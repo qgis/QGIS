@@ -683,10 +683,6 @@ IF (APPLE)
     COMMAND /bin/ln -fs ../../Plugins/qgis/qgisgrass.framework lib/
     WORKING_DIRECTORY "${QGIS_OUTPUT_DIRECTORY}"
   )
-  EXECUTE_PROCESS(
-    COMMAND /bin/ln -fs ../../Plugins/qgis/qgissqlanyconnection.framework lib/
-    WORKING_DIRECTORY "${QGIS_OUTPUT_DIRECTORY}"
-  )
 ENDIF (APPLE)
 
 # manual page - makes sense only on unix systems

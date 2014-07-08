@@ -41,7 +41,7 @@ for i in $FILES; do
 		author=volayaf
 		;;
 
-	src/app/gps/qwtpolar-*|src/app/qtmain_android.cpp|src/core/spatialite/*|src/core/spatialindex/src/*|src/core/gps/qextserialport/*|src/astyle/*|python/pyspatialite/*|src/providers/sqlanywhere/sqlanyconnection/*)
+	src/app/gps/qwtpolar-*|src/app/qtmain_android.cpp|src/core/spatialite/*|src/core/spatialindex/src/*|src/core/gps/qextserialport/*|src/astyle/*|python/pyspatialite/*)
 		# Skip third party files
                 echo $f skipped
                 continue

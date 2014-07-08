@@ -91,10 +91,6 @@ Files: src/plugins/dxf2shp_converter/shapelib-1.2.10/shprewind.c
 Copyright: 2002, Frank Warmerdam
 License: LGPL-2+
 
-Files: src/providers/sqlanywhere/sqlanyconnection/sacapi/*
-Copyright: 2008-2010 iAnywhere Solutions, Inc.
-License: Apache-2.0
-
 Files: cmake/PythonCompile.py
 Copyright: Simon Edwards <simon@simonzone.com>
 License: public-domain
@@ -686,10 +682,6 @@ License: Apache-2.0
  .
  See the License for the specific language governing permissions and
  limitations under the License.
- .
- While not a requirement of the license, if you do modify this file, we
- would appreciate hearing about it. Please email
- sqlany_interfaces@sybase.com
  .
  On Debian systems, the complete text of the Apache License version 2
  an be found in the `/usr/share/common-licenses/Apache-2.0' file.
