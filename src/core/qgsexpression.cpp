@@ -310,6 +310,7 @@ static QgsExpression::Interval getInterval( const QVariant& value, QgsExpression
 
   return QgsExpression::Interval::invalidInterVal();
 }
+
 static QgsGeometry getGeometry( const QVariant& value, QgsExpression* parent )
 {
   if ( value.canConvert<QgsGeometry>() )
@@ -319,6 +320,14 @@ static QgsGeometry getGeometry( const QVariant& value, QgsExpression* parent )
   return QgsGeometry();
 }
 
+static QgsFeature getFeature( const QVariant& value, QgsExpression* parent )
+{
+  if ( value.canConvert<QgsFeature>() )
+    return value.value<QgsFeature>();
+
+  parent->setEvalErrorString( "Cannot convert to QgsFeature" );
+  return 0;
+}
 
 // this handles also NULL values
 static TVL getTVLValue( const QVariant& value, QgsExpression* parent )
@@ -786,6 +795,17 @@ static QVariant fcnFeatureId( const QVariantList& , const QgsFeature* f, QgsExpr
   return f ? QVariant(( int )f->id() ) : QVariant();
 }
 
+static QVariant fcnFeature( const QVariantList& , const QgsFeature* f, QgsExpression* )
+{
+  return f ? QVariant::fromValue( *f ) : QVariant();
+}
+static QVariant fcnAttribute( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
+{
+  QgsFeature feat = getFeature( values.at( 0 ), parent );
+  QString attr = getStringValue( values.at( 1 ), parent );
+
+  return feat.attribute( attr );
+}
 static QVariant fcnConcat( const QVariantList& values, const QgsFeature* , QgsExpression *parent )
 {
   QString concat;
@@ -1660,8 +1680,15 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "geomToWKT", 1, fcnGeomToWKT, "Geometry" )
     << new StaticFunction( "$rownum", 0, fcnRowNumber, "Record" )
     << new StaticFunction( "$id", 0, fcnFeatureId, "Record" )
+    << new StaticFunction( "$currentfeature", 0, fcnFeature, "Features" )
     << new StaticFunction( "$scale", 0, fcnScale, "Record" )
     << new StaticFunction( "$uuid", 0, fcnUuid, "Record" )
+
+    //return all attributes string for referencedColumns - this is caught by
+    // QgsFeatureRequest::setSubsetOfAttributes and causes all attributes to be fetched by the
+    // feature request
+    << new StaticFunction( "attribute", 2, fcnAttribute, "Features", QString(), false, QStringList( QgsFeatureRequest::AllAttributes ) )
+
     << new StaticFunction( "_specialcol_", 1, fcnSpecialColumn, "Special" )
     ;
   }
@@ -1804,6 +1831,7 @@ QStringList QgsExpression::referencedColumns()
 {
   if ( !mRootNode )
     return QStringList();
+
   QStringList columns = mRootNode->referencedColumns();
 
   // filter out duplicates
@@ -2426,6 +2454,26 @@ QString QgsExpression::NodeFunction::dump() const
     return fd->name(); // special column
   else
     return QString( "%1(%2)" ).arg( fd->name() ).arg( mArgs ? mArgs->dump() : QString() ); // function
+}
+
+QStringList QgsExpression::NodeFunction::referencedColumns() const
+{
+  Function* fd = Functions()[mFnIndex];
+  QStringList functionColumns = fd->referencedColumns();
+
+  if ( !mArgs )
+  {
+    //no referenced columns in arguments, just return function's referenced columns
+    return functionColumns;
+  }
+
+  foreach ( Node* n, mArgs->list() )
+  {
+    functionColumns.append( n->referencedColumns() );
+  }
+
+  //remove duplicates and return
+  return functionColumns.toSet().toList();
 }
 
 //
