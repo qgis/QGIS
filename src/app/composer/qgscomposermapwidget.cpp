@@ -59,6 +59,23 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
   mPreviewModeComboBox->insertItem( 1, tr( "Render" ) );
   mPreviewModeComboBox->insertItem( 2, tr( "Rectangle" ) );
 
+  mGridTypeComboBox->insertItem( 0, tr( "Solid" ) );
+  mGridTypeComboBox->insertItem( 1, tr( "Cross" ) );
+
+  mAnnotationFormatComboBox->insertItem( 0, tr( "Decimal" ) );
+  mAnnotationFormatComboBox->insertItem( 1, tr( "DegreeMinute" ) );
+  mAnnotationFormatComboBox->insertItem( 2, tr( "DegreeMinuteSecond" ) );
+
+  insertAnnotationPositionEntries( mAnnotationPositionLeftComboBox );
+  insertAnnotationPositionEntries( mAnnotationPositionRightComboBox );
+  insertAnnotationPositionEntries( mAnnotationPositionTopComboBox );
+  insertAnnotationPositionEntries( mAnnotationPositionBottomComboBox );
+
+  insertAnnotationDirectionEntries( mAnnotationDirectionComboBoxLeft );
+  insertAnnotationDirectionEntries( mAnnotationDirectionComboBoxRight );
+  insertAnnotationDirectionEntries( mAnnotationDirectionComboBoxTop );
+  insertAnnotationDirectionEntries( mAnnotationDirectionComboBoxBottom );
+
   if ( composerMap )
   {
     connect( composerMap, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
@@ -1606,7 +1623,7 @@ void QgsComposerMapWidget::on_mAnnotationFontButton_clicked()
   }
 }
 
-void QgsComposerMapWidget::on_mAnnotationFontColorButton_clicked()
+void QgsComposerMapWidget::on_mAnnotationFontColorButton_colorChanged( const QColor& color )
 {
   QgsComposerMapGrid* grid = currentGrid();
   if ( !grid )
@@ -1614,12 +1631,10 @@ void QgsComposerMapWidget::on_mAnnotationFontColorButton_clicked()
     return;
   }
 
-  QColor c = QColorDialog::getColor( grid->gridAnnotationFontColor(), 0, tr( "Annotation color" ) );
-  if ( c.isValid() )
-  {
-    grid->setGridAnnotationFontColor( c );
-    mAnnotationFontColorButton->setColor( c );
-  }
+  mComposerMap->beginCommand( tr( "Annotation color changed" ) );
+  grid->setGridAnnotationFontColor( color );
+  mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mAnnotationFormatComboBox_currentIndexChanged( int index )

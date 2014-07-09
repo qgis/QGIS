@@ -105,7 +105,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void on_mCoordinatePrecisionSpinBox_valueChanged( int value );
     void on_mDistanceToMapFrameSpinBox_valueChanged( double d );
     void on_mAnnotationFontButton_clicked();
-    void on_mAnnotationFontColorButton_clicked();
+    void on_mAnnotationFontColorButton_colorChanged( const QColor &color );
 
   protected:
     void showEvent( QShowEvent * event );
