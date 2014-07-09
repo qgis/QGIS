@@ -3491,6 +3491,7 @@ void QgsComposer::setAtlasFeature( QgsMapLayer* layer, QgsFeature * feat )
 {
   //update expression variables
   QgsExpression::setSpecialColumn( "$atlasfeatureid", feat->id() );
+  QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( *feat ) );
   QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *( feat->geometry() ) ) );
 
   emit atlasPreviewFeatureChanged();

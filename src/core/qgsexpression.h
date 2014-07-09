@@ -629,6 +629,8 @@ class CORE_EXPORT QgsExpression
     QString mExp;
 
     static QMap<QString, QVariant> gmSpecialColumns;
+    static QMap<QString, QString> gmSpecialColumnGroups;
+
     QgsDistanceArea *mCalc;
 
     friend class QgsOgcUtils;

@@ -1680,14 +1680,14 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "geomToWKT", 1, fcnGeomToWKT, "Geometry" )
     << new StaticFunction( "$rownum", 0, fcnRowNumber, "Record" )
     << new StaticFunction( "$id", 0, fcnFeatureId, "Record" )
-    << new StaticFunction( "$currentfeature", 0, fcnFeature, "Features" )
+    << new StaticFunction( "$currentfeature", 0, fcnFeature, "Record" )
     << new StaticFunction( "$scale", 0, fcnScale, "Record" )
     << new StaticFunction( "$uuid", 0, fcnUuid, "Record" )
 
     //return all attributes string for referencedColumns - this is caught by
     // QgsFeatureRequest::setSubsetOfAttributes and causes all attributes to be fetched by the
     // feature request
-    << new StaticFunction( "attribute", 2, fcnAttribute, "Features", QString(), false, QStringList( QgsFeatureRequest::AllAttributes ) )
+    << new StaticFunction( "attribute", 2, fcnAttribute, "Record", QString(), false, QStringList( QgsFeatureRequest::AllAttributes ) )
 
     << new StaticFunction( "_specialcol_", 1, fcnSpecialColumn, "Special" )
     ;
@@ -1696,6 +1696,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
 }
 
 QMap<QString, QVariant> QgsExpression::gmSpecialColumns;
+QMap<QString, QString> QgsExpression::gmSpecialColumnGroups;
 
 void QgsExpression::setSpecialColumn( const QString& name, QVariant variant )
 {
@@ -1742,10 +1743,23 @@ bool QgsExpression::hasSpecialColumn( const QString& name )
     // This is really sub-optimal, we should get rid of the special columns and instead have contexts in which some values
     // are defined and some are not ($rownum makes sense only in field calculator, $scale only when rendering, $page only for composer etc.)
 
-    QStringList lst;
-    lst << "$page" << "$feature" << "$numpages" << "$numfeatures" << "$atlasfeatureid" << "$atlasgeometry" << "$map";
-    foreach ( QString c, lst )
-      setSpecialColumn( c, QVariant() );
+    //pairs of column name to group name
+    QList< QPair<QString, QString> > lst;
+    lst << qMakePair( QString( "$page" ), QString( "Composer" ) );
+    lst << qMakePair( QString( "$feature" ), QString( "Atlas" ) );
+    lst << qMakePair( QString( "$numpages" ), QString( "Composer" ) );
+    lst << qMakePair( QString( "$numfeatures" ), QString( "Atlas" ) );
+    lst << qMakePair( QString( "$atlasfeatureid" ), QString( "Atlas" ) );
+    lst << qMakePair( QString( "$atlasgeometry" ), QString( "Atlas" ) );
+    lst << qMakePair( QString( "$atlasfeature" ), QString( "Atlas" ) );
+    lst << qMakePair( QString( "$map" ), QString( "Composer" ) );
+
+    QList< QPair<QString, QString> >::const_iterator it = lst.constBegin();
+    for ( ; it != lst.constEnd(); ++it )
+    {
+      setSpecialColumn(( *it ).first, QVariant() );
+      gmSpecialColumnGroups[( *it ).first ] = ( *it ).second;
+    }
 
     initialized = true;
   }
@@ -1768,7 +1782,9 @@ QList<QgsExpression::Function*> QgsExpression::specialColumns()
   QList<Function*> defs;
   for ( QMap<QString, QVariant>::const_iterator it = gmSpecialColumns.begin(); it != gmSpecialColumns.end(); ++it )
   {
-    defs << new StaticFunction( it.key(), 0, 0, "Record" );
+    //check for special column group name
+    QString group = gmSpecialColumnGroups.value( it.key(), "Record" );
+    defs << new StaticFunction( it.key(), 0, 0, group );
   }
   return defs;
 }

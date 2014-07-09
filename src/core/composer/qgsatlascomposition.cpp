@@ -45,6 +45,7 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
   QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )1 ) );
   QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )0 ) );
   QgsExpression::setSpecialColumn( "$atlasfeatureid", QVariant(( int )0 ) );
+  QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( QgsFeature() ) );
   QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( QgsGeometry() ) );
 }
 
@@ -73,6 +74,7 @@ void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
     layer->getFeatures().nextFeature( fet );
     QgsExpression::setSpecialColumn( "$atlasfeatureid", fet.id() );
     QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *fet.geometry() ) );
+    QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( fet ) );
   }
 
   emit coverageLayerChanged( layer );
@@ -357,6 +359,7 @@ bool QgsAtlasComposition::prepareForFeature( int featureI )
 
   QgsExpression::setSpecialColumn( "$atlasfeatureid", mCurrentFeature.id() );
   QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *mCurrentFeature.geometry() ) );
+  QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( mCurrentFeature ) );
   QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
 
   // generate filename for current feature
