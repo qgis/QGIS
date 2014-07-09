@@ -37,6 +37,14 @@ QgsComposerMapGrid::QgsComposerMapGrid( const QString& name, QgsComposerMap* map
 {
   //debug
   mGridLineSymbol = QgsLineSymbolV2::createSimple( QgsStringMap() );
+
+  //get default composer font from settings
+  QSettings settings;
+  QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
+  if ( !defaultFontString.isEmpty() )
+  {
+    mGridAnnotationFont.setFamily( defaultFontString );
+  }
 }
 
 QgsComposerMapGrid::QgsComposerMapGrid(): mComposerMap( 0 )
@@ -173,7 +181,7 @@ bool QgsComposerMapGrid::readXML( const QDomElement& itemElem, const QDomDocumen
   QDomElement crsElem = itemElem.firstChildElement( "spatialrefsys" );
   if ( !crsElem.isNull() )
   {
-    mCRS.readXML( const_cast<QDomElement&>(itemElem ) ); //better would be to change argument in QgsCoordinateReferenceSystem::readXML to const
+    mCRS.readXML( const_cast<QDomElement&>( itemElem ) ); //better would be to change argument in QgsCoordinateReferenceSystem::readXML to const
   }
   else
   {
