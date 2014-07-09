@@ -66,16 +66,3 @@ class OgrAlgorithm(GdalAlgorithm):
         else:
             ogrstr = str(layer.source())
         return ogrstr
-
-    def drivers(self):
-        list = []
-        if ogrAvailable:
-            for iDriver in range(ogr.GetDriverCount()):
-                list.append('%s' % ogr.GetDriver(iDriver).GetName())
-        return list
-
-    def failure(self, pszDataSource):
-        out = 'FAILURE: Unable to open datasource %s with the following \
-              drivers.' % pszDataSource
-        out = out + string.join(map(lambda d: '->' + d, self.drivers()), '\n')
-        return out
