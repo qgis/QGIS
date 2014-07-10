@@ -168,8 +168,7 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
         QHash< QString, QDomElement >::const_iterator pLayerNameIt = pLayerByName.find( lName );
         if ( pLayerNameIt != pLayerByName.constEnd() )
         {
-          pp.layerFromLegendLayer( pLayerNameIt.value(), layers, useCache );
-          break;
+          return ( QList<QgsMapLayer*>() << pp.createLayerFromElement( pLayerNameIt.value(), useCache ) );
         }
 
         const QList<QDomElement>& legendGroupElements = pp.legendGroupElements();
