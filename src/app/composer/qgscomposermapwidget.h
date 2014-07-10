@@ -84,9 +84,14 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void on_mCrossWidthSpinBox_valueChanged( double val );
     void on_mFrameWidthSpinBox_valueChanged( double val );
     void on_mFrameStyleComboBox_currentIndexChanged( const QString& text );
+    void on_mGridFramePenSizeSpinBox_valueChanged( double d );
+    void on_mGridFramePenColorButton_colorChanged( const QColor& newColor );
+    void on_mGridFrameFill1ColorButton_colorChanged( const QColor& newColor );
+    void on_mGridFrameFill2ColorButton_colorChanged( const QColor& newColor );
     void on_mGridTypeComboBox_currentIndexChanged( const QString& text );
     void on_mMapGridCRSButton_clicked();
     void on_mMapGridUnitComboBox_currentIndexChanged( const QString& text );
+    void on_mGridBlendComboBox_currentIndexChanged( int index );
 
     void on_mDrawAnnotationGroupBox_toggled( bool state );
     //annotation position

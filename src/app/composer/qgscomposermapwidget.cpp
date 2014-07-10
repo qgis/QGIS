@@ -617,7 +617,7 @@ void QgsComposerMapWidget::updateGuiElements()
   }
 
   populateDataDefinedButtons();
-
+  loadGridEntries();
   blockAllSignals( false );
 }
 
@@ -721,6 +721,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mAnnotationDirectionComboBoxBottom->blockSignals( b );
   mDistanceToMapFrameSpinBox->blockSignals( b );
   mCoordinatePrecisionSpinBox->blockSignals( b );
+  mGridBlendComboBox->blockSignals( b );
 }
 
 void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
@@ -1210,6 +1211,10 @@ void QgsComposerMapWidget::setGridItemsEnabled( bool enabled )
   mFrameStyleComboBox->setEnabled( enabled );
   mFrameWidthSpinBox->setEnabled( enabled );
   mGridLineStyleButton->setEnabled( enabled );
+  mGridFramePenSizeSpinBox->setEnabled( enabled );
+  mGridFramePenColorButton->setEnabled( enabled );
+  mGridFrameFill1ColorButton->setEnabled( enabled );
+  mGridFrameFill2ColorButton->setEnabled( enabled );
 }
 
 void QgsComposerMapWidget::blockGridItemsSignals( bool block )
@@ -1227,6 +1232,10 @@ void QgsComposerMapWidget::blockGridItemsSignals( bool block )
   mGridLineStyleButton->blockSignals( block );
   mGridTypeComboBox->blockSignals( block );
   mMapGridUnitComboBox->blockSignals( block );
+  mGridFramePenSizeSpinBox->blockSignals( block );
+  mGridFramePenColorButton->blockSignals( block );
+  mGridFrameFill1ColorButton->blockSignals( block );
+  mGridFrameFill2ColorButton->blockSignals( block );
 
   //grid annotation
   mDrawAnnotationGroupBox->blockSignals( block );
@@ -1258,6 +1267,10 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
   mOffsetYSpinBox->setValue( grid->gridOffsetY() );
   mCrossWidthSpinBox->setValue( grid->crossLength() );
   mFrameWidthSpinBox->setValue( grid->gridFrameWidth() );
+  mGridFramePenSizeSpinBox->setValue( grid->gridFramePenSize() );
+  mGridFramePenColorButton->setColor( grid->gridFramePenColor() );
+  mGridFrameFill1ColorButton->setColor( grid->gridFrameFillColor1() );
+  mGridFrameFill2ColorButton->setColor( grid->gridFrameFillColor2() );
 
   QgsComposerMap::GridStyle gridStyle = grid->gridStyle();
   if ( gridStyle == QgsComposerMap::Cross )
@@ -1283,6 +1296,8 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
 
   //line style
   updateLineSymbolMarker( grid );
+
+  mGridBlendComboBox->setBlendMode( grid->blendMode() );
 
   mDrawAnnotationGroupBox->setChecked( grid->showGridAnnotation() );
   initAnnotationPositionBox( mAnnotationPositionLeftComboBox, grid->gridAnnotationPosition( QgsComposerMap::Left ) );
@@ -1436,6 +1451,63 @@ void QgsComposerMapWidget::on_mFrameWidthSpinBox_valueChanged( double val )
   mComposerMap->endCommand();
 }
 
+void QgsComposerMapWidget::on_mGridFramePenSizeSpinBox_valueChanged( double d )
+{
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( !grid || !mComposerMap )
+  {
+    return;
+  }
+
+  mComposerMap->beginCommand( tr( "Changed grid frame line thickness" ) );
+  grid->setGridFramePenSize( d );
+  mComposerMap->updateBoundingRect();
+  mComposerMap->update();
+  mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mGridFramePenColorButton_colorChanged( const QColor& newColor )
+{
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( !grid || !mComposerMap )
+  {
+    return;
+  }
+
+  mComposerMap->beginCommand( tr( "Grid frame color changed" ) );
+  grid->setGridFramePenColor( newColor );
+  mComposerMap->update();
+  mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mGridFrameFill1ColorButton_colorChanged( const QColor& newColor )
+{
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( !grid || !mComposerMap )
+  {
+    return;
+  }
+
+  mComposerMap->beginCommand( tr( "Grid frame first fill color changed" ) );
+  grid->setGridFrameFillColor1( newColor );
+  mComposerMap->update();
+  mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mGridFrameFill2ColorButton_colorChanged( const QColor& newColor )
+{
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( !grid || !mComposerMap )
+  {
+    return;
+  }
+
+  mComposerMap->beginCommand( tr( "Grid frame second fill color changed" ) );
+  grid->setGridFrameFillColor2( newColor );
+  mComposerMap->update();
+  mComposerMap->endCommand();
+}
+
 void QgsComposerMapWidget::on_mFrameStyleComboBox_currentIndexChanged( const QString& text )
 {
   QgsComposerMapGrid* grid = currentGrid();
@@ -1482,6 +1554,20 @@ void QgsComposerMapWidget::on_mMapGridUnitComboBox_currentIndexChanged( const QS
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mGridBlendComboBox_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( grid )
+  {
+    mComposerMap->beginCommand( tr( "Grid blend mode changed" ) );
+    grid->setBlendMode( mGridBlendComboBox->blendMode() );
+    mComposerMap->update();
+    mComposerMap->endCommand();
+  }
+
 }
 
 void QgsComposerMapWidget::on_mGridTypeComboBox_currentIndexChanged( const QString& text )

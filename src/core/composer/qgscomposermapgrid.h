@@ -159,6 +159,32 @@ class CORE_EXPORT QgsComposerMapGrid
     void setGridFrameWidth( double w ) { mGridFrameWidth = w; }
     double gridFrameWidth() const { return mGridFrameWidth; }
 
+    /**Set grid frame pen thickness
+            @note: this function was added in version 2.1*/
+    void setGridFramePenSize( double w ) { mGridFramePenThickness = w; }
+    double gridFramePenSize() const { return mGridFramePenThickness; }
+
+    /**Sets pen color for grid frame
+        @note: this function was added in version 2.1*/
+    void setGridFramePenColor( const QColor& c ) { mGridFramePenColor = c;}
+    /**Get pen color for grid frame
+        @note: this function was added in version 2.1*/
+    QColor gridFramePenColor() const {return mGridFramePenColor;}
+
+    /**Sets first fill color for grid zebra frame
+        @note: this function was added in version 2.1*/
+    void setGridFrameFillColor1( const QColor& c ) { mGridFrameFillColor1 = c;}
+    /**Get first fill color for grid zebra frame
+        @note: this function was added in version 2.1*/
+    QColor gridFrameFillColor1() const {return mGridFrameFillColor1;}
+
+    /**Sets second fill color for grid zebra frame
+        @note: this function was added in version 2.1*/
+    void setGridFrameFillColor2( const QColor& c ) { mGridFrameFillColor2 = c;}
+    /**Get second fill color for grid zebra frame
+        @note: this function was added in version 2.1*/
+    QColor gridFrameFillColor2() const {return mGridFrameFillColor2;}
+
     /**Sets length of the cros segments (if grid style is cross)
     @note this function was added in version 1.4*/
     void setCrossLength( double l ) {mCrossLength = l;}
@@ -173,6 +199,9 @@ class CORE_EXPORT QgsComposerMapGrid
 
     void setGridUnit( GridUnit u ) { mGridUnit = u; }
     GridUnit gridUnit() const { return mGridUnit; }
+
+    void setBlendMode( QPainter::CompositionMode mode ) { mBlendMode = mode; }
+    QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
     double maxExtension() const;
 
@@ -227,6 +256,10 @@ class CORE_EXPORT QgsComposerMapGrid
     QgsComposerMap::GridAnnotationFormat mGridAnnotationFormat;
     QgsComposerMap::GridFrameStyle mGridFrameStyle;
     double mGridFrameWidth;
+    double mGridFramePenThickness;
+    QColor mGridFramePenColor;
+    QColor mGridFrameFillColor1;
+    QColor mGridFrameFillColor2;
     double mCrossLength;
 
     QgsLineSymbolV2* mGridLineSymbol;
@@ -234,6 +267,8 @@ class CORE_EXPORT QgsComposerMapGrid
     QgsCoordinateReferenceSystem mCRS;
 
     GridUnit mGridUnit;
+
+    QPainter::CompositionMode mBlendMode;
 
     /**Draws the map grid*/
     void drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines ) const;
