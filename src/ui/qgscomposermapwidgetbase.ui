@@ -713,12 +713,12 @@
                  <widget class="QComboBox" name="mFrameStyleComboBox">
                   <item>
                    <property name="text">
-                    <string>Zebra</string>
+                    <string>No frame</string>
                    </property>
                   </item>
                   <item>
                    <property name="text">
-                    <string>No frame</string>
+                    <string>Zebra</string>
                    </property>
                   </item>
                  </widget>

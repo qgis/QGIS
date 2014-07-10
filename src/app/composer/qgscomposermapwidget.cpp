@@ -120,7 +120,6 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
   connect( mYMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mYMaxLineEdit, SLOT( setDisabled( bool ) ) );
 
   updateOverviewSymbolMarker();
-  updateLineSymbolMarker();
 
   updateGuiElements();
   loadGridEntries();
