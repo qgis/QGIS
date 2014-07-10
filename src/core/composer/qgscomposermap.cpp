@@ -1675,50 +1675,50 @@ double QgsComposerMap::gridFrameWidth() const
 
 void QgsComposerMap::setGridFramePenSize( double w )
 {
-  //todo...
-  /*QgsComposerMapGrid* g = firstMapGrid();
-  g->setGridFramePenSize( w );*/
+  QgsComposerMapGrid* g = firstMapGrid();
+  g->setGridFramePenSize( w );
 }
 
 double QgsComposerMap::gridFramePenSize() const
 {
-  return 0.0; //todo...
-  /*const QgsComposerMapGrid* g = constFirstMapGrid();
-  return g->gridFramePenSize();*/
+  const QgsComposerMapGrid* g = constFirstMapGrid();
+  return g->gridFramePenSize();
 }
 
 void QgsComposerMap::setGridFramePenColor( const QColor& c )
 {
-  //todo...
-  /*QgsComposerMapGrid* g = firstMapGrid();
-    g->setGridFramePenColor( c );*/
+  QgsComposerMapGrid* g = firstMapGrid();
+  g->setGridFramePenColor( c );
 }
 
 QColor QgsComposerMap::gridFramePenColor() const
 {
-  return QColor(); //todo...
-  /*const QgsComposerMapGrid* g = constFirstMapGrid();
-  return g->gridFramePenColor();*/
+  const QgsComposerMapGrid* g = constFirstMapGrid();
+  return g->gridFramePenColor();
 }
 
 void QgsComposerMap::setGridFrameFillColor1( const QColor& c )
 {
-  //todo...
+  QgsComposerMapGrid* g = firstMapGrid();
+  g->setGridFrameFillColor1( c );
 }
 
 QColor QgsComposerMap::gridFrameFillColor1() const
 {
-  return QColor(); //todo...
+  const QgsComposerMapGrid* g = constFirstMapGrid();
+  return g->gridFrameFillColor1();
 }
 
 void QgsComposerMap::setGridFrameFillColor2( const QColor& c )
 {
-  //todo...
+  QgsComposerMapGrid* g = firstMapGrid();
+  g->setGridFrameFillColor2( c );
 }
 
 QColor QgsComposerMap::gridFrameFillColor2() const
 {
-  return QColor(); //todo...
+  const QgsComposerMapGrid* g = constFirstMapGrid();
+  return g->gridFrameFillColor2();
 }
 
 void QgsComposerMap::setCrossLength( double l )
@@ -1786,16 +1786,14 @@ void QgsComposerMap::drawGrids( QPainter* p )
 
 void QgsComposerMap::setGridBlendMode( QPainter::CompositionMode blendMode )
 {
-#if 0 //todo...
-  mGridBlendMode = blendMode;
-  update();
-#endif //0
+  QgsComposerMapGrid* g = firstMapGrid();
+  g->setBlendMode( blendMode );
 }
 
 QPainter::CompositionMode QgsComposerMap::gridBlendMode()
 {
-  //todo...
-  return QPainter::CompositionMode_SourceOver;
+  const QgsComposerMapGrid* g = constFirstMapGrid();
+  return g->blendMode();
 }
 
 QRectF QgsComposerMap::boundingRect() const
