@@ -1,5 +1,4 @@
 FILE(GLOB PY_FILES *.py)
 FILE(GLOB OTHER_FILES *.txt)
 
-PLUGIN_INSTALL(processing gui ${PY_FILES})
-PLUGIN_INSTALL(processing gui ${OTHER_FILES})
+PLUGIN_INSTALL(processing gui ${PY_FILES} ${OTHER_FILES})
