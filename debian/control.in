@@ -41,6 +41,7 @@ Build-Depends:
  python-sip-dev (>= 4.5.0),
  libosgearth-dev,
  libopenscenegraph-dev,
+ libqscintilla2-dev,
  git,
  doxygen,
  graphviz,
@@ -170,19 +171,6 @@ Description: QGIS - shared Python library
  .
  This package contains the shared Python library.
 
-Package: libqgissqlanyconnection{QGIS_ABI}
-Architecture: any
-Section: libs
-Depends:
- ${shlibs:Depends},
- ${misc:Depends}
-Replaces: libqgis{QGIS_ABI}
-Description: QGIS - shared sqlanywhere connection library
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This package contains the shared sqlanywhere connection library.
-
 Package: libqgis-dev
 Architecture: any
 Section: libdevel
@@ -203,7 +191,6 @@ Depends:
  libqgis-networkanalysis{QGIS_ABI} (= ${binary:Version}),
  libqgisgrass{QGIS_ABI} (= ${binary:Version}),
  libqgispython{QGIS_ABI} (= ${binary:Version}),
- libqgissqlanyconnection{QGIS_ABI} (= ${binary:Version}),
  libqt4-dev (>=4.6.0),
  libsqlite3-dev,
  python-qt4 (>=4.1.0),
@@ -350,21 +337,6 @@ Description: QGIS custom widgets for Qt Designer
  display databases of geographic information.
  .
  This package contains a library to use specific QGIS widgets in Qt Designer.
-
-Package: qgis-sqlanywhere
-Architecture: any
-Depends:
- ${shlibs:Depends},
- ${misc:Depends}
-Conflicts:
- qgis-sqlanywhere1.7.0,
- qgis-sqlanywhere1.7.1,
- qgis-sqlanywhere1.8.0
-Description: QGIS sql anywhere plugin and provider
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This package contains the QGIS sqlanywhere plugin and provider.
 
 Package: qgis-api-doc
 Architecture: all

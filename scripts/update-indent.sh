@@ -57,7 +57,7 @@ ASTYLEDIFF=astyle.r$REV0-r$REV1.diff
 # reformat
 for f in $MODIFIED; do
 	case "$f" in
-	src/core/spatialite/*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|src/astyle/*|python/pyspatialite/*|src/providers/sqlanywhere/sqlanyconnection/*)
+	src/core/spatialite/*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|src/astyle/*|python/pyspatialite/*)
 		echo $f skipped
 		continue
 		;;

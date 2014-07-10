@@ -30,6 +30,7 @@ from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.parameters.ParameterVector import ParameterVector
+from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.outputs.OutputVector import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -38,11 +39,16 @@ class SelectByLocation(GeoAlgorithm):
 
     INPUT = 'INPUT'
     INTERSECT = 'INTERSECT'
+    TOUCHES = 'TOUCHES'
+    OVERLAPS = 'OVERLAPS'
+    WITHIN = 'WITHIN'
     METHOD = 'METHOD'
     OUTPUT = 'OUTPUT'
 
     METHODS = ['creating new selection', 'adding to current selection',
                'removing from current selection']
+    opFlags = 0
+    operators = {'TOUCHES':1,'OVERLAPS':2,'WITHIN':4}
 
 
     def defineCharacteristics(self):
@@ -53,6 +59,15 @@ class SelectByLocation(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INTERSECT,
                           'Additional layer (intersection layer)',
                           [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterBoolean(self.TOUCHES,
+                          'Include input features that touch the selection features',
+                          [True]))
+        self.addParameter(ParameterBoolean(self.OVERLAPS,
+                          'Include input features that overlap/cross the selection features',
+                          [True]))
+        self.addParameter(ParameterBoolean(self.WITHIN,
+                          'Include input features completely within the selection features',
+                          [True]))
         self.addParameter(ParameterSelection(self.METHOD,
                           'Modify current selection by', self.METHODS, 0))
         self.addOutput(OutputVector(self.OUTPUT, 'Selection', True))
@@ -67,6 +82,40 @@ class SelectByLocation(GeoAlgorithm):
         oldSelection = set(inputLayer.selectedFeaturesIds())
         index = vector.spatialindex(inputLayer)
 
+        def _points_op(geomA,geomB):
+            return geomA.intersects(geomB)
+
+        def _poly_lines_op(geomA,geomB):
+            if geomA.disjoint(geomB):
+                return False
+            intersects = False
+            if self.opFlags & self.operators['TOUCHES']:
+                intersects |= geomA.touches(geomB)
+            if not intersects and (self.opFlags & self.operators['OVERLAPS']):
+                if geomB.type() == QGis.Line or geomA.type() == QGis.Line:
+                    intersects |= geomA.crosses(geomB)
+                else:
+                    intersects |= geomA.overlaps(geomB)
+            if not intersects and (self.opFlags & self.operators['WITHIN']):
+                intersects |= geomA.contains(geomB)
+            return intersects
+
+        def _sp_operator():
+            if inputLayer.geometryType() == QGis.Point:
+                return _points_op
+            else:
+                return _poly_lines_op
+
+        self.opFlags = 0
+        if self.getParameterValue(self.TOUCHES):
+            self.opFlags |= self.operators['TOUCHES']
+        if self.getParameterValue(self.OVERLAPS):
+            self.opFlags |= self.operators['OVERLAPS']
+        if self.getParameterValue(self.WITHIN):
+            self.opFlags |= self.operators['WITHIN']
+
+        sp_operator = _sp_operator()
+
         geom = QgsGeometry()
         selectedSet = []
         current = 0
@@ -79,7 +128,7 @@ class SelectByLocation(GeoAlgorithm):
                 request = QgsFeatureRequest().setFilterFid(i)
                 feat = inputLayer.getFeatures(request).next()
                 tmpGeom = QgsGeometry(feat.geometry())
-                if geom.intersects(tmpGeom):
+                if sp_operator(geom,tmpGeom):
                     selectedSet.append(feat.id())
             current += 1
             progress.setPercentage(int(current * total))

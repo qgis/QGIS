@@ -1467,11 +1467,8 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
       }
       else
       {
-        if ( featureI > 0 )
-        {
-          printer.newPage();
-        }
-        mComposition->doPrint( printer, painter );
+        //start print on a new page if we're not on the first feature
+        mComposition->doPrint( printer, painter, featureI > 0 );
       }
     }
     atlasMap->endRender();
@@ -1604,11 +1601,8 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
         return;
       }
 
-      if ( i > 0 )
-      {
-        mPrinter.newPage();
-      }
-      mComposition->doPrint( mPrinter, painter );
+      //start print on a new page if we're not on the first feature
+      mComposition->doPrint( mPrinter, painter, i > 0 );
     }
     atlasMap->endRender();
     painter.end();
@@ -2987,8 +2981,13 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   createCompositionWidget();
 
   //read and restore all the items
+  QDomElement atlasElem;
   if ( mComposition )
   {
+    // read atlas parameters - must be done before adding items
+    atlasElem = composerElem.firstChildElement( "Atlas" );
+    mComposition->atlasComposition().readXML( atlasElem, doc );
+
     mComposition->addItemsFromXML( composerElem, doc, &mMapsToRestore );
   }
 
@@ -3023,15 +3022,14 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
 
   setupUndoView();
 
-  // atlas properties reading
-  QDomNodeList atlasNodeList = composerElem.elementsByTagName( "Atlas" );
-
   //delete old atlas composition widget
   QgsAtlasCompositionWidget* oldAtlasWidget = qobject_cast<QgsAtlasCompositionWidget *>( mAtlasDock->widget() );
   delete oldAtlasWidget;
   mAtlasDock->setWidget( new QgsAtlasCompositionWidget( mAtlasDock, mComposition ) );
 
-  mComposition->atlasComposition().readXML( atlasNodeList.at( 0 ).toElement(), doc );
+  //read atlas map parameters (for pre 2.2 templates)
+  //this part must be done after adding items
+  mComposition->atlasComposition().readXMLMapSettings( atlasElem, doc );
 
   //set state of atlas controls
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
@@ -3493,6 +3491,7 @@ void QgsComposer::setAtlasFeature( QgsMapLayer* layer, QgsFeature * feat )
 {
   //update expression variables
   QgsExpression::setSpecialColumn( "$atlasfeatureid", feat->id() );
+  QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( *feat ) );
   QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *( feat->geometry() ) ) );
 
   emit atlasPreviewFeatureChanged();

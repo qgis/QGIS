@@ -32,7 +32,7 @@
 #include <QSettings>
 #include <QSvgRenderer>
 
-QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QWidget(), mPicture( picture ), mPreviewsLoaded( false )
+QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QgsComposerItemBaseWidget( 0, picture ), mPicture( picture ), mPreviewsLoaded( false )
 {
   setupUi( this );
 
@@ -131,19 +131,10 @@ void QgsComposerPictureWidget::on_mPictureExpressionButton_clicked()
     return;
   }
 
-  QgsVectorLayer* vl = 0;
-  QgsComposition* composition = mPicture->composition();
+  // use the atlas coverage layer, if any
+  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
-  if ( composition )
-  {
-    QgsAtlasComposition* atlasMap = &composition->atlasComposition();
-    if ( atlasMap )
-    {
-      vl = atlasMap->coverageLayer();
-    }
-  }
-
-  QgsExpressionBuilderDialog exprDlg( vl, mPictureExpressionLineEdit->text(), this );
+  QgsExpressionBuilderDialog exprDlg( coverageLayer, mPictureExpressionLineEdit->text(), this );
   exprDlg.setWindowTitle( tr( "Expression based image path" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {

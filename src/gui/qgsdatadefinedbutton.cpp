@@ -692,7 +692,7 @@ QString QgsDataDefinedButton::blendModesDesc()
 {
   return trString() + QString( "[<b>Normal</b>|<b>Lighten</b>|<b>Screen</b>|<b>Dodge</b>|<br>"
                                "<b>Addition</b>|<b>Darken</b>|<b>Multiply</b>|<b>Burn</b>|<b>Overlay</b>|<br>"
-                               "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b>" );
+                               "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b>]" );
 }
 
 QString QgsDataDefinedButton::svgPathDesc()
@@ -700,4 +700,18 @@ QString QgsDataDefinedButton::svgPathDesc()
   return trString() + QString( "[<b>filepath</b>] as<br>"
                                "<b>''</b>=empty|absolute|search-paths-relative|<br>"
                                "project-relative|URL" );
+}
+
+QString QgsDataDefinedButton::paperSizeDesc()
+{
+  return trString() + QString( "[<b>A5</b>|<b>A4</b>|<b>A3</b>|<b>A2</b>|<b>A1</b>|<b>A0</b>"
+                               "<b>B5</b>|<b>B4</b>|<b>B3</b>|<b>B2</b>|<b>B1</b>|<b>B0</b>"
+                               "<b>Legal</b>|<b>Ansi A</b>|<b>Ansi B</b>|<b>Ansi C</b>|<b>Ansi D</b>|<b>Ansi E</b>"
+                               "<b>Arch A</b>|<b>Arch B</b>|<b>Arch C</b>|<b>Arch D</b>|<b>Arch E</b>|<b>Arch E1</b>]"
+                             );
+}
+
+QString QgsDataDefinedButton::paperOrientationDesc()
+{
+  return trString() + QString( "[<b>portrait</b>|<b>landscape</b>]" );
 }

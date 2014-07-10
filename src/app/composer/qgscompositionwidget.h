@@ -15,10 +15,11 @@
  ***************************************************************************/
 
 #include "ui_qgscompositionwidgetbase.h"
+#include "qgscomposeritem.h"
 
 class QgsComposition;
 class QgsComposerMap;
-class QgsComposerItem;
+class QgsDataDefinedButton;
 
 /** \ingroup MapComposer
  * Struct to hold map composer paper properties.
@@ -76,6 +77,12 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     /* when a map is deleted */
     void onItemRemoved( QgsComposerItem* );
 
+    /**Must be called when a data defined button changes*/
+    void updateDataDefinedProperty();
+
+    /**Initializes data defined buttons to current atlas coverage layer*/
+    void populateDataDefinedButtons();
+
   private:
     QgsComposition* mComposition;
     QMap<QString, QgsCompositionPaper> mPaperMap;
@@ -99,4 +106,11 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void setSize( QDoubleSpinBox *spin, double v );
     /**Blocks / unblocks the signals of all items*/
     void blockSignals( bool block );
+
+    /**Sets a data defined property for the item from its current data defined button settings*/
+    void setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerItem::DataDefinedProperty property );
+
+    /**Returns the data defined property corresponding to a data defined button widget*/
+    virtual QgsComposerItem::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton* widget );
+
 };

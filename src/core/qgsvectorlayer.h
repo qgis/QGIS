@@ -255,12 +255,6 @@ struct CORE_EXPORT QgsVectorJoinInfo
  * geometry column, and other attributes.  The url can be constructed using the
  * QgsDataSourceURI class.
  *
- * \subsection sqlanywhere SQL Anywhere data provider (sqlanywhere)
- *
- * Connects to an SQLanywhere database.  The url defines the connection parameters, table,
- * geometry column, and other attributes.  The url can be constructed using the
- * QgsDataSourceURI class.
- *
  * \subsection wfs WFS (web feature service) data provider (wfs)
  *
  * Used to access data provided by a web feature service.

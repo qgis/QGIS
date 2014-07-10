@@ -293,8 +293,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionPanToSelected() { return mActionPanToSelected; }
     QAction *actionZoomIn() { return mActionZoomIn; }
     QAction *actionZoomOut() { return mActionZoomOut; }
-    QAction *actionSelect() { return mActionSelect; }
-    QAction *actionSelectRectangle() { return mActionSelectRectangle; }
+    QAction *actionSelect() { return mActionSelectFeatures; }
+    QAction *actionSelectRectangle() { return mActionSelectFeatures; }
     QAction *actionSelectPolygon() { return mActionSelectPolygon; }
     QAction *actionSelectFreehand() { return mActionSelectFreehand; }
     QAction *actionSelectRadius() { return mActionSelectRadius; }
@@ -996,11 +996,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! shows the snapping Options
     void snappingOptions();
 
-    //! activates the selection tool
-    void select();
-
     //! activates the rectangle selection tool
-    void selectByRectangle();
+    void selectFeatures();
 
     //! activates the polygon selection tool
     void selectByPolygon();
@@ -1433,7 +1430,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mSplitFeatures;
         QgsMapTool* mSplitParts;
         QgsMapTool* mSelect;
-        QgsMapTool* mSelectRectangle;
+        QgsMapTool* mSelectFeatures;
         QgsMapTool* mSelectPolygon;
         QgsMapTool* mSelectFreehand;
         QgsMapTool* mSelectRadius;

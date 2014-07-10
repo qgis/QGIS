@@ -79,7 +79,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
         for path, subdirs, files in os.walk(folder):
             for descriptionFile in files:
                 if descriptionFile.endswith('model'):
-                    try:                    
+                    try:
                         fullpath = os.path.join(path, descriptionFile)
                         alg = ModelerAlgorithm.fromJsonFile(fullpath)
                         if alg:

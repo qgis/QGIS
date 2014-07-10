@@ -5174,7 +5174,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
   {
     QgsDebugMsg( "Connection to database failed. Save style aborted." );
     errCause = QObject::tr( "Connection to database failed" );
-    return QgsVectorLayerImport::ErrConnectionFailed;
+    return false;
   }
 
   sqliteHandle = handle->handle();

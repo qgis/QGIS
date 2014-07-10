@@ -85,7 +85,36 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     mGridResolutionSpinBox->setValue( mComposition->snapGridResolution() );
     mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
     mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
+
+    QgsAtlasComposition* atlas = &mComposition->atlasComposition();
+    if ( atlas )
+    {
+      // repopulate data defined buttons if atlas layer changes
+      connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
+               this, SLOT( populateDataDefinedButtons() ) );
+      connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( populateDataDefinedButtons() ) );
+    }
   }
+
+  connect( mPaperSizeDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mPaperSizeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mPaperSizeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPaperSizeComboBox, SLOT( setDisabled( bool ) ) );
+  connect( mPaperWidthDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mPaperWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mPaperWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPaperWidthDoubleSpinBox, SLOT( setDisabled( bool ) ) );
+  connect( mPaperHeightDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mPaperHeightDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mPaperHeightDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPaperHeightDoubleSpinBox, SLOT( setDisabled( bool ) ) );
+  connect( mNumPagesDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mNumPagesDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mNumPagesDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mNumPagesSpinBox, SLOT( setDisabled( bool ) ) );
+  connect( mPaperOrientationDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mPaperOrientationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mPaperOrientationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPaperOrientationComboBox, SLOT( setDisabled( bool ) ) );
+
+  //initialize data defined buttons
+  populateDataDefinedButtons();
+
   blockSignals( false );
 }
 
@@ -97,6 +126,103 @@ QgsCompositionWidget::QgsCompositionWidget(): QWidget( 0 ), mComposition( 0 )
 QgsCompositionWidget::~QgsCompositionWidget()
 {
 
+}
+
+void QgsCompositionWidget::populateDataDefinedButtons()
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  QgsVectorLayer* vl = 0;
+  QgsAtlasComposition* atlas = &mComposition->atlasComposition();
+
+  if ( atlas && atlas->enabled() )
+  {
+    vl = atlas->coverageLayer();
+  }
+
+  mPaperSizeDDBtn->blockSignals( true );
+  mPaperWidthDDBtn->blockSignals( true );
+  mPaperHeightDDBtn->blockSignals( true );
+  mNumPagesDDBtn->blockSignals( true );
+  mPaperOrientationDDBtn->blockSignals( true );
+
+  mPaperSizeDDBtn->init( vl, mComposition->dataDefinedProperty( QgsComposerItem::PresetPaperSize ),
+                         QgsDataDefinedButton::String, QgsDataDefinedButton::paperSizeDesc() );
+  mPaperWidthDDBtn->init( vl, mComposition->dataDefinedProperty( QgsComposerItem::PaperWidth ),
+                          QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
+  mPaperHeightDDBtn->init( vl, mComposition->dataDefinedProperty( QgsComposerItem::PaperHeight ),
+                           QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
+  mNumPagesDDBtn->init( vl, mComposition->dataDefinedProperty( QgsComposerItem::NumPages ),
+                        QgsDataDefinedButton::Int, QgsDataDefinedButton::intPosOneDesc() );
+  mPaperOrientationDDBtn->init( vl, mComposition->dataDefinedProperty( QgsComposerItem::PaperOrientation ),
+                                QgsDataDefinedButton::String, QgsDataDefinedButton::paperOrientationDesc() );
+
+  //initial state of controls - disable related controls when dd buttons are active
+  mPaperSizeComboBox->setEnabled( !mPaperSizeDDBtn->isActive() );
+
+  mPaperSizeDDBtn->blockSignals( false );
+  mPaperWidthDDBtn->blockSignals( false );
+  mPaperHeightDDBtn->blockSignals( false );
+  mNumPagesDDBtn->blockSignals( false );
+  mPaperOrientationDDBtn->blockSignals( false );
+}
+
+void QgsCompositionWidget::setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsComposerItem::DataDefinedProperty property )
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  const QMap< QString, QString >& map = ddBtn->definedProperty();
+  mComposition->setDataDefinedProperty( property, map.value( "active" ).toInt(), map.value( "useexpr" ).toInt(), map.value( "expression" ), map.value( "field" ) );
+}
+
+QgsComposerItem::DataDefinedProperty QgsCompositionWidget::ddPropertyForWidget( QgsDataDefinedButton *widget )
+{
+  if ( widget == mPaperSizeDDBtn )
+  {
+    return QgsComposerItem::PresetPaperSize;
+  }
+  else if ( widget == mPaperWidthDDBtn )
+  {
+    return QgsComposerItem::PaperWidth;
+  }
+  else if ( widget == mPaperHeightDDBtn )
+  {
+    return QgsComposerItem::PaperHeight;
+  }
+  else if ( widget == mNumPagesDDBtn )
+  {
+    return QgsComposerItem::NumPages;
+  }
+  else if ( widget == mPaperOrientationDDBtn )
+  {
+    return QgsComposerItem::PaperOrientation;
+  }
+
+  return QgsComposerItem::NoProperty;
+}
+
+void QgsCompositionWidget::updateDataDefinedProperty()
+{
+  QgsDataDefinedButton* ddButton = dynamic_cast<QgsDataDefinedButton*>( sender() );
+  if ( !ddButton || !mComposition )
+  {
+    return;
+  }
+
+  QgsComposerItem::DataDefinedProperty property = ddPropertyForWidget( ddButton );
+  if ( property == QgsComposerItem::NoProperty )
+  {
+    return;
+  }
+
+  setDataDefinedProperty( ddButton, property );
+  mComposition->refreshDataDefinedProperty( property );
 }
 
 void QgsCompositionWidget::createPaperEntries()

@@ -76,6 +76,8 @@ class CORE_EXPORT QgsFeatureRequest
       FilterFids        //!< Filter using feature IDs
     };
 
+    static const QString AllAttributes;
+
     //! construct a default request: for all features get attributes and geometries
     QgsFeatureRequest();
     //! construct a request with feature ID filter

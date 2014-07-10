@@ -19,13 +19,14 @@
 #define QGSCOMPOSERLABELWIDGET
 
 #include "ui_qgscomposerlabelwidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerLabel;
 
 /** \ingroup MapComposer
   * A widget to enter text, font size, box yes/no for composer labels
   */
-class QgsComposerLabelWidget: public QWidget, private Ui::QgsComposerLabelWidgetBase
+class QgsComposerLabelWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerLabelWidgetBase
 {
     Q_OBJECT
   public:

@@ -18,13 +18,14 @@
 #define QGSCOMPOSERSCALEBARWIDGET_H
 
 #include "ui_qgscomposerscalebarwidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerScaleBar;
 
 /** \ingroup MapComposer
  * A widget to define the properties of a QgsComposerScaleBarItem.
  */
-class QgsComposerScaleBarWidget: public QWidget, private Ui::QgsComposerScaleBarWidgetBase
+class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerScaleBarWidgetBase
 {
     Q_OBJECT
 

@@ -133,6 +133,46 @@ class QgsComposerItem : QObject, QGraphicsRectItem
       LowerRight
     };
 
+    /** Data defined properties for different item types
+     */
+    enum DataDefinedProperty
+    {
+      NoProperty = 0, /*< no property */
+      AllProperties, /*< all properties for item */
+      //composer page properties
+      PresetPaperSize, /*< preset paper size for composition */
+      PaperWidth, /*< paper width */
+      PaperHeight, /*< paper height */
+      NumPages, /*< number of pages in composition */
+      PaperOrientation, /*< paper orientation */
+      //general composer item properties
+      PageNumber, /*< page number for item placement */
+      PositionX, /*< x position on page */
+      PositionY, /*< y position on page */
+      ItemWidth, /*< width of item */
+      ItemHeight, /*< height of item */
+      ItemRotation, /*< rotation of item */
+      Transparency, /*< item transparency */
+      BlendMode, /*< item blend mode */
+      //composer map
+      MapRotation, /*< map rotation */
+      MapScale, /*< map scale */
+      MapXMin, /*< map extent x minimum */
+      MapYMin, /*< map extent y minimum */
+      MapXMax, /*< map extent x maximum */
+      MapYMax /*< map extent y maximum */
+    };
+
+    /** Specifies whether the value returned by a function should be the original, user
+     * set value, or the current evaluated value for the property. This may differ if
+     * a property has a data defined expression active.
+     */
+    enum PropertyValueType
+    {
+      EvaluatedValue = 0, /*< return the current evaluated value for the property */
+      OriginalValue /*< return the original, user set value */
+    };
+
     /**Constructor
      @param composition parent composition
      @param manageZValue true if the z-Value of this object should be managed by mComposition*/
@@ -428,9 +468,14 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     @note this method was added in version 1.2*/
     bool positionLock() const;
 
-    /**Returns the rotation for the composer item
-    @note this method was added in version 2.1*/
-    double itemRotation() const;
+    /**Returns the current rotation for the composer item.
+     * @returns rotation for composer item
+     * @param valueType controls whether the returned value is the user specified rotation,
+     * or the current evaluated rotation (which may be affected by data driven rotation
+     * settings).
+     * @note this method was added in version 2.1
+     */
+    double itemRotation( PropertyValueType valueType = EvaluatedValue ) const;
 
     /**Returns the rotation for the composer item
      * @deprecated Use itemRotation()
@@ -453,6 +498,20 @@ class QgsComposerItem : QObject, QGraphicsRectItem
       @note this method was added in version 2.0
       @note there is not setter since one can't manually set the id*/
     QString uuid() const;
+    
+    /**Returns whether this item is part of a group
+     * @returns true if item is in a group
+     * @note added in version 2.5
+     * @see setIsGroupMember
+    */
+    bool isGroupMember() const;
+
+    /**Sets whether this item is part of a group
+     * @param isGroupMember set to true if item is in a group
+     * @note added in version 2.5
+     * @see isGroupMember
+    */
+    void setIsGroupMember( bool isGroupMember );
 
     /**Get the number of layers that this item requires for exporting as layers
      * @returns 0 if this item is to be placed on the same layer as the previous item,
@@ -467,6 +526,22 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     */
     void setCurrentExportLayer( int layerIdx = -1 );
 
+    /**Returns a reference to the data defined settings for one of the item's data defined properties.
+     * @param property data defined property to return
+     * @note this method was added in version 2.5
+    */
+    QgsDataDefined* dataDefinedProperty( DataDefinedProperty property );
+
+    /**Sets parameters for a data defined property for the item
+     * @param property data defined property to set
+     * @param active true if data defined property is active, false if it is disabled
+     * @param useExpression true if the expression should be used
+     * @param expression expression for data defined property
+     * @field field name if the data defined property should take its value from a field
+     * @note this method was added in version 2.5
+    */
+    void setDataDefinedProperty( DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
+
   public slots:
     /**Sets the item rotation
      * @deprecated Use setItemRotation( double rotation ) instead
@@ -474,14 +549,23 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     virtual void setRotation( double r );
 
     /**Sets the item rotation
-      @param r item rotation in degrees
-      @param adjustPosition set to true if item should be shifted so that rotation occurs
-       around item center. If false, rotation occurs around item origin
-      @note this method was added in version 2.1
+     * @param r item rotation in degrees
+     * @param adjustPosition set to true if item should be shifted so that rotation occurs
+     * around item center. If false, rotation occurs around item origin
+     * @note this method was added in version 2.1
     */
     virtual void setItemRotation( double r, bool adjustPosition = false );
 
     void repaint();
+
+    /**Refreshes a data defined property for the item by reevaluating the property's value
+     * and redrawing the item with this new value.
+     * @param property data defined property to refresh. If property is set to
+     * QgsComposerItem::AllProperties then all data defined properties for the item will be
+     * refreshed.
+     * @note this method was added in version 2.5
+    */
+    virtual void refreshDataDefinedProperty( DataDefinedProperty property = AllProperties );
 
   protected:
 
@@ -567,6 +651,17 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     QGraphicsLineItem* vAlignSnapItem();
     void deleteVAlignSnapItem();
     void deleteAlignItems();
+
+    /**Evaluate a data defined property and return the calculated value
+     * @returns true if data defined property could be successfully evaluated
+     * @param property data defined property to evaluate
+     * @param expressionValue QVariant for storing the evaluated value
+     * @note this method was added in version 2.5
+    */
+    bool dataDefinedEvaluate( QgsComposerItem::DataDefinedProperty property, QVariant &expressionValue );
+
+    /**Update an item rect to consider data defined position and size of item*/
+    QRectF evalItemRect( const QRectF &newRect );
 
   signals:
     /**Is emitted on item rotation change*/

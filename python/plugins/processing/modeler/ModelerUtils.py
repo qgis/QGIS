@@ -31,7 +31,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 
 
 class ModelerUtils:
-    
+
     allAlgs = {}
     providers = {}
 

@@ -124,10 +124,10 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
       foreach ( QgsLayerTreeLayer* layerNode, layerNodes )
       {
         if ( layerNode->layer() &&
-	     (
-	       qobject_cast<QgsVectorLayer *>( layerNode->layer() ) == 0 ||
-	       qobject_cast<QgsVectorLayer *>( layerNode->layer() )->geometryType() != QGis::NoGeometry
-	     )
+             (
+               qobject_cast<QgsVectorLayer *>( layerNode->layer() ) == 0 ||
+               qobject_cast<QgsVectorLayer *>( layerNode->layer() )->geometryType() != QGis::NoGeometry
+             )
            )
         {
           mCanvas->setDestinationCrs( layerNode->layer()->crs() );

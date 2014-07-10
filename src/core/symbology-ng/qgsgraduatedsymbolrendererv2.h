@@ -24,7 +24,7 @@ class CORE_EXPORT QgsRendererRangeV2
 {
   public:
     QgsRendererRangeV2();
-    QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, QString label );
+    QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, QString label, bool render = true );
     QgsRendererRangeV2( const QgsRendererRangeV2& range );
 
     // default dtor is ok
@@ -41,6 +41,10 @@ class CORE_EXPORT QgsRendererRangeV2
     void setLowerValue( double lowerValue );
     void setUpperValue( double upperValue );
 
+    // @note added in 2.5
+    bool renderState() const;
+    void setRenderState( bool render );
+
     // debugging
     QString dump() const;
 
@@ -50,6 +54,7 @@ class CORE_EXPORT QgsRendererRangeV2
     double mLowerValue, mUpperValue;
     QScopedPointer<QgsSymbolV2> mSymbol;
     QString mLabel;
+    bool mRender;
 
     // for cpy+swap idiom
     void swap( QgsRendererRangeV2 & other );
@@ -97,6 +102,9 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     bool updateRangeLabel( int rangeIndex, QString label );
     bool updateRangeUpperValue( int rangeIndex, double value );
     bool updateRangeLowerValue( int rangeIndex, double value );
+    //! @note added in 2.5
+    bool updateRangeRenderState( int rangeIndex, bool render );
+
 
     void addClass( QgsSymbolV2* symbol );
     //! @note available in python bindings as addClassRange
@@ -178,6 +186,17 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 2.0
     QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
 
+    //! items of symbology items in legend should be checkable
+    // @note added in 2.5
+    virtual bool legendSymbolItemsCheckable() const;
+
+    //! item in symbology was checked
+    // @note added in 2.5
+    virtual bool legendSymbolItemChecked( int index );
+
+    //! item in symbology was checked
+    // @note added in 2.5
+    virtual void checkLegendSymbolItem( int index, bool state = true );
 
   protected:
     QString mAttrName;
@@ -192,6 +211,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     QScopedPointer<QgsExpression> mExpression;
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum;
+    bool mCounting;
 
     //! temporary symbols, used for data-defined rotation and scaling
     QHash<QgsSymbolV2*, QgsSymbolV2*> mTempSymbols;

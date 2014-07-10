@@ -19,13 +19,14 @@
 #define QGSCOMPOSERPICTUREWIDGET_H
 
 #include "ui_qgscomposerpicturewidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerPicture;
 
 /** \ingroup MapComposer
  * A widget for adding an image to a map composition.
  */
-class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWidgetBase
+class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerPictureWidgetBase
 {
     Q_OBJECT
 

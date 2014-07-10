@@ -19,8 +19,13 @@ class QgsExpression
     //! Get the expression ready for evaluation - find out column indexes.
     bool prepare( const QgsFields &fields );
 
-    //! Get list of columns referenced by the expression
+    /**Get list of columns referenced by the expression.
+     * @note if the returned list contains the QgsFeatureRequest::AllAttributes constant then
+     * all attributes from the layer are required for evaluation of the expression.
+     * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
+     */
     QStringList referencedColumns();
+
     //! Returns true if the expression uses feature geometry for some computation
     bool needsGeometry();
 
@@ -155,13 +160,15 @@ class QgsExpression
     class Function
     {
       public:
-        Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false );
+        Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList() );
         /** The name of the function. */
         QString name();
         /** The number of parameters this function takes. */
         int params();
         /** Does this function use a geometry object. */
         bool usesgeometry();
+
+	virtual QStringList referencedColumns() const;
         /** The group the function belongs to. */
         QString group();
         /** The help text for the function. */

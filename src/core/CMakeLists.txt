@@ -168,6 +168,7 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposerlegenditem.cpp
   composer/qgscomposerpicture.cpp
   composer/qgscomposermap.cpp
+  composer/qgscomposermapgrid.cpp
   composer/qgscomposertable.cpp
   composer/qgscomposertablecolumn.cpp  
   composer/qgscomposerattributetable.cpp

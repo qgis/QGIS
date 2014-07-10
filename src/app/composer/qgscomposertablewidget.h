@@ -19,10 +19,11 @@
 #define QGSCOMPOSERTABLEWIDGET_H
 
 #include "ui_qgscomposertablewidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerAttributeTable;
 
-class QgsComposerTableWidget: public QWidget, private Ui::QgsComposerTableWidgetBase
+class QgsComposerTableWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerTableWidgetBase
 {
     Q_OBJECT
   public:

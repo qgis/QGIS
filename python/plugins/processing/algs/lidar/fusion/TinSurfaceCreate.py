@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 """
 ***************************************************************************
@@ -76,5 +76,5 @@ class TinSurfaceCreate(FusionAlgorithm):
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))
         else:
-            commands.extend(files)            
+            commands.extend(files)
         FusionUtils.runFusion(commands, progress)

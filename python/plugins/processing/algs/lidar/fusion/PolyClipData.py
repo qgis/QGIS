@@ -56,9 +56,9 @@ class PolyClipData(FusionAlgorithm):
         ##  'field' e 'value' box should appear or get activated if Shape attribute is switched ON
         self.addParameter(ParameterString(self.FIELD, 'Shape field index'))
         self.addParameter(ParameterString(self.VALUE, "Shape value"))
-        self.addAdvancedModifiers()			
-		
-		
+        self.addAdvancedModifiers()
+
+
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'PolyClipData.exe')]
         commands.append('/verbose')

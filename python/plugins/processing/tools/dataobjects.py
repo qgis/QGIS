@@ -211,7 +211,6 @@ def getObjectFromUri(uri, forceLoad=True):
 
     if uri is None:
         return None
-    print _loadedLayers
     if uri in _loadedLayers:
         return _loadedLayers[uri]
     layers = getRasterLayers()

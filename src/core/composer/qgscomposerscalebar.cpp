@@ -382,7 +382,9 @@ void QgsComposerScaleBar::adjustBoxSize()
   }
 
   QRectF box = mStyle->calculateBoxSize();
-  setSceneRect( box );
+
+  //update rect for data defined size and position
+  setSceneRect( evalItemRect( box ) );
 }
 
 void QgsComposerScaleBar::update()

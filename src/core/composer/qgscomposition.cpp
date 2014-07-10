@@ -39,6 +39,7 @@
 #include "qgsexpression.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsdatadefined.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -95,6 +96,24 @@ void QgsComposition::init()
   mActiveMultiFrameCommand = 0;
   mAtlasMode = QgsComposition::AtlasOff;
   mPreventCursorChange = false;
+
+  //data defined strings
+  mDataDefinedNames.insert( QgsComposerItem::PresetPaperSize, QString( "dataDefinedPaperSize" ) );
+  mDataDefinedNames.insert( QgsComposerItem::PaperWidth, QString( "dataDefinedPaperWidth" ) );
+  mDataDefinedNames.insert( QgsComposerItem::PaperHeight, QString( "dataDefinedPaperHeight" ) );
+  mDataDefinedNames.insert( QgsComposerItem::NumPages, QString( "dataDefinedNumPages" ) );
+  mDataDefinedNames.insert( QgsComposerItem::PaperOrientation, QString( "dataDefinedPaperOrientation" ) );
+
+  //connect to atlas toggling on/off and coverage layer and feature changes
+  //to update data defined values
+  connect( &mAtlasComposition, SIGNAL( toggled( bool ) ), this, SLOT( refreshDataDefinedProperty() ) );
+  connect( &mAtlasComposition, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( refreshDataDefinedProperty() ) );
+  connect( &mAtlasComposition, SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshDataDefinedProperty() ) );
+  //also, refreshing composition triggers a recalculation of data defined properties
+  connect( this, SIGNAL( refreshItemsTriggered() ), this, SLOT( refreshDataDefinedProperty() ) );
+  //toggling atlas or changing coverage layer requires data defined expressions to be reprepared
+  connect( &mAtlasComposition, SIGNAL( toggled( bool ) ), this, SLOT( prepareAllDataDefinedExpressions() ) );
+  connect( &mAtlasComposition, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( prepareAllDataDefinedExpressions() ) );
 
   setBackgroundBrush( QColor( 215, 215, 215 ) );
   createDefaultPageStyleSymbol();
@@ -157,6 +176,10 @@ QgsComposition::~QgsComposition()
   removePaperItems();
   deleteAndRemoveMultiFrames();
 
+  // clear pointers to QgsDataDefined objects
+  //TODO - should be qDeleteAll? Check original label code too for same leak.
+  mDataDefinedProperties.clear();
+
   // make sure that all composer items are removed before
   // this class is deconstructed - to avoid segfaults
   // when composer items access in destructor composition that isn't valid anymore
@@ -190,6 +213,21 @@ void QgsComposition::setSelectedItem( QgsComposerItem *item )
   clearSelection();
   item->setSelected( true );
   emit selectedItemChanged( item );
+}
+
+void QgsComposition::refreshDataDefinedProperty( QgsComposerItem::DataDefinedProperty property )
+{
+  //updates data defined properties and redraws composition to match
+  if ( property == QgsComposerItem::NumPages || property == QgsComposerItem::AllProperties )
+  {
+    setNumPages( numPages() );
+  }
+  if ( property == QgsComposerItem::PaperWidth || property == QgsComposerItem::PaperHeight ||
+       property == QgsComposerItem::PaperOrientation || property == QgsComposerItem::PresetPaperSize ||
+       property == QgsComposerItem::AllProperties )
+  {
+    refreshPageSize();
+  }
 }
 
 QRectF QgsComposition::compositionBounds() const
@@ -279,7 +317,22 @@ double QgsComposition::paperWidth() const
 void QgsComposition::setNumPages( int pages )
 {
   int currentPages = numPages();
-  int diff = pages - currentPages;
+  int desiredPages = pages;
+
+  //data defined num pages set?
+  QVariant exprVal;
+  if ( dataDefinedEvaluate( QgsComposerItem::NumPages, exprVal, &mDataDefinedProperties ) )
+  {
+    bool ok = false;
+    int pagesD = exprVal.toInt( &ok );
+    QgsDebugMsg( QString( "exprVal NumPages:%1" ).arg( pagesD ) );
+    if ( ok )
+    {
+      desiredPages = pagesD;
+    }
+  }
+
+  int diff = desiredPages - currentPages;
   if ( diff >= 0 )
   {
     for ( int i = 0; i < diff; ++i )
@@ -692,6 +745,9 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   }
   composerElem.appendChild( compositionElem );
 
+  //data defined properties
+  writeDataDefinedPropertyMap( compositionElem, doc, &mDataDefinedNames, &mDataDefinedProperties );
+
   return true;
 }
 
@@ -757,6 +813,9 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
 
   mGenerateWorldFile = compositionElem.attribute( "generateWorldFile", "0" ).toInt() == 1 ? true : false;
 
+  //data defined properties
+  readDataDefinedPropertyMap( compositionElem, &mDataDefinedNames, &mDataDefinedProperties );
+
   updatePaperItems();
 
   updateBounds();
@@ -821,6 +880,10 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
     return false;
   }
 
+  // read atlas parameters - must be done before adding items
+  QDomElement atlasElem = importDoc.documentElement().firstChildElement( "Atlas" );
+  atlasComposition().readXML( atlasElem, importDoc );
+
   // remove all uuid attributes since we don't want duplicates UUIDS
   QDomNodeList composerItemsNodes = importDoc.elementsByTagName( "ComposerItem" );
   for ( int i = 0; i < composerItemsNodes.count(); ++i )
@@ -836,9 +899,9 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
   //addItemsFromXML
   addItemsFromXML( importDoc.documentElement(), importDoc, 0, addUndoCommands, 0 );
 
-  // read atlas parameters
-  QDomElement atlasElem = importDoc.documentElement().firstChildElement( "Atlas" );
-  atlasComposition().readXML( atlasElem, importDoc );
+  //read atlas map parameters (for pre 2.2 templates)
+  //this can only be done after items have been added
+  atlasComposition().readXMLMapSettings( atlasElem, importDoc );
   return true;
 }
 
@@ -2432,6 +2495,8 @@ void QgsComposition::beginPrintAsPDF( QPrinter& printer, const QString& file )
   // https://bugreports.qt-project.org/browse/QTBUG-33583 - PDF output converts text to outline
   // Also an issue with PDF paper size using QPrinter::NativeFormat on Mac (always outputs portrait letter-size)
   printer.setOutputFormat( QPrinter::PdfFormat );
+  printer.setOutputFileName( file );
+  refreshPageSize();
   printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
 
   // TODO: add option for this in Composer
@@ -2448,9 +2513,13 @@ bool QgsComposition::exportAsPDF( const QString& file )
   return print( printer );
 }
 
-void QgsComposition::doPrint( QPrinter& printer, QPainter& p )
+void QgsComposition::doPrint( QPrinter& printer, QPainter& p, bool startNewPage )
 {
-//QgsComposition starts page numbering at 0
+  //set the page size again so that data defined page size takes effect
+  refreshPageSize();
+  printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
+
+  //QgsComposition starts page numbering at 0
   int fromPage = ( printer.fromPage() < 1 ) ? 0 : printer.fromPage() - 1 ;
   int toPage = ( printer.toPage() < 1 ) ? numPages() - 1 : printer.toPage() - 1;
 
@@ -2458,7 +2527,7 @@ void QgsComposition::doPrint( QPrinter& printer, QPainter& p )
   {
     for ( int i = fromPage; i <= toPage; ++i )
     {
-      if ( i > fromPage )
+      if ( i > fromPage || startNewPage )
       {
         printer.newPage();
       }
@@ -2476,7 +2545,7 @@ void QgsComposition::doPrint( QPrinter& printer, QPainter& p )
   {
     for ( int i = fromPage; i <= toPage; ++i )
     {
-      if ( i > fromPage )
+      if ( i > fromPage || startNewPage )
       {
         printer.newPage();
       }
@@ -2684,6 +2753,430 @@ bool QgsComposition::setAtlasMode( QgsComposition::AtlasMode mode )
   return true;
 }
 
+void QgsComposition::refreshPageSize()
+{
+  double pageWidth = mPageWidth;
+  double pageHeight = mPageHeight;
+
+  QVariant exprVal;
+  //in order of precedence - first consider predefined page size
+  if ( dataDefinedEvaluate( QgsComposerItem::PresetPaperSize, exprVal, &mDataDefinedProperties ) )
+  {
+    QString presetString = exprVal.toString().trimmed();
+    QgsDebugMsg( QString( "exprVal Paper Preset size :%1" ).arg( presetString ) );
+    double widthD = 0;
+    double heightD = 0;
+    if ( decodePresetPaperSize( presetString, widthD, heightD ) )
+    {
+      pageWidth = widthD;
+      pageHeight = heightD;
+    }
+  }
+
+  //which is overwritten by data defined width/height
+  if ( dataDefinedEvaluate( QgsComposerItem::PaperWidth, exprVal, &mDataDefinedProperties ) )
+  {
+    bool ok;
+    double widthD = exprVal.toDouble( &ok );
+    QgsDebugMsg( QString( "exprVal Paper Width:%1" ).arg( widthD ) );
+    if ( ok )
+    {
+      pageWidth = widthD;
+    }
+  }
+  if ( dataDefinedEvaluate( QgsComposerItem::PaperHeight, exprVal, &mDataDefinedProperties ) )
+  {
+    bool ok;
+    double heightD = exprVal.toDouble( &ok );
+    QgsDebugMsg( QString( "exprVal Paper Height:%1" ).arg( heightD ) );
+    if ( ok )
+    {
+      pageHeight = heightD;
+    }
+  }
+
+  //which is finally overwritten by data defined orientation
+  if ( dataDefinedEvaluate( QgsComposerItem::PaperOrientation, exprVal, &mDataDefinedProperties ) )
+  {
+    bool ok;
+    QString orientationString = exprVal.toString().trimmed();
+    QgsComposition::PaperOrientation orientation = decodePaperOrientation( orientationString, ok );
+    QgsDebugMsg( QString( "exprVal Paper Orientation:%1" ).arg( orientationString ) );
+    if ( ok )
+    {
+      double heightD, widthD;
+      switch ( orientation )
+      {
+        case QgsComposition::Portrait:
+        {
+          heightD = qMax( pageHeight, pageWidth );
+          widthD = qMin( pageHeight, pageWidth );
+          break;
+        }
+        case QgsComposition::Landscape:
+        {
+          heightD = qMin( pageHeight, pageWidth );
+          widthD = qMax( pageHeight, pageWidth );
+          break;
+        }
+      }
+      pageWidth = widthD;
+      pageHeight = heightD;
+    }
+  }
+
+  setPaperSize( pageWidth, pageHeight );
+}
+
+QgsComposition::PaperOrientation QgsComposition::decodePaperOrientation( QString orientationString, bool &ok )
+{
+  if ( orientationString.compare( "Portrait", Qt::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsComposition::Portrait;
+  }
+  if ( orientationString.compare( "Landscape", Qt::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsComposition::Landscape;
+  }
+  ok = false;
+  return QgsComposition::Landscape; // default to landscape
+}
+
+bool QgsComposition::decodePresetPaperSize( QString presetString, double &width, double &height )
+{
+  QList< QPair< QString, QSizeF > > presets;
+  presets << qMakePair( QString( "A5" ), QSizeF( 148, 210 ) );
+  presets << qMakePair( QString( "A4" ), QSizeF( 210, 297 ) );
+  presets << qMakePair( QString( "A3" ), QSizeF( 297, 420 ) );
+  presets << qMakePair( QString( "A2" ), QSizeF( 420, 594 ) );
+  presets << qMakePair( QString( "A1" ), QSizeF( 594, 841 ) );
+  presets << qMakePair( QString( "A0" ), QSizeF( 841, 1189 ) );
+  presets << qMakePair( QString( "B5" ), QSizeF( 176, 250 ) );
+  presets << qMakePair( QString( "B4" ), QSizeF( 250, 353 ) );
+  presets << qMakePair( QString( "B3" ), QSizeF( 353, 500 ) );
+  presets << qMakePair( QString( "B2" ), QSizeF( 500, 707 ) );
+  presets << qMakePair( QString( "B1" ), QSizeF( 707, 1000 ) );
+  presets << qMakePair( QString( "B0" ), QSizeF( 1000, 1414 ) );
+  // North american formats
+  presets << qMakePair( QString( "Legal" ), QSizeF( 215.9, 355.6 ) );
+  presets << qMakePair( QString( "ANSI A" ), QSizeF( 215.9, 279.4 ) );
+  presets << qMakePair( QString( "ANSI B" ), QSizeF( 279.4, 431.8 ) );
+  presets << qMakePair( QString( "ANSI C" ), QSizeF( 431.8, 558.8 ) );
+  presets << qMakePair( QString( "ANSI D" ), QSizeF( 558.8, 863.6 ) );
+  presets << qMakePair( QString( "ANSI E" ), QSizeF( 863.6, 1117.6 ) );
+  presets << qMakePair( QString( "Arch A" ), QSizeF( 228.6, 304.8 ) );
+  presets << qMakePair( QString( "Arch B" ), QSizeF( 304.8, 457.2 ) );
+  presets << qMakePair( QString( "Arch C" ), QSizeF( 457.2, 609.6 ) );
+  presets << qMakePair( QString( "Arch D" ), QSizeF( 609.6, 914.4 ) );
+  presets << qMakePair( QString( "Arch E" ), QSizeF( 914.4, 1219.2 ) );
+  presets << qMakePair( QString( "Arch E1" ), QSizeF( 762, 1066.8 ) );
+
+  QList< QPair< QString, QSizeF > >::const_iterator presetIt = presets.constBegin();
+  for ( ;presetIt != presets.constEnd(); ++presetIt )
+  {
+    if ( presetString.compare(( *presetIt ).first, Qt::CaseInsensitive ) == 0 )
+    {
+      width = ( *presetIt ).second.width();
+      height = ( *presetIt ).second.height();
+      return true;
+    }
+  }
+  return false;
+}
+
+QgsDataDefined *QgsComposition::dataDefinedProperty( QgsComposerItem::DataDefinedProperty property )
+{
+  if ( property == QgsComposerItem::AllProperties || property == QgsComposerItem::NoProperty )
+  {
+    //invalid property
+    return 0;
+  }
+
+  //find matching QgsDataDefined for property
+  QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.find( property );
+  if ( it != mDataDefinedProperties.constEnd() )
+  {
+    return it.value();
+  }
+
+  //not found
+  return 0;
+}
+
+void QgsComposition::setDataDefinedProperty( QgsComposerItem::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field )
+{
+  if ( property == QgsComposerItem::AllProperties || property == QgsComposerItem::NoProperty )
+  {
+    //invalid property
+    return;
+  }
+
+  bool defaultVals = ( !active && !useExpression && expression.isEmpty() && field.isEmpty() );
+
+  if ( mDataDefinedProperties.contains( property ) )
+  {
+    QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.find( property );
+    if ( it != mDataDefinedProperties.constEnd() )
+    {
+      QgsDataDefined* dd = it.value();
+      dd->setActive( active );
+      dd->setUseExpression( useExpression );
+      dd->setExpressionString( expression );
+      dd->setField( field );
+    }
+  }
+  else if ( !defaultVals )
+  {
+    QgsDataDefined* dd = new QgsDataDefined( active, useExpression, expression, field );
+    mDataDefinedProperties.insert( property, dd );
+  }
+}
+
+bool QgsComposition::dataDefinedEvaluate( QgsComposerItem::DataDefinedProperty property, QVariant &expressionValue, QMap<QgsComposerItem::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties )
+{
+  if ( property == QgsComposerItem::NoProperty || property == QgsComposerItem::AllProperties )
+  {
+    //invalid property
+    return false;
+  }
+
+  //null passed-around QVariant
+  expressionValue.clear();
+
+  //get fields and feature from atlas
+  const QgsFeature* currentFeature = 0;
+  const QgsFields* layerFields = 0;
+  if ( mAtlasComposition.enabled() )
+  {
+    QgsVectorLayer* atlasLayer = mAtlasComposition.coverageLayer();
+    if ( atlasLayer )
+    {
+      layerFields = &atlasLayer->pendingFields();
+    }
+    if ( mAtlasMode != QgsComposition::AtlasOff )
+    {
+      currentFeature = mAtlasComposition.currentFeature();
+    }
+  }
+
+  //evaluate data defined property using current atlas context
+  QVariant result = dataDefinedValue( property, currentFeature, layerFields, dataDefinedProperties );
+
+  if ( result.isValid() )
+  {
+    expressionValue = result;
+    return true;
+  }
+
+  return false;
+}
+
+void QgsComposition::readDataDefinedPropertyMap( const QDomElement &itemElem, QMap<QgsComposerItem::DataDefinedProperty, QString> *dataDefinedNames, QMap<QgsComposerItem::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const
+{
+  QMap<QgsComposerItem::DataDefinedProperty, QString>::const_iterator i = dataDefinedNames->constBegin();
+  for ( ; i != dataDefinedNames->constEnd(); ++i )
+  {
+    QString elemName = i.value();
+    QDomNodeList ddNodeList = itemElem.elementsByTagName( elemName );
+    if ( ddNodeList.size() > 0 )
+    {
+      QDomElement ddElem = ddNodeList.at( 0 ).toElement();
+      readDataDefinedProperty( i.key(), ddElem, dataDefinedProperties );
+    }
+  }
+}
+
+void QgsComposition::readDataDefinedProperty( QgsComposerItem::DataDefinedProperty property, const QDomElement &ddElem, QMap<QgsComposerItem::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const
+{
+  if ( property == QgsComposerItem::AllProperties || property == QgsComposerItem::NoProperty )
+  {
+    //invalid property
+    return;
+  }
+
+  QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* >::const_iterator it = dataDefinedProperties->constFind( property );
+
+  QgsDataDefined* dd = 0;
+  if ( it != dataDefinedProperties->constEnd() )
+  {
+    dd = it.value();
+  }
+  else
+  {
+    //QgsDataDefined for property doesn't currently exist, need to add new
+    dd = new QgsDataDefined( );
+    dataDefinedProperties->insert( property, dd );
+  }
+
+  //set values for QgsDataDefined
+  QString active = ddElem.attribute( "active" );
+  if ( active.compare( "true", Qt::CaseInsensitive ) == 0 )
+  {
+    dd->setActive( true );
+  }
+  else
+  {
+    dd->setActive( false );
+  }
+  QString useExpr = ddElem.attribute( "useExpr" );
+  if ( useExpr.compare( "true", Qt::CaseInsensitive ) == 0 )
+  {
+    dd->setUseExpression( true );
+  }
+  else
+  {
+    dd->setUseExpression( false );
+  }
+  dd->setField( ddElem.attribute( "field" ) );
+  dd->setExpressionString( ddElem.attribute( "expr" ) );
+}
+
+void QgsComposition::writeDataDefinedPropertyMap( QDomElement &itemElem, QDomDocument &doc, const QMap<QgsComposerItem::DataDefinedProperty, QString> *dataDefinedNames, const QMap<QgsComposerItem::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const
+{
+  QMap<QgsComposerItem::DataDefinedProperty, QString >::const_iterator i = dataDefinedNames->constBegin();
+  for ( ; i != dataDefinedNames->constEnd(); ++i )
+  {
+    QString newElemName = i.value();
+
+    QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* >::const_iterator it = dataDefinedProperties->find( i.key() );
+    if ( it != dataDefinedProperties->constEnd() )
+    {
+      QgsDataDefined* dd = it.value();
+      if ( dd )
+      {
+        bool active = dd->isActive();
+        bool useExpr = dd->useExpression();
+        QString expr = dd->expressionString();
+        QString field = dd->field();
+
+        bool defaultVals = ( !active && !useExpr && expr.isEmpty() && field.isEmpty() );
+
+        if ( !defaultVals )
+        {
+          QDomElement ddElem = doc.createElement( newElemName );
+          if ( active )
+          {
+            ddElem.setAttribute( "active", "true" );
+          }
+          else
+          {
+            ddElem.setAttribute( "active", "false" );
+          }
+          if ( useExpr )
+          {
+            ddElem.setAttribute( "useExpr", "true" );
+          }
+          else
+          {
+            ddElem.setAttribute( "useExpr", "false" );
+          }
+          ddElem.setAttribute( "expr", expr );
+          ddElem.setAttribute( "field", field );
+          itemElem.appendChild( ddElem );
+        }
+      }
+    }
+  }
+}
+
+QVariant QgsComposition::dataDefinedValue( QgsComposerItem::DataDefinedProperty property, const QgsFeature *feature, const QgsFields *fields, QMap<QgsComposerItem::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties )
+{
+  if ( property == QgsComposerItem::AllProperties || property == QgsComposerItem::NoProperty )
+  {
+    //invalid property
+    return QVariant();
+  }
+  if ( !dataDefinedProperties->contains( property ) )
+  {
+    //missing property
+    return QVariant();
+  }
+
+  QgsDataDefined* dd = 0;
+  QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* >::const_iterator it = dataDefinedProperties->find( property );
+  if ( it != dataDefinedProperties->constEnd() )
+  {
+    dd = it.value();
+  }
+
+  if ( !dd )
+  {
+    return QVariant();
+  }
+
+  if ( !dd->isActive() )
+  {
+    return QVariant();
+  }
+
+  QVariant result = QVariant();
+  bool useExpression = dd->useExpression();
+  QString field = dd->field();
+
+  if ( !dd->expressionIsPrepared() )
+  {
+    prepareDataDefinedExpression( dd, dataDefinedProperties );
+  }
+
+  if ( useExpression && dd->expressionIsPrepared() )
+  {
+    QgsExpression* expr = dd->expression();
+
+    result = expr->evaluate( feature );
+    if ( expr->hasEvalError() )
+    {
+      QgsDebugMsgLevel( QString( "Evaluate error:" ) + expr->evalErrorString(), 4 );
+      return QVariant();
+    }
+  }
+  else if ( !useExpression && !field.isEmpty() && fields )
+  {
+    if ( !feature )
+    {
+      return QVariant();
+    }
+    // use direct attribute access instead of evaluating "field" expression (much faster)
+    int indx = fields->indexFromName( field );
+    if ( indx != -1 )
+    {
+      result = feature->attribute( indx );
+    }
+  }
+  return result;
+}
+
+void QgsComposition::prepareDataDefinedExpression( QgsDataDefined *dd, QMap<QgsComposerItem::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const
+{
+  QgsVectorLayer* atlasLayer = 0;
+
+  if ( mAtlasComposition.enabled() )
+  {
+    atlasLayer = mAtlasComposition.coverageLayer();
+  }
+
+  //if specific QgsDataDefined passed, prepare it
+  //otherwise prepare all QgsDataDefineds
+  if ( dd )
+  {
+    dd->prepareExpression( atlasLayer );
+  }
+  else
+  {
+    QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* >::const_iterator it = dataDefinedProperties->constBegin();
+    for ( ; it != dataDefinedProperties->constEnd();  ++it )
+    {
+      it.value()->prepareExpression( atlasLayer );
+    }
+  }
+}
+
+void QgsComposition::prepareAllDataDefinedExpressions()
+{
+  prepareDataDefinedExpression( 0, &mDataDefinedProperties );
+}
+
 void QgsComposition::relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter )
 {
   //linearly scale rectToResize relative to the scaling from boundsBefore to boundsAfter
@@ -2704,4 +3197,3 @@ double QgsComposition::relativePosition( double position, double beforeMin, doub
   //return linearly scaled position
   return m * position + c;
 }
-

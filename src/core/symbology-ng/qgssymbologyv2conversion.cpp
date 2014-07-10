@@ -266,7 +266,7 @@ static QgsFeatureRendererV2* readOldUniqueValueRenderer( const QDomNode& rnode, 
       QString label = meta.label;
       if ( label.isEmpty() )
         label = value.toString();
-      cats.append( QgsRendererCategoryV2( value, symbolv2, label ) );
+      cats.append( QgsRendererCategoryV2( value, symbolv2, label, true ) );
     }
 
     symbolnode = symbolnode.nextSibling();

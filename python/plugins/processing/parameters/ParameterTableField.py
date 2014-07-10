@@ -43,7 +43,7 @@ class ParameterTableField(Parameter):
         self.optional = optional
 
     def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"'
+        return '"' + unicode(self.value) + '"'
 
     def getAsScriptCode(self):
         return '##' + self.name + '=field ' + str(self.parent)
@@ -52,7 +52,7 @@ class ParameterTableField(Parameter):
         if value is None:
             return self.optional
         elif len(value) > 0:
-            self.value = str(value)
+            self.value = unicode(value)
         else:
             return self.optional
         return True

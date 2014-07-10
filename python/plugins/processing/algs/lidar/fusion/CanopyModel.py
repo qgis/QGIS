@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 """
 ***************************************************************************
@@ -43,7 +43,7 @@ class CanopyModel(FusionAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT_DTM = 'OUTPUT_DTM'
-    CELLSIZE = 'CELLSIZE'  
+    CELLSIZE = 'CELLSIZE'
     XYUNITS = 'XYUNITS'
     ZUNITS = 'ZUNITS'
     UNITS = ['Meter', 'Feet']
@@ -57,11 +57,11 @@ class CanopyModel(FusionAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Canopy Model'
         self.group = 'Points'
-        self.addParameter(ParameterFile(self.INPUT, 'Input las layer'))        
+        self.addParameter(ParameterFile(self.INPUT, 'Input las layer'))
         self.addParameter(ParameterNumber(self.CELLSIZE, 'Cellsize', 0, None, 10.0))
         self.addParameter(ParameterSelection(self.XYUNITS, 'XY Units', self.UNITS))
         self.addParameter(ParameterSelection(self.ZUNITS, 'Z Units', self.UNITS))
-        self.addOutput(OutputFile(self.OUTPUT_DTM, 'DTM Output Surface', 'dtm'))        
+        self.addOutput(OutputFile(self.OUTPUT_DTM, 'DTM Output Surface', 'dtm'))
         ground = ParameterFile(self.GROUND, 'Input ground DTM layer', False, True)
         ground.isAdvanced = True
         self.addParameter(ground)
@@ -70,7 +70,7 @@ class CanopyModel(FusionAlgorithm):
         self.addParameter(median)
         smooth = ParameterString(self.SMOOTH, 'Smooth', '', False, True)
         smooth.isAdvanced = True
-        self.addParameter(smooth) 
+        self.addParameter(smooth)
         slope = ParameterString(self.SLOPE, 'Slope', '', False, True)
         slope.isAdvanced = True
         self.addParameter(slope)
@@ -79,7 +79,7 @@ class CanopyModel(FusionAlgorithm):
         self.addParameter(class_var)
         advance_modifiers = ParameterString(self.ADVANCED_MODIFIERS, 'Additional modifiers', '', False, True)
         advance_modifiers.isAdvanced = True
-        self.addParameter(advance_modifiers)   
+        self.addParameter(advance_modifiers)
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'CanopyModel.exe')]

@@ -31,6 +31,8 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
     virtual void canvasReleaseEvent( QMouseEvent * e );
 
   private:
+    QColor mFillColor;
+    QColor mBorderColour;
 };
 
 #endif

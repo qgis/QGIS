@@ -1724,7 +1724,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation>Mainīt pašreizējo izvēli pēc:</translation>
+        <translation type="obsolete">Mainīt pašreizējo izvēli pēc:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
@@ -2131,7 +2131,7 @@ Vai tiešām vēlaties turpināt?</translation>
     </message>
     <message>
         <source>Use selected features only</source>
-        <translation>Lietot tikai izvēlētos objektus</translation>
+        <translation type="obsolete">Lietot tikai izvēlētos objektus</translation>
     </message>
     <message>
         <source>Simplify results</source>
@@ -2372,6 +2372,22 @@ vienkāršošanas samazinājās uz %s virsotnēm</translation>
     </message>
     <message>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from different threads to the same datasource. Make sure your layer&apos;s attribute tables are closed. Continue?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include input features that touch the selection features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include input features that overlap/cross the selection features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include input features completely within the selection features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only selected features</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7418,7 +7434,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>The selected model could not be loaded.
-Wrong line: %s</source>
+See the log for more information.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11675,6 +11691,10 @@ Response was:
     <message>
         <source>Storage and eXchange Format</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Legend</source>
+        <translation type="unfinished">Leģenda</translation>
     </message>
 </context>
 <context>
@@ -18050,6 +18070,10 @@ Please try a lower resolution or a smaller papersize</source>
         <source> mm</source>
         <translation type="unfinished"> mm</translation>
     </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerLabelWidget</name>
@@ -18201,7 +18225,7 @@ Please try a lower resolution or a smaller papersize</source>
     <name>QgsComposerLegend</name>
     <message>
         <source>Legend</source>
-        <translation>Leģenda</translation>
+        <translation type="obsolete">Leģenda</translation>
     </message>
 </context>
 <context>
@@ -19298,6 +19322,10 @@ Please try a lower resolution or a smaller papersize</source>
         <source> mm</source>
         <translation type="unfinished"> mm</translation>
     </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerMouseHandles</name>
@@ -19756,6 +19784,26 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Scalebar line cap style</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Select fill color</source>
+        <translation type="unfinished">Izvēlieties aizpildījuma krāsu</translation>
+    </message>
+    <message>
+        <source>Select alternate fill color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select font color</source>
+        <translation type="unfinished">Izvēlēties fonta krāsu</translation>
+    </message>
+    <message>
+        <source>Select stroke color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scalebar secondary color changed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerScaleBarWidgetBase</name>
@@ -19906,6 +19954,10 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Cap style</source>
         <translation type="unfinished">Galu stils</translation>
+    </message>
+    <message>
+        <source>Secondary fill color...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -20767,10 +20819,6 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="obsolete">Izšķirtspēja</translation>
     </message>
     <message>
-        <source>Spacing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source> mm</source>
         <translation type="unfinished"> mm</translation>
     </message>
@@ -20795,14 +20843,6 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="obsolete">Krāsa...</translation>
     </message>
     <message>
-        <source>Snap to alignments</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tolerance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Export resolution</source>
         <translation type="unfinished"></translation>
     </message>
@@ -20820,7 +20860,23 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Grid</source>
-        <translation type="unfinished">Tīkls</translation>
+        <translation type="obsolete">Tīkls</translation>
+    </message>
+    <message>
+        <source>Guides and Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid spacing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Snap tolerance</source>
+        <translation type="unfinished">Pielipšanas tolerance</translation>
+    </message>
+    <message>
+        <source> px</source>
+        <translation type="unfinished">px</translation>
     </message>
 </context>
 <context>
@@ -37354,14 +37410,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation>Krāsa...</translation>
     </message>
     <message>
-        <source>Grid defaults</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Spacing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source> mm</source>
         <translation> mm</translation>
     </message>
@@ -37380,10 +37428,6 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <source>Snap tolerance</source>
         <translation>Pielipšanas tolerance</translation>
-    </message>
-    <message>
-        <source>Guide defaults</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Don&apos;t enable &apos;on the fly&apos; reprojection</source>
@@ -37484,6 +37528,18 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <source>Max cores to use:</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid and guide defaults</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid spacing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> px</source>
+        <translation type="unfinished">px</translation>
     </message>
 </context>
 <context>
@@ -41762,6 +41818,10 @@ Proceed?</source>
     <message>
         <source>Quality for JPEG images ( 10 : smaller image - 100 : best quality )</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Project file</source>
+        <translation type="unfinished">Projekta fails</translation>
     </message>
 </context>
 <context>
@@ -53888,12 +53948,12 @@ Apraksts: %3</translation>
     <name>SaveAsPythonScriptAction</name>
     <message>
         <source>I/O error</source>
-        <translation>I/O kļūda</translation>
+        <translation type="obsolete">I/O kļūda</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %s</source>
-        <translation>Nav iespejams saglabāt izmaiņas. Iemesls:
+        <translation type="obsolete">Nav iespejams saglabāt izmaiņas. Iemesls:
  %s</translation>
     </message>
 </context>

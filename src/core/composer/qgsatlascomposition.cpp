@@ -45,6 +45,7 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
   QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )1 ) );
   QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )0 ) );
   QgsExpression::setSpecialColumn( "$atlasfeatureid", QVariant(( int )0 ) );
+  QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( QgsFeature() ) );
   QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( QgsGeometry() ) );
 }
 
@@ -73,6 +74,7 @@ void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
     layer->getFeatures().nextFeature( fet );
     QgsExpression::setSpecialColumn( "$atlasfeatureid", fet.id() );
     QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *fet.geometry() ) );
+    QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( fet ) );
   }
 
   emit coverageLayerChanged( layer );
@@ -357,6 +359,7 @@ bool QgsAtlasComposition::prepareForFeature( int featureI )
 
   QgsExpression::setSpecialColumn( "$atlasfeatureid", mCurrentFeature.id() );
   QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *mCurrentFeature.geometry() ) );
+  QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( mCurrentFeature ) );
   QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
 
   // generate filename for current feature
@@ -617,36 +620,6 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
       break;
     }
   }
-  //look for stored composer map, to upgrade pre 2.1 projects
-  int composerMapNo = atlasElem.attribute( "composerMap", "-1" ).toInt();
-  QgsComposerMap * composerMap = 0;
-  if ( composerMapNo != -1 )
-  {
-    QList<QgsComposerMap*> maps;
-    mComposition->composerItems( maps );
-    for ( QList<QgsComposerMap*>::iterator it = maps.begin(); it != maps.end(); ++it )
-    {
-      if (( *it )->id() == composerMapNo )
-      {
-        composerMap = ( *it );
-        composerMap->setAtlasDriven( true );
-        break;
-      }
-    }
-  }
-  mHideCoverage = atlasElem.attribute( "hideCoverage", "false" ) == "true" ? true : false;
-
-  //upgrade pre 2.1 projects
-  double margin = atlasElem.attribute( "margin", "0.0" ).toDouble();
-  if ( composerMap && margin != 0 )
-  {
-    composerMap->setAtlasMargin( margin );
-  }
-  bool fixedScale = atlasElem.attribute( "fixedScale", "false" ) == "true" ? true : false;
-  if ( composerMap && fixedScale )
-  {
-    composerMap->setAtlasScalingMode( QgsComposerMap::Fixed );
-  }
 
   mSingleFile = atlasElem.attribute( "singleFile", "false" ) == "true" ? true : false;
   mFilenamePattern = atlasElem.attribute( "filenamePattern", "" );
@@ -676,7 +649,43 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
     mFeatureFilter = atlasElem.attribute( "featureFilter", "" );
   }
 
+  mHideCoverage = atlasElem.attribute( "hideCoverage", "false" ) == "true" ? true : false;
+
   emit parameterChanged();
+}
+
+void QgsAtlasComposition::readXMLMapSettings( const QDomElement &elem, const QDomDocument &doc )
+{
+  Q_UNUSED( doc );
+  //look for stored composer map, to upgrade pre 2.1 projects
+  int composerMapNo = elem.attribute( "composerMap", "-1" ).toInt();
+  QgsComposerMap * composerMap = 0;
+  if ( composerMapNo != -1 )
+  {
+    QList<QgsComposerMap*> maps;
+    mComposition->composerItems( maps );
+    for ( QList<QgsComposerMap*>::iterator it = maps.begin(); it != maps.end(); ++it )
+    {
+      if (( *it )->id() == composerMapNo )
+      {
+        composerMap = ( *it );
+        composerMap->setAtlasDriven( true );
+        break;
+      }
+    }
+  }
+
+  //upgrade pre 2.1 projects
+  double margin = elem.attribute( "margin", "0.0" ).toDouble();
+  if ( composerMap && margin != 0 )
+  {
+    composerMap->setAtlasMargin( margin );
+  }
+  bool fixedScale = elem.attribute( "fixedScale", "false" ) == "true" ? true : false;
+  if ( composerMap && fixedScale )
+  {
+    composerMap->setAtlasScalingMode( QgsComposerMap::Fixed );
+  }
 }
 
 void QgsAtlasComposition::setHideCoverage( bool hide )

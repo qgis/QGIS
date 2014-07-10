@@ -1575,7 +1575,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation>Modificar la selección actual:</translation>
+        <translation type="obsolete">Modificar la selección actual:</translation>
     </message>
     <message>
         <source>adding to current selection</source>
@@ -2177,7 +2177,7 @@ Esto puede ocasionar resultados inesperados.</translation>
     </message>
     <message>
         <source>Use selected features only</source>
-        <translation>Usar sólo objetos espaciales seleccionados</translation>
+        <translation type="obsolete">Usar sólo objetos espaciales seleccionados</translation>
     </message>
     <message>
         <source>Select files to merge</source>
@@ -2579,6 +2579,22 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     <message>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from different threads to the same datasource. Make sure your layer&apos;s attribute tables are closed. Continue?</source>
         <translation>Actualmente QGIS no permite el acceso simultáneo desde distintos hilos a la misma fuente de datos. Asegúrese de que las tablas de atributos de su capa están cerradas. ¿Continuar?</translation>
+    </message>
+    <message>
+        <source>Include input features that touch the selection features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include input features that overlap/cross the selection features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include input features completely within the selection features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8143,7 +8159,7 @@ Por favor, use la opción &apos;Guardar como...&apos;</translation>
     </message>
     <message>
         <source>The selected model could not be loaded.
-Wrong line: %s</source>
+See the log for more information.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -12769,6 +12785,10 @@ La respuesta fue:
     <message>
         <source>Storage and eXchange Format</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Legend</source>
+        <translation type="unfinished">Leyenda</translation>
     </message>
 </context>
 <context>
@@ -20444,6 +20464,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source> mm</source>
         <translation> mm</translation>
     </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerLabelWidget</name>
@@ -20603,7 +20627,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <name>QgsComposerLegend</name>
     <message>
         <source>Legend</source>
-        <translation>Leyenda</translation>
+        <translation type="obsolete">Leyenda</translation>
     </message>
 </context>
 <context>
@@ -21744,6 +21768,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source> mm</source>
         <translation> mm</translation>
     </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerMouseHandles</name>
@@ -22210,6 +22238,26 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>Scalebar line cap style</source>
         <translation>Estilo de mayúsculas de línea de barra de escala</translation>
     </message>
+    <message>
+        <source>Select fill color</source>
+        <translation type="unfinished">Seleccionar color de relleno</translation>
+    </message>
+    <message>
+        <source>Select alternate fill color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select font color</source>
+        <translation type="unfinished">Seleccionar color de letra</translation>
+    </message>
+    <message>
+        <source>Select stroke color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scalebar secondary color changed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerScaleBarWidgetBase</name>
@@ -22364,6 +22412,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Cap style</source>
         <translation>Estilo de mayúsculas</translation>
+    </message>
+    <message>
+        <source>Secondary fill color...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23226,7 +23278,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Spacing</source>
-        <translation>Separación</translation>
+        <translation type="obsolete">Separación</translation>
     </message>
     <message>
         <source> mm</source>
@@ -23258,11 +23310,11 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Snap to alignments</source>
-        <translation>Autoensamblar a las alineaciones</translation>
+        <translation type="obsolete">Autoensamblar a las alineaciones</translation>
     </message>
     <message>
         <source>Tolerance</source>
-        <translation>Tolerancia</translation>
+        <translation type="obsolete">Tolerancia</translation>
     </message>
     <message>
         <source>Export resolution</source>
@@ -23282,7 +23334,23 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Grid</source>
-        <translation>Cuadrícula</translation>
+        <translation type="obsolete">Cuadrícula</translation>
+    </message>
+    <message>
+        <source>Guides and Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid spacing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Snap tolerance</source>
+        <translation type="unfinished">Tolerancia de autoensamblado</translation>
+    </message>
+    <message>
+        <source> px</source>
+        <translation type="unfinished"> px</translation>
     </message>
 </context>
 <context>
@@ -40452,11 +40520,11 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Grid defaults</source>
-        <translation>Predeterminados de la cuadrícula</translation>
+        <translation type="obsolete">Predeterminados de la cuadrícula</translation>
     </message>
     <message>
         <source>Spacing</source>
-        <translation>Separación</translation>
+        <translation type="obsolete">Separación</translation>
     </message>
     <message>
         <source> mm</source>
@@ -40480,7 +40548,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Guide defaults</source>
-        <translation>Predeterminados de las guías</translation>
+        <translation type="obsolete">Predeterminados de las guías</translation>
     </message>
     <message>
         <source>Don&apos;t enable &apos;on the fly&apos; reprojection</source>
@@ -40581,6 +40649,18 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     <message>
         <source>Max cores to use:</source>
         <translation>Máximo de núcleos a usar:</translation>
+    </message>
+    <message>
+        <source>Grid and guide defaults</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid spacing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> px</source>
+        <translation type="unfinished"> px</translation>
     </message>
 </context>
 <context>
@@ -45298,6 +45378,10 @@ Proceed?</source>
     <message>
         <source>Quality for JPEG images ( 10 : smaller image - 100 : best quality )</source>
         <translation>Calidad para imágenes JPEG ( 10: imagen más pequeña - 100: mejor calidad )</translation>
+    </message>
+    <message>
+        <source>Project file</source>
+        <translation type="unfinished">Archivos de proyecto</translation>
     </message>
 </context>
 <context>
@@ -58372,7 +58456,7 @@ Descripción: %3</translation>
     <name>SaveAsPythonScriptAction</name>
     <message>
         <source>I/O error</source>
-        <translation>Error de E/S</translation>
+        <translation type="obsolete">Error de E/S</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
@@ -58383,7 +58467,7 @@ Descripción: %3</translation>
     <message>
         <source>Unable to save edits. Reason:
  %s</source>
-        <translation>No se pueden guardar los cambios. Motivo:
+        <translation type="obsolete">No se pueden guardar los cambios. Motivo:
  %s</translation>
     </message>
 </context>

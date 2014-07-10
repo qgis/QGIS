@@ -20,12 +20,14 @@
 
 #include "ui_qgscomposermapwidgetbase.h"
 #include "qgscomposermap.h"
+#include "qgscomposeritemwidget.h"
+
 class QgsMapLayer;
 
 /** \ingroup MapComposer
  * Input widget for the configuration of QgsComposerMap
  * */
-class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
+class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerMapWidgetBase
 {
     Q_OBJECT
 
@@ -54,21 +56,44 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mYMinLineEdit_editingFinished();
     void on_mYMaxLineEdit_editingFinished();
 
+    void on_mAtlasMarginRadio_toggled( bool checked );
+
+    void on_mAtlasCheckBox_toggled( bool checked );
+    void on_mAtlasMarginSpinBox_valueChanged( int value );
+    void on_mAtlasFixedScaleRadio_toggled( bool checked );
+    void on_mAtlasPredefinedScaleRadio_toggled( bool checked );
+
+    void on_mAddGridPushButton_clicked();
+    void on_mRemoveGridPushButton_clicked();
+    void on_mGridUpButton_clicked();
+    void on_mGridDownButton_clicked();
+
+    QgsComposerMapGrid* currentGrid();
     void on_mGridCheckBox_toggled( bool state );
+    void on_mGridListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous );
+    void on_mGridListWidget_itemChanged( QListWidgetItem* item );
+    void setGridItemsEnabled( bool enabled );
+    void setGridItems( const QgsComposerMapGrid* grid );
+    void blockGridItemsSignals( bool block );
+    void updateLineSymbolMarker( const QgsComposerMapGrid* grid );
+    void on_mGridLineStyleButton_clicked();
     void on_mIntervalXSpinBox_editingFinished();
     void on_mIntervalYSpinBox_editingFinished();
-    void on_mOffsetXSpinBox_editingFinished();
-    void on_mOffsetYSpinBox_editingFinished();
-    void on_mGridLineStyleButton_clicked();
+    void on_mOffsetXSpinBox_valueChanged( double value );
+    void on_mOffsetYSpinBox_valueChanged( double value );
+    void on_mCrossWidthSpinBox_valueChanged( double val );
+    void on_mFrameWidthSpinBox_valueChanged( double val );
+    void on_mFrameStyleComboBox_currentIndexChanged( const QString& text );
+    void on_mGridFramePenSizeSpinBox_valueChanged( double d );
+    void on_mGridFramePenColorButton_colorChanged( const QColor& newColor );
+    void on_mGridFrameFill1ColorButton_colorChanged( const QColor& newColor );
+    void on_mGridFrameFill2ColorButton_colorChanged( const QColor& newColor );
     void on_mGridTypeComboBox_currentIndexChanged( const QString& text );
-    void on_mCrossWidthSpinBox_valueChanged( double d );
+    void on_mMapGridCRSButton_clicked();
+    void on_mMapGridUnitComboBox_currentIndexChanged( const QString& text );
     void on_mGridBlendComboBox_currentIndexChanged( int index );
-    void on_mAnnotationFontButton_clicked();
-    void on_mAnnotationFontColorButton_colorChanged( const QColor& newFontColor );
-    void on_mDistanceToMapFrameSpinBox_valueChanged( double d );
 
-    void on_mAnnotationFormatComboBox_currentIndexChanged( int index );
-
+    void on_mDrawAnnotationGroupBox_toggled( bool state );
     //annotation position
     void on_mAnnotationPositionLeftComboBox_currentIndexChanged( const QString& text );
     void on_mAnnotationPositionRightComboBox_currentIndexChanged( const QString& text );
@@ -81,22 +106,11 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mAnnotationDirectionComboBoxTop_currentIndexChanged( const QString& text );
     void on_mAnnotationDirectionComboBoxBottom_currentIndexChanged( const QString& text );
 
-    void on_mDrawAnnotationCheckableGroupBox_toggled( bool state );
+    void on_mAnnotationFormatComboBox_currentIndexChanged( int index );
     void on_mCoordinatePrecisionSpinBox_valueChanged( int value );
-
-    void on_mFrameStyleComboBox_currentIndexChanged( const QString& text );
-    void on_mFrameWidthSpinBox_valueChanged( double d );
-    void on_mGridFramePenSizeSpinBox_valueChanged( double d );
-    void on_mGridFramePenColorButton_colorChanged( const QColor& newColor );
-    void on_mGridFrameFill1ColorButton_colorChanged( const QColor& newColor );
-    void on_mGridFrameFill2ColorButton_colorChanged( const QColor& newColor );
-
-    void on_mAtlasMarginRadio_toggled( bool checked );
-
-    void on_mAtlasCheckBox_toggled( bool checked );
-    void on_mAtlasMarginSpinBox_valueChanged( int value );
-    void on_mAtlasFixedScaleRadio_toggled( bool checked );
-    void on_mAtlasPredefinedScaleRadio_toggled( bool checked );
+    void on_mDistanceToMapFrameSpinBox_valueChanged( double d );
+    void on_mAnnotationFontButton_clicked();
+    void on_mAnnotationFontColorButton_colorChanged( const QColor &color );
 
   protected:
     void showEvent( QShowEvent * event );
@@ -105,6 +119,12 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
 
     /**Sets the current composer map values to the GUI elements*/
     virtual void updateGuiElements();
+
+    QgsComposerItem::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget );
+
+  protected slots:
+    /**Initializes data defined buttons to current atlas coverage layer*/
+    void populateDataDefinedButtons();
 
   private slots:
 
@@ -141,9 +161,6 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     /**Updates the map combo box with the current composer map ids*/
     void refreshMapComboBox();
 
-    /**Enables/disables grid frame related controls*/
-    void toggleFrameControls( bool frameEnabled );
-
     /**Enables or disables the atlas margin and predefined scales radio depending on the atlas coverage layer type*/
     void toggleAtlasScalingOptionsByLayerType();
 
@@ -153,6 +170,9 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     /**Is there some predefined scales, globally or as project's options ?*/
     bool hasPredefinedScales() const;
 
+    QListWidgetItem* addGridListItem( const QString& id, const QString& name );
+
+    void loadGridEntries();
 };
 
 #endif

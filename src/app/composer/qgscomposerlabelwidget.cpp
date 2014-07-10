@@ -25,7 +25,7 @@
 #include <QFontDialog>
 #include <QWidget>
 
-QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QWidget(), mComposerLabel( label )
+QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QgsComposerItemBaseWidget( 0, label ),  mComposerLabel( label )
 {
   setupUi( this );
 
@@ -138,12 +138,8 @@ void QgsComposerLabelWidget::on_mInsertExpressionButton_clicked()
   if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
     selText = selText.mid( 2, selText.size() - 4 );
 
-  QgsVectorLayer* coverageLayer = 0;
   // use the atlas coverage layer, if any
-  if ( mComposerLabel->composition()->atlasComposition().enabled() )
-  {
-    coverageLayer = mComposerLabel->composition()->atlasComposition().coverageLayer();
-  }
+  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
   QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this );
   exprDlg.setWindowTitle( tr( "Insert expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )

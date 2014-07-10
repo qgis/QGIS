@@ -272,7 +272,9 @@ void QgsComposerLabel::adjustSizeToText()
   double yShift = 0;
   itemShiftAdjustSize( width, height, xShift, yShift );
 
-  setSceneRect( QRectF( pos().x() + xShift, pos().y() + yShift, width, height ) );
+  //update rect for data defined size and position
+  QRectF evaluatedRect = evalItemRect( QRectF( pos().x() + xShift, pos().y() + yShift, width, height ) );
+  setSceneRect( evaluatedRect );
 }
 
 QFont QgsComposerLabel::font() const

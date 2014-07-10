@@ -35,6 +35,8 @@ QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas* canvas )
 {
   mRubberBand = 0;
   mCursor = Qt::ArrowCursor;
+  mFillColor = QColor( 254, 178, 76, 63 );
+  mBorderColour = QColor( 254, 58, 29, 100 );
 }
 
 QgsMapToolSelectRadius::~QgsMapToolSelectRadius()
@@ -63,6 +65,8 @@ void QgsMapToolSelectRadius::canvasMoveEvent( QMouseEvent * e )
     if ( mRubberBand == NULL )
     {
       mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+      mRubberBand->setFillColor( mFillColor );
+      mRubberBand->setBorderColor( mBorderColour );
     }
     mDragging = true;
   }
@@ -82,6 +86,8 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QMouseEvent * e )
     if ( mRubberBand == NULL )
     {
       mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+      mRubberBand->setFillColor( mFillColor );
+      mRubberBand->setBorderColor( mBorderColour );
     }
     mRadiusCenter = toMapCoordinates( e->pos() );
     QgsPoint radiusEdge = toMapCoordinates( QPoint( e->pos().x() + 1, e->pos().y() + 1 ) );

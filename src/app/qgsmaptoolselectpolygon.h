@@ -40,6 +40,10 @@ class APP_EXPORT QgsMapToolSelectPolygon : public QgsMapTool
 
     //! used for storing all of the maps point for the polygon
     QgsRubberBand* mRubberBand;
+
+    QColor mFillColor;
+
+    QColor mBorderColour;
 };
 
 #endif

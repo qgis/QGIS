@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
- 
+
 """
 ***************************************************************************
     GridMetrics.py
@@ -86,7 +86,7 @@ class GridMetrics(FusionAlgorithm):
         class_var = ParameterString(self.CLASS, 'Class (set blank if not used)', '', False, True)
         class_var.isAdvanced = True
         self.addParameter(class_var)
-        
+
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'GridMetrics.exe')]

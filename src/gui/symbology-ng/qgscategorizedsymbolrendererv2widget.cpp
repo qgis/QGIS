@@ -92,7 +92,7 @@ Qt::ItemFlags QgsCategorizedSymbolRendererV2Model::flags( const QModelIndex & in
     return Qt::ItemIsDropEnabled;
   }
 
-  Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+  Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | Qt::ItemIsUserCheckable;
   if ( index.column() == 1 || index.column() == 2 )
   {
     flags |= Qt::ItemIsEditable;
@@ -112,7 +112,11 @@ QVariant QgsCategorizedSymbolRendererV2Model::data( const QModelIndex &index, in
 
   const QgsRendererCategoryV2 category = mRenderer->categories().value( index.row() );
 
-  if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
+  if ( role == Qt::CheckStateRole && index.column() == 0 )
+  {
+    return category.renderState() ? Qt::Checked : Qt::Unchecked;
+  }
+  else if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
   {
     switch ( index.column() )
     {
@@ -144,7 +148,17 @@ QVariant QgsCategorizedSymbolRendererV2Model::data( const QModelIndex &index, in
 
 bool QgsCategorizedSymbolRendererV2Model::setData( const QModelIndex & index, const QVariant & value, int role )
 {
-  if ( !index.isValid() || role != Qt::EditRole )
+  if ( !index.isValid() )
+    return false;
+
+  if ( index.column() == 0 && role == Qt::CheckStateRole )
+  {
+    mRenderer->updateCategoryRenderState( index.row(), value == Qt::Checked );
+    emit dataChanged( index, index );
+    return true;
+  }
+
+  if ( role != Qt::EditRole )
     return false;
 
   switch ( index.column() )
@@ -594,7 +608,7 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
     QgsSymbolV2* newSymbol = symbol->clone();
     newSymbol->setColor( ramp->color( x ) );
 
-    cats.append( QgsRendererCategoryV2( value, newSymbol, value.toString() ) );
+    cats.append( QgsRendererCategoryV2( value, newSymbol, value.toString(), true ) );
   }
 
   // add null (default) value if not exists
@@ -602,7 +616,7 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
   {
     QgsSymbolV2* newSymbol = symbol->clone();
     newSymbol->setColor( ramp->color( invert ? 0 : 1 ) );
-    cats.append( QgsRendererCategoryV2( QVariant( "" ), newSymbol, QString() ) );
+    cats.append( QgsRendererCategoryV2( QVariant( "" ), newSymbol, QString(), true ) );
   }
 }
 
@@ -777,7 +791,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategory()
 {
   if ( !mModel ) return;
   QgsSymbolV2 *symbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
-  QgsRendererCategoryV2 cat( QString(), symbol, QString() );
+  QgsRendererCategoryV2 cat( QString(), symbol, QString(), true );
   mModel->addCategory( cat );
 }
 

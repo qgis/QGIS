@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 """
 ***************************************************************************
@@ -43,7 +43,7 @@ class Catalog(FusionAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Catalog'
         self.group = 'Points'
-        self.addParameter(ParameterFile(self.INPUT, 'Input las layer'))       
+        self.addParameter(ParameterFile(self.INPUT, 'Input las layer'))
         self.addOutput(OutputFile(self.OUTPUT, 'Output files'))
         density = ParameterString(self.DENSITY, 'Density - area, min, max (set blank if not used)', '', False, True)
         density.isAdvanced = True
@@ -58,7 +58,7 @@ class Catalog(FusionAlgorithm):
         advanced_modifiers.isAdvanced = True
         self.addParameter(advanced_modifiers)
 
-        
+
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'Catalog.exe')]
         commands.append('/verbose')
@@ -79,6 +79,6 @@ class Catalog(FusionAlgorithm):
             commands.append(self.getParameterValue(self.INPUT))
         else:
             FusionUtils.createFileList(files)
-            commands.append(FusionUtils.tempFileListFilepath())                
-        commands.append(self.getOutputValue(self.OUTPUT))        
+            commands.append(FusionUtils.tempFileListFilepath())
+        commands.append(self.getOutputValue(self.OUTPUT))
         FusionUtils.runFusion(commands, progress)

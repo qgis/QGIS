@@ -6,7 +6,7 @@ class QgsRendererCategoryV2
   public:
 
     //! takes ownership of symbol
-    QgsRendererCategoryV2( QVariant value, QgsSymbolV2* symbol /Transfer/, QString label );
+    QgsRendererCategoryV2( QVariant value, QgsSymbolV2* symbol /Transfer/, QString label, bool render = true );
 
     //! copy constructor
     QgsRendererCategoryV2( const QgsRendererCategoryV2& cat );
@@ -20,6 +20,10 @@ class QgsRendererCategoryV2
     void setValue( const QVariant &value );
     void setSymbol( QgsSymbolV2* s /Transfer/ );
     void setLabel( const QString &label );
+
+    // @note added in 2.5
+    bool renderState() const;
+    void setRenderState( bool render );
 
     // debugging
     QString dump() const;
@@ -68,9 +72,16 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     //! return index of category with specified value (-1 if not found)
     int categoryIndexForValue( QVariant val );
 
+    //! return index of category with specified label (-1 if not found or not unique)
+    //! @note added in 2.5
+    int categoryIndexForLabel( QString val );
+
     bool updateCategoryValue( int catIndex, const QVariant &value );
     bool updateCategorySymbol( int catIndex, QgsSymbolV2* symbol /Transfer/ );
     bool updateCategoryLabel( int catIndex, QString label );
+
+    //! @note added in 2.5
+    bool updateCategoryRenderState( int catIndex, bool render );
 
     void addCategory( const QgsRendererCategoryV2 &category );
     bool deleteCategory( int catIndex );
@@ -123,6 +134,18 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
     //! @note added in 2.0
     QgsSymbolV2::ScaleMethod scaleMethod() const;
+
+    //! items of symbology items in legend should be checkable
+    // @note added in 2.5
+    virtual bool legendSymbolItemsCheckable() const;
+
+    //! item in symbology was checked
+    // @note added in 2.5
+    virtual bool legendSymbolItemChecked( int index );
+
+    //! item in symbology was checked
+    // @note added in 2.5
+    virtual void checkLegendSymbolItem( int index, bool state = true );
 
   protected:
     void rebuildHash();

@@ -21,7 +21,7 @@
 #include <QFileDialog>
 #include <QSettings>
 
-QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame ): QWidget(), mHtml( html ), mFrame( frame )
+QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame ): QgsComposerItemBaseWidget( 0, frame ), mHtml( html ), mFrame( frame )
 {
   setupUi( this );
 
@@ -47,7 +47,7 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
   }
 }
 
-QgsComposerHtmlWidget::QgsComposerHtmlWidget()
+QgsComposerHtmlWidget::QgsComposerHtmlWidget(): QgsComposerItemBaseWidget( 0, 0 )
 {
 }
 

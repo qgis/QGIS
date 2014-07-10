@@ -16,11 +16,12 @@
 #define QGSCOMPOSERHTMLWIDGET_H
 
 #include "ui_qgscomposerhtmlwidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerHtml;
 class QgsComposerFrame;
 
-class QgsComposerHtmlWidget: public QWidget, private Ui::QgsComposerHtmlWidgetBase
+class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerHtmlWidgetBase
 {
     Q_OBJECT
   public:
