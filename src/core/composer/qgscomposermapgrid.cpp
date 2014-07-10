@@ -491,7 +491,7 @@ void QgsComposerMapGrid::drawCoordinateAnnotations( QPainter* p, const QList< QP
   QList< QPair< double, QLineF > >::const_iterator it = hLines.constBegin();
   for ( ; it != hLines.constEnd(); ++it )
   {
-    currentAnnotationString = gridAnnotationString( it->first, QgsComposerMap::Latitude );
+    currentAnnotationString = gridAnnotationString( it->first, QgsComposerMap::Longitude );
     drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString );
     drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString );
   }
@@ -499,7 +499,7 @@ void QgsComposerMapGrid::drawCoordinateAnnotations( QPainter* p, const QList< QP
   it = vLines.constBegin();
   for ( ; it != vLines.constEnd(); ++it )
   {
-    currentAnnotationString =  gridAnnotationString( it->first, QgsComposerMap::Longitude );
+    currentAnnotationString =  gridAnnotationString( it->first, QgsComposerMap::Latitude );
     drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString );
     drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString );
   }
