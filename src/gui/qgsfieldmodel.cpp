@@ -231,7 +231,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
   if ( !index.isValid() )
     return QVariant();
 
-  qint64 exprIdx = index.internalId() - mFields.count();
+  int exprIdx = index.row() - mFields.count();
 
   switch ( role )
   {
@@ -241,7 +241,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       {
         return "";
       }
-      QgsField field = mFields[index.internalId()];
+      QgsField field = mFields[index.row()];
       return field.name();
     }
 
@@ -253,7 +253,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       }
       else
       {
-        QgsField field = mFields[index.internalId()];
+        QgsField field = mFields[index.row()];
         return field.name();
       }
     }
@@ -264,7 +264,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       {
         return QVariant();
       }
-      return index.internalId();
+      return index.row();
     }
 
     case IsExpressionRole:
@@ -287,7 +287,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
     {
       if ( exprIdx < 0 )
       {
-        QgsField field = mFields[index.internalId()];
+        QgsField field = mFields[index.row()];
         return ( int )field.type();
       }
       return QVariant();
@@ -302,11 +302,11 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       }
       else if ( role == Qt::EditRole )
       {
-        return mFields[index.internalId()].name();
+        return mFields[index.row()].name();
       }
       else if ( mLayer )
       {
-        return mLayer->attributeDisplayName( index.internalId() );
+        return mLayer->attributeDisplayName( index.row() );
       }
       else
         return QVariant();
