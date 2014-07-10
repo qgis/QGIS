@@ -19,7 +19,7 @@
 #include <QtCore>
 
 QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands ):
-    mComposition( c ),
+    QgsComposerObject( c ),
     mResizeMode( UseExistingFrames ),
     mCreateUndoCommands( createUndoCommands ),
     mIsRecalculatingSize( false )
@@ -29,7 +29,7 @@ QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndo
 }
 
 QgsComposerMultiFrame::QgsComposerMultiFrame():
-    mComposition( 0 ),
+    QgsComposerObject( 0 ),
     mResizeMode( UseExistingFrames ),
     mIsRecalculatingSize( false )
 {
@@ -313,11 +313,14 @@ bool QgsComposerMultiFrame::_writeXML( QDomElement& elem, QDomDocument& doc, boo
       ( *frameIt )->writeXML( elem, doc );
     }
   }
+  QgsComposerObject::writeXML( elem, doc );
   return true;
 }
 
 bool QgsComposerMultiFrame::_readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
 {
+  QgsComposerObject::readXML( itemElem, doc );
+
   mResizeMode = ( ResizeMode )itemElem.attribute( "resizeMode", "0" ).toInt();
   if ( !ignoreFrames )
   {

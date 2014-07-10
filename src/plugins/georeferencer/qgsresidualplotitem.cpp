@@ -15,6 +15,7 @@
 
 #include "qgsresidualplotitem.h"
 #include "qgsgeorefdatapoint.h"
+#include "qgscomposerutils.h"
 #include <QPainter>
 #include <cfloat>
 #include <cmath>
@@ -99,7 +100,7 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
     QPointF p2( gcpItemMMX + ( *gcpIt )->residual().x() * minMMPixelRatio, gcpItemMMY + ( *gcpIt )->residual().y() * minMMPixelRatio );
     painter->drawLine( p1, p2 );
     painter->setBrush( QBrush( painter->pen().color() ) );
-    drawArrowHead( painter, p2.x(), p2.y(), angle( p1, p2 ), 1 );
+    QgsComposerUtils::drawArrowHead( painter, p2.x(), p2.y(), QgsComposerUtils::angle( p1, p2 ), 1 );
   }
 
   //draw scale bar

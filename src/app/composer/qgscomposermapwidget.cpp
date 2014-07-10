@@ -157,17 +157,17 @@ void QgsComposerMapWidget::populateDataDefinedButtons()
   mYMaxDDBtn->blockSignals( true );
 
   //initialise buttons to use atlas coverage layer
-  mScaleDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::MapScale ),
+  mScaleDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapScale ),
                      QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mMapRotationDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::MapRotation ),
+  mMapRotationDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapRotation ),
                            QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mXMinDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::MapXMin ),
+  mXMinDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapXMin ),
                     QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mYMinDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::MapYMin ),
+  mYMinDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapYMin ),
                     QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mXMaxDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::MapXMax ),
+  mXMaxDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapXMax ),
                     QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mYMaxDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::MapYMax ),
+  mYMaxDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapYMax ),
                     QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
 
   //initial state of controls - disable related controls when dd buttons are active
@@ -187,34 +187,34 @@ void QgsComposerMapWidget::populateDataDefinedButtons()
   mYMaxDDBtn->blockSignals( false );
 }
 
-QgsComposerItem::DataDefinedProperty QgsComposerMapWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )
+QgsComposerObject::DataDefinedProperty QgsComposerMapWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )
 {
   if ( widget == mScaleDDBtn )
   {
-    return QgsComposerItem::MapScale;
+    return QgsComposerObject::MapScale;
   }
   else if ( widget == mMapRotationDDBtn )
   {
-    return QgsComposerItem::MapRotation;
+    return QgsComposerObject::MapRotation;
   }
   else if ( widget == mXMinDDBtn )
   {
-    return QgsComposerItem::MapXMin;
+    return QgsComposerObject::MapXMin;
   }
   else if ( widget == mYMinDDBtn )
   {
-    return QgsComposerItem::MapYMin;
+    return QgsComposerObject::MapYMin;
   }
   else if ( widget == mXMaxDDBtn )
   {
-    return QgsComposerItem::MapXMax;
+    return QgsComposerObject::MapXMax;
   }
   else if ( widget == mYMaxDDBtn )
   {
-    return QgsComposerItem::MapYMax;
+    return QgsComposerObject::MapYMax;
   }
 
-  return QgsComposerItem::NoProperty;
+  return QgsComposerObject::NoProperty;
 }
 
 void QgsComposerMapWidget::compositionAtlasToggled( bool atlasEnabled )
@@ -575,7 +575,7 @@ void QgsComposerMapWidget::updateGuiElements()
   mYMinLineEdit->setText( QString::number( composerMapExtent.yMinimum(), 'f', 3 ) );
   mYMaxLineEdit->setText( QString::number( composerMapExtent.yMaximum(), 'f', 3 ) );
 
-  mMapRotationSpinBox->setValue( mComposerMap->mapRotation( QgsComposerItem::OriginalValue ) );
+  mMapRotationSpinBox->setValue( mComposerMap->mapRotation( QgsComposerObject::OriginalValue ) );
 
   //keep layer list check box
   if ( mComposerMap->keepLayerSet() )

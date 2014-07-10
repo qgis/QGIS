@@ -161,6 +161,8 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposerarrow.cpp
   composer/qgscomposerframe.cpp
   composer/qgscomposermousehandles.cpp
+  composer/qgscomposerobject.cpp
+  composer/qgscomposerutils.cpp
   composer/qgscomposeritem.cpp
   composer/qgscomposeritemcommand.cpp
   composer/qgscomposeritemgroup.cpp
@@ -362,6 +364,8 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposermap.h
   composer/qgscomposerpicture.h
   composer/qgscomposerscalebar.h
+  composer/qgscomposerobject.h
+  composer/qgscomposerutils.h
   composer/qgscomposeritem.h
   composer/qgscomposeritemgroup.h
   composer/qgscomposermousehandles.h  

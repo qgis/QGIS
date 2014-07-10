@@ -120,7 +120,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     /**Sets the current composer map values to the GUI elements*/
     virtual void updateGuiElements();
 
-    QgsComposerItem::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget );
+    QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget );
 
   protected slots:
     /**Initializes data defined buttons to current atlas coverage layer*/

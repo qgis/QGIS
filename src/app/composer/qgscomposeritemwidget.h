@@ -32,7 +32,7 @@ class QgsComposerItemBaseWidget: public QWidget
 {
     Q_OBJECT
   public:
-    QgsComposerItemBaseWidget( QWidget* parent, QgsComposerItem* item );
+    QgsComposerItemBaseWidget( QWidget* parent, QgsComposerObject* baseItem );
     ~QgsComposerItemBaseWidget();
 
   protected slots:
@@ -41,10 +41,10 @@ class QgsComposerItemBaseWidget: public QWidget
 
   protected:
     /**Sets a data defined property for the item from its current data defined button settings*/
-    void setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerItem::DataDefinedProperty p );
+    void setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty p );
 
     /**Returns the data defined property corresponding to a data defined button widget*/
-    virtual QgsComposerItem::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton* widget );
+    virtual QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton* widget );
 
     /**Returns the current atlas coverage layer (if set)*/
     QgsVectorLayer* atlasCoverageLayer() const;
@@ -52,7 +52,7 @@ class QgsComposerItemBaseWidget: public QWidget
     /**Returns the atlas for the composition*/
     QgsAtlasComposition *atlasComposition() const;
 
-    QgsComposerItem* mItem;
+    QgsComposerObject* mBaseItem;
 };
 
 /**A class to enter generic properties for composer items (e.g. background, outline, frame).
@@ -120,7 +120,7 @@ class QgsComposerItemWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     void setValuesForGuiNonPositionElements();
 
   protected:
-    QgsComposerItem::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget );
+    QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget );
 
   protected slots:
     /**Initializes data defined buttons to current atlas coverage layer*/
@@ -128,6 +128,9 @@ class QgsComposerItemWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
 
   private:
     QgsComposerItemWidget();
+
+    QgsComposerItem* mItem;
+
 //    void changeItemTransparency( int value );
     void changeItemPosition();
 

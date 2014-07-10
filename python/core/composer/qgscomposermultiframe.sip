@@ -1,6 +1,6 @@
 
 /**Abstract base class for composer entries with the ability to distribute the content to several frames (items)*/
-class QgsComposerMultiFrame: QObject
+class QgsComposerMultiFrame: QgsComposerObject
 {
 %TypeHeaderCode
 #include "qgscomposermultiframe.h"

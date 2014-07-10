@@ -117,6 +117,7 @@
 %Include composer/qgscomposerattributetablemodel.sip
 %Include composer/qgscomposerframe.sip
 %Include composer/qgscomposerhtml.sip
+%Include composer/qgscomposerobject.sip
 %Include composer/qgscomposeritem.sip
 %Include composer/qgscomposeritemcommand.sip
 %Include composer/qgscomposeritemgroup.sip
@@ -131,6 +132,7 @@
 %Include composer/qgscomposershape.sip
 %Include composer/qgscomposertable.sip
 %Include composer/qgscomposertablecolumn.sip
+%Include composer/qgscomposerutils.sip
 %Include composer/qgscomposition.sip
 %Include composer/qgsatlascomposition.sip
 %Include composer/qgsdoubleboxscalebarstyle.sip

@@ -348,7 +348,7 @@ class QgsComposerMap : QgsComposerItem
      * or the current evaluated rotation (which may be affected by data driven rotation
      * settings).
     */
-    double mapRotation( PropertyValueType valueType = EvaluatedValue ) const;
+   // double mapRotation( QgsComposerBaseItem::PropertyValueType valueType = QgsComposerBaseItem::EvaluatedValue ) const;
 
     void updateItem();
 
@@ -513,5 +513,5 @@ class QgsComposerMap : QgsComposerItem
 
     void overviewExtentChanged();
 
-    virtual void refreshDataDefinedProperty( DataDefinedProperty property = AllProperties );
+    virtual void refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 };
