@@ -64,6 +64,8 @@ class information(GdalAlgorithm):
                           progress)
         output = self.getOutputValue(information.OUTPUT)
         f = open(output, 'w')
+        f.write('<pre>')
         for s in GdalUtils.getConsoleOutput()[1:]:
-            f.write('<p>' + str(s) + '</p>')
+            f.write(unicode(s))
+        f.write('</pre>')
         f.close()
