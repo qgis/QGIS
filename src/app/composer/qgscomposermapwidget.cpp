@@ -1283,14 +1283,14 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
 
   //grid frame
   mFrameWidthSpinBox->setValue( grid->gridFrameWidth() );
-  QgsComposerMap::GridFrameStyle gridFrameStyle = mComposerMap->gridFrameStyle();
+  QgsComposerMap::GridFrameStyle gridFrameStyle = grid->gridFrameStyle();
   if ( gridFrameStyle == QgsComposerMap::Zebra )
   {
-    mFrameStyleComboBox->setCurrentIndex( mFrameStyleComboBox->findText( tr( "Zebra" ) ) );
+    mFrameStyleComboBox->setCurrentIndex( 1 );
   }
   else //NoGridFrame
   {
-    mFrameStyleComboBox->setCurrentIndex( mFrameStyleComboBox->findText( tr( "No frame" ) ) );
+    mFrameStyleComboBox->setCurrentIndex( 0 );
   }
 
   //line style
