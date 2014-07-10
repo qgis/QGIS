@@ -47,6 +47,13 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     /**Sets the GUI elements to the values of mHtmlItem*/
     void setGuiElementValues();
 
+  protected:
+    QgsComposerItem::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget );
+
+  protected slots:
+    /**Initializes data defined buttons to current atlas coverage layer*/
+    void populateDataDefinedButtons();
+
   private:
     QgsComposerHtmlWidget();
     void blockSignals( bool block );

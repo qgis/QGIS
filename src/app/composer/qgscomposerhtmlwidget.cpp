@@ -45,6 +45,15 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
   if ( mHtml )
   {
     QObject::connect( mHtml, SIGNAL( changed() ), this, SLOT( setGuiElementValues() ) );
+
+    QgsAtlasComposition* atlas = atlasComposition();
+    if ( atlas )
+    {
+      // repopulate data defined buttons if atlas layer changes
+      connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
+               this, SLOT( populateDataDefinedButtons() ) );
+      connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( populateDataDefinedButtons() ) );
+    }
   }
 
   //embed widget for general options
@@ -54,6 +63,12 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
     QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, mFrame );
     mainLayout->addWidget( itemPropertiesWidget );
   }
+
+  //connections for data defined buttons
+  connect( mUrlDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mUrlDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mUrlDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mUrlLineEdit, SLOT( setDisabled( bool ) ) );
+
 }
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget(): QgsComposerItemBaseWidget( 0, 0 )
@@ -358,5 +373,35 @@ void QgsComposerHtmlWidget::setGuiElementValues()
   mRadioManualSource->setChecked( mHtml->contentMode() == QgsComposerHtml::ManualHtml );
   mHtmlEditor->setEnabled( mHtml->contentMode() == QgsComposerHtml::ManualHtml );
   mInsertExpressionButton->setEnabled( mHtml->contentMode() == QgsComposerHtml::ManualHtml );
+
+  populateDataDefinedButtons();
+
   blockSignals( false );
+}
+
+QgsComposerItem::DataDefinedProperty QgsComposerHtmlWidget::ddPropertyForWidget( QgsDataDefinedButton *widget )
+{
+  if ( widget == mUrlDDBtn )
+  {
+    return QgsComposerItem::SourceUrl;
+  }
+  return QgsComposerItem::NoProperty;
+}
+
+void QgsComposerHtmlWidget::populateDataDefinedButtons()
+{
+  QgsVectorLayer* vl = atlasCoverageLayer();
+
+  //block signals from data defined buttons
+  mUrlDDBtn->blockSignals( true );
+
+  //initialise buttons to use atlas coverage layer
+  mUrlDDBtn->init( vl, mHtml->dataDefinedProperty( QgsComposerItem::SourceUrl ),
+                   QgsDataDefinedButton::AnyType, tr( "url string" ) );
+
+  //initial state of controls - disable related controls when dd buttons are active
+  mUrlLineEdit->setEnabled( !mUrlDDBtn->isActive() );
+
+  //unblock signals from data defined buttons
+  mUrlDDBtn->blockSignals( false );
 }

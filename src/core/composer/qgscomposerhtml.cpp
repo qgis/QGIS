@@ -20,6 +20,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessagelog.h"
 #include "qgsexpression.h"
+#include "qgslogger.h"
 
 #include <QCoreApplication>
 #include <QPainter>
@@ -47,8 +48,10 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): 
   if ( mComposition )
   {
     QObject::connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( handleFrameRemoval( QgsComposerItem* ) ) );
-    connect( mComposition, SIGNAL( refreshItemsTriggered() ), this, SLOT( loadHtml() ) );
   }
+
+  // data defined strings
+  mDataDefinedNames.insert( QgsComposerObject::SourceUrl, QString( "dataDefinedSourceUrl" ) );
 
   if ( mComposition && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
@@ -152,12 +155,13 @@ QString QgsComposerHtml::fetchHtml( QUrl url )
 
   QByteArray array = reply->readAll();
   reply->deleteLater();
-  return QString( array );
+  mFetchedHtml = QString( array );
+  return mFetchedHtml;
 }
 
 void QgsComposerHtml::loadHtml()
 {
-  if ( !mWebPage || ( mContentMode == QgsComposerHtml::Url && mUrl.isEmpty() ) )
+  if ( !mWebPage )
   {
     return;
   }
@@ -167,7 +171,29 @@ void QgsComposerHtml::loadHtml()
   {
     case QgsComposerHtml::Url:
     {
-      loadedHtml = fetchHtml( mUrl );
+
+      QString currentUrl = mUrl.toString();
+
+      //data defined url set?
+      QVariant exprVal;
+      if ( dataDefinedEvaluate( QgsComposerObject::SourceUrl, exprVal ) )
+      {
+        currentUrl = exprVal.toString().trimmed();;
+        QgsDebugMsg( QString( "exprVal Source Url:%1" ).arg( currentUrl ) );
+      }
+      if ( currentUrl.isEmpty() )
+      {
+        return;
+      }
+      if ( currentUrl != mLastFetchedUrl )
+      {
+        loadedHtml = fetchHtml( QUrl( currentUrl ) );
+        mLastFetchedUrl = currentUrl;
+      }
+      else
+      {
+        loadedHtml = mFetchedHtml;
+      }
       break;
     }
     case QgsComposerHtml::ManualHtml:
@@ -183,7 +209,7 @@ void QgsComposerHtml::loadHtml()
 
   mLoaded = false;
   //set html, using the specified url as base if in Url mode
-  mWebPage->mainFrame()->setHtml( loadedHtml, mContentMode == QgsComposerHtml::Url ? QUrl( mUrl ) : QUrl() );
+  mWebPage->mainFrame()->setHtml( loadedHtml, mContentMode == QgsComposerHtml::Url ? QUrl( mLastFetchedUrl ) : QUrl() );
 
   while ( !mLoaded )
   {
@@ -214,6 +240,8 @@ void QgsComposerHtml::loadHtml()
 
   recalculateFrameSizes();
   emit changed();
+  //trigger a repaint
+  emit contentsChanged();
 }
 
 void QgsComposerHtml::frameLoaded( bool ok )
@@ -454,4 +482,14 @@ void QgsComposerHtml::refreshExpressionContext()
 
   setExpressionContext( feature, vl );
   loadHtml();
+}
+
+void QgsComposerHtml::refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property )
+{
+  //updates data defined properties and redraws item to match
+  if ( property == QgsComposerObject::SourceUrl || property == QgsComposerObject::AllProperties )
+  {
+    loadHtml();
+  }
+  QgsComposerObject::refreshDataDefinedProperty( property );
 }

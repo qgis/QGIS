@@ -92,6 +92,13 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QgsDataDefinedButton" name="mUrlDDBtn">
+              <property name="text">
+               <string>...</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
           <item row="2" column="0" colspan="2">
@@ -219,6 +226,11 @@
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

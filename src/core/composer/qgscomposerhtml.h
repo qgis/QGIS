@@ -178,6 +178,8 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 
     void refreshExpressionContext();
 
+    virtual void refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
+
   private slots:
     void frameLoaded( bool ok = true );
 
@@ -186,6 +188,8 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     QUrl mUrl;
     QWebPage* mWebPage;
     QString mHtml;
+    QString mFetchedHtml;
+    QString mLastFetchedUrl;
     bool mLoaded;
     QSizeF mSize; //total size in mm
     double mHtmlUnitsToMM;

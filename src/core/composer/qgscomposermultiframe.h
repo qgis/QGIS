@@ -122,6 +122,11 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
 
   signals:
     void changed();
+
+    /**Emitted when the contents of the multi frame have changed and the frames
+     * must be redrawn.
+    */
+    void contentsChanged();
 };
 
 #endif // QGSCOMPOSERMULTIFRAME_H

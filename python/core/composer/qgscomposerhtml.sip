@@ -152,4 +152,9 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see url
      */
     void loadHtml();
+    
+    void refreshExpressionContext();
+    
+    virtual void refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
+
 };

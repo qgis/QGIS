@@ -65,7 +65,9 @@ class CORE_EXPORT QgsComposerObject: public QObject
       MapXMax, /*< map extent x maximum */
       MapYMax, /*< map extent y maximum */
       //composer picture
-      PictureSource /*< picture source url */
+      PictureSource, /*< picture source url */
+      //html item
+      SourceUrl /*< html source utl */
     };
 
     /** Specifies whether the value returned by a function should be the original, user
