@@ -59,8 +59,7 @@ void QgsDatumTransformDialog::load()
   for ( ; it != mDt.constEnd(); ++it )
   {
     QTreeWidgetItem *item = new QTreeWidgetItem();
-    bool itemDisabled = false;
-    bool itemHidden = false;
+    int score = 0;
 
     for ( int i = 0; i < 2 && i < it->size(); ++i )
     {
@@ -78,15 +77,17 @@ void QgsDatumTransformDialog::load()
       if ( !QgsCoordinateTransform::datumTransformCrsInfo( nr, epsgNr, srcGeoProj, destGeoProj, remarks, scope, preferred, deprecated ) )
         continue;
 
-      if ( mHideDeprecatedCheckBox->isChecked() && deprecated )
-      {
-        itemHidden = true;
-      }
-
       QString toolTipString;
       if ( gridShiftTransformation( item->text( i ) ) )
       {
         toolTipString.append( QString( "<p><b>NTv2</b></p>" ) );
+        score += 2;
+        if ( !testGridShiftFileAvailability( item, i ) )
+        {
+          score -= 10;
+          item->setDisabled( true );
+          continue;
+        }
       }
 
       if ( epsgNr > 0 )
@@ -99,30 +100,54 @@ void QgsDatumTransformDialog::load()
       if ( !scope.isEmpty() )
         toolTipString.append( QString( "<p><b>Scope:</b> %1</p>" ).arg( scope ) );
       if ( preferred )
+      {
         toolTipString.append( "<p><b>Preferred transformation</b></p>" );
+        score += 1;
+      }
       if ( deprecated )
+      {
         toolTipString.append( "<p><b>Deprecated transformation</b></p>" );
+        score -= 2;
+      }
 
       item->setToolTip( i, toolTipString );
-
-      if ( gridShiftTransformation( item->text( i ) ) && !testGridShiftFileAvailability( item, i ) )
-      {
-        itemDisabled = true;
-      }
     }
 
-    if ( !itemHidden )
-    {
-      item->setDisabled( itemDisabled );
-      mDatumTransformTreeWidget->addTopLevelItem( item );
-    }
-    else
-    {
-      delete item;
-    }
+    item->setData( 2, Qt::UserRole, score);
+    item->setText( 2, QString("%1").arg( score + 50 ) );  // Sort works on text only
+    mDatumTransformTreeWidget->addTopLevelItem( item );
   }
+
+  // Sort transformations by score
+  mDatumTransformTreeWidget->sortItems( 2, Qt::DescendingOrder );
+  mDatumTransformTreeWidget->setSortingEnabled( true );
+  mDatumTransformTreeWidget->setSortingEnabled( false );
+  mDatumTransformTreeWidget->setColumnHidden( 2, true );
+  mDatumTransformTreeWidget->setCurrentItem(mDatumTransformTreeWidget->topLevelItem(0));
+
+  updateStatus();
 }
 
+void QgsDatumTransformDialog::updateStatus()
+{
+  bool hideDeprecated;
+  bool itemHidden;
+
+  hideDeprecated = mHideDeprecatedCheckBox->isChecked();
+
+  QTreeWidgetItemIterator it(mDatumTransformTreeWidget);
+  while (*it) {
+    itemHidden = hideDeprecated && (((*it)->data( 2, Qt::UserRole )).toInt() < 0);
+    (*it)->setHidden( itemHidden );
+    ++it;
+  }
+
+  if ( mDatumTransformTreeWidget->currentItem()->isHidden() )
+  {
+    mDatumTransformTreeWidget->setCurrentItem(mDatumTransformTreeWidget->topLevelItem(0));
+  }
+
+}
 QgsDatumTransformDialog::~QgsDatumTransformDialog()
 {
   QSettings settings;
@@ -225,7 +250,7 @@ bool QgsDatumTransformDialog::testGridShiftFileAvailability( QTreeWidgetItem* it
 
 void QgsDatumTransformDialog::on_mHideDeprecatedCheckBox_stateChanged( int )
 {
-  load();
+  updateStatus();
 }
 
 void QgsDatumTransformDialog::on_mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )

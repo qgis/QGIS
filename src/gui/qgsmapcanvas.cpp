@@ -36,6 +36,7 @@ email                : sherman at mrcc.com
 #include <QString>
 #include <QStringList>
 #include <QWheelEvent>
+#include <QMessageBox>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -1775,8 +1776,14 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
 
   //get list of datum transforms
   QList< QList< int > > dt = QgsCoordinateTransform::datumTransformations( srcCRS, destCRS );
+  // dt é uma lista vazia se houver um erro na especificação dos sistemas de coordenada (CRS), se
+  // os CRS forem iguais ou se não existir uma transformação para os CRS especificados
   if ( dt.size() < 2 )
   {
+//    QMessageBox( QMessageBox::Information, "Datum Transformation not provided",
+//                 " Data may be misplaced" ).exec();
+//    mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, -1, -1 );
+//    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, -1, -1 );
     return;
   }
 
