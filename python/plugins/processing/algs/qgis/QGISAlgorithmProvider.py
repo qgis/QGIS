@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.script.ScriptUtils import ScriptUtils
+import os
 
 
 __author__ = 'Victor Olaya'
@@ -114,6 +116,8 @@ import processing.resources_rc
 
 class QGISAlgorithmProvider(AlgorithmProvider):
 
+    _icon = QIcon(':/processing/images/qgis.png')
+    
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.alglist = [SumLines(), PointsInPolygon(),
@@ -166,6 +170,13 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         # RasterLayerHistogram(), MeanAndStdDevPlot(),
                         # BarPlot(), PolarPlot()
                        ]
+                                         
+        folder = os.path.join(os.path.dirname(__file__), 'scripts')
+        scripts = ScriptUtils.loadFromFolder(folder)
+        for script in scripts:
+            script._icon = self._icon
+            script.allowEdit = False
+        self.alglist.extend(scripts)
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
@@ -180,7 +191,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
         return 'QGIS geoalgorithms'
 
     def getIcon(self):
-        return QIcon(':/processing/images/qgis.png')
+        return self._icon
 
     def _loadAlgorithms(self):
         self.algs = self.alglist
