@@ -151,15 +151,6 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /** \brief Is selected */
     virtual bool selected() const { return QGraphicsRectItem::isSelected(); }
 
-    /** stores state in project */
-    virtual bool writeSettings();
-
-    /** read state from project */
-    virtual bool readSettings();
-
-    /** delete settings from project file  */
-    virtual bool removeSettings();
-
     /**Moves item in canvas coordinates*/
     void move( double dx, double dy );
 

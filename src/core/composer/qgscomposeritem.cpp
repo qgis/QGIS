@@ -171,12 +171,6 @@ void QgsComposerItem::setSelected( bool s )
   update(); //to draw selection boxes
 }
 
-bool QgsComposerItem::writeSettings( void )  { return true; }
-
-bool QgsComposerItem::readSettings( void )  { return true; }
-
-bool QgsComposerItem::removeSettings( void )  { return true; }
-
 bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) const
 {
   if ( itemElem.isNull() )
