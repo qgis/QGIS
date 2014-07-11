@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-657</y>
-        <width>436</width>
-        <height>1719</height>
+        <y>-629</y>
+        <width>439</width>
+        <height>2058</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -405,7 +405,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../../qgis_enterprise/images/images.qrc">
+               <iconset resource="../../images/images.qrc">
                 <normaloff>:/images/themes/default/mActionSignPlus.png</normaloff>:/images/themes/default/mActionSignPlus.png</iconset>
               </property>
              </widget>
@@ -416,7 +416,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../../qgis_enterprise/images/images.qrc">
+               <iconset resource="../../images/images.qrc">
                 <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
               </property>
              </widget>
@@ -427,7 +427,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../../qgis_enterprise/images/images.qrc">
+               <iconset resource="../../images/images.qrc">
                 <normaloff>:/images/themes/default/mActionArrowUp.png</normaloff>:/images/themes/default/mActionArrowUp.png</iconset>
               </property>
              </widget>
@@ -438,7 +438,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../../qgis_enterprise/images/images.qrc">
+               <iconset resource="../../images/images.qrc">
                 <normaloff>:/images/themes/default/mActionArrowDown.png</normaloff>:/images/themes/default/mActionArrowDown.png</iconset>
               </property>
              </widget>
@@ -673,7 +673,7 @@
                </property>
                <layout class="QGridLayout" name="gridLayout_4">
                 <item row="3" column="0">
-                 <widget class="QLabel" name="mFrameWidthLabel_2">
+                 <widget class="QLabel" name="mFrameWidthLabel">
                   <property name="text">
                    <string>Frame size</string>
                   </property>
@@ -1045,7 +1045,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../qgis_enterprise/images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
 </ui>

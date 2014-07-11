@@ -427,7 +427,11 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
   {
     drawOverviewMapExtent( painter );
   }
-  drawGrids( painter );
+  if ( shouldDrawPart( Grid ) &&
+       ( mComposition->plotStyle() != QgsComposition::Preview || mPreviewMode != Rectangle ) )
+  {
+    drawGrids( painter );
+  }
   if ( shouldDrawPart( Frame ) )
   {
     drawFrame( painter );
@@ -445,7 +449,7 @@ int QgsComposerMap::numberExportLayers() const
   return
     ( hasBackground()           ? 1 : 0 )
     + layersToRender().length()
-    + mGrids.size()
+    + 1 // for grids, if they exist
     + ( mOverviewFrameMapId != -1 ? 1 : 0 )
     + ( hasFrame()                ? 1 : 0 )
     + ( isSelected()              ? 1 : 0 )
@@ -486,14 +490,11 @@ bool QgsComposerMap::shouldDrawPart( PartType part ) const
       return mCurrentExportLayer == idx;
     }
   }
-  /*if ( mGridEnabled )
+  --idx;
+  if ( Grid == part )
   {
-    --idx;
-    if ( Grid == part )
-    {
-      return mCurrentExportLayer == idx;
-    }
-  }*/
+    return mCurrentExportLayer == idx;
+  }
   if ( hasBackground() )
   {
     if ( Background == part )
@@ -1334,6 +1335,11 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mapGrid->setCrossLength( gridElem.attribute( "crossLength", "3" ).toDouble() );
     mapGrid->setGridFrameStyle(( QgsComposerMap::GridFrameStyle )gridElem.attribute( "gridFrameStyle", "0" ).toInt() );
     mapGrid->setGridFrameWidth( gridElem.attribute( "gridFrameWidth", "2.0" ).toDouble() );
+    mapGrid->setGridFramePenSize( gridElem.attribute( "gridFramePenThickness", "0.5" ).toDouble() );
+    mapGrid->setGridFramePenColor( QgsSymbolLayerV2Utils::decodeColor( gridElem.attribute( "framePenColor", "0,0,0" ) ) );
+    mapGrid->setGridFrameFillColor1( QgsSymbolLayerV2Utils::decodeColor( gridElem.attribute( "frameFillColor1", "255,255,255,255" ) ) );
+    mapGrid->setGridFrameFillColor2( QgsSymbolLayerV2Utils::decodeColor( gridElem.attribute( "frameFillColor2", "0,0,0,255" ) ) );
+    mapGrid->setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "gridBlendMode", "0" ).toUInt() ) );
     QDomElement gridSymbolElem = gridElem.firstChildElement( "symbol" );
     QgsLineSymbolV2* lineSymbol = 0;
     if ( gridSymbolElem.isNull( ) )
@@ -1370,6 +1376,8 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
       QFont annotationFont;
       annotationFont.fromString( annotationElem.attribute( "font", "" ) );
       mapGrid->setGridAnnotationFont( annotationFont );
+      mapGrid->setGridAnnotationFontColor( QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "fontColor", "0,0,0,255" ) ) );
+
       mapGrid->setGridAnnotationPrecision( annotationElem.attribute( "precision", "3" ).toInt() );
     }
     mGrids.append( mapGrid );
@@ -1804,22 +1812,20 @@ QRectF QgsComposerMap::boundingRect() const
 void QgsComposerMap::updateBoundingRect()
 {
   QRectF rectangle = rect();
-  double extension = 0;
+  double frameExtension = mFrame ? pen().widthF() / 2.0 : 0.0;
+  double maxGridExtension = 0;
 
   QList< QgsComposerMapGrid* >::const_iterator it = mGrids.constBegin();
   for ( ; it != mGrids.constEnd(); ++it )
   {
-    double currentExtension = ( *it )->maxExtension();
-    if ( currentExtension > extension )
-    {
-      extension = currentExtension;
-    }
+    maxGridExtension = qMax( maxGridExtension, ( *it )->maxExtension() );
   }
+  double maxExtension = qMax( frameExtension, maxGridExtension );
 
-  rectangle.setLeft( rectangle.left() - extension );
-  rectangle.setRight( rectangle.right() + extension );
-  rectangle.setTop( rectangle.top() - extension );
-  rectangle.setBottom( rectangle.bottom() + extension );
+  rectangle.setLeft( rectangle.left() - maxExtension );
+  rectangle.setRight( rectangle.right() + maxExtension );
+  rectangle.setTop( rectangle.top() - maxExtension );
+  rectangle.setBottom( rectangle.bottom() + maxExtension );
   if ( rectangle != mCurrentRectangle )
   {
     prepareGeometryChange();

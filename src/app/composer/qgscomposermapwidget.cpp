@@ -66,6 +66,9 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
   mAnnotationFormatComboBox->insertItem( 1, tr( "DegreeMinute" ) );
   mAnnotationFormatComboBox->insertItem( 2, tr( "DegreeMinuteSecond" ) );
 
+  mAnnotationFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
+  mAnnotationFontColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+
   insertAnnotationPositionEntries( mAnnotationPositionLeftComboBox );
   insertAnnotationPositionEntries( mAnnotationPositionRightComboBox );
   insertAnnotationPositionEntries( mAnnotationPositionTopComboBox );
@@ -75,6 +78,16 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
   insertAnnotationDirectionEntries( mAnnotationDirectionComboBoxRight );
   insertAnnotationDirectionEntries( mAnnotationDirectionComboBoxTop );
   insertAnnotationDirectionEntries( mAnnotationDirectionComboBoxBottom );
+
+  mGridFramePenColorButton->setColorDialogTitle( tr( "Select grid frame color" ) );
+  mGridFramePenColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mGridFrameFill1ColorButton->setColorDialogTitle( tr( "Select grid frame fill color" ) );
+  mGridFrameFill1ColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mGridFrameFill2ColorButton->setColorDialogTitle( tr( "Select grid frame fill color" ) );
+  mGridFrameFill2ColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+
+  //set initial state of frame style controls
+  toggleFrameControls( false );
 
   if ( composerMap )
   {
@@ -689,8 +702,6 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mYMinLineEdit->blockSignals( b );
   mYMaxLineEdit->blockSignals( b );
   mDrawCanvasItemsCheckBox->blockSignals( b );
-  mFrameStyleComboBox->blockSignals( b );
-  mFrameWidthSpinBox->blockSignals( b );
   mOverviewFrameMapComboBox->blockSignals( b );
   mOverviewFrameStyleButton->blockSignals( b );
   mOverviewBlendModeComboBox->blockSignals( b );
@@ -700,27 +711,20 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mAtlasMarginSpinBox->blockSignals( b );
   mAtlasFixedScaleRadio->blockSignals( b );
   mAtlasMarginRadio->blockSignals( b );
-  mGridTypeComboBox->blockSignals( b );
-  mIntervalXSpinBox->blockSignals( b );
-  mIntervalYSpinBox->blockSignals( b );
-  mOffsetXSpinBox->blockSignals( b );
-  mOffsetYSpinBox->blockSignals( b );
-  mCrossWidthSpinBox->blockSignals( b );
-  mFrameStyleComboBox->blockSignals( b );
-  mFrameWidthSpinBox->blockSignals( b );
-  mMapGridUnitComboBox->blockSignals( b );
-  mAnnotationFormatComboBox->blockSignals( b );
-  mAnnotationPositionLeftComboBox->blockSignals( b );
-  mAnnotationDirectionComboBoxLeft->blockSignals( b );
-  mAnnotationPositionRightComboBox->blockSignals( b );
-  mAnnotationDirectionComboBoxRight->blockSignals( b );
-  mAnnotationPositionTopComboBox->blockSignals( b );
-  mAnnotationDirectionComboBoxTop->blockSignals( b );
-  mAnnotationPositionBottomComboBox->blockSignals( b );
-  mAnnotationDirectionComboBoxBottom->blockSignals( b );
-  mDistanceToMapFrameSpinBox->blockSignals( b );
-  mCoordinatePrecisionSpinBox->blockSignals( b );
-  mGridBlendComboBox->blockSignals( b );
+  blockGridItemsSignals( b );
+}
+
+void QgsComposerMapWidget::toggleFrameControls( bool frameEnabled )
+{
+  //set status of frame controls
+  mFrameWidthSpinBox->setEnabled( frameEnabled );
+  mGridFramePenSizeSpinBox->setEnabled( frameEnabled );
+  mGridFramePenColorButton->setEnabled( frameEnabled );
+  mGridFrameFill1ColorButton->setEnabled( frameEnabled );
+  mGridFrameFill2ColorButton->setEnabled( frameEnabled );
+  mFrameWidthLabel->setEnabled( frameEnabled );
+  mFramePenLabel->setEnabled( frameEnabled );
+  mFrameFillLabel->setEnabled( frameEnabled );
 }
 
 void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
@@ -1229,12 +1233,12 @@ void QgsComposerMapWidget::blockGridItemsSignals( bool block )
   mFrameStyleComboBox->blockSignals( block );
   mFrameWidthSpinBox->blockSignals( block );
   mGridLineStyleButton->blockSignals( block );
-  mGridTypeComboBox->blockSignals( block );
   mMapGridUnitComboBox->blockSignals( block );
   mGridFramePenSizeSpinBox->blockSignals( block );
   mGridFramePenColorButton->blockSignals( block );
   mGridFrameFill1ColorButton->blockSignals( block );
   mGridFrameFill2ColorButton->blockSignals( block );
+  mGridBlendComboBox->blockSignals( block );
 
   //grid annotation
   mDrawAnnotationGroupBox->blockSignals( block );
@@ -1249,6 +1253,8 @@ void QgsComposerMapWidget::blockGridItemsSignals( bool block )
   mAnnotationDirectionComboBoxBottom->blockSignals( block );
   mDistanceToMapFrameSpinBox->blockSignals( block );
   mCoordinatePrecisionSpinBox->blockSignals( block );
+  mAnnotationFontColorButton->blockSignals( block );
+  mAnnotationFontButton->blockSignals( block );
 }
 
 void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
@@ -1287,10 +1293,12 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
   if ( gridFrameStyle == QgsComposerMap::Zebra )
   {
     mFrameStyleComboBox->setCurrentIndex( 1 );
+    toggleFrameControls( true );
   }
   else //NoGridFrame
   {
     mFrameStyleComboBox->setCurrentIndex( 0 );
+    toggleFrameControls( false );
   }
 
   //line style
@@ -1353,13 +1361,26 @@ void QgsComposerMapWidget::updateLineSymbolMarker( const QgsComposerMapGrid* gri
 void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
 {
   QgsComposerMapGrid* grid = currentGrid();
-  QgsSymbolV2SelectorDialog d( grid->gridLineSymbol(), QgsStyleV2::defaultStyle(), 0 );
-  if ( d.exec() == QDialog::Accepted )
+  if ( !grid )
   {
-    updateLineSymbolMarker( grid );
+    return;
   }
 
-  mComposerMap->update();
+  QgsLineSymbolV2* newSymbol = dynamic_cast<QgsLineSymbolV2*>( grid->gridLineSymbol()->clone() );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
+
+  if ( d.exec() == QDialog::Accepted )
+  {
+    mComposerMap->beginCommand( tr( "Grid line style changed" ) );
+    grid->setGridLineSymbol( newSymbol );
+    updateLineSymbolMarker();
+    mComposerMap->endCommand();
+    mComposerMap->update();
+  }
+  else
+  {
+    delete newSymbol;
+  }
 }
 
 void QgsComposerMapWidget::on_mIntervalXSpinBox_editingFinished()
@@ -1519,10 +1540,12 @@ void QgsComposerMapWidget::on_mFrameStyleComboBox_currentIndexChanged( const QSt
   if ( text == tr( "Zebra" ) )
   {
     grid->setGridFrameStyle( QgsComposerMap::Zebra );
+    toggleFrameControls( true );
   }
   else //no frame
   {
     grid->setGridFrameStyle( QgsComposerMap::NoGridFrame );
+    toggleFrameControls( false );
   }
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
