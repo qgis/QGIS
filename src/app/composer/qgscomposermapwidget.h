@@ -161,6 +161,9 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     /**Updates the map combo box with the current composer map ids*/
     void refreshMapComboBox();
 
+    /**Enables/disables grid frame related controls*/
+    void toggleFrameControls( bool frameEnabled );
+
     /**Enables or disables the atlas margin and predefined scales radio depending on the atlas coverage layer type*/
     void toggleAtlasScalingOptionsByLayerType();
 

@@ -45,9 +45,6 @@ class CORE_EXPORT QgsComposerMapGrid
     /** \brief Reimplementation of QCanvasItem::paint*/
     void drawGrid( QPainter* painter ) const;
 
-    /**Draws grid if CRS is different to map CRS*/
-    void drawGridCRSTransform( QPainter* painter ) const;
-
     /** stores state in Dom element
        * @param elem is Dom element corresponding to 'ComposerMap' tag
        * @param doc Dom document
@@ -293,8 +290,8 @@ class CORE_EXPORT QgsComposerMapGrid
     int yGridLines( QList< QPair< double, QLineF > >& lines ) const;
     int xGridLinesCRSTransform( const QgsRectangle& bbox, const QgsCoordinateTransform& t, QList< QPair< double, QPolygonF > >& lines ) const;
     int yGridLinesCRSTransform( const QgsRectangle& bbox, const QgsCoordinateTransform& t, QList< QPair< double, QPolygonF > >& lines ) const;
-    void drawGridLine( const QLineF& line, QPainter* p ) const;
-    void drawGridLine( const QPolygonF& line, QPainter* p ) const;
+    void drawGridLine( const QLineF& line, QgsRenderContext &context ) const;
+    void drawGridLine( const QPolygonF& line, QgsRenderContext &context ) const;
     void sortGridLinesOnBorders( const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines,  QMap< double, double >& leftFrameEntries,
                                  QMap< double, double >& rightFrameEntries, QMap< double, double >& topFrameEntries, QMap< double, double >& bottomFrameEntries ) const;
     void drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, QgsComposerMap::Border border ) const;
@@ -303,6 +300,13 @@ class CORE_EXPORT QgsComposerMapGrid
     /**Get parameters for drawing grid in CRS different to map CRS*/
     int crsGridParams( QgsRectangle& crsRect, QgsCoordinateTransform& inverseTransform ) const;
     static QPolygonF trimLineToMap( const QPolygonF& line, const QgsRectangle& rect );
+    QPolygonF scalePolygon( const QPolygonF &polygon,  const double scale ) const;
+
+    /**Draws grid if CRS is different to map CRS*/
+    void drawGridCRSTransform( QgsRenderContext &context , double dotsPerMM, QList< QPair< double, QLineF > > &horizontalLines,
+                               QList< QPair< double, QLineF > > &verticalLines ) const;
+
+    void drawGridNoTransform( QgsRenderContext &context, double dotsPerMM, QList<QPair<double, QLineF> > &horizontalLines, QList<QPair<double, QLineF> > &verticalLines ) const;
 };
 
 #endif // QGSCOMPOSERMAPGRID_H

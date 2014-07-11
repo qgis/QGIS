@@ -118,6 +118,7 @@ bool QgsFeatureAction::editFeature()
   else
   {
     QgsAttributes src = mFeature.attributes();
+    dialog->setIsAddDialog( true );
 
     if ( dialog->exec() )
     {

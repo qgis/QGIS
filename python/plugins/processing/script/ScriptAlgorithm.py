@@ -55,6 +55,8 @@ from processing.script.WrongScriptException import WrongScriptException
 
 class ScriptAlgorithm(GeoAlgorithm):
 
+    _icon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/script.png')
+    
     def __init__(self, descriptionFile, script=None):
         """The script parameter can be used to directly pass the code
         of the script without a file.
@@ -65,6 +67,7 @@ class ScriptAlgorithm(GeoAlgorithm):
 
         GeoAlgorithm.__init__(self)
         self.script = script
+        self.allowEdit = True
         self.descriptionFile = descriptionFile
         if script is not None:
             self.defineCharacteristicsFromScript()
@@ -77,7 +80,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/script.png')
+        return self._icon
 
     def defineCharacteristicsFromFile(self):
         self.script = ''
