@@ -173,10 +173,11 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                                          
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         scripts = ScriptUtils.loadFromFolder(folder)
-        for script in scripts:
-            script._icon = self._icon
+        for script in scripts:            
             script.allowEdit = False
         self.alglist.extend(scripts)
+        for alg in self.alglist:
+            alg._icon = self._icon
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
