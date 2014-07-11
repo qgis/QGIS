@@ -62,9 +62,6 @@ QgsComposerMapGrid::QgsComposerMapGrid( const QString& name, QgsComposerMap* map
     mGridUnit( MapUnit ),
     mBlendMode( QPainter::CompositionMode_SourceOver )
 {
-  //debug
-  mGridLineSymbol = QgsLineSymbolV2::createSimple( QgsStringMap() );
-
   //get default composer font from settings
   QSettings settings;
   QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
@@ -72,6 +69,8 @@ QgsComposerMapGrid::QgsComposerMapGrid( const QString& name, QgsComposerMap* map
   {
     mGridAnnotationFont.setFamily( defaultFontString );
   }
+
+  createDefaultGridLineSymbol();
 }
 
 QgsComposerMapGrid::QgsComposerMapGrid(): mComposerMap( 0 )
@@ -81,6 +80,16 @@ QgsComposerMapGrid::QgsComposerMapGrid(): mComposerMap( 0 )
 QgsComposerMapGrid::~QgsComposerMapGrid()
 {
   delete mGridLineSymbol;
+}
+
+void QgsComposerMapGrid::createDefaultGridLineSymbol()
+{
+  delete mGridLineSymbol;
+  QgsStringMap properties;
+  properties.insert( "color", "0,0,0,255" );
+  properties.insert( "width", "0.3" );
+  properties.insert( "capstyle", "flat" );
+  mGridLineSymbol = QgsLineSymbolV2::createSimple( properties );
 }
 
 void QgsComposerMapGrid::setComposerMap( QgsComposerMap* map )
@@ -390,6 +399,10 @@ void QgsComposerMapGrid::drawGridNoTransform( QgsRenderContext &context, double 
     QPointF intersectionPoint, crossEnd1, crossEnd2;
     for ( ; vIt != verticalLines.constEnd(); ++vIt )
     {
+      //start mark
+      crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( vIt->second.p1(), vIt->second.p2(), mCrossLength );
+      drawGridLine( QLineF( vIt->second.p1() * dotsPerMM, crossEnd1 * dotsPerMM ), context );
+
       //test for intersection with every horizontal line
       hIt = horizontalLines.constBegin();
       for ( ; hIt != horizontalLines.constEnd(); ++hIt )
@@ -405,11 +418,18 @@ void QgsComposerMapGrid::drawGridNoTransform( QgsRenderContext &context, double 
           drawGridLine( QLineF( crossEnd1  * dotsPerMM, crossEnd2  * dotsPerMM ), context );
         }
       }
+      //end mark
+      QPointF crossEnd2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( vIt->second.p2(), vIt->second.p1(), mCrossLength );
+      drawGridLine( QLineF( vIt->second.p2() * dotsPerMM, crossEnd2 * dotsPerMM ), context );
     }
 
     hIt = horizontalLines.constBegin();
     for ( ; hIt != horizontalLines.constEnd(); ++hIt )
     {
+      //start mark
+      crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( hIt->second.p1(), hIt->second.p2(), mCrossLength );
+      drawGridLine( QLineF( hIt->second.p1() * dotsPerMM, crossEnd1 * dotsPerMM ), context );
+
       vIt = verticalLines.constBegin();
       for ( ; vIt != verticalLines.constEnd(); ++vIt )
       {
@@ -424,6 +444,9 @@ void QgsComposerMapGrid::drawGridNoTransform( QgsRenderContext &context, double 
           drawGridLine( QLineF( crossEnd1  * dotsPerMM, crossEnd2  * dotsPerMM ), context );
         }
       }
+      //end mark
+      crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( hIt->second.p2(), hIt->second.p1(), mCrossLength );
+      drawGridLine( QLineF( hIt->second.p2() * dotsPerMM, crossEnd1 * dotsPerMM ), context );
     }
   }
 }

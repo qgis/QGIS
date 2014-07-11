@@ -625,7 +625,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     int mOverviewFrameMapId;
     /**Drawing style for overview farme*/
     QgsFillSymbolV2* mOverviewFrameMapSymbol;
-    QgsLineSymbolV2* mGridLineSymbol;
+
     /**Blend mode for overview*/
     QPainter::CompositionMode mOverviewBlendMode;
     bool mOverviewInverted;
@@ -698,7 +698,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QPointF composerMapPosForItem( const QGraphicsItem* item ) const;
     void drawOverviewMapExtent( QPainter* p );
     void createDefaultOverviewFrameSymbol();
-    void createDefaultGridLineSymbol();
     //void initGridAnnotationFormatFromProject();
 
     enum PartType

@@ -60,9 +60,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 {
   mComposition = composition;
   mOverviewFrameMapSymbol = 0;
-  mGridLineSymbol = 0;
   createDefaultOverviewFrameSymbol();
-  createDefaultGridLineSymbol();
 
   mId = 0;
   assignFreeId();
@@ -108,7 +106,6 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     , mAtlasMargin( 0.10 )
 {
   mOverviewFrameMapSymbol = 0;
-  mGridLineSymbol = 0;
   createDefaultOverviewFrameSymbol();
 
   //Offset
@@ -164,7 +161,6 @@ void QgsComposerMap::adjustExtentToItemShape( double itemWidth, double itemHeigh
 QgsComposerMap::~QgsComposerMap()
 {
   delete mOverviewFrameMapSymbol;
-  delete mGridLineSymbol;
   removeGrids();
 }
 
@@ -2379,16 +2375,6 @@ void QgsComposerMap::createDefaultOverviewFrameSymbol()
   properties.insert( "style_border", "no" );
   mOverviewFrameMapSymbol = QgsFillSymbolV2::createSimple( properties );
   mOverviewFrameMapSymbol->setAlpha( 0.3 );
-}
-
-void QgsComposerMap::createDefaultGridLineSymbol()
-{
-  delete mGridLineSymbol;
-  QgsStringMap properties;
-  properties.insert( "color", "0,0,0,255" );
-  properties.insert( "width", "0.3" );
-  properties.insert( "capstyle", "flat" );
-  mGridLineSymbol = QgsLineSymbolV2::createSimple( properties );
 }
 
 /*void QgsComposerMap::initGridAnnotationFormatFromProject()

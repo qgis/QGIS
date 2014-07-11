@@ -307,6 +307,7 @@ class CORE_EXPORT QgsComposerMapGrid
                                QList< QPair< double, QLineF > > &verticalLines ) const;
 
     void drawGridNoTransform( QgsRenderContext &context, double dotsPerMM, QList<QPair<double, QLineF> > &horizontalLines, QList<QPair<double, QLineF> > &verticalLines ) const;
+    void createDefaultGridLineSymbol();
 };
 
 #endif // QGSCOMPOSERMAPGRID_H
