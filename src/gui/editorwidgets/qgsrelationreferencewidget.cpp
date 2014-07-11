@@ -182,14 +182,14 @@ void QgsRelationReferenceWidget::referenceChanged( int index )
       // Backup old dialog and delete only after creating the new dialog, so we can "hot-swap" the contained QgsFeature
       QgsAttributeDialog* oldDialog = mAttributeDialog;
 
-      if ( mAttributeDialog && mAttributeDialog->dialog() )
+      if ( mAttributeDialog )
       {
-        mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
+        mAttributeEditorLayout->removeWidget( mAttributeDialog );
       }
 
       // TODO: Get a proper QgsDistanceArea thingie
       mAttributeDialog = new QgsAttributeDialog( mReferencedLayer, new QgsFeature( feat ), true, mAttributeEditorFrame, false, mEditorContext );
-      QWidget* attrDialog = mAttributeDialog->dialog();
+      QWidget* attrDialog = mAttributeDialog;
       attrDialog->setWindowFlags( Qt::Widget ); // Embed instead of opening as window
       mAttributeEditorLayout->addWidget( attrDialog );
       attrDialog->show();
