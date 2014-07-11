@@ -21,7 +21,7 @@ use Locale::Country;
 
 my @lang;
 
-# script to generate a html list of the qgis application translatons
+# script to generate a html list of the qgis application translations
 # showing the percentage finished and the names of the translators
 
 # without argument it generates html which is used in the about-dialog of the application
@@ -70,9 +70,9 @@ my $translators= {
 	nb => 'James Stott, Maléne Peterson',
 	nl => 'Richard Duivenvoorde, Raymond Nijssen, Carlo van Rijswijk, Diethard Jansen, Willem Hoffmans',
 	pl => 'Robert Szczepanek, Milena Nowotarska, Borys Jurgiel, Mateusz Łoskot, Tomasz Paul, Andrzej Świąder ',
-	pt_BR => 'Sidney Schaberle Goveia, Narcélio de Sá, Arthur Nanni, Marcelo Soares Souza ',
+	pt_BR => 'Sidney Schaberle Goveia, Arthur Nanni, Marcelo Soares Souza, Narcélio de Sá Pereira Filho, Leônidas Descovi Filho, Felipe Sodré Barros ',
 	pt_PT => 'Giovanni Manghi, Joana Simões, Duarte Carreira, Alexandre Neto, Pedro Pereira, Pedro Palheiro, Nelson Silva, Ricardo Sena, Leandro Infantini, João Gaspar',
-	ro => 'Lonut Losifescu-Enescu, Bogdan Pacurar',
+	ro => 'Sorin Călinică, Lonut Losifescu-Enescu, Bogdan Pacurar',
 	ru => 'Alexander Bruy, Artem Popov',
 	sk => 'Lubos Balazovic, Jana Kormanikova, Ivan Mincik',
 	sl => 'Jože Detečnik, Dejan Gregor, Jaka Kranjc',
