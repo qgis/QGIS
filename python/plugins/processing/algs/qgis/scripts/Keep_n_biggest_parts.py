@@ -31,7 +31,7 @@ for n, feat in enumerate(processing.features(polyLayer)):
 		geomarea.sort(key=itemgetter(1))		
 		if To_keep == 1:
 			featres.setGeometry(geoms[geomrea[-1][0]])
-		else if To_keep > len(geoms):
+		elif To_keep > len(geoms):
 			featres.setGeometry(geom)
 		else:
 			featres.setGeometry(geom) 
