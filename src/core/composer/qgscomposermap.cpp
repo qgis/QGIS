@@ -1794,7 +1794,7 @@ void QgsComposerMap::setGridBlendMode( QPainter::CompositionMode blendMode )
   g->setBlendMode( blendMode );
 }
 
-QPainter::CompositionMode QgsComposerMap::gridBlendMode()
+QPainter::CompositionMode QgsComposerMap::gridBlendMode() const
 {
   const QgsComposerMapGrid* g = constFirstMapGrid();
   return g->blendMode();

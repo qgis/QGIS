@@ -432,7 +432,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QgsLineSymbolV2* gridLineSymbol();
 
     /** Returns the grid's blending mode */
-    QPainter::CompositionMode gridBlendMode();
+    QPainter::CompositionMode gridBlendMode() const;
     /** Sets the grid's blending mode*/
     void setGridBlendMode( QPainter::CompositionMode blendMode );
 
