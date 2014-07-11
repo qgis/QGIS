@@ -36,7 +36,7 @@ my @lang;
 # translator names here as a hash where the key is the lang_country code used for the ts file name
 my $translators= {
 	af => '',
-	ar => '',
+	ar => 'Hosham Munier',
 	bg => 'Захари Савов, Jordan Tzvetkov',
 	bs => 'Almir Karabegovic',
 	ca => 'Xavier Roijals',
