@@ -74,7 +74,12 @@ class ImportIntoPostGIS(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                     'Wrong database connection name: ' + connection)
 
-        table = self.getParameterValue(self.TABLENAME)
+        layerUri = self.getParameterValue(self.INPUT)
+        layer = dataobjects.getObjectFromUri(layerUri)
+        
+        table = self.getParameterValue(self.TABLENAME).strip()
+        if table == '':
+            table = layer.name().lower() 
         table.replace(' ', '')
         providerName = 'postgres'
 
@@ -105,8 +110,6 @@ class ImportIntoPostGIS(GeoAlgorithm):
         else:
             uri.setDataSource(schema, table, geomColumn, '')
 
-        layerUri = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(layerUri)
         (ret, errMsg) = QgsVectorLayerImport.importLayer(
             layer,
             uri.uri(),
@@ -139,8 +142,8 @@ class ImportIntoPostGIS(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.DATABASE, 'Database (connection name)',
                           self.DB_CONNECTIONS))
 
-        self.addParameter(ParameterString(self.SCHEMA, 'Schema (schema name)'))
-        self.addParameter(ParameterString(self.TABLENAME, 'Table to import to'
+        self.addParameter(ParameterString(self.SCHEMA, 'Schema (schema name)', 'public'))
+        self.addParameter(ParameterString(self.TABLENAME, 'Table to import to (leave blank to use layer name)'
                           ))
         self.addParameter(ParameterTableField(self.PRIMARY_KEY, 'Primary key field',
                           self.INPUT, optional=True))
