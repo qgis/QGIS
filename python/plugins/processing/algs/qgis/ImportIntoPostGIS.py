@@ -76,10 +76,10 @@ class ImportIntoPostGIS(GeoAlgorithm):
 
         layerUri = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(layerUri)
-        
+
         table = self.getParameterValue(self.TABLENAME).strip()
         if table == '':
-            table = layer.name().lower() 
+            table = layer.name().lower()
         table.replace(' ', '')
         providerName = 'postgres'
 

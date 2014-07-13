@@ -53,7 +53,7 @@ from processing.tools.system import *
 
 
 class GeoAlgorithm:
-    
+
     _icon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/alg.png')
 
     def __init__(self):

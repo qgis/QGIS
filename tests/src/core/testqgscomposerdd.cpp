@@ -104,17 +104,17 @@ void TestQgsComposerDD::initTestCase()
 
 void TestQgsComposerDD::cleanupTestCase()
 {
-    delete mComposition;
-    delete mVectorLayer;
+  delete mComposition;
+  delete mVectorLayer;
 
-    QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
-    QFile myFile( myReportFile );
-    if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-    {
-      QTextStream myQTextStream( &myFile );
-      myQTextStream << mReport;
-      myFile.close();
-    }
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
 }
 
 void TestQgsComposerDD::init()
@@ -128,11 +128,11 @@ void TestQgsComposerDD::cleanup()
 void TestQgsComposerDD::ddEvaluate()
 {
   //set a data defined property
-  mAtlasMap->setDataDefinedProperty( QgsComposerItem::PositionY, true, true, QString("20+30"),QString() );
+  mAtlasMap->setDataDefinedProperty( QgsComposerItem::PositionY, true, true, QString( "20+30" ), QString() );
   //evaluate property
   mAtlasMap->refreshDataDefinedProperty( QgsComposerItem::PositionY );
   QCOMPARE( mAtlasMap->pos().y(), 50.0 );
-  mAtlasMap->setDataDefinedProperty( QgsComposerItem::PositionY, false, false, QString(),QString() );
+  mAtlasMap->setDataDefinedProperty( QgsComposerItem::PositionY, false, false, QString(), QString() );
 }
 
 QTEST_MAIN( TestQgsComposerDD )

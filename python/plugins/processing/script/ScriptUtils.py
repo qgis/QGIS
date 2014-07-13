@@ -45,9 +45,9 @@ class ScriptUtils:
         mkdir(folder)
 
         return os.path.abspath(folder)
-    
+
     @staticmethod
-    def loadFromFolder(folder):        
+    def loadFromFolder(folder):
         if not os.path.exists(folder):
             return []
         algs = []

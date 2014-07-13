@@ -18,7 +18,7 @@ l = 0
 
 writer = VectorWriter(Results, None, polyPrder.fields(),
 					  QGis.WKBMultiPolygon, polyPrder.crs())
-					  
+
 
 resgeom = QgsGeometry()
 resfeat = QgsFeature()
@@ -26,21 +26,21 @@ resfeat = QgsFeature()
 for feat in processing.features(polyLayer):
 	progress.setPercentage(int(100*l/n))
 	l+=1
-	
+
 	g = loads(feat.geometry().asWkb())
-	
-	if g.geom_type == 'MultiPolygon':		
+
+	if g.geom_type == 'MultiPolygon':
 		resg = [Polygon(p.exterior,
 				[r for r in p.interiors if Polygon(r).area > Max_area]) for p in g]
-					
+
 	else:
 		resg = [Polygon(g.exterior,
 				[r for r in g.interiors if Polygon(r).area > Max_area])]
 
 	resgeom = QgsGeometry().fromWkt(dumps(MultiPolygon(resg)))
-	
+
 	resfeat.setAttributes(feat.attributes())
-	resfeat.setGeometry(resgeom)	
-	writer.addFeature(resfeat)		
+	resfeat.setGeometry(resgeom)
+	writer.addFeature(resfeat)
 
 del writer

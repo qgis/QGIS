@@ -201,10 +201,10 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
                         f.write(code)
                     self.progressBar.setValue(i + 1)
                 except HTTPError:
-                    QMessageBox.critical(iface.mainWindow(), "Connection problem", 
+                    QMessageBox.critical(iface.mainWindow(), "Connection problem",
                                          "Could not download file :" + filename)
                     return
-                
+
 
         toDelete = []
         for i in xrange(self.uptodateItem.childCount()):

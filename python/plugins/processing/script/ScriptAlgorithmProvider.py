@@ -39,7 +39,7 @@ import processing.resources_rc
 
 
 class ScriptAlgorithmProvider(AlgorithmProvider):
-   
+
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.actions.extend([CreateNewScriptAction('Create new script',

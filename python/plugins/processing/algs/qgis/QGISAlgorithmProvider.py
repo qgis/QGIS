@@ -117,7 +117,7 @@ import processing.resources_rc
 class QGISAlgorithmProvider(AlgorithmProvider):
 
     _icon = QIcon(':/processing/images/qgis.png')
-    
+
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.alglist = [SumLines(), PointsInPolygon(),
@@ -170,10 +170,10 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         # RasterLayerHistogram(), MeanAndStdDevPlot(),
                         # BarPlot(), PolarPlot()
                        ]
-                                         
+
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         scripts = ScriptUtils.loadFromFolder(folder)
-        for script in scripts:            
+        for script in scripts:
             script.allowEdit = False
         self.alglist.extend(scripts)
         for alg in self.alglist:

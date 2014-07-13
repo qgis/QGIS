@@ -220,7 +220,7 @@ namespace pal
        * \param bbox[3] problem y max
        * return A set of feature which are in the bbox or null if the feature is in the bbox
        */
-      LinkedList<Feature*> *splitFeature( double bbox[4]);
+      LinkedList<Feature*> *splitFeature( double bbox[4] );
 
 
       /**
