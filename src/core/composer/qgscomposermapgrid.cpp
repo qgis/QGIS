@@ -28,6 +28,8 @@
 #include <QPainter>
 #include <QPen>
 
+#define MAX_GRID_LINES 1000 //maximum number of horizontal or vertical grid lines to draw
+
 QgsComposerMapGrid::QgsComposerMapGrid( const QString& name, QgsComposerMap* map ):
     mComposerMap( map ),
     mName( name ),
@@ -370,13 +372,13 @@ void QgsComposerMapGrid::drawGrid( QPainter* p ) const
 void QgsComposerMapGrid::drawGridNoTransform( QgsRenderContext &context, double dotsPerMM, QList< QPair< double, QLineF > > &horizontalLines,
     QList< QPair< double, QLineF > > &verticalLines ) const
 {
-//get line positions
+  //get line positions
   yGridLines( verticalLines );
   QList< QPair< double, QLineF > >::const_iterator vIt = verticalLines.constBegin();
   xGridLines( horizontalLines );
   QList< QPair< double, QLineF > >::const_iterator hIt = horizontalLines.constBegin();
 
-//simple approach: draw vertical lines first, then horizontal ones
+  //simple approach: draw vertical lines first, then horizontal ones
   if ( mGridStyle == QgsComposerMap::Solid )
   {
     //we need to scale line coordinates to dots, rather than mm, since the painter has already been scaled to dots
@@ -815,16 +817,18 @@ int QgsComposerMapGrid::xGridLines( QList< QPair< double, QLineF > >& lines ) co
   double roundCorrection = mapBoundingRect.top() > 0 ? 1.0 : 0.0;
   double currentLevel = ( int )(( mapBoundingRect.top() - gridOffsetY ) / gridIntervalY + roundCorrection ) * gridIntervalY + gridOffsetY;
 
+  int gridLineCount = 0;
   if ( qgsDoubleNear( mComposerMap->mapRotation(), 0.0 ) || mGridUnit != MapUnit )
   {
     //no rotation. Do it 'the easy way'
 
     double yCanvasCoord;
-    while ( currentLevel <= mapBoundingRect.bottom() )
+    while ( currentLevel <= mapBoundingRect.bottom() && gridLineCount < MAX_GRID_LINES )
     {
       yCanvasCoord = mComposerMap->rect().height() * ( 1 - ( currentLevel - mapBoundingRect.top() ) / mapBoundingRect.height() );
       lines.push_back( qMakePair( currentLevel * annotationScale, QLineF( 0, yCanvasCoord, mComposerMap->rect().width(), yCanvasCoord ) ) );
       currentLevel += gridIntervalY;
+      gridLineCount++;
     }
     return 0;
   }
@@ -838,7 +842,7 @@ int QgsComposerMapGrid::xGridLines( QList< QPair< double, QLineF > >& lines ) co
 
   QList<QPointF> intersectionList; //intersects between border lines and grid lines
 
-  while ( currentLevel <= mapBoundingRect.bottom() )
+  while ( currentLevel <= mapBoundingRect.bottom() && gridLineCount < MAX_GRID_LINES )
   {
     intersectionList.clear();
     QLineF gridLine( mapBoundingRect.left(), currentLevel, mapBoundingRect.right(), currentLevel );
@@ -860,6 +864,7 @@ int QgsComposerMapGrid::xGridLines( QList< QPair< double, QLineF > >& lines ) co
     if ( intersectionList.size() >= 2 )
     {
       lines.push_back( qMakePair( currentLevel, QLineF( mComposerMap->mapToItemCoords( intersectionList.at( 0 ) ), mComposerMap->mapToItemCoords( intersectionList.at( 1 ) ) ) ) );
+      gridLineCount++;
     }
     currentLevel += gridIntervalY;
   }
@@ -896,16 +901,17 @@ int QgsComposerMapGrid::yGridLines( QList< QPair< double, QLineF > >& lines ) co
   double roundCorrection = mapBoundingRect.left() > 0 ? 1.0 : 0.0;
   double currentLevel = ( int )(( mapBoundingRect.left() - gridOffsetX ) / gridIntervalX + roundCorrection ) * gridIntervalX + gridOffsetX;
 
+  int gridLineCount = 0;
   if ( qgsDoubleNear( mComposerMap->mapRotation(), 0.0 ) || mGridUnit != MapUnit )
   {
     //no rotation. Do it 'the easy way'
     double xCanvasCoord;
-
-    while ( currentLevel <= mapBoundingRect.right() )
+    while ( currentLevel <= mapBoundingRect.right() && gridLineCount < MAX_GRID_LINES )
     {
       xCanvasCoord = mComposerMap->rect().width() * ( currentLevel - mapBoundingRect.left() ) / mapBoundingRect.width();
       lines.push_back( qMakePair( currentLevel * annotationScale, QLineF( xCanvasCoord, 0, xCanvasCoord, mComposerMap->rect().height() ) ) );
       currentLevel += gridIntervalX;
+      gridLineCount++;
     }
     return 0;
   }
@@ -919,7 +925,7 @@ int QgsComposerMapGrid::yGridLines( QList< QPair< double, QLineF > >& lines ) co
 
   QList<QPointF> intersectionList; //intersects between border lines and grid lines
 
-  while ( currentLevel <= mapBoundingRect.right() )
+  while ( currentLevel <= mapBoundingRect.right() && gridLineCount < MAX_GRID_LINES )
   {
     intersectionList.clear();
     QLineF gridLine( currentLevel, mapBoundingRect.bottom(), currentLevel, mapBoundingRect.top() );
@@ -941,6 +947,7 @@ int QgsComposerMapGrid::yGridLines( QList< QPair< double, QLineF > >& lines ) co
     if ( intersectionList.size() >= 2 )
     {
       lines.push_back( qMakePair( currentLevel, QLineF( mComposerMap->mapToItemCoords( intersectionList.at( 0 ) ), mComposerMap->mapToItemCoords( intersectionList.at( 1 ) ) ) ) );
+      gridLineCount++;
     }
     currentLevel += gridIntervalX;
   }
