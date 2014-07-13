@@ -970,7 +970,8 @@ int QgsComposerMapGrid::xGridLinesCRSTransform( const QgsRectangle& bbox, const 
   double maxX = bbox.xMaximum();
   double step = ( maxX - minX ) / 20;
 
-  while ( currentLevel >= bbox.yMinimum() )
+  int gridLineCount = 0;
+  while ( currentLevel >= bbox.yMinimum() && gridLineCount < MAX_GRID_LINES )
   {
     QPolygonF gridLine;
     double currentX = minX;
@@ -991,6 +992,7 @@ int QgsComposerMapGrid::xGridLinesCRSTransform( const QgsRectangle& bbox, const 
     if ( gridLine.size() > 0 )
     {
       lines.append( qMakePair( currentLevel, gridLine ) );
+      gridLineCount++;
     }
     currentLevel -= mGridIntervalY;
   }
@@ -1013,7 +1015,8 @@ int QgsComposerMapGrid::yGridLinesCRSTransform( const QgsRectangle& bbox, const 
   double maxY = bbox.yMaximum();
   double step = ( maxY - minY ) / 20;
 
-  while ( currentLevel <= bbox.xMaximum() )
+  int gridLineCount = 0;
+  while ( currentLevel <= bbox.xMaximum() && gridLineCount < MAX_GRID_LINES )
   {
     QPolygonF gridLine;
     double currentY = minY;
@@ -1035,6 +1038,7 @@ int QgsComposerMapGrid::yGridLinesCRSTransform( const QgsRectangle& bbox, const 
     if ( gridLine.size() > 0 )
     {
       lines.append( qMakePair( currentLevel, gridLine ) );
+      gridLineCount++;
     }
     currentLevel += mGridIntervalX;
   }
