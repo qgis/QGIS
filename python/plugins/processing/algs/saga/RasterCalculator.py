@@ -58,22 +58,22 @@ class RasterCalculator(SagaAlgorithm):
         self.name = 'Raster calculator'
         self.cmdname = 'Grid Calculator'
         self.undecoratedGroup = "grid_calculus"
-        self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
-        grids = ParameterRaster(self.GRIDS, 'Input layers', True)
-        grids.hidden = True
-        self.addParameter(grids)
-        self.addParameter(ParameterMultipleInput(self.XGRIDS, 'Input layers',
+        self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup) 
+        self.addParameter(ParameterRaster(self.GRIDS, 'Main input layers'))
+        self.addParameter(ParameterMultipleInput(self.XGRIDS, 'Additional layers',
                           ParameterMultipleInput.TYPE_RASTER, False))
         self.addParameter(ParameterString(self.FORMULA, "Formula"))
         self.addOutput(OutputRaster(self.RESULT, "Result"))
 
 
-    def processAlgorithm(self, progress):
-        xgrids = self.getParameterValue(self.XGRIDS)
-        layers = xgrids.split(';')
-        grid = layers[0]
-        self.setParameterValue(self.GRIDS, grid)
-        xgrids = ";".join(layers[1:])
-        if xgrids == "": xgrids = None
-        self.setParameterValue(self.XGRIDS, xgrids)
-        SagaAlgorithm.processAlgorithm(self, progress)
+    #===========================================================================
+    # def processAlgorithm(self, progress):
+    #     xgrids = self.getParameterValue(self.XGRIDS)
+    #     layers = xgrids.split(';')
+    #     grid = layers[0]
+    #     self.setParameterValue(self.GRIDS, grid)
+    #     xgrids = ";".join(layers[1:])
+    #     if xgrids == "": xgrids = None
+    #     self.setParameterValue(self.XGRIDS, xgrids)
+    #     SagaAlgorithm.processAlgorithm(self, progress)
+    #===========================================================================
