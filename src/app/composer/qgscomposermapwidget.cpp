@@ -1203,6 +1203,11 @@ void QgsComposerMapWidget::on_mGridListWidget_itemChanged( QListWidgetItem* item
   }
 
   grid->setName( item->text() );
+  if ( item->isSelected() )
+  {
+    //update check box title if item is current item
+    mGridCheckBox->setTitle( QString( tr( "Draw \"%1\" grid" ) ).arg( grid->name() ) );
+  }
 }
 
 void QgsComposerMapWidget::setGridItemsEnabled( bool enabled )
@@ -1267,6 +1272,8 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
   }
 
   blockGridItemsSignals( true );
+
+  mGridCheckBox->setTitle( QString( tr( "Draw \"%1\" grid" ) ).arg( grid->name() ) );
   mGridCheckBox->setChecked( grid->gridEnabled() );
   mIntervalXSpinBox->setValue( grid->gridIntervalX() );
   mIntervalYSpinBox->setValue( grid->gridIntervalY() );
@@ -1283,10 +1290,14 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
   if ( gridStyle == QgsComposerMap::Cross )
   {
     mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Cross" ) ) );
+    mCrossWidthSpinBox->setEnabled( true );
+    mCrossWidthLabel->setEnabled( true );
   }
   else
   {
     mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Solid" ) ) );
+    mCrossWidthSpinBox->setEnabled( false );
+    mCrossWidthLabel->setEnabled( false );
   }
 
   //grid frame
@@ -1606,10 +1617,14 @@ void QgsComposerMapWidget::on_mGridTypeComboBox_currentIndexChanged( const QStri
   if ( text == tr( "Cross" ) )
   {
     grid->setGridStyle( QgsComposerMap::Cross );
+    mCrossWidthSpinBox->setEnabled( true );
+    mCrossWidthLabel->setEnabled( true );
   }
   else
   {
     grid->setGridStyle( QgsComposerMap::Solid );
+    mCrossWidthSpinBox->setEnabled( false );
+    mCrossWidthLabel->setEnabled( false );
   }
   mComposerMap->update();
   mComposerMap->endCommand();
