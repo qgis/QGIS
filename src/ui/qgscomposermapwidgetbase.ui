@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-629</y>
+        <y>-387</y>
         <width>439</width>
-        <height>2058</height>
+        <height>1944</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -355,13 +355,13 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QRadioButton" name="mAtlasMarginRadio">
-            <property name="enabled">
-             <bool>false</bool>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="mAtlasPredefinedScaleRadio">
+            <property name="toolTip">
+             <string>Use one of the predefined scales of the project where the atlas feature best fits.</string>
             </property>
             <property name="text">
-             <string>Margin around feature</string>
+             <string>Predefined scale (best fit)</string>
             </property>
            </widget>
           </item>
@@ -375,13 +375,13 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QRadioButton" name="mAtlasPredefinedScaleRadio">
-            <property name="toolTip">
-             <string>Use one of the predefined scales of the project where the atlas feature best fits.</string>
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="mAtlasMarginRadio">
+            <property name="enabled">
+             <bool>false</bool>
             </property>
             <property name="text">
-             <string>Predefined scale (best fit)</string>
+             <string>Margin around feature</string>
             </property>
            </widget>
           </item>
@@ -391,16 +391,19 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mGridGroupBox">
          <property name="title">
-          <string>Grid</string>
+          <string>Grids</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_8">
             <item>
              <widget class="QPushButton" name="mAddGridPushButton">
+              <property name="toolTip">
+               <string>Add a new grid</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -412,6 +415,9 @@
             </item>
             <item>
              <widget class="QPushButton" name="mRemoveGridPushButton">
+              <property name="toolTip">
+               <string>Remove selected grid</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -423,6 +429,9 @@
             </item>
             <item>
              <widget class="QPushButton" name="mGridUpButton">
+              <property name="toolTip">
+               <string>Move selected grid up</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -434,6 +443,9 @@
             </item>
             <item>
              <widget class="QPushButton" name="mGridDownButton">
+              <property name="toolTip">
+               <string>Move selected grid down</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -445,7 +457,7 @@
             </item>
            </layout>
           </item>
-          <item row="1" column="0">
+          <item>
            <widget class="QListWidget" name="mGridListWidget">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -453,9 +465,15 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>90</height>
+             </size>
+            </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item>
            <widget class="QGroupBox" name="mGridCheckBox">
             <property name="title">
              <string>Draw grid</string>
@@ -597,7 +615,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="5" column="0">
+               <item row="4" column="0">
                 <widget class="QLabel" name="mLineStyleLabel_2">
                  <property name="text">
                   <string>Line style</string>
@@ -607,35 +625,45 @@
                  </property>
                 </widget>
                </item>
-               <item row="5" column="1">
+               <item row="4" column="1">
                 <widget class="QPushButton" name="mGridLineStyleButton">
                  <property name="text">
                   <string>change...</string>
                  </property>
                 </widget>
                </item>
-               <item row="8" column="0">
+               <item row="5" column="0">
+                <widget class="QLabel" name="mGridBlendLabel">
+                 <property name="text">
+                  <string>Blend mode</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QgsBlendModeComboBox" name="mGridBlendComboBox"/>
+               </item>
+               <item row="6" column="0">
                 <widget class="QLabel" name="mMapGridCRSLabel">
                  <property name="text">
                   <string>CRS</string>
                  </property>
                 </widget>
                </item>
-               <item row="8" column="1">
+               <item row="6" column="1">
                 <widget class="QPushButton" name="mMapGridCRSButton">
                  <property name="text">
                   <string>change...</string>
                  </property>
                 </widget>
                </item>
-               <item row="9" column="0">
+               <item row="7" column="0">
                 <widget class="QLabel" name="mMapGridUnitLabel">
                  <property name="text">
                   <string>Unit</string>
                  </property>
                 </widget>
                </item>
-               <item row="9" column="1">
+               <item row="7" column="1">
                 <widget class="QComboBox" name="mMapGridUnitComboBox">
                  <item>
                   <property name="text">
@@ -654,16 +682,6 @@
                  </item>
                 </widget>
                </item>
-               <item row="7" column="1">
-                <widget class="QgsBlendModeComboBox" name="mGridBlendComboBox"/>
-               </item>
-               <item row="7" column="0">
-                <widget class="QLabel" name="mGridBlendLabel">
-                 <property name="text">
-                  <string>Blend mode</string>
-                 </property>
-                </widget>
-               </item>
               </layout>
              </item>
              <item>
@@ -672,7 +690,49 @@
                 <string>Grid frame</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_4">
+                <item row="0" column="1" colspan="2">
+                 <widget class="QComboBox" name="mFrameStyleComboBox">
+                  <item>
+                   <property name="text">
+                    <string>No frame</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Zebra</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="2" column="2">
+                 <widget class="QgsColorButton" name="mGridFramePenColorButton">
+                  <property name="text">
+                   <string>Color...</string>
+                  </property>
+                 </widget>
+                </item>
                 <item row="3" column="0">
+                 <widget class="QLabel" name="mFrameFillLabel">
+                  <property name="text">
+                   <string>Frame fill colors</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QgsColorButton" name="mGridFrameFill1ColorButton">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="2">
+                 <widget class="QgsColorButton" name="mGridFrameFill2ColorButton">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
                  <widget class="QLabel" name="mFrameWidthLabel">
                   <property name="text">
                    <string>Frame size</string>
@@ -682,7 +742,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="4" column="1">
+                <item row="2" column="1">
                  <widget class="QDoubleSpinBox" name="mGridFramePenSizeSpinBox">
                   <property name="suffix">
                    <string> mm</string>
@@ -699,55 +759,13 @@
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="1" colspan="2">
+                <item row="1" column="1" colspan="2">
                  <widget class="QDoubleSpinBox" name="mFrameWidthSpinBox"/>
                 </item>
-                <item row="4" column="0">
+                <item row="2" column="0">
                  <widget class="QLabel" name="mFramePenLabel">
                   <property name="text">
                    <string>Frame line thickness</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1" colspan="2">
-                 <widget class="QComboBox" name="mFrameStyleComboBox">
-                  <item>
-                   <property name="text">
-                    <string>No frame</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Zebra</string>
-                   </property>
-                  </item>
-                 </widget>
-                </item>
-                <item row="4" column="2">
-                 <widget class="QgsColorButton" name="mGridFramePenColorButton">
-                  <property name="text">
-                   <string>Color...</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="5" column="0">
-                 <widget class="QLabel" name="mFrameFillLabel">
-                  <property name="text">
-                   <string>Frame fill colors</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="5" column="1">
-                 <widget class="QgsColorButton" name="mGridFrameFill1ColorButton">
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-                <item row="5" column="2">
-                 <widget class="QgsColorButton" name="mGridFrameFill2ColorButton">
-                  <property name="text">
-                   <string/>
                   </property>
                  </widget>
                 </item>
@@ -762,9 +780,6 @@
                <property name="title">
                 <string>Draw coordinates</string>
                </property>
-               <property name="flat">
-                <bool>false</bool>
-               </property>
                <property name="checkable">
                 <bool>true</bool>
                </property>
@@ -777,13 +792,7 @@
                <property name="collapsed" stdset="0">
                 <bool>true</bool>
                </property>
-               <layout class="QFormLayout" name="formLayout_6">
-                <property name="fieldGrowthPolicy">
-                 <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-                </property>
-                <property name="labelAlignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
+               <layout class="QFormLayout" name="formLayout_2">
                 <property name="leftMargin">
                  <number>6</number>
                 </property>
@@ -890,6 +899,20 @@
                   </property>
                  </widget>
                 </item>
+                <item row="10" column="0">
+                 <widget class="QLabel" name="mFontColorLabel">
+                  <property name="text">
+                   <string>Font color</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="10" column="1">
+                 <widget class="QgsColorButton" name="mAnnotationFontColorButton">
+                  <property name="text">
+                   <string>Font color...</string>
+                  </property>
+                 </widget>
+                </item>
                 <item row="11" column="0">
                  <widget class="QLabel" name="mDistanceToFrameLabel">
                   <property name="text">
@@ -921,20 +944,6 @@
                 </item>
                 <item row="12" column="1">
                  <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
-                </item>
-                <item row="10" column="1">
-                 <widget class="QgsColorButton" name="mAnnotationFontColorButton">
-                  <property name="text">
-                   <string>Font color...</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="10" column="0">
-                 <widget class="QLabel" name="mFontColorLabel">
-                  <property name="text">
-                   <string>Font color</string>
-                  </property>
-                 </widget>
                 </item>
                </layout>
               </widget>
