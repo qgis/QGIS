@@ -61,6 +61,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
 
   mGridTypeComboBox->insertItem( 0, tr( "Solid" ) );
   mGridTypeComboBox->insertItem( 1, tr( "Cross" ) );
+  mGridTypeComboBox->insertItem( 2, tr( "Markers" ) );
 
   mAnnotationFormatComboBox->insertItem( 0, tr( "Decimal" ) );
   mAnnotationFormatComboBox->insertItem( 1, tr( "DegreeMinute" ) );
@@ -1006,15 +1007,6 @@ void QgsComposerMapWidget::updateOverviewSymbolMarker()
   }
 }
 
-void QgsComposerMapWidget::updateLineSymbolMarker()
-{
-  if ( mComposerMap )
-  {
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerMap->gridLineSymbol(), mGridLineStyleButton->iconSize() );
-    mGridLineStyleButton->setIcon( icon );
-  }
-}
-
 void QgsComposerMapWidget::refreshMapComboBox()
 {
   if ( !mComposerMap )
@@ -1287,17 +1279,35 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
   mGridFrameFill2ColorButton->setColor( grid->gridFrameFillColor2() );
 
   QgsComposerMap::GridStyle gridStyle = grid->gridStyle();
-  if ( gridStyle == QgsComposerMap::Cross )
+  switch ( gridStyle )
   {
-    mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Cross" ) ) );
-    mCrossWidthSpinBox->setEnabled( true );
-    mCrossWidthLabel->setEnabled( true );
-  }
-  else
-  {
-    mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Solid" ) ) );
-    mCrossWidthSpinBox->setEnabled( false );
-    mCrossWidthLabel->setEnabled( false );
+    case QgsComposerMap::Cross:
+      mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Cross" ) ) );
+      mCrossWidthSpinBox->setVisible( true );
+      mCrossWidthLabel->setVisible( true );
+      mGridLineStyleButton->setVisible( true );
+      mLineStyleLabel->setVisible( true );
+      mGridMarkerStyleButton->setVisible( false );
+      mMarkerStyleLabel->setVisible( false );
+      break;
+    case QgsComposerMap::Markers:
+      mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Markers" ) ) );
+      mCrossWidthSpinBox->setVisible( false );
+      mCrossWidthLabel->setVisible( false );
+      mGridLineStyleButton->setVisible( false );
+      mLineStyleLabel->setVisible( false );
+      mGridMarkerStyleButton->setVisible( true );
+      mMarkerStyleLabel->setVisible( true );
+      break;
+    case QgsComposerMap::Solid:
+      mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Solid" ) ) );
+      mCrossWidthSpinBox->setVisible( false );
+      mCrossWidthLabel->setVisible( false );
+      mGridLineStyleButton->setVisible( true );
+      mLineStyleLabel->setVisible( true );
+      mGridMarkerStyleButton->setVisible( false );
+      mMarkerStyleLabel->setVisible( false );
+      break;
   }
 
   //grid frame
@@ -1315,7 +1325,9 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
   }
 
   //line style
-  updateLineSymbolMarker( grid );
+  updateGridLineSymbolMarker( grid );
+  //marker style
+  updateGridMarkerSymbolMarker( grid );
 
   mGridBlendComboBox->setBlendMode( grid->blendMode() );
 
@@ -1361,13 +1373,23 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
   blockGridItemsSignals( false );
 }
 
-void QgsComposerMapWidget::updateLineSymbolMarker( const QgsComposerMapGrid* grid )
+void QgsComposerMapWidget::updateGridLineSymbolMarker( const QgsComposerMapGrid* grid )
 {
   if ( grid )
   {
     QgsLineSymbolV2* nonConstSymbol = const_cast<QgsLineSymbolV2*>( grid->gridLineSymbol() ); //bad
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( nonConstSymbol, mGridLineStyleButton->iconSize() );
     mGridLineStyleButton->setIcon( icon );
+  }
+}
+
+void QgsComposerMapWidget::updateGridMarkerSymbolMarker( const QgsComposerMapGrid *grid )
+{
+  if ( grid )
+  {
+    QgsMarkerSymbolV2* nonConstSymbol = const_cast<QgsMarkerSymbolV2*>( grid->gridMarkerSymbol() ); //bad
+    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( nonConstSymbol, mGridMarkerStyleButton->iconSize() );
+    mGridMarkerStyleButton->setIcon( icon );
   }
 }
 
@@ -1386,7 +1408,32 @@ void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
   {
     mComposerMap->beginCommand( tr( "Grid line style changed" ) );
     grid->setGridLineSymbol( newSymbol );
-    updateLineSymbolMarker();
+    updateGridLineSymbolMarker( grid );
+    mComposerMap->endCommand();
+    mComposerMap->update();
+  }
+  else
+  {
+    delete newSymbol;
+  }
+}
+
+void QgsComposerMapWidget::on_mGridMarkerStyleButton_clicked()
+{
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( !grid )
+  {
+    return;
+  }
+
+  QgsMarkerSymbolV2* newSymbol = dynamic_cast<QgsMarkerSymbolV2*>( grid->gridMarkerSymbol()->clone() );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
+
+  if ( d.exec() == QDialog::Accepted )
+  {
+    mComposerMap->beginCommand( tr( "Grid markers style changed" ) );
+    grid->setGridMarkerSymbol( newSymbol );
+    updateGridMarkerSymbolMarker( grid );
     mComposerMap->endCommand();
     mComposerMap->update();
   }
@@ -1617,14 +1664,32 @@ void QgsComposerMapWidget::on_mGridTypeComboBox_currentIndexChanged( const QStri
   if ( text == tr( "Cross" ) )
   {
     grid->setGridStyle( QgsComposerMap::Cross );
-    mCrossWidthSpinBox->setEnabled( true );
-    mCrossWidthLabel->setEnabled( true );
+    mCrossWidthSpinBox->setVisible( true );
+    mCrossWidthLabel->setVisible( true );
+    mGridLineStyleButton->setVisible( true );
+    mLineStyleLabel->setVisible( true );
+    mGridMarkerStyleButton->setVisible( false );
+    mMarkerStyleLabel->setVisible( false );
+  }
+  else if ( text == tr( "Markers" ) )
+  {
+    grid->setGridStyle( QgsComposerMap::Markers );
+    mCrossWidthSpinBox->setVisible( false );
+    mCrossWidthLabel->setVisible( false );
+    mGridLineStyleButton->setVisible( false );
+    mLineStyleLabel->setVisible( false );
+    mGridMarkerStyleButton->setVisible( true );
+    mMarkerStyleLabel->setVisible( true );
   }
   else
   {
     grid->setGridStyle( QgsComposerMap::Solid );
-    mCrossWidthSpinBox->setEnabled( false );
-    mCrossWidthLabel->setEnabled( false );
+    mCrossWidthSpinBox->setVisible( false );
+    mCrossWidthLabel->setVisible( false );
+    mGridLineStyleButton->setVisible( true );
+    mLineStyleLabel->setVisible( true );
+    mGridMarkerStyleButton->setVisible( false );
+    mMarkerStyleLabel->setVisible( false );
   }
   mComposerMap->update();
   mComposerMap->endCommand();

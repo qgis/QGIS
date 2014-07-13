@@ -61,6 +61,7 @@ QgsComposerMapGrid::QgsComposerMapGrid( const QString& name, QgsComposerMap* map
     mGridFrameFillColor2( Qt::black ),
     mCrossLength( 3 ),
     mGridLineSymbol( 0 ),
+    mGridMarkerSymbol( 0 ),
     mGridUnit( MapUnit ),
     mBlendMode( QPainter::CompositionMode_SourceOver )
 {
@@ -73,6 +74,7 @@ QgsComposerMapGrid::QgsComposerMapGrid( const QString& name, QgsComposerMap* map
   }
 
   createDefaultGridLineSymbol();
+  createDefaultGridMarkerSymbol();
 }
 
 QgsComposerMapGrid::QgsComposerMapGrid(): mComposerMap( 0 )
@@ -82,6 +84,7 @@ QgsComposerMapGrid::QgsComposerMapGrid(): mComposerMap( 0 )
 QgsComposerMapGrid::~QgsComposerMapGrid()
 {
   delete mGridLineSymbol;
+  delete mGridMarkerSymbol;
 }
 
 void QgsComposerMapGrid::createDefaultGridLineSymbol()
@@ -92,6 +95,16 @@ void QgsComposerMapGrid::createDefaultGridLineSymbol()
   properties.insert( "width", "0.3" );
   properties.insert( "capstyle", "flat" );
   mGridLineSymbol = QgsLineSymbolV2::createSimple( properties );
+}
+
+void QgsComposerMapGrid::createDefaultGridMarkerSymbol()
+{
+  delete mGridMarkerSymbol;
+  QgsStringMap properties;
+  properties.insert( "name", "circle" );
+  properties.insert( "size", "2.0" );
+  properties.insert( "color", "0,0,0,255" );
+  mGridMarkerSymbol = QgsMarkerSymbolV2::createSimple( properties );
 }
 
 void QgsComposerMapGrid::setComposerMap( QgsComposerMap* map )
@@ -150,7 +163,17 @@ bool QgsComposerMapGrid::writeXML( QDomElement& elem, QDomDocument& doc ) const
   mapGridElem.setAttribute( "offsetX", qgsDoubleToString( mGridOffsetX ) );
   mapGridElem.setAttribute( "offsetY", qgsDoubleToString( mGridOffsetY ) );
   mapGridElem.setAttribute( "crossLength",  qgsDoubleToString( mCrossLength ) );
+
+  QDomElement lineStyleElem = doc.createElement( "lineStyle" );
   QDomElement gridLineStyleElem = QgsSymbolLayerV2Utils::saveSymbol( QString(), mGridLineSymbol, doc );
+  lineStyleElem.appendChild( gridLineStyleElem );
+  mapGridElem.appendChild( lineStyleElem );
+
+  QDomElement markerStyleElem = doc.createElement( "markerStyle" );
+  QDomElement gridMarkerStyleElem = QgsSymbolLayerV2Utils::saveSymbol( QString(), mGridMarkerSymbol, doc );
+  markerStyleElem.appendChild( gridMarkerStyleElem );
+  mapGridElem.appendChild( markerStyleElem );
+
   mapGridElem.setAttribute( "gridFrameStyle", mGridFrameStyle );
   mapGridElem.setAttribute( "gridFrameWidth", qgsDoubleToString( mGridFrameWidth ) );
   mapGridElem.setAttribute( "gridFramePenThickness", qgsDoubleToString( mGridFramePenThickness ) );
@@ -161,7 +184,6 @@ bool QgsComposerMapGrid::writeXML( QDomElement& elem, QDomDocument& doc ) const
   {
     mCRS.writeXML( mapGridElem, doc );
   }
-  mapGridElem.appendChild( gridLineStyleElem );
 
   mapGridElem.setAttribute( "annotationFormat", mGridAnnotationFormat );
   mapGridElem.setAttribute( "showAnnotation", mShowGridAnnotation );
@@ -209,9 +231,18 @@ bool QgsComposerMapGrid::readXML( const QDomElement& itemElem, const QDomDocumen
   mGridFramePenColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "gridFramePenColor", "0,0,0" ) );
   mGridFrameFillColor1 = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "frameFillColor1", "255,255,255,255" ) );
   mGridFrameFillColor2 = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "frameFillColor2", "0,0,0,255" ) );
-  QDomElement gridSymbolElem = itemElem.firstChildElement( "symbol" );
-  delete mGridLineSymbol;
-  if ( gridSymbolElem.isNull( ) )
+
+  QDomElement lineStyleElem = itemElem.firstChildElement( "lineStyle" );
+  if ( !lineStyleElem.isNull() )
+  {
+    QDomElement symbolElem = lineStyleElem.firstChildElement( "symbol" );
+    if ( !symbolElem.isNull( ) )
+    {
+      delete mGridLineSymbol;
+      mGridLineSymbol = dynamic_cast<QgsLineSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( symbolElem ) );
+    }
+  }
+  else
   {
     //old project file, read penWidth /penColorRed, penColorGreen, penColorBlue
     mGridLineSymbol = QgsLineSymbolV2::createSimple( QgsStringMap() );
@@ -220,10 +251,18 @@ bool QgsComposerMapGrid::readXML( const QDomElement& itemElem, const QDomDocumen
                                        itemElem.attribute( "penColorGreen", "0" ).toInt(),
                                        itemElem.attribute( "penColorBlue", "0" ).toInt() ) );
   }
-  else
+
+  QDomElement markerStyleElem = itemElem.firstChildElement( "markerStyle" );
+  if ( !markerStyleElem.isNull() )
   {
-    mGridLineSymbol = dynamic_cast<QgsLineSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( gridSymbolElem ) );
+    QDomElement symbolElem = markerStyleElem.firstChildElement( "symbol" );
+    if ( !symbolElem.isNull( ) )
+    {
+      delete mGridMarkerSymbol;
+      mGridMarkerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( symbolElem ) );
+    }
   }
+
 
   QDomElement crsElem = itemElem.firstChildElement( "spatialrefsys" );
   if ( !crsElem.isNull() )
@@ -396,14 +435,17 @@ void QgsComposerMapGrid::drawGridNoTransform( QgsRenderContext &context, double 
       drawGridLine( line, context );
     }
   }
-  else //cross
+  else //cross or markers
   {
     QPointF intersectionPoint, crossEnd1, crossEnd2;
     for ( ; vIt != verticalLines.constEnd(); ++vIt )
     {
       //start mark
-      crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( vIt->second.p1(), vIt->second.p2(), mCrossLength );
-      drawGridLine( QLineF( vIt->second.p1() * dotsPerMM, crossEnd1 * dotsPerMM ), context );
+      if ( mGridStyle == QgsComposerMap::Cross )
+      {
+        crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( vIt->second.p1(), vIt->second.p2(), mCrossLength );
+        drawGridLine( QLineF( vIt->second.p1() * dotsPerMM, crossEnd1 * dotsPerMM ), context );
+      }
 
       //test for intersection with every horizontal line
       hIt = horizontalLines.constBegin();
@@ -411,18 +453,34 @@ void QgsComposerMapGrid::drawGridNoTransform( QgsRenderContext &context, double 
       {
         if ( hIt->second.intersect( vIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
         {
-          //apply a treshold to avoid calculate point if the two points are very close together (can lead to artifacts)
-          crossEnd1 = (( intersectionPoint - vIt->second.p1() ).manhattanLength() > 0.01 ) ?
-                      QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, vIt->second.p1(), mCrossLength ) : intersectionPoint;
-          crossEnd2 = (( intersectionPoint - vIt->second.p2() ).manhattanLength() > 0.01 ) ?
-                      QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, vIt->second.p2(), mCrossLength ) : intersectionPoint;
-          //draw line using coordinates scaled to dots
-          drawGridLine( QLineF( crossEnd1  * dotsPerMM, crossEnd2  * dotsPerMM ), context );
+          if ( mGridStyle == QgsComposerMap::Cross )
+          {
+            //apply a treshold to avoid calculate point if the two points are very close together (can lead to artifacts)
+            crossEnd1 = (( intersectionPoint - vIt->second.p1() ).manhattanLength() > 0.01 ) ?
+                        QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, vIt->second.p1(), mCrossLength ) : intersectionPoint;
+            crossEnd2 = (( intersectionPoint - vIt->second.p2() ).manhattanLength() > 0.01 ) ?
+                        QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, vIt->second.p2(), mCrossLength ) : intersectionPoint;
+            //draw line using coordinates scaled to dots
+            drawGridLine( QLineF( crossEnd1  * dotsPerMM, crossEnd2  * dotsPerMM ), context );
+          }
+          else if ( mGridStyle == QgsComposerMap::Markers )
+          {
+            drawGridMarker( intersectionPoint * dotsPerMM , context );
+          }
         }
       }
       //end mark
-      QPointF crossEnd2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( vIt->second.p2(), vIt->second.p1(), mCrossLength );
-      drawGridLine( QLineF( vIt->second.p2() * dotsPerMM, crossEnd2 * dotsPerMM ), context );
+      if ( mGridStyle == QgsComposerMap::Cross )
+      {
+        QPointF crossEnd2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( vIt->second.p2(), vIt->second.p1(), mCrossLength );
+        drawGridLine( QLineF( vIt->second.p2() * dotsPerMM, crossEnd2 * dotsPerMM ), context );
+      }
+    }
+    if ( mGridStyle == QgsComposerMap::Markers )
+    {
+      //markers mode, so we have no need to process horizontal lines (we've already
+      //drawn markers on the intersections between horizontal and vertical lines)
+      return;
     }
 
     hIt = horizontalLines.constBegin();
@@ -491,6 +549,18 @@ void QgsComposerMapGrid::drawGridLine( const QPolygonF& line, QgsRenderContext& 
   mGridLineSymbol->startRender( context );
   mGridLineSymbol->renderPolyline( line, 0, context );
   mGridLineSymbol->stopRender( context );
+}
+
+void QgsComposerMapGrid::drawGridMarker( const QPointF& point, QgsRenderContext& context ) const
+{
+  if ( !mComposerMap || !mComposerMap->composition() || !mGridMarkerSymbol )
+  {
+    return;
+  }
+
+  mGridMarkerSymbol->startRender( context );
+  mGridMarkerSymbol->renderPoint( point, 0, context );
+  mGridMarkerSymbol->stopRender( context );
 }
 
 void QgsComposerMapGrid::drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, QgsComposerMap::Border border ) const
@@ -1116,6 +1186,12 @@ void QgsComposerMapGrid::setGridLineSymbol( QgsLineSymbolV2* symbol )
 {
   delete mGridLineSymbol;
   mGridLineSymbol = symbol;
+}
+
+void QgsComposerMapGrid::setGridMarkerSymbol( QgsMarkerSymbolV2 *symbol )
+{
+  delete mGridMarkerSymbol;
+  mGridMarkerSymbol = symbol;
 }
 
 double QgsComposerMapGrid::maxExtension() const

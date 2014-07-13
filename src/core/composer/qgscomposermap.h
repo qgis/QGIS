@@ -65,7 +65,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     enum GridStyle
     {
       Solid = 0, //solid lines
-      Cross //only draw line crossings
+      Cross, //only draw line crossings
+      Markers
     };
 
     enum GridAnnotationPosition

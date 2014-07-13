@@ -75,8 +75,8 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void setGridItemsEnabled( bool enabled );
     void setGridItems( const QgsComposerMapGrid* grid );
     void blockGridItemsSignals( bool block );
-    void updateLineSymbolMarker( const QgsComposerMapGrid* grid );
     void on_mGridLineStyleButton_clicked();
+    void on_mGridMarkerStyleButton_clicked();
     void on_mIntervalXSpinBox_editingFinished();
     void on_mIntervalYSpinBox_editingFinished();
     void on_mOffsetXSpinBox_valueChanged( double value );
@@ -156,7 +156,8 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void initAnnotationDirectionBox( QComboBox* c, QgsComposerMap::GridAnnotationDirection dir );
 
     void updateOverviewSymbolMarker();
-    void updateLineSymbolMarker();
+    void updateGridLineSymbolMarker( const QgsComposerMapGrid* grid );
+    void updateGridMarkerSymbolMarker( const QgsComposerMapGrid* grid );
 
     /**Updates the map combo box with the current composer map ids*/
     void refreshMapComboBox();

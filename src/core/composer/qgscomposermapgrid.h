@@ -24,6 +24,7 @@
 
 class QgsCoordinateTransform;
 class QgsLineSymbolV2;
+class QgsMarkerSymbolV2;
 class QDomDocument;
 class QDomElement;
 class QPainter;
@@ -191,6 +192,10 @@ class CORE_EXPORT QgsComposerMapGrid
     const QgsLineSymbolV2* gridLineSymbol() const { return mGridLineSymbol; }
     QgsLineSymbolV2* gridLineSymbol() { return mGridLineSymbol; }
 
+    void setGridMarkerSymbol( QgsMarkerSymbolV2* symbol );
+    const QgsMarkerSymbolV2* gridMarkerSymbol() const { return mGridMarkerSymbol; }
+    QgsMarkerSymbolV2* gridMarkerSymbol() { return mGridMarkerSymbol; }
+
     void setCrs( const QgsCoordinateReferenceSystem& crs ) { mCRS = crs; }
     QgsCoordinateReferenceSystem crs() const { return mCRS; }
 
@@ -260,6 +265,7 @@ class CORE_EXPORT QgsComposerMapGrid
     double mCrossLength;
 
     QgsLineSymbolV2* mGridLineSymbol;
+    QgsMarkerSymbolV2* mGridMarkerSymbol;
 
     QgsCoordinateReferenceSystem mCRS;
 
@@ -308,6 +314,8 @@ class CORE_EXPORT QgsComposerMapGrid
 
     void drawGridNoTransform( QgsRenderContext &context, double dotsPerMM, QList<QPair<double, QLineF> > &horizontalLines, QList<QPair<double, QLineF> > &verticalLines ) const;
     void createDefaultGridLineSymbol();
+    void createDefaultGridMarkerSymbol();
+    void drawGridMarker( const QPointF &point, QgsRenderContext &context ) const;
 };
 
 #endif // QGSCOMPOSERMAPGRID_H
