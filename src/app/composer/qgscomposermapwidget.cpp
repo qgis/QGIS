@@ -912,7 +912,8 @@ void QgsComposerMapWidget::insertAnnotationDirectionEntries( QComboBox* c )
 
 void QgsComposerMapWidget::handleChangedAnnotationPosition( QgsComposerMap::Border border, const QString& text )
 {
-  if ( !mComposerMap )
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( !grid )
   {
     return;
   }
@@ -920,15 +921,15 @@ void QgsComposerMapWidget::handleChangedAnnotationPosition( QgsComposerMap::Bord
   mComposerMap->beginCommand( tr( "Annotation position changed" ) );
   if ( text == tr( "Inside frame" ) )
   {
-    mComposerMap->setGridAnnotationPosition( QgsComposerMap::InsideMapFrame, border );
+    grid->setGridAnnotationPosition( QgsComposerMap::InsideMapFrame, border );
   }
   else if ( text == tr( "Disabled" ) )
   {
-    mComposerMap->setGridAnnotationPosition( QgsComposerMap::Disabled, border );
+    grid->setGridAnnotationPosition( QgsComposerMap::Disabled, border );
   }
   else //Outside frame
   {
-    mComposerMap->setGridAnnotationPosition( QgsComposerMap::OutsideMapFrame, border );
+    grid->setGridAnnotationPosition( QgsComposerMap::OutsideMapFrame, border );
   }
 
   mComposerMap->updateBoundingRect();
@@ -938,7 +939,8 @@ void QgsComposerMapWidget::handleChangedAnnotationPosition( QgsComposerMap::Bord
 
 void QgsComposerMapWidget::handleChangedAnnotationDirection( QgsComposerMap::Border border, const QString& text )
 {
-  if ( !mComposerMap )
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( !grid )
   {
     return;
   }
@@ -946,11 +948,11 @@ void QgsComposerMapWidget::handleChangedAnnotationDirection( QgsComposerMap::Bor
   mComposerMap->beginCommand( tr( "Changed annotation direction" ) );
   if ( text == tr( "Horizontal" ) )
   {
-    mComposerMap->setGridAnnotationDirection( QgsComposerMap::Horizontal, border );
+    grid->setGridAnnotationDirection( QgsComposerMap::Horizontal, border );
   }
   else //Vertical
   {
-    mComposerMap->setGridAnnotationDirection( QgsComposerMap::Vertical, border );
+    grid->setGridAnnotationDirection( QgsComposerMap::Vertical, border );
   }
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
