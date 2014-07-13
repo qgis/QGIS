@@ -42,7 +42,6 @@
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 
 /**
- * \mainpage Pal Libray
  *
  * \section intro_sec Introduction
  *
@@ -89,7 +88,7 @@ namespace pal
 
   /** The way to arrange labels against spatial entities
    *
-   * \image html arrangement.png "Arrangement modes" width=7cm
+   * image html arrangement.png "Arrangement modes" width=7cm
    * */
   enum _arrangement
   {
@@ -119,7 +118,7 @@ namespace pal
    *  A pal object will contains layers and global information such as which search method
    *  will be used, the map resolution (dpi) ....
    *
-   *  \author Maxence Laurent <maxence _dot_ laurent _at_ heig-vd _dot_ ch>
+   *  \author Maxence Laurent (maxence _dot_ laurent _at_ heig-vd _dot_ ch)
    */
   class CORE_EXPORT Pal
   {

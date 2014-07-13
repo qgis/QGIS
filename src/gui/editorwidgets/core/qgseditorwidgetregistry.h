@@ -51,6 +51,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * @param config    A configuration which should be used for the widget creation
      * @param editor    An editor widget which will be used instead of an autocreated widget
      * @param parent    The parent which will be used for the created wrapper and the created widget
+     * @param context   The editor context
      *
      * @return A new widget wrapper
      */
@@ -115,13 +116,13 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     /**
      * Read all old-style editor widget configuration from a map node. Will update
      * a project file to the new version on next save
-     * @param mapLayer   The layer in question
+     * @param vl         The layer in question
      * @param layerElem  The layer element from the project file
      * @param cfg        Writable config element
      *
      * @deprecated
      */
-    Q_DECL_DEPRECATED const QString readLegacyConfig( QgsVectorLayer* vl, const QDomElement& editTypeElement , QgsEditorWidgetConfig& cfg );
+    Q_DECL_DEPRECATED const QString readLegacyConfig( QgsVectorLayer* vl, const QDomElement& layerElem, QgsEditorWidgetConfig& cfg );
 
     /**
      * Write all the widget config to a layer XML node

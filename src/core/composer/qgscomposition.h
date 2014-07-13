@@ -473,8 +473,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Print on a preconfigured printer
      * @param printer QPrinter destination
-     * @painter QPainter source
-     * @startNewPage set to true to begin the print on a new page
+     * @param painter QPainter source
+     * @param startNewPage set to true to begin the print on a new page
      */
     void doPrint( QPrinter& printer, QPainter& painter, bool startNewPage = false );
 
@@ -527,7 +527,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @param active true if data defined property is active, false if it is disabled
      * @param useExpression true if the expression should be used
      * @param expression expression for data defined property
-     * @field field name if the data defined property should take its value from a field
+     * @param field field name if the data defined property should take its value from a field
      * @note this method was added in version 2.5
     */
     void setDataDefinedProperty( QgsComposerItem::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );

@@ -39,7 +39,7 @@ class QgsLayerTreeNode;
  * in advanced cases where the grouping in layer tree should be independent from the actual
  * order in the canvas.
  *
- * @added in 2.4
+ * @note added in 2.4
  */
 class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
 {
