@@ -28,10 +28,10 @@ __revision__ = '$Format:%H$'
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.outputs.OutputVector import OutputVector
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterNumber
+from processing.core.outputs import OutputVector
 import Buffer as buff
 from processing.tools import dataobjects
 

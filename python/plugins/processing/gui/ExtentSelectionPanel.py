@@ -30,9 +30,9 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from processing.gui.RectangleMapTool import RectangleMapTool
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterMultipleInput
 from processing.tools import dataobjects
 from qgis.utils import iface
 

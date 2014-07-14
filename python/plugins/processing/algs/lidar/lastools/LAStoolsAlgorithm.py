@@ -33,14 +33,14 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 
 from LAStoolsUtils import LAStoolsUtils
 
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.outputs.OutputFile import OutputFile
-from processing.outputs.OutputRaster import OutputRaster
-from processing.outputs.OutputVector import OutputVector
+from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterSelection
+from processing.core.outputs import OutputFile
+from processing.core.outputs import OutputRaster
+from processing.core.outputs import OutputVector
 
 class LAStoolsAlgorithm(GeoAlgorithm):
 

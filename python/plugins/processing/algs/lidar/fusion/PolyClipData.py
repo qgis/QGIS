@@ -28,11 +28,11 @@ __revision__ = '$Format:%H$'
 import os
 import subprocess
 from PyQt4 import QtGui
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterString import ParameterString
-from processing.outputs.OutputFile import OutputFile
+from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterString
+from processing.core.outputs import OutputFile
 from FusionAlgorithm import FusionAlgorithm
 from FusionUtils import FusionUtils
 

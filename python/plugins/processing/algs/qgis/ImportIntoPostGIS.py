@@ -32,11 +32,11 @@ from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterTableField import ParameterTableField
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterTableField
 from processing.tools import dataobjects
 from processing.algs.qgis import postgis_utils
 

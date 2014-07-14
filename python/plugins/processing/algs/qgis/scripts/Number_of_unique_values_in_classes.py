@@ -6,13 +6,12 @@
 
 from qgis.core import *
 from PyQt4.QtCore import *
-from processing.core.VectorWriter import VectorWriter
 
 layer = processing.getObject(input)
 provider = layer.dataProvider()
 fields = provider.fields()
 fields.append(QgsField('UNIQ_COUNT', QVariant.Int))
-writer = VectorWriter(output, None, fields, provider.geometryType(),
+writer = processing.VectorWriter(output, None, fields, provider.geometryType(),
                       layer.crs())
 
 class_field_index = layer.fieldNameIndex(class_field)

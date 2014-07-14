@@ -29,10 +29,10 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterCrs import ParameterCrs
-from processing.outputs.OutputVector import OutputVector
+from processing.core.parameters import ParameterTable
+from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterCrs
+from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 

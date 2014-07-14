@@ -26,9 +26,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterVector import ParameterVector
-from processing.outputs.OutputNumber import OutputNumber
-from processing.outputs.OutputExtent import OutputExtent
+from processing.core.parameters import ParameterVector
+from processing.core.outputs import OutputNumber
+from processing.core.outputs import OutputExtent
 from processing.tools import dataobjects
 
 

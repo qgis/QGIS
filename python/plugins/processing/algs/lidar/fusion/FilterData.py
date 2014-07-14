@@ -27,9 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 import subprocess
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.outputs.OutputFile import OutputFile
+from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterNumber
+from processing.core.outputs import OutputFile
 from FusionAlgorithm import FusionAlgorithm
 from FusionUtils import FusionUtils
 

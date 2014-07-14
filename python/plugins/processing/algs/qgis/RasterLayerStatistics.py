@@ -29,9 +29,9 @@ import math
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.outputs.OutputNumber import OutputNumber
-from processing.outputs.OutputHTML import OutputHTML
+from processing.core.parameters import ParameterRaster
+from processing.core.outputs import OutputNumber
+from processing.core.outputs import OutputHTML
 from processing.tools import dataobjects
 from processing.tools import raster
 

@@ -31,7 +31,7 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
-from processing.parameters.ParameterSelection import ParameterSelection
+from processing.core.parameters import ParameterSelection
 
 class lasgrid(LAStoolsAlgorithm):
 

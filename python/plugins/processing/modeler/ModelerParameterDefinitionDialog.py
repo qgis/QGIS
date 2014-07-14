@@ -26,17 +26,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4 import QtCore, QtGui
-from processing.parameters.Parameter import Parameter
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterFile import ParameterFile
+from processing.core.parameters import Parameter
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterTable
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterFile
 
 
 class ModelerParameterDefinitionDialog(QtGui.QDialog):

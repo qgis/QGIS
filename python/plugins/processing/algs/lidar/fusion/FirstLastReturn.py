@@ -26,9 +26,9 @@ __copyright__ = "(C) 2014 by Niccolo' Marchi"
 __revision__ = '$Format:%H$'
 
 import os
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.outputs.OutputFile import OutputFile
+from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterBoolean
+from processing.core.outputs import OutputFile
 from FusionAlgorithm import FusionAlgorithm
 from FusionUtils import FusionUtils
 

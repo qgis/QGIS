@@ -27,11 +27,11 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from qgis.core import *
-from processing.core.RasterWriter import RasterWriter
+from processing.tools.raster import RasterWriter
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.outputs.OutputRaster import OutputRaster
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterNumber
+from processing.core.outputs import OutputRaster
 from processing.tools import dataobjects
 
 

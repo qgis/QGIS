@@ -4,8 +4,6 @@
 ##Results=output vector
 
 from qgis.core import *
-from PyQt4.QtCore import *
-from processing.core.VectorWriter import VectorWriter
 from operator import itemgetter
 
 To_keep = int(To_keep)
@@ -17,7 +15,7 @@ if To_keep < 1:
 polyLayer = processing.getObject(Polygons)
 polyPrder = polyLayer.dataProvider()
 count = polyLayer.featureCount()
-writer = VectorWriter(Results, None, polyPrder.fields(),
+writer = processing.VectorWriter(Results, None, polyPrder.fields(),
 					  QGis.WKBMultiPolygon, polyPrder.crs())
 
 

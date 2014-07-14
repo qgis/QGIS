@@ -34,10 +34,10 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from processing.core.Processing import Processing
-from processing.outputs.OutputNumber import OutputNumber
-from processing.outputs.OutputString import OutputString
-from processing.outputs.OutputRaster import OutputRaster
-from processing.outputs.OutputVector import OutputVector
+from processing.core.outputs import OutputNumber
+from processing.core.outputs import OutputString
+from processing.core.outputs import OutputRaster
+from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 

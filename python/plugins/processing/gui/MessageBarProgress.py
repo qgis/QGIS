@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    SilentProgress.py
+    MessageBarProgress.py
     ---------------------
     Date                 : April 2013
     Copyright            : (C) 2013 by Victor Olaya

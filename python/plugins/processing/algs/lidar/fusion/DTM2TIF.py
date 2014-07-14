@@ -26,8 +26,8 @@ __copyright__ = "(C) 2014 by Niccolo' Marchi"
 __revision__ = '$Format:%H$'
 
 import os
-from processing.parameters.ParameterFile import ParameterFile
-from processing.outputs.OutputRaster import OutputRaster
+from processing.core.parameters import ParameterFile
+from processing.core.outputs import OutputRaster
 from FusionAlgorithm import FusionAlgorithm
 from FusionUtils import FusionUtils
 

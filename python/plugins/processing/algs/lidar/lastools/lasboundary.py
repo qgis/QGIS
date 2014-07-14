@@ -32,8 +32,8 @@ from PyQt4 import QtGui
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterNumber import ParameterNumber
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterNumber
 
 class lasboundary(LAStoolsAlgorithm):
 

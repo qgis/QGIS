@@ -31,8 +31,8 @@ from osgeo import gdal, osr
 from PyQt4.QtGui import *
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterBoolean import ParameterBoolean
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterBoolean
 
 
 class ExtractProjection(GdalAlgorithm):

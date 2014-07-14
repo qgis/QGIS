@@ -30,10 +30,10 @@ import matplotlib.pylab as lab
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.outputs.OutputHTML import OutputHTML
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterNumber
+from processing.core.outputs import OutputHTML
 from processing.tools import *
 
 

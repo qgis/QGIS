@@ -28,9 +28,9 @@ __revision__ = '$Format:%H$'
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.tools.system import *
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.outputs.OutputRaster import OutputRaster
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterSelection
+from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
