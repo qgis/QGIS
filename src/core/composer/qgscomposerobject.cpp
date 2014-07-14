@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgscomposerbaseitem.h
+                            qgscomposerobject.cpp
                              -------------------
     begin                : July 2014
     copyright            : (C) 2014 by Nyall Dawson,Radim Blazek

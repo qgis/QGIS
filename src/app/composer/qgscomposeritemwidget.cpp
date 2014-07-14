@@ -28,7 +28,7 @@
 
 //QgsComposerItemBaseWidget
 
-QgsComposerItemBaseWidget::QgsComposerItemBaseWidget( QWidget* parent, QgsComposerObject *baseItem ): QWidget( parent ), mBaseItem( baseItem )
+QgsComposerItemBaseWidget::QgsComposerItemBaseWidget( QWidget* parent, QgsComposerObject *composerObject ): QWidget( parent ), mComposerObject( composerObject )
 {
 
 }
@@ -54,18 +54,18 @@ void QgsComposerItemBaseWidget::updateDataDefinedProperty()
 
   //set the data defined property and refresh the item
   setDataDefinedProperty( ddButton, property );
-  mBaseItem->refreshDataDefinedProperty( property );
+  mComposerObject->refreshDataDefinedProperty( property );
 }
 
 void QgsComposerItemBaseWidget::setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty p )
 {
-  if ( !mBaseItem )
+  if ( !mComposerObject )
   {
     return;
   }
 
   const QMap< QString, QString >& map = ddBtn->definedProperty();
-  mBaseItem->setDataDefinedProperty( p, map.value( "active" ).toInt(), map.value( "useexpr" ).toInt(), map.value( "expression" ), map.value( "field" ) );
+  mComposerObject->setDataDefinedProperty( p, map.value( "active" ).toInt(), map.value( "useexpr" ).toInt(), map.value( "expression" ), map.value( "field" ) );
 }
 
 QgsComposerObject::DataDefinedProperty QgsComposerItemBaseWidget::ddPropertyForWidget( QgsDataDefinedButton *widget )
@@ -78,12 +78,12 @@ QgsComposerObject::DataDefinedProperty QgsComposerItemBaseWidget::ddPropertyForW
 
 QgsAtlasComposition* QgsComposerItemBaseWidget::atlasComposition() const
 {
-  if ( !mBaseItem )
+  if ( !mComposerObject )
   {
     return 0;
   }
 
-  QgsComposition* composition = mBaseItem->composition();
+  QgsComposition* composition = mComposerObject->composition();
 
   if ( !composition )
   {

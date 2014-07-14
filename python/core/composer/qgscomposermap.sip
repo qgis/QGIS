@@ -348,7 +348,7 @@ class QgsComposerMap : QgsComposerItem
      * or the current evaluated rotation (which may be affected by data driven rotation
      * settings).
     */
-   // double mapRotation( QgsComposerBaseItem::PropertyValueType valueType = QgsComposerBaseItem::EvaluatedValue ) const;
+    double mapRotation( QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
 
     void updateItem();
 

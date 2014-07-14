@@ -32,7 +32,7 @@ class QgsComposerItemBaseWidget: public QWidget
 {
     Q_OBJECT
   public:
-    QgsComposerItemBaseWidget( QWidget* parent, QgsComposerObject* baseItem );
+    QgsComposerItemBaseWidget( QWidget* parent, QgsComposerObject* composerObject );
     ~QgsComposerItemBaseWidget();
 
   protected slots:
@@ -52,7 +52,7 @@ class QgsComposerItemBaseWidget: public QWidget
     /**Returns the atlas for the composition*/
     QgsAtlasComposition *atlasComposition() const;
 
-    QgsComposerObject* mBaseItem;
+    QgsComposerObject* mComposerObject;
 };
 
 /**A class to enter generic properties for composer items (e.g. background, outline, frame).
