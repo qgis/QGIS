@@ -43,7 +43,7 @@ QgsMapRenderer::QgsMapRenderer()
 {
   mScale = 1.0;
   mScaleCalculator = new QgsScaleCalculator;
-  //mDistArea = new QgsDistanceArea;
+  mDistArea = new QgsDistanceArea;
 
   mDrawing = false;
   mOverview = false;
@@ -64,7 +64,7 @@ QgsMapRenderer::QgsMapRenderer()
 QgsMapRenderer::~QgsMapRenderer()
 {
   delete mScaleCalculator;
-  //delete mDistArea;
+  delete mDistArea;
   delete mDestCRS;
   delete mLabelingEngine;
 }
@@ -640,7 +640,7 @@ void QgsMapRenderer::setProjectionsEnabled( bool enabled )
   {
     mProjectionsEnabled = enabled;
     QgsDebugMsg( "Adjusting DistArea projection on/off" );
-    //mDistArea->setEllipsoidalMode( enabled );
+    mDistArea->setEllipsoidalMode( enabled );
     updateFullExtent();
     mLastExtent.setMinimal();
 
@@ -675,7 +675,7 @@ void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs,
     }
 
     QgsDebugMsg( "Setting DistArea CRS to " + QString::number( crs.srsid() ) );
-    //mDistArea->setSourceCrs( crs.srsid() );
+    mDistArea->setSourceCrs( crs.srsid() );
     *mDestCRS = crs;
     updateFullExtent();
 

@@ -408,7 +408,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     QgsRectangle mFullExtent;
 
     //! tool for measuring
-    //QgsDistanceArea* mDistArea;
+    QgsDistanceArea* mDistArea;
 
     //!Encapsulates context of rendering
     QgsRenderContext mRenderContext;
