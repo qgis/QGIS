@@ -313,10 +313,6 @@ class QgsGeometry
     /** Returns a buffer region around this geometry having the given width and with a specified number
         of segments used to approximate curves */
     QgsGeometry* buffer( double distance, int segments ) /Factory/;
-    
-    /** Returns a buffer region around this geometry having the given width and with a specified number
-        of segments used to approximate curves, side = 0 for left side and side = 1 for right side */
-    QgsGeometry* buffer( double distance, int segments, int side ) /Factory/;
 
     /** Returns a buffer region around the geometry, with additional style options.
      * @param segments    For round joins, number of segments to approximate quarter-circle
