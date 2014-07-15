@@ -86,7 +86,7 @@ void TestQgsComposerUtils::drawArrowHead()
   testPainter.begin( &testImage );
   QgsComposerUtils::drawArrowHead( &testPainter, 100, 100, 45, 30 );
   testPainter.end();
-  QVERIFY( renderCheck( "composerutils_drawarrowhead", testImage, 0 ) );
+  QVERIFY( renderCheck( "composerutils_drawarrowhead", testImage, 40 ) );
 }
 
 void TestQgsComposerUtils::angle()
@@ -129,19 +129,61 @@ void TestQgsComposerUtils::rotate()
 
 void TestQgsComposerUtils::largestRotatedRect()
 {
-  //simple case
-  QRectF before = QRectF( 0, 0, 2, 1 );
+  QRectF wideRect = QRectF( 0, 0, 2, 1 );
+  QRectF highRect = QRectF( 0, 0, 1, 2 );
   QRectF bounds = QRectF( 0, 0, 4, 2 );
-  QRectF result = QgsComposerUtils::largestRotatedRectWithinBounds( before, bounds, 0 );
 
-  //TODO - check this function. it's failing
-  //QCOMPARE( result, QRectF( 0, 0, 4, 2 ));
+  //simple cases
+  //0 rotation
+  QRectF result = QgsComposerUtils::largestRotatedRectWithinBounds( wideRect, bounds, 0 );
+  QCOMPARE( result, QRectF( 0, 0, 4, 2 ) );
+  result = QgsComposerUtils::largestRotatedRectWithinBounds( highRect, bounds, 0 );
+  QCOMPARE( result, QRectF( 1.5, 0, 1, 2 ) );
+  // 90 rotation
+  result = QgsComposerUtils::largestRotatedRectWithinBounds( wideRect, bounds, 90 );
+  QCOMPARE( result, QRectF( 1.5, 0, 2, 1 ) );
+  result = QgsComposerUtils::largestRotatedRectWithinBounds( highRect, bounds, 90 );
+  QCOMPARE( result, QRectF( 0, 0, 2, 4 ) );
+  // 180 rotation
+  result = QgsComposerUtils::largestRotatedRectWithinBounds( wideRect, bounds, 180 );
+  QCOMPARE( result, QRectF( 0, 0, 4, 2 ) );
+  result = QgsComposerUtils::largestRotatedRectWithinBounds( highRect, bounds, 0 );
+  QCOMPARE( result, QRectF( 1.5, 0, 1, 2 ) );
+  // 270 rotation
+  result = QgsComposerUtils::largestRotatedRectWithinBounds( wideRect, bounds, 270 );
+  QCOMPARE( result, QRectF( 1.5, 0, 2, 1 ) );
+  result = QgsComposerUtils::largestRotatedRectWithinBounds( highRect, bounds, 270 );
+  QCOMPARE( result, QRectF( 0, 0, 2, 4 ) );
+  //360 rotation
+  result = QgsComposerUtils::largestRotatedRectWithinBounds( wideRect, bounds, 360 );
+  QCOMPARE( result, QRectF( 0, 0, 4, 2 ) );
+  result = QgsComposerUtils::largestRotatedRectWithinBounds( highRect, bounds, 360 );
+  QCOMPARE( result, QRectF( 1.5, 0, 1, 2 ) );
 
-  //more complex case
-  before = QRectF( 0, 0, 2, 1 );
-  bounds = QRectF( 0, 0, 4, 2 );
-  result = QgsComposerUtils::largestRotatedRectWithinBounds( before, bounds, 90 );
-  //QCOMPARE( result, QRectF( 0, 0, 1, 2 ));
+  //full test, run through a circle in 10 degree increments
+  for ( double rotation = 10; rotation < 360; rotation += 10 )
+  {
+    result = QgsComposerUtils::largestRotatedRectWithinBounds( wideRect, bounds, rotation );
+    QTransform t;
+    t.rotate( rotation );
+    QRectF rotatedRectBounds = t.mapRect( result );
+    //one of the rotated rects dimensions must equal the bounding rectangles dimensions (ie, it has been constrained by one dimension)
+    //and the other dimension must be less than or equal to bounds dimension
+    QVERIFY(( qAbs( rotatedRectBounds.width() - bounds.width() ) < 0.0001 && ( rotatedRectBounds.height() <= bounds.height() ) )
+            || ( qAbs( rotatedRectBounds.height() - bounds.height() ) < 0.0001 && ( rotatedRectBounds.width() <= bounds.width() ) ) );
+  }
+  //and again for the high rectangle
+  for ( double rotation = 10; rotation < 360; rotation += 10 )
+  {
+    result = QgsComposerUtils::largestRotatedRectWithinBounds( highRect, bounds, rotation );
+    QTransform t;
+    t.rotate( rotation );
+    QRectF rotatedRectBounds = t.mapRect( result );
+    //one of the rotated rects dimensions must equal the bounding rectangles dimensions (ie, it has been constrained by one dimension)
+    //and the other dimension must be less than or equal to bounds dimension
+    QVERIFY(( qAbs( rotatedRectBounds.width() - bounds.width() ) < 0.0001 && ( rotatedRectBounds.height() <= bounds.height() ) )
+            || ( qAbs( rotatedRectBounds.height() - bounds.height() ) < 0.0001 && ( rotatedRectBounds.width() <= bounds.width() ) ) );
+  }
 }
 
 bool TestQgsComposerUtils::renderCheck( QString testName, QImage &image, int mismatchCount )
