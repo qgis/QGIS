@@ -42,16 +42,7 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
+       <property name="margin">
         <number>0</number>
        </property>
        <item>
@@ -188,16 +179,7 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
+       <property name="margin">
         <number>0</number>
        </property>
        <item>
@@ -213,16 +195,7 @@
          </property>
          <widget class="QWidget" name="mProjOpts_01">
           <layout class="QVBoxLayout" name="verticalLayout_6">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -466,49 +439,28 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="3">
-                   <widget class="QLineEdit" name="leSemiMajor"/>
-                  </item>
-                  <item row="3" column="5">
-                   <widget class="QLineEdit" name="leSemiMinor"/>
-                  </item>
-                  <item row="3" column="4">
-                   <widget class="QLabel" name="label_42">
-                    <property name="text">
-                     <string>Semi-minor</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="label_4">
-                    <property name="text">
-                     <string>Computation Method</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="2">
+                  <item row="2" column="1">
                    <widget class="QLabel" name="label_41">
                     <property name="text">
                      <string>Semi-major</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="1" colspan="5">
-                   <widget class="QComboBox" name="cmbEllipsoid"/>
+                  <item row="2" column="2">
+                   <widget class="QLineEdit" name="leSemiMajor"/>
                   </item>
-                  <item row="3" column="1">
-                   <widget class="QComboBox" name="cmbCompMethod">
-                    <item>
-                     <property name="text">
-                      <string>Grass</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>Authalic</string>
-                     </property>
-                    </item>
+                  <item row="2" column="4">
+                   <widget class="QLineEdit" name="leSemiMinor"/>
+                  </item>
+                  <item row="2" column="3">
+                   <widget class="QLabel" name="label_42">
+                    <property name="text">
+                     <string>Semi-minor</string>
+                    </property>
                    </widget>
+                  </item>
+                  <item row="1" column="1" colspan="4">
+                   <widget class="QComboBox" name="cmbEllipsoid"/>
                   </item>
                  </layout>
                 </widget>
@@ -657,16 +609,7 @@
                      <enum>QFrame::Raised</enum>
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_4">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -839,16 +782,7 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_02">
           <layout class="QVBoxLayout" name="verticalLayout_5">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -864,8 +798,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>326</width>
-                <height>46</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -898,16 +832,7 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_03">
           <layout class="QVBoxLayout" name="verticalLayout_9">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -923,8 +848,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>134</width>
-                <height>100</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -979,16 +904,7 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_04">
           <layout class="QVBoxLayout" name="verticalLayout_11">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -1004,8 +920,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>379</width>
-                <height>304</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1356,16 +1272,7 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_05">
           <layout class="QVBoxLayout" name="verticalLayout_14">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -1381,8 +1288,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>543</width>
-                <height>1576</height>
+                <width>667</width>
+                <height>1570</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2080,16 +1987,7 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_06">
           <layout class="QVBoxLayout" name="verticalLayout_15">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -2105,8 +2003,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>168</width>
-                <height>117</height>
+                <width>166</width>
+                <height>114</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2149,16 +2047,7 @@
          </widget>
          <widget class="QWidget" name="mTabRelations">
           <layout class="QGridLayout" name="gridLayout_16">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
           </layout>
@@ -2184,16 +2073,7 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
+      <property name="margin">
        <number>0</number>
       </property>
       <item>

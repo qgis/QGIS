@@ -633,15 +633,6 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", mEllipsoidList[ mEllipsoidIndex ].acronym );
   }
 
-  if ( mEllipsoidList[ mEllipsoidIndex ].acronym == GEO_NONE )
-  {
-    QgsProject::instance()->writeEntry( "Measure", "/Method", QString( "Planimetric" ) );
-  }
-  else
-  {
-    QgsProject::instance()->writeEntry( "Measure", "/Method", cmbCompMethod->currentText() );
-  }
-
   //set the color for selections
   QColor myColor = pbnSelectionColor->color();
   QgsProject::instance()->writeEntry( "Gui", "/SelectionColorRedPart", myColor.red() );
@@ -1610,18 +1601,12 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
     {
       leSemiMajor->setText( QLocale::system().toString( myMajor, 'f', 3 ) );
       leSemiMinor->setText( QLocale::system().toString( myMinor, 'f', 3 ) );
-      cmbCompMethod->setEnabled( true );
-    }
-    else
-    {
-      cmbCompMethod->setEnabled( false );
     }
   }
   else
   {
     cmbEllipsoid->setEnabled( false );
     cmbEllipsoid->setToolTip( tr( "Can only use ellipsoidal calculations when CRS transformation is enabled" ) );
-    cmbCompMethod->setEnabled( false );
   }
   cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
 }
