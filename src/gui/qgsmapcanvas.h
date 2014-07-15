@@ -402,7 +402,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void writeProject( QDomDocument & );
 
     //! ask user about datum transformation
-    void getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId );
+    void getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId, bool bOverload=false );
 
   private slots:
     //! called when current maptool is destroyed

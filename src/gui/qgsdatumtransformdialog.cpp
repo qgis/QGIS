@@ -163,10 +163,23 @@ QgsDatumTransformDialog::~QgsDatumTransformDialog()
   QApplication::restoreOverrideCursor();
 }
 
-void QgsDatumTransformDialog::setDatumTransformInfo( const QString& srcCRSauthId, const QString& destCRSauthId )
+void QgsDatumTransformDialog::setDatumTransformInfo( const QString& srcCRSauthId, const QString& destCRSauthId, int srcTransform, int destTransform)
 {
   mSrcCRSauthId = srcCRSauthId;
   mDestCRSauthId = destCRSauthId;
+  if ( srcTransform != -1 || destTransform != -1 )
+  {
+    QTreeWidgetItemIterator it(mDatumTransformTreeWidget);
+    while (*it) {
+      if ( (*it)->data(0, Qt::UserRole).toInt() == srcTransform && (*it)->data(1, Qt::UserRole).toInt() == destTransform )
+      {
+        mDatumTransformTreeWidget->setCurrentItem( (*it) );
+        break;
+      }
+      ++it;
+    }
+  }
+
   updateTitle();
 }
 

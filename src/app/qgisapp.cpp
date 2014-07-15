@@ -6962,6 +6962,20 @@ void QgisApp::setProjectCRSFromLayer()
   mMapCanvas->refresh();
 }
 
+void QgisApp::setLayerDatumTransform()
+{
+  if ( !mLayerTreeView )
+  {
+    return;
+  }
+
+  QgsMapLayer* currentLayer = mLayerTreeView->currentLayer();
+  if ( !currentLayer )
+    return;
+
+  mMapCanvas->getDatumTransformInfo( currentLayer, currentLayer->crs().authid(), mMapCanvas->mapSettings().destinationCrs().authid(), true);
+
+}
 
 void QgisApp::legendLayerZoomNative()
 {

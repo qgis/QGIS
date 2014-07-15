@@ -28,7 +28,7 @@ class GUI_EXPORT QgsDatumTransformDialog: public QDialog, private Ui::QgsDatumTr
     ~QgsDatumTransformDialog();
 
     //! @note added in 2.4
-    void setDatumTransformInfo( const QString& srcCRSauthId, const QString& destCRSauthId );
+    void setDatumTransformInfo( const QString& srcCRSauthId, const QString& destCRSauthId, int srcTransform = -1, int destTransform = -1 );
 
     QList< int > selectedDatumTransform();
 
