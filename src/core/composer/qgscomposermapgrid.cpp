@@ -1388,8 +1388,6 @@ QgsComposerMap::GridAnnotationDirection QgsComposerMapGrid::gridAnnotationDirect
       return mBottomGridAnnotationDirection;
       break;
   }
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
 }
 
 int QgsComposerMapGrid::crsGridParams( QgsRectangle& crsRect, QgsCoordinateTransform& inverseTransform ) const

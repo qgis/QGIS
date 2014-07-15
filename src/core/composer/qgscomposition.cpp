@@ -2805,20 +2805,15 @@ void QgsComposition::refreshPageSize()
     if ( ok )
     {
       double heightD, widthD;
-      switch ( orientation )
+      if ( orientation == QgsComposition::Portrait )
       {
-        case QgsComposition::Portrait:
-        {
-          heightD = qMax( pageHeight, pageWidth );
-          widthD = qMin( pageHeight, pageWidth );
-          break;
-        }
-        case QgsComposition::Landscape:
-        {
-          heightD = qMin( pageHeight, pageWidth );
-          widthD = qMax( pageHeight, pageWidth );
-          break;
-        }
+        heightD = qMax( pageHeight, pageWidth );
+        widthD = qMin( pageHeight, pageWidth );
+      }
+      else
+      {
+        heightD = qMin( pageHeight, pageWidth );
+        widthD = qMax( pageHeight, pageWidth );
       }
       pageWidth = widthD;
       pageHeight = heightD;

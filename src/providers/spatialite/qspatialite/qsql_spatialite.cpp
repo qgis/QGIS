@@ -303,7 +303,6 @@ bool QSpatiaLiteResultPrivate::fetchNext(QSqlCachedResult::ValueCache &values, i
         q->setAt(QSql::AfterLastRow);
         return false;
     }
-    return false;
 }
 
 QSpatiaLiteResult::QSpatiaLiteResult(const QSpatiaLiteDriver* db)

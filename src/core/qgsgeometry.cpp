@@ -6280,7 +6280,6 @@ QgsGeometry* QgsGeometry::convertToPoint( bool destMultipart )
             multiPoint << *lineIt;
         return fromMultiPoint( multiPoint );
       }
-      return 0;
     }
 
     default:
