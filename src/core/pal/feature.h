@@ -248,12 +248,14 @@ namespace pal
        */
       Layer * getLayer();
 
+#if 0
       /**
        * \brief save the feature into file
        * Called by Pal::save()
        * \param file the file to write
        */
-      //void save(std::ofstream *file);
+      void save(std::ofstream *file);
+#endif
 
       /**
        * \brief generic method to generate candidates

@@ -111,7 +111,7 @@ class CORE_EXPORT QgsComposerObject: public QObject
      * @param active true if data defined property is active, false if it is disabled
      * @param useExpression true if the expression should be used
      * @param expression expression for data defined property
-     * @field field name if the data defined property should take its value from a field
+     * @param field field name if the data defined property should take its value from a field
      * @note this method was added in version 2.5
     */
     void setDataDefinedProperty( const DataDefinedProperty property, const bool active, const bool useExpression, const QString &expression, const QString &field );
