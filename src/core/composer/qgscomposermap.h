@@ -65,7 +65,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     enum GridStyle
     {
       Solid = 0, //solid lines
-      Cross //only draw line crossings
+      Cross, //only draw line crossings
+      Markers
     };
 
     enum GridAnnotationPosition
@@ -390,7 +391,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * or the current evaluated rotation (which may be affected by data driven rotation
      * settings).
     */
-    double mapRotation( PropertyValueType valueType = EvaluatedValue ) const;
+    double mapRotation( QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
 
     void updateItem();
 
@@ -432,7 +433,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QgsLineSymbolV2* gridLineSymbol();
 
     /** Returns the grid's blending mode */
-    QPainter::CompositionMode gridBlendMode();
+    QPainter::CompositionMode gridBlendMode() const;
     /** Sets the grid's blending mode*/
     void setGridBlendMode( QPainter::CompositionMode blendMode );
 
@@ -572,7 +573,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     void overviewExtentChanged();
 
-    virtual void refreshDataDefinedProperty( DataDefinedProperty property = AllProperties );
+    virtual void refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 
   private:
 
@@ -625,7 +626,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     int mOverviewFrameMapId;
     /**Drawing style for overview farme*/
     QgsFillSymbolV2* mOverviewFrameMapSymbol;
-    QgsLineSymbolV2* mGridLineSymbol;
+
     /**Blend mode for overview*/
     QPainter::CompositionMode mOverviewBlendMode;
     bool mOverviewInverted;
@@ -698,7 +699,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QPointF composerMapPosForItem( const QGraphicsItem* item ) const;
     void drawOverviewMapExtent( QPainter* p );
     void createDefaultOverviewFrameSymbol();
-    void createDefaultGridLineSymbol();
     //void initGridAnnotationFormatFromProject();
 
     enum PartType

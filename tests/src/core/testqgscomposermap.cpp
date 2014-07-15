@@ -38,6 +38,7 @@ class TestQgsComposerMap: public QObject
     void render(); //test if rendering of the composition with composr map is correct
     void grid(); //test if grid and grid annotation works
     void crossGrid(); //test if grid "cross" mode works
+    void markerGrid(); //test if grid "marker" mode works
     void overviewMap(); //test if overview map frame works
     void overviewMapRotated(); //test if overview map frame works with rotated overview
     void overviewMapRotated2(); //test if overview map frame works with rotated map
@@ -156,6 +157,24 @@ void TestQgsComposerMap::crossGrid()
   mComposerMap->setGridPenColor( QColor( 0, 255, 0 ) );
   mComposerMap->setGridBlendMode( QPainter::CompositionMode_SourceOver );
   QgsCompositionChecker checker( "composermap_crossgrid", mComposition );
+
+  bool testResult = checker.testComposition( mReport, 0, 100 );
+  mComposerMap->setGridStyle( QgsComposerMap::Solid );
+  mComposerMap->setGridEnabled( false );
+  mComposerMap->setShowGridAnnotation( false );
+  QVERIFY( testResult );
+}
+
+void TestQgsComposerMap::markerGrid()
+{
+  mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+  mComposerMap->setGridEnabled( true );
+  mComposerMap->setGridStyle( QgsComposerMap::Markers );
+  mComposerMap->setGridIntervalX( 2000 );
+  mComposerMap->setGridIntervalY( 2000 );
+  mComposerMap->setShowGridAnnotation( false );
+  mComposerMap->setGridBlendMode( QPainter::CompositionMode_SourceOver );
+  QgsCompositionChecker checker( "composermap_markergrid", mComposition );
 
   bool testResult = checker.testComposition( mReport, 0, 100 );
   mComposerMap->setGridStyle( QgsComposerMap::Solid );

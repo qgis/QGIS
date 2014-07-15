@@ -167,7 +167,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       if ( !nodeL || !nodeL->childrenCheckable() )
         return QVariant();
 
-      if( !nodeL->isVisible() )
+      if ( !nodeL->isVisible() )
         return Qt::PartiallyChecked;
 
       QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( nodeL->layer() );

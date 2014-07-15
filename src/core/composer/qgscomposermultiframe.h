@@ -16,6 +16,7 @@
 #ifndef QGSCOMPOSERMULTIFRAME_H
 #define QGSCOMPOSERMULTIFRAME_H
 
+#include "qgscomposerobject.h"
 #include <QObject>
 #include <QSizeF>
 #include <QPointF>
@@ -29,7 +30,7 @@ class QRectF;
 class QPainter;
 
 /**Abstract base class for composer entries with the ability to distribute the content to several frames (items)*/
-class CORE_EXPORT QgsComposerMultiFrame: public QObject
+class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
 {
     Q_OBJECT
   public:
@@ -103,7 +104,6 @@ class CORE_EXPORT QgsComposerMultiFrame: public QObject
     void recalculateFrameSizes();
 
   protected:
-    QgsComposition* mComposition;
     QList<QgsComposerFrame*> mFrameItems;
     ResizeMode mResizeMode;
     /**True: creates QgsMultiFrameCommands on internal changes (e.g. changing frames )*/

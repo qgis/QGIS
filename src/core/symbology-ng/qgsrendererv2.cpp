@@ -524,7 +524,7 @@ bool QgsFeatureRendererV2::legendSymbolItemChecked( int index )
   return false;
 }
 
-void QgsFeatureRendererV2::checkLegendSymbolItem(int index, bool state )
+void QgsFeatureRendererV2::checkLegendSymbolItem( int index, bool state )
 {
   Q_UNUSED( index );
   Q_UNUSED( state );

@@ -17,6 +17,22 @@
 use strict;
 use warnings;
 
+my @dists;
+open I, "debian/rules";
+while(<I>) {
+	if( /ifneq \(\$\(DISTRIBUTION\),\$\(findstring \$\(DISTRIBUTION\),"(.*)"\)\)/ ) {
+		for my $d (split / /, $1) {
+			next if $d =~ /oracle/;
+			push @dists, $d;
+		}
+		push @dists, "sid";
+		last;
+	}
+}
+close I;
+
+die "no dists" unless @dists;
+
 open I, "doc/linux.t2t";
 open O, ">doc/linux.t2t.new";
 while(<I>) {
@@ -26,10 +42,11 @@ while(<I>) {
 
 print O "|| Distribution | install command for packages |\n";
 
-for my $c (<debian/control.*>) {
-	my ($dist) = $c =~ /^.*\/control\.(.*)$/;
+for my $dist (@dists) {
+	system("git checkout debian/control" )==0 or die "git checkout failed: $!";
+	system("make -f debian/rules DISTRIBUTION=$dist cleantemplates templates" )==0 or die "make failed: $!";
 
-	open F, $c;
+	open F, "debian/control";
 	while(<F>) {
 		chop;
 		last if /^Build-Depends:/i;
@@ -43,6 +60,8 @@ for my $c (<debian/control.*>) {
 		last if /^\S/;
 		$deps .= $_;
 	}
+	close F;
+	system("git checkout debian/control" )==0 or die "git checkout failed: $!";
 
 	my @deps;
 	foreach my $p (split /,/, $deps) {

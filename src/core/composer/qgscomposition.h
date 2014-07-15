@@ -32,6 +32,7 @@
 #include "qgscomposeritemcommand.h"
 #include "qgsatlascomposition.h"
 #include "qgspaperitem.h"
+#include "qgscomposerobject.h"
 #include "qgscomposeritem.h"
 
 class QgisApp;
@@ -473,8 +474,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Print on a preconfigured printer
      * @param printer QPrinter destination
-     * @painter QPainter source
-     * @startNewPage set to true to begin the print on a new page
+     * @param painter QPainter source
+     * @param startNewPage set to true to begin the print on a new page
      */
     void doPrint( QPrinter& printer, QPainter& painter, bool startNewPage = false );
 
@@ -520,17 +521,17 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @param property data defined property to return
      * @note this method was added in version 2.5
     */
-    QgsDataDefined* dataDefinedProperty( QgsComposerItem::DataDefinedProperty property );
+    QgsDataDefined* dataDefinedProperty( QgsComposerObject::DataDefinedProperty property );
 
     /**Sets parameters for a data defined property for the composition
      * @param property data defined property to set
      * @param active true if data defined property is active, false if it is disabled
      * @param useExpression true if the expression should be used
      * @param expression expression for data defined property
-     * @field field name if the data defined property should take its value from a field
+     * @param field field name if the data defined property should take its value from a field
      * @note this method was added in version 2.5
     */
-    void setDataDefinedProperty( QgsComposerItem::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
+    void setDataDefinedProperty( QgsComposerObject::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
 
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
@@ -559,7 +560,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * refreshed.
      * @note this method was added in version 2.5
     */
-    void refreshDataDefinedProperty( QgsComposerItem::DataDefinedProperty property = QgsComposerItem::AllProperties );
+    void refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 
   protected:
     void init();
@@ -633,9 +634,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     bool mPreventCursorChange;
 
     /**Map of data defined properties for the composition to string name to use when exporting composition to xml*/
-    QMap< QgsComposerItem::DataDefinedProperty, QString > mDataDefinedNames;
+    QMap< QgsComposerObject::DataDefinedProperty, QString > mDataDefinedNames;
     /**Map of current data defined properties to QgsDataDefined for the composition*/
-    QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* > mDataDefinedProperties;
+    QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > mDataDefinedProperties;
 
     QgsComposition(); //default constructor is forbidden
 
@@ -686,8 +687,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @param dataDefinedProperties map of data defined properties to QgsDataDefined
      * @note this method was added in version 2.5
     */
-    bool dataDefinedEvaluate( QgsComposerItem::DataDefinedProperty property, QVariant &expressionValue,
-                              QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
+    bool dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue,
+                              QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
 
     /**Reads all data defined properties from xml
      * @param itemElem dom element containing data defined properties
@@ -696,8 +697,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @note this method was added in version 2.5
     */
     void readDataDefinedPropertyMap( const QDomElement &itemElem,
-                                     QMap< QgsComposerItem::DataDefinedProperty, QString >* dataDefinedNames,
-                                     QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties
+                                     QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
+                                     QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties
                                    ) const;
 
     /**Reads a single data defined property from xml DOM element
@@ -706,8 +707,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @param dataDefinedProperties map of data defined properties to QgsDataDefined in which to store properties from xml
      * @note this method was added in version 2.5
     */
-    void readDataDefinedProperty( QgsComposerItem::DataDefinedProperty property, const QDomElement &ddElem,
-                                  QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties ) const;
+    void readDataDefinedProperty( QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem,
+                                  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties ) const;
 
     /**Writes data defined properties to xml
      * @param itemElem DOM element in which to store data defined properties
@@ -717,8 +718,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @note this method was added in version 2.5
     */
     void writeDataDefinedPropertyMap( QDomElement &itemElem, QDomDocument &doc,
-                                      const QMap< QgsComposerItem::DataDefinedProperty, QString >* dataDefinedNames,
-                                      const QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties ) const;
+                                      const QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
+                                      const QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties ) const;
 
     /**Evaluates a data defined property and returns the calculated value.
      * @param property data defined property to evaluate
@@ -727,8 +728,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @param dataDefinedProperties map of data defined properties to QgsDataDefined
      * @note this method was added in version 2.5
     */
-    QVariant dataDefinedValue( QgsComposerItem::DataDefinedProperty property, const QgsFeature *feature, const QgsFields *fields,
-                               QMap<QgsComposerItem::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties );
+    QVariant dataDefinedValue( QgsComposerObject::DataDefinedProperty property, const QgsFeature *feature, const QgsFields *fields,
+                               QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties );
 
 
     /**Prepares the expression for a data defined property, using the current atlas layer if set.
@@ -736,7 +737,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @param dataDefinedProperties map of data defined properties to QgsDataDefined
      * @note this method was added in version 2.5
     */
-    void prepareDataDefinedExpression( QgsDataDefined *dd, QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties ) const;
+    void prepareDataDefinedExpression( QgsDataDefined *dd, QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties ) const;
 
   private slots:
     /*Prepares all data defined expressions*/
@@ -778,7 +779,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Is emitted when the composition has an updated status bar message for the composer window*/
     void statusMsgChanged( QString message );
 
-    friend class QgsComposerItem; //for accessing dataDefinedEvaluate, readDataDefinedPropertyMap and writeDataDefinedPropertyMap
+    friend class QgsComposerObject; //for accessing dataDefinedEvaluate, readDataDefinedPropertyMap and writeDataDefinedPropertyMap
 };
 
 template<class T> void QgsComposition::composerItems( QList<T*>& itemList )

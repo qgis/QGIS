@@ -31,6 +31,7 @@
 #include "qgscomposeritem.h"
 #include "qgscomposerframe.h"
 #include "qgsdatadefined.h"
+#include "qgscomposerutils.h"
 
 #include <limits>
 #include "qgsapplication.h"
@@ -48,9 +49,8 @@
 #endif
 
 QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue )
-    : QObject( 0 )
+    : QgsComposerObject( composition )
     , QGraphicsRectItem( 0 )
-    , mComposition( composition )
     , mBoundingResizeRectangle( 0 )
     , mHAlignSnapItem( 0 )
     , mVAlignSnapItem( 0 )
@@ -75,9 +75,8 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
 }
 
 QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue )
-    : QObject( 0 )
+    : QgsComposerObject( composition )
     , QGraphicsRectItem( 0, 0, width, height, 0 )
-    , mComposition( composition )
     , mBoundingResizeRectangle( 0 )
     , mHAlignSnapItem( 0 )
     , mVAlignSnapItem( 0 )
@@ -122,14 +121,14 @@ void QgsComposerItem::init( bool manageZValue )
   setGraphicsEffect( mEffect );
 
   // data defined strings
-  mDataDefinedNames.insert( PageNumber, QString( "dataDefinedPageNumber" ) );
-  mDataDefinedNames.insert( PositionX, QString( "dataDefinedPositionX" ) );
-  mDataDefinedNames.insert( PositionY, QString( "dataDefinedPositionY" ) );
-  mDataDefinedNames.insert( ItemWidth, QString( "dataDefinedWidth" ) );
-  mDataDefinedNames.insert( ItemHeight, QString( "dataDefinedHeight" ) );
-  mDataDefinedNames.insert( ItemRotation, QString( "dataDefinedRotation" ) );
-  mDataDefinedNames.insert( Transparency, QString( "dataDefinedTransparency" ) );
-  mDataDefinedNames.insert( BlendMode, QString( "dataDefinedBlendMode" ) );
+  mDataDefinedNames.insert( QgsComposerObject::PageNumber, QString( "dataDefinedPageNumber" ) );
+  mDataDefinedNames.insert( QgsComposerObject::PositionX, QString( "dataDefinedPositionX" ) );
+  mDataDefinedNames.insert( QgsComposerObject::PositionY, QString( "dataDefinedPositionY" ) );
+  mDataDefinedNames.insert( QgsComposerObject::ItemWidth, QString( "dataDefinedWidth" ) );
+  mDataDefinedNames.insert( QgsComposerObject::ItemHeight, QString( "dataDefinedHeight" ) );
+  mDataDefinedNames.insert( QgsComposerObject::ItemRotation, QString( "dataDefinedRotation" ) );
+  mDataDefinedNames.insert( QgsComposerObject::Transparency, QString( "dataDefinedTransparency" ) );
+  mDataDefinedNames.insert( QgsComposerObject::BlendMode, QString( "dataDefinedBlendMode" ) );
 
   if ( mComposition )
   {
@@ -157,10 +156,6 @@ QgsComposerItem::~QgsComposerItem()
   delete mBoundingResizeRectangle;
   delete mEffect;
 
-  //clear pointers to QgsDataDefined objects
-  //TODO - probably leaky. Check same code within labelling and fix.
-  mDataDefinedProperties.clear();
-
   deleteAlignItems();
 }
 
@@ -170,12 +165,6 @@ void QgsComposerItem::setSelected( bool s )
   QGraphicsRectItem::setSelected( s );
   update(); //to draw selection boxes
 }
-
-bool QgsComposerItem::writeSettings( void )  { return true; }
-
-bool QgsComposerItem::readSettings( void )  { return true; }
-
-bool QgsComposerItem::removeSettings( void )  { return true; }
 
 bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) const
 {
@@ -259,12 +248,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   //transparency
   composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
 
-  //data defined properties
-  if ( mComposition )
-  {
-    mComposition->writeDataDefinedPropertyMap( composerItemElem, doc, &mDataDefinedNames, &mDataDefinedProperties );
-  }
-
+  QgsComposerObject::writeXML( composerItemElem, doc );
   itemElem.appendChild( composerItemElem );
 
   return true;
@@ -277,6 +261,8 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   {
     return false;
   }
+
+  QgsComposerObject::readXML( itemElem, doc );
 
   //rotation
   setItemRotation( itemElem.attribute( "itemRotation", "0" ).toDouble() );
@@ -407,12 +393,6 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   //transparency
   setTransparency( itemElem.attribute( "transparency" , "0" ).toInt() );
 
-  //data defined properties
-  if ( mComposition )
-  {
-    mComposition->readDataDefinedPropertyMap( itemElem, &mDataDefinedNames, &mDataDefinedProperties );
-  }
-
   QRectF evaluatedRect = evalItemRect( QRectF( x, y, width, height ) );
   setSceneRect( evaluatedRect );
 
@@ -541,9 +521,9 @@ void QgsComposerItem::setPositionLock( bool lock )
   mItemPositionLocked = lock;
 }
 
-double QgsComposerItem::itemRotation( PropertyValueType valueType ) const
+double QgsComposerItem::itemRotation( QgsComposerObject::PropertyValueType valueType ) const
 {
-  return valueType == EvaluatedValue ? mEvaluatedItemRotation : mItemRotation;
+  return valueType == QgsComposerObject::EvaluatedValue ? mEvaluatedItemRotation : mItemRotation;
 }
 
 void QgsComposerItem::move( double dx, double dy )
@@ -689,7 +669,7 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect )
   //data defined position or size set? if so, update rect with data defined values
   QVariant exprVal;
   //evaulate width and height first, since they may affect position if non-top-left reference point set
-  if ( dataDefinedEvaluate( QgsComposerItem::ItemWidth, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::ItemWidth, exprVal ) )
   {
     bool ok;
     double width = exprVal.toDouble( &ok );
@@ -699,7 +679,7 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect )
       result.setWidth( width );
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerItem::ItemHeight, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::ItemHeight, exprVal ) )
   {
     bool ok;
     double height = exprVal.toDouble( &ok );
@@ -720,7 +700,7 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect )
   {
     x += newRect.width();
   }
-  if ( dataDefinedEvaluate( QgsComposerItem::PositionX, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::PositionX, exprVal ) )
   {
     bool ok;
     double positionX = exprVal.toDouble( &ok );
@@ -742,7 +722,7 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect )
     y += newRect.height();
   }
 
-  if ( dataDefinedEvaluate( QgsComposerItem::PositionY, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::PositionY, exprVal ) )
   {
     bool ok;
     double positionY = exprVal.toDouble( &ok );
@@ -792,6 +772,16 @@ void QgsComposerItem::drawBackground( QPainter* p )
   }
 }
 
+void QgsComposerItem::drawArrowHead( QPainter *p, double x, double y, double angle, double arrowHeadWidth ) const
+{
+  QgsComposerUtils::drawArrowHead( p, x, y, angle, arrowHeadWidth );
+}
+
+double QgsComposerItem::angle( const QPointF &p1, const QPointF &p2 ) const
+{
+  return QgsComposerUtils::angle( p1, p2 );
+}
+
 void QgsComposerItem::setBackgroundColor( const QColor& backgroundColor )
 {
   mBackgroundColor = backgroundColor;
@@ -811,7 +801,7 @@ void QgsComposerItem::refreshBlendMode()
 
   //data defined blend mode set?
   QVariant exprVal;
-  if ( dataDefinedEvaluate( QgsComposerItem::BlendMode, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::BlendMode, exprVal ) )
   {
     QString blendstr = exprVal.toString().trimmed();
     QPainter::CompositionMode blendModeD = QgsSymbolLayerV2Utils::decodeBlendMode( blendstr );
@@ -836,7 +826,7 @@ void QgsComposerItem::refreshTransparency( bool updateItem )
 
   //data defined transparency set?
   QVariant exprVal;
-  if ( dataDefinedEvaluate( QgsComposerItem::Transparency, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::Transparency, exprVal ) )
   {
     bool ok;
     int transparencyD = exprVal.toInt( &ok );
@@ -890,43 +880,6 @@ void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& 
   p->drawText( scaledRect, halignment | valignment | flags, text );
   p->restore();
 }
-void QgsComposerItem::drawArrowHead( QPainter* p, double x, double y, double angle, double arrowHeadWidth ) const
-{
-  if ( !p )
-  {
-    return;
-  }
-  double angleRad = angle / 180.0 * M_PI;
-  QPointF middlePoint( x, y );
-  //rotate both arrow points
-  QPointF p1 = QPointF( -arrowHeadWidth / 2.0, arrowHeadWidth );
-  QPointF p2 = QPointF( arrowHeadWidth / 2.0, arrowHeadWidth );
-
-  QPointF p1Rotated, p2Rotated;
-  p1Rotated.setX( p1.x() * cos( angleRad ) + p1.y() * -sin( angleRad ) );
-  p1Rotated.setY( p1.x() * sin( angleRad ) + p1.y() * cos( angleRad ) );
-  p2Rotated.setX( p2.x() * cos( angleRad ) + p2.y() * -sin( angleRad ) );
-  p2Rotated.setY( p2.x() * sin( angleRad ) + p2.y() * cos( angleRad ) );
-
-  QPolygonF arrowHeadPoly;
-  arrowHeadPoly << middlePoint;
-  arrowHeadPoly << QPointF( middlePoint.x() + p1Rotated.x(), middlePoint.y() + p1Rotated.y() );
-  arrowHeadPoly << QPointF( middlePoint.x() + p2Rotated.x(), middlePoint.y() + p2Rotated.y() );
-
-  p->save();
-
-  QPen arrowPen = p->pen();
-  arrowPen.setJoinStyle( Qt::RoundJoin );
-  QBrush arrowBrush = p->brush();
-  arrowBrush.setStyle( Qt::SolidPattern );
-  p->setPen( arrowPen );
-  p->setBrush( arrowBrush );
-  arrowBrush.setStyle( Qt::SolidPattern );
-  p->drawPolygon( arrowHeadPoly );
-
-  p->restore();
-}
-
 double QgsComposerItem::textWidthMillimeters( const QFont& font, const QString& text ) const
 {
   QFont metricsFont = scaledFontPixelSize( font );
@@ -973,24 +926,6 @@ QFont QgsComposerItem::scaledFontPixelSize( const QFont& font ) const
   double pixelSize = pixelFontSize( font.pointSizeF() ) * FONT_WORKAROUND_SCALE + 0.5;
   scaledFont.setPixelSize( pixelSize );
   return scaledFont;
-}
-
-double QgsComposerItem::angle( const QPointF& p1, const QPointF& p2 ) const
-{
-  double xDiff = p2.x() - p1.x();
-  double yDiff = p2.y() - p1.y();
-  double length = sqrt( xDiff * xDiff + yDiff * yDiff );
-  if ( length <= 0 )
-  {
-    return 0;
-  }
-
-  double angle = acos(( -yDiff * length ) / ( length * length ) ) * 180 / M_PI;
-  if ( xDiff < 0 )
-  {
-    return ( 360 - angle );
-  }
-  return angle;
 }
 
 double QgsComposerItem::horizontalViewScaleFactor() const
@@ -1072,7 +1007,7 @@ void QgsComposerItem::refreshRotation( bool updateItem , bool adjustPosition )
 
   //data defined rotation set?
   QVariant exprVal;
-  if ( dataDefinedEvaluate( QgsComposerItem::ItemRotation, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::ItemRotation, exprVal ) )
   {
     bool ok;
     double rotD = exprVal.toDouble( &ok );
@@ -1115,78 +1050,9 @@ void QgsComposerItem::refreshRotation( bool updateItem , bool adjustPosition )
 bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height ) const
 {
   //kept for api compatibility with QGIS 2.0, use item rotation
+  Q_NOWARN_DEPRECATED_PUSH
   return imageSizeConsideringRotation( width, height, mEvaluatedItemRotation );
-}
-
-QRectF QgsComposerItem::largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const
-{
-  double originalWidth = originalRect.width();
-  double originalHeight = originalRect.height();
-  double boundsWidth = boundsRect.width();
-  double boundsHeight = boundsRect.height();
-  double ratioBoundsRect = boundsWidth / boundsHeight;
-
-  //shortcut for some rotation values
-  if ( rotation == 0 || rotation == 90 || rotation == 180 || rotation == 270 )
-  {
-    double originalRatio = originalWidth / originalHeight;
-    double rectScale = originalRatio > ratioBoundsRect ? boundsWidth / originalWidth : boundsHeight / originalHeight;
-    double rectScaledWidth = rectScale * originalWidth;
-    double rectScaledHeight = rectScale * originalHeight;
-
-    if ( rotation == 0 || rotation == 180 )
-    {
-      return QRectF(( boundsWidth - rectScaledWidth ) / 2.0, ( boundsHeight - rectScaledHeight ) / 2.0, rectScaledWidth, rectScaledHeight );
-    }
-    else
-    {
-      return QRectF(( boundsWidth - rectScaledHeight ) / 2.0, ( boundsHeight - rectScaledWidth ) / 2.0, rectScaledHeight, rectScaledWidth );
-    }
-  }
-
-  //convert angle to radians and flip
-  double angleRad = -rotation * M_DEG2RAD;
-  double cosAngle = cos( angleRad );
-  double sinAngle = sin( angleRad );
-
-  //calculate size of bounds of rotated rectangle
-  double widthBoundsRotatedRect = originalWidth * fabs( cosAngle ) + originalHeight * fabs( sinAngle );
-  double heightBoundsRotatedRect = originalHeight * fabs( cosAngle ) + originalWidth * fabs( sinAngle );
-
-  //compare ratio of rotated rect with bounds rect and calculate scaling of rotated
-  //rect to fit within bounds
-  double ratioBoundsRotatedRect = widthBoundsRotatedRect / heightBoundsRotatedRect;
-  double rectScale = ratioBoundsRotatedRect > ratioBoundsRect ? boundsWidth / widthBoundsRotatedRect : boundsHeight / heightBoundsRotatedRect;
-  double rectScaledWidth = rectScale * originalWidth;
-  double rectScaledHeight = rectScale * originalHeight;
-
-  //now calculate offset so that rotated rectangle is centered within bounds
-  //first calculate min x and y coordinates
-  double currentCornerX = 0;
-  double minX = 0;
-  currentCornerX += rectScaledWidth * cosAngle;
-  minX = minX < currentCornerX ? minX : currentCornerX;
-  currentCornerX += rectScaledHeight * sinAngle;
-  minX = minX < currentCornerX ? minX : currentCornerX;
-  currentCornerX -= rectScaledWidth * cosAngle;
-  minX = minX < currentCornerX ? minX : currentCornerX;
-
-  double currentCornerY = 0;
-  double minY = 0;
-  currentCornerY -= rectScaledWidth * sinAngle;
-  minY = minY < currentCornerY ? minY : currentCornerY;
-  currentCornerY += rectScaledHeight * cosAngle;
-  minY = minY < currentCornerY ? minY : currentCornerY;
-  currentCornerY += rectScaledWidth * sinAngle;
-  minY = minY < currentCornerY ? minY : currentCornerY;
-
-  //now calculate offset position of rotated rectangle
-  double offsetX = ratioBoundsRotatedRect > ratioBoundsRect ? 0 : ( boundsWidth - rectScale * widthBoundsRotatedRect ) / 2.0;
-  offsetX += fabs( minX );
-  double offsetY = ratioBoundsRotatedRect > ratioBoundsRect ? ( boundsHeight - rectScale * heightBoundsRotatedRect ) / 2.0 : 0;
-  offsetY += fabs( minY );
-
-  return QRectF( offsetX, offsetY, rectScaledWidth, rectScaledHeight );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation ) const
@@ -1215,6 +1081,7 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
   double midX = width / 2.0;
   double midY = height / 2.0;
 
+  Q_NOWARN_DEPRECATED_PUSH
   if ( !cornerPointOnRotatedAndScaledRect( x1, y1, width, height, rotation ) )
   {
     return false;
@@ -1231,6 +1098,7 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
   {
     return false;
   }
+  Q_NOWARN_DEPRECATED_POP
 
 
   //assume points 1 and 3 are on the rectangle boundaries. Calculate 2 and 4.
@@ -1253,10 +1121,17 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
   return true;
 }
 
+QRectF QgsComposerItem::largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const
+{
+  return QgsComposerUtils::largestRotatedRectWithinBounds( originalRect, boundsRect, rotation );
+}
+
 bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const
 {
   //kept for api compatibility with QGIS 2.0, use item rotation
+  Q_NOWARN_DEPRECATED_PUSH
   return cornerPointOnRotatedAndScaledRect( x, y, width, height, mEvaluatedItemRotation );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const
@@ -1299,7 +1174,9 @@ bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, d
 void QgsComposerItem::sizeChangedByRotation( double& width, double& height )
 {
   //kept for api compatibility with QGIS 2.0, use item rotation
+  Q_NOWARN_DEPRECATED_PUSH
   return sizeChangedByRotation( width, height, mEvaluatedItemRotation );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
@@ -1312,19 +1189,19 @@ void QgsComposerItem::sizeChangedByRotation( double& width, double& height, doub
   //vector to p1
   double x1 = -width / 2.0;
   double y1 = -height / 2.0;
-  rotate( rotation, x1, y1 );
+  QgsComposerUtils::rotate( rotation, x1, y1 );
   //vector to p2
   double x2 = width / 2.0;
   double y2 = -height / 2.0;
-  rotate( rotation, x2, y2 );
+  QgsComposerUtils::rotate( rotation, x2, y2 );
   //vector to p3
   double x3 = width / 2.0;
   double y3 = height / 2.0;
-  rotate( rotation, x3, y3 );
+  QgsComposerUtils::rotate( rotation, x3, y3 );
   //vector to p4
   double x4 = -width / 2.0;
   double y4 = height / 2.0;
-  rotate( rotation, x4, y4 );
+  QgsComposerUtils::rotate( rotation, x4, y4 );
 
   //double midpoint
   QPointF midpoint( width / 2.0, height / 2.0 );
@@ -1341,12 +1218,7 @@ void QgsComposerItem::sizeChangedByRotation( double& width, double& height, doub
 
 void QgsComposerItem::rotate( double angle, double& x, double& y ) const
 {
-  double rotToRad = angle * M_PI / 180.0;
-  double xRot, yRot;
-  xRot = x * cos( rotToRad ) - y * sin( rotToRad );
-  yRot = x * sin( rotToRad ) + y * cos( rotToRad );
-  x = xRot;
-  y = yRot;
+  QgsComposerUtils::rotate( angle, x, y );
 }
 
 QGraphicsLineItem* QgsComposerItem::hAlignSnapItem()
@@ -1399,64 +1271,36 @@ void QgsComposerItem::deleteAlignItems()
   deleteVAlignSnapItem();
 }
 
-bool QgsComposerItem::dataDefinedEvaluate( QgsComposerItem::DataDefinedProperty property, QVariant &expressionValue )
-{
-  if ( !mComposition )
-  {
-    return false;
-  }
-  return mComposition->dataDefinedEvaluate( property, expressionValue, &mDataDefinedProperties );
-}
-
-void QgsComposerItem::prepareDataDefinedExpressions() const
-{
-  //use atlas coverage layer if set
-  QgsVectorLayer* atlasLayer = 0;
-  if ( mComposition )
-  {
-    QgsAtlasComposition* atlas = &mComposition->atlasComposition();
-    if ( atlas && atlas->enabled() )
-    {
-      atlasLayer = atlas->coverageLayer();
-    }
-  }
-
-  //prepare all QgsDataDefineds
-  QMap< DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.constBegin();
-  if ( it != mDataDefinedProperties.constEnd() )
-  {
-    it.value()->prepareExpression( atlasLayer );
-  }
-}
-
 void QgsComposerItem::repaint()
 {
   update();
 }
 
-void QgsComposerItem::refreshDataDefinedProperty( QgsComposerItem::DataDefinedProperty property )
+void QgsComposerItem::refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property )
 {
   //update data defined properties and redraw item to match
-  if ( property == QgsComposerItem::PositionX || property == QgsComposerItem::PositionY ||
-       property == QgsComposerItem::ItemWidth || property == QgsComposerItem::ItemHeight ||
-       property == QgsComposerItem::AllProperties )
+  if ( property == QgsComposerObject::PositionX || property == QgsComposerObject::PositionY ||
+       property == QgsComposerObject::ItemWidth || property == QgsComposerObject::ItemHeight ||
+       property == QgsComposerObject::AllProperties )
   {
     QRectF evaluatedRect = evalItemRect( QRectF( pos().x(), pos().y(), rect().width(), rect().height() ) );
     setSceneRect( evaluatedRect );
   }
-  if ( property == QgsComposerItem::ItemRotation || property == QgsComposerItem::AllProperties )
+  if ( property == QgsComposerObject::ItemRotation || property == QgsComposerObject::AllProperties )
   {
     refreshRotation( false, true );
   }
-  if ( property == QgsComposerItem::Transparency || property == QgsComposerItem::AllProperties )
+  if ( property == QgsComposerObject::Transparency || property == QgsComposerObject::AllProperties )
   {
     refreshTransparency( false );
   }
-  if ( property == QgsComposerItem::BlendMode || property == QgsComposerItem::AllProperties )
+  if ( property == QgsComposerObject::BlendMode || property == QgsComposerObject::AllProperties )
   {
     refreshBlendMode();
   }
 
+  //TODO
+//  QgsComposerBaseItem::refreshDataDefinedPropert
   update();
 }
 
@@ -1470,52 +1314,4 @@ void QgsComposerItem::setIsGroupMember( bool isGroupMember )
 {
   mIsGroupMember = isGroupMember;
   setFlag( QGraphicsItem::ItemIsSelectable, !isGroupMember ); //item in groups cannot be selected
-}
-
-QgsDataDefined *QgsComposerItem::dataDefinedProperty( QgsComposerItem::DataDefinedProperty property )
-{
-  if ( property == QgsComposerItem::AllProperties || property == QgsComposerItem::NoProperty )
-  {
-    //bad property requested, don't return anything
-    return 0;
-  }
-
-  //find corresponding QgsDataDefined and return it
-  QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.find( property );
-  if ( it != mDataDefinedProperties.constEnd() )
-  {
-    return it.value();
-  }
-
-  //could not find matching QgsDataDefined
-  return 0;
-}
-
-void QgsComposerItem::setDataDefinedProperty( QgsComposerItem::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field )
-{
-  if ( property == QgsComposerItem::AllProperties || property == QgsComposerItem::NoProperty )
-  {
-    //bad property requested
-    return;
-  }
-
-  bool defaultVals = ( !active && !useExpression && expression.isEmpty() && field.isEmpty() );
-
-  if ( mDataDefinedProperties.contains( property ) )
-  {
-    QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.find( property );
-    if ( it != mDataDefinedProperties.constEnd() )
-    {
-      QgsDataDefined* dd = it.value();
-      dd->setActive( active );
-      dd->setUseExpression( useExpression );
-      dd->setExpressionString( expression );
-      dd->setField( field );
-    }
-  }
-  else if ( !defaultVals )
-  {
-    QgsDataDefined* dd = new QgsDataDefined( active, useExpression, expression, field );
-    mDataDefinedProperties.insert( property, dd );
-  }
 }

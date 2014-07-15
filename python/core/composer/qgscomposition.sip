@@ -459,7 +459,7 @@ class QgsComposition : QGraphicsScene
      * @param property data defined property to return
      * @note this method was added in version 2.5
     */
-    QgsDataDefined* dataDefinedProperty( QgsComposerItem::DataDefinedProperty property );
+    QgsDataDefined* dataDefinedProperty( QgsComposerObject::DataDefinedProperty property );
 
     /**Sets parameters for a data defined property for the composition
      * @param property data defined property to set
@@ -469,7 +469,7 @@ class QgsComposition : QGraphicsScene
      * @field field name if the data defined property should take its value from a field
      * @note this method was added in version 2.5
     */
-    void setDataDefinedProperty( QgsComposerItem::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
+    void setDataDefinedProperty( QgsComposerObject::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
 
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
@@ -498,7 +498,7 @@ class QgsComposition : QGraphicsScene
      * refreshed.
      * @note this method was added in version 2.5
     */
-    void refreshDataDefinedProperty( QgsComposerItem::DataDefinedProperty property = QgsComposerItem::AllProperties );
+    void refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 
   protected:
     void init();

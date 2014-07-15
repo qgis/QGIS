@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscomposerpicture.h"
+#include "qgscomposerutils.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
 #include "qgsatlascomposition.h"
@@ -531,7 +532,7 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
   //find largest scaling of picture with this rotation which fits in item
   if ( mResizeMode == Zoom )
   {
-    QRectF rotatedImageRect = largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), newRect, mPictureRotation );
+    QRectF rotatedImageRect = QgsComposerUtils::largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), newRect, mPictureRotation );
     mPictureWidth = rotatedImageRect.width();
     mPictureHeight = rotatedImageRect.height();
   }
@@ -559,7 +560,7 @@ void QgsComposerPicture::setPictureRotation( double r )
   {
     //find largest scaling of picture with this rotation which fits in item
     QSizeF currentPictureSize = pictureSize();
-    QRectF rotatedImageRect = largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), rect(), mPictureRotation );
+    QRectF rotatedImageRect = QgsComposerUtils::largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), rect(), mPictureRotation );
     mPictureWidth = rotatedImageRect.width();
     mPictureHeight = rotatedImageRect.height();
     update();
@@ -787,17 +788,23 @@ void QgsComposerPicture::setPictureAnchor( QgsComposerItem::ItemPositionMode anc
 bool QgsComposerPicture::imageSizeConsideringRotation( double& width, double& height ) const
 {
   //kept for api compatibility with QGIS 2.0 - use mPictureRotation
+  Q_NOWARN_DEPRECATED_PUSH
   return QgsComposerItem::imageSizeConsideringRotation( width, height, mPictureRotation );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 bool QgsComposerPicture::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const
 {
   //kept for api compatibility with QGIS 2.0 - use mPictureRotation
+  Q_NOWARN_DEPRECATED_PUSH
   return QgsComposerItem::cornerPointOnRotatedAndScaledRect( x, y, width, height, mPictureRotation );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsComposerPicture::sizeChangedByRotation( double& width, double& height )
 {
   //kept for api compatibility with QGIS 2.0 - use mPictureRotation
+  Q_NOWARN_DEPRECATED_PUSH
   return QgsComposerItem::sizeChangedByRotation( width, height, mPictureRotation );
+  Q_NOWARN_DEPRECATED_POP
 }

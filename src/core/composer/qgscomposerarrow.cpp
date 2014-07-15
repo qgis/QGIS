@@ -17,6 +17,7 @@
 
 #include "qgscomposerarrow.h"
 #include "qgscomposition.h"
+#include "qgscomposerutils.h"
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QVector2D>
@@ -152,20 +153,20 @@ void QgsComposerArrow::drawHardcodedMarker( QPainter *p, MarkerType type )
   if ( mBoundsBehaviour == 22 )
   {
     //if arrow was created in versions prior to 2.4, use the old rendering style
-    drawArrowHead( p, mStopPoint.x() - pos().x(), mStopPoint.y() - pos().y(), angle( mStartPoint, mStopPoint ), mArrowHeadWidth );
+    QgsComposerUtils::drawArrowHead( p, mStopPoint.x() - pos().x(), mStopPoint.y() - pos().y(), QgsComposerUtils::angle( mStartPoint, mStopPoint ), mArrowHeadWidth );
   }
   else
   {
     QVector2D dir = QVector2D( mStopPoint - mStartPoint ).normalized();
     QPointF stop = mStopPoint + ( dir * 0.5 * mArrowHeadWidth ).toPointF();
-    drawArrowHead( p, stop.x() - pos().x(), stop.y() - pos().y(), angle( mStartPoint, stop ), mArrowHeadWidth );
+    QgsComposerUtils::drawArrowHead( p, stop.x() - pos().x(), stop.y() - pos().y(), QgsComposerUtils::angle( mStartPoint, stop ), mArrowHeadWidth );
   }
 }
 
 void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QString &markerPath )
 {
   Q_UNUSED( markerPath );
-  double ang = angle( mStartPoint, mStopPoint );
+  double ang = QgsComposerUtils::angle( mStartPoint, mStopPoint );
 
   double arrowHeadHeight;
   if ( type == StartMarker )

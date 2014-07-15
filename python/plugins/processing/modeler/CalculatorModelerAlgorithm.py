@@ -85,9 +85,12 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
         text = ('You can refer to model values in you formula, using'
                 'single-letter variables, as follows:\n')
         ichar = 97
-        for number in numbers:
-            text += chr(ichar) + '->' + self.resolveValueDescription(number) + '\n'
-            ichar += 1
+        if numbers:
+            for number in numbers:
+                text += chr(ichar) + '->' + self.resolveValueDescription(number) + '\n'
+                ichar += 1
+        else:
+            text += "\n - No numerical variables are available."
         self.infoText.setText(text)
         self.infoText.setEnabled(False)
         self.formulaText = QtGui.QLineEdit()

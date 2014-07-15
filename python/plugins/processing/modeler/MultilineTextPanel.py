@@ -34,7 +34,7 @@ class MultilineTextPanel(QtGui.QWidget):
 
     def __init__(self, options, parent=None):
         super(MultilineTextPanel, self).__init__(parent)
-        self.options = options        
+        self.options = options
         self.verticalLayout = QtGui.QVBoxLayout(self)
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)

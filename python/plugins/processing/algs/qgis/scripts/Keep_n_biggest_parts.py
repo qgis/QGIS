@@ -12,7 +12,7 @@ To_keep = int(To_keep)
 if To_keep < 1:
 	progress.setInfo("'To keep' value has been modified to be at least 1.")
 	To_keep = 1
-	
+
 
 polyLayer = processing.getObject(Polygons)
 polyPrder = polyLayer.dataProvider()
@@ -27,17 +27,17 @@ for n, feat in enumerate(processing.features(polyLayer)):
 	if geom.isMultipart():
 		featres = feat
 		geoms = geom.asGeometryCollection()
-		geomarea = [(i, geoms[i].area()) for i in range(len(geoms))]		
-		geomarea.sort(key=itemgetter(1))		
+		geomarea = [(i, geoms[i].area()) for i in range(len(geoms))]
+		geomarea.sort(key=itemgetter(1))
 		if To_keep == 1:
 			featres.setGeometry(geoms[geomrea[-1][0]])
-		else if To_keep > len(geoms):
+		elif To_keep > len(geoms):
 			featres.setGeometry(geom)
 		else:
-			featres.setGeometry(geom) 
+			featres.setGeometry(geom)
 			geomres = [geoms[i].asPolygon() for i,a in geomarea[-1 * To_keep]]
-			featres.setGeometry(QgsGeometry.fromMultiPolygon(geomres))		
-		writer.addFeature(featres)		
+			featres.setGeometry(QgsGeometry.fromMultiPolygon(geomres))
+		writer.addFeature(featres)
 	else:
 		writer.addFeature(feat)
 

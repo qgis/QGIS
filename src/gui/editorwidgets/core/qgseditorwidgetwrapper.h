@@ -108,7 +108,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     /**
      * Will be called when the feature changes
      *
-     * Is forwarded to the slot @link{setValue()}
+     * Is forwarded to the slot \link setValue() \endlink
      *
      * @param feature The new feature
      */

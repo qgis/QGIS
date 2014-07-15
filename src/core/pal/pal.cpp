@@ -256,7 +256,7 @@ namespace pal
     if ( !context->layer->isScaleValid( context->scale ) )
       return true;
 
-    // is the feature well defined ? // TODO Check epsilon
+    // is the feature well defined ?  TODO Check epsilon
     if ( ft_ptr->getLabelWidth() < 0.0000001 || ft_ptr->getLabelHeight() < 0.0000001 )
       return true;
 
@@ -337,17 +337,17 @@ namespace pal
 
 
   /**
-  * \Brief Problem Factory
+  * \brief Problem Factory
   * Select features from user's choice layers within
   * a specific bounding box
-  * param nbLayers # wanted layers
-  * param layersFactor layers importance
-  * param layersName layers in problem
-  * param lambda_min west bbox
-  * param phi_min south bbox
-  * param lambda_max east bbox
-  * param phi_max north bbox
-  * param scale the scale
+  * @param nbLayers # wanted layers
+  * @param layersFactor layers importance
+  * @param layersName layers in problem
+  * @param lambda_min west bbox
+  * @param phi_min south bbox
+  * @param lambda_max east bbox
+  * @param phi_max north bbox
+  * @param scale the scale
   */
   Problem* Pal::extract( int nbLayers, char **layersName, double *layersFactor, double lambda_min, double phi_min, double lambda_max, double phi_max, double scale, std::ofstream *svgmap )
   {

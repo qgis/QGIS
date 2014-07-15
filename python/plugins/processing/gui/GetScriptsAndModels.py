@@ -16,16 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-import os
-from PyQt4 import QtGui
-from processing.ui.ui_DlgGetScriptsAndModels import Ui_DlgGetScriptsAndModels
-from processing.script.ScriptUtils import ScriptUtils
-from processing.modeler.ModelerUtils import ModelerUtils
-import json
-from processing.gui import Help2Html
-from qgis.utils import iface
-from processing.gui.Help2Html import getDescription, ALG_DESC, ALG_VERSION,\
-    ALG_CREATOR
+
 
 __author__ = 'Victor Olaya'
 __date__ = 'June 2014'
@@ -35,12 +26,20 @@ __copyright__ = '(C) 201, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+import json
 import urllib2
 from urllib2 import HTTPError
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from processing.gui.ToolboxAction import ToolboxAction
-
+from PyQt4 import QtGui
+from processing.ui.ui_DlgGetScriptsAndModels import Ui_DlgGetScriptsAndModels
+from processing.script.ScriptUtils import ScriptUtils
+from processing.modeler.ModelerUtils import ModelerUtils
+from processing.gui import Help2Html
+from qgis.utils import iface
+from processing.gui.Help2Html import getDescription, ALG_DESC, ALG_VERSION, ALG_CREATOR
 
 class GetScriptsAction(ToolboxAction):
 
@@ -93,8 +92,8 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
     HELP_TEXT = ("<h3> Processing resources manager </h3>"
                 "<p>Check/uncheck algorithms in the tree to select the ones that you want to install or remove</p>"
                 "<p>Algorithms are divided in 3 groups:</p>"
-                "<ul><li><b>Installed:</b> Algorihms already in your system, with the latest version available</li>"
-                "<li><b>Upgradable:</b> Algorihms already in your system, but with a newer version available in the server</li>"
+                "<ul><li><b>Installed:</b> Algorithms already in your system, with the latest version available</li>"
+                "<li><b>Upgradable:</b> Algorithms already in your system, but with a newer version available in the server</li>"
                 "<li><b>Not installed:</b> Algorithms not installed in your system</li></ul>")
     MODELS = 0
     SCRIPTS = 1
@@ -195,11 +194,17 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
             for i, filename in enumerate(toDownload):
                 QCoreApplication.processEvents()
                 url = self.urlBase + filename.replace(" ","%20")
-                code = readUrl(url)
-                path = os.path.join(self.folder, filename)
-                with open(path, "w") as f:
-                    f.write(code)
-                self.progressBar.setValue(i + 1)
+                try:
+                    code = readUrl(url)
+                    path = os.path.join(self.folder, filename)
+                    with open(path, "w") as f:
+                        f.write(code)
+                    self.progressBar.setValue(i + 1)
+                except HTTPError:
+                    QMessageBox.critical(iface.mainWindow(), "Connection problem",
+                                         "Could not download file :" + filename)
+                    return
+
 
         toDelete = []
         for i in xrange(self.uptodateItem.childCount()):

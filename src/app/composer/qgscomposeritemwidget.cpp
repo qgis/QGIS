@@ -28,7 +28,7 @@
 
 //QgsComposerItemBaseWidget
 
-QgsComposerItemBaseWidget::QgsComposerItemBaseWidget( QWidget* parent, QgsComposerItem* item ): QWidget( parent ), mItem( item )
+QgsComposerItemBaseWidget::QgsComposerItemBaseWidget( QWidget* parent, QgsComposerObject *composerObject ): QWidget( parent ), mComposerObject( composerObject )
 {
 
 }
@@ -46,44 +46,44 @@ void QgsComposerItemBaseWidget::updateDataDefinedProperty()
   {
     return;
   }
-  QgsComposerItem::DataDefinedProperty property = ddPropertyForWidget( ddButton );
-  if ( property == QgsComposerItem::NoProperty )
+  QgsComposerObject::DataDefinedProperty property = ddPropertyForWidget( ddButton );
+  if ( property == QgsComposerObject::NoProperty )
   {
     return;
   }
 
   //set the data defined property and refresh the item
   setDataDefinedProperty( ddButton, property );
-  mItem->refreshDataDefinedProperty( property );
+  mComposerObject->refreshDataDefinedProperty( property );
 }
 
-void QgsComposerItemBaseWidget::setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerItem::DataDefinedProperty p )
+void QgsComposerItemBaseWidget::setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty p )
 {
-  if ( !mItem )
+  if ( !mComposerObject )
   {
     return;
   }
 
   const QMap< QString, QString >& map = ddBtn->definedProperty();
-  mItem->setDataDefinedProperty( p, map.value( "active" ).toInt(), map.value( "useexpr" ).toInt(), map.value( "expression" ), map.value( "field" ) );
+  mComposerObject->setDataDefinedProperty( p, map.value( "active" ).toInt(), map.value( "useexpr" ).toInt(), map.value( "expression" ), map.value( "field" ) );
 }
 
-QgsComposerItem::DataDefinedProperty QgsComposerItemBaseWidget::ddPropertyForWidget( QgsDataDefinedButton *widget )
+QgsComposerObject::DataDefinedProperty QgsComposerItemBaseWidget::ddPropertyForWidget( QgsDataDefinedButton *widget )
 {
   Q_UNUSED( widget );
 
   //base implementation, return no property
-  return QgsComposerItem::NoProperty;
+  return QgsComposerObject::NoProperty;
 }
 
 QgsAtlasComposition* QgsComposerItemBaseWidget::atlasComposition() const
 {
-  if ( !mItem )
+  if ( !mComposerObject )
   {
     return 0;
   }
 
-  QgsComposition* composition = mItem->composition();
+  QgsComposition* composition = mComposerObject->composition();
 
   if ( !composition )
   {
@@ -108,7 +108,7 @@ QgsVectorLayer* QgsComposerItemBaseWidget::atlasCoverageLayer() const
 
 //QgsComposerItemWidget
 
-QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item ): QgsComposerItemBaseWidget( parent, item )
+QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item ): QgsComposerItemBaseWidget( parent, item ), mItem( item )
 {
 
   setupUi( this );
@@ -515,7 +515,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mBlendModeCombo->setBlendMode( mItem->blendMode() );
   mTransparencySlider->setValue( mItem->transparency() );
   mTransparencySpnBx->setValue( mItem->transparency() );
-  mItemRotationSpinBox->setValue( mItem->itemRotation( QgsComposerItem::OriginalValue ) );
+  mItemRotationSpinBox->setValue( mItem->itemRotation( QgsComposerObject::OriginalValue ) );
 
   mBackgroundColorButton->blockSignals( false );
   mFrameColorButton->blockSignals( false );
@@ -544,19 +544,19 @@ void QgsComposerItemWidget::populateDataDefinedButtons()
   mBlendModeDDBtn->blockSignals( true );
 
   //initialise buttons to use atlas coverage layer
-  mXPositionDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::PositionX ),
+  mXPositionDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::PositionX ),
                          QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mYPositionDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::PositionY ),
+  mYPositionDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::PositionY ),
                          QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mWidthDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::ItemWidth ),
+  mWidthDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::ItemWidth ),
                      QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mHeightDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::ItemHeight ),
+  mHeightDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::ItemHeight ),
                       QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mItemRotationDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::ItemRotation ),
+  mItemRotationDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::ItemRotation ),
                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::double180RotDesc() );
-  mTransparencyDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::Transparency ),
+  mTransparencyDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::Transparency ),
                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::intTranspDesc() );
-  mBlendModeDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::BlendMode ),
+  mBlendModeDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::BlendMode ),
                          QgsDataDefinedButton::String, QgsDataDefinedButton::blendModesDesc() );
 
   //initial state of controls - disable related controls when dd buttons are active
@@ -580,38 +580,38 @@ void QgsComposerItemWidget::populateDataDefinedButtons()
   mBlendModeDDBtn->blockSignals( false );
 }
 
-QgsComposerItem::DataDefinedProperty QgsComposerItemWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )
+QgsComposerObject::DataDefinedProperty QgsComposerItemWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )
 {
   if ( widget == mXPositionDDBtn )
   {
-    return QgsComposerItem::PositionX;
+    return QgsComposerObject::PositionX;
   }
   else if ( widget == mYPositionDDBtn )
   {
-    return QgsComposerItem::PositionY;
+    return QgsComposerObject::PositionY;
   }
   else if ( widget == mWidthDDBtn )
   {
-    return QgsComposerItem::ItemWidth;
+    return QgsComposerObject::ItemWidth;
   }
   else if ( widget == mHeightDDBtn )
   {
-    return QgsComposerItem::ItemHeight;
+    return QgsComposerObject::ItemHeight;
   }
   else if ( widget == mItemRotationDDBtn )
   {
-    return QgsComposerItem::ItemRotation;
+    return QgsComposerObject::ItemRotation;
   }
   else if ( widget == mTransparencyDDBtn )
   {
-    return QgsComposerItem::Transparency;
+    return QgsComposerObject::Transparency;
   }
   else if ( widget == mBlendModeDDBtn )
   {
-    return QgsComposerItem::BlendMode;
+    return QgsComposerObject::BlendMode;
   }
 
-  return QgsComposerItem::NoProperty;
+  return QgsComposerObject::NoProperty;
 }
 
 void QgsComposerItemWidget::setValuesForGuiElements()

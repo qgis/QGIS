@@ -56,7 +56,7 @@ from processing.script.WrongScriptException import WrongScriptException
 class ScriptAlgorithm(GeoAlgorithm):
 
     _icon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/script.png')
-    
+
     def __init__(self, descriptionFile, script=None):
         """The script parameter can be used to directly pass the code
         of the script without a file.

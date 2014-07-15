@@ -54,6 +54,8 @@ from processing.tools.system import *
 
 class GeoAlgorithm:
 
+    _icon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+
     def __init__(self):
         # Parameters needed by the algorithm
         self.parameters = list()
@@ -104,11 +106,11 @@ class GeoAlgorithm:
     # methods to overwrite when creating a custom geoalgorithm
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+        return self._icon
 
     @staticmethod
     def getDefaultIcon():
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+        return GeoAlgorithm._icon
 
     def help(self):
         """Returns the help with the description of this algorithm.

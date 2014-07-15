@@ -18,6 +18,7 @@
 #include "qgscomposermap.h"
 #include "qgscomposermapgrid.h"
 #include "qgscomposition.h"
+#include "qgscomposerutils.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
 #include "qgsmaprenderer.h"
@@ -60,9 +61,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 {
   mComposition = composition;
   mOverviewFrameMapSymbol = 0;
-  mGridLineSymbol = 0;
   createDefaultOverviewFrameSymbol();
-  createDefaultGridLineSymbol();
 
   mId = 0;
   assignFreeId();
@@ -108,7 +107,6 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     , mAtlasMargin( 0.10 )
 {
   mOverviewFrameMapSymbol = 0;
-  mGridLineSymbol = 0;
   createDefaultOverviewFrameSymbol();
 
   //Offset
@@ -130,12 +128,12 @@ void QgsComposerMap::init()
   setToolTip( tr( "Map %1" ).arg( mId ) );
 
   // data defined strings
-  mDataDefinedNames.insert( QgsComposerItem::MapRotation, QString( "dataDefinedMapRotation" ) );
-  mDataDefinedNames.insert( QgsComposerItem::MapScale, QString( "dataDefinedMapScale" ) );
-  mDataDefinedNames.insert( QgsComposerItem::MapXMin, QString( "dataDefinedMapXMin" ) );
-  mDataDefinedNames.insert( QgsComposerItem::MapYMin, QString( "dataDefinedMapYMin" ) );
-  mDataDefinedNames.insert( QgsComposerItem::MapXMax, QString( "dataDefinedMapXMax" ) );
-  mDataDefinedNames.insert( QgsComposerItem::MapYMax, QString( "dataDefinedMapYMax" ) );
+  mDataDefinedNames.insert( QgsComposerObject::MapRotation, QString( "dataDefinedMapRotation" ) );
+  mDataDefinedNames.insert( QgsComposerObject::MapScale, QString( "dataDefinedMapScale" ) );
+  mDataDefinedNames.insert( QgsComposerObject::MapXMin, QString( "dataDefinedMapXMin" ) );
+  mDataDefinedNames.insert( QgsComposerObject::MapYMin, QString( "dataDefinedMapYMin" ) );
+  mDataDefinedNames.insert( QgsComposerObject::MapXMax, QString( "dataDefinedMapXMax" ) );
+  mDataDefinedNames.insert( QgsComposerObject::MapYMax, QString( "dataDefinedMapYMax" ) );
 }
 
 void QgsComposerMap::adjustExtentToItemShape( double itemWidth, double itemHeight, QgsRectangle& extent ) const
@@ -164,7 +162,6 @@ void QgsComposerMap::adjustExtentToItemShape( double itemWidth, double itemHeigh
 QgsComposerMap::~QgsComposerMap()
 {
   delete mOverviewFrameMapSymbol;
-  delete mGridLineSymbol;
   removeGrids();
 }
 
@@ -870,9 +867,9 @@ void QgsComposerMap::setMapRotation( double r )
   update();
 }
 
-double QgsComposerMap::mapRotation( PropertyValueType valueType ) const
+double QgsComposerMap::mapRotation( QgsComposerObject::PropertyValueType valueType ) const
 {
-  return valueType == EvaluatedValue ? mEvaluatedMapRotation : mMapRotation;
+  return valueType == QgsComposerObject::EvaluatedValue ? mEvaluatedMapRotation : mMapRotation;
 }
 
 void QgsComposerMap::refreshMapExtents()
@@ -882,7 +879,7 @@ void QgsComposerMap::refreshMapExtents()
 
   QgsRectangle newExtent = *currentMapExtent();
 
-  if ( dataDefinedEvaluate( QgsComposerItem::MapXMin, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapXMin, exprVal ) )
   {
     bool ok;
     double minXD = exprVal.toDouble( &ok );
@@ -892,7 +889,7 @@ void QgsComposerMap::refreshMapExtents()
       newExtent.setXMinimum( minXD );
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerItem::MapYMin, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapYMin, exprVal ) )
   {
     bool ok;
     double minYD = exprVal.toDouble( &ok );
@@ -902,7 +899,7 @@ void QgsComposerMap::refreshMapExtents()
       newExtent.setYMinimum( minYD );
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerItem::MapXMax, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapXMax, exprVal ) )
   {
     bool ok;
     double maxXD = exprVal.toDouble( &ok );
@@ -912,7 +909,7 @@ void QgsComposerMap::refreshMapExtents()
       newExtent.setXMaximum( maxXD );
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerItem::MapYMax, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapYMax, exprVal ) )
   {
     bool ok;
     double maxYD = exprVal.toDouble( &ok );
@@ -955,7 +952,7 @@ void QgsComposerMap::refreshMapExtents()
   //now refresh scale, as this potentially overrides extents
 
   //data defined map scale set?
-  if ( dataDefinedEvaluate( QgsComposerItem::MapScale, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapScale, exprVal ) )
   {
     bool ok;
     double scaleD = exprVal.toDouble( &ok );
@@ -970,7 +967,7 @@ void QgsComposerMap::refreshMapExtents()
   double mapRotation = mMapRotation;
 
   //data defined map rotation set?
-  if ( dataDefinedEvaluate( QgsComposerItem::MapRotation, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapRotation, exprVal ) )
   {
     bool ok;
     double rotationD = exprVal.toDouble( &ok );
@@ -1798,7 +1795,7 @@ void QgsComposerMap::setGridBlendMode( QPainter::CompositionMode blendMode )
   g->setBlendMode( blendMode );
 }
 
-QPainter::CompositionMode QgsComposerMap::gridBlendMode()
+QPainter::CompositionMode QgsComposerMap::gridBlendMode() const
 {
   const QgsComposerMapGrid* g = constFirstMapGrid();
   return g->blendMode();
@@ -1882,25 +1879,25 @@ void QgsComposerMap::mapPolygon( const QgsRectangle& extent, QPolygonF& poly ) c
   //top left point
   dx = rotationPoint.x() - extent.xMinimum();
   dy = rotationPoint.y() - extent.yMaximum();
-  rotate( mEvaluatedMapRotation, dx, dy );
+  QgsComposerUtils::rotate( mEvaluatedMapRotation, dx, dy );
   poly << QPointF( rotationPoint.x() - dx, rotationPoint.y() - dy );
 
   //top right point
   dx = rotationPoint.x() - extent.xMaximum();
   dy = rotationPoint.y() - extent.yMaximum();
-  rotate( mEvaluatedMapRotation, dx, dy );
+  QgsComposerUtils::rotate( mEvaluatedMapRotation, dx, dy );
   poly << QPointF( rotationPoint.x() - dx, rotationPoint.y() - dy );
 
   //bottom right point
   dx = rotationPoint.x() - extent.xMaximum();
   dy = rotationPoint.y() - extent.yMinimum();
-  rotate( mEvaluatedMapRotation, dx, dy );
+  QgsComposerUtils::rotate( mEvaluatedMapRotation, dx, dy );
   poly << QPointF( rotationPoint.x() - dx, rotationPoint.y() - dy );
 
   //bottom left point
   dx = rotationPoint.x() - extent.xMinimum();
   dy = rotationPoint.y() - extent.yMinimum();
-  rotate( mEvaluatedMapRotation, dx, dy );
+  QgsComposerUtils::rotate( mEvaluatedMapRotation, dx, dy );
   poly << QPointF( rotationPoint.x() - dx, rotationPoint.y() - dy );
 }
 
@@ -2078,13 +2075,13 @@ void QgsComposerMap::overviewExtentChanged()
   update();
 }
 
-void QgsComposerMap::refreshDataDefinedProperty( QgsComposerItem::DataDefinedProperty property )
+void QgsComposerMap::refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property )
 {
   //updates data defined properties and redraws item to match
-  if ( property == QgsComposerItem::MapRotation || property == QgsComposerItem::MapScale ||
-       property == QgsComposerItem::MapXMin || property == QgsComposerItem::MapYMin ||
-       property == QgsComposerItem::MapXMax || property == QgsComposerItem::MapYMax ||
-       property == QgsComposerItem::AllProperties )
+  if ( property == QgsComposerObject::MapRotation || property == QgsComposerObject::MapScale ||
+       property == QgsComposerObject::MapXMin || property == QgsComposerObject::MapYMin ||
+       property == QgsComposerObject::MapXMax || property == QgsComposerObject::MapYMax ||
+       property == QgsComposerObject::AllProperties )
   {
     refreshMapExtents();
     emit itemChanged();
@@ -2151,7 +2148,7 @@ void QgsComposerMap::transformShift( double& xShift, double& yShift ) const
   double dxScaled = xShift * mmToMapUnits;
   double dyScaled = - yShift * mmToMapUnits;
 
-  rotate( mEvaluatedMapRotation, dxScaled, dyScaled );
+  QgsComposerUtils::rotate( mEvaluatedMapRotation, dxScaled, dyScaled );
 
   xShift = dxScaled;
   yShift = dyScaled;
@@ -2169,7 +2166,7 @@ QPointF QgsComposerMap::mapToItemCoords( const QPointF& mapCoords ) const
   QgsPoint rotationPoint(( tExtent.xMaximum() + tExtent.xMinimum() ) / 2.0, ( tExtent.yMaximum() + tExtent.yMinimum() ) / 2.0 );
   double dx = mapCoords.x() - rotationPoint.x();
   double dy = mapCoords.y() - rotationPoint.y();
-  rotate( -mEvaluatedMapRotation, dx, dy );
+  QgsComposerUtils::rotate( -mEvaluatedMapRotation, dx, dy );
   QgsPoint backRotatedCoords( rotationPoint.x() + dx, rotationPoint.y() + dy );
 
   QgsRectangle unrotatedExtent = transformedExtent();
@@ -2381,16 +2378,6 @@ void QgsComposerMap::createDefaultOverviewFrameSymbol()
   mOverviewFrameMapSymbol->setAlpha( 0.3 );
 }
 
-void QgsComposerMap::createDefaultGridLineSymbol()
-{
-  delete mGridLineSymbol;
-  QgsStringMap properties;
-  properties.insert( "color", "0,0,0,255" );
-  properties.insert( "width", "0.3" );
-  properties.insert( "capstyle", "flat" );
-  mGridLineSymbol = QgsLineSymbolV2::createSimple( properties );
-}
-
 /*void QgsComposerMap::initGridAnnotationFormatFromProject()
 {
   QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "D" );
@@ -2440,19 +2427,25 @@ void QgsComposerMap::assignFreeId()
 bool QgsComposerMap::imageSizeConsideringRotation( double& width, double& height ) const
 {
   //kept for api compatibility with QGIS 2.0 - use mMapRotation
+  Q_NOWARN_DEPRECATED_PUSH
   return QgsComposerItem::imageSizeConsideringRotation( width, height, mEvaluatedMapRotation );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 bool QgsComposerMap::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const
 {
   //kept for api compatibility with QGIS 2.0 - use mMapRotation
+  Q_NOWARN_DEPRECATED_PUSH
   return QgsComposerItem::cornerPointOnRotatedAndScaledRect( x, y, width, height, mEvaluatedMapRotation );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsComposerMap::sizeChangedByRotation( double& width, double& height )
 {
   //kept for api compatibility with QGIS 2.0 - use mMapRotation
+  Q_NOWARN_DEPRECATED_PUSH
   return QgsComposerItem::sizeChangedByRotation( width, height, mEvaluatedMapRotation );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsComposerMap::setAtlasDriven( bool enabled )

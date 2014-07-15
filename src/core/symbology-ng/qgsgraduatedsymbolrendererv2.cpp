@@ -1235,7 +1235,7 @@ bool QgsGraduatedSymbolRendererV2::legendSymbolItemsCheckable() const
 
 bool QgsGraduatedSymbolRendererV2::legendSymbolItemChecked( int index )
 {
-  if( index >= 0 && index < mRanges.size() )
+  if ( index >= 0 && index < mRanges.size() )
     return mRanges[ index ].renderState();
   else
     return true;

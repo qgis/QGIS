@@ -60,7 +60,7 @@ namespace pal
    *
    * a layer is a bog of feature with some data which influence the labelling process
    *
-   *  \author Maxence Laurent <maxence _dot_ laurent _at_ heig-vd _dot_ ch>
+   *  \author Maxence Laurent (maxence _dot_ laurent _at_ heig-vd _dot_ ch)
    */
   class CORE_EXPORT Layer
   {
@@ -303,9 +303,10 @@ namespace pal
        * \brief register a feature in the layer
        *
        * @param geom_id unique identifier
+       * @param userGeom user's geometry that implements the PalGeometry interface
        * @param label_x label width
        * @param label_y label height
-       * @param userGeom user's geometry that implements the PalGeometry interface
+       * @param labelText label text
        * @param labelPosX x position of the label (in case of fixed label position)
        * @param labelPosY y position of the label (in case of fixed label position)
        * @param fixedPos true if a single fixed position for this label is needed

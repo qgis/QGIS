@@ -145,7 +145,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * Is called, when the value of the widget needs to be changed. Update the widget representation
      * to reflect the new value.
      *
-     * @param value The new value of the attribute
+     * @param feature The new feature
      */
     virtual void setFeature( const QgsFeature& feature ) = 0;
 

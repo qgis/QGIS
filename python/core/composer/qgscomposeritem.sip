@@ -1,7 +1,7 @@
 /** \ingroup MapComposer
  * A item that forms part of a map composition.
  */
-class QgsComposerItem : QObject, QGraphicsRectItem
+class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
 {
 %TypeHeaderCode
 #include <qgscomposeritem.h>
@@ -133,46 +133,6 @@ class QgsComposerItem : QObject, QGraphicsRectItem
       LowerRight
     };
 
-    /** Data defined properties for different item types
-     */
-    enum DataDefinedProperty
-    {
-      NoProperty = 0, /*< no property */
-      AllProperties, /*< all properties for item */
-      //composer page properties
-      PresetPaperSize, /*< preset paper size for composition */
-      PaperWidth, /*< paper width */
-      PaperHeight, /*< paper height */
-      NumPages, /*< number of pages in composition */
-      PaperOrientation, /*< paper orientation */
-      //general composer item properties
-      PageNumber, /*< page number for item placement */
-      PositionX, /*< x position on page */
-      PositionY, /*< y position on page */
-      ItemWidth, /*< width of item */
-      ItemHeight, /*< height of item */
-      ItemRotation, /*< rotation of item */
-      Transparency, /*< item transparency */
-      BlendMode, /*< item blend mode */
-      //composer map
-      MapRotation, /*< map rotation */
-      MapScale, /*< map scale */
-      MapXMin, /*< map extent x minimum */
-      MapYMin, /*< map extent y minimum */
-      MapXMax, /*< map extent x maximum */
-      MapYMax /*< map extent y maximum */
-    };
-
-    /** Specifies whether the value returned by a function should be the original, user
-     * set value, or the current evaluated value for the property. This may differ if
-     * a property has a data defined expression active.
-     */
-    enum PropertyValueType
-    {
-      EvaluatedValue = 0, /*< return the current evaluated value for the property */
-      OriginalValue /*< return the original, user set value */
-    };
-
     /**Constructor
      @param composition parent composition
      @param manageZValue true if the z-Value of this object should be managed by mComposition*/
@@ -195,15 +155,6 @@ class QgsComposerItem : QObject, QGraphicsRectItem
 
     /** \brief Is selected */
     virtual bool selected() const;
-
-    /** stores state in project */
-    virtual bool writeSettings();
-
-    /** read state from project */
-    virtual bool readSettings();
-
-    /** delete settings from project file  */
-    virtual bool removeSettings();
 
     /**Moves item in canvas coordinates*/
     void move( double dx, double dy );
@@ -268,20 +219,8 @@ class QgsComposerItem : QObject, QGraphicsRectItem
      corresponds to 1 scene size unit*/
     virtual void setSceneRect( const QRectF& rectangle );
 
-    /** stores state in Dom element
-     * @param elem is Dom element corresponding to 'Composer' tag
-     * @param doc is the Dom document
-     */
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const = 0;
-
     /**Writes parameter that are not subclass specific in document. Usually called from writeXML methods of subclasses*/
     bool _writeXML( QDomElement& itemElem, QDomDocument& doc ) const;
-
-    /** sets state from Dom document
-     * @param itemElem is Dom node corresponding to item tag
-     * @param doc is Dom document
-     */
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) = 0;
 
     /**Reads parameter that are not subclass specific in document. Usually called from readXML methods of subclasses*/
     bool _readXML( const QDomElement& itemElem, const QDomDocument& doc );
@@ -403,8 +342,6 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     virtual void addItem( QgsComposerItem* item );
     virtual void removeItems();
 
-    const QgsComposition* composition() const;
-
     virtual void beginItemCommand( const QString& text );
 
     /**Starts new composer undo command
@@ -475,7 +412,7 @@ class QgsComposerItem : QObject, QGraphicsRectItem
      * settings).
      * @note this method was added in version 2.1
      */
-    double itemRotation( PropertyValueType valueType = EvaluatedValue ) const;
+    double itemRotation( QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
 
     /**Returns the rotation for the composer item
      * @deprecated Use itemRotation()
@@ -526,22 +463,6 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     */
     void setCurrentExportLayer( int layerIdx = -1 );
 
-    /**Returns a reference to the data defined settings for one of the item's data defined properties.
-     * @param property data defined property to return
-     * @note this method was added in version 2.5
-    */
-    QgsDataDefined* dataDefinedProperty( DataDefinedProperty property );
-
-    /**Sets parameters for a data defined property for the item
-     * @param property data defined property to set
-     * @param active true if data defined property is active, false if it is disabled
-     * @param useExpression true if the expression should be used
-     * @param expression expression for data defined property
-     * @field field name if the data defined property should take its value from a field
-     * @note this method was added in version 2.5
-    */
-    void setDataDefinedProperty( DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
-
   public slots:
     /**Sets the item rotation
      * @deprecated Use setItemRotation( double rotation ) instead
@@ -565,7 +486,7 @@ class QgsComposerItem : QObject, QGraphicsRectItem
      * refreshed.
      * @note this method was added in version 2.5
     */
-    virtual void refreshDataDefinedProperty( DataDefinedProperty property = AllProperties );
+    virtual void refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 
   protected:
 
@@ -606,43 +527,52 @@ class QgsComposerItem : QObject, QGraphicsRectItem
 
     //some utility functions
 
-    /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation*/
-    bool imageSizeConsideringRotation( double& width, double& height, double rotation ) const;
+    /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation.
+     * @deprecated will be removed in QGIS 3.0
+    */
+    bool imageSizeConsideringRotation( double& width, double& height, double rotation ) const /Deprecated/;
+    
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
-     * @deprecated Use bool imageSizeConsideringRotation( double& width, double& height, double rotation )
-     * instead
+     * @deprecated will be removed in QGIS 3.0
      */
     bool imageSizeConsideringRotation( double& width, double& height ) const /Deprecated/;
 
     /**Calculates the largest scaled version of originalRect which fits within boundsRect, when it is rotated by
-     * a specified amount
-        @param originalRect QRectF to be rotated and scaled
-        @param boundsRect QRectF specifying the bounds which the rotated and scaled rectangle must fit within
-        @param rotation the rotation in degrees to be applied to the rectangle
-    */
-    QRectF largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const;
+      * a specified amount
+      * @param originalRect QRectF to be rotated and scaled
+      * @param boundsRect QRectF specifying the bounds which the rotated and scaled rectangle must fit within
+      * @param rotation the rotation in degrees to be applied to the rectangle
+      * @deprecated use QgsComposerUtils::largestRotatedRectWithinBounds instead
+      */
+    QRectF largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const /Deprecated/;
 
-    /**Calculates corner point after rotation and scaling*/
-    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const;
     /**Calculates corner point after rotation and scaling
-     * @deprecated Use bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
-     * instead
+     * @deprecated will be removed in QGIS 3.0
+    */
+    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const /Deprecated/;
+    
+    /**Calculates corner point after rotation and scaling
+     * @deprecated will be removed in QGIS 3.0
      */
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const /Deprecated/;
 
-    /**Calculates width / height of the bounding box of a rotated rectangle*/
-    void sizeChangedByRotation( double& width, double& height, double rotation );
+    /**Calculates corner point after rotation and scaling
+     * @deprecated will be removed in QGIS 3.0
+    */
+    void sizeChangedByRotation( double& width, double& height, double rotation ) /Deprecated/;
+    
     /**Calculates width / height of the bounding box of a rotated rectangle
-    * @deprecated Use void sizeChangedByRotation( double& width, double& height, double rotation )
-    * instead
+     * @deprecated will be removed in QGIS 3.0
     */
     void sizeChangedByRotation( double& width, double& height ) /Deprecated/;
-
+    
     /**Rotates a point / vector
-        @param angle rotation angle in degrees, counterclockwise
-        @param x in/out: x coordinate before / after the rotation
-        @param y in/out: y cooreinate before / after the rotation*/
-    void rotate( double angle, double& x, double& y ) const;
+     * @param angle rotation angle in degrees, counterclockwise
+     * @param x in/out: x coordinate before / after the rotation
+     * @param y in/out: y cooreinate before / after the rotation
+     * @deprecated use QgsComposerUtils:rotate instead
+    */
+    void rotate( double angle, double& x, double& y ) const /Deprecated/;    
 
     /**Return horizontal align snap item. Creates a new graphics line if 0*/
     QGraphicsLineItem* hAlignSnapItem();
@@ -652,22 +582,12 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     void deleteVAlignSnapItem();
     void deleteAlignItems();
 
-    /**Evaluate a data defined property and return the calculated value
-     * @returns true if data defined property could be successfully evaluated
-     * @param property data defined property to evaluate
-     * @param expressionValue QVariant for storing the evaluated value
-     * @note this method was added in version 2.5
-    */
-    bool dataDefinedEvaluate( QgsComposerItem::DataDefinedProperty property, QVariant &expressionValue );
-
     /**Update an item rect to consider data defined position and size of item*/
     QRectF evalItemRect( const QRectF &newRect );
 
   signals:
     /**Is emitted on item rotation change*/
     void itemRotationChanged( double newRotation );
-    /**Used e.g. by the item widgets to update the gui elements*/
-    void itemChanged();
     /**Emitted if the rectangle changes*/
     void sizeChanged();
     /**Emitted if the item's frame style changes
