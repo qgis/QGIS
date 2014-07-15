@@ -8690,20 +8690,22 @@ void QgisApp::projectProperties()
   connect( pp, SIGNAL( refresh() ), mMapCanvas, SLOT( refresh() ) );
 
   // Display the modal dialog box.
-  pp->exec();
+  if ( pp->exec() == QDialog::Accepted)
+  {
 
-  int  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
-  int  myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
-  int  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
-  QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
-  mMapCanvas->setCanvasColor( myColor ); // this is fill color before rendering onto canvas
+    int  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
+    int  myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
+    int  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
+    QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
+    mMapCanvas->setCanvasColor( myColor ); // this is fill color before rendering onto canvas
 
-  qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureDist )->updateSettings();
-  qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureArea )->updateSettings();
-  qobject_cast<QgsMapToolMeasureAngle*>( mMapTools.mMeasureAngle )->updateSettings();
+    qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureDist )->updateSettings();
+    qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureArea )->updateSettings();
+    qobject_cast<QgsMapToolMeasureAngle*>( mMapTools.mMeasureAngle )->updateSettings();
 
-  // Set the window title.
-  setTitleBarText_( *this );
+    // Set the window title.
+    setTitleBarText_( *this );
+  }
 
   // delete the property sheet object
   delete pp;
