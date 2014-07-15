@@ -308,6 +308,8 @@ void TestQgsGeometry::bufferCheck()
 }
 void TestQgsGeometry::bufferCheck2()
 {
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+ ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=8)))
   // should be a single polygon
   QgsGeometry * mypBufferGeometry  =  mpPolygonGeometryB->buffer( 10, 10, 0 );
   qDebug( "Geometry Type: %s", QGis::featureType( mypBufferGeometry->wkbType() ) );
@@ -317,6 +319,9 @@ void TestQgsGeometry::bufferCheck2()
   dumpPolygon( myPolygon );
   delete mypBufferGeometry;
   QVERIFY( renderCheck( "geometry_bufferCheck2", "Checking left side buffer(10,10,0) of B" ) );
+#else
+  return true;
+#endif
 }
 bool TestQgsGeometry::renderCheck( QString theTestName, QString theComment )
 {
