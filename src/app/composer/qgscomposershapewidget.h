@@ -19,11 +19,12 @@
 #define QGSCOMPOSERSHAPEWIDGET_H
 
 #include "ui_qgscomposershapewidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerShape;
 
 /**Input widget for QgsComposerShape*/
-class QgsComposerShapeWidget: public QWidget, private Ui::QgsComposerShapeWidgetBase
+class QgsComposerShapeWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerShapeWidgetBase
 {
     Q_OBJECT
   public:

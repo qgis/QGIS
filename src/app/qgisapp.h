@@ -293,8 +293,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionPanToSelected() { return mActionPanToSelected; }
     QAction *actionZoomIn() { return mActionZoomIn; }
     QAction *actionZoomOut() { return mActionZoomOut; }
-    QAction *actionSelect() { return mActionSelect; }
-    QAction *actionSelectRectangle() { return mActionSelectRectangle; }
+    QAction *actionSelect() { return mActionSelectFeatures; }
+    QAction *actionSelectRectangle() { return mActionSelectFeatures; }
     QAction *actionSelectPolygon() { return mActionSelectPolygon; }
     QAction *actionSelectFreehand() { return mActionSelectFreehand; }
     QAction *actionSelectRadius() { return mActionSelectRadius; }
@@ -469,7 +469,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
   public slots:
     void layerTreeViewDoubleClicked( const QModelIndex& index );
-    void layerTreeViewCurrentChanged( const QModelIndex& current, const QModelIndex& previous );
+    //! Make sure the insertion point for new layers is up-to-date with the current item in layer tree view
+    void updateNewLayerInsertionPoint();
     void activeLayerChanged( QgsMapLayer* layer );
     //! Zoom to full extent
     void zoomFull();
@@ -995,11 +996,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! shows the snapping Options
     void snappingOptions();
 
-    //! activates the selection tool
-    void select();
-
     //! activates the rectangle selection tool
-    void selectByRectangle();
+    void selectFeatures();
 
     //! activates the polygon selection tool
     void selectByPolygon();
@@ -1018,6 +1016,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! refresh map canvas
     void refreshMapCanvas();
+
+    //! start "busy" progress bar
+    void canvasRefreshStarted();
+    //! stop "busy" progress bar
+    void canvasRefreshFinished();
 
     /** Dialog for verification of action on many edits
      * @note added in 1.9 */
@@ -1224,6 +1227,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * @note added in 2.3 */
     void activateDeuteranopePreview();
 
+    /** Make the user feel dizzy */
+    void dizzy();
+
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
@@ -1332,6 +1338,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**Removes annotation items in the canvas*/
     void removeAnnotationItems();
 
+    //! Configure layer tree view according to the user options from QSettings
+    void setupLayerTreeViewFromSettings();
+
     /// QgisApp aren't copyable
     QgisApp( QgisApp const & );
     /// QgisApp aren't copyable
@@ -1421,7 +1430,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mSplitFeatures;
         QgsMapTool* mSplitParts;
         QgsMapTool* mSelect;
-        QgsMapTool* mSelectRectangle;
+        QgsMapTool* mSelectFeatures;
         QgsMapTool* mSelectPolygon;
         QgsMapTool* mSelectFreehand;
         QgsMapTool* mSelectRadius;
@@ -1532,6 +1541,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Timer for map tips
      */
     QTimer *mpMapTipsTimer;
+
+    //! Helps to make people dizzy
+    QTimer* mDizzyTimer;
 
     /** Point of last mouse position in map coordinates (used with MapTips)
      */

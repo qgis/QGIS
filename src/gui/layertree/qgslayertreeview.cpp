@@ -33,7 +33,7 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   setDragEnabled( true );
   setAcceptDrops( true );
   setDropIndicatorShown( true );
-  setEditTriggers( EditKeyPressed | SelectedClicked );
+  setEditTriggers( EditKeyPressed );
   setExpandsOnDoubleClick( false ); // normally used for other actions
 
   setSelectionMode( ExtendedSelection );
@@ -56,6 +56,8 @@ void QgsLayerTreeView::setModel( QAbstractItemModel* model )
   connect( model, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( modelRowsRemoved() ) );
 
   QTreeView::setModel( model );
+
+  connect( layerTreeModel()->rootGroup(), SIGNAL( expandedChanged( QgsLayerTreeNode*, bool ) ), this, SLOT( onExpandedChanged( QgsLayerTreeNode*, bool ) ) );
 
   connect( selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( onCurrentChanged() ) );
 
@@ -161,6 +163,13 @@ void QgsLayerTreeView::onCurrentChanged()
 
   mCurrentIndex = layerCurrentIndex;
   emit currentLayerChanged( layerCurrent );
+}
+
+void QgsLayerTreeView::onExpandedChanged( QgsLayerTreeNode* node, bool expanded )
+{
+  QModelIndex idx = layerTreeModel()->node2index( node );
+  if ( isExpanded( idx ) != expanded )
+    setExpanded( idx, expanded );
 }
 
 void QgsLayerTreeView::updateExpandedStateFromNode( QgsLayerTreeNode* node )

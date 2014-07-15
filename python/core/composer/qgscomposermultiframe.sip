@@ -1,6 +1,6 @@
 
 /**Abstract base class for composer entries with the ability to distribute the content to several frames (items)*/
-class QgsComposerMultiFrame: QObject
+class QgsComposerMultiFrame: QgsComposerObject
 {
 %TypeHeaderCode
 #include "qgscomposermultiframe.h"
@@ -10,7 +10,7 @@ class QgsComposerMultiFrame: QObject
 
     enum ResizeMode
     {
-      UseExistingFrames = 0,
+      UseExistingFrames,
       ExtendToNextPage, //uses the next page(s) until the content has been printed
       RepeatOnEveryPage, //repeats the same frame on every page
       RepeatUntilFinished //duplicates last frame to next page to fit the total size

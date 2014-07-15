@@ -311,6 +311,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   placement = AroundPoint;
   placementFlags = 0;
   centroidWhole = false;
+  centroidInside = false;
   quadOffset = QuadrantOver;
   xOffset = 0;
   yOffset = 0;
@@ -431,6 +432,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   mDataDefinedNames.insert( DistanceUnits, QPair<QString, int>( "DistanceUnits", -1 ) );
   mDataDefinedNames.insert( OffsetRotation, QPair<QString, int>( "OffsetRotation", -1 ) );
   mDataDefinedNames.insert( CurvedCharAngleInOut, QPair<QString, int>( "CurvedCharAngleInOut", -1 ) );
+  mDataDefinedNames.insert( RepeatDistance, QPair<QString, int>( "RepeatDistance", -1 ) );
+  mDataDefinedNames.insert( RepeatDistanceUnit, QPair<QString, int>( "RepeatDistanceUnit", -1 ) );
   // (data defined only)
   mDataDefinedNames.insert( PositionX, QPair<QString, int>( "PositionX", 9 ) );
   mDataDefinedNames.insert( PositionY, QPair<QString, int>( "PositionY", 10 ) );
@@ -502,6 +505,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   placement = s.placement;
   placementFlags = s.placementFlags;
   centroidWhole = s.centroidWhole;
+  centroidInside = s.centroidInside;
   quadOffset = s.quadOffset;
   xOffset = s.xOffset;
   yOffset = s.yOffset;
@@ -648,23 +652,6 @@ static QgsPalLayerSettings::SizeUnit _decodeUnits( const QString& str )
        || str.compare( "MapUnits", Qt::CaseInsensitive ) == 0 ) return QgsPalLayerSettings::MapUnits;
   if ( str.compare( "Percent", Qt::CaseInsensitive ) == 0 ) return QgsPalLayerSettings::Percent;
   return QgsPalLayerSettings::MM; // "MM"
-}
-
-static QPainter::CompositionMode _decodeBlendMode( const QString& str )
-{
-  if ( str.compare( "Lighten", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Lighten;
-  if ( str.compare( "Screen", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Screen;
-  if ( str.compare( "Dodge", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_ColorDodge;
-  if ( str.compare( "Addition", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Plus;
-  if ( str.compare( "Darken", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Darken;
-  if ( str.compare( "Multiply", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Multiply;
-  if ( str.compare( "Burn", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_ColorBurn;
-  if ( str.compare( "Overlay", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Overlay;
-  if ( str.compare( "SoftLight", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_SoftLight;
-  if ( str.compare( "HardLight", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_HardLight;
-  if ( str.compare( "Difference", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Difference;
-  if ( str.compare( "Subtract", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Exclusion;
-  return QPainter::CompositionMode_SourceOver; // "Normal"
 }
 
 static Qt::PenJoinStyle _decodePenJoinStyle( const QString& str )
@@ -850,7 +837,14 @@ void QgsPalLayerSettings::readDataDefinedProperty( QgsVectorLayer* layer,
 void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
 {
   if ( layer->customProperty( "labeling" ).toString() != QString( "pal" ) )
+  {
+    // for polygons the "over point" (over centroid) placement is better than the default
+    // "around point" (around centroid) which is more suitable for points
+    if ( layer->geometryType() == QGis::Polygon )
+      placement = OverPoint;
+
     return; // there's no information available
+  }
 
   // NOTE: set defaults for newly added properties, for backwards compatibility
 
@@ -997,6 +991,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   placement = ( Placement )layer->customProperty( "labeling/placement" ).toInt();
   placementFlags = layer->customProperty( "labeling/placementFlags" ).toUInt();
   centroidWhole = layer->customProperty( "labeling/centroidWhole", QVariant( false ) ).toBool();
+  centroidInside = layer->customProperty( "labeling/centroidInside", QVariant( false ) ).toBool();
   dist = layer->customProperty( "labeling/dist" ).toDouble();
   distInMapUnits = layer->customProperty( "labeling/distInMapUnits" ).toBool();
   distMapUnitScale.minScale = layer->customProperty( "labeling/distMapUnitMinScale", 0.0 ).toDouble();
@@ -1167,6 +1162,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/placement", placement );
   layer->setCustomProperty( "labeling/placementFlags", ( unsigned int )placementFlags );
   layer->setCustomProperty( "labeling/centroidWhole", centroidWhole );
+  layer->setCustomProperty( "labeling/centroidInside", centroidInside );
   layer->setCustomProperty( "labeling/dist", dist );
   layer->setCustomProperty( "labeling/distInMapUnits", distInMapUnits );
   layer->setCustomProperty( "labeling/distMapUnitMinScale", distMapUnitScale.minScale );
@@ -1910,10 +1906,19 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     }
   }
 
+  if ( !geom->asGeos() )
+    return;  // there is something really wrong with the geometry
+
   // fix invalid polygons
   if ( geom->type() == QGis::Polygon && !geom->isGeosValid() )
   {
-    geom->fromGeos( GEOSBuffer( geom->asGeos(), 0, 0 ) );
+    QgsGeometry* bufferGeom = geom->buffer( 0, 0 );
+    if ( !bufferGeom )
+    {
+      return;
+    }
+    geom = bufferGeom;
+    clonedGeometry.reset( geom );
   }
 
   // CLIP the geometry if it is bigger than the extent
@@ -1924,11 +1929,13 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     do_clip = !extentGeom->contains( geom );
     if ( do_clip )
     {
-      geom = geom->intersection( extentGeom ); // creates new geometry
-      if ( !geom )
+      QgsGeometry* clipGeom = geom->intersection( extentGeom ); // creates new geometry
+      if ( !clipGeom )
       {
         return;
       }
+      geom = clipGeom;
+      clonedGeometry.reset( geom );
     }
   }
 
@@ -1963,7 +1970,15 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     }
   }
 
-  GEOSGeometry* geos_geom_clone = GEOSGeom_clone( geos_geom );
+  GEOSGeometry* geos_geom_clone;
+  if ( GEOSGeomTypeId( geos_geom ) == GEOS_POLYGON && repeatDistance > 0 && placement == Line )
+  {
+    geos_geom_clone = GEOSBoundary( geos_geom );
+  }
+  else
+  {
+    geos_geom_clone = GEOSGeom_clone( geos_geom );
+  }
 
   //data defined position / alignment / rotation?
   bool dataDefinedPosition = false;
@@ -2099,13 +2114,15 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   if ( dataDefinedEvaluate( QgsPalLayerSettings::PositionX, exprVal ) )
   {
-    xPos = exprVal.toDouble( &ddXPos );
+    if ( !exprVal.isNull() )
+      xPos = exprVal.toDouble( &ddXPos );
     QgsDebugMsgLevel( QString( "exprVal PositionX:%1" ).arg( xPos ), 4 );
 
     if ( dataDefinedEvaluate( QgsPalLayerSettings::PositionY, exprVal ) )
     {
       //data defined position. But field values could be NULL -> positions will be generated by PAL
-      yPos = exprVal.toDouble( &ddYPos );
+      if ( !exprVal.isNull() )
+        yPos = exprVal.toDouble( &ddYPos );
       QgsDebugMsgLevel( QString( "exprVal PositionY:%1" ).arg( yPos ), 4 );
 
       if ( ddXPos && ddYPos )
@@ -2232,48 +2249,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 #endif
   lbl->setDefinedFont( labelFont );
 
-  // data defined repeat distance?
-  double repeatDist = repeatDistance;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::RepeatDistance, exprVal ) )
-  {
-    bool ok;
-    double distD = exprVal.toDouble( &ok );
-    if ( ok )
-    {
-      repeatDist = distD;
-    }
-  }
-
-  // data defined label-repeat distance units?
-  bool repeatdistinmapunit = repeatDistanceUnit == MapUnits;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::RepeatDistanceUnit, exprVal ) )
-  {
-    QString units = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QString( "exprVal RepeatDistanceUnits:%1" ).arg( units ), 4 );
-    if ( !units.isEmpty() )
-    {
-      repeatdistinmapunit = ( _decodeUnits( units ) == QgsPalLayerSettings::MapUnits );
-    }
-  }
-
-  if ( repeatDist != 0 )
-  {
-    if ( !repeatdistinmapunit ) //convert distance from mm/map units to pixels
-    {
-      repeatDist *= repeatDistanceMapUnitScale.computeMapUnitsPerPixel( context ) * context.scaleFactor();
-    }
-    else //mm
-    {
-      repeatDist *= vectorScaleFactor;
-    }
-  }
-
   //  feature to the layer
   try
   {
     if ( !palLayer->registerFeature( lbl->strId(), lbl, labelX, labelY, labelText.toUtf8().constData(),
                                      xPos, yPos, dataDefinedPosition, angle, dataDefinedRotation,
-                                     quadOffsetX, quadOffsetY, offsetX, offsetY, alwaysShow, repeatDist ) )
+                                     quadOffsetX, quadOffsetY, offsetX, offsetY, alwaysShow ) )
       return;
   }
   catch ( std::exception &e )
@@ -2485,7 +2466,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
 
       if ( !blendstr.isEmpty() )
       {
-        dataDefinedValues.insert( p, QVariant(( int )_decodeBlendMode( blendstr ) ) );
+        dataDefinedValues.insert( p, QVariant(( int )QgsSymbolLayerV2Utils::decodeBlendMode( blendstr ) ) );
         return true;
       }
     }
@@ -3195,6 +3176,7 @@ QgsPalLabeling::QgsPalLabeling()
   mShowingShadowRects = false;
   mShowingAllLabels = false;
   mShowingPartialsLabels = p.getShowPartial();
+  mDrawOutlineLabels = true;
 }
 
 QgsPalLabeling::~QgsPalLabeling()
@@ -3388,6 +3370,49 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
 
   // set whether adjacent lines should be merged
   l->setMergeConnectedLines( lyr.mergeLines );
+
+
+  // set whether location of centroid must be inside of polygons
+  l->setCentroidInside( lyr.centroidInside );
+
+  // set repeat distance
+  // data defined repeat distance?
+  QVariant exprVal;
+  double repeatDist = lyr.repeatDistance;
+  if ( lyr.dataDefinedEvaluate( QgsPalLayerSettings::RepeatDistance, exprVal ) )
+  {
+    bool ok;
+    double distD = exprVal.toDouble( &ok );
+    if ( ok )
+    {
+      repeatDist = distD;
+    }
+  }
+
+  // data defined label-repeat distance units?
+  bool repeatdistinmapunit = lyr.repeatDistanceUnit == QgsPalLayerSettings::MapUnits;
+  if ( lyr.dataDefinedEvaluate( QgsPalLayerSettings::RepeatDistanceUnit, exprVal ) )
+  {
+    QString units = exprVal.toString().trimmed();
+    QgsDebugMsgLevel( QString( "exprVal RepeatDistanceUnits:%1" ).arg( units ), 4 );
+    if ( !units.isEmpty() )
+    {
+      repeatdistinmapunit = ( _decodeUnits( units ) == QgsPalLayerSettings::MapUnits );
+    }
+  }
+
+  if ( repeatDist != 0 )
+  {
+    if ( !repeatdistinmapunit ) //convert distance from mm/map units to pixels
+    {
+      repeatDist *= lyr.repeatDistanceMapUnitScale.computeMapUnitsPerPixel( ctx ) * ctx.scaleFactor();
+    }
+    else //mm
+    {
+      repeatDist *= lyr.vectorScaleFactor;
+    }
+  }
+  l->setRepeatDistance( repeatDist );
 
   // set how to show upside-down labels
   Layer::UpsideDownLabels upsdnlabels;
@@ -4424,6 +4449,11 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
         textp.setPen( Qt::NoPen );
         textp.setBrush( tmpLyr.textColor );
         textp.drawPath( path );
+        // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
+        //       e.g. some capitalization options, but not others
+        //textp.setFont( tmpLyr.textFont );
+        //textp.setPen( tmpLyr.textColor );
+        //textp.drawText( 0, 0, component.text() );
         textp.end();
 
         if ( tmpLyr.shadowDraw && tmpLyr.shadowUnder == QgsPalLayerSettings::ShadowText )
@@ -4440,20 +4470,24 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
         {
           painter->setCompositionMode( tmpLyr.blendMode );
         }
-//        painter->setPen( Qt::NoPen );
-//        painter->setBrush( tmpLyr.textColor );
-//        painter->drawPath( path );
 
         // scale for any print output or image saving @ specific dpi
         painter->scale( component.dpiRatio(), component.dpiRatio() );
-        _fixQPictureDPI( painter );
-        painter->drawPicture( 0, 0, textPict );
 
-        // regular text draw, for testing optimization
-//        painter->setFont( tmpLyr.textFont );
-//        painter->setPen( tmpLyr.textColor );
-//        painter->drawText( 0, 0, multiLineList.at( i ) );
-
+        if ( mDrawOutlineLabels )
+        {
+          // draw outlined text
+          _fixQPictureDPI( painter );
+          painter->drawPicture( 0, 0, textPict );
+        }
+        else
+        {
+          // draw text as text (for SVG and PDF exports)
+          painter->setFont( tmpLyr.textFont );
+          painter->setPen( tmpLyr.textColor );
+          painter->setRenderHint( QPainter::TextAntialiasing );
+          painter->drawText( 0, 0, component.text() );
+        }
       }
       painter->restore();
     }
@@ -4985,6 +5019,8 @@ void QgsPalLabeling::loadEngineSettings()
                         "PAL", "/ShowingAllLabels", false, &saved );
   mShowingPartialsLabels = QgsProject::instance()->readBoolEntry(
                              "PAL", "/ShowingPartialsLabels", p.getShowPartial(), &saved );
+  mDrawOutlineLabels = QgsProject::instance()->readBoolEntry(
+                         "PAL", "/DrawOutlineLabels", true, &saved );
 }
 
 void QgsPalLabeling::saveEngineSettings()
@@ -4997,6 +5033,7 @@ void QgsPalLabeling::saveEngineSettings()
   QgsProject::instance()->writeEntry( "PAL", "/ShowingShadowRects", mShowingShadowRects );
   QgsProject::instance()->writeEntry( "PAL", "/ShowingAllLabels", mShowingAllLabels );
   QgsProject::instance()->writeEntry( "PAL", "/ShowingPartialsLabels", mShowingPartialsLabels );
+  QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", mDrawOutlineLabels );
 }
 
 void QgsPalLabeling::clearEngineSettings()
@@ -5009,6 +5046,7 @@ void QgsPalLabeling::clearEngineSettings()
   QgsProject::instance()->removeEntry( "PAL", "/ShowingShadowRects" );
   QgsProject::instance()->removeEntry( "PAL", "/ShowingAllLabels" );
   QgsProject::instance()->removeEntry( "PAL", "/ShowingPartialsLabels" );
+  QgsProject::instance()->removeEntry( "PAL", "/DrawOutlineLabels" );
 }
 
 QgsLabelingEngineInterface* QgsPalLabeling::clone()
@@ -5018,6 +5056,7 @@ QgsLabelingEngineInterface* QgsPalLabeling::clone()
   lbl->mShowingCandidates = mShowingCandidates;
   lbl->mShowingShadowRects = mShowingShadowRects;
   lbl->mShowingPartialsLabels = mShowingPartialsLabels;
+  lbl->mDrawOutlineLabels = mDrawOutlineLabels;
   return lbl;
 }
 

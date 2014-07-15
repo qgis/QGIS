@@ -27,7 +27,7 @@
 #include <QColorDialog>
 #include <QFontDialog>
 
-QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table ): QWidget( 0 ), mComposerTable( table )
+QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table ): QgsComposerItemBaseWidget( 0, table ), mComposerTable( table )
 {
   setupUi( this );
   //add widget for general composer item properties

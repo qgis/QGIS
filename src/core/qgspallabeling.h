@@ -64,10 +64,8 @@ class QgsVectorLayer;
 class CORE_EXPORT QgsPalLayerSettings
 {
   public:
-    Q_NOWARN_DEPRECATED_PUSH
     QgsPalLayerSettings();
     QgsPalLayerSettings( const QgsPalLayerSettings& s );
-    Q_NOWARN_DEPRECATED_POP
     ~QgsPalLayerSettings();
 
     //! @note added in 2.4
@@ -257,7 +255,7 @@ class CORE_EXPORT QgsPalLayerSettings
       Vali = 12, //vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
       Rotation = 14, //data defined rotation
       RepeatDistance = 84,
-      RepeatDistanceUnit = 85,
+      RepeatDistanceUnit = 86,
 
       // rendering
       ScaleVisibility = 23,
@@ -376,6 +374,7 @@ class CORE_EXPORT QgsPalLayerSettings
     unsigned int placementFlags;
 
     bool centroidWhole; // whether centroid calculated from whole or visible polygon
+    bool centroidInside; // whether centroid-point calculated must be inside polygon
     double dist; // distance from the feature (in mm)
     bool distInMapUnits; //true if distance is in map units (otherwise in mm)
     QgsMapUnitScale distMapUnitScale;
@@ -702,7 +701,7 @@ class CORE_EXPORT QgsLabelingResults
     friend class QgsPalLabeling;
 };
 
-
+Q_NOWARN_DEPRECATED_PUSH
 class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 {
   public:
@@ -741,13 +740,15 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     bool isShowingPartialsLabels() const { return mShowingPartialsLabels; }
     void setShowingPartialsLabels( bool showing ) { mShowingPartialsLabels = showing; }
 
+    //! @note added in 2.4
+    bool isDrawingOutlineLabels() const { return mDrawOutlineLabels; }
+    void setDrawingOutlineLabels( bool outline ) { mDrawOutlineLabels = outline; }
+
     // implemented methods from labeling engine interface
 
     //! called when we're going to start with rendering
     //! @deprecated since 2.4 - use override with QgsMapSettings
-    Q_NOWARN_DEPRECATED_PUSH
     Q_DECL_DEPRECATED virtual void init( QgsMapRenderer* mr );
-    Q_NOWARN_DEPRECATED_POP
     //! called when we're going to start with rendering
     virtual void init( const QgsMapSettings& mapSettings );
     //! called to find out whether the layer is used for labeling
@@ -776,14 +777,12 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     //! called when we're done with rendering
     virtual void exit();
 
-    Q_NOWARN_DEPRECATED_PUSH
     //! return infos about labels at a given (map) position
     //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
     Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p );
     //! return infos about labels within a given (map) rectangle
     //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
     Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r );
-    Q_NOWARN_DEPRECATED_POP
 
     //! Return pointer to recently computed results (in drawLabeling()) and pass the ownership of results to the caller
     //! @note added in 2.4
@@ -861,8 +860,11 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     bool mShowingAllLabels; // whether to avoid collisions or not
     bool mShowingShadowRects; // whether to show debugging rectangles for drop shadows
     bool mShowingPartialsLabels; // whether to avoid partials labels or not
+    bool mDrawOutlineLabels; // whether to draw labels as text or outlines
 
     QgsLabelingResults* mResults;
 };
+Q_NOWARN_DEPRECATED_POP
+
 
 #endif // QGSPALLABELING_H

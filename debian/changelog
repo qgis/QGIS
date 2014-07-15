@@ -1,4 +1,19 @@
-qgis (2.3.0) UNRELEASED; urgency=medium
+qgis (2.5.0) UNRELEASED; urgency=medium
+
+  * New development version 2.5 after branch of 2.4
+  * add libqscintilla2-dev as build dependency
+  * add remove sqlanywhere plugin and provider
+  * drop support for ubuntu quantal and raring and add utopic
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 15 Jul 2014 09:09:52 +0200
+
+qgis (2.4.0) unstable; urgency=medium
+
+  * Release of 2.4
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 27 Jun 2014 14:00:54 +0200
+
+qgis (2.3.0) unstable; urgency=medium
 
   * New development version 2.3 after branch of 2.2
   * enable globe on jessie
@@ -8,7 +23,7 @@ qgis (2.3.0) UNRELEASED; urgency=medium
   * include metasearch plugins and add it's dependencies
   * include custom widgets
 
- -- Jürgen E. Fischer <jef@norbit.de>  Mon, 19 May 2014 16:50:23 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 27 Jun 2014 14:00:08 +0200
 
 qgis (2.2.0) unstable; urgency=medium
 

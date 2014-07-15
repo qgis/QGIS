@@ -49,6 +49,12 @@ QModelIndex QgsFieldModel::indexFromName( const QString &fieldName )
   return QModelIndex();
 }
 
+bool QgsFieldModel::isField( const QString& expression )
+{
+  int index = mFields.indexFromName( expression );
+  return index >= 0;
+}
+
 void QgsFieldModel::setLayer( QgsVectorLayer *layer )
 {
   if ( mLayer )
@@ -78,13 +84,74 @@ void QgsFieldModel::layerDeleted()
 
 void QgsFieldModel::updateModel()
 {
-  beginResetModel();
-  mExpression = QList<QString>();
   if ( mLayer )
-    mFields = mLayer->pendingFields();
+  {
+    QgsFields newFields = mLayer->pendingFields();
+    if ( mFields.toList() != newFields.toList() )
+    {
+      // Try to handle two special cases: addition of a new field and removal of a field.
+      // It would be better to listen directly to attributeAdded/attributeDeleted
+      // so we would not have to check for addition/removal here.
+
+      if ( mFields.count() == newFields.count() - 1 )
+      {
+        QgsFields tmpNewFields = newFields;
+        tmpNewFields.remove( tmpNewFields.count() - 1 );
+        if ( mFields.toList() == tmpNewFields.toList() )
+        {
+          // the only change is a new field at the end
+          beginInsertRows( QModelIndex(), mFields.count(), mFields.count() );
+          mFields = newFields;
+          endInsertRows();
+          return;
+        }
+      }
+
+      if ( mFields.count() == newFields.count() + 1 )
+      {
+        QgsFields tmpOldFields = mFields;
+        tmpOldFields.remove( tmpOldFields.count() - 1 );
+        if ( tmpOldFields.toList() == newFields.toList() )
+        {
+          // the only change is a field removed at the end
+          beginRemoveRows( QModelIndex(), mFields.count() - 1, mFields.count() - 1 );
+          mFields = newFields;
+          endRemoveRows();
+          return;
+        }
+
+        for ( int i = 0; i < newFields.count(); ++i )
+        {
+          if ( mFields.at( i ) != newFields.at( i ) )
+          {
+            QgsFields tmpOldFields = mFields;
+            tmpOldFields.remove( i );
+            if ( tmpOldFields.toList() != newFields.toList() )
+              break; // the change is more complex - go with general case
+
+            // the only change is a field removed at index i
+            beginRemoveRows( QModelIndex(), i, i );
+            mFields = newFields;
+            endRemoveRows();
+            return;
+          }
+        }
+      }
+
+      // general case with reset - not good - resets selections
+      beginResetModel();
+      mFields = mLayer->pendingFields();
+      endResetModel();
+    }
+    else
+      emit dataChanged( index( 0, 0 ), index( rowCount(), 0 ) );
+  }
   else
+  {
+    beginResetModel();
     mFields = QgsFields();
-  endResetModel();
+    endResetModel();
+  }
 }
 
 void QgsFieldModel::setAllowExpression( bool allowExpression )
@@ -104,16 +171,20 @@ void QgsFieldModel::setAllowExpression( bool allowExpression )
   }
 }
 
-QModelIndex QgsFieldModel::setExpression( const QString &expression )
+void QgsFieldModel::setExpression( const QString &expression )
 {
   if ( !mAllowExpression )
-    return QModelIndex();
+    return;
+
+  QModelIndex idx = indexFromName( expression );
+  if ( idx.isValid() )
+    return;
 
   beginResetModel();
-  mExpression = QList<QString>() << expression;
+  mExpression = QList<QString>();
+  if ( !expression.isEmpty() )
+    mExpression << expression;
   endResetModel();
-
-  return index( mFields.count() , 0 );
 }
 
 void QgsFieldModel::removeExpression()
@@ -125,11 +196,12 @@ void QgsFieldModel::removeExpression()
 
 QModelIndex QgsFieldModel::index( int row, int column, const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
-  if ( row < 0 || row >= rowCount() )
-    return QModelIndex();
+  if ( hasIndex( row, column, parent ) )
+  {
+    return createIndex( row, column, row );
+  }
 
-  return createIndex( row, column, row );
+  return QModelIndex();
 }
 
 QModelIndex QgsFieldModel::parent( const QModelIndex &child ) const
@@ -140,7 +212,11 @@ QModelIndex QgsFieldModel::parent( const QModelIndex &child ) const
 
 int QgsFieldModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  if ( parent.isValid() )
+  {
+    return 0;
+  }
+
   return mAllowExpression ? mFields.count() + mExpression.count() : mFields.count();
 }
 
@@ -155,10 +231,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
   if ( !index.isValid() )
     return QVariant();
 
-  if ( !mLayer )
-    return QVariant();
-
-  int exprIdx = index.internalId() - mFields.count();
+  qint64 exprIdx = index.internalId() - mFields.count();
 
   switch ( role )
   {
@@ -203,10 +276,8 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
     {
       if ( exprIdx >= 0 )
       {
-        if ( !mLayer )
-          return false;
         QgsExpression exp( mExpression[exprIdx] );
-        exp.prepare( mLayer->pendingFields() );
+        exp.prepare( mLayer ? mLayer->pendingFields() : QgsFields() );
         return !exp.hasParserError();
       }
       return true;
@@ -219,6 +290,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
         QgsField field = mFields[index.internalId()];
         return ( int )field.type();
       }
+      return QVariant();
     }
 
     case Qt::DisplayRole:
@@ -228,10 +300,16 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       {
         return mExpression[exprIdx];
       }
-      QgsField field = mFields[index.internalId()];
-      const QMap< QString, QString > aliases = mLayer->attributeAliases();
-      QString alias = aliases.value( field.name(), field.name() );
-      return alias;
+      else if ( role == Qt::EditRole )
+      {
+        return mFields[index.internalId()].name();
+      }
+      else if ( mLayer )
+      {
+        return mLayer->attributeDisplayName( index.internalId() );
+      }
+      else
+        return QVariant();
     }
 
     case Qt::ForegroundRole:
@@ -239,10 +317,8 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       if ( exprIdx >= 0 )
       {
         // if expression, test validity
-        if ( !mLayer )
-          return false;
         QgsExpression exp( mExpression[exprIdx] );
-        exp.prepare( mLayer->pendingFields() );
+        exp.prepare( mLayer ? mLayer->pendingFields() : QgsFields() );
         if ( exp.hasParserError() )
         {
           return QBrush( QColor( Qt::red ) );

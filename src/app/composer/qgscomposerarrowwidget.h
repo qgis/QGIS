@@ -19,10 +19,11 @@
 #define QGSCOMPOSERARROWWIDGET_H
 
 #include "ui_qgscomposerarrowwidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerArrow;
 
-class QgsComposerArrowWidget: public QWidget, private Ui::QgsComposerArrowWidgetBase
+class QgsComposerArrowWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerArrowWidgetBase
 {
     Q_OBJECT
   public:

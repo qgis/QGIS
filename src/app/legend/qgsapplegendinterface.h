@@ -30,6 +30,7 @@ class QgsMapLayer;
  * QgsLegendInterface
  * Abstract base class to make QgsLegend available to plugins.
  */
+Q_NOWARN_DEPRECATED_PUSH
 class QgsAppLegendInterface : public QgsLegendInterface
 {
     Q_OBJECT
@@ -117,5 +118,6 @@ class QgsAppLegendInterface : public QgsLegendInterface
     int groupNodeToIndex( QgsLayerTreeGroup* group );
     void setExpanded( QgsLayerTreeNode *node, bool expand );
 };
+Q_NOWARN_DEPRECATED_POP
 
 #endif //QGSLEGENDAPPIFACE_H

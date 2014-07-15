@@ -28,6 +28,7 @@ from PyQt4.QtGui import *
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
 
+import os
 import psycopg2
 import psycopg2.extensions
 # use unicode!
@@ -42,14 +43,11 @@ class PostGisDBConnector(DBConnector):
 	def __init__(self, uri):
 		DBConnector.__init__(self, uri)
 
-		self.host = uri.host()
-		self.port = uri.port()
-		self.dbname = uri.database()
-		self.user = uri.username()
-		self.passwd = uri.password()
-
-		if self.dbname == '' or self.dbname is None:
-			self.dbname = self.user
+		self.host = uri.host() or os.environ.get('PGHOST')
+		self.port = uri.port() or os.environ.get('PGPORT')
+		self.user = uri.username() or os.environ.get('PGUSER') or os.environ.get('USER')
+		self.dbname = uri.database() or os.environ.get('PGDATABASE') or self.user
+		self.passwd = uri.password() or os.environ.get('PGPASSWORD')
 
 		try:
 			self.connection = psycopg2.connect( self._connectionInfo().encode('utf-8') )

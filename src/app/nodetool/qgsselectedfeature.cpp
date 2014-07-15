@@ -258,7 +258,7 @@ void QgsSelectedFeature::deleteSelectedVertexes()
   beginGeometryChange();
 
   int count = 0;
-  for ( int i = mVertexMap.size() - 1; i > -1; i-- )
+  for ( int i = mVertexMap.size() - 1; i > -1 && nSelected > 0; i-- )
   {
     if ( mVertexMap[i]->isSelected() )
     {
@@ -535,6 +535,9 @@ void QgsSelectedFeature::createVertexMap()
 
 void QgsSelectedFeature::selectVertex( int vertexNr )
 {
+  if ( vertexNr < 0 || vertexNr >= mVertexMap.size() )
+    return;
+
   QgsVertexEntry *entry = mVertexMap[vertexNr];
   entry->setSelected();
   entry->update();
@@ -550,6 +553,9 @@ void QgsSelectedFeature::selectVertex( int vertexNr )
 
 void QgsSelectedFeature::deselectVertex( int vertexNr )
 {
+  if ( vertexNr < 0 || vertexNr >= mVertexMap.size() )
+    return;
+
   QgsVertexEntry *entry = mVertexMap[vertexNr];
   entry->setSelected( false );
   entry->update();
@@ -574,6 +580,9 @@ void QgsSelectedFeature::deselectAllVertexes()
 
 void QgsSelectedFeature::invertVertexSelection( int vertexNr, bool invert )
 {
+  if ( vertexNr < 0 || vertexNr >= mVertexMap.size() )
+    return;
+
   QgsVertexEntry *entry = mVertexMap[vertexNr];
 
   bool selected = !entry->isSelected();

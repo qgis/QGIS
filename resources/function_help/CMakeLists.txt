@@ -5,6 +5,8 @@ SET(HELP_OUTPUT "${CMAKE_SOURCE_DIR}/src/core/qgsexpression_texts.cpp")
 
 FILE(WRITE ${HELP_OUTPUT} "#include \"qgsexpression.h\"\n#include <QCoreApplication>\n\nQHash<QString, QString> QgsExpression::gFunctionHelpTexts;\n\nvoid QgsExpression::initFunctionHelp()\n{\n  if( !gFunctionHelpTexts.isEmpty() )\n    return;\n")
 
+LIST(SORT HELP_FILES)
+
 FOREACH(HELP_FILE ${HELP_FILES})
   STRING(REGEX REPLACE "^.*/([^/]+)$" "\\1" FN ${HELP_FILE})
 

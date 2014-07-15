@@ -145,6 +145,7 @@ static GEOSInit geosinit;
 #define GEOSArea(g, a) GEOSArea( (GEOSGeometry*) g, a )
 #define GEOSTopologyPreserveSimplify(g, t) GEOSTopologyPreserveSimplify( (GEOSGeometry*) g, t )
 #define GEOSGetCentroid(g) GEOSGetCentroid( (GEOSGeometry*) g )
+#define GEOSPointOnSurface(g) GEOSPointOnSurface( (GEOSGeometry*) g )
 
 #define GEOSCoordSeq_getSize(cs,n) GEOSCoordSeq_getSize( (GEOSCoordSequence *) cs, n )
 #define GEOSCoordSeq_getX(cs,i,x) GEOSCoordSeq_getX( (GEOSCoordSequence *)cs, i, x )
@@ -1362,18 +1363,31 @@ bool QgsGeometry::moveVertex( double x, double y, int atVertex )
   }
 }
 
-bool QgsGeometry::deleteVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int atVertex, bool hasZValue, int &pointIndex, bool isRing, bool lastItem )
+// copy vertices from srcPtr to dstPtr and skip/delete one vertex
+// @param srcPtr ring/part starting with number of points (adjusted in each call)
+// @param dstPtr ring/part to copy to (adjusted in each call)
+// @param atVertex index of vertex to skip
+// @param hasZValue points have 3 elements
+// @param pointIndex reference to index of first ring/part vertex in overall object (adjusted in each call)
+// @param isRing srcPtr points to a ring
+// @param lastItem last ring/part, atVertex after this one must be wrong
+// @return
+//   0 no delete was done
+//   1 "normal" delete was done
+//   2 last element of the ring/part was deleted
+int QgsGeometry::deleteVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int atVertex, bool hasZValue, int &pointIndex, bool isRing, bool lastItem )
 {
   QgsDebugMsg( QString( "atVertex:%1 hasZValue:%2 pointIndex:%3 isRing:%4" ).arg( atVertex ).arg( hasZValue ).arg( pointIndex ).arg( isRing ) );
   const int ps = ( hasZValue ? 3 : 2 ) * sizeof( double );
   int nPoints;
   srcPtr >> nPoints;
 
+  // copy complete ring/part if vertex is in a following one
   if ( atVertex < pointIndex || atVertex >= pointIndex + nPoints )
   {
     // atVertex does not exist
     if ( lastItem && atVertex >= pointIndex + nPoints )
-      return false;
+      return 0;
 
     dstPtr << nPoints;
 
@@ -1382,14 +1396,25 @@ bool QgsGeometry::deleteVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int a
     dstPtr += len;
     srcPtr += len;
     pointIndex += nPoints;
-    return false;
+    return 0;
   }
 
+  // delete the first vertex of a ring instead of the last
   if ( isRing && atVertex == pointIndex + nPoints - 1 )
     atVertex = pointIndex;
 
+  if ( nPoints == ( isRing ? 2 : 1 ) )
+  {
+    // last point of the part/ring is deleted
+    // skip the whole part/ring
+    srcPtr += nPoints * ps;
+    pointIndex += nPoints;
+    return 2;
+  }
+
   dstPtr << nPoints - 1;
 
+  // copy ring before vertex
   int len = ( atVertex - pointIndex ) * ps;
   if ( len > 0 )
   {
@@ -1398,9 +1423,13 @@ bool QgsGeometry::deleteVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int a
     srcPtr += len;
   }
 
+  // skip deleted vertex
   srcPtr += ps;
 
+  // copy reset of ring
   len = ( pointIndex + nPoints - atVertex - 1 ) * ps;
+
+  // save position of vertex, if we delete the first vertex of a ring
   const unsigned char *first = 0;
   if ( isRing && atVertex == pointIndex )
   {
@@ -1415,6 +1444,7 @@ bool QgsGeometry::deleteVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int a
     srcPtr += len;
   }
 
+  // copy new first vertex instead of the old last, if we deleted the original first vertex
   if ( first )
   {
     memcpy( dstPtr, first, ps );
@@ -1422,13 +1452,14 @@ bool QgsGeometry::deleteVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int a
     srcPtr += ps;
   }
 
-  pointIndex += nPoints - 1;
+  pointIndex += nPoints;
 
-  return true;
+  return 1;
 }
 
 bool QgsGeometry::deleteVertex( int atVertex )
 {
+  QgsDebugMsg( QString( "atVertex:%1" ).arg( atVertex ) );
   if ( atVertex < 0 )
     return false;
 
@@ -1467,7 +1498,14 @@ bool QgsGeometry::deleteVertex( int atVertex )
     case QGis::WKBLineString:
     {
       int pointIndex = 0;
-      deleted = deleteVertex( srcPtr, dstPtr, atVertex, hasZValue, pointIndex, false, true );
+      int res = deleteVertex( srcPtr, dstPtr, atVertex, hasZValue, pointIndex, false, true );
+      if ( res == 2 )
+      {
+        // Linestring with 0 points
+        dstPtr << 0;
+      }
+
+      deleted = res != 0;
       break;
     }
 
@@ -1476,10 +1514,17 @@ bool QgsGeometry::deleteVertex( int atVertex )
     {
       int nRings;
       srcPtr >> nRings;
+      QgsWkbPtr ptrN( dstPtr );
       dstPtr << nRings;
 
       for ( int ringnr = 0, pointIndex = 0; ringnr < nRings; ++ringnr )
-        deleted |= deleteVertex( srcPtr, dstPtr, atVertex, hasZValue, pointIndex, true, ringnr == nRings - 1 );
+      {
+        int res = deleteVertex( srcPtr, dstPtr, atVertex, hasZValue, pointIndex, true, ringnr == nRings - 1 );
+        if ( res == 2 )
+          ptrN << nRings - 1;
+
+        deleted |= res != 0;
+      }
 
       break;
     }
@@ -1523,13 +1568,24 @@ bool QgsGeometry::deleteVertex( int atVertex )
     {
       int nLines;
       srcPtr >> nLines;
+      QgsWkbPtr ptrN( dstPtr );
       dstPtr << nLines;
 
       for ( int linenr = 0, pointIndex = 0; linenr < nLines; ++linenr )
       {
+        QgsWkbPtr saveDstPtr( dstPtr );
         srcPtr >> endianness >> wkbType;
         dstPtr << endianness << wkbType;
-        deleted |= deleteVertex( srcPtr, dstPtr, atVertex, hasZValue, pointIndex, false, linenr == nLines - 1 );
+
+        int res = deleteVertex( srcPtr, dstPtr, atVertex, hasZValue, pointIndex, false, linenr == nLines - 1 );
+        if ( res == 2 )
+        {
+          // line string was completely removed
+          ptrN << nLines - 1;
+          dstPtr = saveDstPtr;
+        }
+
+        deleted |= res != 0;
       }
 
       break;
@@ -1540,16 +1596,38 @@ bool QgsGeometry::deleteVertex( int atVertex )
     {
       int nPolys;
       srcPtr >> nPolys;
+      QgsWkbPtr ptrNPolys( dstPtr );
       dstPtr << nPolys;
 
       for ( int polynr = 0, pointIndex = 0; polynr < nPolys; ++polynr )
       {
         int nRings;
         srcPtr >> endianness >> wkbType >> nRings;
-        dstPtr << endianness << wkbType << nRings;
+        QgsWkbPtr saveDstPolyPtr( dstPtr );
+        dstPtr << endianness << wkbType;
+        QgsWkbPtr ptrNRings( dstPtr );
+        dstPtr << nRings;
 
         for ( int ringnr = 0; ringnr < nRings; ++ringnr )
-          deleted |= deleteVertex( srcPtr, dstPtr, atVertex, hasZValue, pointIndex, true, polynr == nPolys - 1 && ringnr == nRings - 1 );
+        {
+          int res = deleteVertex( srcPtr, dstPtr, atVertex, hasZValue, pointIndex, true, polynr == nPolys - 1 && ringnr == nRings - 1 );
+          if ( res == 2 )
+          {
+            // ring was completely removed
+            if ( nRings == 1 )
+            {
+              // last ring => remove polygon
+              ptrNPolys << nPolys - 1;
+              dstPtr = saveDstPolyPtr;
+            }
+            else
+            {
+              ptrNRings << nRings - 1;
+            }
+          }
+
+          deleted |= res != 0;
+        }
       }
       break;
     }
@@ -5186,9 +5264,7 @@ int QgsGeometry::lineContainedInLine( const GEOSGeometry* line1, const GEOSGeome
     return -1;
   }
 
-  double bufferDistance = 0.00001;
-  if ( geomInDegrees( line2 ) ) //use more accurate tolerance for degrees
-    bufferDistance = 0.00000001;
+  double bufferDistance = pow( 1.0L, geomDigits( line2 ) - 11 );
 
   GEOSGeometry* bufferGeom = GEOSBuffer( line2, bufferDistance, DEFAULT_QUADRANT_SEGMENTS );
   if ( !bufferGeom )
@@ -5218,9 +5294,7 @@ int QgsGeometry::pointContainedInLine( const GEOSGeometry* point, const GEOSGeom
   if ( !point || !line )
     return -1;
 
-  double bufferDistance = 0.000001;
-  if ( geomInDegrees( line ) )
-    bufferDistance = 0.00000001;
+  double bufferDistance = pow( 1.0L, geomDigits( line ) - 11 );
 
   GEOSGeometry* lineBuffer = GEOSBuffer( line, bufferDistance, 8 );
   if ( !lineBuffer )
@@ -5234,39 +5308,43 @@ int QgsGeometry::pointContainedInLine( const GEOSGeometry* point, const GEOSGeom
   return contained;
 }
 
-bool QgsGeometry::geomInDegrees( const GEOSGeometry* geom )
+int QgsGeometry::geomDigits( const GEOSGeometry* geom )
 {
   GEOSGeometry* bbox = GEOSEnvelope( geom );
   if ( !bbox )
-    return false;
+    return -1;
 
   const GEOSGeometry* bBoxRing = GEOSGetExteriorRing( bbox );
   if ( !bBoxRing )
-    return false;
+    return -1;
 
   const GEOSCoordSequence* bBoxCoordSeq = GEOSGeom_getCoordSeq( bBoxRing );
 
   if ( !bBoxCoordSeq )
-    return false;
+    return -1;
 
   unsigned int nCoords = 0;
   if ( !GEOSCoordSeq_getSize( bBoxCoordSeq, &nCoords ) )
-    return false;
+    return -1;
 
-  double x, y;
-  for ( unsigned int i = 0; i < ( nCoords - 1 ); ++i )
+  int maxDigits = -1;
+  for ( unsigned int i = 0; i < nCoords - 1; ++i )
   {
-    GEOSCoordSeq_getX( bBoxCoordSeq, i, &x );
-    if ( x > 180 || x < -180 )
-      return false;
+    double t;
+    GEOSCoordSeq_getX( bBoxCoordSeq, i, &t );
 
-    GEOSCoordSeq_getY( bBoxCoordSeq, i, &y );
-    if ( y > 90 || y < -90 )
-      return false;
+    int digits;
+    digits = ceil( log10( fabs( t ) ) );
+    if ( digits > maxDigits )
+      maxDigits = digits;
 
+    GEOSCoordSeq_getY( bBoxCoordSeq, i, &t );
+    digits = ceil( log10( fabs( t ) ) );
+    if ( digits > maxDigits )
+      maxDigits = digits;
   }
 
-  return true;
+  return maxDigits;
 }
 
 int QgsGeometry::numberOfGeometries( GEOSGeometry* g ) const
@@ -5593,8 +5671,30 @@ QgsGeometry* QgsGeometry::buffer( double distance, int segments )
   CATCH_GEOS( 0 )
 }
 
+QgsGeometry*QgsGeometry::buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit )
+{
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+ ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
+  if ( mDirtyGeos )
+    exportWkbToGeos();
+
+  if ( !mGeos )
+    return 0;
+
+  try
+  {
+    return fromGeosGeom( GEOSBufferWithStyle( mGeos, distance, segments, endCapStyle, joinStyle, mitreLimit ) );
+  }
+  CATCH_GEOS( 0 )
+#else
+  return 0;
+#endif
+}
+
 QgsGeometry* QgsGeometry::buffer( double distance, int segments, int side )
 {
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+ ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
   if ( mDirtyGeos )
   {
     exportWkbToGeos();
@@ -5619,6 +5719,29 @@ QgsGeometry* QgsGeometry::buffer( double distance, int segments, int side )
     return fromGeosGeom(geom);
   }
   CATCH_GEOS( 0 )
+#else
+  return 0;
+#endif
+}
+
+QgsGeometry* QgsGeometry::offsetCurve( double distance, int segments, int joinStyle, double mitreLimit )
+{
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+ ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
+  if ( mDirtyGeos )
+    exportWkbToGeos();
+
+  if ( !mGeos || this->type() != QGis::Line )
+    return 0;
+
+  try
+  {
+    return fromGeosGeom( GEOSOffsetCurve( mGeos, distance, segments, joinStyle, mitreLimit ) );
+  }
+  CATCH_GEOS( 0 )
+#else
+  return 0;
+#endif
 }
 
 QgsGeometry* QgsGeometry::simplify( double tolerance )
@@ -5647,6 +5770,21 @@ QgsGeometry* QgsGeometry::centroid()
   try
   {
     return fromGeosGeom( GEOSGetCentroid( mGeos ) );
+  }
+  CATCH_GEOS( 0 )
+}
+
+QgsGeometry* QgsGeometry::pointOnSurface()
+{
+  if ( mDirtyGeos )
+    exportWkbToGeos();
+
+  if ( !mGeos )
+    return 0;
+
+  try
+  {
+    return fromGeosGeom( GEOSPointOnSurface( mGeos ) );
   }
   CATCH_GEOS( 0 )
 }
@@ -6407,4 +6545,17 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart )
     default:
       return 0;
   }
+}
+
+QgsGeometry *QgsGeometry::unaryUnion( const QList<QgsGeometry*> &geometryList )
+{
+  QList<GEOSGeometry*> geoms;
+  foreach ( QgsGeometry* g, geometryList )
+  {
+    geoms.append( GEOSGeom_clone( g->asGeos() ) );
+  }
+  GEOSGeometry *geomUnion = _makeUnion( geoms );
+  QgsGeometry *ret = new QgsGeometry();
+  ret->fromGeos( geomUnion );
+  return ret;
 }

@@ -152,7 +152,7 @@ const QString QgsLegacyHelpers::convertEditType( QgsVectorLayer::EditType editTy
 
     case QgsVectorLayer::LineEdit:
     {
-      widgetType = "LineEdit";
+      widgetType = "TextEdit";
       cfg.insert( "IsMultiline", false );
       break;
     }

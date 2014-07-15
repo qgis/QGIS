@@ -40,6 +40,14 @@ QgsEditorWidgetWrapper* QgsEditorWidgetWrapper::fromWidget( QWidget* widget )
   return qobject_cast<QgsEditorWidgetWrapper*>( widget->property( "EWV2Wrapper" ).value<QgsWidgetWrapper*>() );
 }
 
+void QgsEditorWidgetWrapper::setEnabled( bool enabled )
+{
+  if ( widget() )
+  {
+    widget()->setEnabled( enabled );
+  }
+}
+
 void QgsEditorWidgetWrapper::setFeature( const QgsFeature& feature )
 {
   setValue( feature.attribute( mFieldIdx ) );

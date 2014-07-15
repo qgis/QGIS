@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>891</width>
+    <width>837</width>
     <height>570</height>
    </rect>
   </property>
@@ -564,22 +564,24 @@
       </item>
       <item>
        <widget class="QLabel" name="label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>=</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="mOpenExpressionWidget">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="mUpdateExpressionText">
-        <property name="placeholderText">
-         <string>[update field expression]</string>
+       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
        </widget>
       </item>
@@ -670,6 +672,11 @@
    <extends>QStackedWidget</extends>
    <header>qgsdualview.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsfieldexpressionwidget.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

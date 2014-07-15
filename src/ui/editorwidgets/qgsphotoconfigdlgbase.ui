@@ -20,7 +20,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="explanationLabel">
      <property name="text">
-      <string notr="true">The field contains a filename for a picture. The widget will show a preview of this picture.</string>
+      <string>The field contains a filename for a picture. The widget will show a preview of this picture.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>

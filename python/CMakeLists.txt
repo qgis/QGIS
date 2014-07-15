@@ -79,6 +79,7 @@ INCLUDE_DIRECTORIES(
   ../src/core/diagram
   ../src/core/dxf
   ../src/core/gps
+  ../src/core/layertree
   ../src/core/raster
   ../src/core/symbology-ng
 

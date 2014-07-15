@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscomposerpicture.h"
+#include "qgscomposerutils.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
 #include "qgsatlascomposition.h"
@@ -60,6 +61,9 @@ QgsComposerPicture::QgsComposerPicture() : QgsComposerItem( 0 ),
 
 void QgsComposerPicture::init()
 {
+  //default to no background
+  setBackgroundEnabled( false );
+
   //connect some signals
 
   //connect to atlas feature changing
@@ -123,6 +127,8 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
                          rect().height() * mComposition->printResolution() / 25.4 );
     }
     painter->save();
+    //antialiasing on
+    painter->setRenderHint( QPainter::Antialiasing, true );
 
     //zoom mode - calculate anchor point and rotation
     if ( mResizeMode == Zoom )
@@ -526,7 +532,7 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
   //find largest scaling of picture with this rotation which fits in item
   if ( mResizeMode == Zoom )
   {
-    QRectF rotatedImageRect = largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), newRect, mPictureRotation );
+    QRectF rotatedImageRect = QgsComposerUtils::largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), newRect, mPictureRotation );
     mPictureWidth = rotatedImageRect.width();
     mPictureHeight = rotatedImageRect.height();
   }
@@ -554,7 +560,7 @@ void QgsComposerPicture::setPictureRotation( double r )
   {
     //find largest scaling of picture with this rotation which fits in item
     QSizeF currentPictureSize = pictureSize();
-    QRectF rotatedImageRect = largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), rect(), mPictureRotation );
+    QRectF rotatedImageRect = QgsComposerUtils::largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), rect(), mPictureRotation );
     mPictureWidth = rotatedImageRect.width();
     mPictureHeight = rotatedImageRect.height();
     update();
@@ -697,7 +703,8 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
   mPictureWidth = itemElem.attribute( "pictureWidth", "10" ).toDouble();
   mPictureHeight = itemElem.attribute( "pictureHeight", "10" ).toDouble();
   mResizeMode = QgsComposerPicture::ResizeMode( itemElem.attribute( "resizeMode", "0" ).toInt() );
-  mPictureAnchor = QgsComposerItem::ItemPositionMode( itemElem.attribute( "anchorPoint", QString( QgsComposerItem::UpperLeft ) ).toInt() );
+  //when loading from xml, default to anchor point of middle to match pre 2.4 behaviour
+  mPictureAnchor = ( QgsComposerItem::ItemPositionMode ) itemElem.attribute( "anchorPoint", QString::number( QgsComposerItem::Middle ) ).toInt();
 
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
   if ( composerItemList.size() > 0 )
@@ -781,17 +788,23 @@ void QgsComposerPicture::setPictureAnchor( QgsComposerItem::ItemPositionMode anc
 bool QgsComposerPicture::imageSizeConsideringRotation( double& width, double& height ) const
 {
   //kept for api compatibility with QGIS 2.0 - use mPictureRotation
+  Q_NOWARN_DEPRECATED_PUSH
   return QgsComposerItem::imageSizeConsideringRotation( width, height, mPictureRotation );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 bool QgsComposerPicture::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const
 {
   //kept for api compatibility with QGIS 2.0 - use mPictureRotation
+  Q_NOWARN_DEPRECATED_PUSH
   return QgsComposerItem::cornerPointOnRotatedAndScaledRect( x, y, width, height, mPictureRotation );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsComposerPicture::sizeChangedByRotation( double& width, double& height )
 {
   //kept for api compatibility with QGIS 2.0 - use mPictureRotation
+  Q_NOWARN_DEPRECATED_PUSH
   return QgsComposerItem::sizeChangedByRotation( width, height, mPictureRotation );
+  Q_NOWARN_DEPRECATED_POP
 }

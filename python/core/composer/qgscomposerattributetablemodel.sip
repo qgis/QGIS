@@ -153,6 +153,11 @@ class QgsComposerTableSortColumnsProxyModel : QSortFilterProxyModel
      */
     QgsComposerTableColumn* columnFromSourceIndex( const QModelIndex& sourceIndex ) const;
 
+    /**Invalidates the current filter used by the proxy model
+     * @note added in 2.3
+     */
+    void resetFilter();
+
   protected:
     bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const;
 

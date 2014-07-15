@@ -100,7 +100,6 @@ typedef QMap<int, QVariant> QgsAttributeMap;
 typedef QVector<QVariant> QgsAttributes;
 
 class QgsField;
-typedef QMap<int, QgsField> QgsFieldMap;
 
 #include "qgsfield.h"
 
@@ -330,6 +329,7 @@ typedef QMap<int, QString> QgsFieldNameMap;
 
 typedef QList<QgsFeature> QgsFeatureList;
 
+Q_DECLARE_METATYPE( QgsFeature )
 Q_DECLARE_METATYPE( QgsFeatureList )
 
 #endif

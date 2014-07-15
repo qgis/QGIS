@@ -54,11 +54,11 @@ bool QgsComposerTableColumn::writeXML( QDomElement& columnElem, QDomDocument& do
 
 bool QgsComposerTableColumn::readXML( const QDomElement& columnElem )
 {
-  mHAlignment = ( Qt::AlignmentFlag )columnElem.attribute( "hAlignment", QString( Qt::AlignLeft ) ).toInt();
+  mHAlignment = ( Qt::AlignmentFlag )columnElem.attribute( "hAlignment", QString::number( Qt::AlignLeft ) ).toInt();
   mHeading = columnElem.attribute( "heading", "" );
   mAttribute = columnElem.attribute( "attribute", "" );
   mSortByRank = columnElem.attribute( "sortByRank", "0" ).toInt();
-  mSortOrder = ( Qt::SortOrder )columnElem.attribute( "sortOrder", QString( Qt::AscendingOrder ) ).toInt();
+  mSortOrder = ( Qt::SortOrder )columnElem.attribute( "sortOrder", QString::number( Qt::AscendingOrder ) ).toInt();
 
   QDomNodeList bgColorList = columnElem.elementsByTagName( "backgroundColor" );
   if ( bgColorList.size() > 0 )

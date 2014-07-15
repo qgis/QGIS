@@ -103,10 +103,10 @@ class QgsPalLayerSettings
 
     enum LinePlacementFlags
     {
-      OnLine    = 1,
-      AboveLine = 2,
-      BelowLine = 4,
-      MapOrientation = 8
+      OnLine,
+      AboveLine,
+      BelowLine,
+      MapOrientation,
     };
 
     enum QuadrantPosition
@@ -138,14 +138,14 @@ class QgsPalLayerSettings
 
     enum MultiLineAlign
     {
-      MultiLeft = 0,
+      MultiLeft,
       MultiCenter,
       MultiRight
     };
 
     enum ShapeType
     {
-      ShapeRectangle = 0,
+      ShapeRectangle,
       ShapeSquare,
       ShapeEllipse,
       ShapeCircle,
@@ -154,14 +154,14 @@ class QgsPalLayerSettings
 
     enum SizeType
     {
-      SizeBuffer = 0,
+      SizeBuffer,
       SizeFixed,
       SizePercent
     };
 
     enum RotationType
     {
-      RotationSync = 0,
+      RotationSync,
       RotationOffset,
       RotationFixed
     };
@@ -169,7 +169,7 @@ class QgsPalLayerSettings
     /** Units used for option sizes, before being converted to rendered sizes */
     enum SizeUnit
     {
-      Points = 0,
+      Points,
       MM,
       MapUnits,
       Percent
@@ -177,7 +177,7 @@ class QgsPalLayerSettings
 
     enum ShadowType
     {
-      ShadowLowest = 0,
+      ShadowLowest,
       ShadowText,
       ShadowBuffer,
       ShadowShape
@@ -394,6 +394,7 @@ class QgsPalLayerSettings
     unsigned int placementFlags;
 
     bool centroidWhole; // whether centroid calculated from whole or visible polygon
+    bool centroidInside; // whether centroid-point calculated must be inside polygon
     double dist; // distance from the feature (in mm)
     bool distInMapUnits; //true if distance is in map units (otherwise in mm)
     QgsMapUnitScale distMapUnitScale;
@@ -605,6 +606,10 @@ class QgsLabelComponent
  */
 class QgsLabelingResults
 {
+%TypeHeaderCode
+#include <qgspallabeling.h>
+%End
+
   public:
     QgsLabelingResults();
     ~QgsLabelingResults();
@@ -661,6 +666,10 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     bool isShowingPartialsLabels() const;
     void setShowingPartialsLabels( bool showing );
 
+    //! @note added in 2.4
+    bool isDrawingOutlineLabels() const;
+    void setDrawingOutlineLabels( bool outline );
+
     // implemented methods from labeling engine interface
 
     //! called when we're going to start with rendering
@@ -693,6 +702,7 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     virtual void drawLabeling( QgsRenderContext& context );
     //! called when we're done with rendering
     virtual void exit();
+
     //! return infos about labels at a given (map) position
     //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
     virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) /Deprecated/;

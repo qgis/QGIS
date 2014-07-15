@@ -16,7 +16,6 @@
 #ifndef QGSCOMPOSITION_H
 #define QGSCOMPOSITION_H
 
-#include "qgscomposeritem.h"
 #include <memory>
 
 #include <QDomDocument>
@@ -33,6 +32,8 @@
 #include "qgscomposeritemcommand.h"
 #include "qgsatlascomposition.h"
 #include "qgspaperitem.h"
+#include "qgscomposerobject.h"
+#include "qgscomposeritem.h"
 
 class QgisApp;
 class QgsComposerFrame;
@@ -56,6 +57,7 @@ class QgsComposerMultiFrameCommand;
 class QgsVectorLayer;
 class QgsComposer;
 class QgsFillSymbolV2;
+class QgsDataDefined;
 
 /** \ingroup MapComposer
  * Graphics scene for map printing. The class manages the paper item which always
@@ -90,6 +92,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
       ZValueAbove
     };
 
+    enum PaperOrientation
+    {
+      Portrait,
+      Landscape
+    };
+
     //! @deprecated since 2.4 - use the constructor with QgsMapSettings
     Q_DECL_DEPRECATED QgsComposition( QgsMapRenderer* mapRenderer );
     explicit QgsComposition( const QgsMapSettings& mapSettings );
@@ -104,7 +112,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     ~QgsComposition();
 
-    /**Changes size of paper item*/
+    /**Changes size of paper item. Also moves all items so that they retain
+     * their same relative position to the top left corner of their current page.
+    */
     void setPaperSize( double width, double height );
 
     /**Returns height of paper item*/
@@ -166,9 +176,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void setSnapGridResolution( double r );
     double snapGridResolution() const {return mSnapGridResolution;}
 
-    void setSnapGridTolerance( double tolerance );
-    double snapGridTolerance() const {return mSnapGridTolerance;}
-
     void setSnapGridOffsetX( double offset );
     double snapGridOffsetX() const {return mSnapGridOffsetX;}
 
@@ -181,8 +188,53 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void setGridStyle( GridStyle s );
     GridStyle gridStyle() const {return mGridStyle;}
 
-    void setAlignmentSnapTolerance( double t ) { mAlignmentSnapTolerance = t; }
-    double alignmentSnapTolerance() const { return mAlignmentSnapTolerance; }
+    /**Sets the snap tolerance to use when automatically snapping items during movement and resizing to the
+     * composition grid.
+     * @param tolerance snap tolerance in pixels
+     * @see snapGridTolerance
+     * @deprecated Use setSnapTolerance instead
+    */
+    Q_DECL_DEPRECATED void setSnapGridTolerance( double tolerance ) { mSnapTolerance = tolerance; }
+
+    /**Returns the snap tolerance to use when automatically snapping items during movement and resizing to the
+     * composition grid.
+     * @returns snap tolerance in pixels
+     * @see setSnapGridTolerance
+     * @deprecated Use snapTolerance instead
+    */
+    Q_DECL_DEPRECATED double snapGridTolerance() const {return mSnapTolerance;}
+
+    /**Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
+     * and the edges and centers of other items.
+     * @param t snap tolerance in pixels
+     * @see alignmentSnapTolerance
+     * @deprecated Use setSnapTolerance instead
+    */
+    Q_DECL_DEPRECATED void setAlignmentSnapTolerance( double t ) { mSnapTolerance = t; }
+
+    /**Returns the snap tolerance to use when automatically snapping items during movement and resizing to guides
+     * and the edges and centers of other items.
+     * @returns snap tolerance in pixels
+     * @see setAlignmentSnapTolerance
+     * @deprecated Use snapTolerance instead
+    */
+    Q_DECL_DEPRECATED double alignmentSnapTolerance() const { return mSnapTolerance; }
+
+    /**Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
+     * and the edges and centers of other items.
+     * @param snapTolerance snap tolerance in pixels
+     * @see alignmentSnapTolerance
+     * @note Added in QGIS 2.5
+    */
+    void setSnapTolerance( int snapTolerance ) { mSnapTolerance = snapTolerance; }
+
+    /**Returns the snap tolerance to use when automatically snapping items during movement and resizing to guides
+     * and the edges and centers of other items.
+     * @returns snap tolerance in pixels
+     * @see setAlignmentSnapTolerance
+     * @note Added in QGIS 2.5
+    */
+    int snapTolerance() const { return mSnapTolerance; }
 
     /**Returns pointer to undo/redo command storage*/
     QUndoStack* undoStack() { return &mUndoStack; }
@@ -419,14 +471,23 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void beginPrint( QPrinter& printer );
     /** Prepare the printer for printing in a PDF */
     void beginPrintAsPDF( QPrinter& printer, const QString& file );
-    /** Print on a preconfigured printer */
-    void doPrint( QPrinter& printer, QPainter& painter );
 
-    /** Convenience function that prepares the printer and prints */
-    void print( QPrinter &printer );
+    /**Print on a preconfigured printer
+     * @param printer QPrinter destination
+     * @param painter QPainter source
+     * @param startNewPage set to true to begin the print on a new page
+     */
+    void doPrint( QPrinter& printer, QPainter& painter, bool startNewPage = false );
 
-    /** Convenience function that prepares the printer for printing in PDF and prints */
-    void exportAsPDF( const QString& file );
+    /**Convenience function that prepares the printer and prints
+     * @returns true if print was successful
+    */
+    bool print( QPrinter &printer );
+
+    /**Convenience function that prepares the printer for printing in PDF and prints
+     * @returns true if export was successful
+    */
+    bool exportAsPDF( const QString& file );
 
     //! print composer page to image
     //! If the image does not fit into memory, a null image is returned
@@ -456,6 +517,22 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      @note added in version 2.4*/
     QList< QgsPaperItem* > pages() { return mPages; }
 
+    /**Returns a reference to the data defined settings for one of the composition's data defined properties.
+     * @param property data defined property to return
+     * @note this method was added in version 2.5
+    */
+    QgsDataDefined* dataDefinedProperty( QgsComposerObject::DataDefinedProperty property );
+
+    /**Sets parameters for a data defined property for the composition
+     * @param property data defined property to set
+     * @param active true if data defined property is active, false if it is disabled
+     * @param useExpression true if the expression should be used
+     * @param expression expression for data defined property
+     * @param field field name if the data defined property should take its value from a field
+     * @note this method was added in version 2.5
+    */
+    void setDataDefinedProperty( QgsComposerObject::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
+
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
@@ -466,14 +543,24 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Forces items in the composition to refresh. For instance, this causes maps to redraw
      * and rebuild cached images, html items to reload their source url, and attribute tables
-     * to refresh their contents.
-    @note added in version 2.3*/
+     * to refresh their contents. Calling this also triggers a recalculation of all data defined
+     * attributes within the composition.
+     * @note added in version 2.3*/
     void refreshItems();
 
     /**Clears any selected items and sets an item as the current selection.
      * @param item item to set as selected
      * @note added in version 2.3*/
     void setSelectedItem( QgsComposerItem* item );
+
+    /**Refreshes a data defined property for the composition by reevaluating the property's value
+     * and redrawing the composition with this new value.
+     * @param property data defined property to refresh. If property is set to
+     * QgsComposerItem::AllProperties then all data defined properties for the composition will be
+     * refreshed.
+     * @note this method was added in version 2.5
+    */
+    void refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 
   protected:
     void init();
@@ -518,7 +605,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     bool mSnapToGrid;
     bool mGridVisible;
     double mSnapGridResolution;
-    double mSnapGridTolerance;
     double mSnapGridOffsetX;
     double mSnapGridOffsetY;
     QPen mGridPen;
@@ -528,7 +614,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     bool mAlignmentSnap;
     bool mGuidesVisible;
     bool mSmartGuides;
-    double mAlignmentSnapTolerance;
+    int mSnapTolerance;
 
     /**Arbitraty snap lines (horizontal and vertical)*/
     QList< QGraphicsLineItem* > mSnapLines;
@@ -544,6 +630,13 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     QgsAtlasComposition mAtlasComposition;
 
     QgsComposition::AtlasMode mAtlasMode;
+
+    bool mPreventCursorChange;
+
+    /**Map of data defined properties for the composition to string name to use when exporting composition to xml*/
+    QMap< QgsComposerObject::DataDefinedProperty, QString > mDataDefinedNames;
+    /**Map of current data defined properties to QgsDataDefined for the composition*/
+    QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > mDataDefinedProperties;
 
     QgsComposition(); //default constructor is forbidden
 
@@ -575,7 +668,80 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     static QString encodeStringForXML( const QString& str );
 
-    bool mPreventCursorChange;
+    //tries to return the current QGraphicsView attached to the composition
+    QGraphicsView* graphicsView() const;
+
+    /*Recalculates the page size using data defined page settings*/
+    void refreshPageSize();
+
+    /*Decodes a string representing a paper orientation*/
+    QgsComposition::PaperOrientation decodePaperOrientation( QString orientationString, bool &ok );
+
+    /*Decodes a string representing a preset page size*/
+    bool decodePresetPaperSize( QString presetString, double &width, double &height );
+
+    /**Evaluate a data defined property and return the calculated value
+     * @returns true if data defined property could be successfully evaluated
+     * @param property data defined property to evaluate
+     * @param expressionValue QVariant for storing the evaluated value
+     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
+     * @note this method was added in version 2.5
+    */
+    bool dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue,
+                              QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
+
+    /**Reads all data defined properties from xml
+     * @param itemElem dom element containing data defined properties
+     * @param dataDefinedNames map of data defined property to name used within xml
+     * @param dataDefinedProperties map of data defined properties to QgsDataDefined in which to store properties from xml
+     * @note this method was added in version 2.5
+    */
+    void readDataDefinedPropertyMap( const QDomElement &itemElem,
+                                     QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
+                                     QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties
+                                   ) const;
+
+    /**Reads a single data defined property from xml DOM element
+     * @param property data defined property to read
+     * @param ddElem dom element containing settings for data defined property
+     * @param dataDefinedProperties map of data defined properties to QgsDataDefined in which to store properties from xml
+     * @note this method was added in version 2.5
+    */
+    void readDataDefinedProperty( QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem,
+                                  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties ) const;
+
+    /**Writes data defined properties to xml
+     * @param itemElem DOM element in which to store data defined properties
+     * @param doc DOM document
+     * @param dataDefinedNames map of data defined property to name used within xml
+     * @param dataDefinedProperties map of data defined properties to QgsDataDefined for storing in xml
+     * @note this method was added in version 2.5
+    */
+    void writeDataDefinedPropertyMap( QDomElement &itemElem, QDomDocument &doc,
+                                      const QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
+                                      const QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties ) const;
+
+    /**Evaluates a data defined property and returns the calculated value.
+     * @param property data defined property to evaluate
+     * @param feature current atlas feature to evaluate property for
+     * @param fields fields from atlas layer
+     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
+     * @note this method was added in version 2.5
+    */
+    QVariant dataDefinedValue( QgsComposerObject::DataDefinedProperty property, const QgsFeature *feature, const QgsFields *fields,
+                               QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties );
+
+
+    /**Prepares the expression for a data defined property, using the current atlas layer if set.
+     * @param dd data defined to prepare. If no data defined is set, all data defined expressions will be prepared
+     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
+     * @note this method was added in version 2.5
+    */
+    void prepareDataDefinedExpression( QgsDataDefined *dd, QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties ) const;
+
+  private slots:
+    /*Prepares all data defined expressions*/
+    void prepareAllDataDefinedExpressions();
 
   signals:
     void paperSizeChanged();
@@ -612,6 +778,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Is emitted when the composition has an updated status bar message for the composer window*/
     void statusMsgChanged( QString message );
+
+    friend class QgsComposerObject; //for accessing dataDefinedEvaluate, readDataDefinedPropertyMap and writeDataDefinedPropertyMap
 };
 
 template<class T> void QgsComposition::composerItems( QList<T*>& itemList )

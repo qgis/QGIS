@@ -27,6 +27,7 @@
 #include "qgspaperitem.h"
 #include "qgis.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
 
 QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition ) : QObject( 0 ),
     QGraphicsRectItem( 0 ),
@@ -439,6 +440,17 @@ QgsComposerMouseHandles::MouseAction QgsComposerMouseHandles::mouseActionForPosi
   bool nearLowerBorder = false;
   bool nearUpperBorder = false;
 
+  bool withinWidth = false;
+  bool withinHeight = false;
+  if ( itemCoordPos.x() >= 0 && itemCoordPos.x() <= rect().width() )
+  {
+    withinWidth = true;
+  }
+  if ( itemCoordPos.y() >= 0 && itemCoordPos.y() <= rect().height() )
+  {
+    withinHeight = true;
+  }
+
   double borderTolerance = rectHandlerBorderTolerance();
 
   if ( itemCoordPos.x() >= 0 && itemCoordPos.x() < borderTolerance )
@@ -474,19 +486,19 @@ QgsComposerMouseHandles::MouseAction QgsComposerMouseHandles::mouseActionForPosi
   {
     return QgsComposerMouseHandles::ResizeRightDown;
   }
-  else if ( nearLeftBorder )
+  else if ( nearLeftBorder && withinHeight )
   {
     return QgsComposerMouseHandles::ResizeLeft;
   }
-  else if ( nearRightBorder )
+  else if ( nearRightBorder && withinHeight )
   {
     return QgsComposerMouseHandles::ResizeRight;
   }
-  else if ( nearUpperBorder )
+  else if ( nearUpperBorder && withinWidth )
   {
     return QgsComposerMouseHandles::ResizeUp;
   }
-  else if ( nearLowerBorder )
+  else if ( nearLowerBorder && withinWidth )
   {
     return QgsComposerMouseHandles::ResizeDown;
   }
@@ -609,7 +621,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
       subcommand->saveAfterState();
     }
     mComposition->undoStack()->push( parentCommand );
-
+    QgsProject::instance()->dirty( true );
   }
   else if ( mCurrentMouseMoveAction != QgsComposerMouseHandles::NoAction )
   {
@@ -649,6 +661,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
       subcommand->saveAfterState();
     }
     mComposition->undoStack()->push( parentCommand );
+    QgsProject::instance()->dirty( true );
   }
 
   deleteAlignItems();
@@ -725,6 +738,11 @@ void QgsComposerMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent* event )
 
   }
 
+}
+
+void QgsComposerMouseHandles::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
+{
+  Q_UNUSED( event );
 }
 
 QSizeF QgsComposerMouseHandles::calcCursorEdgeOffset( const QPointF &cursorPos )
@@ -1211,8 +1229,12 @@ QPointF QgsComposerMouseHandles::alignPos( const QPointF& pos, double& alignX, d
     return pos;
   }
 
+  //convert snap tolerance from pixels to mm
+  double viewScaleFactor = graphicsView()->transform().m11();
+  double alignThreshold = mComposition->snapTolerance() / viewScaleFactor;
+
   QPointF result( pos.x(), pos.y() );
-  if ( abs( nearestX - pos.x() ) < mComposition->alignmentSnapTolerance() )
+  if ( fabs( nearestX - pos.x() ) < alignThreshold )
   {
     result.setX( nearestX );
     alignX = nearestX;
@@ -1222,7 +1244,7 @@ QPointF QgsComposerMouseHandles::alignPos( const QPointF& pos, double& alignX, d
     alignX = -1;
   }
 
-  if ( abs( nearestY - pos.y() ) < mComposition->alignmentSnapTolerance() )
+  if ( fabs( nearestY - pos.y() ) < alignThreshold )
   {
     result.setY( nearestY );
     alignY = nearestY;
@@ -1247,7 +1269,8 @@ void QgsComposerMouseHandles::collectAlignCoordinates( QMap< double, const QgsCo
     {
       const QgsComposerItem* currentItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
       //don't snap to selected items, since they're the ones that will be snapping to something else
-      if ( !currentItem || currentItem->selected() )
+      //also ignore group members - only snap to bounds of group itself
+      if ( !currentItem || currentItem->selected() || currentItem->isGroupMember() )
       {
         continue;
       }
@@ -1291,7 +1314,7 @@ void QgsComposerMouseHandles::collectAlignCoordinates( QMap< double, const QgsCo
   }
 }
 
-void QgsComposerMouseHandles::checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff, double itemCoordOffset, double& itemCoord, double& alignCoord ) const
+void QgsComposerMouseHandles::checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff, double itemCoordOffset, double& itemCoord, double& alignCoord )
 {
   double currentCoord = 0;
   if ( !nearestItem( alignCoords, checkCoord, currentCoord ) )
@@ -1299,8 +1322,12 @@ void QgsComposerMouseHandles::checkNearestItem( double checkCoord, const QMap< d
     return;
   }
 
-  double currentDiff = abs( checkCoord - currentCoord );
-  if ( currentDiff < mComposition->alignmentSnapTolerance() )
+  double currentDiff = fabs( checkCoord - currentCoord );
+  //convert snap tolerance from pixels to mm
+  double viewScaleFactor = graphicsView()->transform().m11();
+  double alignThreshold = mComposition->snapTolerance() / viewScaleFactor;
+
+  if ( currentDiff < alignThreshold && currentDiff < smallestDiff )
   {
     itemCoord = currentCoord + itemCoordOffset;
     alignCoord = currentCoord;
@@ -1348,3 +1375,4 @@ bool QgsComposerMouseHandles::nearestItem( const QMap< double, const QgsComposer
     }
   }
 }
+

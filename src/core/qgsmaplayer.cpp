@@ -109,7 +109,7 @@ void QgsMapLayer::setLayerName( const QString & name )
 /** Read property of QString layerName. */
 QString const & QgsMapLayer::name() const
 {
-  QgsDebugMsgLevel( "returning name '" + mLayerName + "'", 3 );
+  QgsDebugMsgLevel( "returning name '" + mLayerName + "'", 4 );
   return mLayerName;
 }
 
@@ -945,7 +945,7 @@ QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag 
     }
     else
     {
-      myErrorMessage = tr( "style not found in database" );
+      myErrorMessage = tr( "Style not found in database" );
     }
   }
 

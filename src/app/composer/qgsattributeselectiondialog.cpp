@@ -350,6 +350,9 @@ void QgsAttributeSelectionDialog::on_mAddSortColumnPushButton_clicked()
   }
 
   mColumnModel->setColumnAsSorted( column, mOrderComboBox->currentIndex() == 0 ? Qt::AscendingOrder : Qt::DescendingOrder );
+
+  //required so that rows can be reordered if initially no rows were shown in the table view
+  mSortedProxyModel->resetFilter();
 }
 
 void QgsAttributeSelectionDialog::on_mRemoveSortColumnPushButton_clicked()

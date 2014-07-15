@@ -88,14 +88,14 @@ class QgsColorButton: QPushButton
 
   public slots:
     /**
-     * Sets the background pixmap for the button based upon set color and transparency.
+     * Sets the background pixmap for the button based upon color and transparency.
      * Call directly to update background after adding/removing QColorDialog::ShowAlphaChannel option
      * but the color has not changed, i.e. setColor() wouldn't update button and
      * you want the button to retain the set color's alpha component regardless
-     *
+     * @param color Color for button background
      * @note added in 1.9
      */
-    void setButtonBackground();
+    void setButtonBackground( QColor color = QColor() );
 
   signals:
     /**
@@ -112,7 +112,7 @@ class QgsColorButton: QPushButton
     void showEvent( QShowEvent* e );
     static const QPixmap& transpBkgrd();
 
-    /**
+   /**
      * Reimplemented to detect right mouse button clicks on the color button and allow dragging colors
      */
     void mousePressEvent( QMouseEvent* e );
@@ -121,6 +121,16 @@ class QgsColorButton: QPushButton
      * Reimplemented to allow dragging colors from button
      */
     void mouseMoveEvent( QMouseEvent *e );
+
+    /**
+     * Reimplemented to allow color picking
+     */
+    void mouseReleaseEvent( QMouseEvent *e );
+
+    /**
+     * Reimplemented to allow cancelling color pick via keypress, and sample via space bar press
+     */
+    void keyPressEvent( QKeyEvent *e );
 
     /**
      * Reimplemented to accept dragged colors

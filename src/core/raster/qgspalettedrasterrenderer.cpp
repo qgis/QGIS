@@ -155,7 +155,7 @@ void QgsPalettedRasterRenderer::setLabel( int idx, QString label )
 QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   QgsRasterBlock *outputBlock = new QgsRasterBlock();
-  if ( !mInput )
+  if ( !mInput || mNColors == 0 )
   {
     return outputBlock;
   }

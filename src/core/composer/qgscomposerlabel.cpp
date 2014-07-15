@@ -49,6 +49,9 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
   //default to a 10 point font size
   mFont.setPointSizeF( 10 );
 
+  //default to no background
+  setBackgroundEnabled( false );
+
   if ( mComposition && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
     //a label added while atlas preview is enabled needs to have the expression context set,
@@ -78,7 +81,10 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   drawBackground( painter );
   painter->save();
 
-  double penWidth = pen().widthF();
+  //antialiasing on
+  painter->setRenderHint( QPainter::Antialiasing, true );
+
+  double penWidth = hasFrame() ? pen().widthF() : 0;
   QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin, rect().height() - 2 * penWidth - 2 * mMargin );
 
   QString textToDraw = displayText();
@@ -254,17 +260,21 @@ void QgsComposerLabel::setFont( const QFont& f )
 void QgsComposerLabel::adjustSizeToText()
 {
   double textWidth = textWidthMillimeters( mFont, displayText() );
-  double fontAscent = fontAscentMillimeters( mFont );
+  double fontHeight = fontHeightMillimeters( mFont );
 
-  double width = textWidth + 2 * mMargin + 2 * pen().widthF() + 1;
-  double height = fontAscent + 2 * mMargin + 2 * pen().widthF() + 1;
+  double penWidth = hasFrame() ? pen().widthF() : 0;
+
+  double width = textWidth + 2 * mMargin + 2 * penWidth + 1;
+  double height = fontHeight + 2 * mMargin + 2 * penWidth;
 
   //keep alignment point constant
   double xShift = 0;
   double yShift = 0;
   itemShiftAdjustSize( width, height, xShift, yShift );
 
-  setSceneRect( QRectF( pos().x() + xShift, pos().y() + yShift, width, height ) );
+  //update rect for data defined size and position
+  QRectF evaluatedRect = evalItemRect( QRectF( pos().x() + xShift, pos().y() + yShift, width, height ) );
+  setSceneRect( evaluatedRect );
 }
 
 QFont QgsComposerLabel::font() const

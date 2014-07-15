@@ -28,6 +28,7 @@
 #include <QFormLayout>
 #include <QGridLayout>
 #include <QGroupBox>
+#include <QKeyEvent>
 #include <QLabel>
 #include <QPushButton>
 #include <QScrollArea>
@@ -155,7 +156,7 @@ bool QgsAttributeForm::save()
         QVariant srcVar = eww->value();
         if ( dstVar != srcVar && srcVar.isValid() )
         {
-          dst[eww->fieldIdx()] = eww->value();
+          dst[eww->fieldIdx()] = srcVar;
 
           doUpdate = true;
         }
@@ -188,15 +189,24 @@ bool QgsAttributeForm::save()
       {
         mLayer->beginEditCommand( mEditCommandMessage );
 
+        int n = 0;
         for ( int i = 0; i < dst.count(); ++i )
         {
-          if ( dst[i] == src[i] || !src[i].isValid() )
+          if ( dst[i] == src[i] || !dst[i].isValid() )
+          {
+            QgsDebugMsg( "equal or invalid destination" );
+            QgsDebugMsg( QString( "dst:'%1' (type:%2,isNull:%3,isValid:%4)" )
+                         .arg( dst[i].toString() ).arg( dst[i].typeName() ).arg( dst[i].isNull() ).arg( dst[i].isValid() ) );
+            QgsDebugMsg( QString( "src:'%1' (type:%2,isNull:%3,isValid:%4)" )
+                         .arg( src[i].toString() ).arg( src[i].typeName() ).arg( src[i].isNull() ).arg( src[i].isValid() ) );
             continue;
+          }
 
           success &= mLayer->changeAttributeValue( mFeature.id(), i, dst[i], src[i] );
+          n++;
         }
 
-        if ( success )
+        if ( success && n > 0 )
         {
           mLayer->endEditCommand();
           mFeature.setAttributes( dst );
@@ -266,7 +276,13 @@ void QgsAttributeForm::synchronizeEnabledState()
 
   Q_FOREACH( QgsWidgetWrapper* ww, mWidgets )
   {
-    ww->setEnabled( isEditable );
+    bool fieldEditable = true;
+    QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
+    if ( eww )
+    {
+      fieldEditable = mLayer->fieldEditable( eww->fieldIdx() );
+    }
+    ww->setEnabled( isEditable && fieldEditable );
   }
 
   QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
@@ -302,10 +318,13 @@ void QgsAttributeForm::init()
       QFileInfo fi( mLayer->editForm() );
       loader.setWorkingDirectory( fi.dir() );
       formWidget = loader.load( &file, this );
+      formWidget->setWindowFlags( Qt::Widget );
       layout()->addWidget( formWidget );
       formWidget->show();
       file.close();
       createWrappers();
+
+      formWidget->installEventFilter( this );
     }
   }
 
@@ -315,7 +334,7 @@ void QgsAttributeForm::init()
     QTabWidget* tabWidget = new QTabWidget( this );
     layout()->addWidget( tabWidget );
 
-    Q_FOREACH( const QgsAttributeEditorElement *widgDef, mLayer->attributeEditorElements() )
+    Q_FOREACH( QgsAttributeEditorElement *widgDef, mLayer->attributeEditorElements() )
     {
       QWidget* tabPage = new QWidget( tabWidget );
 
@@ -324,6 +343,8 @@ void QgsAttributeForm::init()
 
       if ( widgDef->type() == QgsAttributeEditorElement::AeTypeContainer )
       {
+        QgsAttributeEditorContainer* containerDef = dynamic_cast<QgsAttributeEditorContainer*>( widgDef );
+        containerDef->setIsGroupBox( false ); // Toplevel widgets are tabs not groupboxes
         QString dummy1;
         bool dummy2;
         tabPageLayout->addWidget( createWidgetFromDef( widgDef, tabPage, mLayer, mContext, dummy1, dummy2 ) );
@@ -341,10 +362,18 @@ void QgsAttributeForm::init()
   if ( !formWidget )
   {
     formWidget = new QWidget( this );
-    QFormLayout* formLayout = new QFormLayout( formWidget );
-    formWidget->setLayout( formLayout );
-    layout()->addWidget( formWidget );
+    QGridLayout* gridLayout = new QGridLayout( formWidget );
+    formWidget->setLayout( gridLayout );
 
+    // put the form into a scroll area to nicely handle cases with lots of attributes
+    QScrollArea* scrollArea = new QScrollArea( this );
+    scrollArea->setWidget( formWidget );
+    scrollArea->setWidgetResizable( true );
+    scrollArea->setFrameShape( QFrame::NoFrame );
+    scrollArea->setFrameShadow( QFrame::Plain );
+    layout()->addWidget( scrollArea );
+
+    int row = 0;
     Q_FOREACH( const QgsField& field, mLayer->pendingFields().toList() )
     {
       int idx = mLayer->fieldNameIndex( field.name() );
@@ -352,18 +381,30 @@ void QgsAttributeForm::init()
       QString fieldName = mLayer->attributeDisplayName( idx );
 
       const QString widgetType = mLayer->editorWidgetV2( idx );
-      const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( idx );
 
-      // This will also create the widget
-      QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, idx, widgetConfig, 0, this, mContext );
-      if ( eww )
+      if ( widgetType != "Hidden" )
       {
-        mWidgets.append( eww );
-        formLayout->addRow( new QLabel( fieldName ), eww->widget() );
-      }
-      else
-      {
-        formLayout->addRow( new QLabel( fieldName ), new QLabel( QString( "<p style=\"color: red; font-style: italic;\">Failed to create widget with type '%1'</p>" ).arg( widgetType ) ) );
+        const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( idx );
+        bool labelOnTop = mLayer->labelOnTop( idx );
+
+        // This will also create the widget
+        QWidget *l = new QLabel( fieldName );
+        QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, idx, widgetConfig, 0, this, mContext );
+        QWidget *w = eww ? eww->widget() : new QLabel( QString( "<p style=\"color: red; font-style: italic;\">Failed to create widget with type '%1'</p>" ).arg( widgetType ) );
+
+        if ( eww )
+          mWidgets.append( eww );
+
+        if ( labelOnTop )
+        {
+          gridLayout->addWidget( l, row++, 0, 1, 2 );
+          gridLayout->addWidget( w, row++, 0, 1, 2 );
+        }
+        else
+        {
+          gridLayout->addWidget( l, row, 0 );
+          gridLayout->addWidget( w, row++, 1 );
+        }
       }
     }
 
@@ -371,7 +412,7 @@ void QgsAttributeForm::init()
     {
       QgsRelationWidgetWrapper* rww = new QgsRelationWidgetWrapper( mLayer, rel, 0, this );
       rww->setContext( mContext );
-      formLayout->addRow( rww->widget() );
+      gridLayout->addWidget( rww->widget(), row++, 0, 1, 2 );
       mWidgets.append( rww );
     }
   }
@@ -464,7 +505,7 @@ void QgsAttributeForm::initPython()
   }
 }
 
-QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeEditorContext& context, QString& labelText, bool& labelOnTop )
+QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement *widgetDef, QWidget *parent, QgsVectorLayer *vl, QgsAttributeEditorContext &context, QString &labelText, bool &labelOnTop )
 {
   QWidget *newWidget = 0;
 
@@ -540,7 +581,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement*
         bool labelOnTop;
         QWidget* editor = createWidgetFromDef( childDef, myContainer, vl, context, labelText, labelOnTop );
 
-        if ( labelText == QString::null )
+        if ( labelText.isNull() )
         {
           gbLayout->addWidget( editor, index, 0, 1, 2 );
         }
@@ -625,4 +666,23 @@ void QgsAttributeForm::connectWrappers()
     if ( eww )
       connect( eww, SIGNAL( valueChanged( const QVariant& ) ), this, SLOT( onAttributeChanged( const QVariant& ) ) );
   }
+}
+
+
+bool QgsAttributeForm::eventFilter( QObject* object, QEvent* e )
+{
+  Q_UNUSED( object )
+
+  if ( e->type() == QEvent::KeyPress )
+  {
+    QKeyEvent* keyEvent = dynamic_cast<QKeyEvent*>( e );
+    if ( keyEvent->key() == Qt::Key_Escape )
+    {
+      // Re-emit to this form so it will be forwarded to parent
+      event( e );
+      return true;
+    }
+  }
+
+  return false;
 }

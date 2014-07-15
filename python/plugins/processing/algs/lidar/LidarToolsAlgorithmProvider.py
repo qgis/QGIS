@@ -11,6 +11,10 @@
     Date                 : April 2014
     Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
+    ---------------------
+    Date                 : June 2014
+    Copyright            : (C) 2014 by Agresta S. Coop
+    Email                : iescamochero at agresta dot org
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -88,11 +92,14 @@ from lastools.hugeFileNormalize import hugeFileNormalize
 from fusion.OpenViewerAction import OpenViewerAction
 from fusion.CanopyMaxima import CanopyMaxima
 from fusion.CanopyModel import CanopyModel
+from fusion.Catalog import Catalog
 from fusion.ClipData import ClipData
 from fusion.CloudMetrics import CloudMetrics
 from fusion.Cover import Cover
 from fusion.GridMetrics import GridMetrics
 from fusion.GridSurfaceCreate import GridSurfaceCreate
+from fusion.TinSurfaceCreate import TinSurfaceCreate
+from fusion.Csv2Grid import Csv2Grid
 from fusion.GroundFilter import GroundFilter
 from fusion.MergeData import MergeData
 from fusion.FilterData import FilterData
@@ -146,7 +153,8 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
 
         if isWindows():
             lastoolsPipe = [
-                flightlinesToDTMandDSM(), flightlinesToCHM(), flightlinesToSingleCHMpitFree(), hugeFileClassify(), hugeFileGroundClassify(), hugeFileNormalize()
+                flightlinesToDTMandDSM(), flightlinesToCHM(), flightlinesToSingleCHMpitFree(), hugeFileClassify(),
+                hugeFileGroundClassify(), hugeFileNormalize()
                 ]
         else:
             lastoolsPipe = [
@@ -160,9 +168,9 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
         if isWindows():
             self.actions.append(OpenViewerAction())
             fusiontools = [
-                CloudMetrics(), CanopyMaxima(), CanopyModel(), ClipData(),
-                Cover(), FilterData(), GridMetrics(), GroundFilter(),
-                GridSurfaceCreate(), MergeData()
+                Catalog(), CloudMetrics(), CanopyMaxima(), CanopyModel(), ClipData(),
+                Csv2Grid(), Cover(), FilterData(), GridMetrics(), GroundFilter(),
+                GridSurfaceCreate(), MergeData(), TinSurfaceCreate()
                 ]
             for alg in fusiontools:
                 alg.group = 'Fusion'

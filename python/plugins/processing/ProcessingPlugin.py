@@ -56,7 +56,7 @@ class ProcessingPlugin:
         self.toolbox = ProcessingToolbox()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
-        #Processing.addAlgListListener(self.toolbox)
+        Processing.addAlgListListener(self.toolbox)
 
         self.menu = QMenu(self.iface.mainWindow().menuBar())
         self.menu.setObjectName( 'processing' )

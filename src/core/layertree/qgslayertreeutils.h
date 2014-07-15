@@ -35,11 +35,11 @@ class CORE_EXPORT QgsLayerTreeUtils
 {
   public:
 
-    //! Try to load layer tree from <legend> tag from project files from QGIS 2.2 and below
+    //! Try to load layer tree from \verbatim <legend> \endverbatim tag from project files from QGIS 2.2 and below
     static bool readOldLegend( QgsLayerTreeGroup* root, const QDomElement& legendElem );
-    //! Try to load custom layer order from <legend> tag from project files from QGIS 2.2 and below
+    //! Try to load custom layer order from \verbatim <legend> \endverbatim tag from project files from QGIS 2.2 and below
     static bool readOldLegendLayerOrder( const QDomElement& legendElem, bool& hasCustomOrder, QStringList& order );
-    //! Return <legend> tag used in QGIS 2.2 and below
+    //! Return \verbatim <legend> \endverbatim tag used in QGIS 2.2 and below
     static QDomElement writeOldLegend( QDomDocument& doc, QgsLayerTreeGroup* root, bool hasCustomOrder, const QStringList& order );
 
     //! Convert Qt::CheckState to QString

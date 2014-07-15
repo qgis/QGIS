@@ -1,9 +1,0 @@
-h1 { color: darkblue; font-size: 1.4em;}
-h2 { color: darkblue; font-size: 1.2em; }
-table { border: 1px solid darkblue; margin: 20px}
-div.author { font-style: italic; font-size: small; }
-div.description { text-indent:50px; text-align:justify; margin: 20px; }
-dt { font-weight: bold; background-color: lightgrey; border-bottom: 1px solid grey; }
-dd { font-style: normal; float: center; }
-div.type { font-weight: normal; font-style: italic; float: right;}
-div.constraints{ font-style: italic; }

@@ -260,7 +260,7 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer* vlayer,
 }
 
 bool QgsMapToolShowHideLabels::showHideLabel( QgsVectorLayer* vlayer,
-    int fid,
+    const QgsFeatureId &fid,
     bool hide )
 {
 

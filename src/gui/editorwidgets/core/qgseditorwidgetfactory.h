@@ -116,6 +116,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * @param vl        The vector layer.
      * @param fieldIdx  The index of the field.
      * @param config    The editor widget config.
+     * @param cache     The editor widget cache.
      * @param value     The value to represent.
      *
      * @return By default the string representation of the provided value as implied by the field definition is returned.

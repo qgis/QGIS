@@ -16,7 +16,7 @@ set OSGEO4W_ROOT=%O4W_ROOT%
 REM Do not register extensions if release is installed
 if not exist "%O4W_ROOT%\apps\qgis\bin\qgis.reg" nircmd elevate "%WINDIR%\regedit" /s "%O4W_ROOT%\apps\@package@\bin\qgis.reg"
 
-call "%OSGEO4W_ROOT%"\bin\o4w_env.bat
+call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
 path %PATH%;%OSGEO4W_ROOT%\apps\@package@\bin
 set QGIS_PREFIX_PATH=%OSGEO4W_ROOT:\=/%/apps/@package@
-"%OSGEO4W_ROOT%"\apps\@package@\crssync
+"%OSGEO4W_ROOT%\apps\@package@\crssync"

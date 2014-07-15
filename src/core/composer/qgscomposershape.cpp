@@ -166,19 +166,17 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
   p->save();
   p->setRenderHint( QPainter::Antialiasing );
 
-  QgsRenderContext context;
+  //setup painter scaling to dots so that raster symbology is drawn to scale
+  double dotsPerMM = p->device()->logicalDpiX() / 25.4;
+
+  //setup render context
+  QgsMapSettings ms = mComposition->mapSettings();
+  //context units should be in dots
+  ms.setOutputDpi( p->device()->logicalDpiX() );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setPainter( p );
-  context.setScaleFactor( 1.0 );
-  if ( mComposition->plotStyle() ==  QgsComposition::Preview )
-  {
-    //Limit resolution of symbol fill if composition is not being exported
-    //otherwise zooming into composition slows down renders
-    context.setRasterScaleFactor( qMin( horizontalViewScaleFactor(), 3.0 ) );
-  }
-  else
-  {
-    context.setRasterScaleFactor( mComposition->printResolution() / 25.4 );
-  }
+  context.setForceVectorOutput( true );
+  p->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
 
   //generate polygon to draw
   QList<QPolygonF> rings; //empty list
@@ -196,7 +194,7 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
     {
       //create an ellipse
       QPainterPath ellipsePath;
-      ellipsePath.addEllipse( QRectF( 0, 0 , rect().width(), rect().height() ) );
+      ellipsePath.addEllipse( QRectF( 0, 0 , rect().width() * dotsPerMM, rect().height() * dotsPerMM ) );
       QPolygonF ellipsePoly = ellipsePath.toFillPolygon( t );
       shapePolygon = ti.map( ellipsePoly );
       break;
@@ -207,22 +205,22 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
       if ( mCornerRadius > 0 )
       {
         QPainterPath roundedRectPath;
-        roundedRectPath.addRoundedRect( QRectF( 0, 0 , rect().width(), rect().height() ), mCornerRadius, mCornerRadius );
+        roundedRectPath.addRoundedRect( QRectF( 0, 0 , rect().width() * dotsPerMM, rect().height() * dotsPerMM ), mCornerRadius * dotsPerMM, mCornerRadius * dotsPerMM );
         QPolygonF roundedPoly = roundedRectPath.toFillPolygon( t );
         shapePolygon = ti.map( roundedPoly );
       }
       else
       {
-        shapePolygon = QPolygonF( QRectF( 0, 0, rect().width(), rect().height() ) );
+        shapePolygon = QPolygonF( QRectF( 0, 0, rect().width() * dotsPerMM, rect().height() * dotsPerMM ) );
       }
       break;
     }
     case Triangle:
     {
-      shapePolygon << QPointF( 0, rect().height() );
-      shapePolygon << QPointF( rect().width() , rect().height() );
-      shapePolygon << QPointF( rect().width() / 2.0, 0 );
-      shapePolygon << QPointF( 0, rect().height() );
+      shapePolygon << QPointF( 0, rect().height() * dotsPerMM );
+      shapePolygon << QPointF( rect().width() * dotsPerMM, rect().height() * dotsPerMM );
+      shapePolygon << QPointF( rect().width() / 2.0 * dotsPerMM, 0 );
+      shapePolygon << QPointF( 0, rect().height() * dotsPerMM );
       break;
     }
   }
@@ -337,6 +335,56 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
     }
     properties.insert( "color_border", QgsSymbolLayerV2Utils::encodeColor( pen().color() ) );
     properties.insert( "width_border", QString::number( pen().widthF() ) );
+
+    //for pre 2.0 projects, shape color and outline were specified in a different element...
+    QDomNodeList outlineColorList = itemElem.elementsByTagName( "OutlineColor" );
+    if ( outlineColorList.size() > 0 )
+    {
+      QDomElement frameColorElem = outlineColorList.at( 0 ).toElement();
+      bool redOk, greenOk, blueOk, alphaOk, widthOk;
+      int penRed, penGreen, penBlue, penAlpha;
+      double penWidth;
+
+      penWidth = itemElem.attribute( "outlineWidth" ).toDouble( &widthOk );
+      penRed = frameColorElem.attribute( "red" ).toDouble( &redOk );
+      penGreen = frameColorElem.attribute( "green" ).toDouble( &greenOk );
+      penBlue = frameColorElem.attribute( "blue" ).toDouble( &blueOk );
+      penAlpha = frameColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+
+      if ( redOk && greenOk && blueOk && alphaOk && widthOk )
+      {
+        properties.insert( "color_border", QgsSymbolLayerV2Utils::encodeColor( QColor( penRed, penGreen, penBlue, penAlpha ) ) );
+        properties.insert( "width_border", QString::number( penWidth ) );
+      }
+    }
+    QDomNodeList fillColorList = itemElem.elementsByTagName( "FillColor" );
+    if ( fillColorList.size() > 0 )
+    {
+      QDomElement fillColorElem = fillColorList.at( 0 ).toElement();
+      bool redOk, greenOk, blueOk, alphaOk;
+      int fillRed, fillGreen, fillBlue, fillAlpha;
+
+      fillRed = fillColorElem.attribute( "red" ).toDouble( &redOk );
+      fillGreen = fillColorElem.attribute( "green" ).toDouble( &greenOk );
+      fillBlue = fillColorElem.attribute( "blue" ).toDouble( &blueOk );
+      fillAlpha = fillColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+
+      if ( redOk && greenOk && blueOk && alphaOk )
+      {
+        properties.insert( "color", QgsSymbolLayerV2Utils::encodeColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) ) );
+        properties.insert( "style", "solid" );
+      }
+    }
+    if ( itemElem.hasAttribute( "transparentFill" ) )
+    {
+      //old style (pre 2.0) of specifying that shapes had no fill
+      bool hasOldTransparentFill = itemElem.attribute( "transparentFill", "0" ).toInt();
+      if ( hasOldTransparentFill )
+      {
+        properties.insert( "style", "no" );
+      }
+    }
+
     mShapeStyleSymbol = QgsFillSymbolV2::createSimple( properties );
   }
   emit itemChanged();
@@ -367,7 +415,11 @@ void QgsComposerShape::updateBoundingRect()
 void QgsComposerShape::setSceneRect( const QRectF& rectangle )
 {
   // Reimplemented from QgsComposerItem as we need to call updateBoundingRect after the shape's size changes
-  QgsComposerItem::setSceneRect( rectangle );
+
+  //update rect for data defined size and position
+  QRectF evaluatedRect = evalItemRect( rectangle );
+  QgsComposerItem::setSceneRect( evaluatedRect );
+
   updateBoundingRect();
   update();
 }

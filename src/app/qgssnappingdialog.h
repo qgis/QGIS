@@ -69,9 +69,11 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
      */
     void closeEvent( QCloseEvent* event );
 
+  signals:
+    void snapSettingsChanged();
+
   private slots:
     void reload();
-
 
   private:
     /**Default constructor forbidden*/

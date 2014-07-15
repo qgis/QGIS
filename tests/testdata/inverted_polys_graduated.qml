@@ -1,7 +1,7 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis version="2.3.0-Master" minimumScale="1" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="1" maxLabelScale="1e+08" simplifyDrawingTol="1" simplifyMaxScale="1" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
-  <renderer-v2 type="invertedPolygonRenderer">
-    <renderer-v2 attr="Name" symbollevels="0" type="categorizedSymbol">
+  <renderer-v2 preprocessing="0" type="invertedPolygonRenderer">
+    <renderer-v2 attr="Name" symbollevels="1" type="categorizedSymbol">
       <categories>
         <category symbol="0" value="Dam" label="Dam"/>
         <category symbol="1" value="Lake" label="Lake"/>
@@ -27,7 +27,7 @@
           </layer>
         </symbol>
         <symbol alpha="1" type="fill" name="1">
-          <layer pass="0" class="ShapeburstFill" locked="0">
+          <layer pass="1" class="ShapeburstFill" locked="0">
             <prop k="blur_radius" v="0"/>
             <prop k="color1" v="0,0,255,255"/>
             <prop k="color2" v="0,255,0,255"/>

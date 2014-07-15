@@ -42,8 +42,8 @@ class QgsSymbolV2
     //! @note added in 1.5
     enum RenderHint
     {
-      DataDefinedSizeScale = 1,
-      DataDefinedRotation = 2
+      DataDefinedSizeScale,
+      DataDefinedRotation
     };
 
     virtual ~QgsSymbolV2();

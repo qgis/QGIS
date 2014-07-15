@@ -9,7 +9,7 @@
 #include "qgsmapsettings.h"
 #include "qgsmaplayer.h"
 
-#include "qgsmaprendererjob.h"
+#include "qgsmaprenderersequentialjob.h"
 
 class TestWidget : public QLabel
 {

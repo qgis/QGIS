@@ -2897,7 +2897,7 @@ void QgsGrassModuleInput::updateQgisLayers()
       mMapLayers.push_back( vector );
       mVectorLayerNames.push_back( grassLayer );
 
-      // convert from QgsFieldMap to std::vector<QgsField>
+      // convert from QgsFields to std::vector<QgsField>
       mVectorFields.push_back( vector->dataProvider()->fields() );
     }
     else if ( mType == Raster && layer->type() == QgsMapLayer::RasterLayer )

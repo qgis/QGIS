@@ -86,6 +86,18 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     void setColor( const QColor & color );
 
     /**
+     * Set the file color for the rubberband
+     *  @param color  The color used to render this rubberband
+     */
+    void setFillColor( const QColor & color );
+
+    /**
+     * Set the border color for the rubberband
+     *  @param color  The color used to render this rubberband
+     */
+    void setBorderColor( const QColor & color );
+
+    /**
      * Set the width of the line. Outline width for polygon.
      *  @param width The width for any lines painted for this rubberband
      */

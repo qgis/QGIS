@@ -91,6 +91,7 @@ void TestQgsComposerRotation::initTestCase()
   mComposerLabel->setPos( 70, 70 );
   mComposerLabel->adjustSizeToText();
   mComposerLabel->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );
+  mComposerLabel->setBackgroundEnabled( true );
 
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );

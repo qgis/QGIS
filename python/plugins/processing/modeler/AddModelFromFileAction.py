@@ -47,11 +47,12 @@ class AddModelFromFileAction(ToolboxAction):
                 '*.model')
         if filename:
             try:
-                model = ModelerAlgorithm()
-                model.openModel(filename)
+                ModelerAlgorithm.fromJsonFile(filename)
             except WrongModelException:
                 QtGui.QMessageBox.warning(self.toolbox, "Error reading model", "The selected file does not contain a valid model")
                 return
+            except:
+                QtGui.QMessageBox.warning(self.toolbox, "Error reading model", "Cannot read file")
             destFilename = os.path.join(ModelerUtils.modelsFolder(), os.path.basename(filename))
             shutil.copyfile(filename,destFilename)
             self.toolbox.updateProvider('script')

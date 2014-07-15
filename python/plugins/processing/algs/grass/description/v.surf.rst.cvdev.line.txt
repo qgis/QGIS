@@ -1,0 +1,16 @@
+v.surf.rst
+v.surf.rst.cvdev.line - Spatial approximation and topographic analysis using regularized spline with tension.
+Vector (v.*)
+ParameterVector|input|Input lines layer|1|False
+ParameterString|where|WHERE conditions of SQL statement without 'where' keyword|
+ParameterRaster|maskmap|Name of the raster map used as mask|True
+ParameterTableField|zcolumn|Name of the attribute column with values to be used for approximation|input|-1|False
+ParameterNumber|tension|Tension parameter|None|None|40
+ParameterNumber|segmax|Maximum number of points in a segment|None|None|40
+ParameterNumber|npmin|Minimum number of points for approximation in a segment (>segmax)|None|None|300
+ParameterNumber|dmin|Minimum distance between points (to remove almost identical points)|None|None|0.001
+ParameterNumber|dmax|Maximum distance between points on isoline (to insert additional points)|None|None|2.5
+ParameterNumber|theta|Anisotropy angle (in degrees counterclockwise from East)|0|360|0
+ParameterNumber|scalex|Anisotropy scaling factor|None|None|0
+ParameterBoolean|-c|-c[leave this as True]|True
+OutputVector|cvdev|Cross-validation errors 

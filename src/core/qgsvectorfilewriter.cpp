@@ -1548,6 +1548,8 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2*
 {
   // create the feature
   OGRFeatureH poFeature = createFeature( feature );
+  if ( !poFeature )
+    return false;
 
   //add OGR feature style type
   if ( mSymbologyExport != NoSymbology && renderer )

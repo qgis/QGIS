@@ -35,6 +35,7 @@
 QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent )
     : QAbstractTableModel( parent )
     , mLayerCache( layerCache )
+    , mFieldCount( 0 )
     , mCachedField( -1 )
 {
   QgsDebugMsg( "entered." );
@@ -246,13 +247,16 @@ void QgsAttributeTableModel::loadAttributes()
 
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    QgsEditorWidgetFactory* widgetFactory = QgsEditorWidgetRegistry::instance()->factory( layer()->editorWidgetV2( idx ) );
+    const QString widgetType = layer()->editorWidgetV2( idx );
+    QgsEditorWidgetFactory* widgetFactory = QgsEditorWidgetRegistry::instance()->factory( widgetType );
+    if ( widgetFactory && widgetType != "Hidden" )
+    {
+      mWidgetFactories.append( widgetFactory );
+      mWidgetConfigs.append( layer()->editorWidgetV2Config( idx ) );
+      mAttributeWidgetCaches.append( widgetFactory->createCache( layer(), idx, mWidgetConfigs.last() ) );
 
-    mWidgetFactories.append( widgetFactory );
-    mWidgetConfigs.append( layer()->editorWidgetV2Config( idx ) );
-    mAttributeWidgetCaches.append( widgetFactory->createCache( layer(), idx, mWidgetConfigs.last() ) );
-
-    attributes << idx;
+      attributes << idx;
+    }
   }
 
   if ( mFieldCount < attributes.size() )
@@ -283,9 +287,12 @@ void QgsAttributeTableModel::loadLayer()
 {
   QgsDebugMsg( "entered." );
 
-  beginRemoveRows( QModelIndex(), 0, rowCount() - 1 );
-  removeRows( 0, rowCount() );
-  endRemoveRows();
+  if ( rowCount() != 0 )
+  {
+    beginRemoveRows( QModelIndex(), 0, rowCount() - 1 );
+    removeRows( 0, rowCount() );
+    endRemoveRows();
+  }
 
   QgsFeatureIterator features = mLayerCache->getFeatures( mFeatureRequest );
 
@@ -497,7 +504,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 
   if ( role == Qt::DisplayRole )
   {
-    return mWidgetFactories[ fieldId ]->representValue( layer(), fieldId, mWidgetConfigs[ fieldId ], mAttributeWidgetCaches[ fieldId ], val );
+    return mWidgetFactories[ index.column()]->representValue( layer(), fieldId, mWidgetConfigs[ index.column()], mAttributeWidgetCaches[ index.column()], val );
   }
 
   return val;

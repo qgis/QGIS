@@ -37,6 +37,7 @@
 #include <qgsfeature.h>
 #include <qgsapplication.h>
 #include <qgsvectorlayer.h>
+#include <qgsvectordataprovider.h>
 #include <qgsmessagebar.h>
 
 #include <qgsgraphdirector.h>
@@ -388,6 +389,12 @@ void RgShortestPathWidget::exportPath()
   int startVertexIdx = path->findVertex( p1 );
   int stopVertexIdx  = path->findVertex( p2 );
 
+  double time = 0.0;
+  double cost = 0.0;
+
+  Unit timeUnit = Unit::byName( mPlugin->timeUnitName() );
+  Unit distanceUnit = Unit::byName( mPlugin->distanceUnitName() );
+
   QgsPolyline p;
   while ( startVertexIdx != stopVertexIdx )
   {
@@ -395,15 +402,23 @@ void RgShortestPathWidget::exportPath()
     if ( l.empty() )
       break;
     const QgsGraphArc& e = path->arc( l.front() );
+
+    cost += e.property( 0 ).toDouble();
+    time += e.property( 1 ).toDouble();
+
     p.push_front( ct.transform( path->vertex( e.inVertex() ).point() ) );
     stopVertexIdx = e.outVertex();
   }
   p.push_front( ct.transform( p1 ) );
 
-  vl->startEditing();
   QgsFeature f;
+  f.initAttributes( vl->pendingFields().count() );
   f.setGeometry( QgsGeometry::fromPolyline( p ) );
-  vl->addFeature( f );
+  f.setAttribute( 0, cost / distanceUnit.multipler() );
+  f.setAttribute( 1, time / timeUnit.multipler() );
+  QgsFeatureList features;
+  features << f;
+  vl->dataProvider()->addFeatures( features );
   vl->updateExtents();
 
   mPlugin->iface()->mapCanvas()->update();

@@ -54,7 +54,7 @@ class CORE_EXPORT QgsDataDefined
     void setUseExpression( bool use ) { mUseExpression = use; }
 
     QString expressionString() const { return mExpressionString; }
-    void setExpressionString( const QString& expr ) { mExpressionString = expr; }
+    void setExpressionString( const QString& expr );
 
     // @note not available in python bindings
     QMap<QString, QVariant> expressionParams() const { return mExpressionParams; }

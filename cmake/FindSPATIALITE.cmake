@@ -69,6 +69,7 @@ IF (SPATIALITE_FOUND)
        SET(CMAKE_REQUIRED_LIBRARIES "-F/Library/Frameworks" ${CMAKE_REQUIRED_LIBRARIES})
    ENDIF(APPLE)
    check_library_exists("${SPATIALITE_LIBRARY}" gaiaDropTable "" SPATIALITE_VERSION_GE_4_0_0)
+   check_library_exists("${SPATIALITE_LIBRARY}" gaiaStatisticsInvalidate "" SPATIALITE_VERSION_G_4_1_1)
 
 ELSE (SPATIALITE_FOUND)
 

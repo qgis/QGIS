@@ -150,7 +150,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * Return a map of indexes with field names for this layer
      * @return map of fields
-     * @see QgsFieldMap
+     * @see QgsFields
      */
     virtual const QgsFields &fields() const = 0;
 

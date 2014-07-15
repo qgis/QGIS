@@ -40,7 +40,8 @@
 #include "qgsbench.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaprendererjob.h"
+#include "qgsmaprendererparalleljob.h"
+#include "qgsmaprenderersequentialjob.h"
 #include "qgsproject.h"
 
 const char *pre[] = { "user", "sys", "total", "wall" };

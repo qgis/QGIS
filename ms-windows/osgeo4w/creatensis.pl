@@ -152,19 +152,19 @@ foreach my $p ( keys %pkgs ) {
 
 		print "Downloading $file [$f]...\n" if $verbose;
 		system "wget $wgetopt -c $f";
-		die "download of $f failed" if $?;
+		die "download of $f failed" if $? or ! -f $file;
 
 		if( exists $md5{$file} ) {
 			my $md5;
 			open F, "md5sum $file|";
 			while(<F>) {
-				if( /^(\S+)\s+$file$/ ) {
+				if( /^(\S+)\s+\*?$file$/ ) {
 					$md5 = $1;
 				}
 			}
 			close F;
 
-			die "No md5sum of $p determined" unless defined $md5;
+			die "No md5sum of $p determined [$file]" unless defined $md5;
 			if( $md5 eq $md5{$file} ) {
 				print "md5sum of $file verified.\n" if $verbose;
 			} else {
@@ -224,7 +224,7 @@ unless(-d $unpacked ) {
 		print O "$pn $p 0\n";
 
 		print "Unpacking $p...\n" if $verbose;
-		system "tar $taropt -C $unpacked -xjvf $p | gzip -c >$unpacked/etc/setup/$pn.lst.gz";
+		system "bash -c 'tar $taropt -C $unpacked -xjvf $p | gzip -c >$unpacked/etc/setup/$pn.lst.gz && [ \${PIPESTATUS[0]} == 0 -a \${PIPESTATUS[1]} == 0 ]'";
 		die "unpacking of $p failed" if $?;
 	}
 

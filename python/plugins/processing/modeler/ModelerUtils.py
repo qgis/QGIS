@@ -32,6 +32,9 @@ from processing.core.ProcessingConfig import ProcessingConfig
 
 class ModelerUtils:
 
+    allAlgs = {}
+    providers = {}
+
     MODELS_FOLDER = 'MODELS_FOLDER'
     ACTIVATE_MODELS = 'ACTIVATE_MODELS'
 
@@ -51,6 +54,3 @@ class ModelerUtils:
                 return provider[name]
         return None
 
-    @staticmethod
-    def getAlgorithms():
-        return ModelerUtils.allAlgs

@@ -1,0 +1,13 @@
+<h3>$currentfeature function</h3>
+Returns the current feature being evaluated. This can be used with the 'attribute' function
+to evaluate attribute values from the current feature.
+
+<h4>Syntax</h4>
+<pre>$currentfeature</pre>
+
+<h4>Arguments</h4>
+None
+
+<h4>Example</h4>
+<pre>attribute( $currentfeature, 'name' ) &rarr; returns value stored in 'name' attribute for the current feature</pre>
+

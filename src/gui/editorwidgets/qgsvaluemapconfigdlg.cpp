@@ -192,12 +192,12 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
     QString l = s.readLine().trimmed();
 
     QString key, val;
-    if ( re0.indexIn( l ) >= 0 && re0.numCaptures() == 2 )
+    if ( re0.indexIn( l ) >= 0 && re0.captureCount() == 2 )
     {
       key = re0.cap( 1 ).trimmed();
       val = re0.cap( 2 ).trimmed();
     }
-    else if ( re1.indexIn( l ) >= 0 && re1.numCaptures() == 2 )
+    else if ( re1.indexIn( l ) >= 0 && re1.captureCount() == 2 )
     {
       key = re1.cap( 1 ).trimmed();
       val = re1.cap( 2 ).trimmed();

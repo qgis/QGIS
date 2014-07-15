@@ -99,6 +99,11 @@ class QgsDistanceArea
     double computeDistanceBearing( const QgsPoint& p1, const QgsPoint& p2,
                                    double* course1 = NULL, double* course2 = NULL );
 
+    //! uses flat / planimetric / Euclidean distance
+    double computeDistanceFlat( const QgsPoint& p1, const QgsPoint& p2 );
+
+    //! calculate distance with given coordinates (does not do a transform anymore)
+    double computeDistance( const QList<QgsPoint>& points );
 
     /**
      calculates area of polygon on ellipsoid

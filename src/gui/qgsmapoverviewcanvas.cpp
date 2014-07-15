@@ -18,7 +18,7 @@
 
 #include "qgsmapcanvas.h"
 #include "qgsmapoverviewcanvas.h"
-#include "qgsmaprendererjob.h"
+#include "qgsmaprenderersequentialjob.h"
 #include "qgsmaptopixel.h"
 
 #include <QPainter>

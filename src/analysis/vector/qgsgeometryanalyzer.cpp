@@ -907,7 +907,7 @@ void QgsGeometryAnalyzer::bufferFeature( QgsFeature& f, int nProcessedFeatures, 
   }
 }
 
-bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QList<int>& unlocatedFeatureIds, const QString& outputLayer,
+bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QgsFeatureIds &unlocatedFeatureIds, const QString& outputLayer,
                                       const QString& outputFormat, int locationField1, int locationField2, int offsetField, double offsetScale,
                                       bool forceSingleGeometry, QgsVectorDataProvider* memoryProvider, QProgressDialog* p )
 {
@@ -954,7 +954,6 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   //iterate over eventLayer and write new features to output file or layer
   fit = eventLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
   QgsGeometry* lrsGeom = 0;
-  QgsFeature lineFeature;
   double measure1, measure2 = 0.0;
 
   int nEventFeatures = eventLayer->pendingFeatureCount();
@@ -987,6 +986,10 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
     if ( locationField2 != -1 )
     {
       measure2 = fet.attribute( locationField2 ).toDouble();
+      if ( qgsDoubleNear(( measure2 - measure1 ), 0.0 ) )
+      {
+        continue;
+      }
     }
 
     QList<QgsFeature> featureIdList = lineLayerIdMap.values( fet.attribute( eventField ).toString() );
@@ -1005,12 +1008,12 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
       if ( lrsGeom )
       {
         ++nOutputFeatures;
-        addEventLayerFeature( fet, lrsGeom, lineFeature.geometry(), fileWriter, memoryProviderFeatures, offsetField, offsetScale, forceSingleGeometry );
+        addEventLayerFeature( fet, lrsGeom, featureIdIt->geometry(), fileWriter, memoryProviderFeatures, offsetField, offsetScale, forceSingleGeometry );
       }
     }
     if ( nOutputFeatures < 1 )
     {
-      unlocatedFeatureIds.push_back( fet.id() );
+      unlocatedFeatureIds.insert( fet.id() );
     }
   }
 
@@ -1053,7 +1056,11 @@ void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, QgsGeometry
     {
       double offsetVal = feature.attribute( offsetField ).toDouble();
       offsetVal *= offsetScale;
-      createOffsetGeometry( *geomIt, lineGeom, offsetVal );
+      if ( !createOffsetGeometry( *geomIt, lineGeom, offsetVal ) )
+      {
+        delete *geomIt;
+        continue;
+      }
     }
 
     feature.setGeometry( *geomIt );
@@ -1073,11 +1080,11 @@ void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, QgsGeometry
   }
 }
 
-void QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, QgsGeometry* lineGeom, double offset )
+bool QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, QgsGeometry* lineGeom, double offset )
 {
   if ( !geom || !lineGeom )
   {
-    return;
+    return false;
   }
 
   QList<QgsGeometry*> inputGeomList;
@@ -1100,7 +1107,17 @@ void QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, QgsGeometry* 
       //geos 3.3 needed for line offsets
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
       ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
-      outputGeomList.push_back( GEOSOffsetCurve(( *inputGeomIt )->asGeos(), -offset, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ ) );
+      GEOSGeometry* offsetGeom = GEOSOffsetCurve(( *inputGeomIt )->asGeos(), -offset, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ );
+      if ( !offsetGeom || !GEOSisValid( offsetGeom ) )
+      {
+        return false;
+      }
+      if ( !GEOSisValid( offsetGeom ) || GEOSGeomTypeId( offsetGeom ) != GEOS_LINESTRING || GEOSGeomGetNumPoints( offsetGeom ) < 1 )
+      {
+        GEOSGeom_destroy( offsetGeom );
+        return false;
+      }
+      outputGeomList.push_back( offsetGeom );
 #else
       outputGeomList.push_back( GEOSGeom_clone(( *inputGeomIt )->asGeos() ) );
 #endif
@@ -1144,6 +1161,7 @@ void QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, QgsGeometry* 
     geom->fromGeos( collection );
     delete[] geomArray;
   }
+  return true;
 }
 
 QgsPoint QgsGeometryAnalyzer::createPointOffset( double x, double y, double dist, QgsGeometry* lineGeom ) const

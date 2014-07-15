@@ -195,7 +195,7 @@ void QgsVectorFieldSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
 {
   if ( mLineSymbol )
   {
-    mLineSymbol->startRender( context.renderContext() );
+    mLineSymbol->startRender( context.renderContext(), context.fields() );
   }
 
   const QgsFields* fields = context.fields();

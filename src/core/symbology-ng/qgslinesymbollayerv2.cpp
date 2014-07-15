@@ -258,15 +258,13 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   p->setPen( context.selected() ? mSelPen : mPen );
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #2 points).
-#if 0 // TODO[MD]: after merge
-  if ( points.size() <= 2 && context.layer() && context.layer()->simplifyDrawingCanbeApplied( context.renderContext(), QgsVectorSimplifyMethod::AntialiasingSimplification ) && QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( points, context.layer()->simplifyMethod().threshold() ) && ( p->renderHints() & QPainter::Antialiasing ) )
+  if ( points.size() <= 2 && ( context.renderContext().vectorSimplifyMethod().simplifyHints() & QgsVectorSimplifyMethod::AntialiasingSimplification ) && QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( points, context.renderContext().vectorSimplifyMethod().threshold() ) && ( p->renderHints() & QPainter::Antialiasing ) )
   {
     p->setRenderHint( QPainter::Antialiasing, false );
     p->drawPolyline( points );
     p->setRenderHint( QPainter::Antialiasing, true );
     return;
   }
-#endif
 
   if ( offset == 0 )
   {
@@ -275,7 +273,7 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   else
   {
     double scaledOffset = offset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit, mOffsetMapUnitScale );
-    QList<QPolygonF> mline = ::offsetLine( points, scaledOffset );
+    QList<QPolygonF> mline = ::offsetLine( points, scaledOffset, context.feature() ? context.feature()->geometry()->type() : QGis::Line );
     for ( int part = 0; part < mline.count(); ++part )
       p->drawPolyline( mline[ part ] );
   }
@@ -445,12 +443,32 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   QgsExpression* dashPatternExpression = expression( "customdash" );
   if ( dashPatternExpression )
   {
+
+    double scaledWidth = mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit, mWidthMapUnitScale );
+
+    double dashWidthDiv = mPen.widthF();
+
+    if ( strokeWidthExpression )
+    {
+      dashWidthDiv = pen.widthF();
+      scaledWidth = pen.widthF();
+    }
+
+    //fix dash pattern width in Qt 4.8
+    QStringList versionSplit = QString( qVersion() ).split( "." );
+    if ( versionSplit.size() > 1
+         && versionSplit.at( 1 ).toInt() >= 8
+         && ( scaledWidth * context.renderContext().rasterScaleFactor() ) < 1.0 )
+    {
+      dashWidthDiv = 1.0;
+    }
+
     QVector<qreal> dashVector;
     QStringList dashList = dashPatternExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString().split( ";" );
     QStringList::const_iterator dashIt = dashList.constBegin();
     for ( ; dashIt != dashList.constEnd(); ++dashIt )
     {
-      dashVector.push_back( dashIt->toDouble() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / mPen.widthF() );
+      dashVector.push_back( dashIt->toDouble() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv );
     }
     pen.setDashPattern( dashVector );
   }
@@ -767,7 +785,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   }
   else
   {
-    QList<QPolygonF> mline = ::offsetLine( points, offset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit, mOffsetMapUnitScale ) );
+    QList<QPolygonF> mline = ::offsetLine( points, offset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit, mOffsetMapUnitScale ), context.feature() ? context.feature()->geometry()->type() : QGis::Line );
 
     for ( int part = 0; part < mline.count(); ++part )
     {

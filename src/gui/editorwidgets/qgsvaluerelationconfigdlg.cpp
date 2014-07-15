@@ -18,13 +18,14 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
 
-QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) :
-    QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
+    : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
   mLayerName->setFilters( QgsMapLayerProxyModel::VectorLayer );
   connect( mLayerName, SIGNAL( layerChanged( QgsMapLayer* ) ), mKeyColumn, SLOT( setLayer( QgsMapLayer* ) ) );
   connect( mLayerName, SIGNAL( layerChanged( QgsMapLayer* ) ), mValueColumn, SLOT( setLayer( QgsMapLayer* ) ) );
+  connect( mEditExpression, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
 }
 
 QgsEditorWidgetConfig QgsValueRelationConfigDlg::config()
@@ -51,5 +52,20 @@ void QgsValueRelationConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
   mAllowMulti->setChecked( config.value( "AllowMulti" ).toBool() );
   mAllowNull->setChecked( config.value( "AllowNull" ).toBool() );
   mOrderByValue->setChecked( config.value( "OrderByValue" ).toBool() );
-  mFilterExpression->setPlainText( config.value( "EditExpression" ).toString() );
+  mFilterExpression->setPlainText( config.value( "FilterExpression" ).toString() );
+}
+
+void QgsValueRelationConfigDlg::editExpression()
+{
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( mLayerName->currentLayer() );
+  if ( !vl )
+    return;
+
+  QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this );
+  dlg.setWindowTitle( tr( "Edit filter expression" ) );
+
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    mFilterExpression->setText( dlg.expressionBuilder()->expressionText() );
+  }
 }

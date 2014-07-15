@@ -25,31 +25,21 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
 
-from PyQt4 import QtGui
-
-from processing.core.GeoAlgorithm import GeoAlgorithm
-
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.outputs.OutputRaster import OutputRaster
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-
 from processing.tools.system import *
-
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class merge(GeoAlgorithm):
+class merge(GdalAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     PCT = 'PCT'
     SEPARATE = 'SEPARATE'
-
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + '/icons/merge.png'
-        return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
         self.name = 'Merge'

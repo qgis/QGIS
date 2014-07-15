@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="mProjectMenu">
@@ -63,8 +63,7 @@
      <property name="title">
       <string>Select</string>
      </property>
-     <addaction name="mActionSelect"/>
-     <addaction name="mActionSelectRectangle"/>
+     <addaction name="mActionSelectFeatures"/>
      <addaction name="mActionSelectPolygon"/>
      <addaction name="mActionSelectFreehand"/>
      <addaction name="mActionSelectRadius"/>
@@ -874,19 +873,7 @@
     <string>Ctrl+-</string>
    </property>
   </action>
-  <action name="mActionSelect">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelect.svg</normaloff>:/images/themes/default/mActionSelect.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Select Single Feature</string>
-   </property>
-  </action>
-  <action name="mActionSelectRectangle">
+  <action name="mActionSelectFeatures">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -895,7 +882,10 @@
      <normaloff>:/images/themes/default/mActionSelectRectangle.svg</normaloff>:/images/themes/default/mActionSelectRectangle.svg</iconset>
    </property>
    <property name="text">
-    <string>Select Features by Rectangle</string>
+    <string>Select Feature(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Select Features by area or single click</string>
    </property>
   </action>
   <action name="mActionSelectPolygon">
@@ -2200,7 +2190,7 @@ Acts on currently active editable layer</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate photocopy (grayscale)</string>
+    <string>Simulate Photocopy (Grayscale)</string>
    </property>
    <property name="toolTip">
     <string>Simulate photocopy (grayscale)</string>
@@ -2211,7 +2201,7 @@ Acts on currently active editable layer</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate fax (mono)</string>
+    <string>Simulate Fax (Mono)</string>
    </property>
    <property name="toolTip">
     <string>Simulate fax (mono)</string>
@@ -2222,7 +2212,7 @@ Acts on currently active editable layer</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate color blindness (protanope)</string>
+    <string>Simulate Color Blindness (Protanope)</string>
    </property>
    <property name="toolTip">
     <string>Simulate color blindness (protanope)</string>
@@ -2233,7 +2223,7 @@ Acts on currently active editable layer</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate color blindness (deuteranope)</string>
+    <string>Simulate Color Blindness (Deuteranope)</string>
    </property>
    <property name="toolTip">
     <string>Simulate color blindness (deuteranope)</string>

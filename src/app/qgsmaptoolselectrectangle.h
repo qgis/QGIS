@@ -28,11 +28,11 @@ class QgsGeometry;
 class QgsRubberBand;
 
 
-class APP_EXPORT QgsMapToolSelectRectangle : public QgsMapTool
+class APP_EXPORT QgsMapToolSelectFeatures : public QgsMapTool
 {
     Q_OBJECT
   public:
-    QgsMapToolSelectRectangle( QgsMapCanvas* canvas );
+    QgsMapToolSelectFeatures( QgsMapCanvas* canvas );
 
     //! Overridden mouse move event
     virtual void canvasMoveEvent( QMouseEvent * e );
@@ -52,6 +52,10 @@ class APP_EXPORT QgsMapToolSelectRectangle : public QgsMapTool
     QRect mSelectRect;
 
     QgsRubberBand* mRubberBand;
+
+    QColor mFillColor;
+
+    QColor mBorderColour;
 };
 
 #endif

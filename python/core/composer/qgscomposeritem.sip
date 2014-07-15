@@ -1,7 +1,7 @@
 /** \ingroup MapComposer
  * A item that forms part of a map composition.
  */
-class QgsComposerItem : QObject, QGraphicsRectItem
+class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
 {
 %TypeHeaderCode
 #include <qgscomposeritem.h>
@@ -156,15 +156,6 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     /** \brief Is selected */
     virtual bool selected() const;
 
-    /** stores state in project */
-    virtual bool writeSettings();
-
-    /** read state from project */
-    virtual bool readSettings();
-
-    /** delete settings from project file  */
-    virtual bool removeSettings();
-
     /**Moves item in canvas coordinates*/
     void move( double dx, double dy );
 
@@ -178,6 +169,32 @@ class QgsComposerItem : QObject, QGraphicsRectItem
       @param x x-position of mouse cursor (in item coordinates)
       @param y y-position of mouse cursor (in item coordinates)*/
     virtual void zoomContent( int delta, double x, double y );
+
+    /**Gets the page the item is currently on.
+     * @returns page number for item
+     * @see pagePos
+     * @see updatePagePos
+     * @note this method was added in version 2.4
+    */
+    int page() const;
+
+    /**Returns the item's position relative to its current page.
+     * @returns position relative to the page's top left corner.
+     * @see page
+     * @see updatePagePos
+     * @note this method was added in version 2.4
+    */
+    QPointF pagePos() const;
+
+    /**Moves the item so that it retains its relative position on the page
+     * when the paper size changes.
+     * @param newPageWidth new width of the page in mm
+     * @param newPageHeight new height of the page in mm
+     * @see page
+     * @see pagePos
+     * @note this method was added in version 2.4
+    */
+    void updatePagePos( double newPageWidth, double newPageHeight );
 
     /**Moves the item to a new position (in canvas coordinates)*/
     void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft );
@@ -202,20 +219,8 @@ class QgsComposerItem : QObject, QGraphicsRectItem
      corresponds to 1 scene size unit*/
     virtual void setSceneRect( const QRectF& rectangle );
 
-    /** stores state in Dom element
-     * @param elem is Dom element corresponding to 'Composer' tag
-     * @param doc is the Dom document
-     */
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const = 0;
-
     /**Writes parameter that are not subclass specific in document. Usually called from writeXML methods of subclasses*/
     bool _writeXML( QDomElement& itemElem, QDomDocument& doc ) const;
-
-    /** sets state from Dom document
-     * @param itemElem is Dom node corresponding to item tag
-     * @param doc is Dom document
-     */
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) = 0;
 
     /**Reads parameter that are not subclass specific in document. Usually called from readXML methods of subclasses*/
     bool _readXML( const QDomElement& itemElem, const QDomDocument& doc );
@@ -337,8 +342,6 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     virtual void addItem( QgsComposerItem* item );
     virtual void removeItems();
 
-    const QgsComposition* composition() const;
-
     virtual void beginItemCommand( const QString& text );
 
     /**Starts new composer undo command
@@ -379,8 +382,14 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double fontAscentMillimeters( const QFont& font ) const;
 
-    /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
+    /**Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double fontDescentMillimeters( const QFont& font ) const;
+    
+    /**Returns the font height in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE.
+     * Font height equals the font ascent+descent+1 (for baseline).
+     * @note Added in version 2.4
+    */
+    double fontHeightMillimeters( const QFont& font ) const;
 
     /**Calculates font to from point size to pixel size*/
     double pixelFontSize( double pointSize ) const;
@@ -396,9 +405,14 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     @note this method was added in version 1.2*/
     bool positionLock() const;
 
-    /**Returns the rotation for the composer item
-    @note this method was added in version 2.1*/
-    double itemRotation() const;
+    /**Returns the current rotation for the composer item.
+     * @returns rotation for composer item
+     * @param valueType controls whether the returned value is the user specified rotation,
+     * or the current evaluated rotation (which may be affected by data driven rotation
+     * settings).
+     * @note this method was added in version 2.1
+     */
+    double itemRotation( QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
 
     /**Returns the rotation for the composer item
      * @deprecated Use itemRotation()
@@ -421,6 +435,20 @@ class QgsComposerItem : QObject, QGraphicsRectItem
       @note this method was added in version 2.0
       @note there is not setter since one can't manually set the id*/
     QString uuid() const;
+    
+    /**Returns whether this item is part of a group
+     * @returns true if item is in a group
+     * @note added in version 2.5
+     * @see setIsGroupMember
+    */
+    bool isGroupMember() const;
+
+    /**Sets whether this item is part of a group
+     * @param isGroupMember set to true if item is in a group
+     * @note added in version 2.5
+     * @see isGroupMember
+    */
+    void setIsGroupMember( bool isGroupMember );
 
     /**Get the number of layers that this item requires for exporting as layers
      * @returns 0 if this item is to be placed on the same layer as the previous item,
@@ -442,14 +470,23 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     virtual void setRotation( double r );
 
     /**Sets the item rotation
-      @param r item rotation in degrees
-      @param adjustPosition set to true if item should be shifted so that rotation occurs
-       around item center. If false, rotation occurs around item origin
-      @note this method was added in version 2.1
+     * @param r item rotation in degrees
+     * @param adjustPosition set to true if item should be shifted so that rotation occurs
+     * around item center. If false, rotation occurs around item origin
+     * @note this method was added in version 2.1
     */
     virtual void setItemRotation( double r, bool adjustPosition = false );
 
     void repaint();
+
+    /**Refreshes a data defined property for the item by reevaluating the property's value
+     * and redrawing the item with this new value.
+     * @param property data defined property to refresh. If property is set to
+     * QgsComposerItem::AllProperties then all data defined properties for the item will be
+     * refreshed.
+     * @note this method was added in version 2.5
+    */
+    virtual void refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 
   protected:
 
@@ -490,43 +527,52 @@ class QgsComposerItem : QObject, QGraphicsRectItem
 
     //some utility functions
 
-    /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation*/
-    bool imageSizeConsideringRotation( double& width, double& height, double rotation ) const;
+    /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation.
+     * @deprecated will be removed in QGIS 3.0
+    */
+    bool imageSizeConsideringRotation( double& width, double& height, double rotation ) const /Deprecated/;
+    
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
-     * @deprecated Use bool imageSizeConsideringRotation( double& width, double& height, double rotation )
-     * instead
+     * @deprecated will be removed in QGIS 3.0
      */
     bool imageSizeConsideringRotation( double& width, double& height ) const /Deprecated/;
 
     /**Calculates the largest scaled version of originalRect which fits within boundsRect, when it is rotated by
-     * a specified amount
-        @param originalRect QRectF to be rotated and scaled
-        @param boundsRect QRectF specifying the bounds which the rotated and scaled rectangle must fit within
-        @param rotation the rotation in degrees to be applied to the rectangle
-    */
-    QRectF largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const;
+      * a specified amount
+      * @param originalRect QRectF to be rotated and scaled
+      * @param boundsRect QRectF specifying the bounds which the rotated and scaled rectangle must fit within
+      * @param rotation the rotation in degrees to be applied to the rectangle
+      * @deprecated use QgsComposerUtils::largestRotatedRectWithinBounds instead
+      */
+    QRectF largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const /Deprecated/;
 
-    /**Calculates corner point after rotation and scaling*/
-    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const;
     /**Calculates corner point after rotation and scaling
-     * @deprecated Use bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
-     * instead
+     * @deprecated will be removed in QGIS 3.0
+    */
+    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const /Deprecated/;
+    
+    /**Calculates corner point after rotation and scaling
+     * @deprecated will be removed in QGIS 3.0
      */
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const /Deprecated/;
 
-    /**Calculates width / height of the bounding box of a rotated rectangle*/
-    void sizeChangedByRotation( double& width, double& height, double rotation );
+    /**Calculates corner point after rotation and scaling
+     * @deprecated will be removed in QGIS 3.0
+    */
+    void sizeChangedByRotation( double& width, double& height, double rotation ) /Deprecated/;
+    
     /**Calculates width / height of the bounding box of a rotated rectangle
-    * @deprecated Use void sizeChangedByRotation( double& width, double& height, double rotation )
-    * instead
+     * @deprecated will be removed in QGIS 3.0
     */
     void sizeChangedByRotation( double& width, double& height ) /Deprecated/;
-
+    
     /**Rotates a point / vector
-        @param angle rotation angle in degrees, counterclockwise
-        @param x in/out: x coordinate before / after the rotation
-        @param y in/out: y cooreinate before / after the rotation*/
-    void rotate( double angle, double& x, double& y ) const;
+     * @param angle rotation angle in degrees, counterclockwise
+     * @param x in/out: x coordinate before / after the rotation
+     * @param y in/out: y cooreinate before / after the rotation
+     * @deprecated use QgsComposerUtils:rotate instead
+    */
+    void rotate( double angle, double& x, double& y ) const /Deprecated/;    
 
     /**Return horizontal align snap item. Creates a new graphics line if 0*/
     QGraphicsLineItem* hAlignSnapItem();
@@ -536,11 +582,12 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     void deleteVAlignSnapItem();
     void deleteAlignItems();
 
+    /**Update an item rect to consider data defined position and size of item*/
+    QRectF evalItemRect( const QRectF &newRect );
+
   signals:
     /**Is emitted on item rotation change*/
     void itemRotationChanged( double newRotation );
-    /**Used e.g. by the item widgets to update the gui elements*/
-    void itemChanged();
     /**Emitted if the rectangle changes*/
     void sizeChanged();
     /**Emitted if the item's frame style changes

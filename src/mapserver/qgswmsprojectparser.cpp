@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmapserviceexception.h"
+#include "qgspallabeling.h"
 #include "qgsvectorlayer.h"
 
 #include "qgscomposition.h"
@@ -167,8 +168,7 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
         QHash< QString, QDomElement >::const_iterator pLayerNameIt = pLayerByName.find( lName );
         if ( pLayerNameIt != pLayerByName.constEnd() )
         {
-          pp.layerFromLegendLayer( pLayerNameIt.value(), layers, useCache );
-          break;
+          return ( QList<QgsMapLayer*>() << pp.createLayerFromElement( pLayerNameIt.value(), useCache ) );
         }
 
         const QList<QDomElement>& legendGroupElements = pp.legendGroupElements();
@@ -335,6 +335,21 @@ double QgsWMSProjectParser::maxHeight() const
     }
   }
   return maxHeight;
+}
+
+double QgsWMSProjectParser::imageQuality() const
+{
+  double imageQuality = -1;
+  QDomElement propertiesElem = mProjectParser.propertiesElem();
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement imageQualityElem = propertiesElem.firstChildElement( "WMSImageQuality" );
+    if ( !imageQualityElem.isNull() )
+    {
+      imageQuality = imageQualityElem.text().toInt();
+    }
+  }
+  return imageQuality;
 }
 
 QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlList ) const
@@ -693,7 +708,7 @@ void QgsWMSProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument
   parentElem.appendChild( layerDrawingOrderElem );
 }
 
-void QgsWMSProjectParser::addDrawingOrder( QDomElement groupElem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList ) const
+void QgsWMSProjectParser::addDrawingOrderEmbeddedGroup( QDomElement groupElem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList ) const
 {
   if ( groupElem.isNull() )
   {
@@ -781,6 +796,43 @@ void QgsWMSProjectParser::addDrawingOrder( QDomElement groupElem, bool useDrawin
     for ( ; layerNamesIt != layerNames.constEnd(); ++layerNamesIt )
     {
       orderedLayerList.insert( orderedLayerList.size(), layerNamesIt.value() );
+    }
+  }
+}
+
+void QgsWMSProjectParser::addDrawingOrder( QDomElement elem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList ) const
+{
+  if ( elem.isNull() )
+  {
+    return;
+  }
+
+  if ( elem.tagName() == "legendgroup" )
+  {
+    if ( elem.attribute( "embedded" ) == "1" )
+    {
+      addDrawingOrderEmbeddedGroup( elem, useDrawingOrder, orderedLayerList );
+    }
+    else
+    {
+      QDomNodeList groupChildren = elem.childNodes();
+      for ( int i = 0; i < groupChildren.size(); ++i )
+      {
+        addDrawingOrder( groupChildren.at( i ).toElement(), useDrawingOrder, orderedLayerList );
+      }
+    }
+  }
+  else if ( elem.tagName() == "legendlayer" )
+  {
+    QString layerName = elem.attribute( "name" );
+    if ( useDrawingOrder )
+    {
+      int drawingOrder = elem.attribute( "drawingOrder", "-1" ).toInt();
+      orderedLayerList.insert( drawingOrder, layerName );
+    }
+    else
+    {
+      orderedLayerList.insert( orderedLayerList.size(), layerName );
     }
   }
 }
@@ -1733,6 +1785,80 @@ void QgsWMSProjectParser::drawOverlays( QPainter* p, int dpi, int width, int hei
       svgIt->first->render( p, QRectF( xPos, yPos, renderWidth,
                                        renderHeight ) );
     }
+  }
+}
+
+void QgsWMSProjectParser::loadLabelSettings( QgsLabelingEngineInterface* lbl ) const
+{
+  QgsPalLabeling* pal = dynamic_cast<QgsPalLabeling*>( lbl );
+  if ( pal )
+  {
+    QDomElement propertiesElem = mProjectParser.propertiesElem();
+    if ( propertiesElem.isNull() )
+    {
+      return;
+    }
+
+    QDomElement palElem = propertiesElem.firstChildElement( "PAL" );
+    if ( palElem.isNull() )
+    {
+      return;
+    }
+
+    //pal::Pal default positions for candidates;
+    int candPoint, candLine, candPoly;
+    pal->numCandidatePositions( candPoint, candLine, candPoly );
+
+    //mCandPoint
+    QDomElement candPointElem = palElem.firstChildElement( "CandidatesPoint" );
+    if ( !candPointElem.isNull() )
+    {
+      candPoint = candPointElem.text().toInt();
+    }
+
+    //mCandLine
+    QDomElement candLineElem = palElem.firstChildElement( "CandidatesLine" );
+    if ( !candLineElem.isNull() )
+    {
+      candLine = candLineElem.text().toInt();
+    }
+
+    //mCandPolygon
+    QDomElement candPolyElem = palElem.firstChildElement( "CandidatesPolygon" );
+    if ( !candPolyElem.isNull() )
+    {
+      candPoly = candPolyElem.text().toInt();
+    }
+
+    pal->setNumCandidatePositions( candPoint, candLine, candPoly );
+
+    //mShowingCandidates
+    QDomElement showCandElem = palElem.firstChildElement( "ShowingCandidates" );
+    if ( !showCandElem.isNull() )
+    {
+      pal->setShowingCandidates( showCandElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
+    }
+
+    //mShowingAllLabels
+    QDomElement showAllLabelsElem = palElem.firstChildElement( "ShowingAllLabels" );
+    if ( !showAllLabelsElem.isNull() )
+    {
+      pal->setShowingAllLabels( showAllLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
+    }
+
+    //mShowingPartialsLabels
+    QDomElement showPartialsLabelsElem = palElem.firstChildElement( "ShowingPartialsLabels" );
+    if ( !showPartialsLabelsElem.isNull() )
+    {
+      pal->setShowingPartialsLabels( showPartialsLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
+    }
+
+    //mDrawOutlineLabels
+    // TODO: This should probably always be true (already default) for WMS, regardless of any project setting.
+    //       Not much sense to output text-as-text, when text-as-outlines gives better results.
+
+    //save settings into global project instance (QgsMapRendererCustomPainterJob reads label settings from there)
+    pal->saveEngineSettings();
   }
 }
 

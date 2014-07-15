@@ -280,13 +280,17 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   QStringList myExtensions = fileExtensions();
 
-  // skip *.aux.xml files (GDAL auxilary metadata files) and .shp.xml files (ESRI metadata)
+  // skip *.aux.xml files (GDAL auxilary metadata files),
+  // *.shp.xml files (ESRI metadata) and *.tif.xml files (TIFF metadata)
   // unless that extension is in the list (*.xml might be though)
   if ( thePath.endsWith( ".aux.xml", Qt::CaseInsensitive ) &&
        !myExtensions.contains( "aux.xml" ) )
     return 0;
   if ( thePath.endsWith( ".shp.xml", Qt::CaseInsensitive ) &&
        !myExtensions.contains( "shp.xml" ) )
+    return 0;
+  if ( thePath.endsWith( ".tif.xml", Qt::CaseInsensitive ) &&
+       !myExtensions.contains( "tif.xml" ) )
     return 0;
 
   // We have to filter by extensions, otherwise e.g. all Shapefile files are displayed

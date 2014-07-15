@@ -134,6 +134,7 @@ class QgsMapRenderer : QObject
     ~QgsMapRenderer();
 
     //! starts rendering
+    //! @param painter painter to render to
     //! @param forceWidthScale Force a specific scale factor for line widths and marker sizes. Automatically calculated from output device DPI if 0
     void render( QPainter* painter, double* forceWidthScale = 0 );
 
@@ -220,7 +221,7 @@ class QgsMapRenderer : QObject
     bool hasCrsTransformEnabled() const;
 
     //! sets destination coordinate reference system
-    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs, bool refreshCoordinateTransformInfo = true );
+    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs, bool refreshCoordinateTransformInfo = true, bool transformExtent = true );
 
     //! returns CRS of destination coordinate reference system
     const QgsCoordinateReferenceSystem& destinationCrs() const;

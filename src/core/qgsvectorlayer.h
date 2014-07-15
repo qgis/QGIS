@@ -97,17 +97,21 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 {
   public:
     QgsAttributeEditorContainer( QString name, QObject *parent )
-        : QgsAttributeEditorElement( AeTypeContainer, name, parent ) {}
+        : QgsAttributeEditorElement( AeTypeContainer, name, parent )
+        , mIsGroupBox( true )
+    {}
 
     ~QgsAttributeEditorContainer() {}
 
     virtual QDomElement toDomElement( QDomDocument& doc ) const;
     virtual void addChildElement( QgsAttributeEditorElement *widget );
-    virtual bool isGroupBox() const { return true; }
+    virtual void setIsGroupBox( bool isGroupBox ) { mIsGroupBox = isGroupBox; }
+    virtual bool isGroupBox() const { return mIsGroupBox; }
     QList<QgsAttributeEditorElement*> children() const { return mChildren; }
     virtual QList<QgsAttributeEditorElement*> findElements( AttributeEditorType type ) const;
 
   private:
+    bool mIsGroupBox;
     QList<QgsAttributeEditorElement*> mChildren;
 };
 
@@ -248,12 +252,6 @@ struct CORE_EXPORT QgsVectorJoinInfo
  * \subsection mssql Microsoft SQL server data provider (mssql)
  *
  * Connects to a Microsoft SQL server database.  The url defines the connection parameters, table,
- * geometry column, and other attributes.  The url can be constructed using the
- * QgsDataSourceURI class.
- *
- * \subsection sqlanywhere SQL Anywhere data provider (sqlanywhere)
- *
- * Connects to an SQLanywhere database.  The url defines the connection parameters, table,
  * geometry column, and other attributes.  The url can be constructed using the
  * QgsDataSourceURI class.
  *

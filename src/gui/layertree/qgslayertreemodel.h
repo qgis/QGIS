@@ -17,6 +17,7 @@
 #define QGSLAYERTREEMODEL_H
 
 #include <QAbstractItemModel>
+#include <QFont>
 #include <QIcon>
 
 class QgsLayerTreeNode;
@@ -89,6 +90,7 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     {
       // display flags
       ShowSymbology             = 0x0001,  //!< Add symbology items for layer nodes
+      ShowRasterPreviewIcon     = 0x0002,  //!< Will use real preview of raster layer as icon (may be slow)
 
       // behavioral flags
       AllowNodeReorder          = 0x1000,  //!< Allow reordering with drag'n'drop
@@ -132,6 +134,16 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Set index of the current item. May be used by view. Item marked as current is underlined.
     void setCurrentIndex( const QModelIndex& currentIndex );
 
+    //! Set font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode::NodeType enumeration
+    void setLayerTreeNodeFont( int nodeType, const QFont& font );
+    //! Get font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode::NodeType enumeration
+    QFont layerTreeNodeFont( int nodeType ) const;
+
+    //! Set at what number of symbology nodes the layer node should be collapsed. Setting -1 disables the auto-collapse (default).
+    void setAutoCollapseSymbologyNodes( int nodeCount ) { mAutoCollapseSymNodesCount = nodeCount; }
+    //! Return at what number of symbology nodes the layer node should be collapsed. -1 means no auto-collapse (default).
+    int autoCollapseSymbologyNodes() const { return mAutoCollapseSymNodesCount; }
+
   signals:
 
   protected slots:
@@ -157,6 +169,9 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void connectToLayer( QgsLayerTreeLayer* nodeLayer );
     void disconnectFromLayer( QgsLayerTreeLayer* nodeLayer );
 
+    //! emit dataChanged() for layer tree node items
+    void recursivelyEmitDataChanged( const QModelIndex& index = QModelIndex() );
+
     static QgsLayerTreeModelSymbologyNode* index2symnode( const QModelIndex& index );
 
     static const QIcon& iconGroup();
@@ -170,6 +185,11 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QMap<QgsLayerTreeLayer*, QList<QgsLayerTreeModelSymbologyNode*> > mSymbologyNodes;
     //! Current index - will be underlined
     QPersistentModelIndex mCurrentIndex;
+    //! Minimal number of nodes when symbology should be automatically collapsed. -1 = disabled
+    int mAutoCollapseSymNodesCount;
+
+    QFont mFontLayer;
+    QFont mFontGroup;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayerTreeModel::Flags )

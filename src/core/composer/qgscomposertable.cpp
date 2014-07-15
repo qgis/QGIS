@@ -79,6 +79,10 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
 
   drawBackground( painter );
+  painter->save();
+  //antialiasing on
+  painter->setRenderHint( QPainter::Antialiasing, true );
+
   painter->setPen( Qt::SolidLine );
 
   //now draw the text
@@ -152,6 +156,8 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     drawHorizontalGridLines( painter, mAttributeMaps.size() );
     drawVerticalGridLines( painter, mMaxColumnWidthMap );
   }
+
+  painter->restore();
 
   //draw frame and selection boxes if necessary
   drawFrame( painter );
@@ -362,7 +368,10 @@ void QgsComposerTable::adaptItemFrame( const QMap<int, double>& maxWidthMap, con
   totalWidth += ( 2 * maxWidthMap.size() * mLineTextDistance );
   totalWidth += ( maxWidthMap.size() + 1 ) * mGridStrokeWidth;
 
-  QgsComposerItem::setSceneRect( QRectF( pos().x(), pos().y(), totalWidth, totalHeight ) );
+  QRectF evaluatedRect = evalItemRect( QRectF( pos().x(), pos().y(), totalWidth, totalHeight ) );
+
+  //update rect for data defined size and position
+  QgsComposerItem::setSceneRect( evaluatedRect );
 }
 
 void QgsComposerTable::drawHorizontalGridLines( QPainter* p, int nAttributes )

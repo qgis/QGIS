@@ -499,6 +499,23 @@ QgsSymbolV2::ScaleMethod QgsSymbolLayerV2Utils::decodeScaleMethod( QString str )
   return scaleMethod;
 }
 
+QPainter::CompositionMode QgsSymbolLayerV2Utils::decodeBlendMode( const QString &s )
+{
+  if ( s.compare( "Lighten", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Lighten;
+  if ( s.compare( "Screen", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Screen;
+  if ( s.compare( "Dodge", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_ColorDodge;
+  if ( s.compare( "Addition", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Plus;
+  if ( s.compare( "Darken", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Darken;
+  if ( s.compare( "Multiply", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Multiply;
+  if ( s.compare( "Burn", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_ColorBurn;
+  if ( s.compare( "Overlay", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Overlay;
+  if ( s.compare( "SoftLight", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_SoftLight;
+  if ( s.compare( "HardLight", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_HardLight;
+  if ( s.compare( "Difference", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Difference;
+  if ( s.compare( "Subtract", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Exclusion;
+  return QPainter::CompositionMode_SourceOver; // "Normal"
+}
+
 QIcon QgsSymbolLayerV2Utils::symbolPreviewIcon( QgsSymbolV2* symbol, QSize size )
 {
   return QIcon( symbolPreviewPixmap( symbol, size ) );
@@ -659,10 +676,30 @@ static QPointF linesIntersection( QPointF p1, double t1, QPointF p2, double t2 )
   y = p1.y() + t1 * ( x - p1.x() );
   return QPointF( x, y );
 }
+#else
+static QPolygonF makeOffsetGeometry( const QgsPolyline& polyline )
+{
+  int i, pointCount = polyline.count();
+
+  QPolygonF resultLine;
+  resultLine.resize( pointCount );
+
+  const QgsPoint* tempPtr = polyline.data();
+
+  for ( i = 0; i < pointCount; ++i, tempPtr++ )
+    resultLine[i] = QPointF( tempPtr->x(), tempPtr->y() );
+
+  return resultLine;
+}
+static QList<QPolygonF> makeOffsetGeometry( const QgsPolygon& polygon )
+{
+  QList<QPolygonF> resultGeom;
+  for ( int ring = 0; ring < polygon.size(); ++ring ) resultGeom.append( makeOffsetGeometry( polygon[ ring ] ) );
+  return resultGeom;
+}
 #endif
 
-
-QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
+QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QGis::GeometryType geometryType )
 {
   QList<QPolygonF> resultLine;
 
@@ -685,28 +722,31 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
   for ( i = 0; i < pointCount; ++i, tempPtr++ )
     tempPolyline[i] = QgsPoint( tempPtr->rx(), tempPtr->ry() );
 
-  QgsGeometry* tempGeometry = QgsGeometry::fromPolyline( tempPolyline );
+  QgsGeometry* tempGeometry = ( geometryType == QGis::Polygon ) ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolyline( tempPolyline );
   if ( tempGeometry )
   {
-    const GEOSGeometry* geosGeom = tempGeometry->asGeos();
-    GEOSGeometry* offsetGeom = GEOSOffsetCurve( geosGeom, dist, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ );
+    int quadSegments = 0; // we want mitre joins, not round joins
+    double mitreLimit = 2.0; // the default value in GEOS (5.0) allows for fairly sharp endings
+    QgsGeometry* offsetGeom = 0;
+    if ( geometryType == QGis::Polygon )
+      offsetGeom = tempGeometry->buffer( -dist, quadSegments, GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, mitreLimit );
+    else
+      offsetGeom = tempGeometry->offsetCurve( dist, quadSegments, GEOSBUF_JOIN_MITRE, mitreLimit );
 
     if ( offsetGeom )
     {
-      tempGeometry->fromGeos( offsetGeom );
+      delete tempGeometry;
+      tempGeometry = offsetGeom;
 
       if ( QGis::flatType( tempGeometry->wkbType() ) == QGis::WKBLineString )
       {
-        tempPolyline = tempGeometry->asPolyline();
-
-        pointCount = tempPolyline.count();
-        newLine.resize( pointCount );
-
-        QgsPoint* tempPtr2 = tempPolyline.data();
-        for ( i = 0; i < pointCount; ++i, tempPtr2++ )
-          newLine[i] = QPointF( tempPtr2->x(), tempPtr2->y() );
-        resultLine.append( newLine );
-
+        resultLine.append( makeOffsetGeometry( tempGeometry->asPolyline() ) );
+        delete tempGeometry;
+        return resultLine;
+      }
+      else if ( QGis::flatType( tempGeometry->wkbType() ) == QGis::WKBPolygon )
+      {
+        resultLine.append( makeOffsetGeometry( tempGeometry->asPolygon() ) );
         delete tempGeometry;
         return resultLine;
       }
@@ -716,17 +756,18 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
 
         for ( int part = 0; part < tempMPolyline.count(); ++part )
         {
-          tempPolyline = tempMPolyline[ part ];
+          resultLine.append( makeOffsetGeometry( tempMPolyline[ part ] ) );
+        }
+        delete tempGeometry;
+        return resultLine;
+      }
+      else if ( QGis::flatType( tempGeometry->wkbType() ) == QGis::WKBMultiPolygon )
+      {
+        QgsMultiPolygon tempMPolygon = tempGeometry->asMultiPolygon();
 
-          pointCount = tempPolyline.count();
-          newLine.resize( pointCount );
-
-          QgsPoint* tempPtr2 = tempPolyline.data();
-          for ( i = 0; i < pointCount; ++i, tempPtr2++ )
-            newLine[i] = QPointF( tempPtr2->x(), tempPtr2->y() );
-          resultLine.append( newLine );
-
-          newLine = QPolygonF();
+        for ( int part = 0; part < tempMPolygon.count(); ++part )
+        {
+          resultLine.append( makeOffsetGeometry( tempMPolygon[ part ] ) );
         }
         delete tempGeometry;
         return resultLine;
@@ -780,6 +821,21 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
   return resultLine;
 
 #endif
+}
+QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
+{
+  QGis::GeometryType geometryType = QGis::Point;
+  int pointCount = polyline.count();
+
+  if ( pointCount > 3 && polyline[ 0 ].x() == polyline[ pointCount - 1 ].x() && polyline[ 0 ].y() == polyline[ pointCount - 1 ].y() )
+  {
+    geometryType = QGis::Polygon;
+  }
+  else if ( pointCount > 1 )
+  {
+    geometryType = QGis::Line;
+  }
+  return offsetLine( polyline, dist, geometryType );
 }
 
 /////
@@ -2378,8 +2434,27 @@ bool QgsSymbolLayerV2Utils::createFunctionElement( QDomDocument &doc, QDomElemen
 bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QString &function )
 {
   QgsDebugMsg( "Entered." );
+  QDomElement elem;
+  if ( element.tagName() == "Filter" )
+  {
+    elem = element;
+  }
+  else
+  {
+    QDomNodeList filterNodes = element.elementsByTagName( "Filter" );
+    if ( filterNodes.size() > 0 )
+    {
+      elem = filterNodes.at( 0 ).toElement();
+    }
+  }
 
-  QgsExpression *expr = QgsOgcUtils::expressionFromOgcFilter( element );
+  if ( elem.isNull() )
+  {
+    return false;
+  }
+
+
+  QgsExpression *expr = QgsOgcUtils::expressionFromOgcFilter( elem );
   if ( !expr )
     return false;
 
@@ -3179,6 +3254,62 @@ QPointF QgsSymbolLayerV2Utils::polygonCentroid( const QPolygonF& points )
   return QPointF( cx, cy );
 }
 
+QPointF QgsSymbolLayerV2Utils::polygonPointOnSurface( const QPolygonF& points )
+{
+  QPointF centroid = QgsSymbolLayerV2Utils::polygonCentroid( points );
+
+  // check if centroid inside in polygon
+  if ( !QgsSymbolLayerV2Utils::pointInPolygon( points, centroid ) )
+  {
+    unsigned int i, pointCount = points.count();
+
+    QgsPolyline polyline( pointCount );
+    for ( i = 0; i < pointCount; ++i ) polyline[i] = QgsPoint( points[i].x(), points[i].y() );
+
+    QgsGeometry* geom = QgsGeometry::fromPolygon( QgsPolygon() << polyline );
+    if ( geom )
+    {
+      QgsGeometry* pointOnSurfaceGeom = geom->pointOnSurface();
+
+      if ( pointOnSurfaceGeom )
+      {
+        QgsPoint point = pointOnSurfaceGeom->asPoint();
+        delete pointOnSurfaceGeom;
+        delete geom;
+
+        return QPointF( point.x(), point.y() );
+      }
+      delete geom;
+    }
+  }
+  return centroid;
+}
+
+bool QgsSymbolLayerV2Utils::pointInPolygon( const QPolygonF &points, const QPointF &point )
+{
+  bool inside = false;
+
+  double x = point.x();
+  double y = point.y();
+
+  for ( int i = 0, j = points.count() - 1; i < points.count(); i++ )
+  {
+    const QPointF& p1 = points[i];
+    const QPointF& p2 = points[j];
+
+    if ( p1.x() == x && p1.y() == y )
+      return true;
+
+    if (( p1.y() < y && p2.y() >= y ) || ( p2.y() < y && p1.y() >= y ) )
+    {
+      if ( p1.x() + ( y - p1.y() ) / ( p2.y() - p1.y() )*( p2.x() - p1.x() ) <= x )
+        inside = !inside;
+    }
+
+    j = i;
+  }
+  return inside;
+}
 
 QgsExpression* QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( const QString& fieldOrExpression )
 {

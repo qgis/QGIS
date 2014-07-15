@@ -36,9 +36,8 @@ class QgsFieldModel : QAbstractItemModel
 
     /**
      * @brief setExpression sets a single expression to be added after the fields at the end of the model
-     * @return the model index of the newly added expression
      */
-    QModelIndex setExpression( const QString &expression );
+    void setExpression( const QString &expression );
 
     //! remove expressions from the model
     void removeExpression();

@@ -228,27 +228,6 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       // accept anything else
       return true;
     }
-
-    bool lessThan( const QModelIndex &left,
-                   const QModelIndex &right ) const
-    {
-      // sort file items by name (a file item is not a directory and its parent is a directory)
-      // this is necessary because more several providers can add items to a directory and
-      // alphabetical sorting is not preserved
-      QgsDataItem* leftItem = mModel->dataItem( left );
-      QgsDataItem* rightItem = mModel->dataItem( right );
-      if ( leftItem && leftItem->type() != QgsDataItem::Directory &&
-           leftItem->parent() && leftItem->parent()->type() == QgsDataItem::Directory &&
-           rightItem && rightItem->type() != QgsDataItem::Directory &&
-           rightItem->parent() && rightItem->parent()->type() == QgsDataItem::Directory )
-      {
-        return QString::localeAwareCompare( leftItem->name(), rightItem->name() ) < 0;
-      }
-
-      // default is to keep original order
-      return left.row() < right.row();
-    }
-
 };
 QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
     QDockWidget( parent ), mModel( NULL ), mProxyModel( NULL )
@@ -321,7 +300,6 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
 
     mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
-    mProxyModel->sort( 0 );
     mBrowserView->setModel( mProxyModel );
     // provide a horizontal scroll bar instead of using ellipse (...) for longer items
     mBrowserView->setTextElideMode( Qt::ElideNone );
@@ -573,8 +551,11 @@ void QgsBrowserDockWidget::showProperties( )
         QgsRasterLayer* layer = new QgsRasterLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() );
         if ( layer != NULL )
         {
-          layerCrs = layer->crs();
-          layerMetadata = layer->metadata();
+          if ( layer->isValid() )
+          {
+            layerCrs = layer->crs();
+            layerMetadata = layer->metadata();
+          }
           delete layer;
         }
       }
@@ -584,8 +565,11 @@ void QgsBrowserDockWidget::showProperties( )
         QgsVectorLayer* layer = new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
         if ( layer != NULL )
         {
-          layerCrs = layer->crs();
-          layerMetadata = layer->metadata();
+          if ( layer->isValid() )
+          {
+            layerCrs = layer->crs();
+            layerMetadata = layer->metadata();
+          }
           delete layer;
         }
       }

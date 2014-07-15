@@ -252,7 +252,6 @@ class QgsProject : QObject
     /** Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
       @return the layer or 0 in case of error
       @note: added in version 1.8
-      @note not available in python bindings
      */
     /*
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
@@ -260,9 +259,8 @@ class QgsProject : QObject
     */
     /** Create layer group instance defined in an arbitrary project file.
      * @note: added in version 2.4
-     * @note not available in python bindings
      */
-    // QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath );
+    QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath );
 
     /** Convenience function to set snap settings per layer
       @note added in version 1.9*/
@@ -291,14 +289,13 @@ class QgsProject : QObject
 
     /** Return pointer to the root (invisible) node of the project's layer tree
      * @note added in 2.4
-     * @note not available in python bindings
      */
-    // QgsLayerTreeGroup* layerTreeRoot() const;
+    QgsLayerTreeGroup* layerTreeRoot() const;
 
     /** Return pointer to the helper class that synchronizes map layer registry with layer tree
-     * @note not available in python bindings
+     * @note added in 2.4
      */
-    // QgsLayerTreeRegistryBridge* layerTreeRegistryBridge() const;
+    QgsLayerTreeRegistryBridge* layerTreeRegistryBridge() const;
 
   protected:
 

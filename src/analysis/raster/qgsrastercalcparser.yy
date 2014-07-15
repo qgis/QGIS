@@ -114,13 +114,13 @@ void joinTmpNodes(QgsRasterCalcNode* parent, QgsRasterCalcNode* left, QgsRasterC
 
   if (left)
   {
-    res = gTmpNodes.removeAll(left);
+    res = gTmpNodes.removeAll(left) != 0;
     Q_ASSERT(res);
   }
 
   if (right)
   {
-    res = gTmpNodes.removeAll(right);
+    res = gTmpNodes.removeAll(right) != 0;
     Q_ASSERT(res);
   }
 

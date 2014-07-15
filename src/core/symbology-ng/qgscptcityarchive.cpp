@@ -63,13 +63,13 @@ QgsCptCityArchive::QgsCptCityArchive( QString archiveName, QString baseDir )
 
   // make selection items
   QgsCptCitySelectionItem* selItem = 0;
-  QDir seldir( mBaseDir + QDir::separator() + "selections" );
+  QDir seldir( mBaseDir + "/" + "selections" );
   QgsDebugMsg( "populating selection from " + seldir.path() );
   foreach ( QString selfile, seldir.entryList( QStringList( "*.xml" ), QDir::Files ) )
   {
     QgsDebugMsg( "file= " + seldir.path() + "/" + selfile );
     selItem = new QgsCptCitySelectionItem( NULL, QFileInfo( selfile ).baseName(),
-                                           seldir.dirName() +  QDir::separator() + selfile );
+                                           seldir.dirName() +  "/" + selfile );
     //TODO remove item if there are no children (e.g. esri in qgis-sel)
     if ( selItem->isValid() )
       mSelectionItems << selItem;
@@ -129,7 +129,7 @@ QString QgsCptCityArchive::defaultBaseDir()
   // sub-dir defaults to cpt-city
   archiveName = settings.value( "CptCity/archiveName", DEFAULT_CPTCITY_ARCHIVE ).toString();
 
-  return baseDir + QDir::separator() + archiveName;
+  return baseDir + "/" + archiveName;
 }
 
 
@@ -150,20 +150,20 @@ QString QgsCptCityArchive::findFileName( const QString & target, const QString &
   if ( ! dir.exists( target ) )
     return QString();
   else
-    return dir.path() + QDir::separator() + target;
+    return dir.path() + "/" + target;
 }
 
 
 QString QgsCptCityArchive::copyingFileName( const QString& path ) const
 {
   return QgsCptCityArchive::findFileName( "COPYING.xml",
-                                          baseDir() + QDir::separator() + path, baseDir() );
+                                          baseDir() + "/" + path, baseDir() );
 }
 
 QString QgsCptCityArchive::descFileName( const QString& path ) const
 {
   return QgsCptCityArchive::findFileName( "DESC.xml",
-                                          baseDir() + QDir::separator() + path, baseDir() );
+                                          baseDir() + "/" + path, baseDir() );
 }
 
 QgsStringMap QgsCptCityArchive::copyingInfo( const QString& fileName )
@@ -439,7 +439,7 @@ void QgsCptCityArchive::initDefaultArchive()
   QString defArchiveName = settings.value( "CptCity/archiveName", DEFAULT_CPTCITY_ARCHIVE ).toString();
 
   if ( ! mArchiveRegistry.contains( defArchiveName ) )
-    initArchive( defArchiveName, baseDir + QDir::separator() + defArchiveName );
+    initArchive( defArchiveName, baseDir + "/" + defArchiveName );
 }
 
 void QgsCptCityArchive::initArchives( bool loadAll )
@@ -460,13 +460,13 @@ void QgsCptCityArchive::initArchives( bool loadAll )
     QDir dir( baseDir );
     foreach ( QString entry, dir.entryList( QStringList( "cpt-city*" ), QDir::Dirs ) )
     {
-      if ( QFile::exists( baseDir + QDir::separator() + entry + "/VERSION.xml" ) )
-        archivesMap[ entry ] = baseDir + QDir::separator() + entry;
+      if ( QFile::exists( baseDir + "/" + entry + "/VERSION.xml" ) )
+        archivesMap[ entry ] = baseDir + "/" + entry;
     }
   }
   else
   {
-    archivesMap[ defArchiveName ] = baseDir + QDir::separator() + defArchiveName;
+    archivesMap[ defArchiveName ] = baseDir + "/" + defArchiveName;
   }
 
   for ( QgsStringMap::iterator it = archivesMap.begin();
@@ -900,17 +900,17 @@ QgsCptCityDirectoryItem::QgsCptCityDirectoryItem( QgsCptCityDataItem* parent,
     : QgsCptCityCollectionItem( parent, name, path )
 {
   mType = Directory;
-  mValid = QDir( QgsCptCityArchive::defaultBaseDir() + QDir::separator() + mPath ).exists();
+  mValid = QDir( QgsCptCityArchive::defaultBaseDir() + "/" + mPath ).exists();
   if ( ! mValid )
   {
     QgsDebugMsg( "created invalid dir item, path = " + QgsCptCityArchive::defaultBaseDir()
-                 + QDir::separator() + mPath );
+                 + "/" + mPath );
   }
 
   // parse DESC.xml to get mInfo
   mInfo = "";
-  QString fileName = QgsCptCityArchive::defaultBaseDir() + QDir::separator() + \
-                     mPath + QDir::separator() + "DESC.xml";
+  QString fileName = QgsCptCityArchive::defaultBaseDir() + "/" +
+                     mPath + "/" + "DESC.xml";
   QgsStringMap descMap = QgsCptCityArchive::description( fileName );
   if ( descMap.contains( "name" ) )
     mInfo = descMap.value( "name" );
@@ -947,7 +947,7 @@ QVector<QgsCptCityDataItem*> QgsCptCityDirectoryItem::createChildren()
   foreach ( QString childPath, dirEntries() )
   {
     QgsCptCityDataItem* childItem =
-      QgsCptCityDirectoryItem::dataItem( this, childPath, mPath + QDir::separator() + childPath );
+      QgsCptCityDirectoryItem::dataItem( this, childPath, mPath + "/" + childPath );
     if ( childItem )
       children << childItem;
   }
@@ -968,7 +968,7 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
   int num;
   bool ok, prevAdd, curAdd;
 
-  QDir dir( QgsCptCityArchive::defaultBaseDir() + QDir::separator() + mPath );
+  QDir dir( QgsCptCityArchive::defaultBaseDir() + "/" + mPath );
   schemeNamesAll = dir.entryList( QStringList( "*.svg" ), QDir::Files, QDir::Name );
 
   // TODO detect if there are duplicate names with different variant counts, combine in 1
@@ -1062,7 +1062,7 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
         // set num colors=-1 to parse file on request only
         // mSchemeNumColors[ prevName ] = -1;
         schemeNames << prevName;
-        mRampsMap[ mPath + QDir::separator() + prevName ] = QStringList();
+        mRampsMap[ mPath + "/" + prevName ] = QStringList();
       }
       else if ( listVariant.count() <= 3 )
       {
@@ -1071,13 +1071,13 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
         {
           // mSchemeNumColors[ prevName + listVariant[j] ] = -1;
           schemeNames << prevName + listVariant[j];
-          mRampsMap[ mPath + QDir::separator() + prevName + listVariant[j] ] = QStringList();
+          mRampsMap[ mPath + "/" + prevName + listVariant[j] ] = QStringList();
         }
       }
       else
       {
-        // mSchemeVariants[ path + QDir::separator() + prevName ] = listVariant;
-        mRampsMap[ mPath + QDir::separator() + prevName ] = listVariant;
+        // mSchemeVariants[ path + "/" + prevName ] = listVariant;
+        mRampsMap[ mPath + "/" + prevName ] = listVariant;
         schemeNames << prevName;
       }
       listVariant.clear();
@@ -1087,7 +1087,7 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
       if ( curVariant != "" )
         curName += curVariant;
       schemeNames << curName;
-      mRampsMap[ mPath + QDir::separator() + curName ] = QStringList();
+      mRampsMap[ mPath + "/" + curName ] = QStringList();
     }
     // save current to compare next
     if ( prevAdd || curAdd )
@@ -1110,8 +1110,8 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
 
 QStringList QgsCptCityDirectoryItem::dirEntries() const
 {
-  return QDir( QgsCptCityArchive::defaultBaseDir() +                    \
-               QDir::separator() + mPath ).entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name );
+  return QDir( QgsCptCityArchive::defaultBaseDir() +
+               "/" + mPath ).entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name );
 }
 
 bool QgsCptCityDirectoryItem::equal( const QgsCptCityDataItem *other )
@@ -1234,7 +1234,7 @@ QVector<QgsCptCityDataItem*> QgsCptCitySelectionItem::createChildren()
 
 void QgsCptCitySelectionItem::parseXML()
 {
-  QString filename = QgsCptCityArchive::defaultBaseDir() + QDir::separator() + mPath;
+  QString filename = QgsCptCityArchive::defaultBaseDir() + "/" + mPath;
 
   QgsDebugMsg( "reading file " + filename );
 

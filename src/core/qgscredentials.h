@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QPair>
 #include <QMap>
+#include <QMutex>
 
 /** \ingroup core
  * Interface for requesting credentials in QGIS in GUI independent way.
@@ -45,7 +46,29 @@ class CORE_EXPORT QgsCredentials
     //! retrieves instance
     static QgsCredentials *instance();
 
+    /**
+     * Lock the instance against access from multiple threads. This does not really lock access to get/put methds,
+     * it will just prevent other threads to lock the instance and continue the execution. When the class is used
+     * from non-GUI threads, they should call lock() before the get/put calls to avoid race conditions.
+     * @note added in 2.4
+     */
+    void lock();
+
+    /**
+     * Unlock the instance after being locked.
+     * @note added in 2.4
+     */
+    void unlock();
+
+    /**
+     * Return pointer to mutex
+     * @note added in 2.4
+     */
+    QMutex *mutex() { return &mMutex; }
+
   protected:
+    QgsCredentials();
+
     //! request a password
     virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null ) = 0;
 
@@ -53,11 +76,15 @@ class CORE_EXPORT QgsCredentials
     void setInstance( QgsCredentials *theInstance );
 
   private:
+    Q_DISABLE_COPY( QgsCredentials )
+
     //! cache for already requested credentials in this session
     QMap< QString, QPair<QString, QString> > mCredentialCache;
 
     //! Pointer to the credential instance
     static QgsCredentials *smInstance;
+
+    QMutex mMutex;
 };
 
 

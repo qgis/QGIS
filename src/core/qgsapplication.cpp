@@ -244,15 +244,21 @@ bool QgsApplication::notify( QObject * receiver, QEvent * event )
   }
   catch ( QgsException & e )
   {
-    QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
+    QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
+    if ( qApp->thread() == QThread::currentThread() )
+      QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
   }
   catch ( std::exception & e )
   {
-    QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
+    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
+    if ( qApp->thread() == QThread::currentThread() )
+      QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
   }
   catch ( ... )
   {
-    QMessageBox::critical( activeWindow(), tr( "Exception" ), tr( "unknown exception" ) );
+    QgsDebugMsg( "Caught unhandled unknown exception" );
+    if ( qApp->thread() == QThread::currentThread() )
+      QMessageBox::critical( activeWindow(), tr( "Exception" ), tr( "unknown exception" ) );
   }
 
   return done;
@@ -1045,6 +1051,6 @@ void QgsApplication::setMaxThreads( int maxThreads )
 
   // set max thread count in QThreadPool
   QThreadPool::globalInstance()->setMaxThreadCount( maxThreads );
-  QgsDebugMsg( QString( "set QThreadPool max thread count to %d" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
+  QgsDebugMsg( QString( "set QThreadPool max thread count to %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
 }
 

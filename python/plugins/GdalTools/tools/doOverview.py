@@ -139,9 +139,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
       arguments.append(self.getInputFileName())
 
-      if len(self.mPyramidOptionsWidget.overviewList()) == 0:
-        arguments.append(self.tr("[select levels]"))
-      else:
+      if len(self.mPyramidOptionsWidget.overviewList()) > 0:
         for level in self.mPyramidOptionsWidget.overviewList():
           arguments.append(str(level))
 

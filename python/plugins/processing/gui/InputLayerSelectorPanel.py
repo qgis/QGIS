@@ -31,8 +31,9 @@ from PyQt4 import QtGui, QtCore
 
 class InputLayerSelectorPanel(QtGui.QWidget):
 
-    def __init__(self, options):
+    def __init__(self, options, param):
         super(InputLayerSelectorPanel, self).__init__(None)
+        self.param = param
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
@@ -61,8 +62,8 @@ class InputLayerSelectorPanel(QtGui.QWidget):
         else:
             path = ''
 
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'All files', path,
-                '*.*')
+        filename = QtGui.QFileDialog.getOpenFileName(self, self.param.description, path,
+                'All files(*.*);;' + self.param.getFileFilter())
         if filename:
             self.text.addItem(filename, filename)
             self.text.setCurrentIndex(self.text.count() - 1)

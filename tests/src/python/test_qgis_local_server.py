@@ -116,7 +116,7 @@ class TestQgisLocalServer(TestCase):
     # @unittest.skip('')
     def test_getmap(self):
         test_name = 'qgis_local_server'
-        success, img_path = MAPSERV.get_map(self.getmap_params())
+        success, img_path, url = MAPSERV.get_map(self.getmap_params())
         msg = '\nLocal server get_map failed'
         assert success, msg
 

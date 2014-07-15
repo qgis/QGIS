@@ -22,27 +22,27 @@ class QgsComposerMap : QgsComposerItem
     /** \brief Preview style  */
     enum PreviewMode
     {
-      Cache = 0,   // Use raster cache
+      Cache,       // Use raster cache
       Render,      // Render the map
       Rectangle    // Display only rectangle
     };
 
     enum GridStyle
     {
-      Solid = 0, //solid lines
+      Solid, //solid lines
       Cross //only draw line crossings
     };
 
     enum GridAnnotationPosition
     {
-      InsideMapFrame = 0,
+      InsideMapFrame,
       OutsideMapFrame,
       Disabled
     };
 
     enum GridAnnotationDirection
     {
-      Horizontal = 0,
+      Horizontal,
       Vertical,
       HorizontalAndVertical,
       BoundaryDirection
@@ -50,15 +50,15 @@ class QgsComposerMap : QgsComposerItem
 
     enum GridAnnotationFormat
     {
-      Decimal = 0,
+      Decimal,
       DegreeMinute,
       DegreeMinuteSecond
     };
 
     enum GridFrameStyle
     {
-      NoGridFrame = 0,
-      Zebra //black / white pattern
+      NoGridFrame,
+      Zebra // black/white pattern
     };
 
     /**Enum for different frame borders*/
@@ -127,7 +127,7 @@ class QgsComposerMap : QgsComposerItem
     double scale() const;
 
     /**Sets new scale and changes only mExtent*/
-    void setNewScale( double scaleDenominator );
+    void setNewScale( double scaleDenominator, bool forceUpdate = true );
 
     /**Sets new Extent and changes width, height (and implicitely also scale)*/
     void setNewExtent( const QgsRectangle& extent );
@@ -141,8 +141,11 @@ class QgsComposerMap : QgsComposerItem
     void toggleAtlasPreview();
 
     /**Returns a pointer to the current map extent, which is either the original user specified
-      extent or the temporary atlas-driven feature extent depending on the current atlas state of the composition.
-      Both a const and non-const version are included.*/
+     * extent or the temporary atlas-driven feature extent depending on the current atlas state
+     * of the composition. Both a const and non-const version are included.
+     * @returns pointer to current map extent
+     * @see visibleExtentPolygon
+    */
     const QgsRectangle* currentMapExtent() const;
 
     PreviewMode previewMode() const;
@@ -338,8 +341,14 @@ class QgsComposerMap : QgsComposerItem
       way the map is drawn within the item
       @note this function was added in version 2.1*/
     void setMapRotation( double r );
-    /**Returns the rotation used for drawing the map within the composer item*/
-    double mapRotation() const;
+
+    /**Returns the rotation used for drawing the map within the composer item
+     * @returns rotation for map
+     * @param valueType controls whether the returned value is the user specified rotation,
+     * or the current evaluated rotation (which may be affected by data driven rotation
+     * settings).
+    */
+    double mapRotation( QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
 
     void updateItem();
 
@@ -478,6 +487,14 @@ class QgsComposerMap : QgsComposerItem
     */
     int numberExportLayers() const;
 
+    /**Returns a polygon representing the current visible map extent, considering map extents and rotation.
+     * If the map rotation is 0, the result is the same as currentMapExtent
+     * @returns polygon with the four corner points representing the visible map extent. The points are
+     * clockwise, starting at the top-left point
+     * @see currentMapExtent
+    */
+    QPolygonF visibleExtentPolygon() const;
+
   signals:
     void extentChanged();
 
@@ -495,4 +512,6 @@ class QgsComposerMap : QgsComposerItem
     void renderModeUpdateCachedImage();
 
     void overviewExtentChanged();
+
+    virtual void refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 };

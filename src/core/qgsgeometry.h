@@ -359,6 +359,24 @@ class CORE_EXPORT QgsGeometry
         of segments used to approximate curves, side = 0 for left side and side = 1 for right side */
     QgsGeometry* buffer( double distance, int segments, int side );
 
+    /** Returns a buffer region around the geometry, with additional style options.
+     * @param distance    buffer distance
+     * @param segments    For round joins, number of segments to approximate quarter-circle
+     * @param endCapStyle Round (1) / Flat (2) / Square (3) end cap style
+     * @param joinStyle   Round (1) / Mitre (2) / Bevel (3) join style
+     * @param mitreLimit  Limit on the mitre ratio used for very sharp corners
+     * @note added in 2.4
+     * @note needs GEOS >= 3.3 - otherwise always returns 0
+     */
+    QgsGeometry* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit );
+
+    /** Returns an offset line at a given distance and side from an input line.
+     * See buffer() method for details on parameters.
+     * @note added in 2.4
+     * @note needs GEOS >= 3.3 - otherwise always returns 0
+     */
+    QgsGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit );
+
     /** Returns a simplified version of this geometry using a specified tolerance value */
     QgsGeometry* simplify( double tolerance );
 
@@ -366,6 +384,9 @@ class CORE_EXPORT QgsGeometry
     * @note for line based geometries, the center point of the line is returned,
     * and for point based geometries, the point itself is returned */
     QgsGeometry* centroid();
+
+    /** Returns a point within a geometry */
+    QgsGeometry* pointOnSurface();
 
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
     QgsGeometry* convexHull();
@@ -487,6 +508,12 @@ class CORE_EXPORT QgsGeometry
      **/
     void validateGeometry( QList<Error> &errors );
 
+    /** compute the unary union on a list of geometries. May be faster than an iterative union on a set of geometries.
+        @param geometryList a list of QgsGeometry* as input
+        @returns the new computed QgsGeometry, or null
+    */
+    static QgsGeometry *unaryUnion( const QList<QgsGeometry*>& geometryList );
+
   private:
     // Private variables
 
@@ -601,8 +628,8 @@ class CORE_EXPORT QgsGeometry
       @return 0 not contained, 1 if contained, <0 in case of error*/
     static int pointContainedInLine( const GEOSGeometry* point, const GEOSGeometry* line );
 
-    /**Tests if geom bounding rect is within -180 <= x <= 180, -90 <= y <= 90. Other methods may use more accurate tolerances if this is true*/
-    static bool geomInDegrees( const GEOSGeometry* geom );
+    /** Determines the maximum number of digits before the dot */
+    static int geomDigits( const GEOSGeometry* geom );
 
     /**Returns number of single geometry in a geos geometry. Is save for geos 2 and 3*/
     int numberOfGeometries( GEOSGeometry* g ) const;
@@ -625,7 +652,7 @@ class CORE_EXPORT QgsGeometry
     double leftOf( double x, double y, double& x1, double& y1, double& x2, double& y2 );
 
     static inline bool moveVertex( QgsWkbPtr &wkbPtr, const double &x, const double &y, int atVertex, bool hasZValue, int &pointIndex, bool isRing );
-    static inline bool deleteVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int atVertex, bool hasZValue, int &pointIndex, bool isRing, bool lastItem );
+    static inline int deleteVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int atVertex, bool hasZValue, int &pointIndex, bool isRing, bool lastItem );
     static inline bool insertVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int beforeVertex, const double &x, const double &y, bool hasZValue, int &pointIndex, bool isRing );
 
     /** try to convert the geometry to a point */

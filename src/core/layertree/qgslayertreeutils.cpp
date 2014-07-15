@@ -204,7 +204,6 @@ static void _readOldLegendGroup( const QDomElement& groupElem, QgsLayerTreeGroup
   QDomNodeList groupChildren = groupElem.childNodes();
 
   QgsLayerTreeGroup* groupNode = new QgsLayerTreeGroup( groupElem.attribute( "name" ) );
-  parent->addChildNode( groupNode );
 
   groupNode->setVisible( QgsLayerTreeUtils::checkStateFromXml( groupElem.attribute( "checked" ) ) );
   groupNode->setExpanded( groupElem.attribute( "open" ) == "true" );
@@ -227,6 +226,8 @@ static void _readOldLegendGroup( const QDomElement& groupElem, QgsLayerTreeGroup
       _readOldLegendGroup( currentChildElem, groupNode );
     }
   }
+
+  parent->addChildNode( groupNode );
 }
 
 static void _readOldLegendLayer( const QDomElement& layerElem, QgsLayerTreeGroup* parent )

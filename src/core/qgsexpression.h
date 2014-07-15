@@ -105,8 +105,13 @@ class CORE_EXPORT QgsExpression
     //! Get the expression ready for evaluation - find out column indexes.
     bool prepare( const QgsFields &fields );
 
-    //! Get list of columns referenced by the expression
+    /**Get list of columns referenced by the expression.
+     * @note if the returned list contains the QgsFeatureRequest::AllAttributes constant then
+     * all attributes from the layer are required for evaluation of the expression.
+     * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
+     */
     QStringList referencedColumns();
+
     //! Returns true if the expression uses feature geometry for some computation
     bool needsGeometry();
 
@@ -127,6 +132,7 @@ class CORE_EXPORT QgsExpression
 
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
+    //! @note not available in python bindings
     inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields ) { return evaluate( &f, fields ); }
 
     //! Returns true if an error occurred when evaluating last input
@@ -151,11 +157,13 @@ class CORE_EXPORT QgsExpression
     //! @note added in 2.2
     static bool hasSpecialColumn( const QString& name );
 
+    static bool isValid( const QString& text, const QgsFields& fields, QString &errorMessage );
+
     void setScale( double scale ) { mScale = scale; }
 
-    int scale() {return mScale; }
+    double scale() { return mScale; }
 
-    //! Return the expression string that was given when created.
+    //! Alias for dump()
     const QString expression() const { return dump(); }
 
     //! Return the expression string that represents this QgsExpression.
@@ -241,14 +249,17 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT Function
     {
       public:
-        Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false )
-            : mName( fnname ), mParams( params ), mUsesGeometry( usesGeometry ), mGroup( group ), mHelpText( helpText ) {}
+        Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList() )
+            : mName( fnname ), mParams( params ), mUsesGeometry( usesGeometry ), mGroup( group ), mHelpText( helpText ), mReferencedColumns( referencedColumns ) {}
         /** The name of the function. */
         QString name() { return mName; }
         /** The number of parameters this function takes. */
         int params() { return mParams; }
         /** Does this function use a geometry object. */
         bool usesgeometry() { return mUsesGeometry; }
+
+        virtual QStringList referencedColumns() const { return mReferencedColumns; }
+
         /** The group the function belongs to. */
         QString group() { return mGroup; }
         /** The help text for the function. */
@@ -270,13 +281,14 @@ class CORE_EXPORT QgsExpression
         bool mUsesGeometry;
         QString mGroup;
         QString mHelpText;
+        QStringList mReferencedColumns;
     };
 
     class StaticFunction : public Function
     {
       public:
-        StaticFunction( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false )
-            : Function( fnname, params, group, helpText, usesGeometry ), mFnc( fcn ) {}
+        StaticFunction( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList() )
+            : Function( fnname, params, group, helpText, usesGeometry, referencedColumns ), mFnc( fcn ) {}
 
         virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent )
         {
@@ -313,9 +325,9 @@ class CORE_EXPORT QgsExpression
     static QList<Function*> specialColumns();
 
     //! return quoted column reference (in double quotes)
-    static QString quotedColumnRef( QString name ) { return QString( "\"%1\"" ).arg( name.replace( "\"", "\"\"" ) ); }
+    static QString quotedColumnRef( QString name );
     //! return quoted string (in single quotes)
-    static QString quotedString( QString text ) { return QString( "'%1'" ).arg( text.replace( "'", "''" ) ); }
+    static QString quotedString( QString text );
 
     //////
 
@@ -494,7 +506,7 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
         virtual QString dump() const;
 
-        virtual QStringList referencedColumns() const { QStringList lst; if ( !mArgs ) return lst; foreach ( Node* n, mArgs->list() ) lst.append( n->referencedColumns() ); return lst; }
+        virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const { bool needs = Functions()[mFnIndex]->usesgeometry(); if ( mArgs ) { foreach ( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
         virtual void accept( Visitor& v ) const { v.visit( *this ); }
 
@@ -617,6 +629,8 @@ class CORE_EXPORT QgsExpression
     QString mExp;
 
     static QMap<QString, QVariant> gmSpecialColumns;
+    static QMap<QString, QString> gmSpecialColumnGroups;
+
     QgsDistanceArea *mCalc;
 
     friend class QgsOgcUtils;

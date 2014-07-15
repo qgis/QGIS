@@ -25,24 +25,23 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 
 class MultilineTextPanel(QtGui.QWidget):
 
     USE_TEXT = 0
 
-    def __init__(self, options, model, parent=None):
+    def __init__(self, options, parent=None):
         super(MultilineTextPanel, self).__init__(parent)
         self.options = options
-        self.model = model
         self.verticalLayout = QtGui.QVBoxLayout(self)
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
         self.combo = QtGui.QComboBox()
         self.combo.addItem('[Use text below]')
         for option in options:
-            self.combo.addItem(option.name(), option)
+            self.combo.addItem(option[0], option[1])
         self.combo.setSizePolicy(QtGui.QSizePolicy.Expanding,
                                  QtGui.QSizePolicy.Expanding)
         self.verticalLayout.addWidget(self.combo)
@@ -64,14 +63,10 @@ class MultilineTextPanel(QtGui.QWidget):
 
     def setValue(self, value):
         items = [self.combo.itemData(i) for i in range(1, self.combo.count())]
-        idx = 0
-        for item in items:
-            idx += 1
-            if item and value:
-                if item.alg == value.alg and item.param == value.param:
-                    self.combo.setCurrentIndex(idx)
-                    return
+        for idx, item in enumerate(items):
+            if item == value:
+                self.combo.setCurrentIndex(idx)
+                return
         self.combo.setCurrentIndex(0)
-        value = self.model.getValueFromAlgorithmAndParameter(value)
         if value:
-            self.textBox.setPlainText(str(value))
+            self.textBox.setPlainText(value)

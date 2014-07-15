@@ -37,7 +37,10 @@ QgsLegendSymbologyList QgsPluginLayer::legendSymbologyItems( const QSize& iconSi
   return QgsLegendSymbologyList();
 }
 
-/** Fallback layer renderer implementation for layer that do not support map renderer yet. */
+/** Fallback layer renderer implementation for layer that do not support map renderer yet.
+ *
+ * @note added in 2.4
+ */
 class QgsPluginLayerRenderer : public QgsMapLayerRenderer
 {
   public:

@@ -18,6 +18,7 @@
 #include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"
 #include "qgsfield.h"
+#include "qgslayertree.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
@@ -48,6 +49,31 @@ QgsLegendModel::QgsLegendModel(): QStandardItemModel(), mAutoUpdate( true )
 
 QgsLegendModel::~QgsLegendModel()
 {
+}
+
+void QgsLegendModel::setLayerSetAndGroups( QgsLayerTreeGroup* rootGroup )
+{
+  clear();
+  addGroupFromLayerTree( rootGroup, invisibleRootItem() );
+}
+
+void QgsLegendModel::addGroupFromLayerTree( QgsLayerTreeGroup* parentGroup, QStandardItem* parentItem )
+{
+  foreach ( QgsLayerTreeNode* node, parentGroup->children() )
+  {
+    if ( QgsLayerTree::isGroup( node ) )
+    {
+      QgsLayerTreeGroup* nodeGroup = QgsLayerTree::toGroup( node );
+      QStandardItem* groupItem = addGroup( nodeGroup->name(), -1, parentItem );
+      addGroupFromLayerTree( nodeGroup, groupItem );
+    }
+    else if ( QgsLayerTree::isLayer( node ) )
+    {
+      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
+      if ( nodeLayer->layer() )
+        addLayer( nodeLayer->layer(), -1, QString(), parentItem );
+    }
+  }
 }
 
 void QgsLegendModel::setLayerSetAndGroups( const QStringList& layerIds, const QList< GroupLayerInfo >& groupInfo )
@@ -115,21 +141,24 @@ void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenom
   }
 }
 
-QStandardItem* QgsLegendModel::addGroup( QString text, int position )
+QStandardItem* QgsLegendModel::addGroup( QString text, int position, QStandardItem* parentItem )
 {
   if ( text.isNull() )
     text = tr( "Group" );
+
+  if ( !parentItem )
+    parentItem = invisibleRootItem();
 
   QgsComposerGroupItem* groupItem = new QgsComposerGroupItem( text );
   groupItem->setUserText( text );
 
   if ( position == -1 )
   {
-    position = invisibleRootItem()->rowCount();
+    position = parentItem->rowCount();
   }
   QList<QStandardItem *> itemsList;
   itemsList << groupItem << new QgsComposerStyleItem( groupItem );
-  invisibleRootItem()->insertRow( position, itemsList );
+  parentItem->insertRow( position, itemsList );
 
   emit layersChanged();
   return groupItem;
@@ -195,7 +224,7 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
       {
         currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
       }
-      currentSymbolItem->setSymbolV2( symbolIt->second );
+      currentSymbolItem->setSymbolV2( symbolIt->second->clone() );
       layerItem->setChild( row, 0, currentSymbolItem );
       currentSymbolItem->setText( symbolIt->first );
     }
@@ -281,7 +310,20 @@ int QgsLegendModel::addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* 
         currentSymbolItem->setIcon( QIcon( itemPixmap ) );
       }
       currentSymbolItem->setLayerID( rasterLayer->id() );
-      currentSymbolItem->setColor( itemIt->second );
+
+      QColor itemColor = itemIt->second;
+
+      //determine raster layer opacity, and adjust item color opacity to match
+      QgsRasterRenderer* rasterRenderer = rasterLayer->renderer();
+      int opacity = 255;
+      if ( rasterRenderer )
+      {
+        opacity = rasterRenderer->opacity() * 255.0;
+      }
+      itemColor.setAlpha( opacity );
+
+      currentSymbolItem->setColor( itemColor );
+
       int currentRowCount = layerItem->rowCount();
       layerItem->setChild( currentRowCount, 0, currentSymbolItem );
       row++;
@@ -496,6 +538,14 @@ void QgsLegendModel::removeLayer( const QString& layerId )
 
     if ( layerId == lItem->layerID() )
     {
+      if ( QgsMapLayerRegistry::instance() )
+      {
+        QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
+        if ( layer )
+        {
+          disconnect( layer, SIGNAL( rendererChanged() ), this, SLOT( updateLayer() ) );
+        }
+      }
       removeRow( i ); //todo: also remove the subitems and their symbols...
       emit layersChanged();
       return;
@@ -503,12 +553,15 @@ void QgsLegendModel::removeLayer( const QString& layerId )
   }
 }
 
-void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator, QString rule )
+void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator, QString rule, QStandardItem* parentItem )
 {
   if ( !theMapLayer )
   {
     return;
   }
+
+  if ( !parentItem )
+    parentItem = invisibleRootItem();
 
   QgsComposerLayerItem* layerItem = new QgsComposerLayerItem( theMapLayer->name() );
   if ( theMapLayer->title() != "" )
@@ -522,7 +575,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator
 
   QList<QStandardItem *> itemsList;
   itemsList << layerItem << new QgsComposerStyleItem( layerItem );
-  invisibleRootItem()->appendRow( itemsList );
+  parentItem->appendRow( itemsList );
 
   switch ( theMapLayer->type() )
   {
@@ -541,9 +594,30 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator
     default:
       break;
   }
+
+  if ( mAutoUpdate )
+  {
+    connect( theMapLayer, SIGNAL( rendererChanged() ), this, SLOT( updateLayer() ) );
+  }
+
   emit layersChanged();
 }
 
+void QgsLegendModel::updateLayer()
+{
+  QString layerId = qobject_cast<QgsMapLayer*>( QObject::sender() )->id();
+
+  for ( int i = 0, n = rowCount(); i < n ; ++i )
+  {
+    QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( item( i ) );
+    if ( lItem && layerId == lItem->layerID() )
+    {
+      updateLayer( lItem );
+      emit layersChanged();
+      return;
+    }
+  }
+}
 
 bool QgsLegendModel::writeXML( QDomElement& composerLegendElem, QDomDocument& doc ) const
 {
@@ -582,6 +656,9 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
   }
 
   clear();
+  //disable autoupdates here in order to have a setAutoUpdate(true)
+  //below connect the rendererChanged signals to the layers
+  setAutoUpdate( false );
 
   QDomNodeList topLevelItemList = legendModelElem.childNodes();
   QDomElement currentElem;
@@ -821,6 +898,19 @@ void QgsLegendModel::setAutoUpdate( bool autoUpdate )
     {
       connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
       connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( addLayer( QgsMapLayer* ) ) );
+
+      for ( int i = 0, n = rowCount(); i < n ; ++i )
+      {
+        QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( item( i ) );
+        if ( lItem )
+        {
+          QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
+          if ( layer )
+          {
+            connect( layer, SIGNAL( rendererChanged() ), this, SLOT( updateLayer() ) );
+          }
+        }
+      }
     }
   }
   else
@@ -829,6 +919,19 @@ void QgsLegendModel::setAutoUpdate( bool autoUpdate )
     {
       disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
       disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( addLayer( QgsMapLayer* ) ) );
+
+      for ( int i = 0, n = rowCount(); i < n ; ++i )
+      {
+        QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( item( i ) );
+        if ( lItem )
+        {
+          QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
+          if ( layer )
+          {
+            disconnect( layer, SIGNAL( rendererChanged() ), this, SLOT( updateLayer() ) );
+          }
+        }
+      }
     }
   }
 }

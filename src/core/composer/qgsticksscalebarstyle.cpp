@@ -58,6 +58,8 @@ void QgsTicksScaleBarStyle::draw( QPainter* p, double xOffset ) const
   double bottomPosition = barTopPosition + mScaleBar->height();
 
   p->save();
+  //antialiasing on
+  p->setRenderHint( QPainter::Antialiasing, true );
   p->setPen( mScaleBar->pen() );
 
   QList<QPair<double, double> > segmentInfo;

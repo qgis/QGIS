@@ -388,9 +388,6 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
   }
 }
 
-
-
-
 void QgsVectorLayer::reload()
 {
   if ( mDataProvider )
@@ -408,9 +405,6 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 {
   QgsVectorLayerRenderer renderer( this, rendererContext );
   return renderer.render();
-
-
-
 }
 
 void QgsVectorLayer::drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int m )
@@ -583,7 +577,7 @@ const QgsVectorDataProvider* QgsVectorLayer::dataProvider() const
 
 void QgsVectorLayer::setProviderEncoding( const QString& encoding )
 {
-  if ( mDataProvider )
+  if ( mDataProvider && mDataProvider->encoding() != encoding )
   {
     mDataProvider->setEncoding( encoding );
     updateFields();
@@ -3440,10 +3434,10 @@ QString QgsVectorLayer::metadata()
   myMetadata += "</th>";
 
   //get info for each field by looping through them
-  const QgsFieldMap& myFields = pendingFields();
-  for ( QgsFieldMap::const_iterator it = myFields.begin(); it != myFields.end(); ++it )
+  const QgsFields& myFields = pendingFields();
+  for ( int i = 0, n = myFields.size(); i < n; ++i )
   {
-    const QgsField& myField = *it;
+    const QgsField& myField = fields[i];
 
     myMetadata += "<tr><td>";
     myMetadata += myField.name();

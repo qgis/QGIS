@@ -194,6 +194,14 @@ bool QgsRectangle::isEmpty() const
   return xmax <= xmin || ymax <= ymin;
 }
 
+bool QgsRectangle::isNull() const
+{
+  // rectangle created QgsRectangle() or with rect.setMinimal() ?
+  return ( xmin == 0 && xmax == 0 && ymin == 0 && ymax == 0 ) ||
+         ( xmin == std::numeric_limits<double>::max() && ymin == std::numeric_limits<double>::max() &&
+           xmax == -std::numeric_limits<double>::max() && ymax == -std::numeric_limits<double>::max() );
+}
+
 QString QgsRectangle::asWktCoordinates() const
 {
   QString rep =

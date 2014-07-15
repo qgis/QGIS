@@ -1,3 +1,17 @@
+/***************************************************************************
+  qgsvectorlayerrenderer.cpp
+  --------------------------------------
+  Date                 : December 2013
+  Copyright            : (C) 2013 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #include "qgsvectorlayerrenderer.h"
 
@@ -169,6 +183,15 @@ bool QgsVectorLayerRenderer::render()
     simplifyMethod.setForceLocalOptimization( mSimplifyMethod.forceLocalOptimization() );
 
     featureRequest.setSimplifyMethod( simplifyMethod );
+
+    QgsVectorSimplifyMethod vectorMethod = mSimplifyMethod;
+    mContext.setVectorSimplifyMethod( vectorMethod );
+  }
+  else
+  {
+    QgsVectorSimplifyMethod vectorMethod;
+    vectorMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+    mContext.setVectorSimplifyMethod( vectorMethod );
   }
 
   QgsFeatureIterator fit = mSource->getFeatures( featureRequest );
@@ -218,11 +241,11 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
 
       if ( mContext.renderingStopped() )
       {
-        qDebug( "breaking!" );
+        QgsDebugMsg( QString( "Drawing of vector layer %1 cancelled." ).arg( layerID() ) );
         break;
       }
 
-      bool sel = mSelectedFeatureIds.contains( fet.id() );
+      bool sel = mContext.showSelection() && mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 
       // render feature

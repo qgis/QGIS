@@ -60,7 +60,6 @@ QgsAttributeDialog::~QgsAttributeDialog()
     delete mHighlight;
   }
 
-  saveGeometry();
   delete mDialog;
 }
 
@@ -116,6 +115,7 @@ void QgsAttributeDialog::show()
     mDialog->raise();
     mDialog->activateWindow();
     mDialog->installEventFilter( this );
+    setParent( mDialog );
   }
 }
 
@@ -141,9 +141,16 @@ bool QgsAttributeDialog::eventFilter( QObject* obj, QEvent* e )
   return false;
 }
 
+void QgsAttributeDialog::onDialogFinished( int result )
+{
+  Q_UNUSED( result )
+  saveGeometry();
+}
+
 void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, QgsAttributeEditorContext& context, QWidget* parent )
 {
   mDialog = new QDialog( parent );
+  mDialog->setWindowTitle( tr( "Feature Attributes" ) );
   mDialog->setLayout( new QGridLayout() );
   mDialog->layout()->setMargin( 0 );
   mAttributeForm = new QgsAttributeForm( layer, *feature, context, parent );
@@ -151,4 +158,6 @@ void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, QgsAt
   QDialogButtonBox* buttonBox = mAttributeForm->findChild<QDialogButtonBox*>();
   connect( buttonBox, SIGNAL( rejected() ), mDialog, SLOT( reject() ) );
   connect( buttonBox, SIGNAL( accepted() ), mDialog, SLOT( accept() ) );
+  connect( mDialog, SIGNAL( finished( int ) ), this, SLOT( onDialogFinished( int ) ) );
+  restoreGeometry();
 }

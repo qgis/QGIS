@@ -25,28 +25,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-from PyQt4 import QtGui
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.tools.system import *
-
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.outputs.OutputRaster import OutputRaster
-
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class pct2rgb(GeoAlgorithm):
+class pct2rgb(GdalAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NBAND = 'NBAND'
-
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + '/icons/8-to-24-bits.png'
-        return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
         self.name = 'PCT to RGB'

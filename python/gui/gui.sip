@@ -108,6 +108,12 @@
 %Include attributetable/qgsfeatureselectionmodel.sip
 %Include attributetable/qgsifeatureselectionmanager.sip
 
+%Include layertree/qgscustomlayerorderwidget.sip
+%Include layertree/qgslayertreemapcanvasbridge.sip
+%Include layertree/qgslayertreemodel.sip
+%Include layertree/qgslayertreeview.sip
+%Include layertree/qgslayertreeviewdefaultactions.sip
+
 %Include raster/qgsmultibandcolorrendererwidget.sip
 %Include raster/qgspalettedrendererwidget.sip
 %Include raster/qgsrasterhistogramwidget.sip

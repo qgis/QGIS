@@ -2794,6 +2794,11 @@ void QgsCentroidFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
 
   // layer type is correct, we can do the cast
   mLayer = static_cast<QgsCentroidFillSymbolLayerV2*>( layer );
+
+  // set values
+  mDrawInsideCheckBox->blockSignals( true );
+  mDrawInsideCheckBox->setChecked( mLayer->pointOnSurface() );
+  mDrawInsideCheckBox->blockSignals( false );
 }
 
 QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2Widget::symbolLayer()
@@ -2801,5 +2806,8 @@ QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2Widget::symbolLayer()
   return mLayer;
 }
 
-
-
+void QgsCentroidFillSymbolLayerV2Widget::on_mDrawInsideCheckBox_stateChanged( int state )
+{
+  mLayer->setPointOnSurface( state == Qt::Checked );
+  emit changed();
+}

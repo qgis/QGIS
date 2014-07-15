@@ -32,7 +32,7 @@
 #include <QSettings>
 #include <QSvgRenderer>
 
-QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QWidget(), mPicture( picture ), mPreviewsLoaded( false )
+QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QgsComposerItemBaseWidget( 0, picture ), mPicture( picture ), mPreviewsLoaded( false )
 {
   setupUi( this );
 
@@ -63,6 +63,7 @@ QgsComposerPictureWidget::~QgsComposerPictureWidget()
 
 void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
 {
+  QSettings s;
   QString openDir;
   QString lineEditText = mPictureLineEdit->text();
   if ( !lineEditText.isEmpty() )
@@ -71,6 +72,10 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
     openDir = openDirFileInfo.path();
   }
 
+  if ( openDir.isEmpty() )
+  {
+    openDir = s.value( "/UI/lastComposerPictureDir", "" ).toString();
+  }
 
   //show file dialog
   QString filePath = QFileDialog::getOpenFileName( 0, tr( "Select svg or image file" ), openDir );
@@ -86,6 +91,8 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
     QMessageBox::critical( 0, "Invalid file", "Error, file does not exist or is not readable" );
     return;
   }
+
+  s.setValue( "/UI/lastComposerPictureDir", fileInfo.absolutePath() );
 
   mPictureLineEdit->blockSignals( true );
   mPictureLineEdit->setText( filePath );
@@ -124,19 +131,10 @@ void QgsComposerPictureWidget::on_mPictureExpressionButton_clicked()
     return;
   }
 
-  QgsVectorLayer* vl = 0;
-  QgsComposition* composition = mPicture->composition();
+  // use the atlas coverage layer, if any
+  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
-  if ( composition )
-  {
-    QgsAtlasComposition* atlasMap = &composition->atlasComposition();
-    if ( atlasMap )
-    {
-      vl = atlasMap->coverageLayer();
-    }
-  }
-
-  QgsExpressionBuilderDialog exprDlg( vl, mPictureExpressionLineEdit->text(), this );
+  QgsExpressionBuilderDialog exprDlg( coverageLayer, mPictureExpressionLineEdit->text(), this );
   exprDlg.setWindowTitle( tr( "Expression based image path" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {

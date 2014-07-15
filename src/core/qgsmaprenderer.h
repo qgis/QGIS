@@ -171,6 +171,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     ~QgsMapRenderer();
 
     //! starts rendering
+    //! @param painter painter to render to
     //! @param forceWidthScale Force a specific scale factor for line widths and marker sizes. Automatically calculated from output device DPI if 0
     void render( QPainter* painter, double* forceWidthScale = 0 );
 
@@ -189,8 +190,8 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void setScale( double scale ) {mScale = scale;}
     double mapUnitsPerPixel() const { return mMapUnitsPerPixel; }
 
-    int width() const { return mSize.width(); }
-    int height() const { return mSize.height(); }
+    int width() const { return ( int ) mSize.width(); }
+    int height() const { return ( int ) mSize.height(); }
 
     //! Recalculate the map scale
     void updateScale();
@@ -257,7 +258,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     bool hasCrsTransformEnabled() const;
 
     //! sets destination coordinate reference system
-    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs, bool refreshCoordinateTransformInfo = true );
+    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs, bool refreshCoordinateTransformInfo = true, bool transformExtent = true );
 
     //! returns CRS of destination coordinate reference system
     const QgsCoordinateReferenceSystem& destinationCrs() const;

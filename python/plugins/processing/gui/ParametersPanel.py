@@ -105,7 +105,12 @@ class ParametersPanel(QtGui.QWidget):
                 continue
             desc = param.description
             if isinstance(param, ParameterExtent):
-                desc += '(xmin, xmax, ymin, ymax)'
+                desc += ' (xmin, xmax, ymin, ymax)'
+            try:
+                if param.optional:
+                    desc += ' [optional]'
+            except:
+                pass
             label = QtGui.QLabel(desc)
             self.labels[param.name] = label
             widget = self.getWidgetFromParameter(param)
@@ -197,10 +202,9 @@ class ParametersPanel(QtGui.QWidget):
                 items.append((self.NOT_SELECTED, None))
             for layer in layers:
                 items.append((self.getExtendedLayerName(layer), layer))
-            item = InputLayerSelectorPanel(items)
+            item = InputLayerSelectorPanel(items, param)
         elif isinstance(param, ParameterVector):
-            if self.somethingDependsOnThisParameter(param) \
-                or self.alg.allowOnlyOpenedLayers:
+            if self.somethingDependsOnThisParameter(param) or self.alg.allowOnlyOpenedLayers:
                 item = QtGui.QComboBox()
                 layers = dataobjects.getVectorLayers(param.shapetype)
                 if param.optional:
@@ -220,7 +224,7 @@ class ParametersPanel(QtGui.QWidget):
                 for i,(name,layer) in enumerate(items):
                     if layer and layer.source() == param.value:
                         items.insert(0, items.pop(i))
-                item = InputLayerSelectorPanel(items)
+                item = InputLayerSelectorPanel(items, param)
         elif isinstance(param, ParameterTable):
             if self.somethingDependsOnThisParameter(param):
                 item = QtGui.QComboBox()
@@ -242,7 +246,7 @@ class ParametersPanel(QtGui.QWidget):
                 for i,(name,layer) in enumerate(items):
                     if layer and layer.source() == param.value:
                         items.insert(0, items.pop(i))
-                item = InputLayerSelectorPanel(items)
+                item = InputLayerSelectorPanel(items, param)
         elif isinstance(param, ParameterBoolean):
             item = QtGui.QComboBox()
             item.addItem('Yes')
@@ -277,7 +281,7 @@ class ParametersPanel(QtGui.QWidget):
         elif isinstance(param, ParameterRange):
             item = RangePanel(param)
         elif isinstance(param, ParameterFile):
-            item = FileSelectionPanel(param.isFolder)
+            item = FileSelectionPanel(param.isFolder, param.ext)
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_FILE:
                 item = MultipleFileInputPanel()
@@ -328,6 +332,8 @@ class ParametersPanel(QtGui.QWidget):
         for child in children:
             widget = self.valueItems[child]
             widget.clear()
+            if self.alg.getParameterFromName(child).optional:
+                widget.addItem("[not set]")
             widget.addItems(self.getFields(layer,
                             self.alg.getParameterFromName(child).datatype))
 

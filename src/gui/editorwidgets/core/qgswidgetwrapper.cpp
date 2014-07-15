@@ -23,16 +23,20 @@ QgsWidgetWrapper::QgsWidgetWrapper( QgsVectorLayer* vl, QWidget* editor, QWidget
     , mWidget( editor )
     , mParent( parent )
     , mLayer( vl )
+    , mInitialized( false )
 {
 }
 
 QWidget* QgsWidgetWrapper::widget()
 {
   if ( !mWidget )
-  {
     mWidget = createWidget( mParent );
+
+  if ( !mInitialized )
+  {
     mWidget->setProperty( "EWV2Wrapper", QVariant::fromValue<QgsWidgetWrapper*>( this ) );
     initWidget( mWidget );
+    mInitialized = true;
   }
 
   return mWidget;
@@ -84,8 +88,5 @@ void QgsWidgetWrapper::initWidget( QWidget* editor )
 
 void QgsWidgetWrapper::setEnabled( bool enabled )
 {
-  if ( mWidget )
-  {
-    mWidget->setEnabled( enabled );
-  }
+  Q_UNUSED( enabled );
 }

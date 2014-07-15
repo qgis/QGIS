@@ -26,9 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
 import subprocess
-from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.parameters.ParameterFile import ParameterFile
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterSelection import ParameterSelection

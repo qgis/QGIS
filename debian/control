@@ -150,19 +150,6 @@ Description: QGIS - shared Python library
  .
  This package contains the shared Python library.
 
-Package: libqgissqlanyconnection2.3.0
-Architecture: any
-Section: libs
-Depends:
- ${shlibs:Depends},
- ${misc:Depends}
-Replaces: libqgis2.3.0
-Description: QGIS - shared sqlanywhere connection library
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This package contains the shared sqlanywhere connection library.
-
 Package: libqgis-dev
 Architecture: any
 Section: libdevel

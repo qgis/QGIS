@@ -136,16 +136,7 @@ void QgsMeasureTool::updateSettings()
 
 void QgsMeasureTool::canvasPressEvent( QMouseEvent * e )
 {
-  if ( e->button() == Qt::LeftButton )
-  {
-    if ( mDone )
-    {
-      mDialog->restart();
-      QgsPoint point = snapPoint( e->pos() );
-      addPoint( point );
-      mDone = false;
-    }
-  }
+  Q_UNUSED( e );
 }
 
 void QgsMeasureTool::canvasMoveEvent( QMouseEvent * e )
@@ -155,13 +146,7 @@ void QgsMeasureTool::canvasMoveEvent( QMouseEvent * e )
     QgsPoint point = snapPoint( e->pos() );
 
     mRubberBand->movePoint( point );
-    if ( ! mPoints.isEmpty() )
-    {
-      // Update last point
-      mPoints.removeLast();
-      mPoints.append( point ) ;
-      mDialog->mouseMove( point );
-    }
+    mDialog->mouseMove( point );
   }
 }
 
@@ -170,25 +155,23 @@ void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
 {
   QgsPoint point = snapPoint( e->pos() );
 
-  if ( e->button() == Qt::RightButton && ( e->buttons() & Qt::LeftButton ) == 0 ) // restart
+  if ( mDone ) // if we have stopped measuring any mouse click restart measuring
   {
-    if ( mDone )
-    {
-      mDialog->restart();
-    }
-    else
-    {
-      // The figure is finished
-      mDone = true;
-      mDialog->show();
-    }
+    mDialog->restart();
+  }
+
+  if ( e->button() == Qt::RightButton ) // if we clicked the right button we stop measuring
+  {
+    mDone = true;
   }
   else if ( e->button() == Qt::LeftButton )
   {
-    // Append point we will move
-    addPoint( point );
-    mDialog->show();
+    mDone = false;
   }
+
+  // we allways add the clicked point to the measuring feature
+  addPoint( point );
+  mDialog->show();
 
 }
 
@@ -197,10 +180,11 @@ void QgsMeasureTool::addPoint( QgsPoint &point )
 {
   QgsDebugMsg( "point=" + point.toString() );
 
-  int last = mPoints.size() - 1;
   // don't add points with the same coordinates
-  if ( mPoints.size() > 1 && mPoints[ last ] == mPoints[ last - 1 ] )
+  if ( !mPoints.isEmpty() && mPoints.last() == point )
+  {
     return;
+  }
 
   QgsPoint pnt( point );
   // Append point that we will be moving.
@@ -208,7 +192,7 @@ void QgsMeasureTool::addPoint( QgsPoint &point )
 
   mRubberBand->addPoint( point );
   mRubberBandPoints->addPoint( point );
-  if ( ! mDone )
+  if ( ! mDone )    // Prevent the insertion of a new item in segments measure table
   {
     mDialog->addPoint( point );
   }

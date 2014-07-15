@@ -37,7 +37,7 @@ QgsComposerItemGroup::~QgsComposerItemGroup()
     if ( *itemIt )
     {
       mComposition->removeItem( *itemIt );
-      ( *itemIt )->setFlag( QGraphicsItem::ItemIsSelectable, true );
+      ( *itemIt )->setIsGroupMember( false );
     }
   }
 }
@@ -58,7 +58,7 @@ void QgsComposerItemGroup::addItem( QgsComposerItem* item )
 
   mItems.insert( item );
   item->setSelected( false );
-  item->setFlag( QGraphicsItem::ItemIsSelectable, false ); //item in groups cannot be selected
+  item->setIsGroupMember( true );
 
   //update extent
   if ( mBoundingRectangle.isEmpty() ) //we add the first item
@@ -100,7 +100,7 @@ void QgsComposerItemGroup::removeItems()
   QSet<QgsComposerItem*>::iterator item_it = mItems.begin();
   for ( ; item_it != mItems.end(); ++item_it )
   {
-    ( *item_it )->setFlag( QGraphicsItem::ItemIsSelectable, true ); //enable item selection again
+    ( *item_it )->setIsGroupMember( false );
     ( *item_it )->setSelected( true );
   }
   mItems.clear();

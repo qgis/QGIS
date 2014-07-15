@@ -48,7 +48,7 @@ QgsEditorWidgetConfig QgsRangeWidgetFactory::readConfig( const QDomElement& conf
   return cfg;
 }
 
-void QgsRangeWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, const QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
+void QgsRangeWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( doc );
   Q_UNUSED( layer );

@@ -14,6 +14,7 @@ SET (WFS_MOC_HDRS
   qgswfscapabilities.h
   qgswfsdataitems.h
   qgswfsprovider.h
+  qgswfsfeatureiterator.h
   qgswfssourceselect.h
 )
 

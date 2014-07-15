@@ -27,8 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools.system import *
-
+from processing.script.ScriptAlgorithm import ScriptAlgorithm
+from processing.script.WrongScriptException import WrongScriptException
+from processing.core.ProcessingLog import ProcessingLog
+from processing.tools.system import mkdir, userFolder
 
 class ScriptUtils:
 
@@ -43,3 +45,24 @@ class ScriptUtils:
         mkdir(folder)
 
         return os.path.abspath(folder)
+
+    @staticmethod
+    def loadFromFolder(folder):
+        if not os.path.exists(folder):
+            return []
+        algs = []
+        for path, subdirs, files in os.walk(folder):
+            for descriptionFile in files:
+                if descriptionFile.endswith('py'):
+                    try:
+                        fullpath = os.path.join(path, descriptionFile)
+                        alg = ScriptAlgorithm(fullpath)
+                        if alg.name.strip() != '':
+                            algs.append(alg)
+                    except WrongScriptException, e:
+                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
+                    except Exception, e:
+                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                'Could not load script:' + descriptionFile + '\n'
+                                + unicode(e))
+        return algs

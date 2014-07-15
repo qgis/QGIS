@@ -71,20 +71,39 @@ sub updateCMakeLists {
 }
 
 print "Last pull rebase...\n";
-system("git pull --rebase") == 0 or die "git pull rebase failed";
+system( "git pull --rebase" ) == 0 or die "git pull rebase failed";
 
 my $release = "$newmajor.$newminor";
 my $relbranch = "release-${newmajor}_${newminor}";
 my $reltag = "final-${newmajor}_${newminor}_0";
 
 print "Creating branch...\n";
-system("git checkout -b $relbranch" ) == 0 or die "git checkout release branch failed";
+system( "git checkout -b $relbranch" ) == 0 or die "git checkout release branch failed";
 updateCMakeLists($newmajor,$newminor,$releasename);
 
 print "Updating branch...\n";
-system("dch -r ''" ) == 0 or die "dch failed";
+system( "dch -r ''" ) == 0 or die "dch failed";
 system( "dch --newversion $newmajor.$newminor.0 'Release of $release'" ) == 0 or die "dch failed";
 system( "cp debian/changelog /tmp" ) == 0 or die "backup changelog failed";
+
+if( -f "images/splash/splash-release.png" ) {
+	system( "cp -v images/splash/splash-release.png images/splash/splash.png" ) == 0 or die "splash png switch failed";
+} else {
+	print "WARNING: NO images/splash/splash-release.png\n";
+}
+
+if( -f "images/splash/splash-release.xcf.bz2" ) {
+	system( "cp -v images/splash/splash-release.xcf.bz2 images/splash/splash.xcf.bz2" ) == 0 or die "splash xcf switch failed";
+} else {
+	print "WARNING: NO images/splash/splash-release.xcf.bz2\n";
+}
+
+if( -f "ms-windows/Installer-Files/WelcomeFinishPage-release.bmp" ) {
+	system( "cp -v ms-windows/Installer-Files/WelcomeFinishPage-release.bmp ms-windows/Installer-Files/WelcomeFinishPage.bmp" ) == 0 or die "installer bitmap switch failed";
+} else {
+	print "WARNING: NO ms-windows/Installer-Files/WelcomeFinishPage-release.bmp\n";
+}
+
 system( "git commit -a -m 'Release of $release ($releasename)'" ) == 0 or die "release commit failed";
 system( "git tag $reltag -m 'Version $release'" ) == 0 or die "tag failed";
 

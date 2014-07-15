@@ -32,8 +32,7 @@ from PyQt4.QtGui import *
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingLog import ProcessingLog
 from processing.script.WrongScriptException import WrongScriptException
-
-from GdalAlgorithm import GdalAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalScriptAlgorithm
 from GdalUtils import GdalUtils
 
 from nearblack import nearblack
@@ -103,7 +102,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
         return 'gdalogr'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/icons/gdalicon.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/gdal.png')
 
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
@@ -131,7 +130,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
                     try:
                         fullpath = os.path.join(self.scriptsFolder(),
                                 descriptionFile)
-                        alg = GdalAlgorithm(fullpath)
+                        alg = GdalScriptAlgorithm(fullpath)
                         self.preloadedAlgs.append(alg)
                     except WrongScriptException, e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)

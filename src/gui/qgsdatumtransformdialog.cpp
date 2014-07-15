@@ -25,17 +25,21 @@
 QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > > &dt, QWidget *parent, Qt::WindowFlags f )
     : QDialog( parent, f )
     , mDt( dt )
+    , mLayerName( layerName )
 {
   setupUi( this );
 
   QApplication::setOverrideCursor( Qt::ArrowCursor );
 
-  setWindowTitle( tr( "Select datum transformations for layer" ) + " " + layerName );
+  updateTitle();
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/DatumTransformDialog/geometry" ).toByteArray() );
   mHideDeprecatedCheckBox->setChecked( settings.value( "/Windows/DatumTransformDialog/hideDeprecated", false ).toBool() );
   mRememberSelectionCheckBox->setChecked( settings.value( "/Windows/DatumTransformDialog/rememberSelection", false ).toBool() );
+
+  mLabelSrcDescription->setText( "" );
+  mLabelDstDescription->setText( "" );
 
   for ( int i = 0; i < 2; i++ )
   {
@@ -134,6 +138,13 @@ QgsDatumTransformDialog::~QgsDatumTransformDialog()
   QApplication::restoreOverrideCursor();
 }
 
+void QgsDatumTransformDialog::setDatumTransformInfo( const QString& srcCRSauthId, const QString& destCRSauthId )
+{
+  mSrcCRSauthId = srcCRSauthId;
+  mDestCRSauthId = destCRSauthId;
+  updateTitle();
+}
+
 QList< int > QgsDatumTransformDialog::selectedDatumTransform()
 {
   QList<int> list;
@@ -215,4 +226,20 @@ bool QgsDatumTransformDialog::testGridShiftFileAvailability( QTreeWidgetItem* it
 void QgsDatumTransformDialog::on_mHideDeprecatedCheckBox_stateChanged( int )
 {
   load();
+}
+
+void QgsDatumTransformDialog::on_mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
+{
+  mLabelSrcDescription->setText( current->toolTip( 0 ) );
+  mLabelDstDescription->setText( current->toolTip( 1 ) );
+}
+
+void QgsDatumTransformDialog::updateTitle()
+{
+  mLabelLayer->setText( mLayerName );
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromString( mSrcCRSauthId );
+  mLabelSrcCrs->setText( QString( "%1 - %2" ).arg( mSrcCRSauthId ).arg( crs.isValid() ? crs.description() : tr( "unknown" ) ) );
+  crs.createFromString( mDestCRSauthId );
+  mLabelDstCrs->setText( QString( "%1 - %2" ).arg( mDestCRSauthId ).arg( crs.isValid() ? crs.description() : tr( "unknown" ) ) );
 }

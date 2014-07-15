@@ -62,6 +62,7 @@ class QgsWCSServer: public QgsOWSServer
     QString serviceUrl() const;
 
     QgsWCSProjectParser* mConfigParser;
+
 };
 
 #endif

@@ -2564,7 +2564,7 @@ p, li { white-space: pre-wrap; }
        <item>
         <widget class="QLabel" name="textLabel8" >
          <property name="text" >
-          <string>&lt;p align="center">Existing masets&lt;/p></string>
+          <string>&lt;p align="center">Existing mapsets&lt;/p></string>
          </property>
         </widget>
        </item>

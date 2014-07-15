@@ -17,6 +17,7 @@
 
 #include <spatialite.h>
 
+#include <QStringList>
 #include <QXmlStreamReader>
 
 
@@ -134,14 +135,30 @@ bool QgsOSMXmlImport::createIndexes()
 
 bool QgsOSMXmlImport::createDatabase()
 {
+  char **results;
+  int rows, columns;
   if ( sqlite3_open_v2( mDbFileName.toUtf8().data(), &mDatabase, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0 ) != SQLITE_OK )
     return false;
+
+  bool above41 = false;
+  int ret = sqlite3_get_table( mDatabase, "select spatialite_version()", &results, &rows, &columns, NULL );
+  if ( ret == SQLITE_OK && rows == 1 && columns == 1 )
+  {
+    QString version = QString::fromUtf8( results[1] );
+    QStringList parts = version.split( " ", QString::SkipEmptyParts );
+    if ( parts.size() >= 1 )
+    {
+      QStringList verparts = parts[0].split( ".", QString::SkipEmptyParts );
+      above41 = verparts.size() >= 2 && ( verparts[0].toInt() > 4 || ( verparts[0].toInt() == 4 && verparts[1].toInt() >= 1 ) );
+    }
+  }
+  sqlite3_free_table( results );
 
   const char* sqlInitStatements[] =
   {
     "PRAGMA cache_size = 100000", // TODO!!!
     "PRAGMA synchronous = OFF", // TODO!!!
-    "SELECT InitSpatialMetadata()",
+    above41 ? "SELECT InitSpatialMetadata(1)" : "SELECT InitSpatialMetadata()",
     "CREATE TABLE nodes ( id INTEGER PRIMARY KEY, lat REAL, lon REAL )",
     "CREATE TABLE nodes_tags ( id INTEGER, k TEXT, v TEXT )",
     "CREATE TABLE ways ( id INTEGER PRIMARY KEY )",

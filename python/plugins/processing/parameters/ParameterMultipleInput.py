@@ -68,14 +68,7 @@ class ParameterMultipleInput(ParameterDataObject):
                     return True
                 else:
                     return False
-            s = ''
-            idx = 0
-            for layer in obj:
-                s += self.getAsString(layer)
-                if idx < len(obj) - 1:
-                    s += ';'
-                    idx = idx + 1
-            self.value = s
+            self.value = ";".join([self.getAsString(lay) for lay in obj])
             return True
         else:
             self.value = unicode(obj)
@@ -149,7 +142,7 @@ class ParameterMultipleInput(ParameterDataObject):
                 return unicode(value.source())
             else:
                 s = unicode(value)
-                layers = dataobjects.getVectorLayers(self.datatype)
+                layers = dataobjects.getVectorLayers([self.datatype])
                 for layer in layers:
                     if layer.name() == s:
                         return unicode(layer.source())

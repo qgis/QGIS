@@ -55,6 +55,8 @@ from processing.script.WrongScriptException import WrongScriptException
 
 class ScriptAlgorithm(GeoAlgorithm):
 
+    _icon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/script.png')
+
     def __init__(self, descriptionFile, script=None):
         """The script parameter can be used to directly pass the code
         of the script without a file.
@@ -65,6 +67,7 @@ class ScriptAlgorithm(GeoAlgorithm):
 
         GeoAlgorithm.__init__(self)
         self.script = script
+        self.allowEdit = True
         self.descriptionFile = descriptionFile
         if script is not None:
             self.defineCharacteristicsFromScript()
@@ -77,7 +80,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/script.png')
+        return self._icon
 
     def defineCharacteristicsFromFile(self):
         self.script = ''
@@ -127,6 +130,9 @@ class ScriptAlgorithm(GeoAlgorithm):
         # factories
         if '|' in line:
             self.processDescriptionParameterLine(line)
+            return
+        if line == "nomodeler":
+            self.showInModeler = False
             return
         tokens = line.split('=', 1)
         desc = self.createDescriptiveName(tokens[0])
@@ -183,7 +189,7 @@ class ScriptAlgorithm(GeoAlgorithm):
                     found = True
                     break
             if found:
-                param = ParameterTableField(tokens[0], tokens[0], field)
+                param = ParameterTableField(tokens[0], desc, field)
         elif tokens[1].lower().strip().startswith('string'):
             default = tokens[1].strip()[len('string') + 1:]
             param = ParameterString(tokens[0], desc, default)
@@ -205,6 +211,9 @@ class ScriptAlgorithm(GeoAlgorithm):
             out = OutputHTML()
         elif tokens[1].lower().strip().startswith('output file'):
             out = OutputFile()
+            subtokens = tokens[1].split(' ')
+            if len(subtokens > 2):
+                out.ext = subtokens[2]
         elif tokens[1].lower().strip().startswith('output directory'):
             out = OutputDirectory()
         elif tokens[1].lower().strip().startswith('output number'):
@@ -216,7 +225,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             self.addParameter(param)
         elif out is not None:
             out.name = tokens[0]
-            out.description = tokens[0]
+            out.description = desc
             self.addOutput(out)
         else:
             raise WrongScriptException('Could not load script:'
@@ -247,7 +256,9 @@ class ScriptAlgorithm(GeoAlgorithm):
         ns = {}
         ns['progress'] = progress
 
+        print self.parameters
         for param in self.parameters:
+            print param.name
             ns[param.name] = param.value
 
         for out in self.outputs:

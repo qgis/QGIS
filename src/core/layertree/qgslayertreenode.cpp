@@ -39,7 +39,7 @@ QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode& other )
   QList<QgsLayerTreeNode*> clonedChildren;
   foreach ( QgsLayerTreeNode* child, other.mChildren )
     clonedChildren << child->clone();
-  insertChildren( -1, clonedChildren );
+  insertChildrenPrivate( -1, clonedChildren );
 }
 
 QgsLayerTreeNode::~QgsLayerTreeNode()
@@ -57,6 +57,23 @@ QgsLayerTreeNode* QgsLayerTreeNode::readXML( QDomElement& element )
 
   return node;
 }
+
+
+bool QgsLayerTreeNode::isExpanded() const
+{
+  return mExpanded;
+}
+
+
+void QgsLayerTreeNode::setExpanded( bool expanded )
+{
+  if ( mExpanded == expanded )
+    return;
+
+  mExpanded = expanded;
+  emit expandedChanged( this, expanded );
+}
+
 
 void QgsLayerTreeNode::setCustomProperty( const QString &key, const QVariant &value )
 {
@@ -91,15 +108,11 @@ void QgsLayerTreeNode::writeCommonXML( QDomElement& element )
   mProperties.writeXml( element, doc );
 }
 
-void QgsLayerTreeNode::insertChild( int index, QgsLayerTreeNode *node )
+void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode*> nodes )
 {
-  QList<QgsLayerTreeNode*> nodes;
-  nodes << node;
-  insertChildren( index, nodes );
-}
+  if ( nodes.count() == 0 )
+    return;
 
-void QgsLayerTreeNode::insertChildren( int index, QList<QgsLayerTreeNode*> nodes )
-{
   foreach ( QgsLayerTreeNode* node, nodes )
   {
     Q_ASSERT( node->mParent == 0 );
@@ -122,16 +135,12 @@ void QgsLayerTreeNode::insertChildren( int index, QList<QgsLayerTreeNode*> nodes
     connect( nodes[i], SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ), this, SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ) );
     connect( nodes[i], SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ) );
     connect( nodes[i], SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ) );
+    connect( nodes[i], SIGNAL( expandedChanged( QgsLayerTreeNode*, bool ) ), this, SIGNAL( expandedChanged( QgsLayerTreeNode*, bool ) ) );
   }
   emit addedChildren( this, index, indexTo );
 }
 
-void QgsLayerTreeNode::removeChildAt( int i )
-{
-  removeChildrenRange( i, 1 );
-}
-
-void QgsLayerTreeNode::removeChildrenRange( int from, int count )
+void QgsLayerTreeNode::removeChildrenPrivate( int from, int count )
 {
   if ( count <= 0 )
     return;

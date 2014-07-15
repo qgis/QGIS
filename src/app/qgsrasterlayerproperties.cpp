@@ -1598,6 +1598,7 @@ void QgsRasterLayerProperties::on_pbnLoadDefaultStyle_clicked()
     {
       setRendererWidget( renderer->type() );
     }
+    sync();
     mRasterLayer->triggerRepaint();
   }
   else
@@ -1658,6 +1659,7 @@ void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
     {
       setRendererWidget( renderer->type() );
     }
+    sync();
     mRasterLayer->triggerRepaint();
   }
   else
@@ -1689,15 +1691,9 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
   bool defaultLoadedFlag = false;
   QString message = mRasterLayer->saveNamedStyle( outputFileName, defaultLoadedFlag );
   if ( defaultLoadedFlag )
-  {
-    sync();
-  }
+    settings.setValue( "style/lastStyleDir", QFileInfo( outputFileName ).absolutePath() );
   else
-  {
     QMessageBox::information( this, tr( "Saved Style" ), message );
-  }
-
-  settings.setValue( "style/lastStyleDir", QFileInfo( outputFileName ).absolutePath() );
 }
 
 void QgsRasterLayerProperties::toggleBuildPyramidsButton()
@@ -1727,4 +1723,5 @@ bool QgsRasterLayerProperties::rasterIsMultiBandColor()
 {
   return mRasterLayer && dynamic_cast<QgsMultiBandColorRenderer*>( mRasterLayer->renderer() ) != 0;
 }
+
 

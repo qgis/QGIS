@@ -49,6 +49,8 @@ void QgsNumericScaleBarStyle::draw( QPainter* p, double xOffset ) const
   }
 
   p->save();
+  //antialiasing on
+  p->setRenderHint( QPainter::Antialiasing, true );
   p->setFont( mScaleBar->font() );
   p->setPen( mScaleBar->fontColor() );
 

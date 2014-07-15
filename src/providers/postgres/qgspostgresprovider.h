@@ -397,6 +397,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QgsRectangle mLayerExtent;        //! Rectangle that contains the extent (bounding box) of the layer
 
     QGis::WkbType mDetectedGeomType;  //! geometry type detected in the database
+    bool mForce2d;                    //! geometry type needs to be forced to 2d (eg. ZM)
     QGis::WkbType mRequestedGeomType; //! geometry type requested in the uri
     QString mDetectedSrid;            //! Spatial reference detected in the database
     QString mRequestedSrid;           //! Spatial reference requested in the uri

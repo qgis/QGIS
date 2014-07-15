@@ -18,11 +18,97 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposeritem.h"
 #include "qgscomposermap.h"
+#include "qgsatlascomposition.h"
+#include "qgscomposition.h"
 #include "qgspoint.h"
+#include "qgsdatadefinedbutton.h"
 #include <QColorDialog>
 #include <QPen>
 
-QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item ): QWidget( parent ), mItem( item )
+
+//QgsComposerItemBaseWidget
+
+QgsComposerItemBaseWidget::QgsComposerItemBaseWidget( QWidget* parent, QgsComposerObject *composerObject ): QWidget( parent ), mComposerObject( composerObject )
+{
+
+}
+
+QgsComposerItemBaseWidget::~QgsComposerItemBaseWidget()
+{
+
+}
+
+void QgsComposerItemBaseWidget::updateDataDefinedProperty()
+{
+  //match data defined button to item's data defined property
+  QgsDataDefinedButton* ddButton = dynamic_cast<QgsDataDefinedButton*>( sender() );
+  if ( !ddButton )
+  {
+    return;
+  }
+  QgsComposerObject::DataDefinedProperty property = ddPropertyForWidget( ddButton );
+  if ( property == QgsComposerObject::NoProperty )
+  {
+    return;
+  }
+
+  //set the data defined property and refresh the item
+  setDataDefinedProperty( ddButton, property );
+  mComposerObject->refreshDataDefinedProperty( property );
+}
+
+void QgsComposerItemBaseWidget::setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty p )
+{
+  if ( !mComposerObject )
+  {
+    return;
+  }
+
+  const QMap< QString, QString >& map = ddBtn->definedProperty();
+  mComposerObject->setDataDefinedProperty( p, map.value( "active" ).toInt(), map.value( "useexpr" ).toInt(), map.value( "expression" ), map.value( "field" ) );
+}
+
+QgsComposerObject::DataDefinedProperty QgsComposerItemBaseWidget::ddPropertyForWidget( QgsDataDefinedButton *widget )
+{
+  Q_UNUSED( widget );
+
+  //base implementation, return no property
+  return QgsComposerObject::NoProperty;
+}
+
+QgsAtlasComposition* QgsComposerItemBaseWidget::atlasComposition() const
+{
+  if ( !mComposerObject )
+  {
+    return 0;
+  }
+
+  QgsComposition* composition = mComposerObject->composition();
+
+  if ( !composition )
+  {
+    return 0;
+  }
+
+  return &composition->atlasComposition();
+}
+
+QgsVectorLayer* QgsComposerItemBaseWidget::atlasCoverageLayer() const
+{
+  QgsAtlasComposition* atlasMap = atlasComposition();
+
+  if ( atlasMap && atlasMap->enabled() )
+  {
+    return atlasMap->coverageLayer();
+  }
+
+  return 0;
+}
+
+
+//QgsComposerItemWidget
+
+QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item ): QgsComposerItemBaseWidget( parent, item ), mItem( item )
 {
 
   setupUi( this );
@@ -46,14 +132,56 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   mHeightLineEdit->setValidator( new QDoubleValidator( 0 ) );
 
   setValuesForGuiElements();
+  connect( mItem->composition(), SIGNAL( paperSizeChanged() ), this, SLOT( setValuesForGuiPositionElements() ) );
   connect( mItem, SIGNAL( sizeChanged() ), this, SLOT( setValuesForGuiPositionElements() ) );
   connect( mItem, SIGNAL( itemChanged() ), this, SLOT( setValuesForGuiNonPositionElements() ) );
 
   connect( mTransparencySlider, SIGNAL( valueChanged( int ) ), mTransparencySpnBx, SLOT( setValue( int ) ) );
   connect( mTransparencySpnBx, SIGNAL( valueChanged( int ) ), mTransparencySlider, SLOT( setValue( int ) ) );
+
+  //connect atlas signals to data defined buttons
+  QgsAtlasComposition* atlas = atlasComposition();
+  if ( atlas )
+  {
+    //repopulate data defined buttons if atlas layer changes
+    connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
+             this, SLOT( populateDataDefinedButtons() ) );
+    connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( populateDataDefinedButtons() ) );
+  }
+
+  //connect data defined buttons
+  connect( mXPositionDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mXPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mXPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mXLineEdit, SLOT( setDisabled( bool ) ) );
+
+  connect( mYPositionDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mYPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mYPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mYLineEdit, SLOT( setDisabled( bool ) ) );
+  connect( mYPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPageSpinBox, SLOT( setDisabled( bool ) ) );
+
+  connect( mWidthDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mWidthLineEdit, SLOT( setDisabled( bool ) ) );
+
+  connect( mHeightDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mHeightDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mHeightDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mHeightLineEdit, SLOT( setDisabled( bool ) ) );
+
+  connect( mItemRotationDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mItemRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mItemRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mItemRotationSpinBox, SLOT( setDisabled( bool ) ) );
+
+  connect( mTransparencyDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mTransparencyDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mTransparencyDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mTransparencySlider, SLOT( setDisabled( bool ) ) );
+  connect( mTransparencyDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mTransparencySpnBx, SLOT( setDisabled( bool ) ) );
+
+  connect( mBlendModeDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mBlendModeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mBlendModeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mBlendModeCombo, SLOT( setDisabled( bool ) ) );
 }
 
-QgsComposerItemWidget::QgsComposerItemWidget(): QWidget( 0 ), mItem( 0 )
+QgsComposerItemWidget::QgsComposerItemWidget(): QgsComposerItemBaseWidget( 0, 0 )
 {
 
 }
@@ -142,7 +270,7 @@ void QgsComposerItemWidget::changeItemPosition()
     return;
   }
 
-  mItem->setItemPosition( x, y, width, height, positionMode() );
+  mItem->setItemPosition( x, y, width, height, positionMode(), false, mPageSpinBox->value() );
 
   mItem->update();
   mItem->endCommand();
@@ -270,73 +398,76 @@ void QgsComposerItemWidget::setValuesForGuiPositionElements()
   mLowerLeftCheckBox->blockSignals( true );
   mLowerMiddleCheckBox->blockSignals( true );
   mLowerRightCheckBox->blockSignals( true );
+  mPageSpinBox->blockSignals( true );
 
+  QPointF pos = mItem->pagePos();
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::UpperLeft )
   {
     mUpperLeftCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->pos().x() ) );
-    mYLineEdit->setText( QString::number( mItem->pos().y() ) );
+    mXLineEdit->setText( QString::number( pos.x() ) );
+    mYLineEdit->setText( QString::number( pos.y() ) );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::UpperMiddle )
   {
     mUpperMiddleCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->pos().x() + mItem->rect().width() / 2.0 ) );
-    mYLineEdit->setText( QString::number( mItem->pos().y() ) );
+    mXLineEdit->setText( QString::number( pos.x() + mItem->rect().width() / 2.0 ) );
+    mYLineEdit->setText( QString::number( pos.y() ) );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::UpperRight )
   {
     mUpperRightCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->pos().x() + mItem->rect().width() ) );
-    mYLineEdit->setText( QString::number( mItem->pos().y() ) );
+    mXLineEdit->setText( QString::number( pos.x() + mItem->rect().width() ) );
+    mYLineEdit->setText( QString::number( pos.y() ) );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::MiddleLeft )
   {
     mMiddleLeftCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->pos().x() ) );
-    mYLineEdit->setText( QString::number( mItem->pos().y() + mItem->rect().height() / 2.0 ) );
+    mXLineEdit->setText( QString::number( pos.x() ) );
+    mYLineEdit->setText( QString::number( pos.y() + mItem->rect().height() / 2.0 ) );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::Middle )
   {
     mMiddleCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->pos().x() + mItem->rect().width() / 2.0 ) );
-    mYLineEdit->setText( QString::number( mItem->pos().y() + mItem->rect().height() / 2.0 ) );
+    mXLineEdit->setText( QString::number( pos.x() + mItem->rect().width() / 2.0 ) );
+    mYLineEdit->setText( QString::number( pos.y() + mItem->rect().height() / 2.0 ) );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::MiddleRight )
   {
     mMiddleRightCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->pos().x() + mItem->rect().width() ) );
-    mYLineEdit->setText( QString::number( mItem->pos().y() + mItem->rect().height() / 2.0 ) );
+    mXLineEdit->setText( QString::number( pos.x() + mItem->rect().width() ) );
+    mYLineEdit->setText( QString::number( pos.y() + mItem->rect().height() / 2.0 ) );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::LowerLeft )
   {
     mLowerLeftCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->pos().x() ) );
-    mYLineEdit->setText( QString::number( mItem->pos().y() + mItem->rect().height() ) );
+    mXLineEdit->setText( QString::number( pos.x() ) );
+    mYLineEdit->setText( QString::number( pos.y() + mItem->rect().height() ) );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::LowerMiddle )
   {
     mLowerMiddleCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->pos().x() + mItem->rect().width() / 2.0 ) );
-    mYLineEdit->setText( QString::number( mItem->pos().y() + mItem->rect().height() ) );
+    mXLineEdit->setText( QString::number( pos.x() + mItem->rect().width() / 2.0 ) );
+    mYLineEdit->setText( QString::number( pos.y() + mItem->rect().height() ) );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::LowerRight )
   {
     mLowerRightCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->pos().x() + mItem->rect().width() ) );
-    mYLineEdit->setText( QString::number( mItem->pos().y() + mItem->rect().height() ) );
+    mXLineEdit->setText( QString::number( pos.x() + mItem->rect().width() ) );
+    mYLineEdit->setText( QString::number( pos.y() + mItem->rect().height() ) );
   }
 
   mWidthLineEdit->setText( QString::number( mItem->rect().width() ) );
   mHeightLineEdit->setText( QString::number( mItem->rect().height() ) );
+  mPageSpinBox->setValue( mItem->page() );
 
 
   mXLineEdit->blockSignals( false );
@@ -352,6 +483,7 @@ void QgsComposerItemWidget::setValuesForGuiPositionElements()
   mLowerLeftCheckBox->blockSignals( false );
   mLowerMiddleCheckBox->blockSignals( false );
   mLowerRightCheckBox->blockSignals( false );
+  mPageSpinBox->blockSignals( false );
 }
 
 void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
@@ -383,7 +515,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mBlendModeCombo->setBlendMode( mItem->blendMode() );
   mTransparencySlider->setValue( mItem->transparency() );
   mTransparencySpnBx->setValue( mItem->transparency() );
-  mItemRotationSpinBox->setValue( mItem->itemRotation() );
+  mItemRotationSpinBox->setValue( mItem->itemRotation( QgsComposerObject::OriginalValue ) );
 
   mBackgroundColorButton->blockSignals( false );
   mFrameColorButton->blockSignals( false );
@@ -396,6 +528,90 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mTransparencySlider->blockSignals( false );
   mTransparencySpnBx->blockSignals( false );
   mItemRotationSpinBox->blockSignals( false );
+}
+
+void QgsComposerItemWidget::populateDataDefinedButtons()
+{
+  QgsVectorLayer* vl = atlasCoverageLayer();
+
+  //block signals from data defined buttons
+  mXPositionDDBtn->blockSignals( true );
+  mYPositionDDBtn->blockSignals( true );
+  mWidthDDBtn->blockSignals( true );
+  mHeightDDBtn->blockSignals( true );
+  mItemRotationDDBtn->blockSignals( true );
+  mTransparencyDDBtn->blockSignals( true );
+  mBlendModeDDBtn->blockSignals( true );
+
+  //initialise buttons to use atlas coverage layer
+  mXPositionDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::PositionX ),
+                         QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mYPositionDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::PositionY ),
+                         QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mWidthDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::ItemWidth ),
+                     QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mHeightDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::ItemHeight ),
+                      QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mItemRotationDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::ItemRotation ),
+                            QgsDataDefinedButton::AnyType, QgsDataDefinedButton::double180RotDesc() );
+  mTransparencyDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::Transparency ),
+                            QgsDataDefinedButton::AnyType, QgsDataDefinedButton::intTranspDesc() );
+  mBlendModeDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::BlendMode ),
+                         QgsDataDefinedButton::String, QgsDataDefinedButton::blendModesDesc() );
+
+  //initial state of controls - disable related controls when dd buttons are active
+  mXLineEdit->setEnabled( !mXPositionDDBtn->isActive() );
+  mYLineEdit->setEnabled( !mYPositionDDBtn->isActive() );
+  mPageSpinBox->setEnabled( !mYPositionDDBtn->isActive() );
+  mWidthLineEdit->setEnabled( !mWidthDDBtn->isActive() );
+  mHeightLineEdit->setEnabled( !mHeightDDBtn->isActive() );
+  mItemRotationSpinBox->setEnabled( !mItemRotationDDBtn->isActive() );
+  mTransparencySlider->setEnabled( !mTransparencyDDBtn->isActive() );
+  mTransparencySpnBx->setEnabled( !mTransparencyDDBtn->isActive() );
+  mBlendModeCombo->setEnabled( !mBlendModeDDBtn->isActive() );
+
+  //unblock signals from data defined buttons
+  mXPositionDDBtn->blockSignals( false );
+  mYPositionDDBtn->blockSignals( false );
+  mWidthDDBtn->blockSignals( false );
+  mHeightDDBtn->blockSignals( false );
+  mItemRotationDDBtn->blockSignals( false );
+  mTransparencyDDBtn->blockSignals( false );
+  mBlendModeDDBtn->blockSignals( false );
+}
+
+QgsComposerObject::DataDefinedProperty QgsComposerItemWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )
+{
+  if ( widget == mXPositionDDBtn )
+  {
+    return QgsComposerObject::PositionX;
+  }
+  else if ( widget == mYPositionDDBtn )
+  {
+    return QgsComposerObject::PositionY;
+  }
+  else if ( widget == mWidthDDBtn )
+  {
+    return QgsComposerObject::ItemWidth;
+  }
+  else if ( widget == mHeightDDBtn )
+  {
+    return QgsComposerObject::ItemHeight;
+  }
+  else if ( widget == mItemRotationDDBtn )
+  {
+    return QgsComposerObject::ItemRotation;
+  }
+  else if ( widget == mTransparencyDDBtn )
+  {
+    return QgsComposerObject::Transparency;
+  }
+  else if ( widget == mBlendModeDDBtn )
+  {
+    return QgsComposerObject::BlendMode;
+  }
+
+  return QgsComposerObject::NoProperty;
 }
 
 void QgsComposerItemWidget::setValuesForGuiElements()
@@ -412,6 +628,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
 
   setValuesForGuiPositionElements();
   setValuesForGuiNonPositionElements();
+  populateDataDefinedButtons();
 }
 
 void QgsComposerItemWidget::on_mBlendModeCombo_currentIndexChanged( int index )

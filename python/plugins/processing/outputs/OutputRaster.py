@@ -35,7 +35,13 @@ class OutputRaster(Output):
     compatible = None
 
     def getFileFilter(self, alg):
-        exts = dataobjects.getSupportedOutputRasterLayerExtensions()
+        providerExts = alg.provider.getSupportedOutputRasterLayerExtensions()
+        if providerExts == ['tif']:
+            # use default extensions
+            exts = dataobjects.getSupportedOutputRasterLayerExtensions()
+        else:
+            # use extensions given by the algorithm provider
+            exts = providerExts
         for i in range(len(exts)):
             exts[i] = exts[i].upper() + ' files(*.' + exts[i].lower() + ')'
         return ';;'.join(exts)

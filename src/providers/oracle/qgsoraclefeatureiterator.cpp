@@ -107,8 +107,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
     whereClause += "(" + mSource->mSqlWhereClause + ")";
   }
 
-  if ( !openQuery( whereClause ) )
-    return;
+  openQuery( whereClause );
 }
 
 QgsOracleFeatureIterator::~QgsOracleFeatureIterator()
@@ -252,10 +251,8 @@ bool QgsOracleFeatureIterator::rewind()
 
 bool QgsOracleFeatureIterator::close()
 {
-  if ( !mQry.isActive() )
-    return false;
-
-  mQry.finish();
+  if ( mQry.isActive() )
+    mQry.finish();
 
   if ( mConnection )
     mConnection->disconnect();

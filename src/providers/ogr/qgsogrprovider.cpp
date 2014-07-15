@@ -711,6 +711,10 @@ int QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
         {
           geomType = OGR_G_GetGeometryType( firstGeometry );
         }
+        else
+        {
+          geomType = wkbNone;
+        }
         OGR_F_Destroy( firstFeature );
       }
       OGR_L_ResetReading( ogrLayer );
@@ -1800,6 +1804,11 @@ QString createFilters( QString type )
       {
         myFileFilters += createFileFilter_( QObject::tr( "SQLite/SpatiaLite" ), "*.sqlite *.db" );
         myExtensions << "sqlite" << "db";
+      }
+      else if ( driverName.startsWith( "SXF" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "Storage and eXchange Format" ), "*.sxf" );
+        myExtensions << "sxf";
       }
       else if ( driverName.startsWith( "UK .NTF" ) )
       {

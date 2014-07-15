@@ -35,11 +35,12 @@ QgsRendererRangeV2::QgsRendererRangeV2()
 {
 }
 
-QgsRendererRangeV2::QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, QString label )
+QgsRendererRangeV2::QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, QString label, bool render )
     : mLowerValue( lowerValue )
     , mUpperValue( upperValue )
     , mSymbol( symbol )
     , mLabel( label )
+    , mRender( render )
 {
 }
 
@@ -48,6 +49,7 @@ QgsRendererRangeV2::QgsRendererRangeV2( const QgsRendererRangeV2& range )
     , mUpperValue( range.mUpperValue )
     , mSymbol( range.mSymbol.data() ? range.mSymbol->clone() : NULL )
     , mLabel( range.mLabel )
+    , mRender( range.mRender )
 {
 }
 
@@ -104,6 +106,16 @@ void QgsRendererRangeV2::setUpperValue( double upperValue )
 void QgsRendererRangeV2::setLowerValue( double lowerValue )
 {
   mLowerValue = lowerValue;
+}
+
+bool QgsRendererRangeV2::renderState() const
+{
+  return mRender;
+}
+
+void QgsRendererRangeV2::setRenderState( bool render )
+{
+  mRender = render;
 }
 
 QString QgsRendererRangeV2::dump() const
@@ -164,7 +176,12 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForValue( double value )
   for ( QgsRangeList::iterator it = mRanges.begin(); it != mRanges.end(); ++it )
   {
     if ( it->lowerValue() <= value && it->upperValue() >= value )
-      return it->symbol();
+    {
+      if ( it->renderState() || mCounting )
+        return it->symbol();
+      else
+        return NULL;
+    }
   }
   // the value is out of the range: return NULL instead of symbol
   return NULL;
@@ -220,6 +237,8 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
 
 void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
+  mCounting = context.rendererScale() == 0.0;
+
   // find out classification attribute index from name
   mAttrNum = fields.fieldNameIndex( mAttrName );
 
@@ -265,11 +284,15 @@ QList<QString> QgsGraduatedSymbolRendererV2::usedAttributes()
 {
   QSet<QString> attributes;
 
-  if ( QgsExpression* exp = QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( mAttrName ) )
-  {
-    attributes.unite( exp->referencedColumns().toSet() );
-    delete exp;
-  }
+  // mAttrName can contain either attribute name or an expression.
+  // Sometimes it is not possible to distinguish between those two,
+  // e.g. "a - b" can be both a valid attribute name or expression.
+  // Since we do not have access to fields here, try both options.
+  attributes << mAttrName;
+
+  QgsExpression testExpr( mAttrName );
+  if ( !testExpr.hasParserError() )
+    attributes.unite( testExpr.referencedColumns().toSet() );
 
   if ( mRotation.data() ) attributes.unite( mRotation->referencedColumns().toSet() );
   if ( mSizeScale.data() ) attributes.unite( mSizeScale->referencedColumns().toSet() );
@@ -315,6 +338,14 @@ bool QgsGraduatedSymbolRendererV2::updateRangeLowerValue( int rangeIndex, double
   if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
     return false;
   mRanges[rangeIndex].setLowerValue( value );
+  return true;
+}
+
+bool QgsGraduatedSymbolRendererV2::updateRangeRenderState( int rangeIndex, bool value )
+{
+  if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
+    return false;
+  mRanges[rangeIndex].setRenderState( value );
   return true;
 }
 
@@ -1013,6 +1044,7 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
     rangeElem.setAttribute( "upper", QString::number( range.upperValue(), 'f' ) );
     rangeElem.setAttribute( "symbol", symbolName );
     rangeElem.setAttribute( "label", range.label() );
+    rangeElem.setAttribute( "render", range.renderState() ? "true" : "false" );
     rangesElem.appendChild( rangeElem );
     i++;
   }
@@ -1112,16 +1144,7 @@ QgsLegendSymbolList QgsGraduatedSymbolRendererV2::legendSymbolItems( double scal
   {
     if ( rule.isEmpty() || range.label() == rule )
     {
-      QgsSymbolV2* symbol;
-      if ( !mRotation.data() && !mSizeScale.data() )
-      {
-        symbol = range.symbol();
-      }
-      else
-      {
-        symbol = mTempSymbols[range.symbol()];
-      }
-      lst << qMakePair( range.label(), symbol );
+      lst << qMakePair( range.label(), range.symbol() );
     }
   }
   return lst;
@@ -1204,6 +1227,25 @@ void QgsGraduatedSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scal
     setScaleMethodToSymbol( it->symbol(), scaleMethod );
   }
 }
+
+bool QgsGraduatedSymbolRendererV2::legendSymbolItemsCheckable() const
+{
+  return true;
+}
+
+bool QgsGraduatedSymbolRendererV2::legendSymbolItemChecked( int index )
+{
+  if ( index >= 0 && index < mRanges.size() )
+    return mRanges[ index ].renderState();
+  else
+    return true;
+}
+
+void QgsGraduatedSymbolRendererV2::checkLegendSymbolItem( int index, bool state )
+{
+  updateRangeRenderState( index, state );
+}
+
 
 void QgsGraduatedSymbolRendererV2::addClass( QgsSymbolV2* symbol )
 {

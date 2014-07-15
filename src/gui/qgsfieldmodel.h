@@ -54,11 +54,12 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
     void setAllowExpression( bool allowExpression );
     bool allowExpression() { return mAllowExpression; }
 
+    bool isField( const QString& expression );
+
     /**
      * @brief setExpression sets a single expression to be added after the fields at the end of the model
-     * @return the model index of the newly added expression
      */
-    QModelIndex setExpression( const QString &expression );
+    void setExpression( const QString &expression );
 
     //! remove expressions from the model
     void removeExpression();

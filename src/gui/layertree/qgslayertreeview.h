@@ -104,6 +104,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     void updateExpandedStateToNode( QModelIndex index );
 
     void onCurrentChanged();
+    void onExpandedChanged( QgsLayerTreeNode* node, bool expanded );
 
   protected:
     //! helper class with default actions. Lazily initialized.

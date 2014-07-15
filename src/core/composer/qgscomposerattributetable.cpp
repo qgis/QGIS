@@ -95,7 +95,7 @@ QgsComposerAttributeTable::QgsComposerAttributeTable( QgsComposition* compositio
     , mVectorLayer( 0 )
     , mComposerMap( 0 )
     , mMaximumNumberOfFeatures( 5 )
-    , mShowOnlyVisibleFeatures( true )
+    , mShowOnlyVisibleFeatures( false )
     , mFilterFeatures( false )
     , mFeatureFilter( "" )
 {
@@ -121,6 +121,9 @@ QgsComposerAttributeTable::QgsComposerAttributeTable( QgsComposition* compositio
   {
     //refresh table attributes when composition is refreshed
     connect( mComposition, SIGNAL( refreshItemsTriggered() ), this, SLOT( refreshAttributes() ) );
+
+    //connect to atlas feature changes to update table rows
+    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshAttributes() ) );
   }
 }
 
@@ -274,6 +277,10 @@ void QgsComposerAttributeTable::setDisplayAttributes( const QSet<int>& attr, boo
     for ( ; attIt != attr.constEnd(); ++attIt )
     {
       int attrIdx = ( *attIt );
+      if ( !fields.exists( attrIdx ) )
+      {
+        continue;
+      }
       QString currentAlias = mVectorLayer->attributeDisplayName( attrIdx );
       QgsComposerTableColumn* col = new QgsComposerTableColumn;
       col->setAttribute( fields[attrIdx].name() );
@@ -401,7 +408,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
   if ( !selectionRect.isEmpty() )
     req.setFilterRect( selectionRect );
 
-  req.setFlags( mShowOnlyVisibleFeatures ? QgsFeatureRequest::ExactIntersect : QgsFeatureRequest::NoGeometry );
+  req.setFlags( mShowOnlyVisibleFeatures ? QgsFeatureRequest::ExactIntersect : QgsFeatureRequest::NoFlags );
 
   QgsFeature f;
   int counter = 0;
@@ -435,6 +442,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
       {
         // Lets assume it's an expression
         QgsExpression* expression = new QgsExpression(( *columnIt )->attribute() );
+        expression->setCurrentRowNumber( counter + 1 );
         expression->prepare( mVectorLayer->pendingFields() );
         QVariant value = expression->evaluate( f ) ;
         attributeMaps.last().insert( i, value.toString() );
@@ -473,17 +481,20 @@ void QgsComposerAttributeTable::removeLayer( QString layerId )
 
 void QgsComposerAttributeTable::setSceneRect( const QRectF& rectangle )
 {
+  //update rect for data defined size and position
+  QRectF evaluatedRect = evalItemRect( rectangle );
+
   double titleHeight =  2 * mGridStrokeWidth + 2 * mLineTextDistance + fontAscentMillimeters( mHeaderFont );
   double attributeHeight = mGridStrokeWidth + 2 * mLineTextDistance + fontAscentMillimeters( mContentFont );
-  if (( rectangle.height() - titleHeight ) > 0 )
+  if (( evaluatedRect.height() - titleHeight ) > 0 )
   {
-    mMaximumNumberOfFeatures = ( rectangle.height() - titleHeight ) / attributeHeight;
+    mMaximumNumberOfFeatures = ( evaluatedRect.height() - titleHeight ) / attributeHeight;
   }
   else
   {
     mMaximumNumberOfFeatures = 0;
   }
-  QgsComposerItem::setSceneRect( rectangle );
+  QgsComposerItem::setSceneRect( evaluatedRect );
 
   //refresh table attributes, since number of features has likely changed
   refreshAttributes();

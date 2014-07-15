@@ -40,6 +40,7 @@ class CORE_EXPORT QgsDxfPalLabeling: public QgsPalLabeling
     //only used for render context
     QImage* mImage;
     QPainter* mPainter;
+    QgsMapSettings* mSettings;
 };
 
 #endif // QGSDXFPALLABELING_H

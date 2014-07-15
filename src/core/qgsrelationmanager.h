@@ -53,6 +53,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
   private slots:
     void readProject( const QDomDocument &doc );
     void writeProject( QDomDocument &doc );
+    void layersRemoved( const QStringList& layers );
 
   private:
     /** The references */

@@ -25,7 +25,7 @@
 #include <QFontDialog>
 #include <QWidget>
 
-QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QWidget(), mComposerLabel( label )
+QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QgsComposerItemBaseWidget( 0, label ),  mComposerLabel( label )
 {
   setupUi( this );
 
@@ -113,19 +113,15 @@ void QgsComposerLabelWidget::on_mMarginDoubleSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerLabelWidget::on_mFontColorButton_clicked()
+void QgsComposerLabelWidget::on_mFontColorButton_colorChanged( const QColor &newLabelColor )
 {
   if ( !mComposerLabel )
   {
     return;
   }
-  QColor newColor = QColorDialog::getColor( mComposerLabel->fontColor() );
-  if ( !newColor.isValid() )
-  {
-    return;
-  }
-  mComposerLabel->beginCommand( tr( "Label font changed" ) );
-  mComposerLabel->setFontColor( newColor );
+
+  mComposerLabel->beginCommand( tr( "Label color changed" ) );
+  mComposerLabel->setFontColor( newLabelColor );
   mComposerLabel->endCommand();
 }
 
@@ -142,12 +138,8 @@ void QgsComposerLabelWidget::on_mInsertExpressionButton_clicked()
   if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
     selText = selText.mid( 2, selText.size() - 4 );
 
-  QgsVectorLayer* coverageLayer = 0;
   // use the atlas coverage layer, if any
-  if ( mComposerLabel->composition()->atlasComposition().enabled() )
-  {
-    coverageLayer = mComposerLabel->composition()->atlasComposition().coverageLayer();
-  }
+  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
   QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this );
   exprDlg.setWindowTitle( tr( "Insert expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -241,6 +233,7 @@ void QgsComposerLabelWidget::setGuiElementValues()
   mLeftRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignLeft );
   mCenterRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignHCenter );
   mRightRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignRight );
+  mFontColorButton->setColor( mComposerLabel->fontColor() );
   blockAllSignals( false );
 }
 
@@ -255,4 +248,5 @@ void QgsComposerLabelWidget::blockAllSignals( bool block )
   mLeftRadioButton->blockSignals( block );
   mCenterRadioButton->blockSignals( block );
   mRightRadioButton->blockSignals( block );
+  mFontColorButton->blockSignals( block );
 }

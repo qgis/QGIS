@@ -407,8 +407,10 @@ void QgsFieldsProperties::attributeTypeDialog()
   if ( index == -1 )
     return;
 
-
   QgsAttributeTypeDialog attributeTypeDialog( mLayer, index );
+
+  attributeTypeDialog.setFieldEditable( cfg.mEditable );
+  attributeTypeDialog.setLabelOnTop( cfg.mLabelOnTop );
 
   attributeTypeDialog.setWidgetV2Config( cfg.mEditorWidgetV2Config );
   attributeTypeDialog.setWidgetV2Type( cfg.mEditorWidgetV2Type );
@@ -736,6 +738,9 @@ void QgsFieldsProperties::apply()
   {
     int idx = mFieldsList->item( i, attrIdCol )->text().toInt();
     FieldConfig cfg = configForRow( i );
+
+    mLayer->setFieldEditable( i, cfg.mEditable );
+    mLayer->setLabelOnTop( i, cfg.mLabelOnTop );
 
     mLayer->setEditorWidgetV2( idx, cfg.mEditorWidgetV2Type );
     mLayer->setEditorWidgetV2Config( idx, cfg.mEditorWidgetV2Config );

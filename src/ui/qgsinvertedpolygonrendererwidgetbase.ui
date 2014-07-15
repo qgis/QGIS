@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>390</width>
-    <height>79</height>
+    <width>316</width>
+    <height>75</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,6 +27,16 @@
       <widget class="QComboBox" name="mRendererComboBox"/>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mMergePolygonsCheckBox">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="text">
+      <string>Merge polygons before rendering (slow)</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

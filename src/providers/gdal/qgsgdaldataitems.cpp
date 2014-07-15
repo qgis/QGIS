@@ -191,10 +191,17 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     QgsDebugMsgLevel( "wildcards: " + wildcards.join( " " ), 2 );
   }
 
-  // skip *.aux.xml files (GDAL auxilary metadata files)
+  // skip *.aux.xml files (GDAL auxilary metadata files),
+  // *.shp.xml files (ESRI metadata) and *.tif.xml files (TIFF metadata)
   // unless that extension is in the list (*.xml might be though)
   if ( thePath.endsWith( ".aux.xml", Qt::CaseInsensitive ) &&
        !extensions.contains( "aux.xml" ) )
+    return 0;
+  if ( thePath.endsWith( ".shp.xml", Qt::CaseInsensitive ) &&
+       !extensions.contains( "shp.xml" ) )
+    return 0;
+  if ( thePath.endsWith( ".tif.xml", Qt::CaseInsensitive ) &&
+       !extensions.contains( "tif.xml" ) )
     return 0;
 
   // Filter files by extension

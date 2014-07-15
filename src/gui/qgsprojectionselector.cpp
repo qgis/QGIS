@@ -171,6 +171,8 @@ void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
   // apply deferred selection
   applySelection();
 
+  emit initialized();
+
   // Pass up the inheritance hierarchy
   QWidget::showEvent( theEvent );
 }

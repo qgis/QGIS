@@ -111,7 +111,7 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QMouseEvent *e )
   return;
 }
 
-QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, int& fid, int& partNum )
+QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fid, int& partNum )
 {
   QgsFeature f;
   QgsGeometry* geomPart = new QgsGeometry();

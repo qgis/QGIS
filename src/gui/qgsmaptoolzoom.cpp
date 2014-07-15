@@ -21,6 +21,7 @@
 
 #include <QMouseEvent>
 #include <QRect>
+#include <QColor>
 #include <QCursor>
 #include <QPixmap>
 #include "qgslogger.h"
@@ -50,6 +51,9 @@ void QgsMapToolZoom::canvasMoveEvent( QMouseEvent * e )
     mDragging = true;
     delete mRubberBand;
     mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+    QColor color( Qt::blue );
+    color.setAlpha( 63 );
+    mRubberBand->setColor( color );
     mZoomRect.setTopLeft( e->pos() );
   }
   mZoomRect.setBottomRight( e->pos() );

@@ -104,4 +104,13 @@ IF (EXISTS "${TINY}")
     INSTALLNAMETOOL_CHANGE ("${TINY_CHG}" "${TINY_CHG_TO}" "${QPLUGDIR}/libglobeplugin.so")
 ENDIF ()
 
+GET_INSTALL_NAME ("${OSG_PLUGINS_PATH}/osgdb_kml.so" "libminizip" MINI)
+# MESSAGE (STATUS "libminizip path: ${MINI}")
+IF (EXISTS "${MINI}")
+    SET (MINI_CHG "${MINI}")
+    SET (MINI_CHG_TO "${ATEXECUTABLE}/@QGIS_LIB_SUBDIR@/libminizip.dylib")
+    EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "${MINI_CHG}" "${QLIBDIR}/libminizip.dylib")
+    INSTALLNAMETOOL_CHANGE ("${MINI_CHG}" "${MINI_CHG_TO}" "${QPLUGDIR}/../osgPlugins/osgdb_kml.so")
+ENDIF ()
+
 ENDIF (@OSGEARTH_FOUND@)

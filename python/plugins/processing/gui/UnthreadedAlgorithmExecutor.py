@@ -32,7 +32,7 @@ from processing.core.SilentProgress import SilentProgress
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
-from processing.gui.Postprocessing import Postprocessing
+from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 from processing.tools.system import *
 from processing.tools import vector
@@ -88,8 +88,7 @@ class UnthreadedAlgorithmExecutor:
             outputs[out.name] = out.value
 
         # now run all the algorithms
-        i = 1
-        for f in filelist:
+        for i,f in enumerate(filelist):
             alg.setParameterValue(paramToIter, f)
             for out in alg.outputs:
                 filename = outputs[out.name]
@@ -101,9 +100,7 @@ class UnthreadedAlgorithmExecutor:
                              + str(len(filelist)) + '...')
             progress.setPercentage(i * 100 / len(filelist))
             if UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress()):
-                Postprocessing.handleAlgorithmResults(alg, SilentProgress(),
-                        False)
-                i += 1
+                handleAlgorithmResults(alg, SilentProgress(), False)
             else:
                 return False
 
