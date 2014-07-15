@@ -365,7 +365,6 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerpicture.h
   composer/qgscomposerscalebar.h
   composer/qgscomposerobject.h
-  composer/qgscomposerutils.h
   composer/qgscomposeritem.h
   composer/qgscomposeritemgroup.h
   composer/qgscomposermousehandles.h  
