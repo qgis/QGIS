@@ -6584,11 +6584,11 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Select Single Feature</source>
-        <translation>Izvēlēties atsevišķu objektu</translation>
+        <translation type="obsolete">Izvēlēties atsevišķu objektu</translation>
     </message>
     <message>
         <source>Select Features by Rectangle</source>
-        <translation>Izvēlēties ar taisnstūri</translation>
+        <translation type="obsolete">Izvēlēties ar taisnstūri</translation>
     </message>
     <message>
         <source>Select Features by Polygon</source>
@@ -6984,6 +6984,14 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Simulate Color Blindness (Deuteranope)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Feature(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Features by area or single click</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10108,11 +10116,11 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>SQL Anywhere plugin</source>
-        <translation>SQL Anywhere spraudnis</translation>
+        <translation type="obsolete">SQL Anywhere spraudnis</translation>
     </message>
     <message>
         <source>Store vector layers within a SQL Anywhere database</source>
-        <translation>Glabāt vektora slāņus SQL Anywhere datu bāzē</translation>
+        <translation type="obsolete">Glabāt vektora slāņus SQL Anywhere datu bāzē</translation>
     </message>
     <message>
         <source>Arc/Info Binary Coverage</source>
@@ -10967,11 +10975,7 @@ SQL: %1</translation>
     </message>
     <message>
         <source>Error describing bind parameters</source>
-        <translation>Kļūda aprakstot saistošos rādītājus</translation>
-    </message>
-    <message>
-        <source>Error binding parameters</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Kļūda aprakstot saistošos rādītājus</translation>
     </message>
     <message>
         <source>WFS</source>
@@ -16410,6 +16414,10 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <source>Paste color</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Pick color</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsColorDialog</name>
@@ -18804,6 +18812,10 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Map will be printed here</source>
         <translation>Karte tiks izdrukāta šeit</translation>
     </message>
+    <message>
+        <source>Grid %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerMapWidget</name>
@@ -18901,7 +18913,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Grid cross width changed</source>
-        <translation>Tīkla krustošanas platums ir izmainīts</translation>
+        <translation type="obsolete">Tīkla krustošanas platums ir izmainīts</translation>
     </message>
     <message>
         <source>Annotation font changed</source>
@@ -18928,10 +18940,6 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>Izmainīta anotācijas precizitāte</translation>
     </message>
     <message>
-        <source>No frame</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Zebra</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18941,10 +18949,6 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Changed grid frame style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Changed grid frame width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -18977,7 +18981,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Label font changed</source>
-        <translation type="unfinished">Birkas fonts ir izmainīts</translation>
+        <translation type="obsolete">Birkas fonts ir izmainīts</translation>
     </message>
     <message>
         <source>Overview centering mode changed</source>
@@ -19013,6 +19017,66 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Grid line style changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Markers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add map grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw &quot;%1&quot; grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Kartes vienība</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Centimeter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>change...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid markers style changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cross width changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Frame width changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Changed grid unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid blend mode changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid CRS changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Annotation color changed</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19064,7 +19128,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Grid &amp;type</source>
-        <translation>Tīkls &amp;stils</translation>
+        <translation type="obsolete">Tīkls &amp;stils</translation>
     </message>
     <message>
         <source>Interval X</source>
@@ -19184,7 +19248,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Show grid</source>
-        <translation type="unfinished">Rādīt tīklu</translation>
+        <translation type="obsolete">Rādīt tīklu</translation>
     </message>
     <message>
         <source>Interval</source>
@@ -19325,6 +19389,70 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>...</source>
         <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Grids</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a new grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected grid up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected grid down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS</source>
+        <translation type="unfinished">CRS</translation>
+    </message>
+    <message>
+        <source>Interval units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Kartes vienība</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Centimeter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zebra</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Font color</source>
+        <translation type="unfinished">Fonta krasa</translation>
+    </message>
+    <message>
+        <source>Marker style</source>
+        <translation type="unfinished">Marķiera stils</translation>
     </message>
 </context>
 <context>
@@ -20877,6 +21005,10 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source> px</source>
         <translation type="unfinished">px</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
     </message>
 </context>
 <context>
@@ -47713,32 +47845,28 @@ p, li { white-space: pre-wrap; }
     <name>QgsSqlAnywhereProvider</name>
     <message>
         <source>Failed to load interface</source>
-        <translation>Kļūda ielādējot saskarni (interfeisu)</translation>
+        <translation type="obsolete">Kļūda ielādējot saskarni (interfeisu)</translation>
     </message>
     <message>
         <source>Failed to connect to database</source>
-        <translation>Kļūda pieslēdzoties datu bāzei</translation>
-    </message>
-    <message>
-        <source>A connection to the SQL Anywhere database cannot be established.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Kļūda pieslēdzoties datu bāzei</translation>
     </message>
     <message>
         <source>No suitable key column</source>
-        <translation>Nav derīgas atslēgas kolonnas</translation>
+        <translation type="obsolete">Nav derīgas atslēgas kolonnas</translation>
     </message>
     <message>
         <source>Error loading attributes</source>
-        <translation>Kļūda ielādējot atribūtus</translation>
+        <translation type="obsolete">Kļūda ielādējot atribūtus</translation>
     </message>
     <message>
         <source>Ambiguous field!</source>
-        <translation>Neviennozīmīgs lauks!</translation>
+        <translation type="obsolete">Neviennozīmīgs lauks!</translation>
     </message>
     <message>
         <source>Duplicate field %1 found
 </source>
-        <translation>Ir atrasts dublicēts lauks %1
+        <translation type="obsolete">Ir atrasts dublicēts lauks %1
 </translation>
     </message>
     <message>
@@ -47747,39 +47875,39 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Error inserting features</source>
-        <translation>Kļūda ievietojot objektus</translation>
+        <translation type="obsolete">Kļūda ievietojot objektus</translation>
     </message>
     <message>
         <source>Error deleting features</source>
-        <translation>Kļūda dzēšot objektus</translation>
+        <translation type="obsolete">Kļūda dzēšot objektus</translation>
     </message>
     <message>
         <source>Error adding attributes</source>
-        <translation>Kļūda pievienojot atribūtus</translation>
+        <translation type="obsolete">Kļūda pievienojot atribūtus</translation>
     </message>
     <message>
         <source>Error deleting attributes</source>
-        <translation>Kļūda dzēšot atribūtus</translation>
+        <translation type="obsolete">Kļūda dzēšot atribūtus</translation>
     </message>
     <message>
         <source>Attribute not found</source>
-        <translation>Atribūts nav atrasts</translation>
+        <translation type="obsolete">Atribūts nav atrasts</translation>
     </message>
     <message>
         <source>Error updating attributes</source>
-        <translation>Kļūda atjauninot atribūtus</translation>
+        <translation type="obsolete">Kļūda atjauninot atribūtus</translation>
     </message>
     <message>
         <source>Error updating features</source>
-        <translation>Kļūda atjaunojot objektus</translation>
+        <translation type="obsolete">Kļūda atjaunojot objektus</translation>
     </message>
     <message>
         <source>Error verifying geometry column %1</source>
-        <translation>Kļūda pārbaudot ģeometrijas kolonnu %1</translation>
+        <translation type="obsolete">Kļūda pārbaudot ģeometrijas kolonnu %1</translation>
     </message>
     <message>
         <source>Unknown geometry type</source>
-        <translation>Nezināms ģeometrijas tips</translation>
+        <translation type="obsolete">Nezināms ģeometrijas tips</translation>
     </message>
     <message>
         <source>Column %1 has a geometry type of %2, which Quantum GIS does not currently support.</source>
@@ -47787,55 +47915,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Mixed Spatial Reference Systems</source>
-        <translation>Jauktas telpisko norāžu sistēmas</translation>
+        <translation type="obsolete">Jauktas telpisko norāžu sistēmas</translation>
     </message>
     <message>
         <source>Error checking database ReadOnly property</source>
-        <translation>Kļūda pārbaudot datu bāzes ReadOnly vērtību</translation>
+        <translation type="obsolete">Kļūda pārbaudot datu bāzes ReadOnly vērtību</translation>
     </message>
     <message>
         <source>Error loading SRS definition</source>
-        <translation>Kļūda ielādējot SRS definīciju</translation>
-    </message>
-    <message>
-        <source>Limited Support of Round Earth SRS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Column %1 (%2) contains geometries belonging to a round earth spatial reference system (SRID=%3). %4
-
-Updates to geometry values will be disabled, and query performance may be poor because spatial indexes will not be utilized. To improve performance, consider creating a spatial index on a new (possibly computed) column containing a planar projection of these geometries. For help, refer to the descriptions of the ST_SRID(INT) and ST_Transform(INT) methods in the SQL Anywhere documentation.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Read attempt on an invalid SqlAnywhere data source</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>SQLAnywhere</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The source relation %1 has no column suitable for use as a unique key.
-
-QGIS requires that the relation has an integer column no larger than 32 bits containing unique values. </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Column %1 has a geometry type of %2, which QGIS does not currently support.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Column %1 is not restricted to a single SRID, which QGIS requires.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Because QGIS supports only planar data, the SQL Anywhere data provider will transform the data to the compatible planar projection (SRID=%1).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Because QGIS supports only planar data and no compatible planar projection was found, the SQL Anywhere data provider will attempt to transform the data to planar WGS 84 (SRID=%1).</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Kļūda ielādējot SRS definīciju</translation>
     </message>
 </context>
 <context>
@@ -53560,61 +53648,61 @@ Reason phrase: %2</source>
     <name>SaDbTableModel</name>
     <message>
         <source>Schema</source>
-        <translation>Shēma</translation>
+        <translation type="obsolete">Shēma</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation>Tabula</translation>
+        <translation type="obsolete">Tabula</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>Tips</translation>
+        <translation type="obsolete">Tips</translation>
     </message>
     <message>
         <source>SRID</source>
-        <translation>SRID</translation>
+        <translation type="obsolete">SRID</translation>
     </message>
     <message>
         <source>Line Interpretation</source>
-        <translation>Līnijas interpretācija</translation>
+        <translation type="obsolete">Līnijas interpretācija</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation>Ģeometrijas kolonna</translation>
+        <translation type="obsolete">Ģeometrijas kolonna</translation>
     </message>
     <message>
         <source>Sql</source>
-        <translation>Sql</translation>
+        <translation type="obsolete">Sql</translation>
     </message>
 </context>
 <context>
     <name>SaNewConnection</name>
     <message>
         <source>Save connection</source>
-        <translation>Saglabāt savienojumu</translation>
+        <translation type="obsolete">Saglabāt savienojumu</translation>
     </message>
     <message>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation>Vai pārrakstīt eksistējošo savienojumu %1?</translation>
+        <translation type="obsolete">Vai pārrakstīt eksistējošo savienojumu %1?</translation>
     </message>
     <message>
         <source>Failed to load interface</source>
-        <translation>Kļūda ielādējot saskarni (interfeisu)</translation>
+        <translation type="obsolete">Kļūda ielādējot saskarni (interfeisu)</translation>
     </message>
     <message>
         <source>Test connection</source>
-        <translation>Testēt savienojumu</translation>
+        <translation type="obsolete">Testēt savienojumu</translation>
     </message>
     <message>
         <source>Connection to %1 was successful</source>
-        <translation>Savienojums ar %1 bija sekmīgs</translation>
+        <translation type="obsolete">Savienojums ar %1 bija sekmīgs</translation>
     </message>
     <message>
         <source>Connection failed. Check settings and try again.
 
 SQL Anywhere error code: %1
 Description: %2</source>
-        <translation>Neizdevās izveidot savienojumu. Pārbaudiet iestatījumus un mēģiniet vēlreiz.
+        <translation type="obsolete">Neizdevās izveidot savienojumu. Pārbaudiet iestatījumus un mēģiniet vēlreiz.
 
 SQL Anywhere kļūdas kods: %1
 Apraksts: %2</translation>
@@ -53624,119 +53712,91 @@ Apraksts: %2</translation>
     <name>SaNewConnectionBase</name>
     <message>
         <source>Create a new SQL Anywhere connection</source>
-        <translation>Izveidot jaunu SQL Anywhere savienojumu</translation>
+        <translation type="obsolete">Izveidot jaunu SQL Anywhere savienojumu</translation>
     </message>
     <message>
         <source>Connection Information</source>
-        <translation>Savienojuma informācija</translation>
+        <translation type="obsolete">Savienojuma informācija</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nosaukums</translation>
+        <translation type="obsolete">Nosaukums</translation>
     </message>
     <message>
         <source>Host</source>
-        <translation>Resursdators</translation>
+        <translation type="obsolete">Resursdators</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation>Ports</translation>
+        <translation type="obsolete">Ports</translation>
     </message>
     <message>
         <source>Server</source>
-        <translation>Serveris</translation>
+        <translation type="obsolete">Serveris</translation>
     </message>
     <message>
         <source>Database</source>
-        <translation>Datu bāze</translation>
+        <translation type="obsolete">Datu bāze</translation>
     </message>
     <message>
         <source>Connection Parameters</source>
-        <translation>Savienojuma parametri</translation>
+        <translation type="obsolete">Savienojuma parametri</translation>
     </message>
     <message>
         <source>Username</source>
-        <translation>Lietotājvārds</translation>
+        <translation type="obsolete">Lietotājvārds</translation>
     </message>
     <message>
         <source>Password</source>
-        <translation>Parole</translation>
+        <translation type="obsolete">Parole</translation>
     </message>
     <message>
         <source>Name of the new connection</source>
-        <translation>Jaunā savienojuma nosaukums</translation>
-    </message>
-    <message>
-        <source>Name or IP address of computer hosting the database server (leave blank for local connections)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Port number used by the database server (leave blank for default 2638)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Name of the database server (leave blank for default server on host)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Name of the database (leave blank for default database on server)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Jaunā savienojuma nosaukums</translation>
     </message>
     <message>
         <source>Additional connection parameters</source>
-        <translation>Papildu savienojuma parametri</translation>
+        <translation type="obsolete">Papildu savienojuma parametri</translation>
     </message>
     <message>
         <source>Database username</source>
-        <translation>Datu bāzes lietotājvārds</translation>
+        <translation type="obsolete">Datu bāzes lietotājvārds</translation>
     </message>
     <message>
         <source>Database password</source>
-        <translation>Datu bāzes parole</translation>
+        <translation type="obsolete">Datu bāzes parole</translation>
     </message>
     <message>
         <source>Save Username</source>
-        <translation>Saglabāt lietotājvārdu</translation>
+        <translation type="obsolete">Saglabāt lietotājvārdu</translation>
     </message>
     <message>
         <source>Save the connection username in the registry</source>
-        <translation>Saglabāt savienojuma lietotājvārdu reģistrā</translation>
+        <translation type="obsolete">Saglabāt savienojuma lietotājvārdu reģistrā</translation>
     </message>
     <message>
         <source>&amp;Test Connect</source>
-        <translation>&amp;Testēt savienojumu</translation>
+        <translation type="obsolete">&amp;Testēt savienojumu</translation>
     </message>
     <message>
         <source>Save Password</source>
-        <translation>Saglabāt paroli</translation>
+        <translation type="obsolete">Saglabāt paroli</translation>
     </message>
     <message>
         <source>Save the connection password in the registry (WARNING: NOT SECURE)</source>
-        <translation>Saglabāt savienojuma paroli reģistrā (Brīdinājums: Nav droši)</translation>
+        <translation type="obsolete">Saglabāt savienojuma paroli reģistrā (Brīdinājums: Nav droši)</translation>
     </message>
     <message>
         <source>Simple Encryption</source>
-        <translation>Vienkārša šifrēšana</translation>
-    </message>
-    <message>
-        <source>Encrypt packets using simple encryption</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Vienkārša šifrēšana</translation>
     </message>
     <message>
         <source>Estimate table metadata</source>
-        <translation>Vērtēt tabulas metadatus</translation>
-    </message>
-    <message>
-        <source>Use estimates for certain layer properties such as cardinality, extent, etc. (improves performance)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Vērtēt tabulas metadatus</translation>
     </message>
     <message>
         <source>Search other users&apos; tables</source>
-        <translation>Meklēt citu lietotāju tabulas</translation>
-    </message>
-    <message>
-        <source>Search for geometry columns in tables owned by other users</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Meklēt citu lietotāju tabulas</translation>
     </message>
 </context>
 <context>
@@ -53796,97 +53856,97 @@ Apraksts: %2</translation>
     <name>SaSourceSelect</name>
     <message>
         <source>&amp;Add</source>
-        <translation>&amp;Pievienot</translation>
+        <translation type="obsolete">&amp;Pievienot</translation>
     </message>
     <message>
         <source>Wildcard</source>
-        <translation>Aizstājējzīme</translation>
+        <translation type="obsolete">Aizstājējzīme</translation>
     </message>
     <message>
         <source>RegExp</source>
-        <translation>Regulāra izteiksme</translation>
+        <translation type="obsolete">Regulāra izteiksme</translation>
     </message>
     <message>
         <source>All</source>
-        <translation>Viss</translation>
+        <translation type="obsolete">Viss</translation>
     </message>
     <message>
         <source>Schema</source>
-        <translation>Shēma</translation>
+        <translation type="obsolete">Shēma</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation>Tabula</translation>
+        <translation type="obsolete">Tabula</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>Tips</translation>
+        <translation type="obsolete">Tips</translation>
     </message>
     <message>
         <source>SRID</source>
-        <translation>SRID</translation>
+        <translation type="obsolete">SRID</translation>
     </message>
     <message>
         <source>Line Interpretation</source>
-        <translation>Līnijas interpretācija</translation>
+        <translation type="obsolete">Līnijas interpretācija</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation>Ģeometrijas kolonna</translation>
+        <translation type="obsolete">Ģeometrijas kolonna</translation>
     </message>
     <message>
         <source>Sql</source>
-        <translation>Sql</translation>
+        <translation type="obsolete">Sql</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation>Vai tiešām vēlieties dzēst %1 pieslēgumu un visus saistītos iestatījumus?</translation>
+        <translation type="obsolete">Vai tiešām vēlieties dzēst %1 pieslēgumu un visus saistītos iestatījumus?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation>Apstiprināt dzēšanu</translation>
+        <translation type="obsolete">Apstiprināt dzēšanu</translation>
     </message>
     <message>
         <source>Select Table</source>
-        <translation>Izvēlieties tabulu</translation>
+        <translation type="obsolete">Izvēlieties tabulu</translation>
     </message>
     <message>
         <source>You must select a table in order to add a layer.</source>
-        <translation>Jums ir jāizvēlas tabula, lai varētu pievienot slāni.</translation>
+        <translation type="obsolete">Jums ir jāizvēlas tabula, lai varētu pievienot slāni.</translation>
     </message>
     <message>
         <source>Failed to load interface</source>
-        <translation>Kļūda ielādējot saskarni (interfeisu)</translation>
+        <translation type="obsolete">Kļūda ielādējot saskarni (interfeisu)</translation>
     </message>
     <message>
         <source>Connection failed</source>
-        <translation>Savienošanās neizdevās</translation>
+        <translation type="obsolete">Savienošanās neizdevās</translation>
     </message>
     <message>
         <source>Connection to database %1 failed. Check settings and try again.
 
 SQL Anywhere error code: %2
 Description: %3</source>
-        <translation>Neizdevās izveidot savienojumu ar datu bāzi %1. Pārbaudiet iestatījumus un mēģiniet vēlreiz.
+        <translation type="obsolete">Neizdevās izveidot savienojumu ar datu bāzi %1. Pārbaudiet iestatījumus un mēģiniet vēlreiz.
 
 SQL Anywhere kļūdas kods: %2
 Apraksts: %3</translation>
     </message>
     <message>
         <source>No accessible tables found</source>
-        <translation>Nav atrastas pieejamas tabulas</translation>
+        <translation type="obsolete">Nav atrastas pieejamas tabulas</translation>
     </message>
     <message>
         <source>Database connection was successful, but no tables containing geometry columns were %1.</source>
-        <translation>Datubāzes savienojums bija sekmīgs, bet netika atrasta neviena tabula ar ģeometrijas kolonnu %1.</translation>
+        <translation type="obsolete">Datubāzes savienojums bija sekmīgs, bet netika atrasta neviena tabula ar ģeometrijas kolonnu %1.</translation>
     </message>
     <message>
         <source>found</source>
-        <translation>atrasts</translation>
+        <translation type="obsolete">atrasts</translation>
     </message>
     <message>
         <source>found in your schema</source>
-        <translation>atrasts jūsu shēmā</translation>
+        <translation type="obsolete">atrasts jūsu shēmā</translation>
     </message>
     <message>
         <source>&amp;Build Query</source>
@@ -53894,34 +53954,34 @@ Apraksts: %3</translation>
     </message>
     <message>
         <source>&amp;Set Filter</source>
-        <translation>&amp;Piemērot filtru</translation>
+        <translation type="obsolete">&amp;Piemērot filtru</translation>
     </message>
 </context>
 <context>
     <name>SaSourceSelectBase</name>
     <message>
         <source>Add SQL Anywhere layer</source>
-        <translation>Pievienot SQL Anywhere slāni</translation>
+        <translation type="obsolete">Pievienot SQL Anywhere slāni</translation>
     </message>
     <message>
         <source>SQL Anywhere Connections</source>
-        <translation>SQL Anywhere savienojumi</translation>
+        <translation type="obsolete">SQL Anywhere savienojumi</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation>Dzēst</translation>
+        <translation type="obsolete">Dzēst</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation>Rediģēt</translation>
+        <translation type="obsolete">Rediģēt</translation>
     </message>
     <message>
         <source>New</source>
-        <translation>Jauns</translation>
+        <translation type="obsolete">Jauns</translation>
     </message>
     <message>
         <source>Connect</source>
-        <translation>Pieslēgties</translation>
+        <translation type="obsolete">Pieslēgties</translation>
     </message>
     <message>
         <source>Build query</source>
@@ -53929,19 +53989,19 @@ Apraksts: %3</translation>
     </message>
     <message>
         <source>Search options</source>
-        <translation>Meklēšanas opcijas</translation>
+        <translation type="obsolete">Meklēšanas opcijas</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation>Meklēt</translation>
+        <translation type="obsolete">Meklēt</translation>
     </message>
     <message>
         <source>Search mode</source>
-        <translation>Meklēšanas režīms</translation>
+        <translation type="obsolete">Meklēšanas režīms</translation>
     </message>
     <message>
         <source>Search in columns</source>
-        <translation>Meklēt kolonnās</translation>
+        <translation type="obsolete">Meklēt kolonnās</translation>
     </message>
 </context>
 <context>
@@ -54263,19 +54323,19 @@ Apraksts: %3</translation>
     <name>SqlAnywhere</name>
     <message>
         <source>Add SQL Anywhere Layer...</source>
-        <translation>Pievieno SQL Anywhere slāni...</translation>
+        <translation type="obsolete">Pievieno SQL Anywhere slāni...</translation>
     </message>
     <message>
         <source>Store vector layers within a SQL Anywhere database</source>
-        <translation>Glabāt vektora slāņus SQL Anywhere datu bāzē</translation>
+        <translation type="obsolete">Glabāt vektora slāņus SQL Anywhere datu bāzē</translation>
     </message>
     <message>
         <source>Invalid Layer</source>
-        <translation>Nederīgs slānis</translation>
+        <translation type="obsolete">Nederīgs slānis</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation>%1 ir nederīgs slānis un nevar tikt ielādēts.</translation>
+        <translation type="obsolete">%1 ir nederīgs slānis un nevar tikt ielādēts.</translation>
     </message>
 </context>
 <context>
@@ -56247,41 +56307,6 @@ To update the extent of a bookmark, click on it then click the &lt;label&gt;Upda
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Create a New SQL Anywhere Connection&lt;/h3&gt;
-This dialog allows you to define the settings for a connection to a
-SQL Anywhere database.
-&lt;p&gt;
-&lt;ul&gt;
-&lt;li&gt; &lt;label&gt;Name&lt;/label&gt; A name to identify the connection settings.
-
-&lt;li&gt; &lt;label&gt;Host&lt;/label&gt; Name or IP address of the computer hosting the database server (leave blank for local connections).  
-
-&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; IP port used by the database server (leave blank for local connections or to use default port 2638).
-
-&lt;li&gt; &lt;label&gt;Server&lt;/label&gt; Name of the database server (leave blank for default server on host).
-
-&lt;li&gt; &lt;label&gt;Database&lt;/label&gt; Name of the database (leave blank for default database on server).
-
-&lt;li&gt; &lt;label&gt;Connection Parameters&lt;/label&gt; Additional parameters to add to the connection string (semi-colon delimitted list).  See the SQL Anywhere documentation for a list and description of available connection parameters.
-
-&lt;li&gt; &lt;label&gt;Username&lt;/label&gt; Database user name.
-&lt;li&gt; &lt;label&gt;Password&lt;/label&gt; Database password.
-
-&lt;li&gt; &lt;label&gt;Save Username&lt;/label&gt; Indicates whether to save the database user name in the connection configuration.
-
-&lt;li&gt; &lt;label&gt;Save Password&lt;/label&gt; Indicates whether to save the database password in the connection settings.  &lt;em&gt;Passwords are saved in &lt;strong&gt;clear text&lt;/strong&gt; in the system configuration!&lt;/em&gt;
-
-&lt;li&gt; &lt;label&gt;Simple Encryption&lt;/label&gt; Secure the connection to the database using simple encryption.
-
-&lt;li&gt; &lt;label&gt;Estimate table metadata&lt;/label&gt; When initializing layers, various queries may be needed to establish the characteristics of the geometries stored in the database table.  When this option is checked, these queries examine only a sample of the rows, rather than the entire table.  This can significantly speed up layer initialization, but may result in incorrect characterization of layers containing heterogenous types.
-
-&lt;li&gt; &lt;label&gt;Search other users&apos; tables&lt;/label&gt; Indicates that the layer list should be populated from all layers stored in the database.  When unchecked (the default), only layers stored in tables owned by the connected user are displayed.
-
-&lt;/ul&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;Open Vector Layer Dialog&lt;/h3&gt;
 
 The open vector layer dialog is used to add vector data to the QGIS map view. Vector data are spatial data described using geometries of points, lines and polygons (enclosed areas).&lt;/p&gt;
@@ -56385,47 +56410,6 @@ Add the desired attributes by clicking on the &lt;label&gt;Add to attributes lis
 You can also define the width and precision of the new attribute column.
 &lt;h4&gt;Attributes list&lt;/h4&gt;
 In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Add SQL Anywhere Tables&lt;/h3&gt;
-This dialog allows you to add SQL Anywhere layers (tables with a geometry column) to the QGIS map canvas.
-&lt;p&gt;
-&lt;a href=&quot;#connect&quot;&gt;Connections&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#add&quot;&gt;Adding Layers&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#filter&quot;&gt;Filtering a Layer&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#search&quot;&gt;Search options&lt;/a&gt;&lt;br/&gt;
-
-&lt;a href=&quot;#connect&quot;&gt;
-&lt;h4&gt;Connections&lt;/h4&gt;
-&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;Choose the connection to use from the drop-down box and click &lt;label&gt;Connect&lt;/label&gt;.
-&lt;li&gt;If there are no connections, use the &lt;label&gt;New&lt;/label&gt; button to create a connection.
-&lt;li&gt;To modify or delete the selected connection, click the &lt;label&gt;Edit&lt;/label&gt; or &lt;label&gt;Delete&lt;/label&gt; buttons, respectively.
-&lt;/ul&gt;
-&lt;a name=&quot;add&quot;&gt;
-&lt;h4&gt;Adding Layers&lt;/h4&gt;
-&lt;/a&gt;
-To add a layer:
-&lt;ol&gt;
-&lt;li&gt;Choose the desired connection from the drop-down box.
-&lt;li&gt;Click &lt;label&gt;Connect&lt;/label&gt;, which will populate the list of layers from the database.  Options that affect how this list is populated are described in the help for the new connection dialogue box.
-    
-&lt;li&gt;Find the layer you want to add in the list and click on it to select it.
-&lt;li&gt;You can select additional layers by holding down the Ctrl key and clicking.
-&lt;li&gt;Click &lt;label&gt;Add&lt;/label&gt; to add the layer(s) to the map.
-&lt;/ol&gt;
-&lt;a name=&quot;filter&quot;&gt;
-&lt;h4&gt;Filtering a Layer&lt;/h4&gt;
-&lt;/a&gt;
-To filter a layer before adding it to the map, either double click on its name or select it and click the &lt;label&gt;Build query&lt;/label&gt; button. This will open the Query Builder, allowing you to build up a SQL statement to use in filtering the records.
-
-&lt;a name=&quot;search&quot;&gt;
-&lt;h4&gt;Search options&lt;/h4&gt;
-&lt;/a&gt;
-Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -60890,6 +60874,57 @@ None
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;$atlasfeature function&lt;/h3&gt;
+In atlas generation, returns the current feature that is iterated over on the coverage layer. This can be used with the &apos;attribute&apos; function
+to return attribute values from the current atlas feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasfeature&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;attribute( $atlasfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current atlas feature&lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;$currentfeature function&lt;/h3&gt;
+Returns the current feature being evaluated. This can be used with the &apos;attribute&apos; function
+to evaluate attribute values from the current feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$currentfeature&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;attribute function&lt;/h3&gt;
+Returns the value of a specified attribute from a feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;attribute( feature, attribute_name )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+feature &amp;rarr; a feature&lt;br /&gt;
+attribute_name &amp;rarr; name of attribute to be returned
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
+
 </source>
         <translation type="unfinished"></translation>
     </message>

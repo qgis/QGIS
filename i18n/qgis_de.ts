@@ -3177,7 +3177,7 @@ Geometriespate - Spalte mit eindeutigen ganzahligen Werden</translation>
         <source>Unable to load {0} plugin. 
 The required &quot;{1}&quot; module is missing. 
 Install it and try again.</source>
-        <translation type="obsolete">Konnte Erweiterung {0} nicht laden. 
+        <translation type="unfinished">Konnte Erweiterung {0} nicht laden. 
 Das erforderliche Modul &quot;{1}&quot; fehlt. 
 Bitte installieren und nocheinmal versuchen.</translation>
     </message>
@@ -3871,7 +3871,7 @@ and python executables.
 
 MacOS users usually need to set it to something like
 /Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
-        <translation type="obsolete">Eine Liste von durch Doppelpunkte (Linux und MacOS) oder
+        <translation type="unfinished">Eine Liste von durch Doppelpunkte (Linux und MacOS) oder
 Semikolons (Windows) getrennten Pfaden zu den
 Programmen als auch den Python-Skripten.
 
@@ -3881,13 +3881,13 @@ MacOS-Benutzer müssen hier normalerweise etwas angeben wie:
     <message>
         <source>A list of colon-separated (Linux and MacOS) or
 semicolon-separated (Windows) paths to python modules.</source>
-        <translation type="obsolete">Eine Liste von durch Doppelpunkte (Linux und MacOS) oder
+        <translation type="unfinished">Eine Liste von durch Doppelpunkte (Linux und MacOS) oder
 Semikolons (Windows) getrennten Pfaden zu Python-Modulen.</translation>
     </message>
     <message>
         <source>Useful to open local GDAL documentation instead of online help
 when pressing on the tool dialog&apos;s Help button.</source>
-        <translation type="obsolete">Nützlich, um die lokele GDAL-Dokumentation statt der Onlinehilfe zu
+        <translation type="unfinished">Nützlich, um die lokele GDAL-Dokumentation statt der Onlinehilfe zu
 öffnen, wenn auf den Hilfe-Knopf im Dialog des Werkzeugs gedrückt wird.</translation>
     </message>
     <message>
@@ -39993,7 +39993,7 @@ QGIS muß neugestartet werden, um sie erneut zu laden.</translation>
     </message>
     <message>
         <source>Error reading metadata</source>
-        <translation type="obsolete">Fehler beim Lesen der Metadaten</translation>
+        <translation type="unfinished">Fehler beim Lesen der Metadaten</translation>
     </message>
     <message>
         <source>If you haven&apos;t cancelled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.</source>

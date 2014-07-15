@@ -125,7 +125,7 @@
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">DB Manager</translation>
     </message>
     <message>
         <source>Info</source>
@@ -180,19 +180,19 @@
     </message>
     <message>
         <source>Unable to find a valid unique field</source>
-        <translation type="unfinished"></translation>
+        <translation>În imposibilitate de a găsi un câmp unic, valid</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished">Copiere</translation>
+        <translation>Copiere</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>DB Manager</translation>
     </message>
     <message>
         <source>Server version: </source>
-        <translation type="unfinished"></translation>
+        <translation>Versiune server:</translation>
     </message>
     <message>
         <source>Host:</source>
@@ -221,175 +221,175 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Not connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Neconectat</translation>
     </message>
     <message>
         <source>Connection details</source>
-        <translation type="unfinished"></translation>
+        <translation>Detalii conexiune</translation>
     </message>
     <message>
         <source>General info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informații generale</translation>
     </message>
     <message>
         <source>&lt;warning&gt; %s support not enabled!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;avertisment&gt; suportul %s nu este activat!</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has no privileges!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;avertisment&gt; Acest utilizator nu are privilegii!</translation>
     </message>
     <message>
         <source>User has privileges:</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilizatorul are privilegii:</translation>
     </message>
     <message>
         <source>Privileges</source>
-        <translation type="unfinished"></translation>
+        <translation>Privilegii</translation>
     </message>
     <message>
         <source>Owner:</source>
-        <translation type="unfinished"></translation>
+        <translation>Proprietar:</translation>
     </message>
     <message>
         <source>Comment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentariu:</translation>
     </message>
     <message>
         <source>create new objects</source>
-        <translation type="unfinished"></translation>
+        <translation>creați noi obiecte</translation>
     </message>
     <message>
         <source>access objects</source>
-        <translation type="unfinished"></translation>
+        <translation>accesați obiectele</translation>
     </message>
     <message>
         <source>Schema details</source>
-        <translation type="unfinished"></translation>
+        <translation>Detalii schemă</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has no privileges to access this schema!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;avertisment&gt; Acest utilizator nu are privilegii pentru a accesa această schemă!</translation>
     </message>
     <message>
         <source>Relation type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipul de relație:</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vizualizare</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel</translation>
     </message>
     <message>
         <source>Rows:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rânduri:</translation>
     </message>
     <message>
         <source>Unknown (&lt;a href=&quot;action:rows/count&quot;&gt;find out&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Necunoscut (&lt;a href=&quot;action:rows/count&quot;&gt;descoperiți&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nume</translation>
+        <translation>Nume</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tip</translation>
+        <translation>Tip</translation>
     </message>
     <message>
         <source>Null</source>
-        <translation type="unfinished"></translation>
+        <translation>Null</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Implicit</translation>
     </message>
     <message>
         <source>Column(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Coloană(e)</translation>
     </message>
     <message>
         <source>Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Funcție</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This is not a spatial table.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;avertisment&gt; Acesta nu este un tabel spațial.</translation>
     </message>
     <message>
         <source>Fields</source>
-        <translation type="unfinished">Câmpuri</translation>
+        <translation>Câmpuri</translation>
     </message>
     <message>
         <source>Constraints</source>
-        <translation type="unfinished">Constrângeri</translation>
+        <translation>Constrângeri</translation>
     </message>
     <message>
         <source>Indexes</source>
-        <translation type="unfinished">Indecși</translation>
+        <translation>Indecși</translation>
     </message>
     <message>
         <source>Triggers</source>
-        <translation type="unfinished"></translation>
+        <translation>Declanșatori</translation>
     </message>
     <message>
         <source>View definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Vedeți definiția</translation>
     </message>
     <message>
         <source>Column:</source>
-        <translation type="unfinished"></translation>
+        <translation>Coloană:</translation>
     </message>
     <message>
         <source>Geometry:</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometrie:</translation>
     </message>
     <message>
         <source>Dimension:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dimensiune:</translation>
     </message>
     <message>
         <source>Undefined</source>
-        <translation type="unfinished"></translation>
+        <translation>Nedefinit</translation>
     </message>
     <message>
         <source>Spatial ref:</source>
-        <translation type="unfinished"></translation>
+        <translation>Referința spațială:</translation>
     </message>
     <message>
         <source>Estimated extent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Granițele estimate:</translation>
     </message>
     <message>
         <source>(unknown) (&lt;a href=&quot;action:extent/get&quot;&gt;find out&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>(necunoscut) (&lt;a href=&quot;action:extent/get&quot;&gt;descoperiți&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Extent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Granițe:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; There isn&apos;t entry in geometry_columns!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;avertisment&gt; Nu există o intrare în geometry_columns!</translation>
     </message>
     <message>
         <source>&lt;warning&gt; No spatial index defined (&lt;a href=&quot;action:spatialindex/create&quot;&gt;create it&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;avertisment&gt; Nu este definit indexul spațial (&lt;a href=&quot;action:spatialindex/create&quot;&gt;creați-l&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Pages:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pagini:</translation>
     </message>
     <message>
         <source>Rows (estimation):</source>
-        <translation type="unfinished"></translation>
+        <translation>Rânduri (estimare):</translation>
     </message>
     <message>
         <source>Privileges:</source>
-        <translation type="unfinished"></translation>
+        <translation>Privilegii:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have usage privileges for this schema!</source>
@@ -397,7 +397,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Rows (counted):</source>
-        <translation type="unfinished"></translation>
+        <translation>Rânduri (numărate):</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has read-only privileges.</source>
@@ -427,19 +427,19 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished">Lungime</translation>
+        <translation>Lungime</translation>
     </message>
     <message>
         <source>Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Activat</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Da</translation>
+        <translation>Da</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Nu</translation>
+        <translation>Nu</translation>
     </message>
     <message>
         <source>&lt;a href=&quot;action:triggers/enable&quot;&gt;Enable all triggers&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Disable all triggers&lt;/a&gt;</source>
@@ -447,11 +447,11 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Definiție</translation>
     </message>
     <message>
         <source>Rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Reguli</translation>
     </message>
     <message>
         <source>&amp;Versioning</source>
@@ -483,7 +483,10 @@ This table is essential for many GIS applications for enumeration of tables.</so
 
 Query:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>
+
+Interogare:
+%s</translation>
     </message>
     <message>
         <source>&amp;Re-connect</source>
@@ -1907,12 +1910,12 @@ coloane</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="286"/>
         <source>Output grid as polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Ieșire grilă ca poligoane</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="296"/>
         <source>Output grid as lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Ieșire grilă ca linii</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="17"/>
@@ -2233,7 +2236,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from different threads to the same datasource. Make sure your layer&apos;s attribute tables are closed. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">La ora actuală, QGIS nu permite acces simultan din diferite direcţii la aceeaşi sursă de date. Asiguraţi-vă că tabelele de atribute ale stratului dumneavoastră sunt închise. Doriţi să continuaţi?</translation>
     </message>
     <message>
         <source>Distance matrix</source>
@@ -2329,7 +2332,9 @@ Would you like to add the new layer to the TOC?</source>
         <source>Identical output spatial reference system chosen
 
 Are you sure you want to proceed?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ați ales sisteme de referință spațială de ieșire identice
+
+Sigur doriți să continuați?</translation>
     </message>
     <message>
         <source>Output spatial reference system is not valid</source>
@@ -2366,14 +2371,6 @@ Are you sure you want to proceed?</source>
     <message>
         <source>Please specify an input layer</source>
         <translation type="unfinished">Vă rog să specificaţi un strat de intrare</translation>
-    </message>
-    <message>
-        <source>Currently QGIS doesn&apos;t allow simultaneous access from 
-                                 different threads to the same datasource. Make sure your layer&apos;s 
-                                 attribute tables are closed. Continue?</source>
-        <translation type="obsolete">În prezent, QGIS nu permite accesul simultan din
-fire diferite la aceeași sursă de date. Asigurați-vă că
-tabela de atribute a stratului dvs. este închisă. Continuați?</translation>
     </message>
     <message>
         <source>Simplify results</source>
@@ -2590,11 +2587,11 @@ tabela de atribute a stratului dvs. este închisă. Continuați?</translation>
     </message>
     <message>
         <source>Shapefiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișiere shape</translation>
     </message>
     <message>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportare în fișier</translation>
     </message>
     <message>
         <source>Output table name is required</source>
@@ -2611,18 +2608,19 @@ tabela de atribute a stratului dvs. este închisă. Continuați?</translation>
     <message>
         <source>Error %d
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Eroare %d
+%s</translation>
     </message>
     <message>
         <source>Export finished.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportare finalizată.</translation>
     </message>
 </context>
 <context>
     <name>DlgFieldProperties</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished">Ne pare rău</translation>
+        <translation>Ne pare rău</translation>
     </message>
     <message>
         <source>field name must not be empty</source>
@@ -2706,11 +2704,12 @@ tabela de atribute a stratului dvs. este închisă. Continuați?</translation>
     <message>
         <source>Error %d
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Eroare %d
+%s</translation>
     </message>
     <message>
         <source>Import was successful.</source>
-        <translation type="unfinished">Importare reuşită.</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2733,22 +2732,22 @@ tabela de atribute a stratului dvs. este închisă. Continuați?</translation>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="91"/>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="108"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="44"/>
         <source>Save</source>
-        <translation type="unfinished">Salvare</translation>
+        <translation>Salvare</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="54"/>
         <source>Save as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvare ca...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="71"/>
         <source>Export as image</source>
-        <translation type="unfinished">Exportare ca imagine</translation>
+        <translation>Exportare ca imagine</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="88"/>
@@ -2791,7 +2790,7 @@ tabela de atribute a stratului dvs. este închisă. Continuați?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgMultipleSelection.ui" line="14"/>
         <source>Multiple selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecție multiplă</translation>
     </message>
 </context>
 <context>
@@ -2799,7 +2798,7 @@ tabela de atribute a stratului dvs. este închisă. Continuați?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgNumberInput.ui" line="14"/>
         <source>Enter number or expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Introduceți un număr sau o expresie</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgNumberInput.ui" line="26"/>
@@ -2817,17 +2816,17 @@ tabela de atribute a stratului dvs. este închisă. Continuați?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgRenderingStyles.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Dialog</translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgRenderingStyles.ui" line="30"/>
         <source>Output</source>
-        <translation type="unfinished">Rezultat</translation>
+        <translation>Rezultat</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgRenderingStyles.ui" line="35"/>
         <source>Style</source>
-        <translation type="unfinished">Stil</translation>
+        <translation>Stil</translation>
     </message>
 </context>
 <context>
@@ -2853,7 +2852,7 @@ tabela de atribute a stratului dvs. este închisă. Continuați?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="40"/>
         <source>Save</source>
-        <translation type="unfinished">Salvare</translation>
+        <translation>Salvare</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="43"/>
@@ -2866,12 +2865,12 @@ tabela de atribute a stratului dvs. este închisă. Continuați?</translation>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="141"/>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="151"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="50"/>
         <source>Save as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvare ca...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="67"/>
@@ -2886,27 +2885,27 @@ tabela de atribute a stratului dvs. este închisă. Continuați?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="101"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Tăiere</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="111"/>
         <source>Copy</source>
-        <translation type="unfinished">Copiere</translation>
+        <translation>Copiere</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="121"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Lipire</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="138"/>
         <source>Undo</source>
-        <translation type="unfinished">Înapoi</translation>
+        <translation>Înapoi</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="148"/>
         <source>Redo</source>
-        <translation type="unfinished">Refă</translation>
+        <translation>Refacere</translation>
     </message>
 </context>
 <context>
@@ -2929,7 +2928,7 @@ geometry column - column with unique integer values</source>
     <name>DlgTableProperties</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished">Ne pare rău</translation>
+        <translation>Ne pare rău</translation>
     </message>
     <message>
         <source>nothing selected</source>
@@ -2937,7 +2936,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Are you sure</source>
-        <translation type="unfinished"></translation>
+        <translation>Sigur?</translation>
     </message>
     <message>
         <source>really delete column &apos;%s&apos;?</source>
@@ -3098,7 +3097,7 @@ geometry column - column with unique integer values</source>
     <name>FieldsCalculatorDialog</name>
     <message>
         <source>[Save to temporary file]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Salvează în fișier temporar]</translation>
     </message>
     <message>
         <source>Save file</source>
@@ -3973,7 +3972,7 @@ la apăsarea butonului de ajutor al dialogului instrumentului.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="137"/>
         <source>Allow projection difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Permite diferență de proiecție</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="20"/>
@@ -4014,7 +4013,7 @@ la apăsarea butonului de ajutor al dialogului instrumentului.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="139"/>
         <source>Create an output alpha band</source>
-        <translation type="unfinished"></translation>
+        <translation>Creați o bandă de ieșire transparentă</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="20"/>
@@ -4220,12 +4219,12 @@ la apăsarea butonului de ajutor al dialogului instrumentului.</translation>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="111"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="255"/>
         <source>&amp;Creation Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opțiuni de &amp;creare</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetFillNodata.ui" line="20"/>
         <source>Fill Nodata</source>
-        <translation type="unfinished"></translation>
+        <translation>Completare fără date</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetFillNodata.ui" line="33"/>
@@ -4252,7 +4251,7 @@ la apăsarea butonului de ajutor al dialogului instrumentului.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetFillNodata.ui" line="116"/>
         <source>Band to operate on</source>
-        <translation type="unfinished"></translation>
+        <translation>Banda de lucru</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetFillNodata.ui" line="130"/>
@@ -4407,7 +4406,7 @@ la apăsarea butonului de ajutor al dialogului instrumentului.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="63"/>
         <source>Suppress GCP printing</source>
-        <translation type="unfinished"></translation>
+        <translation>Suprimă imprimarera GCP</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="70"/>
@@ -4447,7 +4446,7 @@ la apăsarea butonului de ajutor al dialogului instrumentului.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="70"/>
         <source>Search for nearly &amp;white (255) pixels instead of black ones</source>
-        <translation type="unfinished"></translation>
+        <translation>Caută pixelii aproape albi (255)  în loc de cei negri</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="20"/>
@@ -4620,7 +4619,7 @@ la apăsarea butonului de ajutor al dialogului instrumentului.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="48"/>
         <source>&amp;Threshold</source>
-        <translation type="unfinished"></translation>
+        <translation>Prag</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="62"/>
@@ -4670,12 +4669,12 @@ la apăsarea butonului de ajutor al dialogului instrumentului.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="81"/>
         <source>Skip files with different projection ref</source>
-        <translation type="unfinished"></translation>
+        <translation>Omite fișierele cu sistem de proiecție diferit</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="20"/>
         <source>Translate (Convert format)</source>
-        <translation type="unfinished">Translatare (convertire format)</translation>
+        <translation>Transformare (Conversie format)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="72"/>
@@ -4687,12 +4686,12 @@ la apăsarea butonului de ajutor al dialogului instrumentului.</translation>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="106"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="122"/>
         <source>Percentage to resize image. This will change pixel size/image resolution accordingly: 25% will create an image with pixels 4x larger.</source>
-        <translation type="unfinished"></translation>
+        <translation>Procentajul de redimensionare a imaginii. Dimensiunea pixelilor/rezoluția imaginii se vor schimba în consecință: 25% va crea o imagine cu pixelii de 4 ori mai mari.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="109"/>
         <source>Outsize</source>
-        <translation type="unfinished"></translation>
+        <translation>Depășire</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="125"/>
@@ -4758,7 +4757,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="218"/>
         <source>Copy all subdatasets of this file to individual output files. Use with formats like HDF or OGDI that have subdatasets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Copie toate subseturile de date ale acestui fișier la fișierele de ieșire individuale. Folosiți cu formate cum ar fi HDF sau OGDI care au subseturile de date.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="221"/>
@@ -4778,7 +4777,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="111"/>
         <source>&amp;Resampling method</source>
-        <translation type="unfinished"></translation>
+        <translation>Metoda de &amp;reeşantionare</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="119"/>
@@ -4950,14 +4949,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from different threads to the same datasource. Make sure your layer&apos;s attribute tables are closed. Continue?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Currently QGIS doesn&apos;t allow simultaneous access from 
-                                 different threads to the same datasource. Make sure your layer&apos;s 
-                                 attribute tables are closed. Continue?</source>
-        <translation type="obsolete">La ora actuală, QGIS nu permite acces simultan din 
-........................diferite direcţii la aceeaşi sursă de date. Asiguraţi-vă că tabelele de atribute ale stratului dumneavoastră sunt închise. Doriţi să continuaţi?</translation>
+        <translation>La ora actuală, QGIS nu permite acces simultan din diferite direcţii la aceeaşi sursă de date. Asiguraţi-vă că tabelele de atribute ale stratului dumneavoastră sunt închise. Doriţi să continuaţi?</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -5039,7 +5031,7 @@ Please choose another field...</source>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zonă(e) tampon</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
@@ -5304,7 +5296,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="20"/>
         <source>Heatmap Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin-ul Heatmap</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="52"/>
@@ -5381,7 +5373,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="254"/>
         <source>0.0</source>
-        <translation type="unfinished">0.0</translation>
+        <translation>0.0</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="261"/>
@@ -5401,7 +5393,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="279"/>
         <source>Uniform</source>
-        <translation type="unfinished"></translation>
+        <translation>Uniform</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="284"/>
@@ -5452,7 +5444,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Are you sure you want to clear log?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sigur doriți să ştergeti acest jurnal?</translation>
     </message>
     <message>
         <source>Create test</source>
@@ -5481,7 +5473,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>InfoViewer</name>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">DB Manager</translation>
     </message>
 </context>
 <context>
@@ -5677,7 +5669,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="577"/>
         <source>Composer Manager...</source>
-        <translation type="unfinished"></translation>
+        <translation>Managerul compozițiilor...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="25"/>
@@ -5727,7 +5719,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="586"/>
         <source>Exit QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Închidere QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="589"/>
@@ -5737,7 +5729,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="601"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Înapoi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="604"/>
@@ -5757,7 +5749,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="625"/>
         <source>Cut Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Divizare entități</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="628"/>
@@ -5767,7 +5759,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="637"/>
         <source>Copy Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiere entități</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="640"/>
@@ -5777,7 +5769,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="649"/>
         <source>Paste Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Lipire entități</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="652"/>
@@ -5787,7 +5779,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="664"/>
         <source>Add Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Adăugare entitate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="667"/>
@@ -5797,7 +5789,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="679"/>
         <source>Move Feature(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Mutare entitate(ăți)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="691"/>
@@ -5807,7 +5799,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="703"/>
         <source>Split Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Divizare entități</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="715"/>
@@ -5817,32 +5809,32 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="724"/>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Ștergere selecție</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="736"/>
         <source>Add Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Adăugare inel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="748"/>
         <source>Add Part</source>
-        <translation type="unfinished"></translation>
+        <translation>Adăugare parte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="760"/>
         <source>Simplify Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Simplificare entitate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="772"/>
         <source>Delete Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Ştergere inel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="784"/>
         <source>Delete Part</source>
-        <translation type="unfinished"></translation>
+        <translation>Ştergere parte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="793"/>
@@ -5857,7 +5849,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="814"/>
         <source>Node Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Instrumentul Nod</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="826"/>
@@ -5872,7 +5864,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="843"/>
         <source>Pan Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Translație hartă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="855"/>
@@ -5906,7 +5898,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="912"/>
         <source>Select Features by Freehand</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectați entitățile în mod liber:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="924"/>
@@ -5957,7 +5949,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="999"/>
         <source>Zoom Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Vedere de ansamblu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1002"/>
@@ -6002,7 +5994,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1065"/>
         <source>Map Tips</source>
-        <translation type="unfinished"></translation>
+        <translation>Indicii despre hartă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1068"/>
@@ -6012,7 +6004,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1077"/>
         <source>New Bookmark...</source>
-        <translation type="unfinished"></translation>
+        <translation>Marcaj nou...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1080"/>
@@ -6032,22 +6024,22 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1101"/>
         <source>Refresh</source>
-        <translation type="unfinished">Actualizează</translation>
+        <translation>Actualizează</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1116"/>
         <source>Text Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Adnotare de tip text</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1128"/>
         <source>Form Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Adnotare de tip formular</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1140"/>
         <source>Move Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Mută adnotarea</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1149"/>
@@ -6082,7 +6074,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1185"/>
         <source>Raster calculator ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Calculator raster ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1194"/>
@@ -6157,7 +6149,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1290"/>
         <source>Toggle Editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Comută editarea</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1293"/>
@@ -6177,7 +6169,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1310"/>
         <source>Save As...</source>
-        <translation type="unfinished">Salvare ca...</translation>
+        <translation>Salvare ca...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2166"/>
@@ -6192,7 +6184,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2182"/>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Normal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2185"/>
@@ -6202,7 +6194,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2193"/>
         <source>Simulate Photocopy (Grayscale)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulează o fotocopie (tonuri de gri)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2196"/>
@@ -6212,7 +6204,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2204"/>
         <source>Simulate Fax (Mono)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulează un fax (monocrom)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2207"/>
@@ -6257,7 +6249,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1327"/>
         <source>Set CRS of Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Setează CRS-ul statului(-urilor)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1330"/>
@@ -6272,7 +6264,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1340"/>
         <source>Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Proprietăţi...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1345"/>
@@ -6307,7 +6299,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1396"/>
         <source>Hide All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ascunde toate straturile</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1399"/>
@@ -6373,7 +6365,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1104"/>
         <source>F5</source>
-        <translation type="unfinished">F5</translation>
+        <translation>F5</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1348"/>
@@ -6383,12 +6375,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1416"/>
         <source>F11</source>
-        <translation type="unfinished">F11</translation>
+        <translation>F11</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1425"/>
         <source>Project Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Proprietățile proiectului...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1428"/>
@@ -6398,17 +6390,17 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1437"/>
         <source>Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>Opţiuni...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1449"/>
         <source>Custom CRS...</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS personalizat...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1458"/>
         <source>Configure shortcuts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Configurare comenzi rapide...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1470"/>
@@ -6433,12 +6425,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1490"/>
         <source>API documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Documentația API</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1499"/>
         <source>QGIS Home Page</source>
-        <translation type="unfinished">Pagina QGIS Home</translation>
+        <translation>Pagina de casă QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1502"/>
@@ -6448,7 +6440,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1511"/>
         <source>Check QGIS Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Verifică versiunea QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1514"/>
@@ -6485,7 +6477,7 @@ Ctl (Cmd) increments by 15 deg.</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1578"/>
         <source>Change Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Schimbare etichetă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1587"/>
@@ -6525,17 +6517,17 @@ Ctl (Cmd) increments by 15 deg.</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1643"/>
         <source>Embed Layers and Groups...</source>
-        <translation type="unfinished"></translation>
+        <translation>Încapsulează straturi sau grupuri...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1646"/>
         <source>Embed layers and groups from other project files</source>
-        <translation type="unfinished"></translation>
+        <translation>Încapsulează straturi sau grupuri din fișierele altui proiect</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1655"/>
         <source>&amp;Copyright Label</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Eticheta Drepturilor de Autor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1658"/>
@@ -6545,7 +6537,7 @@ Ctl (Cmd) increments by 15 deg.</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1667"/>
         <source>&amp;North Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Săgeata &amp;Nordului</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1670"/>
@@ -6566,12 +6558,12 @@ Ctl (Cmd) increments by 15 deg.</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1691"/>
         <source>Add WFS Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaugă stratul WFS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1694"/>
         <source>Add WFS Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Adăugare strat WFS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1706"/>
@@ -6598,32 +6590,32 @@ Ctl (Cmd) increments by 15 deg.</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1748"/>
         <source>Offset Curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Curba de compensare</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1757"/>
         <source>Copy style</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiere stil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1766"/>
         <source>Paste style</source>
-        <translation type="unfinished"></translation>
+        <translation>Lipire stil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1775"/>
         <source>Add WCS Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaugă stratul WCS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1784"/>
         <source>&amp;Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Grid</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1787"/>
         <source>Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Grid</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1802"/>
@@ -6673,7 +6665,7 @@ Acts on all editable layers</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1871"/>
         <source>Show/Hide Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Arată/Ascunde Etichete</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1874"/>
@@ -6687,7 +6679,7 @@ Acts on currently active editable layer</source>
         <location filename="../src/ui/qgisapp.ui" line="1889"/>
         <location filename="../src/ui/qgisapp.ui" line="1892"/>
         <source>Html Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Adnotare HTML</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1901"/>
@@ -6756,7 +6748,7 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2043"/>
         <source>&amp;Import topology from XML</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Importare topologie din XML</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2048"/>
@@ -6766,22 +6758,22 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2057"/>
         <source>Increase brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Creștere luminozitate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2066"/>
         <source>Decrease brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Scădere luminozitate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2075"/>
         <source>Increase contrast</source>
-        <translation type="unfinished"></translation>
+        <translation>Creștere contrast</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2084"/>
         <source>Decrease contrast</source>
-        <translation type="unfinished"></translation>
+        <translation>Scădere contrast</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2093"/>
@@ -6825,7 +6817,7 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/manageconnectionsdialog.ui" line="32"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Răsfoire</translation>
     </message>
     <message>
         <source>Load from file</source>
@@ -6892,13 +6884,13 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="14"/>
         <source>MetaSearch</source>
-        <translation type="unfinished"></translation>
+        <translation>MetaCăutare</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="24"/>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="80"/>
         <source>Search</source>
-        <translation type="unfinished">Căutare</translation>
+        <translation>Căutare</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="30"/>
@@ -7120,11 +7112,11 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Search error</source>
-        <translation type="unfinished"></translation>
+        <translation>Căutare eroare</translation>
     </message>
     <message>
         <source>Search error: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Căutare eroare: %s</translation>
     </message>
     <message>
         <source>Connection error</source>
@@ -7199,7 +7191,7 @@ Acts on currently active editable layer</source>
     <name>ModelerDialog</name>
     <message>
         <source>Search...</source>
-        <translation type="unfinished">Caută...</translation>
+        <translation>Căutare...</translation>
     </message>
     <message>
         <source>Message</source>
@@ -7348,19 +7340,19 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Min X</source>
-        <translation type="unfinished"></translation>
+        <translation>X Minim </translation>
     </message>
     <message>
         <source>Max X</source>
-        <translation type="unfinished"></translation>
+        <translation>X Maxim</translation>
     </message>
     <message>
         <source>Min Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y Minim </translation>
     </message>
     <message>
         <source>Max Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y Maxim</translation>
     </message>
     <message>
         <source>Cellsize</source>
@@ -7372,19 +7364,19 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Mean</source>
-        <translation type="unfinished">Media</translation>
+        <translation>Media</translation>
     </message>
     <message>
         <source>Std. deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Abaterea standard</translation>
     </message>
     <message>
         <source>Max value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valoarea maximă</translation>
     </message>
     <message>
         <source>Min value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valoarea minimă</translation>
     </message>
     <message>
         <source>Values from QGIS map canvas</source>
@@ -7449,7 +7441,7 @@ See the log for more information.</source>
     <name>OutputSelectionPanel</name>
     <message>
         <source>[Save to temporary file]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">[Salvează în fișier temporar]</translation>
     </message>
     <message>
         <source>Save to a temporary file</source>
@@ -7568,7 +7560,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished">Caută...</translation>
+        <translation>Căutare...</translation>
     </message>
     <message>
         <source>Execute</source>
@@ -7686,7 +7678,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Redo</source>
-        <translation type="unfinished">Refă</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Find Text</source>
@@ -7694,7 +7686,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tăiere</translation>
     </message>
     <message>
         <source>Copy</source>
@@ -7702,7 +7694,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lipire</translation>
     </message>
     <message>
         <source>Comment</source>
@@ -8023,7 +8015,7 @@ See the log for more information.</source>
     <message>
         <location filename="../src/core/qgis.cpp" line="98"/>
         <source>nautical miles</source>
-        <translation type="unfinished"></translation>
+        <translation>mile nautice</translation>
     </message>
 </context>
 <context>
@@ -8126,17 +8118,17 @@ See the log for more information.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="10069"/>
         <source>minidump written to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>minidump scris la %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="10073"/>
         <source>writing of minidump to %1 failed (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>scrierea minidump-ului la %1 a eșuat (%2)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="10080"/>
         <source>creation of minidump to %1 failed (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>crearea minidump-ului la %1 a eșuat (%2)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="10083"/>
@@ -8298,7 +8290,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1818"/>
         <source>Imported from GDAL</source>
-        <translation type="unfinished"></translation>
+        <translation>Importat din GDAL</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="156"/>
@@ -8392,12 +8384,12 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="992"/>
         <source> sq. NM</source>
-        <translation type="unfinished"></translation>
+        <translation> sq. NM</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="996"/>
         <source> NM</source>
-        <translation type="unfinished"></translation>
+        <translation> NM</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="1002"/>
@@ -8418,76 +8410,6 @@ Error(%2): %3</source>
         <location filename="../src/core/qgsdistancearea.cpp" line="1013"/>
         <source> unknown</source>
         <translation>necunoscut</translation>
-    </message>
-    <message>
-        <source>day</source>
-        <comment>Note: Word is part matched in code</comment>
-        <translation type="obsolete">zi</translation>
-    </message>
-    <message>
-        <source>days</source>
-        <comment>Note: Word is part matched in code</comment>
-        <translation type="obsolete">zile</translation>
-    </message>
-    <message>
-        <source>week</source>
-        <comment>Note: Word is part matched in code</comment>
-        <translation type="obsolete">săptămână</translation>
-    </message>
-    <message>
-        <source>weeks</source>
-        <comment>Note: Word is part matched in code</comment>
-        <translation type="obsolete">săptămâni</translation>
-    </message>
-    <message>
-        <source>month</source>
-        <comment>Note: Word is part matched in code</comment>
-        <translation type="obsolete">lună</translation>
-    </message>
-    <message>
-        <source>months</source>
-        <comment>Note: Word is part matched in code</comment>
-        <translation type="obsolete">luni</translation>
-    </message>
-    <message>
-        <source>year</source>
-        <comment>Note: Word is part matched in code</comment>
-        <translation type="obsolete">an</translation>
-    </message>
-    <message>
-        <source>years</source>
-        <comment>Note: Word is part matched in code</comment>
-        <translation type="obsolete">ani</translation>
-    </message>
-    <message>
-        <source>second</source>
-        <comment>Note: Word is part matched in code</comment>
-        <translation type="obsolete">secundă</translation>
-    </message>
-    <message>
-        <source>seconds</source>
-        <comment>Note: Word is part matched in code</comment>
-        <translation type="obsolete">secunde</translation>
-    </message>
-    <message>
-        <source>minute</source>
-        <comment>Note: Word is part matched in code</comment>
-        <translation type="obsolete">minut</translation>
-    </message>
-    <message>
-        <source>minutes</source>
-        <comment>Note: Word is part matched in code</comment>
-        <translation type="obsolete">minute</translation>
-    </message>
-    <message>
-        <source>hour</source>
-        <comment>Note: Word is part matched in code</comment>
-        <translation type="obsolete">oră</translation>
-    </message>
-    <message>
-        <source>hours</source>
-        <comment>Note: Word is part matched in code</comment>
-        <translation type="obsolete">ore</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="234"/>
@@ -8580,12 +8502,12 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2654"/>
         <source>Operators</source>
-        <translation type="unfinished">Operatori</translation>
+        <translation>Operatori</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2656"/>
         <source>Fields and Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Câmpuri și valori</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2657"/>
@@ -8657,7 +8579,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2661"/>
         <source>Color</source>
-        <translation type="unfinished">Culoare</translation>
+        <translation>Culoare</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2662"/>
@@ -8814,7 +8736,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="287"/>
         <source>polygon %1 has no rings</source>
-        <translation type="unfinished"></translation>
+        <translation>poligonul %1 nu are inele</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="299"/>
@@ -9004,7 +8926,7 @@ Error(%2): %3</source>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1726"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1742"/>
         <source>Feature geometry not imported (OGR error: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometria centității nu s-a importat (OGR error: %1)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1761"/>
@@ -9066,7 +8988,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="2223"/>
         <source>DBF file</source>
-        <translation type="unfinished"></translation>
+        <translation>file DBF</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="707"/>
@@ -9134,7 +9056,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="692"/>
         <source>DBF File</source>
-        <translation type="unfinished"></translation>
+        <translation>file DBF</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="720"/>
@@ -9309,7 +9231,7 @@ Only %1 of %2 features written.</source>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="2265"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1713"/>
         <source>GPS eXchange Format [GPX]</source>
-        <translation type="unfinished"></translation>
+        <translation>Format GPS eXchange [GPX]</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1010"/>
@@ -9628,12 +9550,12 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="349"/>
         <source>Import was canceled at %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Importul a fost anulat la %1 din %2</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="382"/>
         <source>Vector import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare vector</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="437"/>
@@ -9746,7 +9668,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="50"/>
         <source>Inverted polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Poligoane inverse</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="27"/>
@@ -9791,12 +9713,12 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="45"/>
         <source>Gradient fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Umplere cu gradient</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="47"/>
         <source>Shapeburst fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Umplere de tip shapeburst</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="49"/>
@@ -9866,7 +9788,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="51"/>
         <source>Coordinate Capture</source>
-        <translation type="unfinished">Captură coordonată</translation>
+        <translation>Captură coordonate</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="52"/>
@@ -9881,7 +9803,7 @@ Only %1 of %2 features written.</source>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="51"/>
         <location filename="../src/plugins/topology/topol.cpp" line="36"/>
         <source>Vector</source>
-        <translation type="unfinished">Vector</translation>
+        <translation>Vector</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="54"/>
@@ -9913,12 +9835,12 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="36"/>
         <source>Dxf2Shp Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertor Dxf2Shp</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="37"/>
         <source>Converts from dxf to shp file format</source>
-        <translation type="unfinished"></translation>
+        <translation>Converteşte fişierul din format .dxf în format shapefile .shp</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="82"/>
@@ -9936,7 +9858,7 @@ Only %1 of %2 features written.</source>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="32"/>
         <location filename="../src/plugins/spit/qgsspitplugin.cpp" line="35"/>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation>baza de date</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="85"/>
@@ -9968,17 +9890,17 @@ Only %1 of %2 features written.</source>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="287"/>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="299"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Atenţie</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="76"/>
         <source>This tool only supports vector data</source>
-        <translation type="unfinished">Acest intrument utilizează doar date vectoriale</translation>
+        <translation>Acest intrument utilizează doar date vectoriale</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="81"/>
         <source>No active layers found</source>
-        <translation type="unfinished">Nu s-au găsit straturi active</translation>
+        <translation>Nu s-au găsit straturi active</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="62"/>
@@ -9988,7 +9910,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="63"/>
         <source>Georeferencing rasters using GDAL</source>
-        <translation type="unfinished"></translation>
+        <translation>Georeferecţiere de rastere folosind GDAL</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayerrenderer.cpp" line="46"/>
@@ -10040,22 +9962,22 @@ Only %1 of %2 features written.</source>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="76"/>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="100"/>
         <source>Globe</source>
-        <translation type="unfinished"></translation>
+        <translation>Glob</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="77"/>
         <source>Overlay data on a 3D globe</source>
-        <translation type="unfinished">Date acoperire pe un glob 3D</translation>
+        <translation>Suprapunerea datelor peste globul 3D</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="51"/>
         <source>GPS Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Instrumente GPS</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="52"/>
         <source>Tools for loading and importing GPS data</source>
-        <translation type="unfinished"></translation>
+        <translation>Instrumente pentru încărcarea și importul datelor GPS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="116"/>
@@ -10082,25 +10004,25 @@ Only %1 of %2 features written.</source>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="142"/>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="431"/>
         <source>Rows</source>
-        <translation type="unfinished">Rânduri</translation>
+        <translation>Rânduri</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="143"/>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="430"/>
         <source>Columns</source>
-        <translation type="unfinished">Coloane</translation>
+        <translation>Coloane</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="144"/>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="433"/>
         <source>N-S resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Rezoluţia N-S</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="145"/>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="432"/>
         <source>E-W resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Rezoluţia E-W</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="146"/>
@@ -10138,32 +10060,32 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="183"/>
         <source>Minimum value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valoare minimă</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="184"/>
         <source>Maximum value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valoarea maximă</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="195"/>
         <source>Data source</source>
-        <translation type="unfinished">Sursă date</translation>
+        <translation>Sursa datelor</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="200"/>
         <source>Data description</source>
-        <translation type="unfinished"></translation>
+        <translation>Descrierea datelor</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="209"/>
         <source>Comments</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentarii</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="224"/>
         <source>Categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Categorii</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="244"/>
@@ -10179,17 +10101,17 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="260"/>
         <source>Lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Linii</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="261"/>
         <source>Boundaries</source>
-        <translation type="unfinished"></translation>
+        <translation>Granițele</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="262"/>
         <source>Centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>Centroid</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="265"/>
@@ -10204,44 +10126,44 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="269"/>
         <source>Areas</source>
-        <translation type="unfinished"></translation>
+        <translation>Suprafeţe</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="270"/>
         <source>Islands</source>
-        <translation type="unfinished"></translation>
+        <translation>Insule</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="294"/>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="434"/>
         <source>Top</source>
-        <translation type="unfinished">Sus</translation>
+        <translation>Sus</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="295"/>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="435"/>
         <source>Bottom</source>
-        <translation type="unfinished">Jos</translation>
+        <translation>Jos</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="298"/>
         <source>yes</source>
-        <translation type="unfinished"></translation>
+        <translation>da</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="298"/>
         <source>no</source>
-        <translation type="unfinished"></translation>
+        <translation>nu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="305"/>
         <source>History&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Istorie&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="341"/>
         <source>&lt;b&gt;Layer&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Layer&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="362"/>
@@ -10256,7 +10178,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="373"/>
         <source>Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="374"/>
@@ -10266,7 +10188,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="395"/>
         <source>&lt;b&gt;Region&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Regiune&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="401"/>
@@ -10301,12 +10223,12 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="423"/>
         <source>Projection Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipul proiecţiei</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="425"/>
         <source>Zone</source>
-        <translation type="unfinished"></translation>
+        <translation>Zonă</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="436"/>
@@ -10316,7 +10238,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="437"/>
         <source>3D Rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Rânduri 3D</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="438"/>
@@ -10371,12 +10293,12 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="30"/>
         <source>OfflineEditing</source>
-        <translation type="unfinished"></translation>
+        <translation>Editare Offline</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="31"/>
         <source>Allow offline editing and synchronizing with database</source>
-        <translation type="unfinished"></translation>
+        <translation>Permite editarea offline şi sincronizarea cu baza de date</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="21"/>
@@ -10439,7 +10361,7 @@ Only %1 of %2 features written.</source>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="111"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="128"/>
         <source>Crosses</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Cruciulițe</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="112"/>
@@ -10456,7 +10378,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="120"/>
         <source>Equals</source>
-        <translation type="unfinished"></translation>
+        <translation>Egal</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="121"/>
@@ -10481,7 +10403,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/spit/qgsspitplugin.cpp" line="34"/>
         <source>Shapefile to PostgreSQL/PostGIS Import Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Instrument de import fișiere shape în PostgreSQL/PostGIS</translation>
     </message>
     <message>
         <source>Store vector layers within a SQL Anywhere database</source>
@@ -10505,7 +10427,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="738"/>
         <source>Cannot GDALCreateGenImgProjTransformer: </source>
-        <translation type="unfinished"></translation>
+        <translation>Imposibilitate GDALCreateGenImgProjTransformer:</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="769"/>
@@ -10536,27 +10458,27 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2966"/>
         <source>Nearest Neighbour</source>
-        <translation type="unfinished">cel mai apropiat vecin</translation>
+        <translation>Cel mai apropiat vecin</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2967"/>
         <source>Average</source>
-        <translation type="unfinished"></translation>
+        <translation>Media</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2968"/>
         <source>Gauss</source>
-        <translation type="unfinished"></translation>
+        <translation>Gauss</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2969"/>
         <source>Cubic</source>
-        <translation type="unfinished">Cubic</translation>
+        <translation>Cubic</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2970"/>
         <source>Mode</source>
-        <translation type="unfinished">Mod</translation>
+        <translation>Mod</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2971"/>
@@ -10669,7 +10591,7 @@ Doriţi să specificaţi calea (GISBASE) către instalarea GRASS?</translation>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1249"/>
         <source>Cannot read region</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu se poate citi regiunea</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1273"/>
@@ -10774,10 +10696,15 @@ Doriţi să specificaţi calea (GISBASE) către instalarea GRASS?</translation>
         <translation>DODS</translation>
     </message>
     <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1780"/>
+        <source>OpenFileGDB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1670"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1672"/>
         <source>ESRI Personal GeoDatabase</source>
-        <translation type="unfinished"></translation>
+        <translation>ESRI Personal GeoDatabase</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1678"/>
@@ -10787,7 +10714,7 @@ Doriţi să specificaţi calea (GISBASE) către instalarea GRASS?</translation>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1682"/>
         <source>ESRI Shapefiles</source>
-        <translation type="unfinished"></translation>
+        <translation>ESRI Shapefiles</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1718"/>
@@ -10802,7 +10729,7 @@ Doriţi să specificaţi calea (GISBASE) către instalarea GRASS?</translation>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1727"/>
         <source>Informix DataBlade</source>
-        <translation type="unfinished"></translation>
+        <translation>Informix DataBlade</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1741"/>
@@ -10837,11 +10764,6 @@ Doriţi să specificaţi calea (GISBASE) către instalarea GRASS?</translation>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1776"/>
         <source>OGDI Vectors</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1780"/>
-        <source>OpenFileGDB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -10985,7 +10907,8 @@ Error: %2</source>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2920"/>
         <source>Unable to determine number of geometry columns of layer %1.%2: 
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu se poate determina numărul de coloane de geometrie ale stratului %1.%2:
+%3</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2953"/>
@@ -11039,18 +10962,18 @@ Database error: %2</source>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3393"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5281"/>
         <source>Save style in database</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvare stil în baza de date</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3394"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5282"/>
         <source>A style named &quot;%1&quot; already exists in the database for this layer. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Un stil numit &quot;%1&quot; există deja în baza de date pentru acest strat. Vreți să-l suprascrieți?</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3398"/>
         <source>Operation aborted. No changes were made in the database</source>
-        <translation type="unfinished"></translation>
+        <translation>Operațiune anulată. Nu s-au efectuat modificări în baza de date</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3445"/>
@@ -11061,7 +10984,7 @@ Database error: %2</source>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3492"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3561"/>
         <source>Connection to database failed using username: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Conexiunea cu baza de date, cu numele de utilizator %1, a eşuat</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3510"/>
@@ -11076,24 +10999,24 @@ Database error: %2</source>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5500"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5555"/>
         <source>Error executing query: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Eroare în timpul execuției interogării: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3511"/>
         <source>Error executing the select query for related styles. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Eroare în timpul selecției stilurilor aferente. Interogarea a fost jurnalizată</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3537"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5501"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Eroare în timpul selecției stilurilor care nu sunt aferente. Interogarea a fost jurnalizată</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3578"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5556"/>
         <source>Error executing the select query. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Eroare în timpul selecției. Interogarea a fost jurnalizată</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3573"/>
@@ -11163,7 +11086,7 @@ SQL: %1</translation>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5334"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5438"/>
         <source>Error looking for style. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Eroare în timpul căutării stilului. Interogarea a fost jurnalizată</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5225"/>
@@ -11173,23 +11096,23 @@ SQL: %1</translation>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5287"/>
         <source>Operation aborted</source>
-        <translation type="unfinished"></translation>
+        <translation>Operaţiune anulată.</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5392"/>
         <source>Error executing loading style. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Eroare în timpul încărcării stilului. Interogarea a fost jurnalizată</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5452"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5453"/>
         <source>No styles available on DB</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu există stiluri disponibile în DB</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5474"/>
         <source>Error loading styles. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Eroare în timpul încărcării stilului. Interogarea a fost jurnalizată</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="93"/>
@@ -11259,47 +11182,47 @@ SQL: %1</translation>
     <message>
         <location filename="../src/core/composer/qgscomposerlegendstyle.cpp" line="120"/>
         <source>Undefined</source>
-        <translation type="unfinished"></translation>
+        <translation>Nedefinit</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerlegendstyle.cpp" line="122"/>
         <source>Hidden</source>
-        <translation type="unfinished">Ascuns</translation>
+        <translation>Ascuns</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerlegendstyle.cpp" line="124"/>
         <source>Title</source>
-        <translation type="unfinished">Titlu</translation>
+        <translation>Titlu</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerlegendstyle.cpp" line="126"/>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Grup</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerlegendstyle.cpp" line="128"/>
         <source>Subgroup</source>
-        <translation type="unfinished"></translation>
+        <translation>Subgrup</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerlegendstyle.cpp" line="130"/>
         <source>Symbol</source>
-        <translation type="unfinished">Simbol</translation>
+        <translation>Simbol</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerlegendstyle.cpp" line="132"/>
         <source>Symbol label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etichetă symbol</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="34"/>
         <source>Topology Checker</source>
-        <translation type="unfinished"></translation>
+        <translation>Verificare topologie</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="35"/>
         <source>A Plugin for finding topological errors in vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Un plug-in pentru identificarea erorilor topologice în straturile vectoriale</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolError.cpp" line="24"/>
@@ -11329,12 +11252,12 @@ SQL: %1</translation>
     <message>
         <location filename="../src/plugins/topology/topolError.cpp" line="166"/>
         <source>segment too short</source>
-        <translation type="unfinished"></translation>
+        <translation>segment prea scurt</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolError.cpp" line="172"/>
         <source>invalid geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>geometrie nevalidă</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolError.cpp" line="178"/>
@@ -11374,12 +11297,12 @@ SQL: %1</translation>
     <message>
         <location filename="../src/plugins/topology/topolError.cpp" line="218"/>
         <source>point not in polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>punct în afara poligonului</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolError.cpp" line="223"/>
         <source>polygon does not contain point</source>
-        <translation type="unfinished"></translation>
+        <translation>poligonul nu include un punct</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolError.cpp" line="228"/>
@@ -11389,7 +11312,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="821"/>
         <source>Save style to DB (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvare stil în DB (%1)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="1036"/>
@@ -11405,37 +11328,37 @@ SQL: %1</translation>
     <message>
         <location filename="../src/plugins/topology/dockModel.cpp" line="24"/>
         <source>Error</source>
-        <translation type="unfinished">Eroare</translation>
+        <translation>Eroare</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/dockModel.cpp" line="24"/>
         <source>Layer</source>
-        <translation type="unfinished">Strat</translation>
+        <translation>Strat</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/dockModel.cpp" line="24"/>
         <source>Feature ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID entitate</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="507"/>
         <source>linear</source>
-        <translation type="unfinished"></translation>
+        <translation>liniar</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="511"/>
         <source>radial</source>
-        <translation type="unfinished"></translation>
+        <translation>radial</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="515"/>
         <source>conical</source>
-        <translation type="unfinished"></translation>
+        <translation>conic</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="532"/>
         <source>feature</source>
-        <translation type="unfinished"></translation>
+        <translation>entitate</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="536"/>
@@ -11450,12 +11373,12 @@ SQL: %1</translation>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="557"/>
         <source>repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>repetă</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="561"/>
         <source>reflect</source>
-        <translation type="unfinished"></translation>
+        <translation>reflectă</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayerrenderer.cpp" line="176"/>
@@ -11471,7 +11394,7 @@ SQL: %1</translation>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="211"/>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="235"/>
         <source>Dom Exception</source>
-        <translation type="unfinished">Excepţie dom</translation>
+        <translation>Excepţie DOM</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="213"/>
@@ -11494,7 +11417,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1467"/>
         <source>Generated default style</source>
-        <translation type="unfinished"></translation>
+        <translation>S-a generat stilul implicit</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1468"/>
@@ -11540,27 +11463,27 @@ Response was:
 <context>
     <name>QSpatiaLiteDriver</name>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="578"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="577"/>
         <source>Error opening database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="592"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="591"/>
         <source>Error closing database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="612"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="611"/>
         <source>Unable to begin transaction</source>
         <translation type="unfinished">Nu se poate începe tranzacția</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="627"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="626"/>
         <source>Unable to commit transaction</source>
         <translation type="unfinished">Nu se poate comite tranzacția</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="642"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="641"/>
         <source>Unable to rollback transaction</source>
         <translation type="unfinished">Rollback-ul tranzacției nu se poate realiza</translation>
     </message>
@@ -11580,27 +11503,27 @@ Response was:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="365"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="364"/>
         <source>Unable to execute statement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="370"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="369"/>
         <source>Unable to execute multiple statements at a time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="390"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="389"/>
         <source>Unable to reset statement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="435"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="434"/>
         <source>Unable to bind parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="442"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="441"/>
         <source>Parameter count mismatch</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11723,17 +11646,17 @@ Response was:
     <message>
         <location filename="../src/app/qgisapp.cpp" line="631"/>
         <source>Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigator</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="636"/>
         <source>Browser (2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigator (2)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="644"/>
         <source>GPS Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informaţii GPS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="658"/>
@@ -11838,7 +11761,7 @@ Response was:
     <message>
         <location filename="../src/app/qgisapp.cpp" line="343"/>
         <source>QGIS </source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="536"/>
@@ -11850,7 +11773,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="706"/>
         <source>QGIS - %1 (&apos;%2&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS - %1 (&apos;%2&apos;)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1427"/>
@@ -12112,7 +12035,7 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="3843"/>
         <location filename="../src/app/qgisapp.cpp" line="3908"/>
         <source>QGIS files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișiere QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6722"/>
@@ -12127,7 +12050,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6730"/>
         <source>Remove layers and groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimină straturi sau grupuri...</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="6730"/>
@@ -12152,7 +12075,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6817"/>
         <source>%1 (%2 type unsupported)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (%2 tip nesuportat)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7500"/>
@@ -12162,7 +12085,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7766"/>
         <source>Do you want to save the current project? %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Doriți să salvați proiectul curent? %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9236"/>
@@ -12182,7 +12105,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3196"/>
         <source>Delimited Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Text delimitat</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3196"/>
@@ -12375,7 +12298,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4532"/>
         <source>Labeling</source>
-        <translation type="unfinished">Etichetare</translation>
+        <translation>Etichetare</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4533"/>
@@ -12391,7 +12314,7 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="498"/>
         <location filename="../src/app/qgisapp.cpp" line="505"/>
         <source>CRS was undefined</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS-ul nu a fost definit</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="498"/>
@@ -12511,12 +12434,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3967"/>
         <source>DXF export completed</source>
-        <translation type="unfinished"></translation>
+        <translation>Export DXF încheiat</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3971"/>
         <source>DXF export failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Export DXF eșuat</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4544"/>
@@ -12534,12 +12457,13 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="4547"/>
         <source>Errors: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Erori: %1
+</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4554"/>
         <source>Show more</source>
-        <translation type="unfinished"></translation>
+        <translation>Mai multe</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4604"/>
@@ -12559,7 +12483,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4705"/>
         <source>Reading raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Citire raster</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4780"/>
@@ -12636,12 +12560,12 @@ Error: %1</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5033"/>
         <source>No Features Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu s-au selectat entități</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5034"/>
         <source>The current layer has not selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Stratul curent nu conține entități selectate</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5039"/>
@@ -12831,7 +12755,7 @@ Error: %1</source>
         <location filename="../src/app/qgisapp.cpp" line="5903"/>
         <location filename="../src/app/qgisapp.cpp" line="5909"/>
         <source>Paste features</source>
-        <translation type="unfinished"></translation>
+        <translation>Lipire entități</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5897"/>
@@ -12851,7 +12775,7 @@ Error: %1</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5937"/>
         <source>Pasted</source>
-        <translation type="unfinished"></translation>
+        <translation>Lipit</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5938"/>
@@ -12861,12 +12785,12 @@ Error: %1</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5939"/>
         <source>Layer name</source>
-        <translation type="unfinished">Numele stratului</translation>
+        <translation>Numele stratului</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6015"/>
         <source>No features in clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu sunt entități în clipboard.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6019"/>
@@ -12881,12 +12805,12 @@ Error: %1</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6037"/>
         <source>Cannot create new layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu se poate crea un nou strat</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6050"/>
         <source>Cannot create field %1 (%2,%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu se poate crea câmpul %1 (%2,%3)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6108"/>
@@ -13042,7 +12966,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7213"/>
         <source>Would you like more information?</source>
-        <translation type="unfinished"></translation>
+        <translation>Doriți mai multe informații?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7216"/>
@@ -13050,7 +12974,7 @@ Errors: %3
         <location filename="../src/app/qgisapp.cpp" line="7234"/>
         <location filename="../src/app/qgisapp.cpp" line="7255"/>
         <source>QGIS Version Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informații despre versiunea QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7222"/>
@@ -13060,7 +12984,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7234"/>
         <source>Unable to get current version information from server</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu s-au putut obține de pe server informațiile despre versiunea curentă </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7244"/>
@@ -13099,7 +13023,7 @@ Errors: %3
         <location filename="../src/app/qgisapp.cpp" line="7482"/>
         <source>en</source>
         <comment>documentation language</comment>
-        <translation type="unfinished"></translation>
+        <translation>en</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7609"/>
@@ -13196,12 +13120,12 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9436"/>
         <source>Exit QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Închidere QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9437"/>
         <source>Do you really want to quit QGIS?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sigur doriți să închideți QGIS?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9545"/>
@@ -13308,12 +13232,12 @@ Always ignore these errors?</source>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="20"/>
         <source>About QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Despre QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="120"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>Licență</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="181"/>
@@ -13544,7 +13468,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="20"/>
@@ -13577,18 +13501,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="36"/>
         <source>&amp;Expand All</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Expandează tot</translation>
     </message>
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="37"/>
         <source>&amp;Collapse All</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Colapsează tot</translation>
     </message>
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="48"/>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="76"/>
         <source>&amp;Remove</source>
-        <translation type="unfinished">Ştergeţi</translation>
+        <translation>&amp;Elimină</translation>
     </message>
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="51"/>
@@ -13707,7 +13631,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="959"/>
         <source>Could not open qgis.db</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu se poate deschide qgis.db</translation>
     </message>
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="989"/>
@@ -13733,7 +13657,7 @@ User DB Path:	%9
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="208"/>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="750"/>
         <source>Composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Compozitor</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="351"/>
@@ -13775,7 +13699,7 @@ Parser error:
     <message>
         <location filename="../src/app/composer/qgsatlascompositionwidget.cpp" line="212"/>
         <source>Atlas preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Previzualizare Atlas</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsatlascompositionwidget.cpp" line="213"/>
@@ -14051,12 +13975,12 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="311"/>
         <source>Browse for action</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectați acțiunea</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="314"/>
         <source>Click to browse for an action</source>
-        <translation type="unfinished"></translation>
+        <translation>Faceți clic pentru a selecta acțiunea</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="317"/>
@@ -14117,24 +14041,9 @@ Parser error:
 <context>
     <name>QgsAttributeDialog</name>
     <message>
-        <source>Error</source>
-        <translation type="obsolete">Eroare</translation>
-    </message>
-    <message>
         <location filename="../src/gui/qgsattributedialog.cpp" line="153"/>
         <source>Feature Attributes</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsAttributeEditor</name>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>&lt;</source>
-        <translation type="obsolete">&lt;</translation>
     </message>
 </context>
 <context>
@@ -14216,25 +14125,9 @@ Parser error:
         <translation type="unfinished">Resetare</translation>
     </message>
     <message>
-        <source>Clear</source>
-        <translation type="obsolete">Şterge</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="133"/>
         <source>Sorting</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Column</source>
-        <translation type="obsolete">Coloană</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Attribute&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Atribut&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Alias&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Alias&lt;/b&gt;</translation>
     </message>
 </context>
 <context>
@@ -14367,7 +14260,7 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="455"/>
         <source>Filter</source>
-        <translation type="unfinished">Filtru</translation>
+        <translation>Filtru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="478"/>
@@ -14378,7 +14271,7 @@ Parser error:
         <location filename="../src/ui/qgsattributetabledialog.ui" line="481"/>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="660"/>
         <source>Apply</source>
-        <translation type="unfinished">Aplică</translation>
+        <translation>Aplică</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="516"/>
@@ -14389,7 +14282,7 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="523"/>
         <source>Table View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vizualizare tabelă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="574"/>
@@ -14405,7 +14298,7 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="605"/>
         <source>Advanced Filter (Expression)</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtru avansat (expresie)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="608"/>
@@ -14415,17 +14308,17 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="611"/>
         <source>Ctrl+F</source>
-        <translation type="unfinished">Ctrl+F</translation>
+        <translation>Ctrl+F</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="620"/>
         <source>Show All Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Afişează toate entitățile</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="629"/>
         <source>Show Selected Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Afişează entitățile selectate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="652"/>
@@ -14561,7 +14454,7 @@ Parser error:
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="754"/>
         <source>Error filtering</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtrare eroare</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="499"/>
@@ -14582,19 +14475,11 @@ Parser error:
     <message>
         <location filename="../src/gui/attributetable/qgsattributetableview.cpp" line="243"/>
         <source>Select All</source>
-        <translation type="unfinished">Selectează tot</translation>
+        <translation>Selectează tot</translation>
     </message>
 </context>
 <context>
     <name>QgsAttributeTypeDialog</name>
-    <message>
-        <source>Minimum</source>
-        <translation type="obsolete">Minimum</translation>
-    </message>
-    <message>
-        <source>Maximum</source>
-        <translation type="obsolete">Maximum</translation>
-    </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="14"/>
         <source>Edit Widget Properties</source>
@@ -14606,65 +14491,9 @@ Parser error:
         <translation>Editabil</translation>
     </message>
     <message>
-        <source>Color</source>
-        <translation type="obsolete">Culoare</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="43"/>
         <source>Label on top</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Valoare</translation>
-    </message>
-    <message>
-        <source>Description</source>
-        <translation type="obsolete">Descriere</translation>
-    </message>
-    <message>
-        <source>Layer</source>
-        <translation type="obsolete">Strat</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="obsolete">Înălţime</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">Lăţime</translation>
-    </message>
-    <message>
-        <source>Classification</source>
-        <translation type="obsolete">Clasificare</translation>
-    </message>
-    <message>
-        <source>Range</source>
-        <translation type="obsolete">Gamă</translation>
-    </message>
-    <message>
-        <source>Unique values</source>
-        <translation type="obsolete">Valori unice</translation>
-    </message>
-    <message>
-        <source>Hidden</source>
-        <translation type="obsolete">Ascuns</translation>
-    </message>
-    <message>
-        <source>Calendar</source>
-        <translation type="obsolete">Calendar</translation>
-    </message>
-    <message>
-        <source>UUID generator</source>
-        <translation type="obsolete">Generator UUID</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Eroare</translation>
     </message>
 </context>
 <context>
@@ -14672,7 +14501,7 @@ Parser error:
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="43"/>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="45"/>
@@ -14745,7 +14574,7 @@ Parser error:
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="48"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ştergere</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="49"/>
@@ -14769,7 +14598,7 @@ Database: %3</source>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="81"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="82"/>
@@ -14930,7 +14759,7 @@ Database:%2</source>
     <message>
         <location filename="../src/browser/qgsbrowserbase.ui" line="208"/>
         <source>F5</source>
-        <translation type="unfinished">F5</translation>
+        <translation>F5</translation>
     </message>
     <message>
         <location filename="../src/browser/qgsbrowserbase.ui" line="220"/>
@@ -14982,7 +14811,7 @@ Database:%2</source>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="264"/>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="269"/>
@@ -15056,7 +14885,7 @@ Database:%2</source>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="14"/>
         <source>Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="54"/>
@@ -15152,7 +14981,7 @@ Database:%2</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="29"/>
         <source>Solid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Solid</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="30"/>
@@ -15230,7 +15059,7 @@ Database:%2</source>
     <message>
         <location filename="../src/gui/qgsbusyindicatordialog.cpp" line="28"/>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
 </context>
 <context>
@@ -15289,7 +15118,7 @@ Database:%2</source>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="81"/>
         <source>Change...</source>
-        <translation type="unfinished">Schimbă...</translation>
+        <translation>Schimbă...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="88"/>
@@ -15299,7 +15128,7 @@ Database:%2</source>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="105"/>
         <source>Invert</source>
-        <translation type="unfinished"></translation>
+        <translation>Inversează</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="150"/>
@@ -15334,7 +15163,7 @@ Database:%2</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="396"/>
         <source>Random colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Culori aleatorii</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="441"/>
@@ -15433,7 +15262,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/qgscolorbutton.cpp" line="69"/>
         <source>Select Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectează culoare</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolorbutton.cpp" line="310"/>
@@ -15456,7 +15285,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="35"/>
         <source>Select Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectează culoare</translation>
     </message>
 </context>
 <context>
@@ -15465,7 +15294,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="58"/>
         <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="67"/>
         <source>Random colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Culori aleatorii</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="59"/>
@@ -15523,7 +15352,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposer.cpp" line="197"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2960"/>
         <source>Composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Compozitor</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="204"/>
@@ -15533,48 +15362,48 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="226"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tăiere</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="228"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Tăiere</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="231"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Copiere</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="233"/>
         <source>Copy</source>
-        <translation type="unfinished">Copiere</translation>
+        <translation>Copiere</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="236"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Li&amp;pire</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="238"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Lipire</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="241"/>
         <source>Edit</source>
-        <translation type="unfinished">Editare</translation>
+        <translation>Editare</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="264"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="265"/>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Normal</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="269"/>
         <source>Simulate Photocopy (Grayscale)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulează o fotocopie (tonuri de gri)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="270"/>
@@ -15584,7 +15413,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="273"/>
         <source>Simulate Fax (Mono)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulează un fax (monocrom)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="274"/>
@@ -15614,7 +15443,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="294"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vizualizare</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="325"/>
@@ -15634,12 +15463,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="360"/>
         <source>Atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlas</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="384"/>
         <source>Settings</source>
-        <translation type="unfinished">Setări</translation>
+        <translation>Setări</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="390"/>
@@ -15656,7 +15485,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposer.cpp" line="817"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="829"/>
         <source>%1%</source>
-        <translation type="unfinished"></translation>
+        <translation>%1%</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="503"/>
@@ -15666,7 +15495,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="507"/>
         <source>Item properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Proprietăţile elementului</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="511"/>
@@ -15688,17 +15517,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="799"/>
         <source>x: %1 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>x: %1 mm</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="800"/>
         <source>y: %1 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>y: %1 mm</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="801"/>
         <source>page: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>pagina: %3</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="914"/>
@@ -15725,7 +15554,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1334"/>
         <source>PDF Format</source>
-        <translation type="unfinished">Format PDF</translation>
+        <translation>Format PDF</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1352"/>
@@ -15854,7 +15683,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1793"/>
         <source>Image format: </source>
-        <translation type="unfinished"></translation>
+        <translation>Formatul imaginii:</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1981"/>
@@ -16071,7 +15900,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="35"/>
@@ -16102,7 +15931,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="115"/>
         <source>Color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Culoare...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="125"/>
@@ -16184,7 +16013,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="45"/>
         <source>Composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Compozitor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="70"/>
@@ -16204,7 +16033,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="125"/>
         <source>Atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="150"/>
@@ -16219,7 +16048,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="162"/>
         <source>Zoom Full</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vedere de ansamblu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="165"/>
@@ -16229,7 +16058,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="168"/>
         <source>Ctrl+0</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+0</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="177"/>
@@ -16244,7 +16073,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="183"/>
         <source>Ctrl++</source>
-        <translation type="unfinished">Ctrl++</translation>
+        <translation>Ctrl++</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="192"/>
@@ -16259,18 +16088,18 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="198"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished">Ctrl+-</translation>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="207"/>
         <location filename="../src/ui/qgscomposerbase.ui" line="210"/>
         <source>Zoom to 100%</source>
-        <translation type="unfinished"></translation>
+        <translation>Mărire la 100%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="213"/>
         <source>Ctrl+1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+1</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="222"/>
@@ -16361,17 +16190,17 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="332"/>
         <source>Show Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Arată Grilă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="335"/>
         <source>Show grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Arată grilă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="338"/>
         <source>Ctrl+&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+&apos;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="343"/>
@@ -16401,7 +16230,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="360"/>
         <source>Ctrl+;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="365"/>
@@ -16416,7 +16245,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="371"/>
         <source>Ctrl+Shift+;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="376"/>
@@ -16431,7 +16260,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="382"/>
         <source>Ctrl+Alt+;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="387"/>
@@ -16476,7 +16305,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="421"/>
         <source>Ctrl+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+G</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="426"/>
@@ -16491,7 +16320,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="432"/>
         <source>Ctrl+Shift+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+G</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="437"/>
@@ -16506,7 +16335,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="443"/>
         <source>Ctrl+]</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+]</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="448"/>
@@ -16521,7 +16350,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="454"/>
         <source>Ctrl+[</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+[</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="459"/>
@@ -16536,7 +16365,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="465"/>
         <source>Ctrl+Shift+]</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+]</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="470"/>
@@ -16551,7 +16380,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="476"/>
         <source>Ctrl+Shift+[</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+[</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="481"/>
@@ -16686,17 +16515,17 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="594"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Înapoi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="609"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">Refă</translation>
+        <translation>&amp;Refă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="732"/>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished">Ctrl+Shift+L</translation>
+        <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="737"/>
@@ -16711,12 +16540,12 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="743"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished">Ctrl+Shift+V</translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="748"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Ştergere</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="751"/>
@@ -16726,7 +16555,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="754"/>
         <source>Del</source>
-        <translation type="unfinished"></translation>
+        <translation>Del</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="759"/>
@@ -16741,32 +16570,32 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="765"/>
         <source>Ctrl+Shift+A</source>
-        <translation type="unfinished">Ctrl+Shift+A</translation>
+        <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="770"/>
         <source>Select &amp;All</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecte&amp;ază tot</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="773"/>
         <source>Select all items</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteaa toate elementele</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="776"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="781"/>
         <source>&amp;Invert Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Inversează selecția</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="784"/>
         <source>Invert selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Inversează selecția</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="789"/>
@@ -16781,7 +16610,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="795"/>
         <source>Ctrl+Alt+[</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+[</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="800"/>
@@ -16796,7 +16625,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="806"/>
         <source>Ctrl+Alt+]</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+]</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="815"/>
@@ -16821,12 +16650,12 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="838"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="847"/>
         <source>First Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Prima entitate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="856"/>
@@ -16841,27 +16670,27 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="874"/>
         <source>Last Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Ultima entitate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="883"/>
         <source>Preview Atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>Previzualizare atlas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="892"/>
         <source>Print Atlas...</source>
-        <translation type="unfinished"></translation>
+        <translation>Printare atlas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="901"/>
         <source>Export Atlas as Images...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportare atlas ca imagini...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="910"/>
         <source>Export Atlas as SVG...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportare atlas ca SVG...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="919"/>
@@ -16876,7 +16705,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="931"/>
         <source>Atlas Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Setări atlas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="597"/>
@@ -17006,7 +16835,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="717"/>
         <source>Ctrl+L</source>
-        <translation type="unfinished">Ctrl+L</translation>
+        <translation>Ctrl+L</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="726"/>
@@ -17121,11 +16950,6 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="105"/>
-        <source>Refresh HTML</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="112"/>
         <source>Resize mode</source>
         <translation type="unfinished"></translation>
@@ -17148,6 +16972,11 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="164"/>
         <source> mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="105"/>
+        <source>Refresh HTML</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17262,17 +17091,6 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="265"/>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="277"/>
-        <source>Rotation</source>
-        <translation type="unfinished">Rotaţie</translation>
-    </message>
-    <message utf8="true">
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="292"/>
-        <source> °</source>
-        <translation type="unfinished"> °</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="223"/>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="230"/>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="237"/>
@@ -17282,6 +17100,17 @@ Please try a lower resolution or a smaller papersize</source>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="512"/>
         <source>...</source>
         <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="265"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="277"/>
+        <source>Rotation</source>
+        <translation>Rotire</translation>
+    </message>
+    <message utf8="true">
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="292"/>
+        <source> °</source>
+        <translation> °</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="314"/>
@@ -17301,7 +17130,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="453"/>
         <source>Rendering</source>
-        <translation type="unfinished">Randare</translation>
+        <translation>Randare</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="465"/>
@@ -17317,7 +17146,7 @@ Please try a lower resolution or a smaller papersize</source>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="335"/>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="412"/>
         <source>Color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Culoare...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="388"/>
@@ -17515,12 +17344,12 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="126"/>
         <source>Item</source>
-        <translation type="unfinished"></translation>
+        <translation>Item</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="126"/>
         <source>Title style</source>
-        <translation type="unfinished"></translation>
+        <translation>Titlul stilului</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="208"/>
@@ -17811,7 +17640,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="185"/>
         <source>Update item</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizare item</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="198"/>
@@ -17826,12 +17655,12 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="287"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="390"/>
         <source>Auto update</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto actualizare</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="421"/>
@@ -17924,10 +17753,6 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Title space</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>mm</source>
-        <translation type="obsolete">mm</translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerManager</name>
@@ -17944,12 +17769,12 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="56"/>
         <source>&amp;Remove</source>
-        <translation type="unfinished">Ştergeţi</translation>
+        <translation type="unfinished">&amp;Elimină</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="60"/>
         <source>Re&amp;name</source>
-        <translation type="unfinished">Redenumire</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="70"/>
@@ -18090,18 +17915,18 @@ Please try a lower resolution or a smaller papersize</source>
 <context>
     <name>QgsComposerMap</name>
     <message>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="127"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="128"/>
         <source>Map %1</source>
         <translation>Harta %1</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="321"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="322"/>
         <source>Map will be printed here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="1324"/>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="1465"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="1325"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="1466"/>
         <source>Grid %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18110,50 +17935,57 @@ Please try a lower resolution or a smaller papersize</source>
     <name>QgsComposerMapWidget</name>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="58"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="371"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="552"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="372"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="553"/>
         <source>Cache</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="59"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="376"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="557"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="377"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="558"/>
         <source>Render</source>
         <translation>Randare</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="60"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="381"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="562"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="382"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="563"/>
         <source>Rectangle</source>
         <translation>Dreptunghi</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="62"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1287"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1303"/>
         <source>Solid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Solid</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="63"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1283"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1604"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1285"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1664"/>
         <source>Cross</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="65"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="64"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1294"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1674"/>
+        <source>Markers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="66"/>
         <source>Decimal</source>
         <translation>Zecimal</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="66"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="67"/>
         <source>DegreeMinute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="67"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="68"/>
         <source>DegreeMinuteSecond</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18162,249 +17994,260 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="obsolete">Fără cadre</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1540"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1600"/>
         <source>Zebra</source>
         <translation>Zebră</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="409"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="410"/>
         <source>Map scale changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="421"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="422"/>
         <source>Map rotation changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="466"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="692"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="467"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="693"/>
         <source>Map extent changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="69"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="70"/>
         <source>Select font color</source>
         <translation type="unfinished">Selectare culoare font</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="82"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="83"/>
         <source>Select grid frame color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="84"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="86"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="85"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="87"/>
         <source>Select grid frame fill color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="778"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="779"/>
         <source>Canvas items toggled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="795"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1029"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1053"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="796"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1023"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1047"/>
         <source>None</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="847"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="848"/>
         <source>Overview frame style changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="881"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="882"/>
         <source>Overview centering mode changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1098"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1092"/>
         <source>Grid %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1100"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1094"/>
         <source>Add map grid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1332"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1564"/>
-        <source>Map unit</source>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1201"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1268"/>
+        <source>Draw &quot;%1&quot; grid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1336"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1568"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1357"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1624"/>
+        <source>Map unit</source>
+        <translation type="unfinished">Unitate hartă</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1361"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1628"/>
         <source>Millimeter</source>
         <translation type="unfinished">Milimetru</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1340"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1572"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1365"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1632"/>
         <source>Centimeter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1345"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1370"/>
         <source>change...</source>
         <translation type="unfinished">schimbă...</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1454"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1434"/>
+        <source>Grid markers style changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1514"/>
         <source>Cross width changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1468"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1528"/>
         <source>Frame width changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1563"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1623"/>
         <source>Changed grid unit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1587"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1647"/>
         <source>Grid blend mode changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1631"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1713"/>
         <source>Grid CRS changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1742"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1824"/>
         <source>Annotation color changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1836"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1918"/>
         <source>Grid checkbox toggled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1394"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1409"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1454"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1469"/>
         <source>Grid interval changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervalul grilei s-a schimbat</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1424"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1439"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1484"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1499"/>
         <source>Grid offset changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Offsetul grilei s-a schimbat</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1374"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1409"/>
         <source>Grid line style changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1603"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1663"/>
         <source>Grid type changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipul grilei s-a schimbat</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1726"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1808"/>
         <source>Annotation font changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1702"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1784"/>
         <source>Annotation distance changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1756"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1838"/>
         <source>Annotation format changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1647"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1729"/>
         <source>Annotation toggled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1772"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1854"/>
         <source>Changed annotation precision</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1539"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1599"/>
         <source>Changed grid frame style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1482"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1542"/>
         <source>Changed grid frame line thickness</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1497"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1557"/>
         <source>Grid frame color changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1511"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1571"/>
         <source>Grid frame first fill color changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1525"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1585"/>
         <source>Grid frame second fill color changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="902"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="921"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="969"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="903"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="923"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="972"/>
         <source>Inside frame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="903"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="973"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="904"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="976"/>
         <source>Outside frame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="904"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="925"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="977"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="905"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="927"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="980"/>
         <source>Disabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="909"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="947"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="994"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="910"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="950"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="997"/>
         <source>Horizontal</source>
         <translation>Orizontal</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="910"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="990"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="911"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="993"/>
         <source>Vertical</source>
         <translation>Vertical</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="920"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="922"/>
         <source>Annotation position changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="946"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="949"/>
         <source>Changed annotation direction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1042"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1036"/>
         <source>Map %1</source>
         <translation>Harta %1</translation>
     </message>
@@ -18482,16 +18325,6 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>X min</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="124"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="152"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="217"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="244"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="271"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="298"/>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="314"/>
         <source>View extent in map canvas</source>
         <translation type="unfinished"></translation>
@@ -18502,7 +18335,7 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="364"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="384"/>
         <source>Margin around feature</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18517,78 +18350,94 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="381"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="361"/>
         <source>Use one of the predefined scales of the project where the atlas feature best fits.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="384"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="364"/>
         <source>Predefined scale (best fit)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="546"/>
+        <source>Show grid</source>
+        <translation type="obsolete">Arată grilă</translation>
+    </message>
+    <message>
+        <source>Grid &amp;type</source>
+        <translation type="obsolete">Tipul &amp;grilei</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="593"/>
         <source>Offset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="688"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="643"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="738"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="755"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="926"/>
         <source> mm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="663"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="670"/>
         <source>Blend mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="506"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="553"/>
         <source>Interval</source>
         <translation>Interval</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="672"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="680"/>
         <source>Grid frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadrul grilei</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="678"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="728"/>
         <source>Frame size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="708"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="762"/>
         <source>Frame line thickness</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="729"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="700"/>
         <source>Color...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Culoare...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="736"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="707"/>
         <source>Frame fill colors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="993"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="952"/>
+        <source>Marker style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1017"/>
         <source>Overview blending mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1003"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1027"/>
         <source>Invert overview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1010"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1034"/>
         <source>Center on overview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="518"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="558"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="565"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="605"/>
         <source>X </source>
         <translation>X </translation>
     </message>
@@ -18598,159 +18447,190 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"> °</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="531"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="571"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="578"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="618"/>
         <source>Y </source>
         <translation>Y </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="586"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="633"/>
         <source>Cross width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="695"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="745"/>
         <source>Frame style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="603"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="653"/>
         <source>Line style</source>
         <translation>Stilul liniei</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="124"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="152"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="217"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="244"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="271"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="298"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="394"/>
-        <source>Grid</source>
+        <source>Grids</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="461"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="405"/>
+        <source>Add a new grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="419"/>
+        <source>Remove selected grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="433"/>
+        <source>Move selected grid up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="447"/>
+        <source>Move selected grid down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="479"/>
         <source>Draw grid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="493"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="500"/>
         <source>Grid type</source>
         <translation type="unfinished">Tipul rețelei</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="613"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="627"/>
-        <source>change...</source>
-        <translation>schimbă...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="620"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="513"/>
         <source>CRS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="634"/>
-        <source>Unit</source>
-        <translation type="unfinished">Unitate</translation>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="520"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="663"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="962"/>
+        <source>change...</source>
+        <translation>schimbă...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="642"/>
-        <source>Map unit</source>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="527"/>
+        <source>Interval units</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="647"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="535"/>
+        <source>Map unit</source>
+        <translation type="unfinished">Unitate hartă</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="540"/>
         <source>Millimeter</source>
         <translation type="unfinished">Milimetru</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="652"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="545"/>
         <source>Centimeter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="716"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="687"/>
         <source>No frame</source>
         <translation type="unfinished">Fără cadre</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="721"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="692"/>
         <source>Zebra</source>
         <translation type="unfinished">Zebră</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="763"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="775"/>
         <source>Draw coordinates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="796"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="799"/>
         <source>Format</source>
         <translation>Format</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="806"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="809"/>
         <source>Left</source>
         <translation>Stânga</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="825"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="828"/>
         <source>Right</source>
         <translation>Dreapta</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="844"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="847"/>
         <source>Top</source>
         <translation>Sus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="863"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="866"/>
         <source>Bottom</source>
         <translation>Jos</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="882"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="885"/>
         <source>Font</source>
         <translation>Font</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="889"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="892"/>
         <source>Font...</source>
         <translation>Font...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="896"/>
-        <source>Distance to map frame</source>
-        <translation type="unfinished">Distanța până la cadrul hărții</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="912"/>
-        <source>Coordinate precision</source>
-        <translation>Precizia coordonatelor </translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="928"/>
-        <source>Font color...</source>
-        <translation type="unfinished">Culoarea fontului...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="935"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="899"/>
         <source>Font color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="951"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="913"/>
+        <source>Distance to map frame</source>
+        <translation type="unfinished">Distanța până la cadrul hărții</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="933"/>
+        <source>Coordinate precision</source>
+        <translation>Precizia coordonatelor </translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="906"/>
+        <source>Font color...</source>
+        <translation type="unfinished">Culoarea fontului...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="975"/>
         <source>Overview</source>
         <translation>Vedere generală</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="969"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="993"/>
         <source>Overview frame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="979"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1003"/>
         <source>Overview style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="986"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1010"/>
         <source>Change...</source>
         <translation>Schimbă...</translation>
     </message>
@@ -18791,18 +18671,18 @@ Please try a lower resolution or a smaller papersize</source>
 <context>
     <name>QgsComposerPicture</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="294"/>
+        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="295"/>
         <source>Picture expression parsing error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="294"/>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="330"/>
+        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="295"/>
+        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="331"/>
         <source>Composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Compozitor</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="330"/>
+        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="331"/>
         <source>Picture expression eval error: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18897,6 +18777,11 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>Proprietăți principale</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="117"/>
+        <source>Image source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="86"/>
         <source>Path</source>
         <translation>Cale</translation>
@@ -18908,19 +18793,19 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="117"/>
-        <source>Image source</source>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="169"/>
+        <source>Expression</source>
+        <translation type="unfinished">Expresie</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="131"/>
+        <source>Resize mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="124"/>
         <source>Placement</source>
         <translation type="unfinished">Pozitionare</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="131"/>
-        <source>Resize mode</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="139"/>
@@ -18946,11 +18831,6 @@ Please try a lower resolution or a smaller papersize</source>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="159"/>
         <source>Resize frame to image size</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="169"/>
-        <source>Expression</source>
-        <translation type="unfinished">Expresie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="199"/>
@@ -19480,7 +19360,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="44"/>
@@ -19584,7 +19464,7 @@ Please try a lower resolution or a smaller papersize</source>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="182"/>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="195"/>
         <source>Table maximum columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Nr. maxim de coloane din tabel</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="211"/>
@@ -19612,7 +19492,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="323"/>
         <source>Select grid color</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectați culoarea grilei</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="264"/>
@@ -19701,7 +19581,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="209"/>
         <source>Show grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Arată grilă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="230"/>
@@ -19711,7 +19591,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="250"/>
         <source>Color...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Culoare...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="260"/>
@@ -20246,6 +20126,16 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="436"/>
+        <source>Snap tolerance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="443"/>
+        <source> px</source>
+        <translation type="unfinished"> px</translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="283"/>
         <source>Change...</source>
         <translation type="unfinished">Schimbă...</translation>
@@ -20256,14 +20146,8 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="436"/>
-        <source>Snap tolerance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="443"/>
-        <source> px</source>
-        <translation type="unfinished"> px</translation>
+        <source>Grid</source>
+        <translation type="obsolete">Grilă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="297"/>
@@ -20605,7 +20489,7 @@ and current file is [%3]</source>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="191"/>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="434"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Licență</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="204"/>
@@ -20620,7 +20504,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="372"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informaţii</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="384"/>
@@ -20942,7 +20826,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="82"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lipire</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="83"/>
@@ -21067,12 +20951,12 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="470"/>
         <source>yes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">da</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="470"/>
         <source>no</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">nu</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="474"/>
@@ -21171,10 +21055,6 @@ and current file is [%3]</source>
         <location filename="../src/ui/qgsdatadefinedsymboldialogbase.ui" line="58"/>
         <source>Property</source>
         <translation type="unfinished">Proprietate</translation>
-    </message>
-    <message>
-        <source>Field</source>
-        <translation type="obsolete">Câmp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdatadefinedsymboldialogbase.ui" line="66"/>
@@ -21315,12 +21195,12 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="21"/>
         <source>src transform</source>
-        <translation type="unfinished"></translation>
+        <translation>transformare src</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="26"/>
         <source>dst transform</source>
-        <translation type="unfinished"></translation>
+        <translation>transformare dst</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="41"/>
@@ -21555,10 +21435,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsDecorationGridDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Dialog</translation>
-    </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="14"/>
         <source>Grid properties</source>
@@ -22005,7 +21881,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="411"/>
         <source>Invalid record format at line %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Format de înregistrare nevalid la linia %1</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="488"/>
@@ -22244,7 +22120,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="92"/>
         <source>Browse...</source>
-        <translation type="unfinished">Răsfoire...</translation>
+        <translation>Răsfoire...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="515"/>
@@ -22649,7 +22525,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="70"/>
@@ -23378,7 +23254,7 @@ Parser error:
     <message>
         <location filename="../src/gui/symbology-ng/qgsellipsesymbollayerv2widget.cpp" line="256"/>
         <source>Rotation</source>
-        <translation type="unfinished">Rotaţie</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsellipsesymbollayerv2widget.cpp" line="258"/>
@@ -23398,7 +23274,7 @@ Parser error:
     <message>
         <location filename="../src/gui/symbology-ng/qgsellipsesymbollayerv2widget.cpp" line="264"/>
         <source>Symbol name</source>
-        <translation type="unfinished">Nume simbol</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsellipsesymbollayerv2widget.cpp" line="266"/>
@@ -23705,7 +23581,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="37"/>
@@ -23915,7 +23791,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="22"/>
@@ -24445,7 +24321,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2630"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2631"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitate hartă</translation>
     </message>
 </context>
 <context>
@@ -24525,7 +24401,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialog.cpp" line="53"/>
         <source>Are you sure?</source>
-        <translation>Sunteţi singur?</translation>
+        <translation>Sunteţi sigur?</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialog.cpp" line="54"/>
@@ -25427,7 +25303,7 @@ Please reselect a valid file.</source>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="316"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="423"/>
         <source>GPS eXchange format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format GPS eXchange</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="257"/>
@@ -25471,7 +25347,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="14"/>
         <source>GPS Tools</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Instrumente GPS</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="29"/>
@@ -25488,7 +25364,7 @@ Please reselect a valid file.</source>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="162"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="556"/>
         <source>Browse...</source>
-        <translation type="unfinished">Răsfoire...</translation>
+        <translation>Răsfoire...</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="61"/>
@@ -25516,12 +25392,12 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="139"/>
         <source>Import other file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importă alt fişier</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="145"/>
         <source>File to import</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișierul de importat</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="169"/>
@@ -25552,7 +25428,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="235"/>
         <source>(Note: Selecting correct file type in browser dialog important!)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Notă: Este importantă selectarea tipului corect de fișier, în dialogul browser-ului!)</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="243"/>
@@ -25998,7 +25874,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1034"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1734"/>
         <source>Transform: </source>
-        <translation type="unfinished"></translation>
+        <translation>Transformare: </translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="367"/>
@@ -26191,12 +26067,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1692"/>
         <source>yes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">da</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1696"/>
         <source>no</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">nu</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1741"/>
@@ -26226,7 +26102,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1769"/>
         <source>%1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1% {1?}</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1776"/>
@@ -26306,7 +26182,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="44"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="126"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vizualizare</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="58"/>
@@ -26394,7 +26270,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="248"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ctrl+A</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="253"/>
@@ -26422,7 +26298,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="278"/>
         <source>Ctrl+G</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ctrl+G</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="283"/>
@@ -26822,7 +26698,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="742"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitate hartă</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1047"/>
@@ -26837,7 +26713,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1049"/>
         <source>Angle</source>
-        <translation type="unfinished">Unghi</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1051"/>
@@ -26963,7 +26839,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="150"/>
         <source>Invert</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inversează</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="218"/>
@@ -28484,7 +28360,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2310"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Răsfoire</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2328"/>
@@ -29615,7 +29491,7 @@ or change the following values</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="139"/>
         <source>Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigator</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="164"/>
@@ -29761,12 +29637,13 @@ at line %2 column %3</source>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="136"/>
         <source>Errors: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erori: %1
+</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="143"/>
         <source>Show more</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mai multe</translation>
     </message>
 </context>
 <context>
@@ -29774,7 +29651,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="68"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Răsfoire</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="83"/>
@@ -29845,18 +29722,6 @@ at line %2 column %3</source>
         <location filename="../src/ui/qgshandlebadlayersbase.ui" line="14"/>
         <source>Handle bad layers</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Layer name</source>
-        <translation type="obsolete">Numele stratului</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tip</translation>
-    </message>
-    <message>
-        <source>Provider</source>
-        <translation type="obsolete">Furnizor</translation>
     </message>
 </context>
 <context>
@@ -29941,7 +29806,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="439"/>
         <source>Not connected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Neconectat</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="445"/>
@@ -30006,10 +29871,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Tree</source>
-        <translation type="obsolete">Arbore</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="101"/>
         <source>Layer</source>
         <translation type="unfinished">Strat</translation>
@@ -30046,28 +29907,8 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="151"/>
-        <source>Collapse tree.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="165"/>
-        <source>New results will be expanded by default.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="193"/>
         <source>Clear Results</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="210"/>
-        <source>Copy selected feature to clipboard.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="230"/>
-        <source>Print selected HTML response.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -30093,11 +29934,31 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="31"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vizualizare</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="310"/>
         <source>Auto open form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="151"/>
+        <source>Collapse tree.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="165"/>
+        <source>New results will be expanded by default.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="210"/>
+        <source>Copy selected feature to clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="230"/>
+        <source>Print selected HTML response.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -30121,7 +29982,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="296"/>
         <source>Current layer</source>
-        <translation type="unfinished">Stratul curent</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="297"/>
@@ -30193,7 +30054,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="747"/>
         <source>No attributes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fără atribute.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="957"/>
@@ -31008,7 +30869,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="55"/>
         <source>points</source>
-        <translation type="unfinished">puncte</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="55"/>
@@ -31348,7 +31209,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="394"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="397"/>
         <source>Formatting</source>
-        <translation type="unfinished"></translation>
+        <translation>Formatare</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="430"/>
@@ -31513,10 +31374,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>S</translation>
     </message>
     <message>
-        <source>points</source>
-        <translation type="obsolete">puncte</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="639"/>
         <source>Style</source>
         <translation>Stil</translation>
@@ -31579,10 +31436,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3200"/>
         <source>Buffer</source>
         <translation type="unfinished">Tampon</translation>
-    </message>
-    <message>
-        <source>mm</source>
-        <translation type="obsolete">mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4997"/>
@@ -31873,7 +31726,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4244"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4532"/>
         <source>Rotation</source>
-        <translation type="unfinished">Rotaţie</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3669"/>
@@ -32151,7 +32004,7 @@ not displayed</source>
     <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="43"/>
         <source>&amp;Remove</source>
-        <translation type="unfinished">Ştergeţi</translation>
+        <translation type="unfinished">&amp;Elimină</translation>
     </message>
     <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="54"/>
@@ -32161,7 +32014,7 @@ not displayed</source>
     <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="63"/>
         <source>Re&amp;name</source>
-        <translation type="unfinished">Redenumire</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="74"/>
@@ -32190,40 +32043,6 @@ not displayed</source>
     </message>
 </context>
 <context>
-    <name>QgsLegend</name>
-    <message>
-        <source>sub-group</source>
-        <translation type="obsolete">sub-grup</translation>
-    </message>
-    <message>
-        <source>group</source>
-        <translation type="obsolete">grup</translation>
-    </message>
-    <message>
-        <source>&amp;Remove</source>
-        <translation type="obsolete">Ştergeţi</translation>
-    </message>
-    <message>
-        <source>Re&amp;name</source>
-        <translation type="obsolete">Redenumire</translation>
-    </message>
-    <message>
-        <source>Legend</source>
-        <translation type="obsolete">Legendă</translation>
-    </message>
-</context>
-<context>
-    <name>QgsLegendLayer</name>
-    <message>
-        <source>&amp;Remove</source>
-        <translation type="obsolete">Ştergeţi</translation>
-    </message>
-    <message>
-        <source>Save As...</source>
-        <translation type="obsolete">Salvare ca...</translation>
-    </message>
-</context>
-<context>
     <name>QgsLegendModel</name>
     <message>
         <location filename="../src/core/composer/qgslegendmodel.cpp" line="147"/>
@@ -32248,12 +32067,12 @@ not displayed</source>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2323"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2324"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitate hartă</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2422"/>
         <source>Angle</source>
-        <translation type="unfinished">Unghi</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2424"/>
@@ -32310,7 +32129,7 @@ not displayed</source>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="47"/>
         <source>Select connections to import</source>
-        <translation type="unfinished"></translation>
+        <translation>Alegere conexiune pentru import</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="48"/>
@@ -32551,7 +32370,7 @@ not displayed</source>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="948"/>
         <source>Style not found in database</source>
-        <translation type="unfinished"></translation>
+        <translation>Stilul nu există în baza de date</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="1093"/>
@@ -33246,7 +33065,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="109"/>
         <source>No features were split</source>
-        <translation type="unfinished"></translation>
+        <translation>Nici o entitate nu a fost divizată</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="110"/>
@@ -33263,7 +33082,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="135"/>
         <source>An error occured during splitting.</source>
-        <translation type="unfinished"></translation>
+        <translation>A apărut o eroare pe timpul divizării.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="118"/>
@@ -33296,7 +33115,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="106"/>
         <source>No parts were split</source>
-        <translation type="unfinished"></translation>
+        <translation>Nici o parte nu a fost divizată</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="107"/>
@@ -33312,7 +33131,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="132"/>
         <source>An error occured during splitting.</source>
-        <translation type="unfinished"></translation>
+        <translation>A apărut o eroare pe timpul divizării.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="115"/>
@@ -33367,7 +33186,7 @@ not displayed</source>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1359"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1360"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitate hartă</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1512"/>
@@ -33741,19 +33560,21 @@ not displayed</source>
         <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="387"/>
         <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="391"/>
         <source>Import to MSSQL database</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare în baza de date MSSQL</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="387"/>
         <source>Failed to import some layers!
 
 </source>
-        <translation type="unfinished">Importarea unor straturi a eşuat!</translation>
+        <translation>Importarea unor straturi a eşuat!
+
+</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="391"/>
         <source>Import was successful.</source>
-        <translation type="unfinished">Importare reuşită.</translation>
+        <translation>Importare reuşită.</translation>
     </message>
 </context>
 <context>
@@ -33767,8 +33588,7 @@ not displayed</source>
         <location filename="../src/providers/mssql/qgsmssqlnewconnection.cpp" line="87"/>
         <source>WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.
 </source>
-        <translation type="unfinished">ATENȚIE: Ați optat pentru a salva parola. Acesta va fi stocată ca text simplu în fișierele proiectului și în directorul de casă pe sistemele similare cu Unix, sau în profilul de utilizator pe Windows. Dacă nu doriți acest lucru , vă rog să apăsați butonul Renunță.
-</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlnewconnection.cpp" line="98"/>
@@ -33818,7 +33638,7 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="38"/>
         <source>Connection Information</source>
-        <translation type="unfinished">Informaţii conexiune</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="66"/>
@@ -33828,7 +33648,7 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="76"/>
         <source>Provider/DSN</source>
-        <translation type="unfinished"></translation>
+        <translation>Provider/DSN</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="86"/>
@@ -33863,7 +33683,7 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="188"/>
         <source>Save Username</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvare nume utilizator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="195"/>
@@ -34070,7 +33890,7 @@ not displayed</source>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="220"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunteţi sigur că doriţi ştergerea conexiunii %1 şi a setărilor sale aferente?</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="222"/>
@@ -34185,7 +34005,7 @@ not displayed</source>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="251"/>
         <source>Enter...</source>
-        <translation type="unfinished"></translation>
+        <translation>Introduceți...</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="464"/>
@@ -34278,7 +34098,7 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="134"/>
@@ -34404,7 +34224,7 @@ Note: giving the password is optional. It will be requested interactivly, when n
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="33"/>
         <source>Connection details</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Detalii conexiune</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="39"/>
@@ -34519,7 +34339,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="38"/>
         <source>Connection Information</source>
-        <translation type="unfinished">Informaţii conexiune</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="44"/>
@@ -34875,7 +34695,7 @@ Extended error information:
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="272"/>
         <source>Save layer as...</source>
-        <translation type="unfinished">Salvare strat ca...</translation>
+        <translation>Salvare strat ca...</translation>
     </message>
 </context>
 <context>
@@ -34974,7 +34794,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="270"/>
         <source>File encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Codificare fișier</translation>
     </message>
 </context>
 <context>
@@ -35179,7 +34999,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsosmimportdialog.ui" line="14"/>
         <source>OpenStreetMap Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare OpenStreetMap</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmimportdialog.ui" line="20"/>
@@ -35200,7 +35020,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsosmimportdialog.ui" line="58"/>
         <source>Create connection (SpatiaLite) after import</source>
-        <translation type="unfinished"></translation>
+        <translation>Creare conexiune (SpatiaLite) după import</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmimportdialog.ui" line="67"/>
@@ -35222,7 +35042,7 @@ Extended error information:
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="108"/>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="119"/>
         <source>OpenStreetMap import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare OpenStreetMap</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="88"/>
@@ -35233,12 +35053,13 @@ Extended error information:
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="108"/>
         <source>Failed to import OSM data:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Importul datelor OSM a eșuat
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="119"/>
         <source>Import has been successful.</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare reuşită.</translation>
     </message>
 </context>
 <context>
@@ -35251,7 +35072,7 @@ Extended error information:
     <message>
         <location filename="../src/core/qgsowsconnection.cpp" line="62"/>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Parolă</translation>
     </message>
 </context>
 <context>
@@ -35272,7 +35093,7 @@ Extended error information:
     <message>
         <location filename="../src/providers/ows/qgsowsdataitems.cpp" line="198"/>
         <source>New Connection...</source>
-        <translation type="unfinished">Conexiune nouă...</translation>
+        <translation>Conexiune nouă...</translation>
     </message>
 </context>
 <context>
@@ -35280,7 +35101,7 @@ Extended error information:
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="71"/>
         <source>Add Layer(s) from a %1 Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Adăugare strat(uri) dintr-un %1 Server</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="74"/>
@@ -35315,7 +35136,7 @@ Extended error information:
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="271"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunteţi sigur că doriţi ştergerea conexiunii %1 şi a setărilor sale aferente?</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="273"/>
@@ -35487,7 +35308,7 @@ Extended error information:
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="269"/>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="476"/>
         <source>Format</source>
-        <translation type="unfinished">Format</translation>
+        <translation>Format</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="289"/>
@@ -35591,7 +35412,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="499"/>
         <source>Search</source>
-        <translation type="unfinished">Căutare</translation>
+        <translation>Căutare</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="530"/>
@@ -35778,7 +35599,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="41"/>
         <source>Browse...</source>
-        <translation type="unfinished">Răsfoire...</translation>
+        <translation>Răsfoire...</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="52"/>
@@ -35874,12 +35695,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="430"/>
         <source>Date</source>
-        <translation type="unfinished">Dată</translation>
+        <translation>Dată</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="437"/>
         <source>Date &amp; Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Data și ora</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="482"/>
@@ -36073,7 +35894,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="176"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunteţi sigur că doriţi ştergerea conexiunii %1 şi a setărilor sale aferente?</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="178"/>
@@ -36183,7 +36004,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="186"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Răsfoire</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="244"/>
@@ -36221,10 +36042,6 @@ Always network: always load from network and do not check if the cache has a val
 </context>
 <context>
     <name>QgsOptions</name>
-    <message>
-        <source>Current layer</source>
-        <translation type="obsolete">Stratul curent</translation>
-    </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="102"/>
         <source>Identify highlight color</source>
@@ -36314,25 +36131,25 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="703"/>
         <source>Select grid color</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectează culoarea grilei</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="709"/>
         <location filename="../src/app/qgsoptions.cpp" line="1298"/>
         <source>Solid</source>
-        <translation type="unfinished"></translation>
+        <translation>Solid</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="710"/>
         <location filename="../src/app/qgsoptions.cpp" line="1302"/>
         <source>Dots</source>
-        <translation type="unfinished"></translation>
+        <translation>Puncte</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="711"/>
         <location filename="../src/app/qgsoptions.cpp" line="1306"/>
         <source>Crosses</source>
-        <translation type="unfinished"></translation>
+        <translation>Cruciulițe</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="736"/>
@@ -36390,7 +36207,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="942"/>
         <source>QGIS files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișiere QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="765"/>
@@ -36458,7 +36275,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="306"/>
         <source>Show features visible on map</source>
-        <translation type="unfinished"></translation>
+        <translation>Afișare entități vizibile pe hartă</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="940"/>
@@ -36478,7 +36295,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1544"/>
         <source>Restore UI defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Revenire la UI implicită</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1544"/>
@@ -36845,7 +36662,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1051"/>
         <source>QSettings</source>
-        <translation type="unfinished"></translation>
+        <translation>QSettings</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1077"/>
@@ -37189,7 +37006,7 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsoptionsbase.ui" line="160"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="163"/>
         <source>Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Compozitor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="627"/>
@@ -37292,10 +37109,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Mode</source>
-        <translation type="obsolete">Mod</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2749"/>
         <source>Measure tool</source>
         <translation type="unfinished">Instrument de măsură</translation>
@@ -37344,7 +37157,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1700"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation> ms</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1731"/>
@@ -37429,12 +37242,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3019"/>
         <source>Import from file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Importare din fişier</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3033"/>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exportare în fișier</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3100"/>
@@ -37449,7 +37262,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3123"/>
         <source>Grid appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Aparența grilei</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3131"/>
@@ -37459,7 +37272,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3141"/>
         <source>Color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Culoare...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2613"/>
@@ -37467,7 +37280,7 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsoptionsbase.ui" line="2724"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3166"/>
         <source> mm</source>
-        <translation type="unfinished"></translation>
+        <translation> mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3179"/>
@@ -37477,12 +37290,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3191"/>
         <source>x: </source>
-        <translation type="unfinished">x: </translation>
+        <translation>x: </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3201"/>
         <source>y: </source>
-        <translation type="unfinished">y: </translation>
+        <translation>y: </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3213"/>
@@ -37786,7 +37599,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4316"/>
         <source>User-Agent</source>
-        <translation type="unfinished"></translation>
+        <translation>User-Agent</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4331"/>
@@ -37801,7 +37614,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4354"/>
         <source>Size [KiB]</source>
-        <translation type="unfinished"></translation>
+        <translation>Mărime [KiB]</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4364"/>
@@ -37972,12 +37785,12 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="605"/>
         <source>No Geometry</source>
-        <translation type="unfinished">Nici o geometrie</translation>
+        <translation>Nici o geometrie</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="608"/>
         <source>Unknown Geometry</source>
-        <translation type="unfinished">Geometrie necunoscută</translation>
+        <translation>Geometrie necunoscută</translation>
     </message>
 </context>
 <context>
@@ -37985,61 +37798,63 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="161"/>
         <source>Edit...</source>
-        <translation type="unfinished">Editare...</translation>
+        <translation>Editare...</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="165"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Ştergere</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="169"/>
         <source>Refresh</source>
-        <translation type="unfinished">Actualizează</translation>
+        <translation>Actualizează</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="210"/>
         <source>Copying features...</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiere entități...</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="210"/>
         <source>Abort</source>
-        <translation type="unfinished">Renunţare</translation>
+        <translation>Renunţare</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="211"/>
         <source>Import layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Importă strat</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="222"/>
         <source>%1: Not a vector layer!</source>
-        <translation type="unfinished">%1: Nu este un strat vectorial!</translation>
+        <translation>%1: Nu este un strat vectorial!</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="244"/>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="253"/>
         <source>%1: OK!</source>
-        <translation type="unfinished">%1: OK!</translation>
+        <translation>%1: OK!</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="267"/>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="273"/>
         <source>Import to Oracle database</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare în baza de date Oracle</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="268"/>
         <source>Failed to import some layers!
 
 </source>
-        <translation type="unfinished">Importarea unor straturi a eşuat!</translation>
+        <translation>Importarea unor straturi a eşuat!
+
+</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="273"/>
         <source>Import was successful.</source>
-        <translation type="unfinished">Importare reuşită.</translation>
+        <translation>Importul a reuşit.</translation>
     </message>
 </context>
 <context>
@@ -38049,12 +37864,12 @@ error:%2
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="310"/>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="314"/>
         <source>Delete layer</source>
-        <translation type="unfinished">Ştergere strat</translation>
+        <translation>Ştergere strat</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="314"/>
         <source>Layer deleted successfully.</source>
-        <translation type="unfinished">Strat şters.</translation>
+        <translation>Strat şters.</translation>
     </message>
 </context>
 <context>
@@ -38062,42 +37877,43 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="89"/>
         <source>Saving passwords</source>
-        <translation type="unfinished">Salvare parole</translation>
+        <translation>Salvare parole</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="90"/>
         <source>WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.
 </source>
-        <translation type="unfinished">ATENȚIE: Ați optat pentru a salva parola. Acesta va fi stocată ca text simplu în fișierele proiectului și în directorul de casă pe sistemele similare cu Unix, sau în profilul de utilizator pe Windows. Dacă nu doriți acest lucru , vă rog să apăsați butonul Renunță.
+        <translation>ATENȚIE: Ați optat pentru a salva parola. Acesta va fi stocată ca text simplu în fișierele proiectului și în directorul de casă pe sistemele similare cu Unix, sau în profilul de utilizator pe Windows. Dacă nu doriți acest lucru, vă rog să apăsați butonul Renunță.
+
 </translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="101"/>
         <source>Save connection</source>
-        <translation type="unfinished">Salvare conexiune</translation>
+        <translation>Salvare conexiune</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="102"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation type="unfinished">Doriţi suprascrierea conexiunii existente %1?</translation>
+        <translation>Doriţi suprascrierea conexiunii existente %1?</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="146"/>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="155"/>
         <source>Test connection</source>
-        <translation type="unfinished">Test conexiune</translation>
+        <translation>Test conexiune</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="147"/>
         <source>Connection to %1 was successful</source>
-        <translation type="unfinished"></translation>
+        <translation>Conexiune la %1 reuşită</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="156"/>
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation type="unfinished">Conexiune ratată. Verificaţi setările şi reîncercaţi.
+        <translation>Conexiune ratată - Verificaţi setările şi reîncercaţi.
 
 </translation>
     </message>
@@ -38107,42 +37923,42 @@ error:%2
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="20"/>
         <source>Create a New Oracle connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Creare conexiune Oracle nouă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="45"/>
         <source>Connection Information</source>
-        <translation type="unfinished">Informaţii conexiune</translation>
+        <translation>Informații conexiune</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="67"/>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Parolă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="84"/>
         <source>Save Username</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvare nume utilizator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="91"/>
         <source>Username</source>
-        <translation type="unfinished"></translation>
+        <translation>Nume utilizator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="101"/>
         <source>Name of the new connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Numele noii conexiuni</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="108"/>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation>Bază de date</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="118"/>
         <source>Name</source>
-        <translation type="unfinished">Nume</translation>
+        <translation>Nume</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="128"/>
@@ -38762,7 +38578,7 @@ Error: %2</source>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="129"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunteţi sigur că doriţi ştergerea conexiunii %1 şi a setărilor sale aferente?</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="132"/>
@@ -38875,7 +38691,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="272"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunteţi sigur că doriţi ştergerea conexiunii %1 şi a setărilor sale aferente?</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="274"/>
@@ -38924,7 +38740,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="162"/>
         <source>Enter...</source>
-        <translation type="unfinished"></translation>
+        <translation>Introduceți...</translation>
     </message>
 </context>
 <context>
@@ -38996,7 +38812,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="89"/>
         <source>Enter...</source>
-        <translation type="unfinished"></translation>
+        <translation>Introduceți...</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="108"/>
@@ -39019,12 +38835,12 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="164"/>
         <source>Refresh</source>
-        <translation type="unfinished">Actualizează</translation>
+        <translation>Actualizează</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="204"/>
         <source>Copying features...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Copiere entități...</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="204"/>
@@ -39034,7 +38850,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="205"/>
         <source>Import layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare strat</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="216"/>
@@ -39051,19 +38867,21 @@ Error: %2</source>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="255"/>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="261"/>
         <source>Import to PostGIS database</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare în baza de date PostGIS</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="256"/>
         <source>Failed to import some layers!
 
 </source>
-        <translation type="unfinished">Importarea unor straturi a eşuat!</translation>
+        <translation>Importarea unor straturi a eşuat!
+
+</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="261"/>
         <source>Import was successful.</source>
-        <translation type="unfinished">Importare reuşită.</translation>
+        <translation>Importare reuşită.</translation>
     </message>
 </context>
 <context>
@@ -39107,7 +38925,7 @@ Error: %2</source>
     <message>
         <location filename="../src/ui/qgspalettedrendererwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspalettedrendererwidgetbase.ui" line="28"/>
@@ -39127,7 +38945,7 @@ Error: %2</source>
     <message>
         <location filename="../src/ui/qgspalettedrendererwidgetbase.ui" line="60"/>
         <source>Label</source>
-        <translation type="unfinished">Etichetă</translation>
+        <translation>Etichetă</translation>
     </message>
 </context>
 <context>
@@ -39435,7 +39253,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="169"/>
         <source>Add PostGIS Table(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Adăugare tabel(e) PostGIS</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="172"/>
@@ -39515,7 +39333,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="254"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunteţi sigur că doriţi ştergerea conexiunii %1 şi a setărilor sale aferente?</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="256"/>
@@ -39564,7 +39382,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="148"/>
         <source>Enter...</source>
-        <translation type="unfinished"></translation>
+        <translation>Introduceți...</translation>
     </message>
 </context>
 <context>
@@ -39644,7 +39462,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="87"/>
         <source>Enter...</source>
-        <translation type="unfinished"></translation>
+        <translation>Introduceți...</translation>
     </message>
 </context>
 <context>
@@ -39831,7 +39649,7 @@ You need to restart QGIS in order to reload it.</source>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sigur doriți să ştergeți următorul depozit?</translation>
     </message>
     <message>
         <source>If you haven&apos;t cancelled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.</source>
@@ -40051,7 +39869,7 @@ You need to restart QGIS in order to reload it.</source>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="228"/>
         <source>Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Activat</translation>
     </message>
 </context>
 <context>
@@ -40406,7 +40224,7 @@ You need to restart QGIS in order to reload it.</source>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="272"/>
         <source>Search</source>
-        <translation type="unfinished">Căutare</translation>
+        <translation>Căutare</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="133"/>
@@ -40711,7 +40529,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2458"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2459"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitate hartă</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2595"/>
@@ -41334,7 +41152,7 @@ Alegeţi ignorare pentru a continua încărcarea fără straturile lipsă. Alege
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="113"/>
         <source>QGIS files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fișiere QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="144"/>
@@ -42377,7 +42195,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="136"/>
         <source>Maximum</source>
-        <translation type="unfinished">Maximum</translation>
+        <translation>Maximum</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="143"/>
@@ -42387,7 +42205,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="152"/>
         <source>Local minimum/maximum = 0/0</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum/Maximum local = 0/0</translation>
     </message>
 </context>
 <context>
@@ -42473,7 +42291,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="224"/>
         <source>Output format</source>
-        <translation type="unfinished"></translation>
+        <translation>Formatul de ieșire</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="231"/>
@@ -43235,7 +43053,7 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="223"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="226"/>
         <source>Nearest neighbour</source>
-        <translation type="unfinished">Cel mai apropiat vecin</translation>
+        <translation>Cel mai apropiat vecin</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="224"/>
@@ -43423,7 +43241,7 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1419"/>
         <source>Import Error</source>
-        <translation type="unfinished">Eroare importare</translation>
+        <translation>Eroare importare</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1419"/>
@@ -43539,15 +43357,6 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1524"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1682"/>
         <source>Description</source>
         <translation type="unfinished">Descriere</translation>
@@ -43562,7 +43371,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1849"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1911"/>
         <source>Format</source>
-        <translation type="unfinished">Format</translation>
+        <translation>Format</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1770"/>
@@ -43785,7 +43594,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1317"/>
         <source>Add values manually</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Adaugă valoarea manual</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1320"/>
@@ -43810,12 +43619,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1376"/>
         <source>Import from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare din fişier</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1390"/>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exportare în fișier</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="85"/>
@@ -43859,10 +43668,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Current</source>
-        <translation type="obsolete">Actual</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="325"/>
         <source>Coordinate reference system</source>
         <translation type="unfinished">Sistem de coordonate de referinţă</translation>
@@ -43898,6 +43703,15 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="148"/>
         <source>Metadata</source>
         <translation>Metadate</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1524"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1691"/>
@@ -43939,7 +43753,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1593"/>
         <source>Overview format</source>
-        <translation type="unfinished">Format vedere generală</translation>
+        <translation>Vedere generală asupra formatului</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1575"/>
@@ -44087,7 +43901,7 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="130"/>
         <source>Browse...</source>
-        <translation type="unfinished">Răsfoire...</translation>
+        <translation>Răsfoire...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="153"/>
@@ -44204,7 +44018,7 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="573"/>
         <source>Add values manually</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Adaugă valoarea manual</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="576"/>
@@ -44766,10 +44580,6 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
 <context>
     <name>QgsRelationAddDlgBase</name>
     <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Dialog</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="14"/>
         <source>Add relation</source>
         <translation type="unfinished"></translation>
@@ -44810,7 +44620,7 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
     <message>
         <location filename="../src/ui/qgsrelationeditorwidgetbase.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formă</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationeditorwidgetbase.ui" line="28"/>
@@ -44846,7 +44656,7 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
     <message>
         <location filename="../src/ui/qgsrelationeditorwidgetbase.ui" line="155"/>
         <source>Table View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vizualizare tabelă</translation>
     </message>
 </context>
 <context>
@@ -44952,18 +44762,6 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
         <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="81"/>
         <source>Scale range</source>
         <translation>Gamă scară</translation>
-    </message>
-    <message>
-        <source>Min. scale</source>
-        <translation type="obsolete">Scară min</translation>
-    </message>
-    <message>
-        <source>1 : </source>
-        <translation type="obsolete">1 :</translation>
-    </message>
-    <message>
-        <source>Max. scale</source>
-        <translation type="obsolete">Scară max</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="112"/>
@@ -45084,7 +44882,7 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="34"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lipire</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="38"/>
@@ -45203,7 +45001,7 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="808"/>
         <source>Max. scale</source>
-        <translation type="unfinished">Scară max</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="815"/>
@@ -45470,10 +45268,6 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
 <context>
     <name>QgsSVGFillSymbolLayerWidget</name>
     <message>
-        <source>Select svg texture file</source>
-        <translation type="obsolete">Selectaţi fişierul textură svg</translation>
-    </message>
-    <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2286"/>
         <source>Texture width</source>
         <translation type="unfinished">Lăţimea texturii</translation>
@@ -45494,7 +45288,7 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2036"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2037"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitate hartă</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2096"/>
@@ -45509,7 +45303,7 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2290"/>
         <source>Rotation</source>
-        <translation type="unfinished">Rotaţie</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2292"/>
@@ -45532,7 +45326,7 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
     <message>
         <location filename="../src/app/qgssavestyletodbdialog.cpp" line="50"/>
         <source>Save style in database</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Salvare stil în baza de date</translation>
     </message>
     <message>
         <location filename="../src/app/qgssavestyletodbdialog.cpp" line="50"/>
@@ -45615,7 +45409,8 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="35"/>
         <source>Maximum
 (inclusive)</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum
+(inclusiv)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="38"/>
@@ -45876,7 +45671,7 @@ Eroarea a fost:
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1095"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1096"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitate hartă</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1316"/>
@@ -45926,12 +45721,12 @@ Eroarea a fost:
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="579"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="580"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitate hartă</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="710"/>
         <source>Color</source>
-        <translation type="unfinished">Culoare</translation>
+        <translation>Culoare</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="711"/>
@@ -45958,12 +45753,12 @@ Eroarea a fost:
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="76"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="77"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitate hartă</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="261"/>
         <source>Color</source>
-        <translation type="unfinished">Culoare</translation>
+        <translation>Culoare</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="263"/>
@@ -46005,12 +45800,12 @@ Eroarea a fost:
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="318"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="319"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitate hartă</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="515"/>
         <source>Name</source>
-        <translation type="unfinished">Nume</translation>
+        <translation>Nume</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="517"/>
@@ -46030,12 +45825,12 @@ Eroarea a fost:
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="525"/>
         <source>Angle</source>
-        <translation type="unfinished">Unghi</translation>
+        <translation>Unghi</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="527"/>
         <source>Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Compensare</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="529"/>
@@ -46250,7 +46045,7 @@ enhancement</source>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="48"/>
         <source>Add values manually</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaugă valoarea manual</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="51"/>
@@ -46335,7 +46130,7 @@ enhancement</source>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="203"/>
         <source>Invert</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inversează</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="299"/>
@@ -46381,17 +46176,17 @@ enhancement</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="36"/>
         <source>does NOT have the tag</source>
-        <translation type="unfinished"></translation>
+        <translation>NU are etichetă</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="37"/>
         <source>is NOT a member of group</source>
-        <translation type="unfinished"></translation>
+        <translation>NU este un membru al grupului</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="38"/>
         <source>has NO part of name matching</source>
-        <translation type="unfinished"></translation>
+        <translation>nici o parte a numelui NU se potrivește</translation>
     </message>
 </context>
 <context>
@@ -46412,7 +46207,7 @@ enhancement</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="86"/>
         <source>ALL the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>TOATE constrângerile</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="87"/>
@@ -46841,7 +46636,7 @@ but implies better performance thereafter.</source>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="297"/>
         <source>Error</source>
-        <translation type="unfinished">Eroare</translation>
+        <translation>Eroare</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="297"/>
@@ -47091,7 +46886,7 @@ but implies better performance thereafter.</source>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="693"/>
         <source>Map &quot;%1&quot; &quot;on the fly&quot; transformation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformare &quot;din zbor&quot; a hărții &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="693"/>
@@ -47389,7 +47184,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="138"/>
         <source>Are you sure you want to remove the [%1] connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunteţi sigur că doriţi ştergerea conexiunii [%1] şi a setărilor sale aferente?</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="139"/>
@@ -47404,7 +47199,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="168"/>
         <source>Shapefiles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fișiere shape</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="168"/>
@@ -47544,7 +47339,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/spit/qgsspit.cpp" line="830"/>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="835"/>
         <source>Import Shapefiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare fişiere de tip shape</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="387"/>
@@ -47585,7 +47380,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="523"/>
         <source>Importing files</source>
-        <translation type="unfinished"></translation>
+        <translation>Import fișiere</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="523"/>
@@ -47625,7 +47420,8 @@ The following fields are duplicates:
         <location filename="../src/plugins/spit/qgsspit.cpp" line="586"/>
         <source>Importing files
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Import fișiere
+%1</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="597"/>
@@ -47848,20 +47644,24 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsSqlAnywhereProvider</name>
-    <message>
-        <source>Failed to load interface</source>
-        <translation type="obsolete">Eroare încărcare interfaţă</translation>
-    </message>
-    <message>
-        <source>Duplicate field %1 found
-</source>
-        <translation type="obsolete">Câmpul duplicat %1 a fost găsit
-</translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;Muncim din greu pentru a vă facilita utilizarea acestui program. Remarcați toate caracteristicile interesante pe care le are? Rămâneți cu impresii bune în urma utilizării lui? QGIS este rezultatul dăruirii de care dă dovadă echipa de dezvoltatori. Vrem să-l multiplicați și să-l puneți în mâinile a cât mai multor oameni. În cazul în care economisiți bani utilizând QGIS sau dacă vă place munca noastră și aveți capacitatea financiară de a ajuta, vă rugăm să luați în considerare sponsorizarea dezvoltării QGIS. Folosim banii sponsorilor pentru a ne plăti costurile legate participarea și organizarea întâlnirilor noastre bi-anuale, și pentru a atinge, în general, obiectivele proiectului nostru. &lt;br /&gt;&lt;br /&gt; Vă rugăm să consultați &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;pagina web despre sponsorizarea QGIS&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; pentru mai multe detalii. În &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/about/sponsorship.html#list-of-sponsors&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;pagina sponsorilor&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; puteți vedea oamenii extraordinari și companiile care ne ajută financiar - un mare, mare &apos;mulțumesc&apos; pentru fiecare în parte!&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/gold.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/aas_300wide.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/silver.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/vorarlberg.png&quot; /&gt; &lt;img src=&quot;:/images/sponsors/sponsors/gaia.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/bronze.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt; &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -48075,12 +47875,12 @@ Doriţi să salvaţi peste acesta?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="75"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportare</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="76"/>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="103"/>
@@ -48180,7 +47980,7 @@ Doriţi să salvaţi peste acesta?</translation>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="378"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="383"/>
         <source>Save symbol</source>
-        <translation type="unfinished">Salvare simbol</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="379"/>
@@ -48190,7 +47990,7 @@ Doriţi să salvaţi peste acesta?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="384"/>
         <source>Symbol with name &apos;%1&apos; already exists. Overwrite?</source>
-        <translation type="unfinished">Simbolul cu numele &apos;%1&apos; există deja. Salvaţi peste acesta?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="416"/>
@@ -48255,17 +48055,17 @@ Doriţi să salvaţi peste acesta?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="768"/>
         <source>Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupuri</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="769"/>
         <source>Ungrouped</source>
-        <translation type="unfinished"></translation>
+        <translation>Degrupat</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="776"/>
         <source>Smart Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupuri Inteligente</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="883"/>
@@ -48498,7 +48298,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgssublayersdialogbase.ui" line="33"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
 </context>
 <context>
@@ -48580,7 +48380,7 @@ There was a problem with your symbol database.</source>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1549"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1550"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitate hartă</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1857"/>
@@ -48600,7 +48400,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1977"/>
         <source>Angle</source>
-        <translation type="unfinished">Unghi</translation>
+        <translation>Unghi</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1979"/>
@@ -48711,37 +48511,29 @@ There was a problem with your symbol database.</source>
 <context>
     <name>QgsSymbolV2SelectorDialog</name>
     <message>
-        <source>Invalid Selection!</source>
-        <translation type="obsolete">Selectare incorectă!</translation>
-    </message>
-    <message>
-        <source>Kindly select a symbol to add layer.</source>
-        <translation type="obsolete">Selectaţi vă rog un simbol pentru a adăuga un strat.</translation>
-    </message>
-    <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="492"/>
         <source>Symbol name</source>
-        <translation type="unfinished">Nume simbol</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="493"/>
         <source>Please enter name for the symbol:</source>
-        <translation type="unfinished">Vă rugăm introduceţi numele pentru simbol:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="493"/>
         <source>New symbol</source>
-        <translation type="unfinished">Simbol nou</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="500"/>
         <source>Save symbol</source>
-        <translation type="unfinished">Salvare simbol</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="501"/>
         <source>Symbol with name &apos;%1&apos; already exists. Overwrite?</source>
-        <translation type="unfinished">Simbolul cu numele &apos;%1&apos; există deja. Salvaţi peste acesta?</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48750,10 +48542,6 @@ There was a problem with your symbol database.</source>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="14"/>
         <source>Symbol selector</source>
         <translation>Selector simbol</translation>
-    </message>
-    <message>
-        <source>Symbol layers</source>
-        <translation type="obsolete">Straturi simbol</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="74"/>
@@ -48783,7 +48571,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="155"/>
         <source>Save symbol</source>
-        <translation type="unfinished">Salvare simbol</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="158"/>
@@ -48801,32 +48589,32 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="45"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitate hartă</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="207"/>
         <source>Symbol name</source>
-        <translation>Nume simbol</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="208"/>
         <source>Please enter name for the symbol:</source>
-        <translation>Vă rugăm introduceţi numele pentru simbol:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="208"/>
         <source>New symbol</source>
-        <translation>Simbol nou</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="215"/>
         <source>Save symbol</source>
-        <translation>Salvare simbol</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="216"/>
         <source>Symbol with name &apos;%1&apos; already exists. Overwrite?</source>
-        <translation>Simbolul cu numele &apos;%1&apos; există deja. Salvaţi peste acesta?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="259"/>
@@ -50293,7 +50081,7 @@ Error was:%2</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1424"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1486"/>
         <source>Format</source>
-        <translation type="unfinished">Format</translation>
+        <translation>Format</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1345"/>
@@ -50392,10 +50180,6 @@ Error was:%2</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="408"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
         <translation>Specificaţi sistemul de coordonate de referinţă al geometriei stratului.</translation>
-    </message>
-    <message>
-        <source>Current</source>
-        <translation type="obsolete">Actual</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="495"/>
@@ -51127,7 +50911,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="197"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunteţi sigur că doriţi ştergerea conexiunii %1 şi a setărilor sale aferente?</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="199"/>
@@ -52216,7 +52000,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1018"/>
         <source>Dom Exception</source>
-        <translation type="unfinished">Excepţie dom</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1073"/>
@@ -52909,10 +52693,6 @@ Reason phrase: %2</source>
 </context>
 <context>
     <name>QgsWmtsDimensionsBase</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Dialog</translation>
-    </message>
     <message>
         <location filename="../src/ui/qgswmtsdimensionsbase.ui" line="14"/>
         <source>Select dimensions</source>
@@ -53743,7 +53523,7 @@ Descriere:%3</translation>
         <location filename="../python/console/console_settings.ui" line="428"/>
         <location filename="../python/console/console_settings.ui" line="960"/>
         <source>Comment:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Comentariu:</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="442"/>
@@ -53973,14 +53753,6 @@ Descriere:%3</translation>
         <translation>Unitate</translation>
     </message>
     <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">Milimetru</translation>
-    </message>
-    <message>
-        <source>Map unit</source>
-        <translation type="obsolete">Unitatea hărţii</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="46"/>
         <source>Opacity</source>
         <translation>Opacitate</translation>
@@ -53991,8 +53763,9 @@ Descriere:%3</translation>
         <translation>Culoare</translation>
     </message>
     <message>
-        <source>Symbol</source>
-        <translation type="obsolete">Simbol</translation>
+        <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="245"/>
+        <source>Open Library</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="119"/>
@@ -54018,15 +53791,6 @@ Descriere:%3</translation>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="219"/>
         <source>Symbols in group</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="245"/>
-        <source>Open Library</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saved styles</source>
-        <translation type="obsolete">Stiluri salvate</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="296"/>
@@ -54225,10 +53989,6 @@ Descriere:%3</translation>
         <translation type="unfinished">Margine</translation>
     </message>
     <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">Milimetru</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="199"/>
         <source>Left</source>
         <translation type="unfinished">Stânga</translation>
@@ -54317,10 +54077,6 @@ Descriere:%3</translation>
         <translation>Rotaţie</translation>
     </message>
     <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">Milimetru</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="175"/>
         <source>Anchor point</source>
         <translation type="unfinished"></translation>
@@ -54381,7 +54137,7 @@ Descriere:%3</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formă</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="41"/>
@@ -54457,13 +54213,13 @@ Descriere:%3</translation>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="207"/>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="278"/>
         <source>x</source>
-        <translation type="unfinished">x</translation>
+        <translation>x</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="227"/>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="298"/>
         <source>y</source>
-        <translation type="unfinished"></translation>
+        <translation>y</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="244"/>
@@ -54479,21 +54235,17 @@ Descriere:%3</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="340"/>
         <source>Angle</source>
-        <translation type="unfinished">Unghi</translation>
+        <translation>Angle</translation>
     </message>
     <message utf8="true">
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="347"/>
         <source> °</source>
-        <translation type="unfinished"> °</translation>
+        <translation> °</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="366"/>
         <source>Data defined properties...</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">Milimetru</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="424"/>
@@ -54512,10 +54264,6 @@ Descriere:%3</translation>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="41"/>
         <source>Angle</source>
         <translation>Unghi</translation>
-    </message>
-    <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">Milimetru</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="130"/>
@@ -54590,10 +54338,6 @@ Descriere:%3</translation>
         <source>on central point</source>
         <translation>pe punctul central</translation>
     </message>
-    <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">Milimetru</translation>
-    </message>
 </context>
 <context>
     <name>WidgetPointPatternFill</name>
@@ -54606,10 +54350,6 @@ Descriere:%3</translation>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="74"/>
         <source>Vertical distance</source>
         <translation>Distanţă verticală</translation>
-    </message>
-    <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">Milimetru</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="140"/>
@@ -54655,10 +54395,6 @@ Descriere:%3</translation>
         <translation>Lăţimea texturii</translation>
     </message>
     <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">Milimetru</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="157"/>
         <source>Colors</source>
         <translation type="unfinished">Culori</translation>
@@ -54699,7 +54435,7 @@ Descriere:%3</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formă</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="20"/>
@@ -54735,10 +54471,6 @@ Descriere:%3</translation>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="123"/>
         <source>Shade to a set distance:</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">Milimetru</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="154"/>
@@ -54794,10 +54526,6 @@ Descriere:%3</translation>
         <translation type="unfinished">Stil îmbinare</translation>
     </message>
     <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">Milimetru</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="235"/>
         <source>Data defined properties...</source>
         <translation type="unfinished"></translation>
@@ -54805,7 +54533,7 @@ Descriere:%3</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="35"/>
         <source>Fill</source>
-        <translation type="unfinished">Umplere</translation>
+        <translation>Umplere</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="67"/>
@@ -54834,10 +54562,6 @@ Descriere:%3</translation>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="73"/>
         <source>Pen width</source>
         <translation>Lăţimea peniţei</translation>
-    </message>
-    <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">Milimetru</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="112"/>
@@ -54895,16 +54619,12 @@ Descriere:%3</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="29"/>
         <source>Fill</source>
-        <translation type="unfinished">Umplere</translation>
+        <translation>Umplere</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="61"/>
         <source>Border</source>
         <translation type="unfinished">Margine</translation>
-    </message>
-    <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">Milimetru</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="138"/>
@@ -54983,10 +54703,6 @@ Descriere:%3</translation>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="14"/>
         <source>Form</source>
         <translation>Formă</translation>
-    </message>
-    <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">Milimetru</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="84"/>
@@ -55084,7 +54800,7 @@ Descriere:%3</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formă</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="23"/>
@@ -55185,10 +54901,6 @@ Descriere:%3</translation>
         <translation>Conform acelor de ceasornic dinspre nord</translation>
     </message>
     <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">Milimetru</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="95"/>
         <source>Distance unit</source>
         <translation type="unfinished">Unitate de distanţă</translation>
@@ -55230,7 +54942,7 @@ Descriere:%3</translation>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="14"/>
         <source>Topology Checker</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verificare topologie</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="41"/>
@@ -57080,7 +56792,7 @@ For support send a mail to scala@itc.cnr.it
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="75"/>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="229"/>
         <source>Undefined</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nedefinit</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="77"/>
@@ -57808,7 +57520,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished">Cea mai apropiată analiză</translation>
+        <translation>Analiza celui mai apropiat vecin:</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
@@ -57840,7 +57552,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="unfinished">Rețea vector</translation>
+        <translation>Grilă vectorială</translation>
     </message>
     <message>
         <source>Select by location</source>
@@ -57860,7 +57572,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zonă(e) tampon</translation>
     </message>
     <message>
         <source>Intersect</source>
@@ -57880,7 +57592,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished">Dizolvă</translation>
+        <translation>Dizolvă</translation>
     </message>
     <message>
         <source>Difference</source>
@@ -57892,55 +57604,55 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Instrumente G&amp;eometrie</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished">Exportare/adăugare coloane geometrie</translation>
+        <translation>Exportă/Adaugă coloane de geometrie</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">Verificaţi validitatea geometriei</translation>
+        <translation>Verifică validitatea geometriei</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished">Centroid poligonal</translation>
+        <translation>Centroizi poligoane</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="unfinished">Triangulaţie Delaunay</translation>
+        <translation>Triangulație Delaunay </translation>
     </message>
     <message>
         <source>Voronoi Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Poligoane Voronoi</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished">Extrage noduri</translation>
+        <translation>Extragere noduri</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished">Simplificare geometrii</translation>
+        <translation>Simplificare geometrii</translation>
     </message>
     <message>
         <source>Densify geometries</source>
-        <translation type="unfinished">Densificare geometrii</translation>
+        <translation>Densificare geometrii</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished">De la multipărţi la părţi separate</translation>
+        <translation>De la multipărţi la părţi separate</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished">De la părţi separate la multipărţi</translation>
+        <translation>De la părţi separate la multipărţi</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished">Poligoane la linii</translation>
+        <translation>De la poligoane la linii</translation>
     </message>
     <message>
         <source>Lines to polygons</source>
-        <translation type="unfinished">Linii la poligoane</translation>
+        <translation>De la linii la poligoane</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
@@ -57948,23 +57660,23 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished">Definește proiecţia curentă</translation>
+        <translation>Definește proiecţia curentă</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="unfinished">Unește atributele în funcție de locație</translation>
+        <translation>Unește atributele în funcție de locație</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="unfinished">Divizează stratul vectorial</translation>
+        <translation>Divide stratul vectorial</translation>
     </message>
     <message>
         <source>Merge shapefiles to one</source>
-        <translation type="unfinished"></translation>
+        <translation>Unește fișierele shape într-unul singur</translation>
     </message>
     <message>
         <source>Create spatial index</source>
-        <translation type="unfinished"></translation>
+        <translation>Creează index spațial</translation>
     </message>
 </context>
 <context>
@@ -59295,7 +59007,19 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funcția $uuid&lt;/h3&gt;
+Generează un Identificator Unic Universal (UUID) pentru fiecare rând care folosește metoda Qt
+&lt;a href=&apos;http://qt-project.org/doc/qt-4.8/quuid.html#createUuid&apos;&gt;QUuid::createUuid&lt;/a&gt;.  Fiecare UUID are o lungime de 38 caractere.
+
+&lt;h4&gt;Sintaxă&lt;/h4&gt;
+&lt;pre&gt;$uuid&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Niciunul
+
+&lt;h4&gt;Exemplu&lt;/h4&gt;
+&lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="592"/>
@@ -60720,7 +60444,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="7"/>
         <source>(1-256)</source>
-        <translation type="unfinished"></translation>
+        <translation>(1-256)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="8"/>
@@ -60910,7 +60634,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="45"/>
         <source>Calculate statistics for raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Calculează statistici pentru raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="46"/>
@@ -60960,7 +60684,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="55"/>
         <source>Change field</source>
-        <translation type="unfinished"></translation>
+        <translation>Schimbare câmp</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="56"/>
@@ -60970,7 +60694,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="57"/>
         <source>Change resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Schimbare rezoluție</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="58"/>
@@ -60990,7 +60714,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="61"/>
         <source>Choose appropriate format</source>
-        <translation type="unfinished"></translation>
+        <translation>Alegeți formatul adecvat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="62"/>
@@ -61020,7 +60744,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="67"/>
         <source>Concentric circles</source>
-        <translation type="unfinished"></translation>
+        <translation>Cercuri concentrice</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="68"/>
@@ -61045,7 +60769,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="72"/>
         <source>Convert 2D vector to 3D vector by sampling of elevation raster. Default sampling by nearest neighbour</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertiți vectorul 2D în vector 3D prin eșantionarea altitudinii rasterului. Eșantionarea implicită după cel mai apropiat vecin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="73"/>
@@ -61140,7 +60864,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="91"/>
         <source>Count of neighbouring points</source>
-        <translation type="unfinished"></translation>
+        <translation>Numărul celor mai apropiate puncte vecine</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="92"/>
@@ -61190,7 +60914,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="101"/>
         <source>Create grid in current region</source>
-        <translation type="unfinished"></translation>
+        <translation>Creare grilă în regiunea curentă</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="102"/>
@@ -61575,12 +61299,12 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="178"/>
         <source>Export raster to ESRI ARCGRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportă raster ca ESRI ARCGRID</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="179"/>
         <source>Export raster to GRIDATB.FOR map file (TOPMODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Export raster ca hartă fișier GRIDATB.FOR (Topmodel)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="180"/>
@@ -61845,157 +61569,157 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="232"/>
         <source>Hydrologic modelling</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelare hidraulică</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="233"/>
         <source>Imagery</source>
-        <translation type="unfinished"></translation>
+        <translation>Imagini</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="234"/>
         <source>Import ASCII raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare raster ASCII </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="235"/>
         <source>Import DXF vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare vector DXF</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="236"/>
         <source>Import ESRI ARC/INFO ASCII GRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare ESRI ARC/INFO ASCII GRID</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="237"/>
         <source>Import ESRI E00 vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare vector ESRI E00 </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="238"/>
         <source>Import GDAL supported raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare raster suportat de GDAL</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="239"/>
         <source>Import GDAL supported raster and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare raster suportat de GDAL și crearea unei locații potrivite</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="240"/>
         <source>Import GRIDATB.FOR (TOPMODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare GRIDATB.FOR (TOPMODEL)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="241"/>
         <source>Import MapGen or MatLab vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare vector MapGen sau MatLab</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="242"/>
         <source>Import OGR vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare vector OGR</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="243"/>
         <source>Import OGR vector and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare raster suportat de OGR și crearea unei locații potrivite</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="244"/>
         <source>Import OGR vectors in a given data source combining them in a GRASS vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare vectori OGR dintr-o sursă de date dată, combinându-i într-un vector GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="245"/>
         <source>Import SPOT VGT NDVI</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare SPOT VGT NDVI</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="246"/>
         <source>Import SRTM HGT</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare SRTM HGT</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="247"/>
         <source>Import US-NGA GEOnet Names Server (GNS) country file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare fișiere naționale US-NGA GEOnet Names Server (GNS)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="248"/>
         <source>Import all OGR/PostGIS vectors in a given data source and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Importarea tuturor vectorilor OGR / PostGIS  dintr-o sursă de date dată și crearea unei locații potrivite</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="249"/>
         <source>Import attribute tables in various formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare diferite formate de tabele de atribute</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="250"/>
         <source>Import binary MAT-File(v4)</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare binară MAT-File(v4)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="251"/>
         <source>Import binary raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare raster binar</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="252"/>
         <source>Import from database into GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare dintr-o bază de date în GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="253"/>
         <source>Import geonames.org country files</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare fișiere naționale geonames.org</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="254"/>
         <source>Import into GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare în GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="255"/>
         <source>Import loaded raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare raster încărcat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="256"/>
         <source>Import loaded raster and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare raster importat și crearea unei locații potrivite</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="257"/>
         <source>Import loaded vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare vector importat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="258"/>
         <source>Import loaded vector and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare vector încărcat și crearea unei locații potrivite</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="259"/>
         <source>Import only some layers of a DXF vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare doar a unor straturi dintr-un vector DXF</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="260"/>
         <source>Import raster from ASCII polygon/line</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare raster din poligon/linie ASCII</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="261"/>
         <source>Import raster from coordinates using univariate statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare raster din coordonate, folosind statistici univariate</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="262"/>
         <source>Import raster into GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Importare raster din GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="263"/>
@@ -62195,7 +61919,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="302"/>
         <source>Neighborhood analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analiza celui mai apropiat vecin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="303"/>
@@ -62330,7 +62054,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="329"/>
         <source>Raster neighbours analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Cel mai apropiat raster vecin:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="330"/>
@@ -62720,17 +62444,17 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="407"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 4 raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformare Tasseled Cap (Kauth Thomas) pentru raster LANDSAT-TM 4</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="408"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 5 raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformare Tasseled Cap (Kauth Thomas) pentru raster LANDSAT-TM 5</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="409"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 7 raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformare Tasseled Cap (Kauth Thomas) pentru raster LANDSAT-TM 7</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="410"/>
@@ -62780,12 +62504,12 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="419"/>
         <source>Transform features</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformare entități</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="420"/>
         <source>Transform image</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformare imagine</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="421"/>
@@ -62917,7 +62641,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <name>optionsDialog</name>
     <message>
         <source>Warning!</source>
-        <translation type="unfinished"></translation>
+        <translation>Atenție</translation>
     </message>
     <message>
         <source>You need to add some APIs file in order to compile</source>
@@ -62961,17 +62685,17 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="20"/>
         <source>Current Rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Reguli curente</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="100"/>
         <source>Add Rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaugă regulă</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="112"/>
         <source>Rule</source>
-        <translation type="unfinished">Regulă</translation>
+        <translation>Regulă</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="117"/>
@@ -63204,7 +62928,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     </message>
     <message>
         <source>Nearest neighbour index:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cel mai apropiat index vecin:</translation>
     </message>
     <message>
         <source>Z-Score:</source>
@@ -63234,12 +62958,12 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../python/plugins/processing/ui/widgetOutputSelect.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formular</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/widgetOutputSelect.ui" line="29"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 </TS>

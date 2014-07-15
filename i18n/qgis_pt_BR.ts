@@ -11540,27 +11540,27 @@ Resposta foi:
 <context>
     <name>QSpatiaLiteDriver</name>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="578"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="577"/>
         <source>Error opening database</source>
         <translation>Erro ao abrir base de dados</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="592"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="591"/>
         <source>Error closing database</source>
         <translation>Erro ao fechar base de dados</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="612"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="611"/>
         <source>Unable to begin transaction</source>
         <translation>Impossível iniciar transação</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="627"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="626"/>
         <source>Unable to commit transaction</source>
         <translation>Impossível enviar transação</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="642"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="641"/>
         <source>Unable to rollback transaction</source>
         <translation>Impossível retornar transação</translation>
     </message>
@@ -11580,27 +11580,27 @@ Resposta foi:
         <translation>Sem consulta</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="365"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="364"/>
         <source>Unable to execute statement</source>
         <translation>Impossível executar instrução</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="370"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="369"/>
         <source>Unable to execute multiple statements at a time</source>
         <translation>Impossível executar instruções múltiplas em uma vez</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="390"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="389"/>
         <source>Unable to reset statement</source>
         <translation>Impossível reiniciar instrução</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="435"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="434"/>
         <source>Unable to bind parameters</source>
         <translation>Impossível vincular parâmetros</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="442"/>
+        <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="441"/>
         <source>Parameter count mismatch</source>
         <translation>Incompatibilidade na contagem do parâmetro</translation>
     </message>
@@ -18023,18 +18023,18 @@ Tente uma resolução ou um tamanho de papel menor</translation>
 <context>
     <name>QgsComposerMap</name>
     <message>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="127"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="128"/>
         <source>Map %1</source>
         <translation>Mapa %1</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="321"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="322"/>
         <source>Map will be printed here</source>
         <translation>O mapa será impresso aqui</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="1324"/>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="1465"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="1325"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="1466"/>
         <source>Grid %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18043,50 +18043,57 @@ Tente uma resolução ou um tamanho de papel menor</translation>
     <name>QgsComposerMapWidget</name>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="58"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="371"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="552"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="372"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="553"/>
         <source>Cache</source>
         <translation>Cache</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="59"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="376"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="557"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="377"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="558"/>
         <source>Render</source>
         <translation>Desenhar</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="60"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="381"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="562"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="382"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="563"/>
         <source>Rectangle</source>
         <translation>Retângulo</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="62"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1287"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1303"/>
         <source>Solid</source>
         <translation>Sólido</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="63"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1283"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1604"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1285"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1664"/>
         <source>Cross</source>
         <translation>Cruz</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="65"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="64"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1294"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1674"/>
+        <source>Markers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="66"/>
         <source>Decimal</source>
         <translation>Decimal</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="66"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="67"/>
         <source>DegreeMinute</source>
         <translation>GrauMinuto</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="67"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="68"/>
         <source>DegreeMinuteSecond</source>
         <translation>GrauMinutoSegundo</translation>
     </message>
@@ -18095,151 +18102,162 @@ Tente uma resolução ou um tamanho de papel menor</translation>
         <translation type="obsolete">Sem moldura</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1540"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1600"/>
         <source>Zebra</source>
         <translation>Zebra</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="409"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="410"/>
         <source>Map scale changed</source>
         <translation>Escala do mapa modificada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="421"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="422"/>
         <source>Map rotation changed</source>
         <translation>Rotação do mapa modificada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="466"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="692"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="467"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="693"/>
         <source>Map extent changed</source>
         <translation>Extensão do mapa modificada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="69"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="70"/>
         <source>Select font color</source>
         <translation>Selecionar a cor da fonte</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="82"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="83"/>
         <source>Select grid frame color</source>
         <translation>Selecionar cor da moldura da grade</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="84"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="86"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="85"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="87"/>
         <source>Select grid frame fill color</source>
         <translation>Selecionar cor do preenchimento da moldura da grade</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="778"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="779"/>
         <source>Canvas items toggled</source>
         <translation>Itens da tela alternados</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="795"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1029"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1053"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="796"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1023"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1047"/>
         <source>None</source>
         <translation>Nenhum</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="847"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="848"/>
         <source>Overview frame style changed</source>
         <translation>Estilo da moldura da Visão Geral modificada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="881"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="882"/>
         <source>Overview centering mode changed</source>
         <translation>Modo de centralização da Visão Geral alterado</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1098"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1092"/>
         <source>Grid %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1100"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1094"/>
         <source>Add map grid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1332"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1564"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1201"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1268"/>
+        <source>Draw &quot;%1&quot; grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1357"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1624"/>
         <source>Map unit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1336"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1568"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1361"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1628"/>
         <source>Millimeter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1340"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1572"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1365"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1632"/>
         <source>Centimeter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1345"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1370"/>
         <source>change...</source>
         <translation type="unfinished">mudar...</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1454"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1434"/>
+        <source>Grid markers style changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1514"/>
         <source>Cross width changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1468"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1528"/>
         <source>Frame width changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1563"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1623"/>
         <source>Changed grid unit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1587"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1647"/>
         <source>Grid blend mode changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1631"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1713"/>
         <source>Grid CRS changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1742"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1824"/>
         <source>Annotation color changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1836"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1918"/>
         <source>Grid checkbox toggled</source>
         <translation>Caixa de verificação da grade alternada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1394"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1409"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1454"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1469"/>
         <source>Grid interval changed</source>
         <translation>Intervalo do Grid modificado</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1424"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1439"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1484"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1499"/>
         <source>Grid offset changed</source>
         <translation>Deslocamento do Grid modificado</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1374"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1409"/>
         <source>Grid line style changed</source>
         <translation>Estilo da linha de grade modificada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1603"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1663"/>
         <source>Grid type changed</source>
         <translation>Tipo do Grid modificado</translation>
     </message>
@@ -18248,7 +18266,7 @@ Tente uma resolução ou um tamanho de papel menor</translation>
         <translation type="obsolete">Espessura da cruz do Grid modificada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1726"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1808"/>
         <source>Annotation font changed</source>
         <translation>Fonte da anotação moficada</translation>
     </message>
@@ -18257,27 +18275,27 @@ Tente uma resolução ou um tamanho de papel menor</translation>
         <translation type="obsolete">Fonte do rótulo modificada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1702"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1784"/>
         <source>Annotation distance changed</source>
         <translation>Distância da anotação modificada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1756"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1838"/>
         <source>Annotation format changed</source>
         <translation>Formato da anotação moficada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1647"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1729"/>
         <source>Annotation toggled</source>
         <translation>Anotação alternada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1772"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1854"/>
         <source>Changed annotation precision</source>
         <translation>Precisão da anotação modificada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1539"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1599"/>
         <source>Changed grid frame style</source>
         <translation>Estilo da grade de moldura modificado</translation>
     </message>
@@ -18286,70 +18304,70 @@ Tente uma resolução ou um tamanho de papel menor</translation>
         <translation type="obsolete">Estilo da grade de moldura modificado</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1482"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1542"/>
         <source>Changed grid frame line thickness</source>
         <translation>Espessura da linha da moldura da grade alterada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1497"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1557"/>
         <source>Grid frame color changed</source>
         <translation>Cor da moldura da grade alterada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1511"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1571"/>
         <source>Grid frame first fill color changed</source>
         <translation>Primeira cor de preenchimento da moldura da grade alterada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1525"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1585"/>
         <source>Grid frame second fill color changed</source>
         <translation>Segunda cor de preenchimento da moldura da grade alterada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="902"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="921"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="969"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="903"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="923"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="972"/>
         <source>Inside frame</source>
         <translation>Dentro da moldura</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="903"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="973"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="904"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="976"/>
         <source>Outside frame</source>
         <translation>Fora da moldura</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="904"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="925"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="977"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="905"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="927"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="980"/>
         <source>Disabled</source>
         <translation>Desabilitado</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="909"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="947"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="994"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="910"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="950"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="997"/>
         <source>Horizontal</source>
         <translation>Horizontal</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="910"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="990"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="911"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="993"/>
         <source>Vertical</source>
         <translation>Vertical</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="920"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="922"/>
         <source>Annotation position changed</source>
         <translation>Posição da anotação modificada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="946"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="949"/>
         <source>Changed annotation direction</source>
         <translation>Direção da anotação modificada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1042"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1036"/>
         <source>Map %1</source>
         <translation>Mapa %1</translation>
     </message>
@@ -18437,7 +18455,7 @@ Tente uma resolução ou um tamanho de papel menor</translation>
         <translation>Controlado pelo atlas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="364"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="384"/>
         <source>Margin around feature</source>
         <translation>Margem em torno da feição</translation>
     </message>
@@ -18452,12 +18470,12 @@ Tente uma resolução ou um tamanho de papel menor</translation>
         <translation>Escala fixa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="381"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="361"/>
         <source>Use one of the predefined scales of the project where the atlas feature best fits.</source>
         <translation>Use uma das escalas predefinidas do projeto onde o atlas apresentam melhor se encaixa.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="384"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="364"/>
         <source>Predefined scale (best fit)</source>
         <translation>Escala predefinida (melhor ajuste)</translation>
     </message>
@@ -18470,68 +18488,76 @@ Tente uma resolução ou um tamanho de papel menor</translation>
         <translation type="obsolete">&amp;Tipo de grade</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="546"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="593"/>
         <source>Offset</source>
         <translation>Afastamento</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="688"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="643"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="738"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="755"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="926"/>
         <source> mm</source>
         <translation> mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="663"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="670"/>
         <source>Blend mode</source>
         <translation>Modo de mistura</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="506"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="553"/>
         <source>Interval</source>
         <translation>Intervalo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="672"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="680"/>
         <source>Grid frame</source>
         <translation>Moldura da grade</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="678"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="728"/>
         <source>Frame size</source>
         <translation>Tamanho da moldura</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="708"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="762"/>
         <source>Frame line thickness</source>
         <translation>Espessura da linha da moldura</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="729"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="700"/>
         <source>Color...</source>
         <translation>Cor...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="736"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="707"/>
         <source>Frame fill colors</source>
         <translation>Cores de preenchimento da moldura</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="993"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="952"/>
+        <source>Marker style</source>
+        <translation type="unfinished">Estilo de marcadores</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1017"/>
         <source>Overview blending mode</source>
         <translation>Visão geral do modo de mistura</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1003"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1027"/>
         <source>Invert overview</source>
         <translation>Inverter visão geral</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1010"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1034"/>
         <source>Center on overview</source>
         <translation>Centralizar na visão geral</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="518"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="558"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="565"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="605"/>
         <source>X </source>
         <translation>X </translation>
     </message>
@@ -18541,23 +18567,23 @@ Tente uma resolução ou um tamanho de papel menor</translation>
         <translation> °</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="531"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="571"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="578"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="618"/>
         <source>Y </source>
         <translation>Y </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="586"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="633"/>
         <source>Cross width</source>
         <translation>Espessura do cruzamento</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="695"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="745"/>
         <source>Frame style</source>
         <translation>Estilo de moldura</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="603"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="653"/>
         <source>Line style</source>
         <translation>Estilo de linha</translation>
     </message>
@@ -18573,137 +18599,158 @@ Tente uma resolução ou um tamanho de papel menor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="394"/>
-        <source>Grid</source>
-        <translation type="unfinished">Grade</translation>
+        <source>Grids</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="461"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="405"/>
+        <source>Add a new grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="419"/>
+        <source>Remove selected grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="433"/>
+        <source>Move selected grid up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="447"/>
+        <source>Move selected grid down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="479"/>
         <source>Draw grid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="493"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="500"/>
         <source>Grid type</source>
         <translation type="unfinished">Tipo de grade</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="613"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="627"/>
-        <source>change...</source>
-        <translation>mudar...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="620"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="513"/>
         <source>CRS</source>
         <translation type="unfinished">SRC</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="634"/>
-        <source>Unit</source>
-        <translation type="unfinished">Unidade</translation>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="520"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="663"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="962"/>
+        <source>change...</source>
+        <translation>mudar...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="642"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="527"/>
+        <source>Interval units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="535"/>
         <source>Map unit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="647"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="540"/>
         <source>Millimeter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="652"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="545"/>
         <source>Centimeter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="716"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="687"/>
         <source>No frame</source>
         <translation type="unfinished">Sem moldura</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="721"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="692"/>
         <source>Zebra</source>
         <translation type="unfinished">Zebra</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="763"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="775"/>
         <source>Draw coordinates</source>
         <translation>Desenhar coordenadas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="796"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="799"/>
         <source>Format</source>
         <translation>Formato</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="806"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="809"/>
         <source>Left</source>
         <translation>Esquerda</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="825"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="828"/>
         <source>Right</source>
         <translation>Direita</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="844"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="847"/>
         <source>Top</source>
         <translation>Topo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="863"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="866"/>
         <source>Bottom</source>
         <translation>Base</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="882"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="885"/>
         <source>Font</source>
         <translation>Fonte</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="889"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="892"/>
         <source>Font...</source>
         <translation>Fonte...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="896"/>
-        <source>Distance to map frame</source>
-        <translation>Distância a moldura do mapa</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="912"/>
-        <source>Coordinate precision</source>
-        <translation>Precisão da coordenada</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="928"/>
-        <source>Font color...</source>
-        <translation>Cor da fonte...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="935"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="899"/>
         <source>Font color</source>
         <translation type="unfinished">Cor da fonte</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="951"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="913"/>
+        <source>Distance to map frame</source>
+        <translation>Distância a moldura do mapa</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="933"/>
+        <source>Coordinate precision</source>
+        <translation>Precisão da coordenada</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="906"/>
+        <source>Font color...</source>
+        <translation>Cor da fonte...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="975"/>
         <source>Overview</source>
         <translation>Visão Geral</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="969"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="993"/>
         <source>Overview frame</source>
         <translation>Moldura da visão geral</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="979"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1003"/>
         <source>Overview style</source>
         <translation>Estilo da visão geral</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="986"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1010"/>
         <source>Change...</source>
         <translation>Mudar ...</translation>
     </message>
@@ -18744,18 +18791,18 @@ Tente uma resolução ou um tamanho de papel menor</translation>
 <context>
     <name>QgsComposerPicture</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="294"/>
+        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="295"/>
         <source>Picture expression parsing error: %1</source>
         <translation>Análise de erro na expressão da imagem: 1%</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="294"/>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="330"/>
+        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="295"/>
+        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="331"/>
         <source>Composer</source>
         <translation>Compositor</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="330"/>
+        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="331"/>
         <source>Picture expression eval error: %1</source>
         <translation>Aval de erro na expressão da imagem: 1%</translation>
     </message>

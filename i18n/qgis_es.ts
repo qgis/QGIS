@@ -7231,11 +7231,11 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Select Single Feature</source>
-        <translation>Seleccionar objetos espaciales individuales</translation>
+        <translation type="obsolete">Seleccionar objetos espaciales individuales</translation>
     </message>
     <message>
         <source>Select Features by Rectangle</source>
-        <translation>Seleccionar objetos espaciales por rectángulo</translation>
+        <translation type="obsolete">Seleccionar objetos espaciales por rectángulo</translation>
     </message>
     <message>
         <source>Select Features by Polygon</source>
@@ -7646,6 +7646,14 @@ Actúa sobre la capa actual en edición</translation>
     <message>
         <source>Simulate Color Blindness (Deuteranope)</source>
         <translation>Simular falta de color (deuteranope)</translation>
+    </message>
+    <message>
+        <source>Select Feature(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Features by area or single click</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11083,11 +11091,11 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     </message>
     <message>
         <source>SQL Anywhere plugin</source>
-        <translation>Complemento SQL Anywhere</translation>
+        <translation type="obsolete">Complemento SQL Anywhere</translation>
     </message>
     <message>
         <source>Store vector layers within a SQL Anywhere database</source>
-        <translation>Guarda capas vectoriales en una base de datos SQL Anywhere</translation>
+        <translation type="obsolete">Guarda capas vectoriales en una base de datos SQL Anywhere</translation>
     </message>
     <message>
         <source>Arc/Info Binary Coverage</source>
@@ -12015,11 +12023,11 @@ SQL: %1</translation>
     </message>
     <message>
         <source>Error describing bind parameters</source>
-        <translation>Error al describir parámetros de enlace</translation>
+        <translation type="obsolete">Error al describir parámetros de enlace</translation>
     </message>
     <message>
         <source>Error binding parameters</source>
-        <translation>Error enlazando parámetros</translation>
+        <translation type="obsolete">Error enlazando parámetros</translation>
     </message>
     <message>
         <source>WFS</source>
@@ -18769,6 +18777,10 @@ Should the existing classes be deleted before classification?</source>
         <source>Paste color</source>
         <translation>Pegar color</translation>
     </message>
+    <message>
+        <source>Pick color</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsColorDialog</name>
@@ -21210,6 +21222,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>Map %1</source>
         <translation>Mapa %1</translation>
     </message>
+    <message>
+        <source>Grid %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerMapWidget</name>
@@ -21303,7 +21319,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Grid cross width changed</source>
-        <translation>Cambiada la anchura de cruz de la cuadrícula</translation>
+        <translation type="obsolete">Cambiada la anchura de cruz de la cuadrícula</translation>
     </message>
     <message>
         <source>Annotation font changed</source>
@@ -21347,7 +21363,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>No frame</source>
-        <translation>Sin marco</translation>
+        <translation type="obsolete">Sin marco</translation>
     </message>
     <message>
         <source>Zebra</source>
@@ -21367,7 +21383,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Changed grid frame width</source>
-        <translation>Cambiada anchura de marco de la cuadrícula</translation>
+        <translation type="obsolete">Cambiada anchura de marco de la cuadrícula</translation>
     </message>
     <message>
         <source>Disabled</source>
@@ -21383,7 +21399,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Label font changed</source>
-        <translation>Cambiado el tipo de letra de la etiqueta</translation>
+        <translation type="obsolete">Cambiado el tipo de letra de la etiqueta</translation>
     </message>
     <message>
         <source>Overview centering mode changed</source>
@@ -21420,6 +21436,66 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Grid line style changed</source>
         <translation>Cambiado el estilo de línea de cuadrícula</translation>
+    </message>
+    <message>
+        <source>Markers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add map grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw &quot;%1&quot; grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Unidad de mapa</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Milímetro</translation>
+    </message>
+    <message>
+        <source>Centimeter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>change...</source>
+        <translation type="unfinished">cambiar...</translation>
+    </message>
+    <message>
+        <source>Grid markers style changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cross width changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Frame width changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Changed grid unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid blend mode changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid CRS changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Annotation color changed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -21474,7 +21550,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Grid &amp;type</source>
-        <translation>&amp;Tipo de cuadrícula</translation>
+        <translation type="obsolete">&amp;Tipo de cuadrícula</translation>
     </message>
     <message>
         <source>Interval X</source>
@@ -21626,7 +21702,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Show grid</source>
-        <translation>Mostrar cuadrícula</translation>
+        <translation type="obsolete">Mostrar cuadrícula</translation>
     </message>
     <message>
         <source>Interval</source>
@@ -21771,6 +21847,70 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>...</source>
         <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Grids</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a new grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected grid up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected grid down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid type</source>
+        <translation type="unfinished">Tipo de cuadrícula</translation>
+    </message>
+    <message>
+        <source>CRS</source>
+        <translation type="unfinished">SRC</translation>
+    </message>
+    <message>
+        <source>Interval units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Unidad de mapa</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Milímetro</translation>
+    </message>
+    <message>
+        <source>Centimeter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No frame</source>
+        <translation type="unfinished">Sin marco</translation>
+    </message>
+    <message>
+        <source>Zebra</source>
+        <translation type="unfinished">Cebra</translation>
+    </message>
+    <message>
+        <source>Font color</source>
+        <translation type="unfinished">Color de letras</translation>
+    </message>
+    <message>
+        <source>Marker style</source>
+        <translation type="unfinished">Estilo de marcadores</translation>
     </message>
 </context>
 <context>
@@ -23351,6 +23491,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source> px</source>
         <translation type="unfinished"> px</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
     </message>
 </context>
 <context>
@@ -51783,19 +51927,19 @@ p, li { white-space: pre-wrap; }
     <name>QgsSqlAnywhereProvider</name>
     <message>
         <source>Failed to load interface</source>
-        <translation>No se pudo cargar la interfaz</translation>
+        <translation type="obsolete">No se pudo cargar la interfaz</translation>
     </message>
     <message>
         <source>Failed to connect to database</source>
-        <translation>No se pudo conectar a la base de datos</translation>
+        <translation type="obsolete">No se pudo conectar a la base de datos</translation>
     </message>
     <message>
         <source>A connection to the SQL Anywhere database cannot be established.</source>
-        <translation>No se puede establecer una conexión con la base de datos SQL Anywhere.</translation>
+        <translation type="obsolete">No se puede establecer una conexión con la base de datos SQL Anywhere.</translation>
     </message>
     <message>
         <source>No suitable key column</source>
-        <translation>No hay una columna de clave adecuada</translation>
+        <translation type="obsolete">No hay una columna de clave adecuada</translation>
     </message>
     <message>
         <source>The source relation %1 has no column suitable for use as a unique key.
@@ -51807,16 +51951,16 @@ Quantum GIS necesita que la relación tenga una columna entera no mayor de 32 bi
     </message>
     <message>
         <source>Error loading attributes</source>
-        <translation>Error al cargar lo atributos</translation>
+        <translation type="obsolete">Error al cargar lo atributos</translation>
     </message>
     <message>
         <source>Ambiguous field!</source>
-        <translation>¡Campo ambiguo!</translation>
+        <translation type="obsolete">¡Campo ambiguo!</translation>
     </message>
     <message>
         <source>Duplicate field %1 found
 </source>
-        <translation>Se ha encontrado duplicado el campo %1
+        <translation type="obsolete">Se ha encontrado duplicado el campo %1
 </translation>
     </message>
     <message>
@@ -51829,39 +51973,39 @@ Quantum GIS necesita que la relación tenga una columna entera no mayor de 32 bi
     </message>
     <message>
         <source>Error inserting features</source>
-        <translation>Error al insertar objetos espaciales</translation>
+        <translation type="obsolete">Error al insertar objetos espaciales</translation>
     </message>
     <message>
         <source>Error deleting features</source>
-        <translation>Error al borrar objetos espaciales</translation>
+        <translation type="obsolete">Error al borrar objetos espaciales</translation>
     </message>
     <message>
         <source>Error adding attributes</source>
-        <translation>Error al añadir atributos</translation>
+        <translation type="obsolete">Error al añadir atributos</translation>
     </message>
     <message>
         <source>Error deleting attributes</source>
-        <translation>Error al borrar atributos</translation>
+        <translation type="obsolete">Error al borrar atributos</translation>
     </message>
     <message>
         <source>Attribute not found</source>
-        <translation>Atributo no encontrado</translation>
+        <translation type="obsolete">Atributo no encontrado</translation>
     </message>
     <message>
         <source>Error updating attributes</source>
-        <translation>Error al actualizar atributos</translation>
+        <translation type="obsolete">Error al actualizar atributos</translation>
     </message>
     <message>
         <source>Error updating features</source>
-        <translation>Error al actualizar objetos espaciales</translation>
+        <translation type="obsolete">Error al actualizar objetos espaciales</translation>
     </message>
     <message>
         <source>Error verifying geometry column %1</source>
-        <translation>Error al verificar la columna de geometría %1</translation>
+        <translation type="obsolete">Error al verificar la columna de geometría %1</translation>
     </message>
     <message>
         <source>Unknown geometry type</source>
-        <translation>Tipo de geometría desconocido</translation>
+        <translation type="obsolete">Tipo de geometría desconocido</translation>
     </message>
     <message>
         <source>Column %1 has a geometry type of %2, which Quantum GIS does not currently support.</source>
@@ -51869,7 +52013,7 @@ Quantum GIS necesita que la relación tenga una columna entera no mayor de 32 bi
     </message>
     <message>
         <source>Mixed Spatial Reference Systems</source>
-        <translation>Sistema de referencia espacial mixto</translation>
+        <translation type="obsolete">Sistema de referencia espacial mixto</translation>
     </message>
     <message>
         <source>Column %1 is not restricted to a single SRID, which Quantum GIS requires.</source>
@@ -51877,11 +52021,11 @@ Quantum GIS necesita que la relación tenga una columna entera no mayor de 32 bi
     </message>
     <message>
         <source>Error checking database ReadOnly property</source>
-        <translation>Error al comprobar la propiedad ReadOnly de la base de datos</translation>
+        <translation type="obsolete">Error al comprobar la propiedad ReadOnly de la base de datos</translation>
     </message>
     <message>
         <source>Error loading SRS definition</source>
-        <translation>Error al cargar la definición del SRE</translation>
+        <translation type="obsolete">Error al cargar la definición del SRE</translation>
     </message>
     <message>
         <source>Because Quantum GIS supports only planar data, the SQL Anywhere data provider will transform the data to the compatible planar projection (SRID=%1).</source>
@@ -51893,47 +52037,47 @@ Quantum GIS necesita que la relación tenga una columna entera no mayor de 32 bi
     </message>
     <message>
         <source>Limited Support of Round Earth SRS</source>
-        <translation>Capacidad limitada para SRE Round Earth</translation>
+        <translation type="obsolete">Capacidad limitada para SRE Round Earth</translation>
     </message>
     <message>
         <source>Column %1 (%2) contains geometries belonging to a round earth spatial reference system (SRID=%3). %4
 
 Updates to geometry values will be disabled, and query performance may be poor because spatial indexes will not be utilized. To improve performance, consider creating a spatial index on a new (possibly computed) column containing a planar projection of these geometries. For help, refer to the descriptions of the ST_SRID(INT) and ST_Transform(INT) methods in the SQL Anywhere documentation.</source>
-        <translation>La columna %1 (%2) contiene geometrías que pertenecen a un sistema de referencia espacial esférico (SRID=%3). %4
+        <translation type="obsolete">La columna %1 (%2) contiene geometrías que pertenecen a un sistema de referencia espacial esférico (SRID=%3). %4
 
 Se desactivarán las actualizaciones de los valores de la geometría y el rendimiento de las consultas puede ser pobre porque no se usarán índices espaciales. Para mejorar el rendimiento piense en crear un índice espacial en una columna nueva (posiblemente procesada) que contenga una proyección plana de esas geometrías. Para ayuda, consulte las descripciones los métodos ST_SRID(INT) y ST_Transform(INT) en la documentación de SQL Anywhere.</translation>
     </message>
     <message>
         <source>Read attempt on an invalid SqlAnywhere data source</source>
-        <translation>Intento de lectura en una fuente de datos SqlAnywhere no válida</translation>
+        <translation type="obsolete">Intento de lectura en una fuente de datos SqlAnywhere no válida</translation>
     </message>
     <message>
         <source>SQLAnywhere</source>
-        <translation>SQLAnywhere</translation>
+        <translation type="obsolete">SQLAnywhere</translation>
     </message>
     <message>
         <source>The source relation %1 has no column suitable for use as a unique key.
 
 QGIS requires that the relation has an integer column no larger than 32 bits containing unique values. </source>
-        <translation>La relación de origen %1 no tiene ninguna columna apta para usarla como clave única.
+        <translation type="obsolete">La relación de origen %1 no tiene ninguna columna apta para usarla como clave única.
 
 QGIS necesita que la relación tenga una columna de enteros no mayor de 32 bits que contenga valores únicos.</translation>
     </message>
     <message>
         <source>Column %1 has a geometry type of %2, which QGIS does not currently support.</source>
-        <translation>La columna %1 tiene un tipo de geometría de %2, que QGIS no soporta actualmente.</translation>
+        <translation type="obsolete">La columna %1 tiene un tipo de geometría de %2, que QGIS no soporta actualmente.</translation>
     </message>
     <message>
         <source>Column %1 is not restricted to a single SRID, which QGIS requires.</source>
-        <translation>La columna %1 no está restringida a un único SRID, que es requerido por QGIS.</translation>
+        <translation type="obsolete">La columna %1 no está restringida a un único SRID, que es requerido por QGIS.</translation>
     </message>
     <message>
         <source>Because QGIS supports only planar data, the SQL Anywhere data provider will transform the data to the compatible planar projection (SRID=%1).</source>
-        <translation>Dado que QGIS sólo admite datos planos, el proveedor de datos SQL Anywhere transformará los datos a la proyección plana compatible (SRID=%1).</translation>
+        <translation type="obsolete">Dado que QGIS sólo admite datos planos, el proveedor de datos SQL Anywhere transformará los datos a la proyección plana compatible (SRID=%1).</translation>
     </message>
     <message>
         <source>Because QGIS supports only planar data and no compatible planar projection was found, the SQL Anywhere data provider will attempt to transform the data to planar WGS 84 (SRID=%1).</source>
-        <translation>Dado que QGIS sólo admite datos planos y no se ha encontrado ninguna proyección plana compatible, el proveedor de datos SQL Anywhere intentará transformar los datos a WGS84 plana (SRID=%1).</translation>
+        <translation type="obsolete">Dado que QGIS sólo admite datos planos y no se ha encontrado ninguna proyección plana compatible, el proveedor de datos SQL Anywhere intentará transformar los datos a WGS84 plana (SRID=%1).</translation>
     </message>
 </context>
 <context>
@@ -58066,61 +58210,61 @@ Frase de motivo: %2</translation>
     <name>SaDbTableModel</name>
     <message>
         <source>Schema</source>
-        <translation>Esquema</translation>
+        <translation type="obsolete">Esquema</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation>Tabla</translation>
+        <translation type="obsolete">Tabla</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>Tipo</translation>
+        <translation type="obsolete">Tipo</translation>
     </message>
     <message>
         <source>SRID</source>
-        <translation>SRID</translation>
+        <translation type="obsolete">SRID</translation>
     </message>
     <message>
         <source>Line Interpretation</source>
-        <translation>Interpretación de línea</translation>
+        <translation type="obsolete">Interpretación de línea</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation>Columna de geometría</translation>
+        <translation type="obsolete">Columna de geometría</translation>
     </message>
     <message>
         <source>Sql</source>
-        <translation>Sql</translation>
+        <translation type="obsolete">Sql</translation>
     </message>
 </context>
 <context>
     <name>SaNewConnection</name>
     <message>
         <source>Save connection</source>
-        <translation>Guardar conexión</translation>
+        <translation type="obsolete">Guardar conexión</translation>
     </message>
     <message>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation>¿Se debe sobrescribir la conexión %1 existente?</translation>
+        <translation type="obsolete">¿Se debe sobrescribir la conexión %1 existente?</translation>
     </message>
     <message>
         <source>Failed to load interface</source>
-        <translation>No se pudo cargar la interfaz</translation>
+        <translation type="obsolete">No se pudo cargar la interfaz</translation>
     </message>
     <message>
         <source>Test connection</source>
-        <translation>Probar conexión</translation>
+        <translation type="obsolete">Probar conexión</translation>
     </message>
     <message>
         <source>Connection to %1 was successful</source>
-        <translation>La conexión a %1 tuvo éxito</translation>
+        <translation type="obsolete">La conexión a %1 tuvo éxito</translation>
     </message>
     <message>
         <source>Connection failed. Check settings and try again.
 
 SQL Anywhere error code: %1
 Description: %2</source>
-        <translation>Falló la conexión - Compruebe la configuración y vuelva a probar.
+        <translation type="obsolete">Falló la conexión - Compruebe la configuración y vuelva a probar.
 
 Código de error de SQL Anywhere: %1
 Descripción: %2</translation>
@@ -58130,119 +58274,119 @@ Descripción: %2</translation>
     <name>SaNewConnectionBase</name>
     <message>
         <source>Create a new SQL Anywhere connection</source>
-        <translation>Crear una nueva conexión SQL Anywhere</translation>
+        <translation type="obsolete">Crear una nueva conexión SQL Anywhere</translation>
     </message>
     <message>
         <source>Connection Information</source>
-        <translation>Información sobre la conexión</translation>
+        <translation type="obsolete">Información sobre la conexión</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nombre</translation>
+        <translation type="obsolete">Nombre</translation>
     </message>
     <message>
         <source>Host</source>
-        <translation>Servidor</translation>
+        <translation type="obsolete">Servidor</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation>Puerto</translation>
+        <translation type="obsolete">Puerto</translation>
     </message>
     <message>
         <source>Server</source>
-        <translation>Servidor</translation>
+        <translation type="obsolete">Servidor</translation>
     </message>
     <message>
         <source>Database</source>
-        <translation>Base de datos</translation>
+        <translation type="obsolete">Base de datos</translation>
     </message>
     <message>
         <source>Connection Parameters</source>
-        <translation>Parámetros de conexión</translation>
+        <translation type="obsolete">Parámetros de conexión</translation>
     </message>
     <message>
         <source>Username</source>
-        <translation>Nombre de usuario</translation>
+        <translation type="obsolete">Nombre de usuario</translation>
     </message>
     <message>
         <source>Password</source>
-        <translation>Contraseña</translation>
+        <translation type="obsolete">Contraseña</translation>
     </message>
     <message>
         <source>Name of the new connection</source>
-        <translation>Nombre de la nueva conexión</translation>
+        <translation type="obsolete">Nombre de la nueva conexión</translation>
     </message>
     <message>
         <source>Name or IP address of computer hosting the database server (leave blank for local connections)</source>
-        <translation>Nombre o dirección IP del ordenador que aloja el servidor de la base de datos (dejar en blanco para conexiones locales)</translation>
+        <translation type="obsolete">Nombre o dirección IP del ordenador que aloja el servidor de la base de datos (dejar en blanco para conexiones locales)</translation>
     </message>
     <message>
         <source>Port number used by the database server (leave blank for default 2638)</source>
-        <translation>Número de puerto usado por el servidor de la base de datos (dejar en blanco para el 2638 predeterminado)</translation>
+        <translation type="obsolete">Número de puerto usado por el servidor de la base de datos (dejar en blanco para el 2638 predeterminado)</translation>
     </message>
     <message>
         <source>Name of the database server (leave blank for default server on host)</source>
-        <translation>Nombre del servidor de la base de datos (dejar en blanco para el servidor predeterminado del servidor)</translation>
+        <translation type="obsolete">Nombre del servidor de la base de datos (dejar en blanco para el servidor predeterminado del servidor)</translation>
     </message>
     <message>
         <source>Name of the database (leave blank for default database on server)</source>
-        <translation>Nombre de la base de datos (dejar en blanco para la base de datos predeterminada del servidor)</translation>
+        <translation type="obsolete">Nombre de la base de datos (dejar en blanco para la base de datos predeterminada del servidor)</translation>
     </message>
     <message>
         <source>Additional connection parameters</source>
-        <translation>Parámetros adicionales de conexión</translation>
+        <translation type="obsolete">Parámetros adicionales de conexión</translation>
     </message>
     <message>
         <source>Database username</source>
-        <translation>Nombre de usuario de la base de datos</translation>
+        <translation type="obsolete">Nombre de usuario de la base de datos</translation>
     </message>
     <message>
         <source>Database password</source>
-        <translation>Contraseña de la base de datos</translation>
+        <translation type="obsolete">Contraseña de la base de datos</translation>
     </message>
     <message>
         <source>Save Username</source>
-        <translation>Guardar nombre de usuario</translation>
+        <translation type="obsolete">Guardar nombre de usuario</translation>
     </message>
     <message>
         <source>Save the connection username in the registry</source>
-        <translation>Guardar el nombre de usuario de la conexión en el registro</translation>
+        <translation type="obsolete">Guardar el nombre de usuario de la conexión en el registro</translation>
     </message>
     <message>
         <source>&amp;Test Connect</source>
-        <translation>&amp;Probar conexión</translation>
+        <translation type="obsolete">&amp;Probar conexión</translation>
     </message>
     <message>
         <source>Save Password</source>
-        <translation>Guardar contraseña</translation>
+        <translation type="obsolete">Guardar contraseña</translation>
     </message>
     <message>
         <source>Save the connection password in the registry (WARNING: NOT SECURE)</source>
-        <translation>Guardar la contraseña de conexión en el registro (AVISO: NO ES SEGURO)</translation>
+        <translation type="obsolete">Guardar la contraseña de conexión en el registro (AVISO: NO ES SEGURO)</translation>
     </message>
     <message>
         <source>Simple Encryption</source>
-        <translation>Encriptado sencillo</translation>
+        <translation type="obsolete">Encriptado sencillo</translation>
     </message>
     <message>
         <source>Encrypt packets using simple encryption</source>
-        <translation>Encriptar paquetes usando encriptado sencillo</translation>
+        <translation type="obsolete">Encriptar paquetes usando encriptado sencillo</translation>
     </message>
     <message>
         <source>Estimate table metadata</source>
-        <translation>Estimar metadatos de la tabla</translation>
+        <translation type="obsolete">Estimar metadatos de la tabla</translation>
     </message>
     <message>
         <source>Use estimates for certain layer properties such as cardinality, extent, etc. (improves performance)</source>
-        <translation>Usar estimas para ciertas propiedades de capa como orientación, extensión, etc. (mejora las prestaciones)</translation>
+        <translation type="obsolete">Usar estimas para ciertas propiedades de capa como orientación, extensión, etc. (mejora las prestaciones)</translation>
     </message>
     <message>
         <source>Search other users&apos; tables</source>
-        <translation>Buscar tablas de otros usuarios</translation>
+        <translation type="obsolete">Buscar tablas de otros usuarios</translation>
     </message>
     <message>
         <source>Search for geometry columns in tables owned by other users</source>
-        <translation>Buscar columnas de geometría en tablas pertenecientes a otros usuarios</translation>
+        <translation type="obsolete">Buscar columnas de geometría en tablas pertenecientes a otros usuarios</translation>
     </message>
 </context>
 <context>
@@ -58304,7 +58448,7 @@ Descripción: %2</translation>
     <name>SaSourceSelect</name>
     <message>
         <source>&amp;Add</source>
-        <translation>&amp;Añadir</translation>
+        <translation type="obsolete">&amp;Añadir</translation>
     </message>
     <message>
         <source>&amp;Build Query</source>
@@ -58312,124 +58456,124 @@ Descripción: %2</translation>
     </message>
     <message>
         <source>Wildcard</source>
-        <translation>Comodín</translation>
+        <translation type="obsolete">Comodín</translation>
     </message>
     <message>
         <source>RegExp</source>
-        <translation>Expresión regular</translation>
+        <translation type="obsolete">Expresión regular</translation>
     </message>
     <message>
         <source>All</source>
-        <translation>Todos</translation>
+        <translation type="obsolete">Todos</translation>
     </message>
     <message>
         <source>Schema</source>
-        <translation>Esquema</translation>
+        <translation type="obsolete">Esquema</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation>Tabla</translation>
+        <translation type="obsolete">Tabla</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>Tipo</translation>
+        <translation type="obsolete">Tipo</translation>
     </message>
     <message>
         <source>SRID</source>
-        <translation>SRID</translation>
+        <translation type="obsolete">SRID</translation>
     </message>
     <message>
         <source>Line Interpretation</source>
-        <translation>Interpretación de línea</translation>
+        <translation type="obsolete">Interpretación de línea</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation>Columna de geometría</translation>
+        <translation type="obsolete">Columna de geometría</translation>
     </message>
     <message>
         <source>Sql</source>
-        <translation>Sql</translation>
+        <translation type="obsolete">Sql</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation>¿Seguro que quiere eliminar la conexión %1 y toda su configuración asociada?</translation>
+        <translation type="obsolete">¿Seguro que quiere eliminar la conexión %1 y toda su configuración asociada?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation>Confirmar borrado</translation>
+        <translation type="obsolete">Confirmar borrado</translation>
     </message>
     <message>
         <source>Select Table</source>
-        <translation>Seleccionar tabla</translation>
+        <translation type="obsolete">Seleccionar tabla</translation>
     </message>
     <message>
         <source>You must select a table in order to add a layer.</source>
-        <translation>Debe seleccionar una tabla para añadir una capa.</translation>
+        <translation type="obsolete">Debe seleccionar una tabla para añadir una capa.</translation>
     </message>
     <message>
         <source>Failed to load interface</source>
-        <translation>No se pudo cargar la interfaz</translation>
+        <translation type="obsolete">No se pudo cargar la interfaz</translation>
     </message>
     <message>
         <source>Connection failed</source>
-        <translation>Falló la conexión</translation>
+        <translation type="obsolete">Falló la conexión</translation>
     </message>
     <message>
         <source>Connection to database %1 failed. Check settings and try again.
 
 SQL Anywhere error code: %2
 Description: %3</source>
-        <translation>Falló la conexión a la base de datos %1- Compruebe la configuración y vuelva a probar.
+        <translation type="obsolete">Falló la conexión a la base de datos %1- Compruebe la configuración y vuelva a probar.
 
 Código de error de SQL Anywhere: %2
 Descripción: %3</translation>
     </message>
     <message>
         <source>No accessible tables found</source>
-        <translation>No se encontraron tablas accesibles</translation>
+        <translation type="obsolete">No se encontraron tablas accesibles</translation>
     </message>
     <message>
         <source>Database connection was successful, but no tables containing geometry columns were %1.</source>
-        <translation>La conexión a la base de datos tuvo éxito, pero no se %1 ninguna tabla que contuviera columnas de geometría.</translation>
+        <translation type="obsolete">La conexión a la base de datos tuvo éxito, pero no se %1 ninguna tabla que contuviera columnas de geometría.</translation>
     </message>
     <message>
         <source>found</source>
-        <translation>encontró</translation>
+        <translation type="obsolete">encontró</translation>
     </message>
     <message>
         <source>found in your schema</source>
-        <translation>encontró en su esquema</translation>
+        <translation type="obsolete">encontró en su esquema</translation>
     </message>
     <message>
         <source>&amp;Set Filter</source>
-        <translation>E&amp;stablecer filtro</translation>
+        <translation type="obsolete">E&amp;stablecer filtro</translation>
     </message>
 </context>
 <context>
     <name>SaSourceSelectBase</name>
     <message>
         <source>Add SQL Anywhere layer</source>
-        <translation>Añadir capa SQL Anywhere</translation>
+        <translation type="obsolete">Añadir capa SQL Anywhere</translation>
     </message>
     <message>
         <source>SQL Anywhere Connections</source>
-        <translation>Conexiones SQL Anywhere</translation>
+        <translation type="obsolete">Conexiones SQL Anywhere</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation>Borrar</translation>
+        <translation type="obsolete">Borrar</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation>Editar</translation>
+        <translation type="obsolete">Editar</translation>
     </message>
     <message>
         <source>New</source>
-        <translation>Nueva</translation>
+        <translation type="obsolete">Nueva</translation>
     </message>
     <message>
         <source>Connect</source>
-        <translation>Conectar</translation>
+        <translation type="obsolete">Conectar</translation>
     </message>
     <message>
         <source>Build query</source>
@@ -58437,19 +58581,19 @@ Descripción: %3</translation>
     </message>
     <message>
         <source>Search options</source>
-        <translation>Opciones de búsqueda</translation>
+        <translation type="obsolete">Opciones de búsqueda</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation>Buscar</translation>
+        <translation type="obsolete">Buscar</translation>
     </message>
     <message>
         <source>Search mode</source>
-        <translation>Modo de búsqueda</translation>
+        <translation type="obsolete">Modo de búsqueda</translation>
     </message>
     <message>
         <source>Search in columns</source>
-        <translation>Buscar en columnas</translation>
+        <translation type="obsolete">Buscar en columnas</translation>
     </message>
 </context>
 <context>
@@ -58862,19 +59006,19 @@ sobre SEXTANTE</translation>
     <name>SqlAnywhere</name>
     <message>
         <source>Add SQL Anywhere Layer...</source>
-        <translation>Añadir capa SQL Anywhere...</translation>
+        <translation type="obsolete">Añadir capa SQL Anywhere...</translation>
     </message>
     <message>
         <source>Store vector layers within a SQL Anywhere database</source>
-        <translation>Guarda capas vectoriales en una base de datos SQL Anywhere</translation>
+        <translation type="obsolete">Guarda capas vectoriales en una base de datos SQL Anywhere</translation>
     </message>
     <message>
         <source>Invalid Layer</source>
-        <translation>Capa no válida</translation>
+        <translation type="obsolete">Capa no válida</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation>%1 es una capa no válida y no se puede cargar.</translation>
+        <translation type="obsolete">%1 es una capa no válida y no se puede cargar.</translation>
     </message>
 </context>
 <context>
@@ -61388,7 +61532,7 @@ To filter a layer before adding it to the map, either double click on its name o
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation>&lt;h3&gt;Añadir tablas de SQL Anywhere&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Añadir tablas de SQL Anywhere&lt;/h3&gt;
 Este diálogo le permite añadir capas de SQL Anywhere (tablas con una columna de geometría) a la vista del mapa de QGIS.
 &lt;p&gt;
 &lt;a href=&quot;#connect&quot;&gt;Conexiones&lt;/a&gt;&lt;br/&gt;
@@ -62250,7 +62394,7 @@ SQL Anywhere database.
 
 &lt;/ul&gt;
 </source>
-        <translation>&lt;h3&gt;Crear una conexión SQL Anywhere nueva&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Crear una conexión SQL Anywhere nueva&lt;/h3&gt;
 Este diálogo permite definir la configuración para la conexión a una base de datos
 SQL Anywhere.
 &lt;p&gt;
@@ -70274,6 +70418,57 @@ None
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;$atlasfeature function&lt;/h3&gt;
+In atlas generation, returns the current feature that is iterated over on the coverage layer. This can be used with the &apos;attribute&apos; function
+to return attribute values from the current atlas feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasfeature&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;attribute( $atlasfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current atlas feature&lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;$currentfeature function&lt;/h3&gt;
+Returns the current feature being evaluated. This can be used with the &apos;attribute&apos; function
+to evaluate attribute values from the current feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$currentfeature&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;attribute function&lt;/h3&gt;
+Returns the value of a specified attribute from a feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;attribute( feature, attribute_name )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+feature &amp;rarr; a feature&lt;br /&gt;
+attribute_name &amp;rarr; name of attribute to be returned
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
+
 </source>
         <translation type="unfinished"></translation>
     </message>
