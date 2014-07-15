@@ -354,10 +354,6 @@ class CORE_EXPORT QgsGeometry
     /** Returns a buffer region around this geometry having the given width and with a specified number
         of segments used to approximate curves */
     QgsGeometry* buffer( double distance, int segments );
-    
-    /** Returns a single sided buffer region around this geometry having the given width, with a specified number
-        of segments used to approximate curves, side = 0 for left side and side = 1 for right side */
-    QgsGeometry* buffer( double distance, int segments, int side );
 
     /** Returns a buffer region around the geometry, with additional style options.
      * @param distance    buffer distance
@@ -369,6 +365,12 @@ class CORE_EXPORT QgsGeometry
      * @note needs GEOS >= 3.3 - otherwise always returns 0
      */
     QgsGeometry* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit );
+
+    /** Returns a single sided buffer region around this geometry having the given width, with a specified number
+     * of segments used to approximate curves, side = 0 for left side and side = 1 for right side
+     * @note needs GEOS >= 3.8 - otherwise always returns 0
+     */
+    QgsGeometry* buffer( double distance, int segments, int side );
 
     /** Returns an offset line at a given distance and side from an input line.
      * See buffer() method for details on parameters.
