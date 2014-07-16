@@ -1830,7 +1830,7 @@ void QgsComposerMap::updateBoundingRect()
   }
 }
 
-void QgsComposerMap::setFrameOutlineWidth( double outlineWidth )
+void QgsComposerMap::setFrameOutlineWidth( const double outlineWidth )
 {
   QgsComposerItem::setFrameOutlineWidth( outlineWidth );
   updateBoundingRect();
@@ -2075,7 +2075,7 @@ void QgsComposerMap::overviewExtentChanged()
   update();
 }
 
-void QgsComposerMap::refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property )
+void QgsComposerMap::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
 {
   //updates data defined properties and redraws item to match
   if ( property == QgsComposerObject::MapRotation || property == QgsComposerObject::MapScale ||

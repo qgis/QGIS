@@ -128,7 +128,7 @@ class CORE_EXPORT QgsComposerObject: public QObject
      * refreshed.
      * @note this method was added in version 2.5
     */
-    virtual void refreshDataDefinedProperty( DataDefinedProperty property = AllProperties );
+    virtual void refreshDataDefinedProperty( const DataDefinedProperty property = AllProperties );
 
   protected:
 
@@ -143,9 +143,7 @@ class CORE_EXPORT QgsComposerObject: public QObject
      * @param expressionValue QVariant for storing the evaluated value
      * @note this method was added in version 2.5
     */
-    bool dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue );
-
-    //some helpful utility functions
+    bool dataDefinedEvaluate( const QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue );
 
   signals:
     /**Emitted when the item changes. Signifies that the item widgets must update the

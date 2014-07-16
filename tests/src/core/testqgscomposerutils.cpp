@@ -18,8 +18,10 @@
 #include "qgscomposerutils.h"
 #include "qgscomposition.h"
 #include "qgscompositionchecker.h"
+#include "qgsdatadefined.h"
 #include <QObject>
 #include <QtTest>
+#include <QMap>
 
 class TestQgsComposerUtils: public QObject
 {
@@ -33,6 +35,15 @@ class TestQgsComposerUtils: public QObject
     void angle(); //test angle utility function
     void rotate(); //test rotation helper function
     void largestRotatedRect(); //test largest rotated rect helper function
+    void pointsToMM(); //test conversion of point size to mm
+    void mmToPoints(); //test conversion of mm to point size
+    void relativePosition(); //test relative position function
+    void relativeResizeRect(); //test relative resize of rectangle function
+    void decodePaperOrientation(); //test decoding paper orientation
+    void decodePaperSize(); //test decoding paper size
+    void readDataDefinedProperty(); //test reading a data defined property
+    void readDataDefinedPropertyMap(); //test reading a whole data defined property map
+    void writeDataDefinedPropertyMap(); //test reading a whole data defined property map
 
   private:
     bool renderCheck( QString testName, QImage &image, int mismatchCount = 0 );
@@ -169,8 +180,11 @@ void TestQgsComposerUtils::largestRotatedRect()
     QRectF rotatedRectBounds = t.mapRect( result );
     //one of the rotated rects dimensions must equal the bounding rectangles dimensions (ie, it has been constrained by one dimension)
     //and the other dimension must be less than or equal to bounds dimension
-    QVERIFY(( qAbs( rotatedRectBounds.width() - bounds.width() ) < 0.0001 && ( rotatedRectBounds.height() <= bounds.height() ) )
-            || ( qAbs( rotatedRectBounds.height() - bounds.height() ) < 0.0001 && ( rotatedRectBounds.width() <= bounds.width() ) ) );
+    QVERIFY(( qgsDoubleNear( rotatedRectBounds.width(), bounds.width(), 0.001 ) && ( rotatedRectBounds.height() <= bounds.height() ) )
+            || ( qgsDoubleNear( rotatedRectBounds.height(), bounds.height(), 0.001 ) && ( rotatedRectBounds.width() <= bounds.width() ) ) );
+
+    //also verify that aspect ratio of rectangle has not changed
+    QVERIFY( qgsDoubleNear( result.width() / result.height(), wideRect.width() / wideRect.height() ) );
   }
   //and again for the high rectangle
   for ( double rotation = 10; rotation < 360; rotation += 10 )
@@ -181,9 +195,271 @@ void TestQgsComposerUtils::largestRotatedRect()
     QRectF rotatedRectBounds = t.mapRect( result );
     //one of the rotated rects dimensions must equal the bounding rectangles dimensions (ie, it has been constrained by one dimension)
     //and the other dimension must be less than or equal to bounds dimension
-    QVERIFY(( qAbs( rotatedRectBounds.width() - bounds.width() ) < 0.0001 && ( rotatedRectBounds.height() <= bounds.height() ) )
-            || ( qAbs( rotatedRectBounds.height() - bounds.height() ) < 0.0001 && ( rotatedRectBounds.width() <= bounds.width() ) ) );
+    QVERIFY(( qgsDoubleNear( rotatedRectBounds.width(), bounds.width(), 0.001 ) && ( rotatedRectBounds.height() <= bounds.height() ) )
+            || ( qgsDoubleNear( rotatedRectBounds.height(), bounds.height(), 0.001 ) && ( rotatedRectBounds.width() <= bounds.width() ) ) );
+
+    //also verify that aspect ratio of rectangle has not changed
+    QVERIFY( qgsDoubleNear( result.width() / result.height(), highRect.width() / highRect.height() ) );
   }
+}
+
+void TestQgsComposerUtils::pointsToMM()
+{
+  //test conversion of points to mm, based on 1 point = 1 / 72 of an inch
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::pointsToMM( 72 / 25.4 ), 1, 0.001 ) );
+}
+
+void TestQgsComposerUtils::mmToPoints()
+{
+  //test conversion of mm to points, based on 1 point = 1 / 72 of an inch
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::mmToPoints( 25.4 / 72 ), 1, 0.001 ) );
+}
+
+void TestQgsComposerUtils::relativePosition()
+{
+  //+ve gradient
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 1, 0, 2, 0, 4 ), 2, 0.001 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 0, 0, 2, 0, 4 ), 0, 0.001 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 2, 0, 2, 0, 4 ), 4, 0.001 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 4, 0, 2, 0, 4 ), 8, 0.001 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( -2, 0, 2, 0, 4 ), -4, 0.001 ) );
+  //-ve gradient
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 1, 0, 2, 4, 0 ), 2, 0.001 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 0, 0, 2, 4, 0 ), 4, 0.001 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 2, 0, 2, 4, 0 ), 0, 0.001 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 4, 0, 2, 4, 0 ), -4, 0.001 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( -2, 0, 2, 4, 0 ), 8, 0.001 ) );
+  //-ve domain
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 1, 2, 0, 0, 4 ), 2, 0.001 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 0, 2, 0, 0, 4 ), 4, 0.001 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 2, 2, 0, 0, 4 ), 0, 0.001 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 4, 2, 0, 0, 4 ), -4, 0.001 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( -2, 2, 0, 0, 4 ), 8, 0.001 ) );
+  //-ve domain and gradient
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 1, 2, 0, 4, 0 ), 2, 0.001 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 0, 2, 0, 4, 0 ), 0, 0.001 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 2, 2, 0, 4, 0 ), 4, 0.001 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 4, 2, 0, 4, 0 ), 8, 0.001 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( -2, 2, 0, 4, 0 ), -4, 0.001 ) );
+}
+
+void TestQgsComposerUtils::relativeResizeRect()
+{
+  //test rectangle which fills bounds
+  QRectF testRect = QRectF( 0, 0, 1, 1 );
+  QRectF boundsBefore = QRectF( 0, 0, 1, 1 );
+  QRectF boundsAfter = QRectF( 0, 0, 1, 1 );
+  QgsComposerUtils::relativeResizeRect( testRect, boundsBefore, boundsAfter );
+  QCOMPARE( testRect, QRectF( 0, 0, 1, 1 ) );
+  testRect = QRectF( 0, 0, 1, 1 );
+  boundsAfter = QRectF( 0, 0, 2, 2 );
+  QgsComposerUtils::relativeResizeRect( testRect, boundsBefore, boundsAfter );
+  QCOMPARE( testRect, QRectF( 0, 0, 2, 2 ) );
+  testRect = QRectF( 0, 0, 1, 1 );
+  boundsAfter = QRectF( 0, 0, 0.5, 4 );
+  QgsComposerUtils::relativeResizeRect( testRect, boundsBefore, boundsAfter );
+  QCOMPARE( testRect, QRectF( 0, 0, 0.5, 4 ) );
+
+  //test rectangle which doesn't fill bounds
+  testRect = QRectF( 1, 2, 1, 2 );
+  boundsBefore = QRectF( 0, 0, 4, 8 );
+  boundsAfter = QRectF( 0, 0, 2, 4 );
+  QgsComposerUtils::relativeResizeRect( testRect, boundsBefore, boundsAfter );
+  QCOMPARE( testRect, QRectF( 0.5, 1, 0.5, 1 ) );
+}
+
+void TestQgsComposerUtils::decodePaperOrientation()
+{
+  QgsComposition::PaperOrientation orientation;
+  bool ok = false;
+  orientation = QgsComposerUtils::decodePaperOrientation( "bad string", ok );
+  QVERIFY( !ok );
+  QCOMPARE( orientation, QgsComposition::Landscape ); //should default to landscape
+  ok = false;
+  orientation = QgsComposerUtils::decodePaperOrientation( "portrait", ok );
+  QVERIFY( ok );
+  QCOMPARE( orientation, QgsComposition::Portrait );
+  ok = false;
+  orientation = QgsComposerUtils::decodePaperOrientation( "LANDSCAPE", ok );
+  QVERIFY( ok );
+  QCOMPARE( orientation, QgsComposition::Landscape );
+}
+
+void TestQgsComposerUtils::decodePaperSize()
+{
+  double width = 0;
+  double height = 0;
+  QVERIFY( ! QgsComposerUtils::decodePresetPaperSize( "bad string", width, height ) );
+
+  //good strings
+  QVERIFY( QgsComposerUtils::decodePresetPaperSize( "a4", width, height ) );
+  QCOMPARE( width, 210.0 );
+  QCOMPARE( height, 297.0 );
+  QVERIFY( QgsComposerUtils::decodePresetPaperSize( "B0", width, height ) );
+  QCOMPARE( width, 1000.0 );
+  QCOMPARE( height, 1414.0 );
+  QVERIFY( QgsComposerUtils::decodePresetPaperSize( "letter", width, height ) );
+  QCOMPARE( width, 215.9 );
+  QCOMPARE( height, 279.4 );
+  QVERIFY( QgsComposerUtils::decodePresetPaperSize( "LEGAL", width, height ) );
+  QCOMPARE( width, 215.9 );
+  QCOMPARE( height, 355.6 );
+}
+
+void TestQgsComposerUtils::readDataDefinedProperty()
+{
+  //create a test dom element
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+  QDomDocument doc( documentType );
+  QDomElement rootNode = doc.createElement( "qgis" );
+  QDomElement itemElem = doc.createElement( "item" );
+
+  //dd element
+  QDomElement ddElem = doc.createElement( "dataDefinedProperty" );
+  ddElem.setAttribute( "active", "true" );
+  ddElem.setAttribute( "useExpr", "true" );
+  ddElem.setAttribute( "expr", "test expression" );
+  ddElem.setAttribute( "field", "test field" );
+  itemElem.appendChild( ddElem );
+  rootNode.appendChild( itemElem );
+
+  //try reading dd elements
+  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > dataDefinedProperties;
+
+  //bad data defined properties - should not be read into dataDefinedProperties map
+  QgsComposerUtils::readDataDefinedProperty( QgsComposerObject::NoProperty, ddElem, &dataDefinedProperties );
+  QCOMPARE( dataDefinedProperties.count(), 0 );
+  QgsComposerUtils::readDataDefinedProperty( QgsComposerObject::AllProperties, ddElem, &dataDefinedProperties );
+  QCOMPARE( dataDefinedProperties.count(), 0 );
+
+  //read into valid property
+  QgsComposerUtils::readDataDefinedProperty( QgsComposerObject::TestProperty, ddElem, &dataDefinedProperties );
+  QCOMPARE( dataDefinedProperties.count(), 1 );
+  QVERIFY(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->isActive() );
+  QVERIFY(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->useExpression() );
+  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->expressionString(), QString( "test expression" ) );
+  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->field(), QString( "test field" ) );
+
+  //reading false parameters
+  QDomElement ddElem2 = doc.createElement( "dataDefinedProperty2" );
+  ddElem2.setAttribute( "active", "false" );
+  ddElem2.setAttribute( "useExpr", "false" );
+  itemElem.appendChild( ddElem2 );
+  QgsComposerUtils::readDataDefinedProperty( QgsComposerObject::TestProperty, ddElem2, &dataDefinedProperties );
+  QCOMPARE( dataDefinedProperties.count(), 1 );
+  QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->isActive() );
+  QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->useExpression() );
+  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->expressionString(), QString() );
+  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->field(), QString() );
+}
+
+void TestQgsComposerUtils::readDataDefinedPropertyMap()
+{
+  //create a test dom element
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+  QDomDocument doc( documentType );
+  QDomElement rootNode = doc.createElement( "qgis" );
+  QDomElement itemElem = doc.createElement( "item" );
+
+  //dd elements
+  QDomElement ddElem = doc.createElement( "dataDefinedProperty" );
+  ddElem.setAttribute( "active", "true" );
+  ddElem.setAttribute( "useExpr", "true" );
+  ddElem.setAttribute( "expr", "test expression" );
+  ddElem.setAttribute( "field", "test field" );
+  itemElem.appendChild( ddElem );
+  QDomElement ddElem2 = doc.createElement( "dataDefinedProperty2" );
+  ddElem2.setAttribute( "active", "false" );
+  ddElem2.setAttribute( "useExpr", "false" );
+  ddElem2.setAttribute( "expr", "test expression 2" );
+  ddElem2.setAttribute( "field", "test field 2" );
+  itemElem.appendChild( ddElem2 );
+  QDomElement ddElem3 = doc.createElement( "dataDefinedProperty3" );
+  ddElem3.setAttribute( "active", "true" );
+  ddElem3.setAttribute( "useExpr", "false" );
+  ddElem3.setAttribute( "expr", "test expression 3" );
+  ddElem3.setAttribute( "field", "test field 3" );
+  itemElem.appendChild( ddElem3 );
+  rootNode.appendChild( itemElem );
+
+  //try reading dd elements
+  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > dataDefinedProperties;
+  QMap<QgsComposerObject::DataDefinedProperty, QString> dataDefinedNames;
+  dataDefinedNames[ QgsComposerObject::BlendMode ] = QString( "dataDefinedProperty" );
+  dataDefinedNames[ QgsComposerObject::Transparency ] = QString( "dataDefinedProperty2" );
+  dataDefinedNames[ QgsComposerObject::TestProperty ] = QString( "dataDefinedProperty3" );
+
+  QgsComposerUtils::readDataDefinedPropertyMap( itemElem, &dataDefinedNames, &dataDefinedProperties );
+  //check returned values
+  QCOMPARE( dataDefinedProperties.count(), 3 );
+  QVERIFY(( dataDefinedProperties.value( QgsComposerObject::BlendMode ) )->isActive() );
+  QVERIFY(( dataDefinedProperties.value( QgsComposerObject::BlendMode ) )->useExpression() );
+  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::BlendMode ) )->expressionString(), QString( "test expression" ) );
+  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::BlendMode ) )->field(), QString( "test field" ) );
+  QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::Transparency ) )->isActive() );
+  QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::Transparency ) )->useExpression() );
+  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::Transparency ) )->expressionString(), QString( "test expression 2" ) );
+  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::Transparency ) )->field(), QString( "test field 2" ) );
+  QVERIFY(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->isActive() );
+  QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->useExpression() );
+  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->expressionString(), QString( "test expression 3" ) );
+  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->field(), QString( "test field 3" ) );
+}
+
+void TestQgsComposerUtils::writeDataDefinedPropertyMap()
+{
+  //create a test dom element
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+  QDomDocument doc( documentType );
+  QDomElement itemElem = doc.createElement( "item" );
+
+  //create some data defined properties
+  QMap<QgsComposerObject::DataDefinedProperty, QString> dataDefinedNames;
+  dataDefinedNames[ QgsComposerObject::BlendMode ] = QString( "dataDefinedProperty" );
+  dataDefinedNames[ QgsComposerObject::Transparency ] = QString( "dataDefinedProperty2" );
+  dataDefinedNames[ QgsComposerObject::TestProperty ] = QString( "dataDefinedProperty3" );
+
+  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > dataDefinedProperties;
+  dataDefinedProperties[ QgsComposerObject::BlendMode ] = new QgsDataDefined( true, true, QString( "expression 1" ), QString( "field 1" ) );
+  dataDefinedProperties[ QgsComposerObject::Transparency ] = new QgsDataDefined( false, false, QString( "expression 2" ), QString( "field 2" ) );
+  dataDefinedProperties[ QgsComposerObject::TestProperty ] = new QgsDataDefined( false, true, QString( "expression 3" ), QString( "field 3" ) );
+
+  //write the property map
+  QgsComposerUtils::writeDataDefinedPropertyMap( itemElem, doc, &dataDefinedNames, &dataDefinedProperties );
+
+  //now check it
+  QDomNodeList dd1NodeList = itemElem.elementsByTagName( "dataDefinedProperty" );
+  QCOMPARE( dd1NodeList.count(), 1 );
+  QDomElement dd1Elem = dd1NodeList.at( 0 ).toElement();
+  QCOMPARE( dd1Elem.attribute( "active", "bad" ), QString( "true" ) );
+  QCOMPARE( dd1Elem.attribute( "useExpr", "bad" ), QString( "true" ) );
+  QCOMPARE( dd1Elem.attribute( "expr", "bad" ), QString( "expression 1" ) );
+  QCOMPARE( dd1Elem.attribute( "field", "bad" ), QString( "field 1" ) );
+
+  QDomNodeList dd2NodeList = itemElem.elementsByTagName( "dataDefinedProperty2" );
+  QCOMPARE( dd2NodeList.count(), 1 );
+  QDomElement dd2Elem = dd2NodeList.at( 0 ).toElement();
+  QCOMPARE( dd2Elem.attribute( "active", "bad" ), QString( "false" ) );
+  QCOMPARE( dd2Elem.attribute( "useExpr", "bad" ), QString( "false" ) );
+  QCOMPARE( dd2Elem.attribute( "expr", "bad" ), QString( "expression 2" ) );
+  QCOMPARE( dd2Elem.attribute( "field", "bad" ), QString( "field 2" ) );
+
+  QDomNodeList dd3NodeList = itemElem.elementsByTagName( "dataDefinedProperty3" );
+  QCOMPARE( dd3NodeList.count(), 1 );
+  QDomElement dd3Elem = dd3NodeList.at( 0 ).toElement();
+  QCOMPARE( dd3Elem.attribute( "active", "bad" ), QString( "false" ) );
+  QCOMPARE( dd3Elem.attribute( "useExpr", "bad" ), QString( "true" ) );
+  QCOMPARE( dd3Elem.attribute( "expr", "bad" ), QString( "expression 3" ) );
+  QCOMPARE( dd3Elem.attribute( "field", "bad" ), QString( "field 3" ) );
 }
 
 bool TestQgsComposerUtils::renderCheck( QString testName, QImage &image, int mismatchCount )

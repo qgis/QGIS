@@ -367,7 +367,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void updateBoundingRect();
 
     /* reimplement setFrameOutlineWidth, so that updateBoundingRect() is called after setting the frame width */
-    virtual void setFrameOutlineWidth( double outlineWidth );
+    virtual void setFrameOutlineWidth( const double outlineWidth );
 
     /**Sets rotation for the map - this does not affect the composer item shape, only the
       way the map is drawn within the item
@@ -573,7 +573,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     void overviewExtentChanged();
 
-    virtual void refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 
   private:
 

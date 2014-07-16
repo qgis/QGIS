@@ -93,6 +93,16 @@ class QgsComposerObject : QObject
     /**Triggers a redraw for the item*/
     virtual void repaint();
 
+    /**Refreshes a data defined property for the item by reevaluating the property's value
+     * and redrawing the item with this new value.
+     * @param property data defined property to refresh. If property is set to
+     * QgsComposerItem::AllProperties then all data defined properties for the item will be
+     * refreshed.
+     * @note this method was added in version 2.5
+    */
+    virtual void refreshDataDefinedProperty( const DataDefinedProperty property = AllProperties );
+
+
   protected:
 
     /**Evaluate a data defined property and return the calculated value

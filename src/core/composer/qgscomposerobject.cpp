@@ -18,6 +18,7 @@
 #include <QPainter>
 
 #include "qgscomposition.h"
+#include "qgscomposerutils.h"
 #include "qgscomposerobject.h"
 #include "qgsdatadefined.h"
 
@@ -65,10 +66,7 @@ bool QgsComposerObject::writeXML( QDomElement &elem, QDomDocument &doc ) const
   }
 
   //data defined properties
-  if ( mComposition )
-  {
-    mComposition->writeDataDefinedPropertyMap( elem, doc, &mDataDefinedNames, &mDataDefinedProperties );
-  }
+  QgsComposerUtils::writeDataDefinedPropertyMap( elem, doc, &mDataDefinedNames, &mDataDefinedProperties );
 
   return true;
 }
@@ -82,10 +80,7 @@ bool QgsComposerObject::readXML( const QDomElement &itemElem, const QDomDocument
   }
 
   //data defined properties
-  if ( mComposition )
-  {
-    mComposition->readDataDefinedPropertyMap( itemElem, &mDataDefinedNames, &mDataDefinedProperties );
-  }
+  QgsComposerUtils::readDataDefinedPropertyMap( itemElem, &mDataDefinedNames, &mDataDefinedProperties );
 
   return true;
 }
@@ -143,14 +138,14 @@ void QgsComposerObject::repaint()
   //nothing to do in base class for now
 }
 
-void QgsComposerObject::refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property )
+void QgsComposerObject::refreshDataDefinedProperty( const DataDefinedProperty property )
 {
   Q_UNUSED( property );
 
   //nothing to do in base class for now
 }
 
-bool QgsComposerObject::dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue )
+bool QgsComposerObject::dataDefinedEvaluate( const DataDefinedProperty property, QVariant &expressionValue )
 {
   if ( !mComposition )
   {

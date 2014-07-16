@@ -115,7 +115,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Changes size of paper item. Also moves all items so that they retain
      * their same relative position to the top left corner of their current page.
     */
-    void setPaperSize( double width, double height );
+    void setPaperSize( const double width, const double height );
 
     /**Returns height of paper item*/
     double paperHeight() const;
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     double spaceBetweenPages() const { return mSpaceBetweenPages; }
 
     /**Note: added in version 1.9*/
-    void setNumPages( int pages );
+    void setNumPages( const int pages );
     /**Note: added in version 1.9*/
     int numPages() const;
 
@@ -154,38 +154,38 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      *Note: added in version 2.1*/
     void updateSettings();
 
-    void setSnapToGridEnabled( bool b );
+    void setSnapToGridEnabled( const bool b );
     bool snapToGridEnabled() const {return mSnapToGrid;}
 
-    void setGridVisible( bool b );
+    void setGridVisible( const bool b );
     bool gridVisible() const {return mGridVisible;}
 
     /**Hides / shows custom snap lines*/
-    void setSnapLinesVisible( bool visible );
+    void setSnapLinesVisible( const bool visible );
     bool snapLinesVisible() const {return mGuidesVisible;}
 
-    void setAlignmentSnap( bool s ) { mAlignmentSnap = s; }
+    void setAlignmentSnap( const bool s ) { mAlignmentSnap = s; }
     bool alignmentSnap() const { return mAlignmentSnap; }
 
-    void setSmartGuidesEnabled( bool b ) { mSmartGuides = b; }
+    void setSmartGuidesEnabled( const bool b ) { mSmartGuides = b; }
     bool smartGuidesEnabled() const {return mSmartGuides;}
 
     /**Removes all snap lines*/
     void clearSnapLines();
 
-    void setSnapGridResolution( double r );
+    void setSnapGridResolution( const double r );
     double snapGridResolution() const {return mSnapGridResolution;}
 
-    void setSnapGridOffsetX( double offset );
+    void setSnapGridOffsetX( const double offset );
     double snapGridOffsetX() const {return mSnapGridOffsetX;}
 
-    void setSnapGridOffsetY( double offset );
+    void setSnapGridOffsetY( const double offset );
     double snapGridOffsetY() const {return mSnapGridOffsetY;}
 
     void setGridPen( const QPen& p );
     const QPen& gridPen() const {return mGridPen;}
 
-    void setGridStyle( GridStyle s );
+    void setGridStyle( const GridStyle s );
     GridStyle gridStyle() const {return mGridStyle;}
 
     /**Sets the snap tolerance to use when automatically snapping items during movement and resizing to the
@@ -226,7 +226,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @see alignmentSnapTolerance
      * @note Added in QGIS 2.5
     */
-    void setSnapTolerance( int snapTolerance ) { mSnapTolerance = snapTolerance; }
+    void setSnapTolerance( const int snapTolerance ) { mSnapTolerance = snapTolerance; }
 
     /**Returns the snap tolerance to use when automatically snapping items during movement and resizing to guides
      * and the edges and centers of other items.
@@ -240,14 +240,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     QUndoStack* undoStack() { return &mUndoStack; }
 
     /**Returns the topmost composer item. Ignores mPaperItem*/
-    QgsComposerItem* composerItemAt( const QPointF & position );
+    QgsComposerItem* composerItemAt( const QPointF & position ) const;
 
     /**Returns the highest composer item at a specified position which is below a specified item. Ignores mPaperItem
       @note Added in QGIS 2.1
     */
-    QgsComposerItem* composerItemAt( const QPointF & position, const QgsComposerItem* belowItem );
+    QgsComposerItem* composerItemAt( const QPointF & position, const QgsComposerItem* belowItem ) const;
 
-    /** Returns the page number (0-bsaed) given a coordinate */
+    /** Returns the page number (0-based) given a coordinate */
     int pageNumberAt( const QPointF& position ) const;
 
     /** Returns on which page number (0-based) is displayed an item */
@@ -267,7 +267,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Returns the composer map with specified id
      @return QgsComposerMap or 0 pointer if the composer map item does not exist*/
-    const QgsComposerMap* getComposerMapById( int id ) const;
+    const QgsComposerMap* getComposerMapById( const int id ) const;
 
     /**Returns the composer html with specified id (a string as named in the
       composer user interface item properties).
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
       @param item the item.
       @return QgsComposerHtml pointer or 0 pointer if no such item exists.
      */
-    const QgsComposerHtml* getComposerHtmlByItem( QgsComposerItem *item ) const;
+    Q_DECL_DEPRECATED const QgsComposerHtml* getComposerHtmlByItem( QgsComposerItem *item ) const;
 
     /**Returns a composer item given its text identifier.
        Ids are not necessarely unique, but this function returns only one element.
@@ -284,22 +284,22 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
         retrieve.
       @return QgsComposerItem pointer or 0 pointer if no such item exists.
      */
-    const QgsComposerItem* getComposerItemById( QString theId ) const;
+    const QgsComposerItem* getComposerItemById( const QString theId ) const;
 
     /**Returns a composer item given its unique identifier.
       @note added in 2.0
       @param theUuid A QString representing the UUID of the item to
       **/
-    const QgsComposerItem* getComposerItemByUuid( QString theUuid ) const;
+    const QgsComposerItem* getComposerItemByUuid( const QString theUuid ) const;
 
     int printResolution() const {return mPrintResolution;}
-    void setPrintResolution( int dpi );
+    void setPrintResolution( const int dpi );
 
     bool printAsRaster() const {return mPrintAsRaster;}
-    void setPrintAsRaster( bool enabled ) { mPrintAsRaster = enabled; }
+    void setPrintAsRaster( const bool enabled ) { mPrintAsRaster = enabled; }
 
     bool generateWorldFile() const { return mGenerateWorldFile; }
-    void setGenerateWorldFile( bool enabled ) { mGenerateWorldFile = enabled; }
+    void setGenerateWorldFile( const bool enabled ) { mGenerateWorldFile = enabled; }
 
     QgsComposerMap* worldFileMap() const { return mWorldFileMap; }
     void setWorldFileMap( QgsComposerMap* map ) { mWorldFileMap = map; }
@@ -309,7 +309,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     bool useAdvancedEffects() const {return mUseAdvancedEffects;}
     /**Used to enable or disable advanced effects such as blend modes in a composition
       @note: added in version 1.9*/
-    void setUseAdvancedEffects( bool effectsEnabled );
+    void setUseAdvancedEffects( const bool effectsEnabled );
 
     /**Returns pointer to map renderer of qgis map canvas*/
     //! @deprecated since 2.4 - use mapSettings() instead. May return null if not initialized with QgsMapRenderer
@@ -320,15 +320,18 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
     QgsComposition::PlotStyle plotStyle() const {return mPlotStyle;}
-    void setPlotStyle( QgsComposition::PlotStyle style ) {mPlotStyle = style;}
+    void setPlotStyle( const QgsComposition::PlotStyle style ) {mPlotStyle = style;}
 
-    /**Returns the pixel font size for a font that has point size set.
-     The result depends on the resolution (dpi) and of the preview mode. Each item that sets
-    a font should call this function before drawing text*/
-    int pixelFontSize( double pointSize ) const;
+    /**Returns the mm font size for a font that has point size set.
+     * Each item that sets a font should call this function before drawing text
+     * @deprecated use QgsComposerUtils::pointsToMM instead
+    */
+    Q_DECL_DEPRECATED int pixelFontSize( double pointSize ) const;
 
-    /**Does the inverse calculation and returns points for pixels (equals to mm in QgsComposition)*/
-    double pointFontSize( int pixelSize ) const;
+    /**Does the inverse calculation and returns points for mm
+     * @deprecated use QgsComposerUtils::mmToPoints instead
+    */
+    Q_DECL_DEPRECATED double pointFontSize( int pixelSize ) const;
 
     /**Writes settings to xml (paper dimension)*/
     bool writeXML( QDomElement& composerElem, QDomDocument& doc );
@@ -371,9 +374,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void moveItemToBottom( QgsComposerItem* item );
 
     //functions to find items by their position in the z list
-    void selectNextByZOrder( ZValueDirection direction );
-    QgsComposerItem* getComposerItemBelow( QgsComposerItem* item );
-    QgsComposerItem* getComposerItemAbove( QgsComposerItem* item );
+    void selectNextByZOrder( const ZValueDirection direction );
+    QgsComposerItem* getComposerItemBelow( QgsComposerItem* item ) const;
+    QgsComposerItem* getComposerItemAbove( QgsComposerItem* item ) const;
 
     //functions to align selected items
     void alignSelectedItemsLeft();
@@ -414,13 +417,13 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Get nearest snap line
      * @note not available in python bindings
      */
-    QGraphicsLineItem* nearestSnapLine( bool horizontal, double x, double y, double tolerance, QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >& snappedItems );
+    QGraphicsLineItem* nearestSnapLine( const bool horizontal, const double x, const double y, const double tolerance, QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >& snappedItems ) const;
 
     /**Allocates new item command and saves initial state in it
       @param item target item
       @param commandText descriptive command text
       @param c context for merge commands (unknown for non-mergeable commands)*/
-    void beginCommand( QgsComposerItem* item, const QString& commandText, QgsComposerMergeCommand::Context c = QgsComposerMergeCommand::Unknown );
+    void beginCommand( QgsComposerItem* item, const QString& commandText, const QgsComposerMergeCommand::Context c = QgsComposerMergeCommand::Unknown );
 
     /**Saves end state of item and pushes command to the undo history*/
     void endCommand();
@@ -440,7 +443,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Adds label to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerLabel( QgsComposerLabel* label );
     /**Adds map to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerMap( QgsComposerMap* map, bool setDefaultPreviewStyle = true );
+    void addComposerMap( QgsComposerMap* map, const bool setDefaultPreviewStyle = true );
     /**Adds scale bar to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerScaleBar( QgsComposerScaleBar* scaleBar );
     /**Adds legend to the graphics scene and advices composer to create a widget for it (through signal)*/
@@ -455,15 +458,15 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame );
 
     /**Remove item from the graphics scene. Additionally to QGraphicsScene::removeItem, this function considers undo/redo command*/
-    void removeComposerItem( QgsComposerItem* item, bool createCommand = true );
+    void removeComposerItem( QgsComposerItem* item, const bool createCommand = true );
 
     /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
-    void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
+    void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, const QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
 
     /**If true, prevents any mouse cursor changes by the composition or by any composer items
       Used by QgsComposer and QgsComposerView to prevent unwanted cursor changes*/
-    void setPreventCursorChange( bool preventChange ) { mPreventCursorChange = preventChange; }
-    bool preventCursorChange() { return mPreventCursorChange; }
+    void setPreventCursorChange( const bool preventChange ) { mPreventCursorChange = preventChange; }
+    bool preventCursorChange() const { return mPreventCursorChange; }
 
     //printing
 
@@ -502,15 +505,28 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     QgsAtlasComposition& atlasComposition() { return mAtlasComposition; }
 
-    /**Resizes a QRectF relative to the change from boundsBefore to boundsAfter*/
-    static void relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter );
-    /**Returns a scaled position given a before and after range*/
-    static double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax );
+    /**Resizes a QRectF relative to the change from boundsBefore to boundsAfter
+     * @deprecated use QgsComposerUtils::relativeResizeRect instead
+     */
+    Q_DECL_DEPRECATED static void relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter );
 
-    /** Returns the current atlas mode of the composition */
+    /**Returns a scaled position given a before and after range
+     * @deprecated use QgsComposerUtils::relativePosition instead
+     */
+    Q_DECL_DEPRECATED static double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax );
+
+    /**Returns the current atlas mode of the composition
+     * @returns current atlas mode
+     * @see setAtlasMode
+     */
     QgsComposition::AtlasMode atlasMode() const { return mAtlasMode; }
-    /** Sets the current atlas mode of the composition. Returns false if the mode could not be changed. */
-    bool setAtlasMode( QgsComposition::AtlasMode mode );
+
+    /**Sets the current atlas mode of the composition.
+     * @param mode atlas mode to switch to
+     * @returns false if the mode could not be changed.
+     * @see atlasMode
+    */
+    bool setAtlasMode( const QgsComposition::AtlasMode mode );
 
     /** Return pages in the correct order
      @note composerItems(QList< QgsPaperItem* > &) may not return pages in the correct order
@@ -521,7 +537,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @param property data defined property to return
      * @note this method was added in version 2.5
     */
-    QgsDataDefined* dataDefinedProperty( QgsComposerObject::DataDefinedProperty property );
+    QgsDataDefined* dataDefinedProperty( const QgsComposerObject::DataDefinedProperty property );
 
     /**Sets parameters for a data defined property for the composition
      * @param property data defined property to set
@@ -531,7 +547,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @param field field name if the data defined property should take its value from a field
      * @note this method was added in version 2.5
     */
-    void setDataDefinedProperty( QgsComposerObject::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
+    void setDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
 
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
@@ -560,7 +576,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * refreshed.
      * @note this method was added in version 2.5
     */
-    void refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
+    void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 
   protected:
     void init();
@@ -644,7 +660,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     QRectF compositionBounds() const;
 
     /**Reset z-values of items based on position in z list*/
-    void updateZValues( bool addUndoCommands = true );
+    void updateZValues( const bool addUndoCommands = true );
 
     /**Returns the bounding rectangle of the selected items in scene coordinates
      @return 0 in case of success*/
@@ -674,12 +690,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /*Recalculates the page size using data defined page settings*/
     void refreshPageSize();
 
-    /*Decodes a string representing a paper orientation*/
-    QgsComposition::PaperOrientation decodePaperOrientation( QString orientationString, bool &ok );
-
-    /*Decodes a string representing a preset page size*/
-    bool decodePresetPaperSize( QString presetString, double &width, double &height );
-
     /**Evaluate a data defined property and return the calculated value
      * @returns true if data defined property could be successfully evaluated
      * @param property data defined property to evaluate
@@ -689,37 +699,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     */
     bool dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue,
                               QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
-
-    /**Reads all data defined properties from xml
-     * @param itemElem dom element containing data defined properties
-     * @param dataDefinedNames map of data defined property to name used within xml
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined in which to store properties from xml
-     * @note this method was added in version 2.5
-    */
-    void readDataDefinedPropertyMap( const QDomElement &itemElem,
-                                     QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
-                                     QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties
-                                   ) const;
-
-    /**Reads a single data defined property from xml DOM element
-     * @param property data defined property to read
-     * @param ddElem dom element containing settings for data defined property
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined in which to store properties from xml
-     * @note this method was added in version 2.5
-    */
-    void readDataDefinedProperty( QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem,
-                                  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties ) const;
-
-    /**Writes data defined properties to xml
-     * @param itemElem DOM element in which to store data defined properties
-     * @param doc DOM document
-     * @param dataDefinedNames map of data defined property to name used within xml
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined for storing in xml
-     * @note this method was added in version 2.5
-    */
-    void writeDataDefinedPropertyMap( QDomElement &itemElem, QDomDocument &doc,
-                                      const QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
-                                      const QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties ) const;
 
     /**Evaluates a data defined property and returns the calculated value.
      * @param property data defined property to evaluate

@@ -24,6 +24,7 @@
 #include "qgscomposermousehandles.h"
 #include "qgscomposeritem.h"
 #include "qgscomposition.h"
+#include "qgscomposerutils.h"
 #include "qgspaperitem.h"
 #include "qgis.h"
 #include "qgslogger.h"
@@ -171,7 +172,7 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
         //get item bounds in mouse handle item's coordinate system
         QRectF itemRect = mapRectFromItem(( *itemIter ), ( *itemIter )->rectWithFrame() );
         //now, resize it relative to the current resized dimensions of the mouse handles
-        QgsComposition::relativeResizeRect( itemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
+        QgsComposerUtils::relativeResizeRect( itemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
         itemBounds = QPolygonF( itemRect );
       }
       else
@@ -651,7 +652,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
       {
         //multiple items selected, so each needs to be scaled relatively to the final size of the mouse handles
         itemRect = mapRectFromItem(( *itemIter ), ( *itemIter )->rectWithFrame() );
-        QgsComposition::relativeResizeRect( itemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
+        QgsComposerUtils::relativeResizeRect( itemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
       }
 
       itemRect = itemRect.normalized();
