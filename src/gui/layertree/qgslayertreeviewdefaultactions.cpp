@@ -260,16 +260,17 @@ void QgsLayerTreeViewDefaultActions::makeTopLevel()
 void QgsLayerTreeViewDefaultActions::groupSelected()
 {
   QList<QgsLayerTreeNode*> nodes = mView->selectedNodes( true );
-  if ( nodes.count() < 2 )
+  if ( nodes.count() < 2 || ! QgsLayerTree::isGroup( nodes[0]->parent() ) )
     return;
 
-  QgsLayerTreeGroup* parentGroup = mView->layerTreeModel()->rootGroup();
+  QgsLayerTreeGroup* parentGroup = QgsLayerTree::toGroup( nodes[0]->parent() );
+  int insertIdx = parentGroup->children().indexOf( nodes[0] );
 
   QgsLayerTreeGroup* newGroup = new QgsLayerTreeGroup( uniqueGroupName( parentGroup ) );
   foreach ( QgsLayerTreeNode* node, nodes )
     newGroup->addChildNode( node->clone() );
 
-  parentGroup->addChildNode( newGroup );
+  parentGroup->insertChildNode( insertIdx, newGroup );
 
   foreach ( QgsLayerTreeNode* node, nodes )
   {
@@ -277,4 +278,6 @@ void QgsLayerTreeViewDefaultActions::groupSelected()
     if ( group )
       group->removeChildNode( node );
   }
+
+  mView->setCurrentIndex( mView->layerTreeModel()->node2index( newGroup ) );
 }
