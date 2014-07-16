@@ -16,11 +16,10 @@
 #ifndef QGSCODEEDITOR_H
 #define QGSCODEEDITOR_H
 
-#define QSCINTILLA_DLL
-
 #include <QString>
 // qscintilla includes
 #include <Qsci/qsciapis.h>
+
 
 class QWidget;
 
