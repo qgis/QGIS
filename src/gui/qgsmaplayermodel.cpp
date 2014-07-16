@@ -15,6 +15,7 @@
 
 #include <QIcon>
 
+#include "qgsdataitem.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsapplication.h"
@@ -132,6 +133,7 @@ int QgsMapLayerModel::columnCount( const QModelIndex &parent ) const
   return 1;
 }
 
+
 QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() || !index.internalPointer() )
@@ -165,7 +167,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       {
         case QgsMapLayer::RasterLayer:
         {
-          return QgsApplication::getThemeIcon( "/mIconRasterLayer.svg" );
+          return QgsLayerItem::iconRaster();
         }
 
         case QgsMapLayer::VectorLayer:
@@ -180,19 +182,19 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
           {
             case QGis::Point:
             {
-              return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
+              return QgsLayerItem::iconPoint();
             }
             case QGis::Polygon :
             {
-              return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
+              return QgsLayerItem::iconPolygon();
             }
             case QGis::Line :
             {
-              return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
+              return QgsLayerItem::iconLine();
             }
             case QGis::NoGeometry :
             {
-              return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
+              return QgsLayerItem::iconTable();
             }
             default:
             {
