@@ -28,10 +28,6 @@
 #include <QRegExp>
 #include <QUrl>
 
-static QString DefaultFieldName( "field_%1" );
-static QRegExp InvalidFieldRegexp( "^\\d*(\\.\\d*)?$" );
-// field_ is optional in following regexp to simplify QgsDelimitedTextFile::fieldNumber()
-static QRegExp DefaultFieldRegexp( "^(?:field_)?(\\d+)$", Qt::CaseInsensitive );
 
 QgsDelimitedTextFile::QgsDelimitedTextFile( QString url ) :
     mFileName( QString() ),
@@ -52,7 +48,11 @@ QgsDelimitedTextFile::QgsDelimitedTextFile( QString url ) :
     mRecordNumber( -1 ),
     mHoldCurrentRecord( false ),
     mMaxRecordNumber( -1 ),
-    mMaxFieldCount( 0 )
+    mMaxFieldCount( 0 ),
+    mDefaultFieldName( "field_%1" ),
+    mInvalidFieldRegexp( "^\\d*(\\.\\d*)?$" ),
+    // field_ is optional in following regexp to simplify QgsDelimitedTextFile::fieldNumber()
+    mDefaultFieldRegexp( "^(?:field_)?(\\d+)$", Qt::CaseInsensitive )
 {
   // The default type is CSV
   setTypeCSV();
@@ -428,15 +428,15 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
     if ( name.length() > mMaxNameLength ) name = name.mid( 0, mMaxNameLength );
 
     // If the name is invalid then reset it to default name
-    if ( InvalidFieldRegexp.exactMatch( name ) )
+    if ( mInvalidFieldRegexp.exactMatch( name ) )
     {
-      name = DefaultFieldName.arg( fieldNo );
+      name = mDefaultFieldName.arg( fieldNo );
     }
     // If the name looks like a default field name (field_##), then it is
     // valid if the number matches its column number..
-    else if ( DefaultFieldRegexp.indexIn( name ) == 0 )
+    else if ( mDefaultFieldRegexp.indexIn( name ) == 0 )
     {
-      int col = DefaultFieldRegexp.capturedTexts()[1].toInt();
+      int col = mDefaultFieldRegexp.capturedTexts()[1].toInt();
       nameOk = col == fieldNo;
     }
     // Otherwise it is valid if isn't the name of an existing field...
@@ -477,7 +477,7 @@ QStringList &QgsDelimitedTextFile::fieldNames()
   {
     for ( int i = mFieldNames.size() + 1; i <= mMaxFieldCount; i++ )
     {
-      mFieldNames.append( DefaultFieldName.arg( i ) );
+      mFieldNames.append( mDefaultFieldName.arg( i ) );
     }
   }
   return mFieldNames;
@@ -490,9 +490,9 @@ int QgsDelimitedTextFile::fieldIndex( QString name )
   if ( mUseHeader && ! mFile ) reset();
   // Try to determine the field based on a default field name, includes
   // Field_### and simple integer fields.
-  if ( DefaultFieldRegexp.indexIn( name ) == 0 )
+  if ( mDefaultFieldRegexp.indexIn( name ) == 0 )
   {
-    return DefaultFieldRegexp.capturedTexts()[1].toInt() - 1;
+    return mDefaultFieldRegexp.capturedTexts()[1].toInt() - 1;
   }
   for ( int i = 0; i < mFieldNames.size(); i++ )
   {
