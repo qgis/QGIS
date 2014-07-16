@@ -379,6 +379,10 @@ class QgsDelimitedTextFile : public QObject
     // Maximum number of record (ie maximum record number visited)
     long mMaxRecordNumber;
     int mMaxFieldCount;
+
+    QString mDefaultFieldName;
+    QRegExp mInvalidFieldRegexp;
+    QRegExp mDefaultFieldRegexp;
 };
 
 #endif
