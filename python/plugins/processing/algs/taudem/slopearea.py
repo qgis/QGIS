@@ -54,7 +54,7 @@ class SlopeArea(GeoAlgorithm):
     SLOPE_AREA_GRID = 'SLOPE_AREA_GRID'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
         self.name = 'Slope Area Combination'

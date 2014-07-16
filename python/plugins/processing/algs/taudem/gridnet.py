@@ -57,7 +57,7 @@ class GridNet(GeoAlgorithm):
     STRAHLER_GRID = 'STRAHLER_GRID'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
         self.name = 'Grid Network'

@@ -54,7 +54,7 @@ class LengthArea(GeoAlgorithm):
     STREAM_SOURCE_GRID = 'STREAM_SOURCE_GRID'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
         self.name = 'Length Area Stream Source'

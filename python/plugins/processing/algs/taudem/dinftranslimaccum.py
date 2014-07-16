@@ -59,7 +59,7 @@ class DinfTransLimAccum(GeoAlgorithm):
     OUT_CONCENTR_GRID = 'OUT_CONCENTR_GRID'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
         self.name = 'D-Infinity Transport Limited Accumulation'
