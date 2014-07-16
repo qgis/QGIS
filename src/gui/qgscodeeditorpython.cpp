@@ -132,13 +132,6 @@ void QgsCodeEditorPython::loadScript( const QString &script )
 
   QTextStream in( &file );
 
-  //QString line = in.readAll();
-  //while ( !in.atEnd() )
-  //{
-  //QString line = in.readLine();
-  //QStringList fields = line.split( "," );
-  //QgsCodeEditor::insert( fields );
-  //}
   setText( in.readAll() );
   file.close();
 

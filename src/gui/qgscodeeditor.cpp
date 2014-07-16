@@ -36,6 +36,7 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, QString title, bool folding, bool
     setWindowTitle( mWidgetTitle );
   }
   setSciWidget();
+  setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 }
 
 QgsCodeEditor::~QgsCodeEditor()

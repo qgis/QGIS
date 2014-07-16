@@ -32,7 +32,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
   mValueGroupBox->hide();
   mLoadGroupBox->hide();
-  highlighter = new QgsExpressionHighlighter( txtExpressionString->document() );
+//  highlighter = new QgsExpressionHighlighter( txtExpressionString->document() );
 
   mModel = new QStandardItemModel( );
   mProxyModel = new QgsExpressionItemSearchProxy();
@@ -158,7 +158,7 @@ void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked( const QModelIn
     return;
 
   // Insert the expression text.
-  txtExpressionString->insertPlainText( item->getExpressionText() );
+  txtExpressionString->insert( item->getExpressionText() );
   txtExpressionString->setFocus();
 }
 
@@ -185,7 +185,7 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
     fieldNames << fieldName;
     registerItem( "Fields and Values", fieldName, " \"" + fieldName + "\" ", "", QgsExpressionItem::Field );
   }
-  highlighter->addFields( fieldNames );
+//  highlighter->addFields( fieldNames );
 }
 
 void QgsExpressionBuilderWidget::fillFieldValues( int fieldIndex, int countLimit )
@@ -289,17 +289,17 @@ void QgsExpressionBuilderWidget::setGeomCalculator( const QgsDistanceArea & da )
 
 QString QgsExpressionBuilderWidget::expressionText()
 {
-  return txtExpressionString->toPlainText();
+  return txtExpressionString->text();
 }
 
 void QgsExpressionBuilderWidget::setExpressionText( const QString& expression )
 {
-  txtExpressionString->setPlainText( expression );
+  txtExpressionString->setText( expression );
 }
 
 void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 {
-  QString text = txtExpressionString->toPlainText();
+  QString text = txtExpressionString->text();
 
   // If the string is empty the expression will still "fail" although
   // we don't show the user an error as it will be confusing.
@@ -392,14 +392,14 @@ void QgsExpressionBuilderWidget::on_lblPreview_linkActivated( QString link )
 
 void QgsExpressionBuilderWidget::on_mValueListWidget_itemDoubleClicked( QListWidgetItem *item )
 {
-  txtExpressionString->insertPlainText( " " + item->text() + " " );
+  txtExpressionString->insert( " " + item->text() + " " );
   txtExpressionString->setFocus();
 }
 
 void QgsExpressionBuilderWidget::operatorButtonClicked()
 {
   QPushButton* button = dynamic_cast<QPushButton*>( sender() );
-  txtExpressionString->insertPlainText( " " + button->text() + " " );
+  txtExpressionString->insert( " " + button->text() + " " );
   txtExpressionString->setFocus();
 }
 
