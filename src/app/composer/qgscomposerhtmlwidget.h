@@ -34,6 +34,9 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     void on_mResizeModeComboBox_currentIndexChanged( int index );
     void on_mUseSmartBreaksCheckBox_toggled( bool checked );
     void on_mMaxDistanceSpinBox_valueChanged( double val );
+    void on_mHtmlTextEdit_textChanged();
+    void on_mRadioManualSource_clicked( bool checked );
+    void on_mRadioUrlSource_clicked( bool checked );
 
     void on_mReloadPushButton_clicked();
     void on_mAddFramePushButton_clicked();

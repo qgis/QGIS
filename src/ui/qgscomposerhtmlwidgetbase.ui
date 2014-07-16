@@ -17,16 +17,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -55,15 +46,15 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>407</width>
-        <height>364</height>
+        <width>391</width>
+        <height>519</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
          <property name="title">
-          <string>Main properties</string>
+          <string>HTML Source</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>
@@ -72,20 +63,14 @@
           <bool>false</bool>
          </property>
          <layout class="QFormLayout" name="formLayout">
-          <property name="labelAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="mUrlLabel">
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="mRadioUrlSource">
             <property name="text">
              <string>URL</string>
             </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="1" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QLineEdit" name="mUrlLineEdit"/>
@@ -99,14 +84,42 @@
             </item>
            </layout>
           </item>
-          <item row="1" column="0" colspan="2">
+          <item row="2" column="0" colspan="2">
+           <widget class="QRadioButton" name="mRadioManualSource">
+            <property name="text">
+             <string>Source:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QPlainTextEdit" name="mHtmlTextEdit"/>
+          </item>
+          <item row="4" column="0" colspan="2">
            <widget class="QPushButton" name="mReloadPushButton">
             <property name="text">
              <string>Refresh HTML</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="frameGroupBox">
+         <property name="title">
+          <string>Frames</string>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
            <widget class="QLabel" name="mResizeModeLabel">
             <property name="text">
              <string>Resize mode</string>
@@ -116,7 +129,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="0" column="1">
            <widget class="QComboBox" name="mResizeModeComboBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -126,7 +139,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="2">
+          <item row="1" column="0" colspan="2">
            <widget class="QPushButton" name="mAddFramePushButton">
             <property name="text">
              <string>Add Frame</string>
@@ -148,7 +161,7 @@
           <bool>false</bool>
          </property>
          <property name="collapsed" stdset="0">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <layout class="QFormLayout" name="formLayout_2">
           <item row="0" column="0">

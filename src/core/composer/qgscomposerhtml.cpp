@@ -26,6 +26,7 @@
 #include <QImage>
 
 QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): QgsComposerMultiFrame( c, createUndoCommands ),
+    mContentMode( QgsComposerHtml::Url ),
     mWebPage( 0 ),
     mLoaded( false ),
     mHtmlUnitsToMM( 1.0 ),
@@ -45,6 +46,7 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): 
 }
 
 QgsComposerHtml::QgsComposerHtml(): QgsComposerMultiFrame( 0, false ),
+    mContentMode( QgsComposerHtml::Url ),
     mWebPage( 0 ),
     mLoaded( false ),
     mHtmlUnitsToMM( 1.0 ),
@@ -71,15 +73,31 @@ void QgsComposerHtml::setUrl( const QUrl& url )
   loadHtml();
 }
 
+void QgsComposerHtml::setHtml( const QString html )
+{
+  mHtml = html;
+}
+
 void QgsComposerHtml::loadHtml()
 {
-  if ( !mWebPage || mUrl.isEmpty() )
+  if ( !mWebPage || ( mContentMode == QgsComposerHtml::Url && mUrl.isEmpty() ) )
   {
     return;
   }
 
   mLoaded = false;
-  mWebPage->mainFrame()->load( mUrl );
+  //set contents
+  switch ( mContentMode )
+  {
+    case QgsComposerHtml::Url:
+      mWebPage->mainFrame()->load( mUrl );
+      break;
+    case QgsComposerHtml::ManualHtml:
+      mWebPage->mainFrame()->setHtml( mHtml );
+      break;
+  }
+
+  //pause until HTML loaded
   while ( !mLoaded )
   {
     qApp->processEvents();
@@ -282,7 +300,9 @@ void QgsComposerHtml::setMaxBreakDistance( double maxBreakDistance )
 bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
   QDomElement htmlElem = doc.createElement( "ComposerHtml" );
+  htmlElem.setAttribute( "contentMode",  QString::number(( int ) mContentMode ) );
   htmlElem.setAttribute( "url", mUrl.toString() );
+  htmlElem.setAttribute( "html", mHtml );
   htmlElem.setAttribute( "useSmartBreaks", mUseSmartBreaks ? "true" : "false" );
   htmlElem.setAttribute( "maxBreakDistance", QString::number( mMaxBreakDistance ) );
 
@@ -301,9 +321,15 @@ bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& 
     return false;
   }
 
+  bool contentModeOK;
+  mContentMode = ( QgsComposerHtml::ContentMode )itemElem.attribute( "contentMode" ).toInt( &contentModeOK );
+  if ( !contentModeOK )
+  {
+    mContentMode = QgsComposerHtml::Url;
+  }
   mUseSmartBreaks = itemElem.attribute( "useSmartBreaks", "true" ) == "true" ? true : false;
   mMaxBreakDistance = itemElem.attribute( "maxBreakDistance", "10" ).toDouble();
-
+  mHtml = itemElem.attribute( "html" );
   //finally load the set url
   QString urlString = itemElem.attribute( "url" );
   if ( !urlString.isEmpty() )

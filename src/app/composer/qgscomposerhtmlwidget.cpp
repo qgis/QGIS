@@ -62,6 +62,9 @@ void QgsComposerHtmlWidget::blockSignals( bool block )
   mResizeModeComboBox->blockSignals( block );
   mUseSmartBreaksCheckBox->blockSignals( block );
   mMaxDistanceSpinBox->blockSignals( block );
+  mHtmlTextEdit->blockSignals( block );
+  mRadioManualSource->blockSignals( block );
+  mRadioUrlSource->blockSignals( block );
 }
 
 void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
@@ -146,6 +149,46 @@ void QgsComposerHtmlWidget::on_mMaxDistanceSpinBox_valueChanged( double val )
   mHtml->setMaxBreakDistance( val );
 }
 
+void QgsComposerHtmlWidget::on_mHtmlTextEdit_textChanged()
+{
+  if ( !mHtml )
+  {
+    return;
+  }
+
+  mHtml->setHtml( mHtmlTextEdit->toPlainText() );
+}
+
+void QgsComposerHtmlWidget::on_mRadioManualSource_clicked( bool checked )
+{
+  if ( !mHtml )
+  {
+    return;
+  }
+
+  mHtml->setContentMode( checked ? QgsComposerHtml::ManualHtml : QgsComposerHtml::Url );
+  mHtmlTextEdit->setEnabled( checked );
+  mUrlLineEdit->setEnabled( !checked );
+  mFileToolButton->setEnabled( !checked );
+
+  mHtml->loadHtml();
+}
+
+void QgsComposerHtmlWidget::on_mRadioUrlSource_clicked( bool checked )
+{
+  if ( !mHtml )
+  {
+    return;
+  }
+
+  mHtml->setContentMode( checked ? QgsComposerHtml::Url : QgsComposerHtml::ManualHtml );
+  mHtmlTextEdit->setEnabled( !checked );
+  mUrlLineEdit->setEnabled( checked );
+  mFileToolButton->setEnabled( checked );
+
+  mHtml->loadHtml();
+}
+
 void QgsComposerHtmlWidget::on_mReloadPushButton_clicked()
 {
   if ( !mHtml )
@@ -193,5 +236,12 @@ void QgsComposerHtmlWidget::setGuiElementValues()
   mMaxDistanceSpinBox->setValue( mHtml->maxBreakDistance() );
 
   mAddFramePushButton->setEnabled( mHtml->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
+  mHtmlTextEdit->setPlainText( mHtml->html() );
+
+  mRadioUrlSource->setChecked( mHtml->contentMode() == QgsComposerHtml::Url );
+  mUrlLineEdit->setEnabled( mHtml->contentMode() == QgsComposerHtml::Url );
+  mFileToolButton->setEnabled( mHtml->contentMode() == QgsComposerHtml::Url );
+  mRadioManualSource->setChecked( mHtml->contentMode() == QgsComposerHtml::ManualHtml );
+  mHtmlTextEdit->setEnabled( mHtml->contentMode() == QgsComposerHtml::ManualHtml );
   blockSignals( false );
 }

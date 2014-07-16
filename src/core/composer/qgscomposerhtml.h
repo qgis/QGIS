@@ -26,12 +26,74 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 {
     Q_OBJECT
   public:
+
+    /** Source modes for the HTML content to render in the item
+    */
+    enum ContentMode
+    {
+      Url, /*< Using this mode item fetches its content via a url*/
+      ManualHtml /*< HTML content is manually set for the item*/
+    };
+
     QgsComposerHtml( QgsComposition* c, bool createUndoCommands );
     QgsComposerHtml();
     ~QgsComposerHtml();
 
+    /**Sets the source mode for item's HTML content.
+     * @param mode ContentMode for the item's source
+     * @see contentMode
+     * @see setUrl
+     * @see setHtml
+     * @note added in 2.5
+     */
+    void setContentMode( ContentMode mode ) { mContentMode = mode; }
+
+    /**Returns the source mode for item's HTML content.
+     * @returns ContentMode for the item's source
+     * @see setContentMode
+     * @see url
+     * @see html
+     * @note added in 2.5
+     */
+    ContentMode contentMode() const { return mContentMode; }
+
+    /**Sets the URL for content to display in the item when the item is using
+     * the QgsComposerHtml::Url mode. Content is automatically fetched and the
+     * HTML item refreshed after calling this function.
+     * @param url URL of content to display in the item
+     * @see url
+     * @see contentMode
+     */
     void setUrl( const QUrl& url );
+
+    /**Returns the URL of the content displayed in the item if the item is using
+     * the QgsComposerHtml::Url mode.
+     * @returns url for content displayed in item
+     * @see setUrl
+     * @see contentMode
+     */
     const QUrl& url() const { return mUrl; }
+
+    /**Sets the HTML to display in the item when the item is using
+     * the QgsComposerHtml::ManualHtml mode. Setting the HTML using this function
+     * does not automatically refresh the item's contents. Call loadHtml to trigger
+     * a refresh of the item after setting the HTML content.
+     * @param html HTML to display in item
+     * @see html
+     * @see contentMode
+     * @see loadHtml
+     * @note added in 2.5
+     */
+    void setHtml( const QString html );
+
+    /**Returns the HTML source displayed in the item if the item is using
+     * the QgsComposerHtml::ManualHtml mode.
+     * @returns HTML displayed in item
+     * @see setHtml
+     * @see contentMode
+     * @note added in 2.5
+     */
+    QString html() const { return mHtml; }
 
     QSizeF totalSize() const;
     void render( QPainter* p, const QRectF& renderExtent );
@@ -96,8 +158,10 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     void frameLoaded( bool ok );
 
   private:
+    ContentMode mContentMode;
     QUrl mUrl;
     QWebPage* mWebPage;
+    QString mHtml;
     bool mLoaded;
     QSizeF mSize; //total size in mm
     double mHtmlUnitsToMM;
