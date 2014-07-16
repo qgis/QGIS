@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscodeeditorpython.h - description
+    qgscodeeditorpython.h - A Python editor based on QScintilla
      --------------------------------------
     Date                 : 06-Oct-2013
     Copyright            : (C) 2013 by Salvatore Larosa
@@ -20,9 +20,9 @@
 
 
 /** \ingroup gui
- * A Python editor based on QScintilla2. Adds syntax highlghiting and
+ * A Python editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
- * \note added in 2.1
+ * \note added in 2.6
  */
 class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
 {
@@ -34,13 +34,10 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      *
      * @param parent The parent QWidget
      * @param filenames The list of apis files to load for the python lexer
-     * @note added in 2.1
+     * @note added in 2.6
      */
     QgsCodeEditorPython( QWidget *parent = 0 , const QList<QString> &filenames = QList<QString>() );
     ~QgsCodeEditorPython();
-
-    /** Set the widget title */
-    void setTitle( QString );
 
     /** Load APIs from one or more files
      * @param filenames The list of apis files to load for the python lexer
@@ -50,7 +47,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     /** Load a script file
      * @param script The script file to load
      */
-    void loadScript( const QString &script );
+    bool loadScript( const QString &script );
 
   private:
     //QgsCodeEditor *mSciWidget;

@@ -1,5 +1,6 @@
 /***************************************************************************
-    qgscodeeditor.cpp - description
+    qgscodeeditor.cpp - A base code editor for QGIS and plugins.  Provides
+                        a base editor using QScintilla for editors
      --------------------------------------
     Date                 : 06-Oct-2013
     Copyright            : (C) 2013 by Salvatore Larosa
@@ -21,10 +22,10 @@
 #include <QDebug>
 
 QgsCodeEditor::QgsCodeEditor( QWidget *parent, QString title, bool folding, bool margin )
-    : QsciScintilla( parent ),
-    mWidgetTitle( title ),
-    mFolding( folding ),
-    mMargin( margin )
+    : QsciScintilla( parent )
+    , mWidgetTitle( title )
+    , mFolding( folding )
+    , mMargin( margin )
 {
   if ( !parent && mWidgetTitle.isEmpty() )
   {
@@ -52,9 +53,9 @@ void QgsCodeEditor::setSciWidget()
   setBraceMatching( QsciScintilla::SloppyBraceMatch );
   setMatchedBraceBackgroundColor( QColor( "#b7f907" ) );
   // whether margin will be shown
-  enableMargin( mMargin );
+  setMarginVisible( mMargin );
   // whether margin will be shown
-  enableFolding( mFolding );
+  setFoldingVisible( mFolding );
   // indentation
   setAutoIndent( true );
   setIndentationWidth( 4 );
@@ -66,8 +67,14 @@ void QgsCodeEditor::setSciWidget()
   setAutoCompletionSource( QsciScintilla::AcsAPIs );
 }
 
-bool QgsCodeEditor::enableMargin( bool margin )
+void QgsCodeEditor::setTitle( QString title )
 {
+  setWindowTitle( title );
+}
+
+void QgsCodeEditor::setMarginVisible( bool margin )
+{
+  mMargin = margin;
   if ( margin )
   {
     QFont marginFont( "Courier", 10 );
@@ -76,19 +83,18 @@ bool QgsCodeEditor::enableMargin( bool margin )
     setMarginWidth( 1, "00000" );
     setMarginsForegroundColor( QColor( "#3E3EE3" ) );
     setMarginsBackgroundColor( QColor( "#f9f9f9" ) );
-    return true;
   }
   else
   {
     setMarginWidth( 0, 0 );
     setMarginWidth( 1, 0 );
     setMarginWidth( 2, 0 );
-    return false;
   }
 }
 
-void QgsCodeEditor::enableFolding( bool folding )
+void QgsCodeEditor::setFoldingVisible( bool folding )
 {
+  mFolding = folding;
   if ( folding )
   {
     setFolding( QsciScintilla::PlainFoldStyle );
@@ -104,7 +110,6 @@ void QgsCodeEditor::enableFolding( bool folding )
 bool QgsCodeEditor::isFixedPitch( const QFont& font )
 {
   const QFontInfo fi( font );
-  qDebug() << fi.family() << fi.fixedPitch();
   return fi.fixedPitch();
 }
 

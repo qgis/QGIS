@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscodeeditorsql.h - description
+    qgscodeeditorsql.h - A SQL editor based on QScintilla
      --------------------------------------
     Date                 : 06-Oct-2013
     Copyright            : (C) 2013 by Salvatore Larosa
@@ -20,9 +20,9 @@
 
 
 /** \ingroup gui
- * A SQL editor based on QScintilla2. Adds syntax highlghiting and
+ * A SQL editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
- * \note added in 2.1
+ * \note added in 2.6
  */
 class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
 {
@@ -31,12 +31,6 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
   public:
     QgsCodeEditorSQL( QWidget *parent = 0 );
     ~QgsCodeEditorSQL();
-
-    void setTitle( QString );
-
-    void showMargin( bool withMargin );
-
-    void showFolding( bool withFolding );
 
   private:
     //QgsCodeEditor *mSciWidget;

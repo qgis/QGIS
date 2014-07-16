@@ -8,7 +8,15 @@ class QgsCodeEditor: QsciScintilla
     QgsCodeEditor( QWidget *parent /TransferThis/ = 0, QString title = "" , bool folding = false, bool margin = false );
     ~QgsCodeEditor();
 
-    bool enableMargin( bool margin );
+    /** Set margin visible state
+     *  @param margin Set margin in the editor
+     */
+    void setMarginVisible( bool margin );
+    bool marginVisible();
 
-    void enableFolding( bool folding);
+    /** Set folding visible state
+     *  @param folding Set folding in the editor
+     */
+    void setFoldingVisible( bool folding);
+    bool foldingVisible();
 };

@@ -1,5 +1,6 @@
 /***************************************************************************
-    qgscodeeditor.h - description
+    qgscodeeditor.h - A base code editor for QGIS and plugins.  Provides
+                      a base editor using QScintilla for editors
      --------------------------------------
     Date                 : 06-Oct-2013
     Copyright            : (C) 2013 by Salvatore Larosa
@@ -25,7 +26,7 @@ class QWidget;
 
 /** \ingroup gui
  * A text editor based on QScintilla2.
- * \note added in 2.1
+ * \note added in 2.6
  */
 class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 {
@@ -39,20 +40,25 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * @param title The title to show in the code editor dialog
      * @param folding False: Enable margin for code editor
      * @param margin False: Enable folding for code editor
-     * @note added in 2.1
+     * @note added in 2.6
      */
     QgsCodeEditor( QWidget *parent = 0, QString title = "" , bool folding = false, bool margin = false );
     ~QgsCodeEditor();
 
-    /** Enable folding
+    /** Set the widget title */
+    void setTitle( QString );
+
+    /** Set margin visible state
      *  @param margin Set margin in the editor
      */
-    bool enableMargin( bool margin );
+    void setMarginVisible( bool margin );
+    bool marginVisible() { return mMargin; }
 
-    /** Enable margin
+    /** Set folding visible state
      *  @param folding Set folding in the editor
      */
-    void enableFolding( bool folding );
+    void setFoldingVisible( bool folding );
+    bool foldingVisible() { return mFolding; }
 
   protected:
 

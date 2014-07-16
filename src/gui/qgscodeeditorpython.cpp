@@ -1,6 +1,6 @@
 /***************************************************************************
-    qgscodeeditorpython.cpp - description
-     --------------------------------------
+    qgscodeeditorpython.cpp  - A Python editor based on QScintilla
+    --------------------------------------
     Date                 : 06-Oct-2013
     Copyright            : (C) 2013 by Salvatore Larosa
     Email                : lrssvtml (at) gmail (dot) com
@@ -26,12 +26,12 @@
 #include <Qsci/qscilexerpython.h>
 
 QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames )
-    : QgsCodeEditor( parent ),
-    mAPISFilesList( filenames )
+    : QgsCodeEditor( parent )
+    , mAPISFilesList( filenames )
 {
   if ( !parent )
   {
-    setTitle( "Qscintilla2 Python Editor" );
+    setTitle( tr( "Qscintilla2 Python Editor" ) );
   }
   setSciLexerPython();
 }
@@ -105,14 +105,10 @@ void QgsCodeEditorPython::setSciLexerPython()
   }
   setLexer( pyLexer );
 
-  enableMargin( true );
-  enableFolding( true );
+  setMarginVisible( true );
+  setFoldingVisible( true );
 }
 
-void QgsCodeEditorPython::setTitle( QString title )
-{
-  setWindowTitle( title );
-}
 
 void QgsCodeEditorPython::loadAPIs( const QList<QString> &filenames )
 {
@@ -121,13 +117,13 @@ void QgsCodeEditorPython::loadAPIs( const QList<QString> &filenames )
   setSciLexerPython();
 }
 
-void QgsCodeEditorPython::loadScript( const QString &script )
+bool QgsCodeEditorPython::loadScript( const QString &script )
 {
   QgsDebugMsg( QString( "The script file: %1" ).arg( script ) );
   QFile file( script );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QMessageBox::information( 0, "error", file.errorString() );
+    return false;
   }
 
   QTextStream in( &file );
@@ -136,4 +132,5 @@ void QgsCodeEditorPython::loadScript( const QString &script )
   file.close();
 
   setSciLexerPython();
+  return true;
 }

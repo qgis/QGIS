@@ -8,10 +8,8 @@ class QgsCodeEditorPython: QgsCodeEditor
     QgsCodeEditorPython( QWidget *parent /TransferThis/ = 0, const QList<QString> &filenames = QList<QString>() );
     ~QgsCodeEditorPython();
 
-    void setTitle( QString );
-
     void loadAPIs(const QList<QString> &filenames );
 
-    void loadScript( const QString &script );
+    bool loadScript( const QString &script );
 
 };

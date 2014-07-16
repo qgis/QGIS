@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscodeeditorsql.cpp - description
+    qgscodeeditorsql.cpp - A SQL editor based on QScintilla
      --------------------------------------
     Date                 : 06-Oct-2013
     Copyright            : (C) 2013 by Salvatore Larosa
@@ -22,14 +22,15 @@
 #include <Qsci/qscilexersql.h>
 
 
-QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent ) : QgsCodeEditor( parent )
+QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
+  : QgsCodeEditor( parent )
 {
   if ( !parent )
   {
-    setTitle( "Qscintilla2 SQL Editor" );
+    setTitle( tr( "Qscintilla2 SQL Editor" ) );
   }
-  enableMargin( false );
-  enableFolding( true );
+  setMarginVisible( false );
+  setFoldingVisible( true );
   setSciLexerSQL();
 }
 
@@ -43,19 +44,4 @@ void QgsCodeEditorSQL::setSciLexerSQL()
   sqlLexer->setDefaultFont( QFont( "Sans", 10 ) );
 
   setLexer( sqlLexer );
-}
-
-void QgsCodeEditorSQL::setTitle( QString title )
-{
-  setWindowTitle( title );
-}
-
-void QgsCodeEditorSQL::showMargin( bool withMargin )
-{
-  enableMargin( withMargin );
-}
-
-void QgsCodeEditorSQL::showFolding( bool withFolding )
-{
-  enableFolding( withFolding );
 }
