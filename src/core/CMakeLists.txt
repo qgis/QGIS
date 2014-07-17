@@ -96,6 +96,7 @@ SET(QGIS_CORE_SRCS
   qgslegendsettings.cpp
   qgslogger.cpp
   qgsmaplayer.cpp
+  qgsmaplayerlegend.cpp
   qgsmaplayerregistry.cpp
   qgsmaprenderer.cpp
   qgsmaprenderercache.cpp
@@ -336,6 +337,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsgmlschema.h
   qgshttptransaction.h
   qgsmaplayer.h
+  qgsmaplayerlegend.h
   qgsmaplayerregistry.h
   qgsmaprenderer.h
   qgsmaprenderercache.h
@@ -469,6 +471,7 @@ SET(QGIS_CORE_HDRS
   qgslegendsettings.h
   qgslogger.h
   qgsmaplayer.h
+  qgsmaplayerlegend.h
   qgsmaplayerregistry.h
   qgsmaprenderer.h
   qgsmaprenderercache.h

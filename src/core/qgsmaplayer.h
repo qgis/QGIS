@@ -34,6 +34,7 @@
 
 class QgsRenderContext;
 class QgsCoordinateReferenceSystem;
+class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
 
 class QDomDocument;
@@ -382,6 +383,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** @deprecated since 2.4 - does nothing */
     Q_DECL_DEPRECATED virtual void onCacheImageDelete() {}
 
+    /**
+     * Assign a legend controller to the map layer. The object will be responsible for providing legend items.
+     * @param legend Takes ownership of the object. Can be null pointer
+     * @note added in 2.6
+     */
+    void setLegend( QgsMapLayerLegend* legend );
+    /**
+     * @note added in 2.6
+     */
+    QgsMapLayerLegend* legend() const;
+
   public slots:
 
     /** Event handler for when a coordinate transform fails due to bad vertex error */
@@ -445,6 +457,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Signal emitted when renderer is changed */
     void rendererChanged();
+
+    /**
+     * Signal emitted when legend of the layer has changed
+     * @note added in 2.6
+     */
+    void legendChanged();
 
   protected:
     /** Set the extent */
@@ -559,6 +577,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Layer's persistent storage of additional properties (may be used by plugins)
     QgsObjectCustomProperties mCustomProperties;
+
+    //! Controller of legend items of this layer
+    QgsMapLayerLegend* mLegend;
 };
 
 #endif

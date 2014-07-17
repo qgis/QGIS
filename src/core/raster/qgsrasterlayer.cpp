@@ -20,6 +20,7 @@ email                : tim at linfiniti.com
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
@@ -620,6 +621,8 @@ double QgsRasterLayer::rasterUnitsPerPixelY()
 void QgsRasterLayer::init()
 {
   mRasterType = QgsRasterLayer::GrayOrUndefined;
+
+  setLegend( QgsMapLayerLegend::defaultRasterLegend( this ) );
 
   setRendererForDrawingStyle( QgsRaster::UndefinedDrawingStyle );
 

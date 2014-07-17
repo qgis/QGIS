@@ -51,6 +51,7 @@
 #include "qgslabel.h"
 #include "qgslegacyhelpers.h"
 #include "qgslogger.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
@@ -168,6 +169,8 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
       // add single symbol renderer
       setRendererV2( QgsFeatureRendererV2::defaultRenderer( geometryType() ) );
     }
+
+    setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
   }
@@ -1321,6 +1324,8 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   {
     return false;
   }
+
+  setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
   return mValid;               // should be true if read successfully
 
