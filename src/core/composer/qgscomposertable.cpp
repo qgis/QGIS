@@ -17,6 +17,7 @@
 
 #include "qgscomposertable.h"
 #include "qgscomposertablecolumn.h"
+#include "qgssymbollayerv2utils.h"
 #include <QPainter>
 #include <QSettings>
 
@@ -24,6 +25,8 @@
 QgsComposerTable::QgsComposerTable( QgsComposition* composition )
     : QgsComposerItem( composition )
     , mLineTextDistance( 1.0 )
+    , mHeaderFontColor( Qt::black )
+    , mContentFontColor( Qt::black )
     , mHeaderHAlignment( FollowColumn )
     , mShowGrid( true )
     , mGridStrokeWidth( 0.5 )
@@ -120,12 +123,14 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
         break;
     }
 
+    painter->setPen( mHeaderFontColor );
     drawText( painter, cell, ( *columnIt )->heading(), mHeaderFont, headerAlign, Qt::AlignVCenter, Qt::TextDontClip );
 
     currentY += cellHeaderHeight;
     currentY += mGridStrokeWidth;
 
     //draw the attribute values
+    painter->setPen( mContentFontColor );
     QList<QgsAttributeMap>::const_iterator attIt = mAttributeMaps.begin();
     for ( ; attIt != mAttributeMaps.end(); ++attIt )
     {
@@ -181,6 +186,12 @@ void QgsComposerTable::setHeaderFont( const QFont& f )
   adjustFrameToSize();
 }
 
+void QgsComposerTable::setHeaderFontColor( const QColor &color )
+{
+  mHeaderFontColor = color;
+  repaint();
+}
+
 void QgsComposerTable::setHeaderHAlignment( const QgsComposerTable::HeaderHAlignment alignment )
 {
   mHeaderHAlignment = alignment;
@@ -192,6 +203,12 @@ void QgsComposerTable::setContentFont( const QFont& f )
   mContentFont = f;
   //since font attributes have changed, we need to recalculate the table size
   adjustFrameToSize();
+}
+
+void QgsComposerTable::setContentFontColor( const QColor &color )
+{
+  mContentFontColor = color;
+  repaint();
 }
 
 void QgsComposerTable::setShowGrid( bool show )
@@ -248,12 +265,12 @@ bool QgsComposerTable::tableWriteXML( QDomElement& elem, QDomDocument & doc ) co
 {
   elem.setAttribute( "lineTextDist", QString::number( mLineTextDistance ) );
   elem.setAttribute( "headerFont", mHeaderFont.toString() );
+  elem.setAttribute( "headerFontColor", QgsSymbolLayerV2Utils::encodeColor( mHeaderFontColor ) );
   elem.setAttribute( "headerHAlignment", QString::number(( int )mHeaderHAlignment ) );
   elem.setAttribute( "contentFont", mContentFont.toString() );
+  elem.setAttribute( "contentFontColor", QgsSymbolLayerV2Utils::encodeColor( mContentFontColor ) );
   elem.setAttribute( "gridStrokeWidth", QString::number( mGridStrokeWidth ) );
-  elem.setAttribute( "gridColorRed", mGridColor.red() );
-  elem.setAttribute( "gridColorGreen", mGridColor.green() );
-  elem.setAttribute( "gridColorBlue", mGridColor.blue() );
+  elem.setAttribute( "gridColor", QgsSymbolLayerV2Utils::encodeColor( mGridColor ) );
   elem.setAttribute( "showGrid", mShowGrid );
 
   //columns
@@ -278,17 +295,27 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
   }
 
   mHeaderFont.fromString( itemElem.attribute( "headerFont", "" ) );
+  mHeaderFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "headerFontColor", "0,0,0,255" ) );
   mHeaderHAlignment = QgsComposerTable::HeaderHAlignment( itemElem.attribute( "headerHAlignment", "0" ).toInt() );
   mContentFont.fromString( itemElem.attribute( "contentFont", "" ) );
+  mContentFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "contentFontColor", "0,0,0,255" ) );
   mLineTextDistance = itemElem.attribute( "lineTextDist", "1.0" ).toDouble();
   mGridStrokeWidth = itemElem.attribute( "gridStrokeWidth", "0.5" ).toDouble();
   mShowGrid = itemElem.attribute( "showGrid", "1" ).toInt();
 
   //grid color
-  int gridRed = itemElem.attribute( "gridColorRed", "0" ).toInt();
-  int gridGreen = itemElem.attribute( "gridColorGreen", "0" ).toInt();
-  int gridBlue = itemElem.attribute( "gridColorBlue", "0" ).toInt();
-  mGridColor = QColor( gridRed, gridGreen, gridBlue );
+  if ( itemElem.hasAttribute( "gridColor" ) )
+  {
+    mGridColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "gridColor", "0,0,0,255" ) );
+  }
+  else
+  {
+    //old style grid color
+    int gridRed = itemElem.attribute( "gridColorRed", "0" ).toInt();
+    int gridGreen = itemElem.attribute( "gridColorGreen", "0" ).toInt();
+    int gridBlue = itemElem.attribute( "gridColorBlue", "0" ).toInt();
+    mGridColor = QColor( gridRed, gridGreen, gridBlue );
+  }
 
   //restore column specifications
   qDeleteAll( mColumns );

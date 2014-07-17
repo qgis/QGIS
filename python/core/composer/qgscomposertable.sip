@@ -55,6 +55,24 @@ class QgsComposerTable: QgsComposerItem
      */
     QFont headerFont() const;
 
+    /**Sets the color used to draw header text in the table.
+     * @param color header text color
+     * @see headerFontColor
+     * @see setHeaderFont
+     * @see setContentFontColor
+     * @note added in 2.5
+     */
+    void setHeaderFontColor( const QColor& color );
+
+    /**Returns the color used to draw header text in the table.
+     * @returns color for header text
+     * @see setHeaderFontColor
+     * @see headerFont
+     * @see contentFontColor
+     * @note added in 2.5
+     */
+    QColor headerFontColor() const;
+
     /**Sets the horizontal alignment for table headers
      * @param alignment Horizontal alignment for table header cells
      * @note added in 2.3
@@ -82,6 +100,24 @@ class QgsComposerTable: QgsComposerItem
      * @see headerFont
      */
     QFont contentFont() const;
+
+    /**Sets the color used to draw text in table body cells.
+     * @param color table cell text color
+     * @see contentFontColor
+     * @see setContentFont
+     * @see setHeaderFontColor
+     * @note added in 2.5
+     */
+    void setContentFontColor( const QColor& color );
+
+    /**Returns the color used to draw text in table body cells.
+     * @returns text color for table cells
+     * @see setContentFontColor
+     * @see contentFont
+     * @see headerFontColor
+     * @note added in 2.5
+     */
+    QColor contentFontColor() const;
 
     /**Sets whether grid lines should be drawn in the table
      * @param show set to true to show grid lines
