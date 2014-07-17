@@ -46,21 +46,20 @@ QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
   connect( previewButton, SIGNAL( pressed( ) ), this, SLOT( previewButtonPushed( ) ) );
 
   fillLayerList();
-}
 
+  keyComboBox->setDisabled( true );
+  valueComboBox->setDisabled( true );
+}
 
 QgsAttributeTypeLoadDialog::~QgsAttributeTypeLoadDialog()
 {
 
 }
 
-
 void QgsAttributeTypeLoadDialog::setVectorLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;
 }
-
-
 
 void QgsAttributeTypeLoadDialog::previewButtonPushed()
 {
@@ -69,6 +68,7 @@ void QgsAttributeTypeLoadDialog::previewButtonPushed()
 
 void QgsAttributeTypeLoadDialog::fillLayerList()
 {
+  layerComboBox->blockSignals( true );
   layerComboBox->clear();
   foreach ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
@@ -76,33 +76,39 @@ void QgsAttributeTypeLoadDialog::fillLayerList()
     if ( vl )
       layerComboBox->addItem( vl->name(), vl->id() );
   }
+  layerComboBox->setCurrentIndex( -1 );
+  layerComboBox->blockSignals( false );
 }
 
 void QgsAttributeTypeLoadDialog::fillComboBoxes( int layerIndex )
 {
+  keyComboBox->blockSignals( true );
+  valueComboBox->blockSignals( true );
+
   //clear comboboxes first
   keyComboBox->clear();
   valueComboBox->clear();
 
-  if ( layerIndex < 0 )
+  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layerIndex < 0 ? 0 : QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->itemData( layerIndex ).toString() ) );
+  if ( vLayer )
   {
-    return;
+    QMap<QString, int> fieldMap = vLayer->dataProvider()->fieldNameMap();
+    QMap<QString, int>::iterator it = fieldMap.begin();
+    for ( ; it != fieldMap.end(); ++it )
+    {
+      keyComboBox->addItem( it.key(), it.value() );
+      valueComboBox->addItem( it.key(), it.value() );
+    }
   }
 
-  QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->itemData( layerComboBox->currentIndex() ).toString() );
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
-  if ( vLayer == NULL )
-  {
-    return;
-  }
-  QMap<QString, int> fieldMap = vLayer->dataProvider()->fieldNameMap();
-  QMap<QString, int>::iterator it = fieldMap.begin();
-  for ( ; it != fieldMap.end(); ++it )
-  {
-    keyComboBox->addItem( it.key(), it.value() );
-    valueComboBox->addItem( it.key(), it.value() );
-  }
+  keyComboBox->setEnabled( vLayer != 0 );
+  valueComboBox->setEnabled( vLayer != 0 );
 
+  keyComboBox->setCurrentIndex( -1 );
+  valueComboBox->setEnabled( -1 );
+
+  keyComboBox->blockSignals( false );
+  valueComboBox->blockSignals( false );
 }
 
 void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
@@ -122,10 +128,8 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
   int idx2 = valueComboBox->itemData( valueComboBox->currentIndex() ).toInt();
   QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->itemData( layerComboBox->currentIndex() ).toString() );
   QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
-  if ( vLayer == NULL )
-  {
+  if ( !vLayer )
     return;
-  }
 
   QgsAttributeList attributeList = QgsAttributeList();
   attributeList.append( idx );
@@ -154,7 +158,6 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
     previewTableWidget->setItem( row, 0, new QTableWidgetItem( mit.value().toString() ) );
     previewTableWidget->setItem( row, 1, new QTableWidgetItem( mit.key() ) );
   }
-
 }
 
 QMap<QString, QVariant> &QgsAttributeTypeLoadDialog::valueMap()
@@ -174,10 +177,8 @@ void QgsAttributeTypeLoadDialog::loadDataToValueMap()
   int idx2 = valueComboBox->itemData( valueComboBox->currentIndex() ).toInt();
   QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->itemData( layerComboBox->currentIndex() ).toString() );
   QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
-  if ( vLayer == NULL )
-  {
+  if ( !vLayer )
     return;
-  }
 
   QgsAttributeList attributeList = QgsAttributeList();
   attributeList.append( idx );
@@ -196,12 +197,9 @@ void QgsAttributeTypeLoadDialog::loadDataToValueMap()
   }
 }
 
-
-
 void QgsAttributeTypeLoadDialog::accept()
 {
   //store data to output variable
   loadDataToValueMap();
   QDialog::accept();
 }
-
