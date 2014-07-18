@@ -80,9 +80,8 @@ class SagaAlgorithm(GeoAlgorithm):
         self.undecoratedGroup = line
         self.group = SagaGroupNameDecorator.getDecoratedName(
                 self.undecoratedGroup)
-        line = lines.readline().strip('\n').strip() 
+        line = lines.readline().strip('\n').strip()
         while line != '':
-            line = line.strip('\n').strip()
             if line.startswith('Hardcoded'):
                 self.hardcodedStrings.append(line[len('Harcoded|') + 1:])
             elif line.startswith('Parameter'):
@@ -371,19 +370,24 @@ class SagaAlgorithm(GeoAlgorithm):
         extent = None
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
-                layer = dataobjects.getObjectFromUri(param.value)
+                files = [param.value]
+            elif isinstance(param, ParameterMultipleInput) and param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                files = param.value.split(";")
+            for f in files:
+                layer = dataobjects.getObjectFromUri(f)
                 if layer is None:
                     continue
                 if layer.bandCount() > 1:
                     return 'Input layer ' + str(layer.name()) \
                         + ' has more than one band.\n' \
                         + 'Multiband layers are not supported by SAGA'
-                if extent is None:
-                    extent = (layer.extent(), layer.height(), layer.width())
-                else:
-                    extent2 = (layer.extent(), layer.height(), layer.width())
-                    if extent != extent2:
-                        return "Input layers do not have the same grid extent."
+                if not self.allowUnmatchingGridExtents:
+                    if extent is None:
+                        extent = (layer.extent(), layer.height(), layer.width())
+                    else:
+                        extent2 = (layer.extent(), layer.height(), layer.width())
+                        if extent != extent2:
+                            return "Input layers do not have the same grid extent."
 
 
 
