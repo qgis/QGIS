@@ -222,6 +222,9 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
     double* ptr = ( double* )targetWkb;
     map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'LengthSquare' calculations.
 
+    bool isaUngenerizableSegment;
+    bool hasUngenerizableSegments = false; //-> To avoid replace the simplified geometry by its BBOX when there are 'long' segments.
+
     // Check whether the LinearRing is really closed.
     if ( isaLinearRing )
     {
@@ -246,14 +249,21 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
       memcpy( &x, sourceWkb, sizeof( double ) ); sourceWkb += sizeOfDoubleX;
       memcpy( &y, sourceWkb, sizeof( double ) ); sourceWkb += sizeOfDoubleY;
 
+      isaUngenerizableSegment = false;
+
       if ( i == 0 ||
            !isGeneralizable ||
-           calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol ||
+           ( isaUngenerizableSegment = ( calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol ) ) ||
            ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
       {
         memcpy( ptr, &x, sizeof( double ) ); lastX = x; ptr++;
         memcpy( ptr, &y, sizeof( double ) ); lastY = y; ptr++;
         numTargetPoints++;
+
+        if ( isaUngenerizableSegment && !hasUngenerizableSegments )
+        {
+          hasUngenerizableSegments = true;
+        }
       }
 
       r.combineExtentWith( x, y );
@@ -261,7 +271,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
     targetWkb = wkb2 + 4;
 
     // Fix the topology of the geometry
-    if ( numTargetPoints <= ( isaLinearRing ? 2 : 1 ) )
+    if ( numTargetPoints <= ( isaLinearRing ? 2 : 1 ) && !hasUngenerizableSegments )
     {
       unsigned char* targetTempWkb = targetWkb;
       int targetWkbTempSize = targetWkbSize;
