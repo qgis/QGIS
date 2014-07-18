@@ -195,8 +195,8 @@ class ParameterFile(Parameter):
 
 class ParameterFixedTable(Parameter):
 
-    def __init__(self, name='', description='', cols=['value'],
-                 numRows=3, fixedNumOfRows=False):
+    def __init__(self, name='', description='', numRows=3,
+                 cols=['value'], fixedNumOfRows=False):
         Parameter.__init__(self, name, description)
         self.cols = cols
         if isinstance(cols, basestring):
@@ -244,7 +244,7 @@ class ParameterMultipleInput(ParameterDataObject):
 
     def __init__(self, name='', description='', datatype=-1, optional=False):
         ParameterDataObject.__init__(self, name, description)
-        self.datatype = int(datatype)
+        self.datatype = int(float(datatype))
         self.optional = parseBool(optional)
         self.value = None
         self.exported = None
@@ -502,7 +502,7 @@ class ParameterSelection(Parameter):
             return True
         except:
             return False
-  
+
 
 class ParameterString(Parameter):
 
