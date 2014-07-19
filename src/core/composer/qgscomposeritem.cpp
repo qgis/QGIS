@@ -891,26 +891,35 @@ QRectF QgsComposerItem::largestRotatedRectWithinBounds( QRectF originalRect, QRe
   double boundsHeight = boundsRect.height();
   double ratioBoundsRect = boundsWidth / boundsHeight;
 
+  double clippedRotation = fmod( rotation, 360.0 );
+
   //shortcut for some rotation values
-  if ( rotation == 0 || rotation == 90 || rotation == 180 || rotation == 270 )
+  if ( clippedRotation == 0 || clippedRotation == 90 || clippedRotation == 180 || clippedRotation == 270 )
   {
-    double originalRatio = originalWidth / originalHeight;
-    double rectScale = originalRatio > ratioBoundsRect ? boundsWidth / originalWidth : boundsHeight / originalHeight;
+    double rectScale;
+    if ( clippedRotation == 0 || clippedRotation == 180 )
+    {
+      rectScale = (( originalWidth / originalHeight ) > ratioBoundsRect ) ? boundsWidth / originalWidth : boundsHeight / originalHeight;
+    }
+    else
+    {
+      rectScale = (( originalHeight / originalWidth ) > ratioBoundsRect ) ? boundsWidth / originalHeight : boundsHeight / originalWidth;
+    }
     double rectScaledWidth = rectScale * originalWidth;
     double rectScaledHeight = rectScale * originalHeight;
 
-    if ( rotation == 0 || rotation == 180 )
+    if ( clippedRotation == 0 || clippedRotation == 180 )
     {
       return QRectF(( boundsWidth - rectScaledWidth ) / 2.0, ( boundsHeight - rectScaledHeight ) / 2.0, rectScaledWidth, rectScaledHeight );
     }
     else
     {
-      return QRectF(( boundsWidth - rectScaledHeight ) / 2.0, ( boundsHeight - rectScaledWidth ) / 2.0, rectScaledHeight, rectScaledWidth );
+      return QRectF(( boundsWidth - rectScaledHeight ) / 2.0, ( boundsHeight - rectScaledWidth ) / 2.0, rectScaledWidth, rectScaledHeight );
     }
   }
 
   //convert angle to radians and flip
-  double angleRad = -rotation * M_DEG2RAD;
+  double angleRad = -clippedRotation * M_DEG2RAD;
   double cosAngle = cos( angleRad );
   double sinAngle = sin( angleRad );
 
