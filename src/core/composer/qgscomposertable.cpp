@@ -313,7 +313,8 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
     int gridRed = itemElem.attribute( "gridColorRed", "0" ).toInt();
     int gridGreen = itemElem.attribute( "gridColorGreen", "0" ).toInt();
     int gridBlue = itemElem.attribute( "gridColorBlue", "0" ).toInt();
-    mGridColor = QColor( gridRed, gridGreen, gridBlue );
+    int gridAlpha = itemElem.attribute( "gridColorAlpha", "255" ).toInt();
+    mGridColor = QColor( gridRed, gridGreen, gridBlue, gridAlpha );
   }
 
   //restore column specifications
