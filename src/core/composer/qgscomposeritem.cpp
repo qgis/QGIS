@@ -861,64 +861,36 @@ void QgsComposerItem::setEffectsEnabled( const bool effectsEnabled )
 
 void QgsComposerItem::drawText( QPainter* p, double x, double y, const QString& text, const QFont& font, const QColor& c ) const
 {
-  QFont textFont = scaledFontPixelSize( font );
-
-  p->save();
-  p->setFont( textFont );
-  p->setPen( c );
-  double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
-  p->scale( scaleFactor, scaleFactor );
-  p->drawText( QPointF( x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE ), text );
-  p->restore();
+  QgsComposerUtils::drawText( p, QPointF( x, y ), text, font, c );
 }
 
 void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment, Qt::AlignmentFlag valignment, int flags ) const
 {
-  QFont textFont = scaledFontPixelSize( font );
-
-  QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE,
-                     rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
-
-  p->save();
-  p->setFont( textFont );
-  double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
-  p->scale( scaleFactor, scaleFactor );
-  p->drawText( scaledRect, halignment | valignment | flags, text );
-  p->restore();
+  QgsComposerUtils::drawText( p, rect, text, font, QColor(), halignment, valignment, flags );
 }
 double QgsComposerItem::textWidthMillimeters( const QFont& font, const QString& text ) const
 {
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetricsF fontMetrics( metricsFont );
-  return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
+  return QgsComposerUtils::textWidthMM( font, text );
 }
 
 double QgsComposerItem::fontHeightCharacterMM( const QFont& font, const QChar& c ) const
 {
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetricsF fontMetrics( metricsFont );
-  return ( fontMetrics.boundingRect( c ).height() / FONT_WORKAROUND_SCALE );
+  return QgsComposerUtils::fontHeightCharacterMM( font, c );
 }
 
 double QgsComposerItem::fontAscentMillimeters( const QFont& font ) const
 {
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetricsF fontMetrics( metricsFont );
-  return ( fontMetrics.ascent() / FONT_WORKAROUND_SCALE );
+  return QgsComposerUtils::fontAscentMM( font );
 }
 
 double QgsComposerItem::fontDescentMillimeters( const QFont& font ) const
 {
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetricsF fontMetrics( metricsFont );
-  return ( fontMetrics.descent() / FONT_WORKAROUND_SCALE );
+  return QgsComposerUtils::fontDescentMM( font );
 }
 
 double QgsComposerItem::fontHeightMillimeters( const QFont& font ) const
 {
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetricsF fontMetrics( metricsFont );
-  return ( fontMetrics.height() / FONT_WORKAROUND_SCALE );
+  return QgsComposerUtils::fontHeightMM( font );
 }
 
 double QgsComposerItem::pixelFontSize( double pointSize ) const
@@ -928,10 +900,7 @@ double QgsComposerItem::pixelFontSize( double pointSize ) const
 
 QFont QgsComposerItem::scaledFontPixelSize( const QFont& font ) const
 {
-  QFont scaledFont = font;
-  double pixelSize = QgsComposerUtils::pointsToMM( font.pointSizeF() ) * FONT_WORKAROUND_SCALE + 0.5;
-  scaledFont.setPixelSize( pixelSize );
-  return scaledFont;
+  return QgsComposerUtils::scaledFontPixelSize( font );
 }
 
 double QgsComposerItem::horizontalViewScaleFactor() const

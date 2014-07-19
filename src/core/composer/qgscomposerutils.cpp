@@ -371,3 +371,107 @@ void QgsComposerUtils::writeDataDefinedPropertyMap( QDomElement &itemElem, QDomD
     }
   }
 }
+
+QFont QgsComposerUtils::scaledFontPixelSize( const QFont &font )
+{
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont scaledFont = font;
+  double pixelSize = pointsToMM( scaledFont.pointSizeF() ) * FONT_WORKAROUND_SCALE + 0.5;
+  scaledFont.setPixelSize( pixelSize );
+  return scaledFont;
+}
+
+double QgsComposerUtils::fontAscentMM( const QFont &font )
+{
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.ascent() / FONT_WORKAROUND_SCALE );
+}
+
+double QgsComposerUtils::fontDescentMM( const QFont &font )
+{
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.descent() / FONT_WORKAROUND_SCALE );
+}
+
+double QgsComposerUtils::fontHeightMM( const QFont &font )
+{
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.height() / FONT_WORKAROUND_SCALE );
+}
+
+double QgsComposerUtils::fontHeightCharacterMM( const QFont &font, const QChar &character )
+{
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.boundingRect( character ).height() / FONT_WORKAROUND_SCALE );
+}
+
+double QgsComposerUtils::textWidthMM( const QFont &font, const QString &text )
+{
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
+}
+
+void QgsComposerUtils::drawText( QPainter *painter, const QPointF &pos, const QString &text, const QFont &font, const QColor &color )
+{
+  if ( !painter )
+  {
+    return;
+  }
+
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont textFont = scaledFontPixelSize( font );
+
+  painter->save();
+  painter->setFont( textFont );
+  if ( color.isValid() )
+  {
+    painter->setPen( color );
+  }
+  double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
+  painter->scale( scaleFactor, scaleFactor );
+  painter->drawText( pos * FONT_WORKAROUND_SCALE, text );
+  painter->restore();
+}
+
+void QgsComposerUtils::drawText( QPainter *painter, const QRectF &rect, const QString &text, const QFont &font, const QColor &color, const Qt::AlignmentFlag halignment, const Qt::AlignmentFlag valignment, const int flags )
+{
+  if ( !painter )
+  {
+    return;
+  }
+
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont textFont = scaledFontPixelSize( font );
+
+  QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE,
+                     rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
+
+  painter->save();
+  painter->setFont( textFont );
+  if ( color.isValid() )
+  {
+    painter->setPen( color );
+  }
+  double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
+  painter->scale( scaleFactor, scaleFactor );
+  painter->drawText( scaledRect, halignment | valignment | flags, text );
+  painter->restore();
+}

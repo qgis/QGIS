@@ -15,10 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h" //for standard test font
 #include "qgscomposerutils.h"
 #include "qgscomposition.h"
 #include "qgscompositionchecker.h"
 #include "qgsdatadefined.h"
+#include "qgsfontutils.h"
 #include <QObject>
 #include <QtTest>
 #include <QMap>
@@ -44,21 +46,38 @@ class TestQgsComposerUtils: public QObject
     void readDataDefinedProperty(); //test reading a data defined property
     void readDataDefinedPropertyMap(); //test reading a whole data defined property map
     void writeDataDefinedPropertyMap(); //test reading a whole data defined property map
+    void scaledFontPixelSize(); //test creating a scaled font
+    void fontAscentMM(); //test calculating font ascent in mm
+    void fontDescentMM(); //test calculating font descent in mm
+    void fontHeightMM(); //test calculating font height in mm
+    void fontHeightCharacterMM(); //test calculating font character height in mm
+    void textWidthMM(); //test calculting text width in mm
+    void drawTextPos(); //test drawing text at a pos
+    void drawTextRect(); //test drawing text in a rect
 
   private:
     bool renderCheck( QString testName, QImage &image, int mismatchCount = 0 );
     QgsComposition* mComposition;
     QgsMapSettings mMapSettings;
     QString mReport;
+    QFont mTestFont;
 
 };
 
 void TestQgsComposerUtils::initTestCase()
 {
+  QgsApplication::init();
+  QgsApplication::initQgis(); //for access to test font
+
   mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = "<h1>Composer Utils Tests</h1>\n";
+
+  QgsFontUtils::loadStandardTestFonts( QStringList() << "Oblique" );
+  mTestFont = QgsFontUtils::getStandardTestFont( "Oblique " );
+  mTestFont.setItalic( true );
+
 }
 
 void TestQgsComposerUtils::cleanupTestCase()
@@ -460,6 +479,117 @@ void TestQgsComposerUtils::writeDataDefinedPropertyMap()
   QCOMPARE( dd3Elem.attribute( "useExpr", "bad" ), QString( "true" ) );
   QCOMPARE( dd3Elem.attribute( "expr", "bad" ), QString( "expression 3" ) );
   QCOMPARE( dd3Elem.attribute( "field", "bad" ), QString( "field 3" ) );
+}
+
+void TestQgsComposerUtils::scaledFontPixelSize()
+{
+  //create a 12 point test font
+  mTestFont.setPointSize( 12 );
+
+  //test scaling of font for painting
+  QFont scaledFont = QgsComposerUtils::scaledFontPixelSize( mTestFont );
+  QCOMPARE( scaledFont.pixelSize(), 42 );
+  QCOMPARE( scaledFont.family(), mTestFont.family() );
+}
+
+void TestQgsComposerUtils::fontAscentMM()
+{
+  mTestFont.setPointSize( 12 );
+  //platform specific font rendering differences mean these tests need to be very leniant
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::fontAscentMM( mTestFont ), 3.9, 0.5 ) );
+}
+
+void TestQgsComposerUtils::fontDescentMM()
+{
+  mTestFont.setPointSize( 12 );
+  QCOMPARE( QgsComposerUtils::fontDescentMM( mTestFont ), 0.9 );
+}
+
+void TestQgsComposerUtils::fontHeightMM()
+{
+  mTestFont.setPointSize( 12 );
+  //platform specific font rendering differences mean these tests need to be very leniant
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::fontHeightMM( mTestFont ), 4.9, 0.5 ) );
+}
+
+void TestQgsComposerUtils::fontHeightCharacterMM()
+{
+  mTestFont.setPointSize( 12 );
+  //platform specific font rendering differences mean these tests need to be very leniant
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::fontHeightCharacterMM( mTestFont, QChar( 'a' ) ), 2.4, 0.15 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::fontHeightCharacterMM( mTestFont, QChar( 'l' ) ), 3.15, 0.16 ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::fontHeightCharacterMM( mTestFont, QChar( 'g' ) ), 3.2, 0.11 ) );
+}
+
+void TestQgsComposerUtils::textWidthMM()
+{
+  //platform specific font rendering differences mean this test needs to be very leniant
+  mTestFont.setPointSize( 12 );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::textWidthMM( mTestFont, QString( "test string" ) ), 20, 2 ) );
+}
+
+void TestQgsComposerUtils::drawTextPos()
+{
+  //test drawing with no painter
+  QgsComposerUtils::drawText( 0, QPointF( 5, 15 ), QString( "Abc123" ), mTestFont );
+
+  //test drawing text on to image
+  mTestFont.setPointSize( 48 );
+  QImage testImage = QImage( 250, 250, QImage::Format_RGB32 );
+  testImage.fill( qRgb( 152, 219, 249 ) );
+  QPainter testPainter;
+  testPainter.begin( &testImage );
+  QgsComposerUtils::drawText( &testPainter, QPointF( 5, 15 ), QString( "Abc123" ), mTestFont, Qt::white );
+  testPainter.end();
+  QVERIFY( renderCheck( "composerutils_drawtext_pos", testImage, 100 ) );
+
+  //test drawing with pen color set on painter and no specified color
+  //text should be drawn using painter pen color
+  testImage.fill( qRgb( 152, 219, 249 ) );
+  testPainter.begin( &testImage );
+  testPainter.setPen( QPen( Qt::green ) );
+  QgsComposerUtils::drawText( &testPainter, QPointF( 5, 15 ), QString( "Abc123" ), mTestFont );
+  testPainter.end();
+  QVERIFY( renderCheck( "composerutils_drawtext_posnocolor", testImage, 100 ) );
+}
+
+void TestQgsComposerUtils::drawTextRect()
+{
+  //test drawing with no painter
+  QgsComposerUtils::drawText( 0, QRectF( 5, 15, 200, 50 ), QString( "Abc123" ), mTestFont );
+
+  //test drawing text on to image
+  mTestFont.setPointSize( 48 );
+  QImage testImage = QImage( 250, 250, QImage::Format_RGB32 );
+  testImage.fill( qRgb( 152, 219, 249 ) );
+  QPainter testPainter;
+  testPainter.begin( &testImage );
+  QgsComposerUtils::drawText( &testPainter, QRectF( 5, 15, 200, 50 ), QString( "Abc123" ), mTestFont, Qt::white );
+  testPainter.end();
+  QVERIFY( renderCheck( "composerutils_drawtext_rect", testImage, 100 ) );
+
+  //test drawing with pen color set on painter and no specified color
+  //text should be drawn using painter pen color
+  testImage.fill( qRgb( 152, 219, 249 ) );
+  testPainter.begin( &testImage );
+  testPainter.setPen( QPen( Qt::green ) );
+  QgsComposerUtils::drawText( &testPainter, QRectF( 5, 15, 200, 50 ), QString( "Abc123" ), mTestFont );
+  testPainter.end();
+  QVERIFY( renderCheck( "composerutils_drawtext_rectnocolor", testImage, 100 ) );
+
+  //test alignment settings
+  testImage.fill( qRgb( 152, 219, 249 ) );
+  testPainter.begin( &testImage );
+  QgsComposerUtils::drawText( &testPainter, QRectF( 5, 15, 200, 50 ), QString( "Abc123" ), mTestFont, Qt::black, Qt::AlignRight, Qt::AlignBottom );
+  testPainter.end();
+  QVERIFY( renderCheck( "composerutils_drawtext_rectalign", testImage, 100 ) );
+
+  //test extra flags - render without clipping
+  testImage.fill( qRgb( 152, 219, 249 ) );
+  testPainter.begin( &testImage );
+  QgsComposerUtils::drawText( &testPainter, QRectF( 5, 15, 20, 50 ), QString( "Abc123" ), mTestFont, Qt::white, Qt::AlignLeft, Qt::AlignTop, Qt::TextDontClip );
+  testPainter.end();
+  QVERIFY( renderCheck( "composerutils_drawtext_rectflag", testImage, 100 ) );
 }
 
 bool TestQgsComposerUtils::renderCheck( QString testName, QImage &image, int mismatchCount )

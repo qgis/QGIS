@@ -18,6 +18,7 @@
 #include "qgscomposertable.h"
 #include "qgscomposertablecolumn.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgscomposerutils.h"
 #include <QPainter>
 #include <QSettings>
 
@@ -95,8 +96,8 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();
 
   int col = 0;
-  double cellHeaderHeight = fontAscentMillimeters( mHeaderFont ) + 2 * mLineTextDistance;
-  double cellBodyHeight = fontAscentMillimeters( mContentFont ) + 2 * mLineTextDistance;
+  double cellHeaderHeight = QgsComposerUtils::fontAscentMM( mHeaderFont ) + 2 * mLineTextDistance;
+  double cellBodyHeight = QgsComposerUtils::fontAscentMM( mContentFont ) + 2 * mLineTextDistance;
   QRectF cell;
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
@@ -123,14 +124,12 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
         break;
     }
 
-    painter->setPen( mHeaderFontColor );
-    drawText( painter, cell, ( *columnIt )->heading(), mHeaderFont, headerAlign, Qt::AlignVCenter, Qt::TextDontClip );
+    QgsComposerUtils::drawText( painter, cell, ( *columnIt )->heading(), mHeaderFont, mHeaderFontColor, headerAlign, Qt::AlignVCenter, Qt::TextDontClip );
 
     currentY += cellHeaderHeight;
     currentY += mGridStrokeWidth;
 
     //draw the attribute values
-    painter->setPen( mContentFontColor );
     QList<QgsAttributeMap>::const_iterator attIt = mAttributeMaps.begin();
     for ( ; attIt != mAttributeMaps.end(); ++attIt )
     {
@@ -138,7 +137,7 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
       const QgsAttributeMap &currentAttributeMap = *attIt;
       QString str = currentAttributeMap[ col ].toString();
-      drawText( painter, cell, str, mContentFont, ( *columnIt )->hAlignment(), Qt::AlignVCenter, Qt::TextDontClip );
+      QgsComposerUtils::drawText( painter, cell, str, mContentFont, mContentFontColor, ( *columnIt )->hAlignment(), Qt::AlignVCenter, Qt::TextDontClip );
 
       currentY += cellBodyHeight;
       currentY += mGridStrokeWidth;
@@ -352,7 +351,7 @@ bool QgsComposerTable::calculateMaxColumnWidths( QMap<int, double>& maxWidthMap,
   int col = 0;
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
-    maxWidthMap.insert( col, textWidthMillimeters( mHeaderFont, ( *columnIt )->heading() ) );
+    maxWidthMap.insert( col, QgsComposerUtils::textWidthMM( mHeaderFont, ( *columnIt )->heading() ) );
     col++;
   }
 
@@ -366,7 +365,7 @@ bool QgsComposerTable::calculateMaxColumnWidths( QMap<int, double>& maxWidthMap,
     QgsAttributeMap::const_iterator attIt2 = attIt->constBegin();
     for ( ; attIt2 != attIt->constEnd(); ++attIt2 )
     {
-      currentAttributeTextWidth = textWidthMillimeters( mContentFont, attIt2.value().toString() );
+      currentAttributeTextWidth = QgsComposerUtils::textWidthMM( mContentFont, attIt2.value().toString() );
       if ( currentAttributeTextWidth > maxWidthMap[ attIt2.key()] )
       {
         maxWidthMap[ attIt2.key()] = currentAttributeTextWidth;
@@ -380,8 +379,8 @@ void QgsComposerTable::adaptItemFrame( const QMap<int, double>& maxWidthMap, con
 {
   //calculate height
   int n = attributeMaps.size();
-  double totalHeight = fontAscentMillimeters( mHeaderFont )
-                       + n * fontAscentMillimeters( mContentFont )
+  double totalHeight = QgsComposerUtils::fontAscentMM( mHeaderFont )
+                       + n * QgsComposerUtils::fontAscentMM( mContentFont )
                        + ( n + 1 ) * mLineTextDistance * 2
                        + ( n + 2 ) * mGridStrokeWidth;
 
@@ -408,12 +407,12 @@ void QgsComposerTable::drawHorizontalGridLines( QPainter* p, int nAttributes )
   double currentY = halfGridStrokeWidth;
   p->drawLine( QPointF( halfGridStrokeWidth, currentY ), QPointF( rect().width() - halfGridStrokeWidth, currentY ) );
   currentY += mGridStrokeWidth;
-  currentY += ( fontAscentMillimeters( mHeaderFont ) + 2 * mLineTextDistance );
+  currentY += ( QgsComposerUtils::fontAscentMM( mHeaderFont ) + 2 * mLineTextDistance );
   for ( int i = 0; i < nAttributes; ++i )
   {
     p->drawLine( QPointF( halfGridStrokeWidth, currentY ), QPointF( rect().width() - halfGridStrokeWidth, currentY ) );
     currentY += mGridStrokeWidth;
-    currentY += ( fontAscentMillimeters( mContentFont ) + 2 * mLineTextDistance );
+    currentY += ( QgsComposerUtils::fontAscentMM( mContentFont ) + 2 * mLineTextDistance );
   }
   p->drawLine( QPointF( halfGridStrokeWidth, currentY ), QPointF( rect().width() - halfGridStrokeWidth, currentY ) );
 }

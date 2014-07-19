@@ -353,8 +353,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     //painter down by the same factor for drawing
 
     /**Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
-     to work around the Qt font bug)*/
-    void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font, const QColor& c = QColor( 0, 0, 0 ) ) const;
+     * to work around the Qt font bug)
+     * @deprecated use QgsComposerUtils::drawText instead
+    */
+    Q_DECL_DEPRECATED void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font, const QColor& c = QColor() ) const;
 
     /**Like the above, but with a rectangle for multiline text
      * @param p painter to use
@@ -364,35 +366,47 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param halignment optional horizontal alignment
      * @param valignment optional vertical alignment
      * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
+     * @deprecated use QgsComposerUtils::drawText instead
     */
-    void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
+    Q_DECL_DEPRECATED void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
 
-    /**Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
-    double textWidthMillimeters( const QFont& font, const QString& text ) const;
+    /**Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
+     * @deprecated use QgsComposerUtils::textWidthMM instead
+    */
+    Q_DECL_DEPRECATED double textWidthMillimeters( const QFont& font, const QString& text ) const;
 
     /**Returns the font height of a character in millimeters
-      @note this method was added in version 1.7*/
-    double fontHeightCharacterMM( const QFont& font, const QChar& c ) const;
+     * @note this method was added in version 1.7
+     * @deprecated use QgsComposerUtils::fontHeightCharacterMM instead
+     */
+    Q_DECL_DEPRECATED double fontHeightCharacterMM( const QFont& font, const QChar& c ) const;
 
-    /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
-    double fontAscentMillimeters( const QFont& font ) const;
+    /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
+     * @deprecated use QgsComposerUtils::fontAscentMM instead
+     */
+    Q_DECL_DEPRECATED double fontAscentMillimeters( const QFont& font ) const;
 
-    /**Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
-    double fontDescentMillimeters( const QFont& font ) const;
+    /**Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
+     * @deprecated use QgsComposerUtils::fontDescentMM instead
+     */
+    Q_DECL_DEPRECATED double fontDescentMillimeters( const QFont& font ) const;
 
     /**Returns the font height in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE.
      * Font height equals the font ascent+descent+1 (for baseline).
      * @note Added in version 2.4
+     * @deprecated use QgsComposerUtils::fontHeightMM instead
     */
-    double fontHeightMillimeters( const QFont& font ) const;
+    Q_DECL_DEPRECATED double fontHeightMillimeters( const QFont& font ) const;
 
     /**Calculates font size in mm from a font point size
      * @deprecated use QgsComposerUtils::mmFontSize instead
      */
     Q_DECL_DEPRECATED double pixelFontSize( double pointSize ) const;
 
-    /**Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE*/
-    QFont scaledFontPixelSize( const QFont& font ) const;
+    /**Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE
+     * @deprecated use QgsComposerUtils::scaledFontPixelSize instead
+     */
+    Q_DECL_DEPRECATED QFont scaledFontPixelSize( const QFont& font ) const;
 
     /**Locks / unlocks the item position for mouse drags
      * @param lock set to true to prevent item movement and resizing via the mouse

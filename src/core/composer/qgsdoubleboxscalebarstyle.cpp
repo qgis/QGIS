@@ -16,6 +16,7 @@
 
 #include "qgsdoubleboxscalebarstyle.h"
 #include "qgscomposerscalebar.h"
+#include "qgscomposerutils.h"
 #include <QList>
 #include <QPainter>
 
@@ -45,7 +46,7 @@ void QgsDoubleBoxScaleBarStyle::draw( QPainter* p, double xOffset ) const
   {
     return;
   }
-  double barTopPosition = mScaleBar->fontAscentMillimeters( mScaleBar->font() ) + mScaleBar->labelBarSpace() + mScaleBar->boxContentSpace();
+  double barTopPosition = QgsComposerUtils::fontAscentMM( mScaleBar->font() ) + mScaleBar->labelBarSpace() + mScaleBar->boxContentSpace();
   double segmentHeight = mScaleBar->height() / 2;
 
   p->save();

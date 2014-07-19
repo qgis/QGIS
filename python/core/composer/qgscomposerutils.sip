@@ -93,7 +93,6 @@ class QgsComposerUtils
     static void readDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem,
                                          QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
 
-
     /**Writes data defined properties to xml
      * @param itemElem DOM element in which to store data defined properties
      * @param doc DOM document
@@ -105,5 +104,97 @@ class QgsComposerUtils
         const QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
         const QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
 
+    /**Returns a font where size is set in pixels and the size has been upscaled with FONT_WORKAROUND_SCALE
+     * to workaround QT font rendering bugs
+     * @param font source font with size set in points
+     * @returns font with size set in pixels
+     * @note added in version 2.5
+    */
+    static QFont scaledFontPixelSize( const QFont& font );
+
+    /**Calculate font ascent in millimeters, including workarounds for QT font rendering issues
+     * @param font input font
+     * @returns font ascent in millimeters
+     * @note added in version 2.5
+     * @see fontDescentMM
+     * @see fontHeightMM
+     * @see fontHeightCharacterMM
+     * @see textWidthMM
+     */
+    static double fontAscentMM( const QFont& font );
+
+    /**Calculate font descent in millimeters, including workarounds for QT font rendering issues
+     * @param font input font
+     * @returns font descent in millimeters
+     * @note added in version 2.5
+     * @see fontAscentMM
+     * @see fontHeightMM
+     * @see fontHeightCharacterMM
+     * @see textWidthMM
+     */
+    static double fontDescentMM( const QFont& font );
+
+    /**Calculate font height in millimeters, including workarounds for QT font rendering issues
+     * The font height is the font ascent + descent + 1 (for the baseline).
+     * @param font input font
+     * @returns font height in millimeters
+     * @note added in version 2.5
+     * @see fontAscentMM
+     * @see fontDescentMM
+     * @see fontHeightCharacterMM
+     * @see textWidthMM
+     */
+    static double fontHeightMM( const QFont& font );
+
+    /**Calculate font height in millimeters of a single character, including workarounds for QT font
+     * rendering issues
+     * @param font input font
+     * @param character character to calculate height for
+     * @returns character height in millimeters
+     * @note added in version 2.5
+     * @see fontAscentMM
+     * @see fontDescentMM
+     * @see fontHeightMM
+     * @see textWidthMM
+     */
+    static double fontHeightCharacterMM( const QFont& font, const QChar& character );
+
+    /**Calculate font width in millimeters for a string, including workarounds for QT font
+     * rendering issues
+     * @param font input font
+     * @param text string to calculate width of
+     * @returns string width in millimeters
+     * @note added in version 2.5
+     * @see fontAscentMM
+     * @see fontDescentMM
+     * @see fontHeightMM
+     * @see fontHeightCharacterMM
+     */
+    static double textWidthMM( const QFont& font, const QString& text );
+
+    /**Draws text on a painter at a specific position, taking care of composer specific issues (calculation to pixel,
+     * scaling of font and painter to work around Qt font bugs)
+     * @param painter destination QPainter
+     * @param pos position to draw text
+     * @param text string to draw
+     * @param font font to use for drawing text
+     * @param color color to draw text
+     * @note added in version 2.5
+     */
+    static void drawText( QPainter* painter, const QPointF& pos, const QString& text, const QFont& font, const QColor& color = QColor() );
+
+    /**Draws text on a painter within a rectangle, taking care of composer specific issues (calculation to pixel,
+     * scaling of font and painter to work around Qt font bugs)
+     * @param painter destination QPainter
+     * @param rect rectangle to draw into
+     * @param text string to draw
+     * @param font font to use for drawing text
+     * @param color color to draw text
+     * @param halignment optional horizontal alignment
+     * @param valignment optional vertical alignment
+     * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
+     * @note added in version 2.5
+     */
+    static void drawText( QPainter* painter, const QRectF& rect, const QString& text, const QFont& font, const QColor& color = QColor(), const Qt::AlignmentFlag halignment = Qt::AlignLeft, const Qt::AlignmentFlag valignment = Qt::AlignTop, const int flags = Qt::TextWordWrap );
 
 };

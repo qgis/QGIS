@@ -18,6 +18,7 @@
 #include "qgscomposerattributetable.h"
 #include "qgscomposertablecolumn.h"
 #include "qgscomposermap.h"
+#include "qgscomposerutils.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 
@@ -484,8 +485,8 @@ void QgsComposerAttributeTable::setSceneRect( const QRectF& rectangle )
   //update rect for data defined size and position
   QRectF evaluatedRect = evalItemRect( rectangle );
 
-  double titleHeight =  2 * mGridStrokeWidth + 2 * mLineTextDistance + fontAscentMillimeters( mHeaderFont );
-  double attributeHeight = mGridStrokeWidth + 2 * mLineTextDistance + fontAscentMillimeters( mContentFont );
+  double titleHeight =  2 * mGridStrokeWidth + 2 * mLineTextDistance + QgsComposerUtils::fontAscentMM( mHeaderFont );
+  double attributeHeight = mGridStrokeWidth + 2 * mLineTextDistance + QgsComposerUtils::fontAscentMM( mContentFont );
   if (( evaluatedRect.height() - titleHeight ) > 0 )
   {
     mMaximumNumberOfFeatures = ( evaluatedRect.height() - titleHeight ) / attributeHeight;
