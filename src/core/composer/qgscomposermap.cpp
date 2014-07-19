@@ -115,6 +115,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
   mOverviewFrameMapSymbol = 0;
   mGridLineSymbol = 0;
   createDefaultOverviewFrameSymbol();
+  createDefaultGridLineSymbol();
 
   //Offset
   mXOffset = 0.0;
