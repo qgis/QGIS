@@ -64,13 +64,29 @@ class QgsComposerUtils
     */
     static void relativeResizeRect( QRectF &rectToResize, const QRectF &boundsBefore, const QRectF &boundsAfter );
 
-    /**Returns a scaled position given a before and after range*/
+    /**Returns a scaled position given a before and after range
+     * @param position initial position within before range to scale
+     * @param beforeMin minimum value in before range
+     * @param beforeMax maximum value in before range
+     * @param afterMin minimum value in after range
+     * @param afterMax maximum value in after range
+     * @returns position scaled to range specified by afterMin and afterMax
+    */
     static double relativePosition( const double position, const double beforeMin, const double beforeMax, const double afterMin, const double afterMax );
 
-    /*Decodes a string representing a paper orientation*/
+    /**Decodes a string representing a paper orientation
+     * @param orientationString string to decode
+     * @param ok will be true if string could be decoded
+     * @returns decoded paper orientation
+    */
     static QgsComposition::PaperOrientation decodePaperOrientation( const QString orientationString, bool &ok );
 
-    /*Decodes a string representing a preset page size*/
+    /**Decodes a string representing a preset page size
+     * @param presetString string to decode
+     * @param width double for decoded paper width
+     * @param height double for decoded paper height
+     * @returns true if string could be decoded successfully
+    */
     static bool decodePresetPaperSize( const QString presetString, double &width, double &height );
 
     /**Reads all data defined properties from xml
@@ -78,6 +94,8 @@ class QgsComposerUtils
      * @param dataDefinedNames map of data defined property to name used within xml
      * @param dataDefinedProperties map of data defined properties to QgsDataDefined in which to store properties from xml
      * @note this method was added in version 2.5
+     * @see readDataDefinedProperty
+     * @see writeDataDefinedPropertyMap
     */
     static void readDataDefinedPropertyMap( const QDomElement &itemElem,
                                             QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
@@ -89,6 +107,7 @@ class QgsComposerUtils
      * @param ddElem dom element containing settings for data defined property
      * @param dataDefinedProperties map of data defined properties to QgsDataDefined in which to store properties from xml
      * @note this method was added in version 2.5
+     * @see readDataDefinedPropertyMap
     */
     static void readDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem,
                                          QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
@@ -99,6 +118,7 @@ class QgsComposerUtils
      * @param dataDefinedNames map of data defined property to name used within xml
      * @param dataDefinedProperties map of data defined properties to QgsDataDefined for storing in xml
      * @note this method was added in version 2.5
+     * @see readDataDefinedPropertyMap
     */
     static void writeDataDefinedPropertyMap( QDomElement &itemElem, QDomDocument &doc,
         const QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
