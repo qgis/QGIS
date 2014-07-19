@@ -369,10 +369,12 @@ class SagaAlgorithm(GeoAlgorithm):
         """
         extent = None
         for param in self.parameters:
+            files = []
             if isinstance(param, ParameterRaster):
                 files = [param.value]
             elif isinstance(param, ParameterMultipleInput) and param.datatype == ParameterMultipleInput.TYPE_RASTER:
-                files = param.value.split(";")
+                if param.value is not None:
+                    files = param.value.split(";")
             for f in files:
                 layer = dataobjects.getObjectFromUri(f)
                 if layer is None:
