@@ -1178,6 +1178,10 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   //overview map frame
   composerMapElem.setAttribute( "overviewFrameMap", mOverviewFrameMapId );
 
+  //write a dummy "Grid" element to prevent crashes on pre 2.5 versions (refs #10905)
+  QDomElement gridElem = doc.createElement( "Grid" );
+  composerMapElem.appendChild( gridElem );
+
   QList< QgsComposerMapGrid* >::const_iterator gridIt = mGrids.constBegin();
   for ( ; gridIt != mGrids.constEnd(); ++gridIt )
   {
@@ -1317,9 +1321,21 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   mNumCachedLayers = 0;
   mCacheUpdated = false;
 
+  //grids
+  QDomNodeList mapGridNodeList = itemElem.elementsByTagName( "ComposerMapGrid" );
+  for ( int i = 0; i < mapGridNodeList.size(); ++i )
+  {
+    QDomElement mapGridElem = mapGridNodeList.at( i ).toElement();
+    QgsComposerMapGrid* mapGrid = new QgsComposerMapGrid( mapGridElem.attribute( "name" ), this );
+    mapGrid->readXML( mapGridElem, doc );
+    mGrids.append( mapGrid );
+  }
+
   //load grid / grid annotation in old xml format
+  //only do this if we don't have the newer ComposerMapGrid element, otherwise this will
+  //be the dummy element created by QGIS >= 2.5 (refs #10905)
   QDomNodeList gridNodeList = itemElem.elementsByTagName( "Grid" );
-  if ( gridNodeList.size() > 0 )
+  if ( mapGridNodeList.size() == 0 && gridNodeList.size() > 0 )
   {
     QDomElement gridElem = gridNodeList.at( 0 ).toElement();
     QgsComposerMapGrid* mapGrid = new QgsComposerMapGrid( tr( "Grid %1" ).arg( gridCount() + 1 ), this );
@@ -1377,16 +1393,6 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
 
       mapGrid->setGridAnnotationPrecision( annotationElem.attribute( "precision", "3" ).toInt() );
     }
-    mGrids.append( mapGrid );
-  }
-
-  //grids
-  QDomNodeList mapGridNodeList = itemElem.elementsByTagName( "ComposerMapGrid" );
-  for ( int i = 0; i < mapGridNodeList.size(); ++i )
-  {
-    QDomElement mapGridElem = mapGridNodeList.at( i ).toElement();
-    QgsComposerMapGrid* mapGrid = new QgsComposerMapGrid( mapGridElem.attribute( "name" ), this );
-    mapGrid->readXML( mapGridElem, doc );
     mGrids.append( mapGrid );
   }
 
