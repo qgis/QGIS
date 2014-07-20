@@ -31,7 +31,7 @@ QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> 
 {
   if ( !parent )
   {
-    setTitle( tr( "Qscintilla2 Python Editor" ) );
+    setTitle( tr( "Python Editor" ) );
   }
   setSciLexerPython();
 }

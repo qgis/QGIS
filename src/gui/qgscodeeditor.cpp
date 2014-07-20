@@ -29,7 +29,7 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, QString title, bool folding, bool
 {
   if ( !parent && mWidgetTitle.isEmpty() )
   {
-    setWindowTitle( "QScintilla2 Text Editor" );
+    setWindowTitle( "Text Editor" );
     setMinimumSize( 800, 300 );
   }
   else

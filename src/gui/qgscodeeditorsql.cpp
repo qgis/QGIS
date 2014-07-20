@@ -27,7 +27,7 @@ QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
 {
   if ( !parent )
   {
-    setTitle( tr( "Qscintilla2 SQL Editor" ) );
+    setTitle( tr( "SQL Editor" ) );
   }
   setMarginVisible( false );
   setFoldingVisible( true );
