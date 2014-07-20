@@ -41,7 +41,6 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
   public slots:
     void on_mPictureBrowseButton_clicked();
     void on_mPictureLineEdit_editingFinished();
-    void on_mPictureExpressionButton_clicked();
     void on_mPictureRotationSpinBox_valueChanged( double d );
     void on_mPreviewListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous );
     void on_mAddDirectoryButton_clicked();
@@ -50,13 +49,16 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     void on_mComposerMapComboBox_activated( const QString & text );
     void on_mResizeModeComboBox_currentIndexChanged( int index );
     void on_mAnchorPointComboBox_currentIndexChanged( int index );
-    void on_mRadioPath_clicked();
-    void on_mRadioExpression_clicked();
-    void setPictureExpression();
 
   protected:
     void showEvent( QShowEvent * event );
     void resizeEvent( QResizeEvent * event );
+
+    QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget );
+
+  protected slots:
+    /**Initializes data defined buttons to current atlas coverage layer*/
+    void populateDataDefinedButtons();
 
   private slots:
     /**Sets the GUI elements to the values of mPicture*/

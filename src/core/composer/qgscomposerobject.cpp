@@ -85,7 +85,7 @@ bool QgsComposerObject::readXML( const QDomElement &itemElem, const QDomDocument
   return true;
 }
 
-QgsDataDefined *QgsComposerObject::dataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
+QgsDataDefined *QgsComposerObject::dataDefinedProperty( const QgsComposerObject::DataDefinedProperty property ) const
 {
   if ( property == QgsComposerObject::AllProperties || property == QgsComposerObject::NoProperty )
   {

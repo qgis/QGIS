@@ -1274,8 +1274,6 @@ void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataD
     refreshBlendMode();
   }
 
-  //TODO
-//  QgsComposerBaseItem::refreshDataDefinedPropert
   update();
 }
 

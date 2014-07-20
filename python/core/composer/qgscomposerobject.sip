@@ -36,7 +36,9 @@ class QgsComposerObject : QObject
     MapXMin, /*< map extent x minimum */
     MapYMin, /*< map extent y minimum */
     MapXMax, /*< map extent x maximum */
-    MapYMax /*< map extent y maximum */
+    MapYMax, /*< map extent y maximum */
+    //composer picture
+    PictureSource /*< picture source url */
   };
 
   /** Specifies whether the value returned by a function should be the original, user
@@ -76,7 +78,7 @@ class QgsComposerObject : QObject
      * @param property data defined property to return
      * @note this method was added in version 2.5
     */
-    QgsDataDefined* dataDefinedProperty( const DataDefinedProperty property );
+    QgsDataDefined* dataDefinedProperty( const DataDefinedProperty property ) const;
 
     /**Sets parameters for a data defined property for the item
      * @param property data defined property to set
