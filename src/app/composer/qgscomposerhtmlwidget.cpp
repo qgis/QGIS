@@ -19,21 +19,17 @@
 #include "qgscomposerhtml.h"
 #include "qgscomposition.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgscodeeditorhtml.h"
 #include <QFileDialog>
 #include <QSettings>
-#include <Qsci/qsciscintilla.h>
-#include <Qsci/qscilexerhtml.h>
+
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame ): QgsComposerItemBaseWidget( 0, html ), mHtml( html ), mFrame( frame )
 {
   setupUi( this );
 
   //setup html editor
-  mHtmlEditor = new QsciScintilla( this );
-  mHtmlEditor->setLexer( new QsciLexerHTML );
-  mHtmlEditor->setFolding( QsciScintilla::BoxedFoldStyle );
-  //hide the line numbers
-  mHtmlEditor->setMarginWidth( 1, 0 );
+  mHtmlEditor = new QgsCodeEditorHTML( this );
 
   connect( mHtmlEditor, SIGNAL( textChanged() ), this, SLOT( htmlEditorChanged() ) );
   htmlEditorLayout->addWidget( mHtmlEditor );

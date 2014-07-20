@@ -20,7 +20,7 @@
 
 class QgsComposerHtml;
 class QgsComposerFrame;
-class QsciScintilla;
+class QgsCodeEditorHTML;
 
 class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerHtmlWidgetBase
 {
@@ -53,7 +53,7 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
 
     QgsComposerHtml* mHtml;
     QgsComposerFrame* mFrame;
-    QsciScintilla *mHtmlEditor;
+    QgsCodeEditorHTML *mHtmlEditor;
 };
 
 #endif // QGSCOMPOSERHTMLWIDGET_H
