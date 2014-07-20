@@ -17,6 +17,7 @@
 
 #include "qgscomposermap.h"
 #include "qgscomposermapgrid.h"
+#include "qgscomposermapoverview.h"
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
 #include "qgscoordinatetransform.h"
@@ -48,10 +49,6 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     , mMapRotation( 0 )
     , mEvaluatedMapRotation( 0 )
     , mKeepLayerSet( false )
-    , mOverviewFrameMapId( -1 )
-    , mOverviewBlendMode( QPainter::CompositionMode_SourceOver )
-    , mOverviewInverted( false )
-    , mOverviewCentered( false )
     , mUpdatesEnabled( true )
     , mMapCanvas( 0 )
     , mDrawCanvasItems( true )
@@ -60,8 +57,6 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     , mAtlasMargin( 0.10 )
 {
   mComposition = composition;
-  mOverviewFrameMapSymbol = 0;
-  createDefaultOverviewFrameSymbol();
 
   mId = 0;
   assignFreeId();
@@ -95,10 +90,6 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     , mMapRotation( 0 )
     , mEvaluatedMapRotation( 0 )
     , mKeepLayerSet( false )
-    , mOverviewFrameMapId( -1 )
-    , mOverviewBlendMode( QPainter::CompositionMode_SourceOver )
-    , mOverviewInverted( false )
-    , mOverviewCentered( false )
     , mUpdatesEnabled( true )
     , mMapCanvas( 0 )
     , mDrawCanvasItems( true )
@@ -106,9 +97,6 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     , mAtlasScalingMode( Auto )
     , mAtlasMargin( 0.10 )
 {
-  mOverviewFrameMapSymbol = 0;
-  createDefaultOverviewFrameSymbol();
-
   //Offset
   mXOffset = 0.0;
   mYOffset = 0.0;
@@ -161,8 +149,8 @@ void QgsComposerMap::adjustExtentToItemShape( double itemWidth, double itemHeigh
 
 QgsComposerMap::~QgsComposerMap()
 {
-  delete mOverviewFrameMapSymbol;
   removeGrids();
+  removeOverviews();
 }
 
 /* This function is called by paint() and cache() to render the map.  It does not override any functions
@@ -420,9 +408,10 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
   }
 
   painter->setClipRect( thisPaintRect , Qt::NoClip );
-  if ( mOverviewFrameMapId != -1 && shouldDrawPart( OverviewMapExtent ) )
+  if ( shouldDrawPart( OverviewMapExtent ) &&
+       ( mComposition->plotStyle() != QgsComposition::Preview || mPreviewMode != Rectangle ) )
   {
-    drawOverviewMapExtent( painter );
+    drawOverviews( painter );
   }
   if ( shouldDrawPart( Grid ) &&
        ( mComposition->plotStyle() != QgsComposition::Preview || mPreviewMode != Rectangle ) )
@@ -447,7 +436,7 @@ int QgsComposerMap::numberExportLayers() const
     ( hasBackground()           ? 1 : 0 )
     + layersToRender().length()
     + 1 // for grids, if they exist
-    + ( mOverviewFrameMapId != -1 ? 1 : 0 )
+    + 1 // for overviews, if they exist
     + ( hasFrame()                ? 1 : 0 )
     + ( isSelected()              ? 1 : 0 )
     ;
@@ -479,13 +468,10 @@ bool QgsComposerMap::shouldDrawPart( PartType part ) const
       return mCurrentExportLayer == idx;
     }
   }
-  if ( mOverviewFrameMapId )
+  --idx;
+  if ( OverviewMapExtent == part )
   {
-    --idx;
-    if ( OverviewMapExtent == part )
-    {
-      return mCurrentExportLayer == idx;
-    }
+    return mCurrentExportLayer == idx;
   }
   --idx;
   if ( Grid == part )
@@ -1132,26 +1118,6 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
     composerMapElem.setAttribute( "drawCanvasItems", "false" );
   }
 
-  //overview map frame
-  QDomElement overviewFrameElem = doc.createElement( "overviewFrame" );
-  overviewFrameElem.setAttribute( "overviewFrameMap", mOverviewFrameMapId );
-  overviewFrameElem.setAttribute( "overviewBlendMode", QgsMapRenderer::getBlendModeEnum( mOverviewBlendMode ) );
-  if ( mOverviewInverted )
-  {
-    overviewFrameElem.setAttribute( "overviewInverted", "true" );
-  }
-  else
-  {
-    overviewFrameElem.setAttribute( "overviewInverted", "false" );
-  }
-
-  overviewFrameElem.setAttribute( "overviewCentered", mOverviewCentered ? "true" : "false" );
-
-  QDomElement overviewFrameStyleElem = QgsSymbolLayerV2Utils::saveSymbol( QString(), mOverviewFrameMapSymbol, doc );
-  overviewFrameElem.appendChild( overviewFrameStyleElem );
-  composerMapElem.appendChild( overviewFrameElem );
-
-
   //extent
   QDomElement extentElem = doc.createElement( "Extent" );
   extentElem.setAttribute( "xmin", qgsDoubleToString( mExtent.xMinimum() ) );
@@ -1175,17 +1141,22 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   }
   composerMapElem.appendChild( layerSetElem );
 
-  //overview map frame
-  composerMapElem.setAttribute( "overviewFrameMap", mOverviewFrameMapId );
-
   //write a dummy "Grid" element to prevent crashes on pre 2.5 versions (refs #10905)
   QDomElement gridElem = doc.createElement( "Grid" );
   composerMapElem.appendChild( gridElem );
 
+  //grids
   QList< QgsComposerMapGrid* >::const_iterator gridIt = mGrids.constBegin();
   for ( ; gridIt != mGrids.constEnd(); ++gridIt )
   {
     ( *gridIt )->writeXML( composerMapElem, doc );
+  }
+
+  //overviews
+  QList< QgsComposerMapOverview* >::const_iterator overviewIt = mOverviews.constBegin();
+  for ( ; overviewIt != mOverviews.constEnd(); ++overviewIt )
+  {
+    ( *overviewIt )->writeXML( composerMapElem, doc );
   }
 
   //atlas
@@ -1207,6 +1178,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   }
 
   removeGrids();
+  removeOverviews();
 
   QString idRead = itemElem.attribute( "id", "not found" );
   if ( idRead != "not found" )
@@ -1228,39 +1200,6 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   else
   {
     mPreviewMode = Rectangle;
-  }
-
-  QDomElement overviewFrameElem = itemElem.firstChildElement( "overviewFrame" );
-  if ( !overviewFrameElem.isNull() )
-  {
-    setOverviewFrameMap( overviewFrameElem.attribute( "overviewFrameMap", "-1" ).toInt() );
-    setOverviewBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) overviewFrameElem.attribute( "overviewBlendMode", "0" ).toUInt() ) );
-
-    QString overviewInvertedFlag = overviewFrameElem.attribute( "overviewInverted" );
-    if ( overviewInvertedFlag.compare( "true", Qt::CaseInsensitive ) == 0 )
-    {
-      setOverviewInverted( true );
-    }
-    else
-    {
-      setOverviewInverted( false );
-    }
-
-    if ( overviewFrameElem.attribute( "overviewCentered" ).compare( "true", Qt::CaseInsensitive ) == 0 )
-    {
-      mOverviewCentered = true;
-    }
-    else
-    {
-      mOverviewCentered = false;
-    }
-
-    QDomElement overviewFrameSymbolElem = overviewFrameElem.firstChildElement( "symbol" );
-    if ( !overviewFrameSymbolElem.isNull() )
-    {
-      delete mOverviewFrameMapSymbol;
-      mOverviewFrameMapSymbol = dynamic_cast<QgsFillSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( overviewFrameSymbolElem ) );
-    }
   }
 
   //extent
@@ -1394,6 +1333,36 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
       mapGrid->setGridAnnotationPrecision( annotationElem.attribute( "precision", "3" ).toInt() );
     }
     mGrids.append( mapGrid );
+  }
+
+  //load overview in old xml format
+  QDomElement overviewFrameElem = itemElem.firstChildElement( "overviewFrame" );
+  if ( !overviewFrameElem.isNull() )
+  {
+    QgsComposerMapOverview* mapOverview = new QgsComposerMapOverview( tr( "Overview %1" ).arg( overviewCount() + 1 ), this );
+
+    mapOverview->setFrameMap( overviewFrameElem.attribute( "overviewFrameMap", "-1" ).toInt() );
+    mapOverview->setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) overviewFrameElem.attribute( "overviewBlendMode", "0" ).toUInt() ) );
+    mapOverview->setInverted( overviewFrameElem.attribute( "overviewInverted" ).compare( "true", Qt::CaseInsensitive ) == 0 );
+    mapOverview->setCentered( overviewFrameElem.attribute( "overviewCentered" ).compare( "true", Qt::CaseInsensitive ) == 0 );
+
+    QgsFillSymbolV2* fillSymbol = 0;
+    QDomElement overviewFrameSymbolElem = overviewFrameElem.firstChildElement( "symbol" );
+    if ( !overviewFrameSymbolElem.isNull() )
+    {
+      fillSymbol = dynamic_cast<QgsFillSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( overviewFrameSymbolElem ) );
+      mapOverview->setFrameSymbol( fillSymbol );
+    }
+  }
+
+  //overviews
+  QDomNodeList mapOverviewNodeList = itemElem.elementsByTagName( "ComposerMapOverview" );
+  for ( int i = 0; i < mapOverviewNodeList.size(); ++i )
+  {
+    QDomElement mapOverviewElem = mapOverviewNodeList.at( i ).toElement();
+    QgsComposerMapOverview* mapOverview = new QgsComposerMapOverview( mapOverviewElem.attribute( "name" ), this );
+    mapOverview->readXML( mapOverviewElem, doc );
+    mOverviews.append( mapOverview );
   }
 
   //atlas
@@ -1759,6 +1728,36 @@ void QgsComposerMap::drawGrids( QPainter* p )
   }
 }
 
+QgsComposerMapOverview *QgsComposerMap::firstMapOverview()
+{
+  if ( mOverviews.size() < 1 )
+  {
+    QgsComposerMapOverview* overview = new QgsComposerMapOverview( tr( "Overview %1" ).arg( 1 ), this );
+    mOverviews.push_back( overview );
+  }
+  return mOverviews.at( 0 );
+}
+
+const QgsComposerMapOverview *QgsComposerMap::constFirstMapOverview() const
+{
+  return const_cast<QgsComposerMap*>( this )->firstMapOverview();
+}
+
+void QgsComposerMap::removeOverviews()
+{
+  qDeleteAll( mOverviews );
+  mOverviews.clear();
+}
+
+void QgsComposerMap::drawOverviews( QPainter* p )
+{
+  QList< QgsComposerMapOverview* >::const_iterator overviewIt = mOverviews.constBegin();
+  for ( ; overviewIt != mOverviews.constEnd(); ++overviewIt )
+  {
+    ( *overviewIt )->drawOverview( p );
+  }
+}
+
 /*QString QgsComposerMap::gridAnnotationString( double value, AnnotationCoordinate coord ) const
 {
   if ( mGridAnnotationFormat == Decimal )
@@ -1926,7 +1925,7 @@ void QgsComposerMap::removeGrid( const QString& name )
   {
     if ( mGrids.at( i )->name() == name )
     {
-      mGrids.removeAt( i );
+      delete mGrids.takeAt( i );
     }
   }
 }
@@ -2004,6 +2003,104 @@ QList< const QgsComposerMapGrid* > QgsComposerMap::mapGrids() const
   return list;
 }
 
+void QgsComposerMap::addOverview( QgsComposerMapOverview *overview )
+{
+  mOverviews.append( overview );
+}
+
+void QgsComposerMap::removeOverview( const QString &name )
+{
+  for ( int i = mOverviews.size() - 1; i >= 0; --i )
+  {
+    if ( mOverviews.at( i )->name() == name )
+    {
+      delete mOverviews.takeAt( i );
+    }
+  }
+}
+
+void QgsComposerMap::moveOverviewUp( const QString &name )
+{
+  QgsComposerMapOverview* overview = mapOverview( name );
+  if ( !overview )
+  {
+    return;
+  }
+
+  int index = mOverviews.indexOf( overview );
+  if ( index >= mOverviews.size() - 1 )
+  {
+    return;
+  }
+  mOverviews.swap( index, index + 1 );
+  update();
+}
+
+void QgsComposerMap::moveOverviewDown( const QString &name )
+{
+  QgsComposerMapOverview* overview = mapOverview( name );
+  if ( !overview )
+  {
+    return;
+  }
+
+  int index = mOverviews.indexOf( overview );
+  if ( index < 1 )
+  {
+    return;
+  }
+  mOverviews.swap( index, index - 1 );
+  update();
+}
+
+const QgsComposerMapOverview *QgsComposerMap::constMapOverview( const QString &id ) const
+{
+  QList< QgsComposerMapOverview* >::const_iterator it = mOverviews.constBegin();
+  for ( ; it != mOverviews.constEnd(); ++it )
+  {
+    if (( *it )->id() == id )
+    {
+      return ( *it );
+    }
+  }
+
+  return 0;
+}
+
+QgsComposerMapOverview *QgsComposerMap::mapOverview( const QString &id ) const
+{
+  QList< QgsComposerMapOverview* >::const_iterator it = mOverviews.begin();
+  for ( ; it != mOverviews.end(); ++it )
+  {
+    if (( *it )->id() == id )
+    {
+      return ( *it );
+    }
+  }
+
+  return 0;
+}
+
+QList<QgsComposerMapOverview *> QgsComposerMap::mapOverviews() const
+{
+  QList< QgsComposerMapOverview* > list;
+  QList< QgsComposerMapOverview* >::const_iterator it = mOverviews.begin();
+  for ( ; it != mOverviews.end(); ++it )
+  {
+    list.append( *it );
+  }
+  return list;
+}
+
+void QgsComposerMap::connectMapOverviewSignals()
+{
+    QList< QgsComposerMapOverview* >::const_iterator it = mOverviews.begin();
+    for ( ; it != mOverviews.end(); ++it )
+    {
+      (*it)->connectSignals();
+    }
+}
+
 void QgsComposerMap::requestedExtent( QgsRectangle& extent )
 {
   QgsRectangle newExtent = *currentMapExtent();
@@ -2035,50 +2132,14 @@ double QgsComposerMap::mapUnitsToMM() const
 
 void QgsComposerMap::setOverviewFrameMap( int mapId )
 {
-  if ( mOverviewFrameMapId != -1 )
-  {
-    const QgsComposerMap* map = mComposition->getComposerMapById( mapId );
-    if ( map )
-    {
-      QObject::disconnect( map, SIGNAL( extentChanged() ), this, SLOT( overviewExtentChanged() ) );
-    }
-  }
-  mOverviewFrameMapId = mapId;
-  if ( mOverviewFrameMapId != -1 )
-  {
-    const QgsComposerMap* map = mComposition->getComposerMapById( mapId );
-    if ( map )
-    {
-      QObject::connect( map, SIGNAL( extentChanged() ), this, SLOT( overviewExtentChanged() ) );
-    }
-  }
-  update();
+  QgsComposerMapOverview* overview = firstMapOverview();
+  overview->setFrameMap( mapId );
 }
 
-void QgsComposerMap::overviewExtentChanged()
+int QgsComposerMap::overviewFrameMapId() const
 {
-  //if using overview centering, update the map's extent
-  if ( mOverviewCentered && mOverviewFrameMapId != -1 )
-  {
-    QgsRectangle extent = *currentMapExtent();
-
-    const QgsComposerMap* overviewFrameMap = mComposition->getComposerMapById( mOverviewFrameMapId );
-    QgsRectangle otherExtent = *overviewFrameMap->currentMapExtent();
-
-    QgsPoint center = otherExtent.center();
-    QgsRectangle movedExtent( center.x() - currentMapExtent()->width() / 2,
-                              center.y() - currentMapExtent()->height() / 2,
-                              center.x() - currentMapExtent()->width() / 2 + currentMapExtent()->width(),
-                              center.y() - currentMapExtent()->height() / 2 + currentMapExtent()->height() );
-    *currentMapExtent() = movedExtent;
-
-    emit itemChanged();
-    emit extentChanged();
-  }
-
-  //redraw so that overview gets updated
-  cache();
-  update();
+  const QgsComposerMapOverview* overview = constFirstMapOverview();
+  return overview->frameMapId();
 }
 
 void QgsComposerMap::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
@@ -2102,26 +2163,51 @@ void QgsComposerMap::refreshDataDefinedProperty( const QgsComposerObject::DataDe
 
 void QgsComposerMap::setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol )
 {
-  delete mOverviewFrameMapSymbol;
-  mOverviewFrameMapSymbol = symbol;
+  QgsComposerMapOverview* overview = firstMapOverview();
+  overview->setFrameSymbol( symbol );
+}
+
+QgsFillSymbolV2 *QgsComposerMap::overviewFrameMapSymbol()
+{
+  QgsComposerMapOverview* overview = firstMapOverview();
+  return overview->frameSymbol();
+}
+
+QPainter::CompositionMode QgsComposerMap::overviewBlendMode() const
+{
+  const QgsComposerMapOverview* overview = constFirstMapOverview();
+  return overview->blendMode();
 }
 
 void QgsComposerMap::setOverviewBlendMode( QPainter::CompositionMode blendMode )
 {
-  mOverviewBlendMode = blendMode;
-  update();
+  QgsComposerMapOverview* overview = firstMapOverview();
+  overview->setBlendMode( blendMode );
+}
+
+bool QgsComposerMap::overviewInverted() const
+{
+  const QgsComposerMapOverview* overview = constFirstMapOverview();
+  return overview->inverted();
 }
 
 void QgsComposerMap::setOverviewInverted( bool inverted )
 {
-  mOverviewInverted = inverted;
-  update();
+  QgsComposerMapOverview* overview = firstMapOverview();
+  overview->setInverted( inverted );
+}
+
+bool QgsComposerMap::overviewCentered() const
+{
+  const QgsComposerMapOverview* overview = constFirstMapOverview();
+  return overview->centered();
 }
 
 void QgsComposerMap::setOverviewCentered( bool centered )
 {
-  mOverviewCentered = centered;
-  overviewExtentChanged();
+  QgsComposerMapOverview* overview = firstMapOverview();
+  overview->setCentered( centered );
+  //overviewExtentChanged();
 }
 
 void QgsComposerMap::setGridLineSymbol( QgsLineSymbolV2* symbol )
@@ -2288,100 +2374,6 @@ QPointF QgsComposerMap::composerMapPosForItem( const QGraphicsItem* item ) const
   double mapX = itemScenePos.x() / graphicsSceneRect.width() * mapRendererExtent.width() + mapRendererExtent.xMinimum();
   double mapY = mapRendererExtent.yMaximum() - itemScenePos.y() / graphicsSceneRect.height() * mapRendererExtent.height();
   return mapToItemCoords( QPointF( mapX, mapY ) );
-}
-
-void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
-{
-  if ( mOverviewFrameMapId == -1 || !mComposition )
-  {
-    return;
-  }
-
-  if ( mComposition->plotStyle() == QgsComposition::Preview && mPreviewMode == Rectangle )
-  {
-    //if map item is set to rectangle preview mode and we are not exporting the composition
-    //then don't draw an overview rectangle
-    return;
-  }
-
-  const QgsComposerMap* overviewFrameMap = mComposition->getComposerMapById( mOverviewFrameMapId );
-  if ( !overviewFrameMap )
-  {
-    return;
-  }
-
-  //get polygon for other overview frame map's extent (use visibleExtentPolygon as it accounts for map rotation)
-  QPolygonF otherExtent = overviewFrameMap->visibleExtentPolygon();
-
-  //get current map's extent as a QPolygonF
-  QPolygonF thisExtent = visibleExtentPolygon();
-  //intersect the two
-  QPolygonF intersectExtent = thisExtent.intersected( otherExtent );
-
-  //setup painter scaling to dots so that raster symbology is drawn to scale
-  double dotsPerMM = p->device()->logicalDpiX() / 25.4;
-
-  //setup render context
-  QgsMapSettings ms = mComposition->mapSettings();
-  //context units should be in dots
-  ms.setOutputSize( QSizeF( rect().width() * dotsPerMM, rect().height() * dotsPerMM ).toSize() );
-  ms.setExtent( *currentMapExtent() );
-  ms.setOutputDpi( p->device()->logicalDpiX() );
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  context.setForceVectorOutput( true );
-  context.setPainter( p );
-
-  p->save();
-  p->setCompositionMode( mOverviewBlendMode );
-  p->translate( mXOffset, mYOffset );
-  p->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
-  p->setRenderHint( QPainter::Antialiasing );
-
-  mOverviewFrameMapSymbol->startRender( context );
-
-  //construct a polygon corresponding to the intersecting map extent
-  //need to scale line to dots, rather then mm, since the painter has been scaled to dots
-  QTransform mapTransform;
-  QPolygonF thisRectPoly = QPolygonF( QRectF( 0, 0, dotsPerMM *  rect().width(), dotsPerMM *  rect().height() ) );
-
-  //workaround QT Bug #21329
-  thisRectPoly.pop_back();
-  //create transform from map coordinates to painter coordinates
-  QTransform::quadToQuad( thisExtent, thisRectPoly, mapTransform );
-  QPolygonF intersectPolygon;
-  intersectPolygon = mapTransform.map( intersectExtent );
-
-  QList<QPolygonF> rings; //empty list
-  if ( !mOverviewInverted )
-  {
-    //Render the intersecting map extent
-    mOverviewFrameMapSymbol->renderPolygon( intersectPolygon, &rings, 0, context );;
-  }
-  else
-  {
-    //We are inverting the overview frame (ie, shading outside the intersecting extent)
-    //Construct a polygon corresponding to the overview map extent
-    QPolygonF outerPolygon;
-    outerPolygon << QPointF( 0, 0 ) << QPointF( rect().width() * dotsPerMM, 0 ) << QPointF( rect().width() * dotsPerMM, rect().height() * dotsPerMM ) << QPointF( 0, rect().height() * dotsPerMM ) << QPointF( 0, 0 );
-
-    //Intersecting extent is an inner ring for the shaded area
-    rings.append( intersectPolygon );
-    mOverviewFrameMapSymbol->renderPolygon( outerPolygon, &rings, 0, context );
-  }
-
-  mOverviewFrameMapSymbol->stopRender( context );
-  p->restore();
-}
-
-void QgsComposerMap::createDefaultOverviewFrameSymbol()
-{
-  delete mOverviewFrameMapSymbol;
-  QgsStringMap properties;
-  properties.insert( "color", "255,0,0,255" );
-  properties.insert( "style", "solid" );
-  properties.insert( "style_border", "no" );
-  mOverviewFrameMapSymbol = QgsFillSymbolV2::createSimple( properties );
-  mOverviewFrameMapSymbol->setAlpha( 0.3 );
 }
 
 /*void QgsComposerMap::initGridAnnotationFormatFromProject()

@@ -172,6 +172,7 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposerpicture.cpp
   composer/qgscomposermap.cpp
   composer/qgscomposermapgrid.cpp
+  composer/qgscomposermapoverview.cpp
   composer/qgscomposertable.cpp
   composer/qgscomposertablecolumn.cpp  
   composer/qgscomposerattributetable.cpp
@@ -364,6 +365,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgsaddremoveitemcommand.h
   composer/qgscomposerlegend.h
   composer/qgscomposermap.h
+  composer/qgscomposermapoverview.h
   composer/qgscomposerpicture.h
   composer/qgscomposerscalebar.h
   composer/qgscomposerobject.h

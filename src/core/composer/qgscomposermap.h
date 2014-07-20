@@ -25,6 +25,7 @@
 
 class QgsComposition;
 class QgsComposerMapGrid;
+class QgsComposerMapOverview;
 class QgsMapRenderer;
 class QgsMapToPixel;
 class QDomNode;
@@ -409,23 +410,23 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setOverviewFrameMap( int mapId );
     /**Returns id of overview frame (or -1 if no overfiew frame)
     @note: this function was added in version 1.9*/
-    int overviewFrameMapId() const { return mOverviewFrameMapId; }
+    int overviewFrameMapId() const;
 
     void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol );
-    QgsFillSymbolV2* overviewFrameMapSymbol() { return mOverviewFrameMapSymbol; }
+    QgsFillSymbolV2* overviewFrameMapSymbol();
 
     /** Returns the overview's blending mode */
-    QPainter::CompositionMode overviewBlendMode() const {return mOverviewBlendMode;}
+    QPainter::CompositionMode overviewBlendMode() const;
     /** Sets the overview's blending mode*/
     void setOverviewBlendMode( QPainter::CompositionMode blendMode );
 
     /** Returns true if the overview frame is inverted */
-    bool overviewInverted() const {return mOverviewInverted;}
+    bool overviewInverted() const;
     /** Sets the overview's inversion mode*/
     void setOverviewInverted( bool inverted );
 
     /** Returns true if the extent is forced to center on the overview */
-    bool overviewCentered() const { return mOverviewCentered; }
+    bool overviewCentered() const;
     /** Set the overview's centering mode */
     void setOverviewCentered( bool centered );
 
@@ -549,13 +550,25 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     int gridCount() const { return mGrids.size(); }
 
+    /**Adds new map overview (takes ownership)*/
+    void addOverview( QgsComposerMapOverview* overview );
+    void removeOverview( const QString& name );
+    void moveOverviewUp( const QString& name );
+    void moveOverviewDown( const QString& name );
+    const QgsComposerMapOverview* constMapOverview( const QString& id ) const;
+    QgsComposerMapOverview* mapOverview( const QString& id ) const;
+    QList<QgsComposerMapOverview *> mapOverviews() const;
+    int overviewCount() const { return mOverviews.size(); }
+
     /**Returns extent that considers rotation and shift with mOffsetX / mOffsetY*/
     QPolygonF transformedMapPolygon() const;
 
     /**Transforms map coordinates to item coordinates (considering rotation and move offset)*/
     QPointF mapToItemCoords( const QPointF& mapCoords ) const;
 
-  signals:
+    void connectMapOverviewSignals();
+
+signals:
     void extentChanged();
 
     /**Is emitted on rotation change to notify north arrow pictures*/
@@ -571,7 +584,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Call updateCachedImage if item is in render mode*/
     void renderModeUpdateCachedImage();
 
-    void overviewExtentChanged();
+    /**@deprecated use QgsComposerMapOverview::overviewExtentChanged instead*/
+    void overviewExtentChanged() {};
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 
@@ -622,17 +636,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Stored layer list (used if layer live-link mKeepLayerSet is disabled)*/
     QStringList mLayerSet;
 
-    /**Id of map which displays its extent rectangle into this composer map (overview map functionality). -1 if not present*/
-    int mOverviewFrameMapId;
-    /**Drawing style for overview farme*/
-    QgsFillSymbolV2* mOverviewFrameMapSymbol;
-
-    /**Blend mode for overview*/
-    QPainter::CompositionMode mOverviewBlendMode;
-    bool mOverviewInverted;
-    /** Centering mode for overview */
-    bool mOverviewCentered;
-
     /** Whether updates to the map are enabled */
     bool mUpdatesEnabled;
 
@@ -649,6 +652,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void removeGrids();
     void drawGrids( QPainter* p );
 
+    /**Returns first map overview or creates an empty one if none*/
+    QgsComposerMapOverview* firstMapOverview();
+    const QgsComposerMapOverview* constFirstMapOverview() const;
+
+    void removeOverviews();
+    void drawOverviews( QPainter* p );
+
     //QPainter::CompositionMode mGridBlendMode;
     /*double mGridFrameWidth;
     double mGridFramePenThickness;
@@ -662,6 +672,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**True if annotation items, rubber band, etc. from the main canvas should be displayed*/
     bool mDrawCanvasItems;
     QList< QgsComposerMapGrid* > mGrids;
+
+    QList< QgsComposerMapOverview* > mOverviews;
 
     /**Adjusts an extent rectangle to match the provided item width and height, so that extent
      * center of extent remains the same */
@@ -697,8 +709,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void drawCanvasItems( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle );
     void drawCanvasItem( QGraphicsItem* item, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle );
     QPointF composerMapPosForItem( const QGraphicsItem* item ) const;
-    void drawOverviewMapExtent( QPainter* p );
-    void createDefaultOverviewFrameSymbol();
     //void initGridAnnotationFormatFromProject();
 
     enum PartType
@@ -718,6 +728,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @note this method was added in version 2.5
      */
     void refreshMapExtents();
+
+    friend class QgsComposerMapOverview; //to access mXOffset, mYOffset
 };
 
 #endif

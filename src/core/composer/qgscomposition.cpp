@@ -22,6 +22,7 @@
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
 #include "qgscomposermap.h"
+#include "qgscomposermapoverview.h"
 #include "qgscomposermousehandles.h"
 #include "qgscomposeritemgroup.h"
 #include "qgscomposerpicture.h"
@@ -1037,12 +1038,13 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   composerItems( maps );
   for ( QList<QgsComposerMap*>::iterator mit = maps.begin(); mit != maps.end(); ++mit )
   {
-    if (( *mit )->overviewFrameMapId() != -1 )
+    QgsComposerMap* map = ( *mit );
+    if ( map )
     {
-      const QgsComposerMap* overviewMap = getComposerMapById(( *mit )->overviewFrameMapId() );
-      if ( overviewMap )
+      QList<QgsComposerMapOverview* >::iterator overviewIt = map->mapOverviews().begin();
+      for ( ; overviewIt != map->mapOverviews().end(); ++overviewIt )
       {
-        QObject::connect( overviewMap, SIGNAL( extentChanged() ), *mit, SLOT( overviewExtentChanged() ) );
+        ( *overviewIt )->connectSignals();
       }
     }
   }
