@@ -1468,8 +1468,8 @@ void QgsProjectProperties::resetPythonMacros()
 {
   grpPythonMacros->setChecked( false );
   ptePythonMacros->setText( "def openProject():\n    pass\n\n" \
-                                 "def saveProject():\n    pass\n\n" \
-                                 "def closeProject():\n    pass\n" );
+                            "def saveProject():\n    pass\n\n" \
+                            "def closeProject():\n    pass\n" );
 }
 
 void QgsProjectProperties::populateEllipsoidList()

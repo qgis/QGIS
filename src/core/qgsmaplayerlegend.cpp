@@ -48,7 +48,7 @@ QgsMapLayerLegend* QgsMapLayerLegend::defaultPluginLegend( QgsPluginLayer* pl )
 
 
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL )
-  : mParent( nodeL )
+    : mParent( nodeL )
 {
 }
 

@@ -58,7 +58,7 @@ class RasterCalculator(SagaAlgorithm):
         self.name = 'Raster calculator'
         self.cmdname = 'Grid Calculator'
         self.undecoratedGroup = "grid_calculus"
-        self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup) 
+        self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
         self.addParameter(ParameterRaster(self.GRIDS, 'Main input layers'))
         self.addParameter(ParameterMultipleInput(self.XGRIDS, 'Additional layers',
                           ParameterMultipleInput.TYPE_RASTER, False))

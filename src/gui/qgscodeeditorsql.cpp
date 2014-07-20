@@ -23,7 +23,7 @@
 
 
 QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
-  : QgsCodeEditor( parent )
+    : QgsCodeEditor( parent )
 {
   if ( !parent )
   {

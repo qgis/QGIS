@@ -254,7 +254,7 @@ namespace pal
        * Called by Pal::save()
        * \param file the file to write
        */
-      void save(std::ofstream *file);
+      void save( std::ofstream *file );
 #endif
 
       /**
