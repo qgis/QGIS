@@ -191,7 +191,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="mProjOpts_01">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -211,8 +211,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>779</height>
+                <width>684</width>
+                <height>783</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -798,8 +798,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>779</height>
+                <width>238</width>
+                <height>43</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -848,8 +848,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>779</height>
+                <width>684</width>
+                <height>783</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -920,8 +920,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>779</height>
+                <width>684</width>
+                <height>783</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1289,7 +1289,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>667</width>
-                <height>1570</height>
+                <height>1391</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2003,8 +2003,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>166</width>
-                <height>114</height>
+                <width>684</width>
+                <height>783</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2027,14 +2027,7 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_16">
                   <item>
-                   <widget class="QPlainTextEdit" name="ptePythonMacros">
-                    <property name="documentTitle">
-                     <string notr="true"/>
-                    </property>
-                    <property name="plainText">
-                     <string/>
-                    </property>
-                   </widget>
+                   <widget class="QgsCodeEditorPython" name="ptePythonMacros" native="true"/>
                   </item>
                  </layout>
                 </widget>
@@ -2107,6 +2100,12 @@
    <class>QgsProjectionSelector</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselector.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorPython</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorpython.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -2200,9 +2199,9 @@
   <tabstop>mWCSUrlLineEdit</tabstop>
   <tabstop>scrollArea_6</tabstop>
   <tabstop>grpPythonMacros</tabstop>
-  <tabstop>ptePythonMacros</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

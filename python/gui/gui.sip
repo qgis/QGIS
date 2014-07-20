@@ -5,6 +5,7 @@
 %Import QtCore/QtCoremod.sip
 %Import QtGui/QtGuimod.sip
 %Import QtXml/QtXmlmod.sip
+%Import Qsci/qscimod4.sip
 
 %Import core/core.sip
 
@@ -19,6 +20,9 @@
 %Include qgsattributeforminterface.sip
 %Include qgsbusyindicatordialog.sip
 %Include qgscollapsiblegroupbox.sip
+%Include qgscodeeditor.sip
+%Include qgscodeeditorpython.sip
+%Include qgscodeeditorsql.sip
 %Include qgscolorbutton.sip
 %Include qgscolordialog.sip
 %Include qgscomposerview.sip
