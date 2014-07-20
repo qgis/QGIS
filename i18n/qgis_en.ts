@@ -9469,23 +9469,23 @@ Only %1 of %2 features written.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3577"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3598"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3623"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3582"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3603"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3628"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="64"/>
         <source>Unable to load %1 provider</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3585"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3606"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3631"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3590"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3611"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3636"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="73"/>
         <source>Provider %1 has no %2 method</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3678"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3683"/>
         <source>Loaded from Provider</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11261,7 +11261,7 @@ SQL: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1036"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1039"/>
         <source>Could not save symbology because:
 %1</source>
         <translation type="unfinished"></translation>
@@ -15182,6 +15182,22 @@ Should the existing classes be deleted before classification?</source>
     </message>
 </context>
 <context>
+    <name>QgsCodeEditorPython</name>
+    <message>
+        <location filename="../src/gui/qgscodeeditorpython.cpp" line="34"/>
+        <source>Python Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsCodeEditorSQL</name>
+    <message>
+        <location filename="../src/gui/qgscodeeditorsql.cpp" line="30"/>
+        <source>SQL Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsCollapsibleGroupBoxBasic</name>
     <message>
         <location filename="../src/gui/qgscollapsiblegroupbox.cpp" line="194"/>
@@ -17916,8 +17932,8 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="1325"/>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="1466"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="1341"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="1472"/>
         <source>Grid %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18900,32 +18916,32 @@ Please try a lower resolution or a smaller papersize</source>
 <context>
     <name>QgsComposerScaleBar</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="317"/>
+        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="318"/>
         <source>units</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="325"/>
+        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="326"/>
         <source>km</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="330"/>
+        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="331"/>
         <source>m</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="339"/>
+        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="340"/>
         <source>miles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="344"/>
+        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="345"/>
         <source>ft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="351"/>
+        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="352"/>
         <source>Nm</source>
         <translation type="unfinished"></translation>
     </message>
@@ -21859,6 +21875,20 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsDefaultRasterLayerLegend</name>
+    <message>
+        <location filename="../src/core/qgsmaplayerlegend.cpp" line="216"/>
+        <source>Double-click to view legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsmaplayerlegend.cpp" line="239"/>
+        <source>following %1 items
+not displayed</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsDelAttrDialogBase</name>
     <message>
         <location filename="../src/ui/qgsdelattrdialogbase.ui" line="14"/>
@@ -23711,13 +23741,13 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="484"/>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="508"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="456"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="480"/>
         <source>Output preview is generated &lt;br&gt; using the first feature from the layer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="487"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="459"/>
         <source>Output preview:   </source>
         <translation type="unfinished"></translation>
     </message>
@@ -31961,20 +31991,6 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
 </context>
 <context>
-    <name>QgsLayerTreeModel</name>
-    <message>
-        <location filename="../src/gui/layertree/qgslayertreemodel.cpp" line="732"/>
-        <source>Double-click to view legend</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/layertree/qgslayertreemodel.cpp" line="757"/>
-        <source>following %1 items
-not displayed</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsLayerTreeViewDefaultActions</name>
     <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="36"/>
@@ -32310,96 +32326,96 @@ not displayed</source>
 <context>
     <name>QgsMapLayer</name>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="296"/>
-        <location filename="../src/core/qgsmaplayer.cpp" line="783"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="299"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="786"/>
         <source>Specify CRS for layer %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="927"/>
-        <location filename="../src/core/qgsmaplayer.cpp" line="943"/>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1297"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="930"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="946"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1300"/>
         <source>%1 at line %2 column %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="979"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="982"/>
         <source>Error: qgis element could not be found in %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1005"/>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1333"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1008"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1336"/>
         <source>Loading style file %1 failed because:
 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1208"/>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1215"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1211"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1218"/>
         <source>Could not save symbology because:
 %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1079"/>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1257"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1082"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1260"/>
         <source>The directory containing your dataset needs to be writable!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="948"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="951"/>
         <source>Style not found in database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1093"/>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1271"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1096"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1274"/>
         <source>Created default style file as %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1098"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1101"/>
         <source>ERROR: Failed to created default style file as %1. Check file permissions and retry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1114"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1117"/>
         <source>User database could not be opened.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1129"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1132"/>
         <source>The style table could not be created.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1144"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1147"/>
         <source>The style %1 was saved to database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1161"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1164"/>
         <source>The style %1 was updated in the database.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1166"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1169"/>
         <source>The style %1 could not be updated in the database.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1172"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1175"/>
         <source>The style %1 could not be inserted into database.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1276"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1279"/>
         <source>ERROR: Failed to created SLD style file as %1. Check file permissions and retry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1302"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1305"/>
         <source>Unable to open file %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -42751,194 +42767,194 @@ Click on help button to get valid creation options for this format.</source>
 <context>
     <name>QgsRasterLayer</name>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="83"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="96"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="129"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="84"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="97"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="130"/>
         <source>Not Set</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="151"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="152"/>
         <source>QgsRasterLayer created</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1489"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1492"/>
         <source>Raster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="331"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="332"/>
         <source>No Data Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="341"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="342"/>
         <source>NoDataValue not set</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="387"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="388"/>
         <source>Could not determine raster data type.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="321"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="322"/>
         <source>Driver</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="347"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="348"/>
         <source>Data Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="354"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="355"/>
         <source>Byte - Eight bit unsigned integer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="357"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="358"/>
         <source>UInt16 - Sixteen bit unsigned integer </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="360"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="361"/>
         <source>Int16 - Sixteen bit signed integer </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="363"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="364"/>
         <source>UInt32 - Thirty two bit unsigned integer </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="366"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="367"/>
         <source>Int32 - Thirty two bit signed integer </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="369"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="370"/>
         <source>Float32 - Thirty two bit floating point </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="372"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="373"/>
         <source>Float64 - Sixty four bit floating point </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="375"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="376"/>
         <source>CInt16 - Complex Int16 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="378"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="379"/>
         <source>CInt32 - Complex Int32 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="381"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="382"/>
         <source>CFloat32 - Complex Float32 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="384"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="385"/>
         <source>CFloat64 - Complex Float64 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="392"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="393"/>
         <source>Pyramid overviews</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="397"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="398"/>
         <source>Layer Spatial Reference System</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="404"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="405"/>
         <source>Layer Extent (layer original source projection)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="414"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="415"/>
         <source>Project Spatial Reference System</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="430"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="431"/>
         <source>Band</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="437"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="438"/>
         <source>Band No</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="449"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="450"/>
         <source>No Stats</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="452"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="453"/>
         <source>No stats collected yet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="462"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="463"/>
         <source>Min Val</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="470"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="471"/>
         <source>Max Val</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="478"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="479"/>
         <source>Range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="486"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="487"/>
         <source>Mean</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="494"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="495"/>
         <source>Sum of squares</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="502"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="503"/>
         <source>Standard Deviation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="510"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="511"/>
         <source>Sum of all cells</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="518"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="519"/>
         <source>Cell Count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="655"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="658"/>
         <source>Cannot instantiate the &apos;%1&apos; data provider</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="665"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="668"/>
         <source>Provider is not valid (provider: %1, URI: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1489"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1492"/>
         <source>&lt;maplayer&gt; not found.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -49420,150 +49436,150 @@ Error was:%2</source>
 <context>
     <name>QgsVectorLayer</name>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="757"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="760"/>
         <source>Updating feature count for layer %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="757"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="760"/>
         <source>Abort</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2182"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2187"/>
         <source>ERROR: no provider</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2188"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2193"/>
         <source>ERROR: layer not editable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2205"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2210"/>
         <source>Commit errors:
   %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3220"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3225"/>
         <source>General</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3226"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3231"/>
         <source>Layer comment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3233"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3238"/>
         <source>Storage type of this layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3241"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3246"/>
         <source>Description of this provider</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3248"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3253"/>
         <source>Source for this layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3265"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3270"/>
         <source>Geometry type of the features in this layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3274"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3279"/>
         <source>Primary key attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3285"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3290"/>
         <source>The number of features in this layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3290"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3295"/>
         <source>Editing capabilities of this layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3299"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3304"/>
         <source>Extents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3303"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3308"/>
         <source>In layer spatial reference system units</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3369"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3404"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3374"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3409"/>
         <source>In project spatial reference system units</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3382"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3387"/>
         <source>Layer Spatial Reference System</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3393"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3398"/>
         <source>Project (Output) Spatial Reference System</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3415"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3420"/>
         <source>Attribute field info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3696"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3701"/>
         <source>Error: qgis element could not be found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3352"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3371"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3357"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3376"/>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3357"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3362"/>
         <source>unknown extent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3406"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3411"/>
         <source>(Invalid transformation of layer extents)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3421"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3426"/>
         <source>Field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3424"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3429"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3427"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3432"/>
         <source>Length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3430"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3435"/>
         <source>Precision</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3433"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3438"/>
         <source>Comment</source>
         <translation type="unfinished"></translation>
     </message>
