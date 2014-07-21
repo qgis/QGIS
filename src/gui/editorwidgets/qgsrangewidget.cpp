@@ -43,7 +43,9 @@ QWidget* QgsRangeWidget::createWidget( QWidget* parent )
     switch ( layer()->pendingFields()[fieldIdx()].type() )
     {
       case QVariant::Double:
-        editor = new QDoubleSpinBox( parent );
+        QDoubleSpinBox* spin  = new QDoubleSpinBox( parent );
+        spin->setDecimals( layer()->pendingFields()[fieldIdx()].precision() );
+        editor = spin;
         break;
 
       case QVariant::Int:
