@@ -36,6 +36,8 @@ class TestQgsComposerUtils: public QObject
     void drawArrowHead(); //test drawing an arrow head
     void angle(); //test angle utility function
     void rotate(); //test rotation helper function
+    void normalizedAngle(); //test normalised angle function
+    void snappedAngle(); //test snapped angle function
     void largestRotatedRect(); //test largest rotated rect helper function
     void pointsToMM(); //test conversion of point size to mm
     void mmToPoints(); //test conversion of mm to point size
@@ -154,6 +156,79 @@ void TestQgsComposerUtils::rotate()
     QgsComposerUtils::rotate(( *it ).second, x, y );
     QVERIFY( qgsDoubleNear( x, ( *it ).first.x2() ) );
     QVERIFY( qgsDoubleNear( y, ( *it ).first.y2() ) );
+  }
+}
+
+void TestQgsComposerUtils::normalizedAngle()
+{
+  QList< QPair< double, double > > testVals;
+  testVals << qMakePair( 0.0, 0.0 );
+  testVals << qMakePair( 90.0, 90.0 );
+  testVals << qMakePair( 180.0, 180.0 );
+  testVals << qMakePair( 270.0, 270.0 );
+  testVals << qMakePair( 360.0, 0.0 );
+  testVals << qMakePair( 390.0, 30.0 );
+  testVals << qMakePair( 720.0, 0.0 );
+  testVals << qMakePair( 730.0, 10.0 );
+  testVals << qMakePair( -10.0, 350.0 );
+  testVals << qMakePair( -360.0, 0.0 );
+  testVals << qMakePair( -370.0, 350.0 );
+  testVals << qMakePair( -760.0, 320.0 );
+
+  //test normalized angle helper function
+  QList< QPair< double, double > >::const_iterator it = testVals.constBegin();
+  for ( ; it != testVals.constEnd(); ++it )
+  {
+    QVERIFY( qgsDoubleNear( QgsComposerUtils::normalizedAngle(( *it ).first ), ( *it ).second ) );
+  }
+}
+
+void TestQgsComposerUtils::snappedAngle()
+{
+  QList< QPair< double, double > > testVals;
+  testVals << qMakePair( 0.0, 0.0 );
+  testVals << qMakePair( 10.0, 0.0 );
+  testVals << qMakePair( 20.0, 0.0 );
+  testVals << qMakePair( 30.0, 45.0 );
+  testVals << qMakePair( 40.0, 45.0 );
+  testVals << qMakePair( 50.0, 45.0 );
+  testVals << qMakePair( 60.0, 45.0 );
+  testVals << qMakePair( 70.0, 90.0 );
+  testVals << qMakePair( 80.0, 90.0 );
+  testVals << qMakePair( 90.0, 90.0 );
+  testVals << qMakePair( 100.0, 90.0 );
+  testVals << qMakePair( 110.0, 90.0 );
+  testVals << qMakePair( 120.0, 135.0 );
+  testVals << qMakePair( 130.0, 135.0 );
+  testVals << qMakePair( 140.0, 135.0 );
+  testVals << qMakePair( 150.0, 135.0 );
+  testVals << qMakePair( 160.0, 180.0 );
+  testVals << qMakePair( 170.0, 180.0 );
+  testVals << qMakePair( 180.0, 180.0 );
+  testVals << qMakePair( 190.0, 180.0 );
+  testVals << qMakePair( 200.0, 180.0 );
+  testVals << qMakePair( 210.0, 225.0 );
+  testVals << qMakePair( 220.0, 225.0 );
+  testVals << qMakePair( 230.0, 225.0 );
+  testVals << qMakePair( 240.0, 225.0 );
+  testVals << qMakePair( 250.0, 270.0 );
+  testVals << qMakePair( 260.0, 270.0 );
+  testVals << qMakePair( 270.0, 270.0 );
+  testVals << qMakePair( 280.0, 270.0 );
+  testVals << qMakePair( 290.0, 270.0 );
+  testVals << qMakePair( 300.0, 315.0 );
+  testVals << qMakePair( 310.0, 315.0 );
+  testVals << qMakePair( 320.0, 315.0 );
+  testVals << qMakePair( 330.0, 315.0 );
+  testVals << qMakePair( 340.0, 0.0 );
+  testVals << qMakePair( 350.0, 0.0 );
+  testVals << qMakePair( 360.0, 0.0 );
+
+  //test snapped angle helper function
+  QList< QPair< double, double > >::const_iterator it = testVals.constBegin();
+  for ( ; it != testVals.constEnd(); ++it )
+  {
+    QVERIFY( qgsDoubleNear( QgsComposerUtils::snappedAngle(( *it ).first ), ( *it ).second ) );
   }
 }
 

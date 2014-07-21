@@ -92,6 +92,60 @@ void QgsComposerUtils::rotate( const double angle, double &x, double &y )
   y = yRot;
 }
 
+double QgsComposerUtils::normalizedAngle( const double angle )
+{
+  double clippedAngle = angle;
+  if ( clippedAngle >= 360.0 || clippedAngle <= -360.0 )
+  {
+    clippedAngle = fmod( clippedAngle, 360.0 );
+  }
+  if ( clippedAngle < 0.0 )
+  {
+    clippedAngle += 360.0;
+  }
+  return clippedAngle;
+}
+
+double QgsComposerUtils::snappedAngle( const double angle )
+{
+  //normalize angle to 0-360 degrees
+  double clippedAngle = normalizedAngle( angle );
+
+  //snap angle to 45 degree
+  if ( clippedAngle >= 22.5 && clippedAngle < 67.5 )
+  {
+    return 45.0;
+  }
+  else if ( clippedAngle >= 67.5 && clippedAngle < 112.5 )
+  {
+    return 90.0;
+  }
+  else if ( clippedAngle >= 112.5 && clippedAngle < 157.5 )
+  {
+    return 135.0;
+  }
+  else if ( clippedAngle >= 157.5 && clippedAngle < 202.5 )
+  {
+    return 180.0;
+  }
+  else if ( clippedAngle >= 202.5 && clippedAngle < 247.5 )
+  {
+    return 225.0;
+  }
+  else if ( clippedAngle >= 247.5 && clippedAngle < 292.5 )
+  {
+    return 270.0;
+  }
+  else if ( clippedAngle >= 292.5 && clippedAngle < 337.5 )
+  {
+    return 315.0;
+  }
+  else
+  {
+    return 0.0;
+  }
+}
+
 QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF originalRect, const QRectF boundsRect, const double rotation )
 {
   double originalWidth = originalRect.width();
@@ -100,7 +154,7 @@ QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF originalRe
   double boundsHeight = boundsRect.height();
   double ratioBoundsRect = boundsWidth / boundsHeight;
 
-  double clippedRotation = fmod( rotation, 360.0 );
+  double clippedRotation = normalizedAngle( rotation );
 
   //shortcut for some rotation values
   if ( clippedRotation == 0 || clippedRotation == 90 || clippedRotation == 180 || clippedRotation == 270 )

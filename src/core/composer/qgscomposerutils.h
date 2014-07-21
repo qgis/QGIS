@@ -55,6 +55,19 @@ class CORE_EXPORT QgsComposerUtils
     */
     static void rotate( const double angle, double& x, double& y );
 
+    /**Ensures that an angle is in the range 0 <= angle < 360
+     * @param angle angle in degrees
+     * @returns equivalent angle within the range [0, 360)
+     * @see snappedAngle
+    */
+    static double normalizedAngle( const double angle );
+
+    /**Snaps an angle to its closest 45 degree angle
+     * @param angle angle in degrees
+     * @returns angle snapped to 0, 45/90/135/180/225/270 or 315 degrees
+    */
+    static double snappedAngle( const double angle );
+
     /**Calculates the largest scaled version of originalRect which fits within boundsRect, when it is rotated by
      * a specified amount.
      * @param originalRect QRectF to be rotated and scaled

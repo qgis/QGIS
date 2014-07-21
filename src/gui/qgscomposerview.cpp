@@ -45,6 +45,7 @@
 #include "qgspaperitem.h"
 #include "qgsmapcanvas.h" //for QgsMapCanvas::WheelAction
 #include "qgscursors.h"
+#include "qgscomposerutils.h"
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WindowFlags f )
     : QGraphicsView( parent )
@@ -333,6 +334,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     {
       mRubberBandStartPos = QPointF( snappedScenePoint.x(), snappedScenePoint.y() );
       mRubberBandLineItem = new QGraphicsLineItem( snappedScenePoint.x(), snappedScenePoint.y(), snappedScenePoint.x(), snappedScenePoint.y() );
+      mRubberBandLineItem->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
       mRubberBandLineItem->setZValue( 1000 );
       scene()->addItem( mRubberBandLineItem );
       scene()->update();
@@ -352,6 +354,8 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     {
       QTransform t;
       mRubberBandItem = new QGraphicsRectItem( 0, 0, 0, 0 );
+      mRubberBandItem->setBrush( Qt::NoBrush );
+      mRubberBandItem->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
       mRubberBandStartPos = QPointF( snappedScenePoint.x(), snappedScenePoint.y() );
       t.translate( snappedScenePoint.x(), snappedScenePoint.y() );
       mRubberBandItem->setTransform( t );
@@ -486,8 +490,8 @@ void QgsComposerView::startMarqueeSelect( QPointF & scenePoint )
 
   QTransform t;
   mRubberBandItem = new QGraphicsRectItem( 0, 0, 0, 0 );
-  mRubberBandItem->setBrush( QBrush( QColor( 225, 50, 70, 25 ) ) );
-  mRubberBandItem->setPen( QPen( Qt::DotLine ) );
+  mRubberBandItem->setBrush( QBrush( QColor( 224, 178, 76, 63 ) ) );
+  mRubberBandItem->setPen( QPen( QBrush( QColor( 254, 58, 29, 100 ) ), 0, Qt::DotLine ) );
   mRubberBandStartPos = QPointF( scenePoint.x(), scenePoint.y() );
   t.translate( scenePoint.x(), scenePoint.y() );
   mRubberBandItem->setTransform( t );
@@ -742,9 +746,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       }
       else
       {
-        QPointF scenePoint = mapToScene( e->pos() );
-        QPointF snappedScenePoint = composition()->snapPointToGrid( scenePoint );
-        QgsComposerArrow* composerArrow = new QgsComposerArrow( mRubberBandStartPos, QPointF( snappedScenePoint.x(), snappedScenePoint.y() ), composition() );
+        QgsComposerArrow* composerArrow = new QgsComposerArrow( mRubberBandLineItem->line().p1(), mRubberBandLineItem->line().p2(), composition() );
         composition()->addComposerArrow( composerArrow );
 
         composition()->clearSelection();
@@ -925,6 +927,19 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
     return;
   }
 
+  bool shiftModifier = false;
+  bool controlModifier = false;
+  if ( e->modifiers() & Qt::ShiftModifier )
+  {
+    //shift key depressed
+    shiftModifier = true;
+  }
+  if ( e->modifiers() & Qt::ControlModifier )
+  {
+    //control key depressed
+    controlModifier = true;
+  }
+
   mMouseCurrentXY = e->pos();
   //update cursor position in composer status bar
   emit cursorPosChanged( mapToScene( e->pos() ) );
@@ -960,7 +975,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
 
     if ( mMarqueeSelect || mMarqueeZoom )
     {
-      updateRubberBand( scenePoint );
+      updateRubberBandRect( scenePoint );
       return;
     }
 
@@ -972,10 +987,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
 
       case AddArrow:
       {
-        if ( mRubberBandLineItem )
-        {
-          mRubberBandLineItem->setLine( mRubberBandStartPos.x(), mRubberBandStartPos.y(),  scenePoint.x(),  scenePoint.y() );
-        }
+        updateRubberBandLine( scenePoint, shiftModifier );
         break;
       }
 
@@ -990,7 +1002,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       case AddTable:
         //adjust rubber band item
       {
-        updateRubberBand( scenePoint );
+        updateRubberBandRect( scenePoint, shiftModifier, controlModifier );
         break;
       }
 
@@ -1011,8 +1023,13 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
   }
 }
 
-void QgsComposerView::updateRubberBand( QPointF & pos )
+void QgsComposerView::updateRubberBandRect( QPointF & pos, const bool constrainSquare, const bool fromCenter )
 {
+  if ( !mRubberBandItem )
+  {
+    return;
+  }
+
   double x = 0;
   double y = 0;
   double width = 0;
@@ -1021,35 +1038,82 @@ void QgsComposerView::updateRubberBand( QPointF & pos )
   double dx = pos.x() - mRubberBandStartPos.x();
   double dy = pos.y() - mRubberBandStartPos.y();
 
-  if ( dx < 0 )
+  if ( constrainSquare )
   {
-    x = pos.x();
-    width = -dx;
+    if ( fabs( dx ) > fabs( dy ) )
+    {
+      width = fabs( dx );
+      height = width;
+    }
+    else
+    {
+      height = fabs( dy );
+      width = height;
+    }
+
+    x = mRubberBandStartPos.x() - (( dx < 0 ) ? width : 0 );
+    y = mRubberBandStartPos.y() - (( dy < 0 ) ? height : 0 );
   }
   else
   {
-    x = mRubberBandStartPos.x();
-    width = dx;
+    //not constraining
+    if ( dx < 0 )
+    {
+      x = pos.x();
+      width = -dx;
+    }
+    else
+    {
+      x = mRubberBandStartPos.x();
+      width = dx;
+    }
+
+    if ( dy < 0 )
+    {
+      y = pos.y();
+      height = -dy;
+    }
+    else
+    {
+      y = mRubberBandStartPos.y();
+      height = dy;
+    }
   }
 
-  if ( dy < 0 )
+  if ( fromCenter )
   {
-    y = pos.y();
-    height = -dy;
-  }
-  else
-  {
-    y = mRubberBandStartPos.y();
-    height = dy;
+    x = mRubberBandStartPos.x() - width;
+    y = mRubberBandStartPos.y() - height;
+    width *= 2.0;
+    height *= 2.0;
   }
 
-  if ( mRubberBandItem )
+  mRubberBandItem->setRect( 0, 0, width, height );
+  QTransform t;
+  t.translate( x, y );
+  mRubberBandItem->setTransform( t );
+}
+
+void QgsComposerView::updateRubberBandLine( const QPointF &pos, const bool constrainAngles )
+{
+  if ( !mRubberBandLineItem )
   {
-    mRubberBandItem->setRect( 0, 0, width, height );
-    QTransform t;
-    t.translate( x, y );
-    mRubberBandItem->setTransform( t );
+    return;
   }
+
+  //snap to grid
+  QPointF snappedScenePoint = composition()->snapPointToGrid( pos );
+
+  QLineF newLine = QLineF( mRubberBandStartPos, snappedScenePoint );
+
+  if ( constrainAngles )
+  {
+    //movement is contrained to 45 degree angles
+    double angle = QgsComposerUtils::snappedAngle( newLine.angle() );
+    newLine.setAngle( angle );
+  }
+
+  mRubberBandLineItem->setLine( newLine );
 }
 
 void QgsComposerView::mouseDoubleClickEvent( QMouseEvent* e )
