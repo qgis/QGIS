@@ -178,7 +178,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 
     void refreshExpressionContext();
 
-    virtual void refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 
   private slots:
     void frameLoaded( bool ok = true );

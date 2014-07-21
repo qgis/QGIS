@@ -484,7 +484,7 @@ void QgsComposerHtml::refreshExpressionContext()
   loadHtml();
 }
 
-void QgsComposerHtml::refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property )
+void QgsComposerHtml::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
 {
   //updates data defined properties and redraws item to match
   if ( property == QgsComposerObject::SourceUrl || property == QgsComposerObject::AllProperties )

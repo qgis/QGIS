@@ -155,6 +155,6 @@ class QgsComposerHtml: QgsComposerMultiFrame
     
     void refreshExpressionContext();
     
-    virtual void refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 
 };
