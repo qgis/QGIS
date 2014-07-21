@@ -30,9 +30,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtXml import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.outputs.OutputRaster import OutputRaster
+from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterRaster
+from processing.core.outputs import OutputRaster
 from processing.tools import dataobjects
 from qgis.utils import iface
 

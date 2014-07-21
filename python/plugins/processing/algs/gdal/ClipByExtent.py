@@ -31,10 +31,10 @@ from qgis.core import *
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterString import ParameterString
-from processing.outputs.OutputRaster import OutputRaster
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterString
+from processing.core.outputs import OutputRaster
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 

@@ -35,9 +35,9 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
     GeoAlgorithmExecutionException
 
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.outputs.OutputRaster import OutputRaster
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterNumber
+from processing.core.outputs import OutputRaster
 
 from processing.tools.system import *
 

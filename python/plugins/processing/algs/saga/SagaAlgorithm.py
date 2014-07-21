@@ -36,20 +36,8 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterFixedTable import ParameterFixedTable
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterFactory import ParameterFactory
-from processing.outputs.OutputFactory import OutputFactory
-from processing.outputs.OutputTable import OutputTable
-from processing.outputs.OutputVector import OutputVector
-from processing.outputs.OutputRaster import OutputRaster
+from processing.core.parameters import *
+from processing.core.outputs import *
 from SagaUtils import SagaUtils
 from SagaGroupNameDecorator import SagaGroupNameDecorator
 from processing.tools import dataobjects
@@ -92,12 +80,13 @@ class SagaAlgorithm(GeoAlgorithm):
         self.undecoratedGroup = line
         self.group = SagaGroupNameDecorator.getDecoratedName(
                 self.undecoratedGroup)
+        line = lines.readline().strip('\n').strip() 
         while line != '':
             line = line.strip('\n').strip()
             if line.startswith('Hardcoded'):
                 self.hardcodedStrings.append(line[len('Harcoded|') + 1:])
             elif line.startswith('Parameter'):
-                self.addParameter(ParameterFactory.getFromString(line))
+                self.addParameter(getParameterFromString(line))
             elif line.startswith('AllowUnmatching'):
                 self.allowUnmatchingGridExtents = True
             elif line.startswith('Extent'):
@@ -106,7 +95,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 self.addParameter(ParameterExtent(self.OUTPUT_EXTENT,
                                   'Output extent', '0,1,0,1'))
             else:
-                self.addOutput(OutputFactory.getFromString(line))
+                self.addOutput(getOutputFromString(line))
             line = lines.readline().strip('\n').strip()
         lines.close()
 
@@ -366,6 +355,7 @@ class SagaAlgorithm(GeoAlgorithm):
     def checkBeforeOpeningParametersDialog(self):
         msg = SagaUtils.checkSagaIsInstalled()
         if msg is not None:
+            print msg
             html = '<p>This algorithm requires SAGA to be run.Unfortunately, \
                    it seems that SAGA is not installed in your system, or it \
                    is not correctly configured to be used from QGIS</p>'

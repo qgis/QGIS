@@ -1,4 +1,4 @@
-##Lines=group
+##Vector geometry tools=group
 ##lines=vector
 ##distance=number 1
 ##startpoint=number 0
@@ -7,7 +7,7 @@
 
 from qgis.core import *
 from PyQt4.QtCore import *
-from processing.core.VectorWriter import VectorWriter
+
 
 
 def create_points(feat):

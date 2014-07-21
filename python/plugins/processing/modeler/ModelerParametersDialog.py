@@ -30,35 +30,13 @@ from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui, QtWebKit
 from processing.modeler.ModelerAlgorithm import ValueFromInput,\
     ValueFromOutput, Algorithm, Output
-from processing.core.WrongHelpFileException import WrongHelpFileException
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.RangePanel import RangePanel
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
-from processing.parameters.ParameterCrs import ParameterCrs
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.parameters.ParameterFixedTable import ParameterFixedTable
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterRange import ParameterRange
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.outputs.OutputRaster import OutputRaster
-from processing.outputs.OutputVector import OutputVector
-from processing.outputs.OutputTable import OutputTable
-from processing.outputs.OutputExtent import OutputExtent
-from processing.outputs.OutputString import OutputString
-from processing.outputs.OutputNumber import OutputNumber
-from processing.outputs.OutputHTML import OutputHTML
-from processing.outputs.OutputFile import OutputFile
-from processing.outputs.OutputDirectory import OutputDirectory
+from processing.core.parameters import *
+from processing.core.outputs import *
 
 
 class ModelerParametersDialog(QtGui.QDialog):
@@ -187,19 +165,16 @@ class ModelerParametersDialog(QtGui.QDialog):
         self.webView = QtWebKit.QWebView()
 
         html = None
-        url = None
-        try:
-            isText, help = self._alg.help()
-            if help is not None:
-                if isText:
-                    html = help;
-                else:
-                    url = QtCore.QUrl(help)
+        url = None        
+        isText, help = self._alg.help()
+        if help is not None:
+            if isText:
+                html = help;
             else:
-                html = '<h2>Sorry, no help is available for this \
-                        algorithm.</h2>'
-        except WrongHelpFileException, e:
-            html = e.args[0]
+                url = QtCore.QUrl(help)
+        else:
+            html = '<h2>Sorry, no help is available for this \
+                    algorithm.</h2>'
         try:
             if html:
                 self.webView.setHtml(html)

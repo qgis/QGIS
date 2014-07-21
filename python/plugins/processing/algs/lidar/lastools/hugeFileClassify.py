@@ -27,9 +27,9 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterNumber import ParameterNumber
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterNumber
 
 class hugeFileClassify(LAStoolsAlgorithm):
 

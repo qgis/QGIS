@@ -28,20 +28,23 @@ __revision__ = '$Format:%H$'
 import os
 from PyQt4.QtGui import *
 from qgis.core import *
+from processing.gui.SilentProgress import SilentProgress
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.ResultsDialog import ResultsDialog
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.CouldNotLoadResultsDialog import CouldNotLoadResultsDialog
-from processing.outputs.OutputRaster import OutputRaster
-from processing.outputs.OutputVector import OutputVector
-from processing.outputs.OutputTable import OutputTable
+from processing.core.outputs import OutputRaster
+from processing.core.outputs import OutputVector
+from processing.core.outputs import OutputTable
 from processing.core.ProcessingResults import ProcessingResults
-from processing.outputs.OutputHTML import OutputHTML
+from processing.core.outputs import OutputHTML
 from processing.tools import dataobjects
 
-def handleAlgorithmResults(alg, progress, showResults=True):
+def handleAlgorithmResults(alg, progress=None, showResults=True):
     wrongLayers = []
     htmlResults = False
+    if progress is None:
+        progress = SilentProgress()
     progress.setText('Loading resulting layers')
     i = 0
     for out in alg.outputs:

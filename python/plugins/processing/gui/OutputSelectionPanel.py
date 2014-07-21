@@ -34,8 +34,8 @@ from PyQt4.QtGui import *
 from qgis.gui import *
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.outputs.OutputVector import OutputVector
-from processing.outputs.OutputDirectory import OutputDirectory
+from processing.core.outputs import OutputVector
+from processing.core.outputs import OutputDirectory
 
 from processing.ui.ui_widgetOutputSelect import Ui_widgetOutputSelect
 

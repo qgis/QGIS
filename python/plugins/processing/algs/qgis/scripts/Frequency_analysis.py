@@ -5,19 +5,18 @@
 
 from qgis.core import *
 from PyQt4.QtCore import *
-from processing.core.TableWriter import TableWriter
 from collections import defaultdict
 
 layer = processing.getObject(Input)
 inputFields = layer.pendingFields()
 fieldIdxs = []
 fields = Fields.split(',')
-for f in fields:
-    idx = inputFields.indexFromName(f)
+for f in fields:  
+    idx = inputFields.indexFromName(f)  
     if  idx == -1:
         raise GeoAlgorithmExecutionException('Field not found:' + f)
     fieldIdxs.append(idx)
-writer = TableWriter(Output, None,  fields + ['FREQ'])
+writer = processing.TableWriter(Output, None,  fields + ['FREQ'])
 
 counts = {}
 feats = processing.features(layer)

@@ -30,9 +30,9 @@ from PyQt4.QtCore import *
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.outputs.OutputTable import OutputTable
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterNumber
+from processing.core.outputs import OutputTable
 
 from processing.tools.system import *
 

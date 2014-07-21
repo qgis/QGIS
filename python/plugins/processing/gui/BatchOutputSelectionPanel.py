@@ -28,13 +28,13 @@ __revision__ = '$Format:%H$'
 import os.path
 from PyQt4 import QtGui, QtCore
 from processing.gui.AutofillDialog import AutofillDialog
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterFixedTable import ParameterFixedTable
+from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterTable
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterFixedTable
 
 
 class BatchOutputSelectionPanel(QtGui.QWidget):

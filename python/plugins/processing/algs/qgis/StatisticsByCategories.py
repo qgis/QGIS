@@ -28,11 +28,11 @@ __revision__ = '$Format:%H$'
 import math
 from PyQt4.QtCore import *
 from qgis.core import *
-from processing.outputs.OutputTable import OutputTable
+from processing.core.outputs import OutputTable
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.tools import dataobjects, vector
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterTableField import ParameterTableField
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTableField
 
 
 class StatisticsByCategories(GeoAlgorithm):

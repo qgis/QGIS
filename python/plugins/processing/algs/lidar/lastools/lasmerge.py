@@ -27,7 +27,7 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
-from processing.parameters.ParameterFile import ParameterFile
+from processing.core.parameters import ParameterFile
 
 class lasmerge(LAStoolsAlgorithm):
 

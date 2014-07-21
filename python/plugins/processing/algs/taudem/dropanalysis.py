@@ -35,11 +35,11 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
     GeoAlgorithmExecutionException
 
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.outputs.OutputFile import OutputFile
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterSelection
+from processing.core.outputs import OutputFile
 
 from processing.tools.system import *
 

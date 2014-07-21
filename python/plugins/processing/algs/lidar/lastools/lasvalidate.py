@@ -26,7 +26,7 @@ __revision__ = '$Format:%H$'
 import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
-from processing.outputs.OutputFile import OutputFile
+from processing.core.outputs import OutputFile
 
 class lasvalidate(LAStoolsAlgorithm):
 

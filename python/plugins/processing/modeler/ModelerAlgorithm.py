@@ -39,11 +39,11 @@ from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
 from processing.gui.Help2Html import  getHtmlFromHelpFile
 from processing.modeler.ModelerUtils import ModelerUtils
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterDataObject import ParameterDataObject
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.parameters.ParameterVector import ParameterVector
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterDataObject
+from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterVector
 from processing.tools import dataobjects
 
 
@@ -501,6 +501,8 @@ class ModelerAlgorithm(GeoAlgorithm):
                 def _import(name):
                     __import__(name)
                     return sys.modules[name]
+                if moduleName.startswith("processing.parameters"):
+                    moduleName = "processing.core.parameters"
                 module = _import(moduleName)
                 clazz = getattr(module, className)
                 instance = clazz()

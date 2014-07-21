@@ -28,11 +28,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterString import ParameterString
-from processing.outputs.OutputFile import OutputFile
+from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterString
+from processing.core.outputs import OutputFile
 from FusionUtils import FusionUtils
 from FusionAlgorithm import FusionAlgorithm
 

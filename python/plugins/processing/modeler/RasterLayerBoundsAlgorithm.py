@@ -26,10 +26,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.outputs.OutputNumber import OutputNumber
+from processing.core.parameters import ParameterRaster
+from processing.core.outputs import OutputNumber
 from processing.tools import dataobjects
-from processing.outputs.OutputExtent import OutputExtent
+from processing.core.outputs import OutputExtent
 
 class RasterLayerBoundsAlgorithm(GeoAlgorithm):
 

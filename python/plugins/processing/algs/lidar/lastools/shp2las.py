@@ -27,8 +27,8 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterFile import ParameterFile
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterFile
 
 class shp2las(LAStoolsAlgorithm):
 

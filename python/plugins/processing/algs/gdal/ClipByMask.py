@@ -32,12 +32,12 @@ from qgis.core import *
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterString import ParameterString
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterString
 
-from processing.outputs.OutputRaster import OutputRaster
+from processing.core.outputs import OutputRaster
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 

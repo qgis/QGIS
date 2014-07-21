@@ -31,9 +31,9 @@ from qgis.core import *
 
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterString import ParameterString
-from processing.outputs.OutputVector import OutputVector
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterString
+from processing.core.outputs import OutputVector
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm

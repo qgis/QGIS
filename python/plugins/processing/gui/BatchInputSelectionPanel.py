@@ -27,12 +27,12 @@ __revision__ = '$Format:%H$'
 
 import os
 from PyQt4 import QtGui, QtCore
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
+from processing.core.parameters import ParameterMultipleInput
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 from processing.tools import dataobjects
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterTable import ParameterTable
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTable
 
 
 class BatchInputSelectionPanel(QtGui.QWidget):

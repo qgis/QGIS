@@ -27,9 +27,9 @@ __revision__ = '$Format:%H$'
 
 from PyQt4 import QtCore
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterString import ParameterString
-from processing.outputs.OutputVector import OutputVector
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterString
+from processing.core.outputs import OutputVector
 from processing.tools.system import *
 from processing.algs.gdal.GdalUtils import GdalUtils
 

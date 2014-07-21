@@ -28,10 +28,10 @@ __revision__ = '$Format:%H$'
 import os
 from PyQt4 import QtGui
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.outputs.OutputTable import OutputTable
+from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterBoolean
+from processing.core.outputs import OutputTable
 from FusionUtils import FusionUtils
 from FusionAlgorithm import FusionAlgorithm
 

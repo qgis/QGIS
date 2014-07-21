@@ -33,9 +33,9 @@ import numpy as np
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.outputs.OutputHTML import OutputHTML
+from processing.core.parameters import ParameterTable
+from processing.core.parameters import ParameterTableField
+from processing.core.outputs import OutputHTML
 from processing.tools import *
 
 
