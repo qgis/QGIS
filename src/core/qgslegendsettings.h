@@ -4,7 +4,12 @@
 #include <QColor>
 #include <QSizeF>
 
+class QRectF;
+
 #include "qgscomposerlegendstyle.h"
+
+class QgsComposerLegendItem;
+
 
 /**
  * @brief The QgsLegendSettings class stores the appearance and layout settings
@@ -74,6 +79,45 @@ class CORE_EXPORT QgsLegendSettings
     bool useAdvancedEffects() const { return mUseAdvancedEffects; }
     void setUseAdvancedEffects( bool use ) { mUseAdvancedEffects = use; }
 
+    // utility functions
+
+    /** Splits a string using the wrap char taking into account handling empty
+      wrap char which means no wrapping */
+    QStringList splitStringForWrapping( QString stringToSplt ) const;
+
+    /** Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
+     to work around the Qt font bug)*/
+    void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const;
+
+    /** Like the above, but with a rectangle for multiline text
+     * @param p painter to use
+     * @param rect rectangle to draw into
+     * @param text text to draw
+     * @param font font to use
+     * @param halignment optional horizontal alignment
+     * @param valignment optional vertical alignment
+     * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
+    */
+    void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
+
+    /** Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE */
+    QFont scaledFontPixelSize( const QFont& font ) const;
+
+    /** Calculates font to from point size to pixel size */
+    double pixelFontSize( double pointSize ) const;
+
+    /** Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE */
+    double textWidthMillimeters( const QFont& font, const QString& text ) const;
+
+    /** Returns the font height of a character in millimeters */
+    double fontHeightCharacterMM( const QFont& font, const QChar& c ) const;
+
+    /** Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE */
+    double fontAscentMillimeters( const QFont& font ) const;
+
+    /** Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE */
+    double fontDescentMillimeters( const QFont& font ) const;
+
   private:
 
     QString mTitle;
@@ -117,5 +161,7 @@ class CORE_EXPORT QgsLegendSettings
     /** Whether to use advanced effects like transparency for symbols - may require their rasterization */
     bool mUseAdvancedEffects;
 };
+
+
 
 #endif // QGSLEGENDSETTINGS_H

@@ -9,6 +9,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
   ${QT_INCLUDE_DIR}
@@ -129,3 +130,4 @@ ADD_QGIS_TEST(invertedpolygontest testqgsinvertedpolygonrenderer.cpp )
 ADD_QGIS_TEST(colorschemeregistry testqgscolorschemeregistry.cpp)
 ADD_QGIS_TEST(colorscheme testqgscolorscheme.cpp)
 ADD_QGIS_TEST(networkcontentfetcher testqgsnetworkcontentfetcher.cpp )
+ADD_QGIS_TEST(legendrenderertest testqgslegendrenderer.cpp )

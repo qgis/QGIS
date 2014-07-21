@@ -1,5 +1,7 @@
 #include "qgslegendsettings.h"
 
+#include <QPainter>
+
 QgsLegendSettings::QgsLegendSettings()
     : mTitle( QObject::tr( "Legend" ) )
     , mTitleAlignment( Qt::AlignLeft )
@@ -27,3 +29,88 @@ QgsLegendSettings::QgsLegendSettings()
   rstyle( QgsComposerLegendStyle::Subgroup ).rfont().setPointSizeF( 12.0 );
   rstyle( QgsComposerLegendStyle::SymbolLabel ).rfont().setPointSizeF( 12.0 );
 }
+
+QStringList QgsLegendSettings::splitStringForWrapping( QString stringToSplt ) const
+{
+  QStringList list;
+  // If the string contains nothing then just return the string without spliting.
+  if ( wrapChar().count() == 0 )
+    list << stringToSplt;
+  else
+    list = stringToSplt.split( wrapChar() );
+  return list;
+}
+
+#define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
+
+
+void QgsLegendSettings::drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const
+{
+  QFont textFont = scaledFontPixelSize( font );
+
+  p->save();
+  p->setFont( textFont );
+  double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
+  p->scale( scaleFactor, scaleFactor );
+  p->drawText( QPointF( x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE ), text );
+  p->restore();
+}
+
+
+void QgsLegendSettings::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment, Qt::AlignmentFlag valignment, int flags ) const
+{
+  QFont textFont = scaledFontPixelSize( font );
+
+  QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE,
+                     rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
+
+  p->save();
+  p->setFont( textFont );
+  double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
+  p->scale( scaleFactor, scaleFactor );
+  p->drawText( scaledRect, halignment | valignment | flags, text );
+  p->restore();
+}
+
+
+QFont QgsLegendSettings::scaledFontPixelSize( const QFont& font ) const
+{
+  QFont scaledFont = font;
+  double pixelSize = pixelFontSize( font.pointSizeF() ) * FONT_WORKAROUND_SCALE + 0.5;
+  scaledFont.setPixelSize( pixelSize );
+  return scaledFont;
+}
+
+double QgsLegendSettings::pixelFontSize( double pointSize ) const
+{
+  return ( pointSize * 0.3527 );
+}
+
+double QgsLegendSettings::textWidthMillimeters( const QFont& font, const QString& text ) const
+{
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
+}
+
+double QgsLegendSettings::fontHeightCharacterMM( const QFont& font, const QChar& c ) const
+{
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.boundingRect( c ).height() / FONT_WORKAROUND_SCALE );
+}
+
+double QgsLegendSettings::fontAscentMillimeters( const QFont& font ) const
+{
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.ascent() / FONT_WORKAROUND_SCALE );
+}
+
+double QgsLegendSettings::fontDescentMillimeters( const QFont& font ) const
+{
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.descent() / FONT_WORKAROUND_SCALE );
+}
+
