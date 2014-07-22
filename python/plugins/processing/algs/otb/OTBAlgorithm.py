@@ -146,17 +146,17 @@ class OTBAlgorithm(GeoAlgorithm):
 
         for line in the_result:
             try:
-                if line.startswith("Parameter"):
-                    param = getParameterFromString(line)
+                if line.startswith("Parameter") or line.startswith("*Parameter"):
+                    if line.startswith("*Parameter"):
+                        param = ParameterFactory.getFromString(line[1:])
+                        param.isAdvanced = True
+                    else:    
+                        param = getParameterFromString(line)
                     # Hack for initializing the elevation parameters from Processing configuration
                     if param.name == "-elev.dem.path" or param.name == "-elev.dem" or "elev.dem" in param.name:
                         param.default = OTBUtils.otbSRTMPath()
                     elif param.name == "-elev.dem.geoid" or param.name == "-elev.geoid" or "elev.geoid" in param.name:
                         param.default = OTBUtils.otbGeoidPath()
-                    self.addParameter(param)
-                elif line.startswith("*Parameter"):
-                    param = getParameterFromString(line[1:])
-                    param.isAdvanced = True
                     self.addParameter(param)
                 elif line.startswith("Extent"):
                     self.addParameter(ParameterExtent(self.REGION_OF_INTEREST, "Region of interest", "0,1,0,1"))
