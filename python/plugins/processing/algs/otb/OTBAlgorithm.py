@@ -340,9 +340,9 @@ class OTBAlgorithm(GeoAlgorithm):
         if not found:
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, "Adapter for %s not found" % the_key)
 
-        frames = inspect.getouterframes(inspect.currentframe())[1:]
-        for a_frame in frames:
-            frame,filename,line_number,function_name,lines,index = a_frame
-            ProcessingLog.addToLog(ProcessingLog.LOG_INFO, "%s %s %s %s %s %s" % (frame,filename,line_number,function_name,lines,index))
+        #frames = inspect.getouterframes(inspect.currentframe())[1:]
+        #for a_frame in frames:
+        #    frame,filename,line_number,function_name,lines,index = a_frame
+        #    ProcessingLog.addToLog(ProcessingLog.LOG_INFO, "%s %s %s %s %s %s" % (frame,filename,line_number,function_name,lines,index))
 
         OTBUtils.executeOtb(commands, progress)
