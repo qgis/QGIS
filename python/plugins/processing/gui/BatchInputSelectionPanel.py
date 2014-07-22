@@ -115,7 +115,7 @@ class BatchInputSelectionPanel(QtGui.QWidget):
             path = ''
 
         ret = QtGui.QFileDialog.getOpenFileNames(self, 'Open file', path,
-                self.param.getFileFilter())
+                'All files(*.*);;' + self.param.getFileFilter())
         if ret:
             files = list(ret)
             if len(files) == 1:
