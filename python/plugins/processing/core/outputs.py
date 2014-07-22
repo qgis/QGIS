@@ -114,7 +114,7 @@ class OutputFile(Output):
         if self.ext is None:
             return 'All files(*.*)'
         else:
-            return '%s files(*.%s)' % self.ext
+            return '%s files(*.%s)' % (self.ext, self.ext)
 
     def getDefaultFileExtension(self, alg):
         return self.ext or 'file'
