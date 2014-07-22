@@ -256,9 +256,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         ns = {}
         ns['progress'] = progress
 
-        print self.parameters
         for param in self.parameters:
-            print param.name
             ns[param.name] = param.value
 
         for out in self.outputs:
