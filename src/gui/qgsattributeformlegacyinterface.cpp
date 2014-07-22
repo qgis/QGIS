@@ -26,6 +26,8 @@ QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString&
     , mPyFunctionName( function )
     , mPyFormVarName( pyFormName )
 {
+  QDialogButtonBox* buttonBox = form->findChild<QDialogButtonBox*>();
+
   mPyLayerVarName = QString( "_qgis_layer_%1" ).arg( form->layer()->id() );
 
   QString initLayer = QString( "%1 = sip.wrapinstance( %2, qgis.core.QgsVectorLayer )" )
@@ -46,6 +48,9 @@ void QgsAttributeFormLegacyInterface::featureChanged()
   QDialogButtonBox* buttonBox = form()->findChild<QDialogButtonBox*>();
   if ( buttonBox )
   {
+    // If the init function did not call disconnect, we do it here before reconnecting
+    // If it did call disconnect, then the call will just do nothing
+    QObject::disconnect( buttonBox, SIGNAL( accepted() ), form(), SLOT( accept() ) );
     QObject::connect( buttonBox, SIGNAL( accepted() ), form(), SLOT( accept() ) );
   }
 
