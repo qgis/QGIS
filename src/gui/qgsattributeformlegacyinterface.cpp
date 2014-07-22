@@ -46,6 +46,9 @@ void QgsAttributeFormLegacyInterface::featureChanged()
   QDialogButtonBox* buttonBox = form()->findChild<QDialogButtonBox*>();
   if ( buttonBox )
   {
+    // If the init function did not call disconnect, we do it here before reconnecting
+    // If it did call disconnect, then the call will just do nothing
+    QObject::disconnect( buttonBox, SIGNAL( accepted() ), form(), SLOT( accept() ) );
     QObject::connect( buttonBox, SIGNAL( accepted() ), form(), SLOT( accept() ) );
   }
 
