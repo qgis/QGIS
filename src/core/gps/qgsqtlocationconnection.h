@@ -19,12 +19,20 @@
 #define QGSQTLOCATIONCONNECTION_H
 
 #include "qgsgpsconnection.h"
-#include <QtCore/QPointer>
-#include <QtLocation/QGeoPositionInfoSource>
-#include <QtLocation/QGeoSatelliteInfo>
-#include <QtLocation/QGeoSatelliteInfoSource>
 
-QTM_USE_NAMESPACE
+#include <QtCore/QPointer>
+
+#if defined(HAVE_QT_MOBILITY_LOCATION )
+  #include <QtLocation/QGeoPositionInfoSource>
+  #include <QtLocation/QGeoSatelliteInfo>
+  #include <QtLocation/QGeoSatelliteInfoSource>
+
+  QTM_USE_NAMESPACE
+#else // Using QtPositioning
+  #include <QtPositioning/QGeoPositionInfoSource>
+  #include <QtPositioning/QGeoSatelliteInfo>
+  #include <QtPositioning/QGeoSatelliteInfoSource>
+#endif
 
 class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
 {
