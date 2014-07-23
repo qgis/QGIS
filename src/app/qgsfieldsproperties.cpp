@@ -212,6 +212,20 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
   dataItem->setData( Qt::DisplayRole, idx );
   DesignerTreeItemData itemData( DesignerTreeItemData::Field, field.name() );
   dataItem->setData( DesignerTreeRole, itemData.asQVariant() );
+  switch ( mLayer->pendingFields().fieldOrigin( idx ) )
+  {
+    case QgsFields::OriginExpression:
+      dataItem->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
+      break;
+
+    case QgsFields::OriginJoin:
+      dataItem->setIcon( QgsApplication::getThemeIcon( "/propertyicons/join.png" ) );
+      break;
+
+    default:
+      dataItem->setIcon( QgsApplication::getThemeIcon( "/propertyicons/attributes.png" ) );
+      break;
+  }
   mFieldsList->setItem( row, attrIdCol, dataItem );
   mIndexedWidgets.insert( idx, mFieldsList->item( row, 0 ) );
   mFieldsList->setItem( row, attrNameCol, new QTableWidgetItem( field.name() ) );
