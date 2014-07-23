@@ -62,6 +62,13 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl , int fieldId
                                         + 2 );
   selectionListWidget->setMaximumWidth( selectionListWidget->sizeHintForColumn( 0 )
                                         + 2 );
+
+  if ( vl->pendingFields().fieldOrigin( fieldIdx ) == QgsFields::OriginJoin ||
+       vl->pendingFields().fieldOrigin( fieldIdx ) == QgsFields::OriginExpression )
+  {
+    isFieldEditableCheckBox->setEnabled( false );
+  }
+
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/QgsAttributeTypeDialog/geometry" ).toByteArray() );
 }
