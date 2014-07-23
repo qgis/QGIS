@@ -41,5 +41,4 @@ try:
 except ImportError:
     VER = ""
 
-
 print("qsci_version_str:%s" % VER)
