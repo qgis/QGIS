@@ -85,7 +85,7 @@ void QgsExpressionFieldBuffer::updateFields( QgsFields& flds )
   int index = 0;
   Q_FOREACH( const ExpressionField& fld, mExpressions )
   {
-    flds.appendExpressionField( fld.field, index, fld.expression );
+    flds.appendExpressionField( fld.field, index );
     ++index;
   }
 }

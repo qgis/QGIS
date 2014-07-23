@@ -177,12 +177,10 @@ class CORE_EXPORT QgsFields
     {
       Field(): origin( OriginUnknown ), originIndex( -1 ) {}
       Field( const QgsField& f, FieldOrigin o, int oi ): field( f ), origin( o ), originIndex( oi ) {}
-      Field( const QgsField& f, int oi, const QString& exp ): field( f ), origin( OriginExpression ), originIndex( oi ), expression( exp ) {}
 
       QgsField field;      //!< field
       FieldOrigin origin;  //!< origin of the field
       int originIndex;     //!< index specific to the origin
-      QString expression;  //!< An expression to calculate the field or a NULL string if origin is not OriginExpression
     } Field;
 
     //! Remove all fields
@@ -190,7 +188,7 @@ class CORE_EXPORT QgsFields
     //! Append a field. The field must have unique name, otherwise it is rejected (returns false)
     bool append( const QgsField& field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
     //! Append an expression field. The field must have unique name, otherwise it is rejected (returns false)
-    bool appendExpressionField( const QgsField& field, int originIndex, const QString& expression );
+    bool appendExpressionField( const QgsField& field, int originIndex );
     //! Remove a field with the given index
     void remove( int fieldIdx );
     //! Extend with fields from another QgsFields container
