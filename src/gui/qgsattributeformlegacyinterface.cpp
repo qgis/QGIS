@@ -26,8 +26,6 @@ QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString&
     , mPyFunctionName( function )
     , mPyFormVarName( pyFormName )
 {
-  QDialogButtonBox* buttonBox = form->findChild<QDialogButtonBox*>();
-
   mPyLayerVarName = QString( "_qgis_layer_%1" ).arg( form->layer()->id() );
 
   QString initLayer = QString( "%1 = sip.wrapinstance( %2, qgis.core.QgsVectorLayer )" )
