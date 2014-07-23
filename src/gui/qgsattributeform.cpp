@@ -371,6 +371,7 @@ void QgsAttributeForm::init()
     scrollArea->setWidgetResizable( true );
     scrollArea->setFrameShape( QFrame::NoFrame );
     scrollArea->setFrameShadow( QFrame::Plain );
+    scrollArea->setFocusProxy( this );
     layout()->addWidget( scrollArea );
 
     int row = 0;
@@ -678,12 +679,22 @@ void QgsAttributeForm::createWrappers()
 
 void QgsAttributeForm::connectWrappers()
 {
+  bool isFirstEww = true;
+
   Q_FOREACH( QgsWidgetWrapper* ww, mWidgets )
   {
     QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
 
     if ( eww )
+    {
+      if ( isFirstEww )
+      {
+        setFocusProxy( eww->widget() );
+        isFirstEww = false;
+      }
+
       connect( eww, SIGNAL( valueChanged( const QVariant& ) ), this, SLOT( onAttributeChanged( const QVariant& ) ) );
+    }
   }
 }
 
