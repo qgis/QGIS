@@ -15,7 +15,11 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTableWidget" name="mLayerList"/>
+    <widget class="QTableWidget" name="mLayerList">
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
