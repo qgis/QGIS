@@ -517,12 +517,6 @@ void QgsVectorLayerFeatureIterator::prepareExpressions()
       }
     }
   }
-
-#if 0
-  // add required fields if we're using a subset
-  if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
-    mRequest.setSubsetOfAttributes( mRequest.subsetOfAttributes() + sourceJoinFields );
-#endif
 }
 
 void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
