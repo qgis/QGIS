@@ -183,7 +183,7 @@ QgsValueRelationWidget::ValueRelationCache QgsValueRelationWidget::createCache( 
       if ( e )
       {
         if ( e->needsGeometry() )
-          flags |= QgsFeatureRequest::NoGeometry;
+          flags = QgsFeatureRequest::NoFlags;
 
         Q_FOREACH( const QString& field, e->referencedColumns() )
         {
