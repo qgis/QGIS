@@ -2589,6 +2589,14 @@ QString QgsVectorLayer::editForm()
 
 void QgsVectorLayer::setEditForm( QString ui )
 {
+  if ( ui.isEmpty() || ui.isNull() )
+  {
+    setEditorLayout( GeneratedLayout );
+  }
+  else
+  {
+    setEditorLayout( UiFileLayout );
+  }
   mEditForm = ui;
 }
 
