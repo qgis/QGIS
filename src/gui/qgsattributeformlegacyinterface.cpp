@@ -20,6 +20,7 @@
 
 #include <QString>
 #include <QDateTime>
+#include <QRegExp>
 
 QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString& function, const QString& pyFormName, QgsAttributeForm* form )
     : QgsAttributeFormInterface( form )
@@ -27,6 +28,7 @@ QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString&
     , mPyFormVarName( pyFormName )
 {
   mPyLayerVarName = QString( "_qgis_layer_%1" ).arg( form->layer()->id() );
+  mPyLayerVarName.replace( QRegExp( "[^a-zA-Z0-9_]" ), "_" ); // clean identifier
 
   QString initLayer = QString( "%1 = sip.wrapinstance( %2, qgis.core.QgsVectorLayer )" )
                       .arg( mPyLayerVarName )
