@@ -1858,21 +1858,12 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     }
   }
 
-  //edit types
-  QDomElement editTypesElement = doc.createElement( "edittypes" );
-
-  Q_FOREACH( QgsField field, pendingFields().toList() )
-  {
-    QDomElement editTypeElement = doc.createElement( "edittype" );
-    editTypeElement.setAttribute( "name", field.name() );
-    editTypeElement.setAttribute( "editable", mFieldEditables[field.name()] ? 1 : 0 );
-    editTypeElement.setAttribute( "labelontop", mLabelOnTop[field.name()] ? 1 : 0 );
-
-
-    editTypesElement.appendChild( editTypeElement );
-  }
-
-  node.appendChild( editTypesElement );
+  // FIXME
+  // edittypes are written to the layerNode
+  // by slot QgsEditorWidgetRegistry::writeMapLayer()
+  // triggered by signal QgsProject::writeMapLayer()
+  // still other editing settings are written here,
+  // although they are not part of symbology either
 
   QDomElement efField  = doc.createElement( "editform" );
   QDomText efText = doc.createTextNode( QgsProject::instance()->writePath( mEditForm ) );
