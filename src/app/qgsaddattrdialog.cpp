@@ -113,6 +113,18 @@ void QgsAddAttrDialog::accept()
                           tr( "Invalid field name. This field name is reserved and cannot be used." ) );
     return;
   }
+  if ( mNameEdit->text().isEmpty() )
+  {
+    QMessageBox::warning( this, tr( "Warning" ),
+                          tr( "No name specified. Please specify a name to create a new field." ) );
+    return;
+  }
+  if ( mButtonVirtualField->isChecked() && mExpressionWidget->currentField().isEmpty() )
+  {
+    QMessageBox::warning( this, tr( "Warning" ),
+                          tr( "No expression specified. Please enter an expression that will be used to calculate the field values." ) );
+    return;
+  }
   QDialog::accept();
 }
 
