@@ -10714,23 +10714,23 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <translation>Daten auf einem 3D-Globus überlagern</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3582"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3603"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3628"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3610"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3631"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3656"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="64"/>
         <source>Unable to load %1 provider</source>
         <translation>Kann Datenlieferant %1 nicht laden</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3590"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3611"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3636"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3618"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3639"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3664"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="73"/>
         <source>Provider %1 has no %2 method</source>
         <translation>Datenlieferant %1 hat keine Methode %2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3683"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3711"/>
         <source>Loaded from Provider</source>
         <translation>Aus Datenlieferanten geladen</translation>
     </message>
@@ -13396,14 +13396,26 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAddAttrDialog</name>
     <message>
-        <location filename="../src/app/qgsaddattrdialog.cpp" line="93"/>
+        <location filename="../src/app/qgsaddattrdialog.cpp" line="112"/>
+        <location filename="../src/app/qgsaddattrdialog.cpp" line="118"/>
+        <location filename="../src/app/qgsaddattrdialog.cpp" line="124"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsaddattrdialog.cpp" line="94"/>
+        <location filename="../src/app/qgsaddattrdialog.cpp" line="113"/>
         <source>Invalid field name. This field name is reserved and cannot be used.</source>
         <translation>Ungültiger Feldname. Dieser Feldname ist reserviert und kann nicht benutzt werden.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsaddattrdialog.cpp" line="119"/>
+        <source>No name specified. Please specify a name to create a new field.</source>
+        <translation>Kein Name angegeben. Bitte dem neuen Feld einen Namen geben.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsaddattrdialog.cpp" line="125"/>
+        <source>No expression specified. Please enter an expression that will be used to calculate the field values.</source>
+        <translation>Kein Ausdruck angegeben. Bitte einen Ausdruck zum Errechnen des Feldwerts angeben.</translation>
     </message>
 </context>
 <context>
@@ -13415,27 +13427,47 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="23"/>
+        <source>Provider Field</source>
+        <translation>Datenlieferantfeld</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsaddattrdialogbase.ui" line="36"/>
+        <source>Virtual Field</source>
+        <translation>Virtuelles Feld</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsaddattrdialogbase.ui" line="55"/>
+        <source>Define an expression which will be used to calculate this field.</source>
+        <translation>Einen Ausdruck zum Errechnen dieses Feldes festlegen.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsaddattrdialogbase.ui" line="58"/>
+        <source>Expression</source>
+        <translation>Ausdruck</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsaddattrdialogbase.ui" line="65"/>
         <source>N&amp;ame</source>
         <translation>N&amp;ame</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsaddattrdialogbase.ui" line="36"/>
+        <location filename="../src/ui/qgsaddattrdialogbase.ui" line="78"/>
         <source>Comment</source>
         <translation>Kommentar</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsaddattrdialogbase.ui" line="49"/>
-        <location filename="../src/ui/qgsaddattrdialogbase.ui" line="62"/>
+        <location filename="../src/ui/qgsaddattrdialogbase.ui" line="91"/>
+        <location filename="../src/ui/qgsaddattrdialogbase.ui" line="104"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsaddattrdialogbase.ui" line="72"/>
+        <location filename="../src/ui/qgsaddattrdialogbase.ui" line="114"/>
         <source>Width</source>
         <translation>Breite</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsaddattrdialogbase.ui" line="85"/>
+        <location filename="../src/ui/qgsaddattrdialogbase.ui" line="127"/>
         <source>Precision</source>
         <translation>Genauigkeit</translation>
     </message>
@@ -14121,7 +14153,7 @@ Ausdruckfehler:
 <context>
     <name>QgsAttributeDialog</name>
     <message>
-        <location filename="../src/gui/qgsattributedialog.cpp" line="153"/>
+        <location filename="../src/gui/qgsattributedialog.cpp" line="101"/>
         <source>Feature Attributes</source>
         <translation>Objektattribute</translation>
     </message>
@@ -14235,22 +14267,22 @@ Ausdruckfehler:
         <translation>Attributtabelle - %1 :: Objekte gesamt: %2, gefiltert: %3, gewählt: %4</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="712"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="720"/>
         <source>Parsing error</source>
         <translation>Parsingfehler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="718"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="726"/>
         <source>Evaluation error</source>
         <translation>Auswertungsfehler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="754"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="762"/>
         <source>Error filtering</source>
         <translation>Fehlerfilterung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="594"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="600"/>
         <source>Attribute added</source>
         <translation>Attribut hinzugefügt</translation>
     </message>
@@ -14277,27 +14309,27 @@ Ausdruckfehler:
         <translation>Ausdrucksbasierter Filter</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="601"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="607"/>
         <source>Attribute Error</source>
         <translation>Attributfehler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="601"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="607"/>
         <source>The attribute could not be added to the layer</source>
         <translation>Das Attribute konnte dem Layer nicht hinzugefügt werden</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="628"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="636"/>
         <source>Deleted attribute</source>
         <translation>Attribut gelöscht</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="635"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="643"/>
         <source>The attribute(s) could not be deleted</source>
         <translation>Die Attribute konnten nicht gelöscht werden</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="635"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="643"/>
         <source>Attribute error</source>
         <translation>Attributfehler</translation>
     </message>
@@ -16992,8 +17024,8 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
 <context>
     <name>QgsComposerHtml</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerhtml.cpp" line="128"/>
-        <location filename="../src/core/composer/qgscomposerhtml.cpp" line="148"/>
+        <location filename="../src/core/composer/qgscomposerhtml.cpp" line="131"/>
+        <location filename="../src/core/composer/qgscomposerhtml.cpp" line="151"/>
         <source>HTML fetch %1 failed with error %2</source>
         <translation>Herunterladen von HTML %1 mit Fehler &apos;%2&apos; gescheitert</translation>
     </message>
@@ -17001,82 +17033,88 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
 <context>
     <name>QgsComposerHtmlWidget</name>
     <message>
-        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="42"/>
+        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="38"/>
         <source>Use existing frames</source>
         <translation>Vorhandene Rahmen benutzen</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="43"/>
+        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="39"/>
         <source>Extend to next page</source>
         <translation>Auf nächste Seite erweitern</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="44"/>
+        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="40"/>
         <source>Repeat on every page</source>
         <translation>Auf jeder Seite wiederholen</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="45"/>
+        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="41"/>
         <source>Repeat until finished</source>
         <translation>Bis zum Ende wiederholen</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="97"/>
+        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="108"/>
         <source>Change html url</source>
         <translation>HTML-Url ändern</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="109"/>
+        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="120"/>
         <source>Select HTML document</source>
         <translation>HTML-Dokument wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="130"/>
+        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="141"/>
         <source>Change resize mode</source>
         <translation>Resize-Modus ändern</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="149"/>
+        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="160"/>
         <source>Evaluate expressions changed</source>
         <translation>Ausdrucksauswertung umgeschaltet</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="167"/>
+        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="178"/>
         <source>Use smart breaks changed</source>
         <translation>Nutzung intelligenter Seitenumbrüche geändert</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="185"/>
+        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="196"/>
         <source>Page break distance changed</source>
         <translation>Abstand des Seitenumbruch geändert</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="203"/>
+        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="214"/>
         <source>HTML changed</source>
         <translation>HTML geändert</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="222"/>
-        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="246"/>
-        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="293"/>
+        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="233"/>
+        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="257"/>
+        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="304"/>
         <source>HTML source changed</source>
         <translation>HTML-Quelle geändert</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="285"/>
+        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="296"/>
         <source>Insert expression</source>
         <translation>Ausdruck einfügen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="400"/>
+        <source>url string</source>
+        <translation>URL-Zeichenkette</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerHtmlWidgetBase</name>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="91"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="98"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="110"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="117"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
@@ -17106,42 +17144,42 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
         <translation>QGIS-Ausdrücke in HTML-Quelle auswerten</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="100"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="107"/>
         <source>Source:</source>
         <translation>Quelle:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="117"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="124"/>
         <source>Insert an expression</source>
         <translation>Einen Ausdruck einfügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="127"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="134"/>
         <source>Frames</source>
         <translation>Rahmen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="142"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="149"/>
         <source>Resize mode</source>
         <translation>Resize-Modus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="162"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="169"/>
         <source>Add Frame</source>
         <translation>Rahmen hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="172"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="179"/>
         <source>Use smart page breaks</source>
         <translation>Intelligenter Seitenumbrüche nutzen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="187"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="194"/>
         <source>Maximum distance</source>
         <translation>Maximalabstand</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="194"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="201"/>
         <source> mm</source>
         <translation> mm</translation>
     </message>
@@ -18870,90 +18908,87 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
 <context>
     <name>QgsComposerPicture</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="295"/>
         <source>Picture expression parsing error: %1</source>
-        <translation>Bildausdrucksfehler: %1</translation>
+        <translation type="obsolete">Bildausdrucksfehler: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="295"/>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="331"/>
         <source>Composer</source>
-        <translation>Zusammenstellung</translation>
+        <translation type="obsolete">Zusammenstellung</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="331"/>
         <source>Picture expression eval error: %1</source>
-        <translation>Bildausdrucksfehler: %1</translation>
+        <translation type="obsolete">Bildausdrucksfehler: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="300"/>
+        <source>Picture expression eval error</source>
+        <translation>Bildausdrucksfehler</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerPictureWidget</name>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="81"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="93"/>
         <source>Select svg or image file</source>
         <translation>SVG oder Rasterbild wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="104"/>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="120"/>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="169"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="116"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="132"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="158"/>
         <source>Picture changed</source>
         <translation>Bild geändert</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="138"/>
         <source>Expression based image path</source>
-        <translation>Ausdrucksbasiertes Bildpfad</translation>
+        <translation type="obsolete">Ausdrucksbasiertes Bildpfad</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="154"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="143"/>
         <source>Picture rotation changed</source>
         <translation>Bilddrehung geändert</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="179"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="168"/>
         <source>Select new preview directory</source>
         <translation>Neues Vorschauverzeichnis wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="234"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="223"/>
         <source>Picture resize mode changed</source>
         <translation>Bilddgrößenanpassungmethode geändert</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="260"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="249"/>
         <source>Picture placement changed</source>
         <translation>Bildplatzierung geändert</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="272"/>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="289"/>
         <source>Picture source changed</source>
-        <translation>Bildquelle geändert</translation>
+        <translation type="obsolete">Bildquelle geändert</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="306"/>
         <source>Picture source expression</source>
-        <translation>Bildquellausdruck</translation>
+        <translation type="obsolete">Bildquellausdruck</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="318"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="261"/>
         <source>Rotation synchronisation toggled</source>
         <translation>Drehungssynchronisation umgeschaltet</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="378"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="321"/>
         <source>Rotation map changed</source>
         <translation>Kartendrehung geändert</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="402"/>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="455"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="345"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="395"/>
         <source>Map %1</source>
         <translation>Karte %1</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="526"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="456"/>
         <source>Creating icon for file %1</source>
         <translation>Icon für Datei %1 wird erzeugt</translation>
     </message>
@@ -18966,153 +19001,151 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
         <translation>Bild-Optionen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="50"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="41"/>
         <source>Picture</source>
         <translation>Bild</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="72"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="63"/>
         <source>Main properties</source>
         <translation>Haupteigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="117"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="75"/>
         <source>Image source</source>
         <translation>Bildquelle</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="86"/>
         <source>Path</source>
-        <translation>Pfad</translation>
+        <translation type="obsolete">Pfad</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="169"/>
         <source>Expression</source>
-        <translation>Ausdruck</translation>
+        <translation type="obsolete">Ausdruck</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="131"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="115"/>
         <source>Resize mode</source>
         <translation>Größenanpassungsmodus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="124"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="151"/>
         <source>Placement</source>
         <translation>Platzierung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="139"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="123"/>
         <source>Zoom</source>
         <translation>Zoom</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="144"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="128"/>
         <source>Stretch</source>
         <translation>Strecken</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="149"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="133"/>
         <source>Clip</source>
         <translation>Zuschneiden</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="154"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="138"/>
         <source>Zoom and resize frame</source>
         <translation>Rahmen zoomen und Größe anpassen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="159"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="143"/>
         <source>Resize frame to image size</source>
         <translation>Rahmen auf Bildgröße setzen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="199"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="159"/>
         <source>Top left</source>
         <translation>Oben links</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="204"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="164"/>
         <source>Top center</source>
         <translation>Oben Mitte</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="209"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="169"/>
         <source>Top right</source>
         <translation>Oben rechts</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="214"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="174"/>
         <source>Middle left</source>
         <translation>Mitte links</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="219"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="179"/>
         <source>Middle</source>
         <translation>Mitte</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="224"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="184"/>
         <source>Middle right</source>
         <translation>Mitte rechts</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="229"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="189"/>
         <source>Bottom left</source>
         <translation>Unten links</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="234"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="194"/>
         <source>Bottom center</source>
         <translation>Unten Mitte</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="239"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="199"/>
         <source>Bottom right</source>
         <translation>Unten rechts</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="256"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="216"/>
         <source>Search directories</source>
         <translation>Verzeichnisse durchsuchen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="317"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="277"/>
         <source>Image search paths</source>
         <translation>Bildsuchpfade</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="340"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="300"/>
         <source>Add...</source>
         <translation>Hinzufügen...</translation>
     </message>
     <message utf8="true">
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="380"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="340"/>
         <source> °</source>
         <translation> °</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="333"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="293"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="108"/>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="185"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="99"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="106"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="273"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="233"/>
         <source>Loading previews...</source>
         <translation>Lade Vorschauen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="352"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="312"/>
         <source>Image rotation</source>
         <translation>Bilddrehung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="370"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="330"/>
         <source>Sync with map</source>
         <translation>Mit Karte abgleichen</translation>
     </message>
@@ -19923,75 +19956,75 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
 <context>
     <name>QgsComposerView</name>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="820"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="822"/>
         <source>QGIS</source>
         <translation>QGIS</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="727"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="731"/>
         <source>Move item content</source>
         <translation>Elementinhalt verschieben</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="900"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="902"/>
         <source>Html item added</source>
         <translation>HTML-Element hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="905"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="907"/>
         <source>Html frame added</source>
         <translation>HTML-Rahmen hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="1349"/>
-        <location filename="../src/gui/qgscomposerview.cpp" line="1358"/>
-        <location filename="../src/gui/qgscomposerview.cpp" line="1367"/>
-        <location filename="../src/gui/qgscomposerview.cpp" line="1376"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="1413"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="1422"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="1431"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="1440"/>
         <source>Item moved</source>
         <translation>Element verschoben</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="1457"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="1521"/>
         <source>Zoom item content</source>
         <translation>Zum Elementinhalt zoomen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="758"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="760"/>
         <source>Arrow added</source>
         <translation>Pfeil hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="836"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="838"/>
         <source>Label added</source>
         <translation>Beschriftung hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="785"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="787"/>
         <source>Map added</source>
         <translation>Karte hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="382"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="386"/>
         <source>Scale bar added</source>
         <translation>Maßstabsleiste hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="859"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="861"/>
         <source>Legend added</source>
         <translation>Legende hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="807"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="809"/>
         <source>Picture added</source>
         <translation>Bild hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="457"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="461"/>
         <source>Shape added</source>
         <translation>Form hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="886"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="888"/>
         <source>Table added</source>
         <translation>Tabelle hinzugefügt</translation>
     </message>
@@ -23592,12 +23625,11 @@ Parser-Fehler:
     <name>QgsEditorWidgetRegistry</name>
     <message>
         <location filename="../src/gui/editorwidgets/core/qgseditorwidgetregistry.cpp" line="164"/>
-        <location filename="../src/gui/editorwidgets/core/qgseditorwidgetregistry.cpp" line="227"/>
         <source>Unknown attribute editor widget &apos;%1&apos;</source>
         <translation>Unbekanntes Bearbeitungselement &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/core/qgseditorwidgetregistry.cpp" line="198"/>
+        <location filename="../src/gui/editorwidgets/core/qgseditorwidgetregistry.cpp" line="201"/>
         <source>Could not save unknown editor widget type &apos;%1&apos;.</source>
         <translation>Konnte unbekanntes Bearbeitungselement &apos;%1&apos; nicht speichern</translation>
     </message>
@@ -24378,139 +24410,137 @@ Der Ausdruck ist ungültig (siehe (mehr Information) für Näheres)</translation
         <translation>Feld</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="472"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="541"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="543"/>
         <source>Name conflict</source>
         <translation>Namenskonflikt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="472"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="541"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="543"/>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
         <translation>Das Attribut konnte nicht eingefügt werden, da der Name bereits vorhanden ist.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="484"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="480"/>
         <source>Added attribute</source>
         <translation>Attribut hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="561"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="564"/>
         <source>Deleted attribute</source>
         <translation>Attribut gelöscht</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="633"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="636"/>
         <source>Line edit</source>
         <translation>Eingabezeile</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="634"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="637"/>
         <source>Unique values</source>
         <translation>Eindeutige Werte</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="635"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="638"/>
         <source>Unique values editable</source>
         <translation>Eindeutige Werte (bearbeitbar)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="636"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="639"/>
         <source>Classification</source>
         <translation>Klassifikation</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="637"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="640"/>
         <source>Value map</source>
         <translation>Wertabbildung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="638"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="641"/>
         <source>Edit range</source>
         <translation>Eingabezeile mit Bereich</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="639"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="642"/>
         <source>Slider range</source>
         <translation>Schieberbereich</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="640"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="643"/>
         <source>Dial range</source>
         <translation>Drehreglerbereich</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="641"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="644"/>
         <source>File name</source>
         <translation>Dateiname</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="642"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="645"/>
         <source>Enumeration</source>
         <translation>Aufzählung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="643"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="646"/>
         <source>Immutable</source>
         <translation>Unveränderbar</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="644"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="647"/>
         <source>Hidden</source>
         <translation>Versteckt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="645"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="648"/>
         <source>Checkbox</source>
         <translation>Kontrollkästchen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="646"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="649"/>
         <source>Text edit</source>
         <translation>Texteditor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="647"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="650"/>
         <source>Calendar</source>
         <translation>Kalender</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="648"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="651"/>
         <source>Value relation</source>
         <translation>Wertbeziehung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="649"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="652"/>
         <source>UUID generator</source>
         <translation>UUID-Generator</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="650"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="653"/>
         <source>Photo</source>
         <translation>Foto</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="651"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="654"/>
         <source>Web view</source>
         <translation>Webansicht</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="652"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="655"/>
         <source>Color</source>
         <translation>Farbe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="653"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="656"/>
         <source>Editor Widget</source>
         <translation>Bearbeitungselement</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="703"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="706"/>
         <source>Select edit form</source>
         <translation>Bearbeitungsformular wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="703"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="706"/>
         <source>UI file</source>
         <translation>UI-Dateien</translation>
     </message>
@@ -50084,12 +50114,12 @@ Fehler war:%2</translation>
 <context>
     <name>QgsVectorLayer</name>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="760"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="762"/>
         <source>Updating feature count for layer %1</source>
         <translation>Objektanzahl des Layers %1 wird aktualisiert</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="760"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="762"/>
         <source>Abort</source>
         <translation>Abbrechen</translation>
     </message>
@@ -50111,124 +50141,124 @@ Fehler war:%2</translation>
   %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3225"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3253"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3231"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3259"/>
         <source>Layer comment</source>
         <translation>Layerkommentar</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3238"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3266"/>
         <source>Storage type of this layer</source>
         <translation>Speichertyp dieses Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3246"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3274"/>
         <source>Description of this provider</source>
         <translation>Beschreibung dieses Datenlieferanten</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3253"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3281"/>
         <source>Source for this layer</source>
         <translation>Quelle dieses Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3270"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3298"/>
         <source>Geometry type of the features in this layer</source>
         <translation>Geometrietyp der Objekte dieses Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3279"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3307"/>
         <source>Primary key attributes</source>
         <translation>Primärschlüsselattribute</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3290"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3318"/>
         <source>The number of features in this layer</source>
         <translation>Anzahl der Objekte dieses Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3295"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3323"/>
         <source>Editing capabilities of this layer</source>
         <translation>Bearbeitungsmöglichkeiten dieses Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3304"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3332"/>
         <source>Extents</source>
         <translation>Ausdehnung</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3308"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3336"/>
         <source>In layer spatial reference system units</source>
         <translation>In Bezugssystemeinheiten des Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3374"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3409"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3402"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3437"/>
         <source>In project spatial reference system units</source>
         <translation>In Bezugssystemeinheiten des Projekts</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3387"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3415"/>
         <source>Layer Spatial Reference System</source>
         <translation>Räumliches Bezugssystem des Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3398"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3426"/>
         <source>Project (Output) Spatial Reference System</source>
         <translation>Räumliches Bezugssystem des Projekts (Ausgabe)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3420"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3448"/>
         <source>Attribute field info</source>
         <translation>Attributfeldinformationen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3701"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3729"/>
         <source>Error: qgis element could not be found</source>
         <translation>Fehler: Element qgis wurde nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3357"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3376"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3385"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3404"/>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
         <translation>xMin,yMin %1;%2 : xMax,yMax %3;%4</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3362"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3390"/>
         <source>unknown extent</source>
         <translation>Unbekannte Ausmaße</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3411"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3439"/>
         <source>(Invalid transformation of layer extents)</source>
         <translation>(Transformation der Layerausdehnung ungültig)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3426"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3454"/>
         <source>Field</source>
         <translation>Feld</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3429"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3457"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3432"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3460"/>
         <source>Length</source>
         <translation>Länge</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3435"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3463"/>
         <source>Precision</source>
         <translation>Genauigkeit</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3438"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3466"/>
         <source>Comment</source>
         <translation>Kommentar</translation>
     </message>
@@ -50236,7 +50266,7 @@ Fehler war:%2</translation>
 <context>
     <name>QgsVectorLayerEditBuffer</name>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="256"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="257"/>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
         <translation>
@@ -50245,7 +50275,7 @@ Fehler war:%2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="265"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="266"/>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
         <translation>
@@ -50254,7 +50284,7 @@ Fehler war:%2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="285"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="286"/>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
         <translation>
@@ -50263,7 +50293,7 @@ Fehler war:%2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="294"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="295"/>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
         <translation>
@@ -50272,37 +50302,37 @@ Fehler war:%2</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="318"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="319"/>
         <source>ERROR: the count of fields is incorrect after addition/removal of fields!</source>
         <translation>FEHLER: Die Feldanzahl stimmt nach dem Hinzufügen/Entfernen von Feldern nicht!</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="329"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="330"/>
         <source>ERROR: field with index %1 is not the same!</source>
         <translation>FEHLER: Feld mit Index %1 ist nicht das gleiche!</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="330"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="331"/>
         <source>Provider: %1</source>
         <translation>Datenlieferant: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="331"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="332"/>
         <source>Storage: %1</source>
         <translation>Speicherart: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="333"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="334"/>
         <source>expected field</source>
         <translation>Erwartetes Feld</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="340"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="341"/>
         <source>retrieved field</source>
         <translation>Geladenes Feld</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="360"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="361"/>
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
         <translation>
@@ -50311,7 +50341,7 @@ Fehler war:%2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="368"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="369"/>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
         <translation>
@@ -50320,7 +50350,7 @@ Fehler war:%2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="393"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="394"/>
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
         <translation>
@@ -50329,7 +50359,7 @@ Fehler war:%2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="407"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="408"/>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
         <translation>
@@ -50338,7 +50368,7 @@ Fehler war:%2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="432"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="433"/>
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
         <translation>
@@ -50347,7 +50377,7 @@ Fehler war:%2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="456"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="457"/>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
         <translation>
@@ -50356,7 +50386,7 @@ Fehler war:%2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="475"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="476"/>
         <source>ERROR: %n feature(s) not added - provider doesn&apos;t support adding features.</source>
         <comment>not added features count</comment>
         <translation>
@@ -50365,7 +50395,7 @@ Fehler war:%2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="492"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="493"/>
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
         <translation>
@@ -50374,7 +50404,7 @@ Fehler war:%2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="500"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="501"/>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
         <translation>
@@ -50383,7 +50413,7 @@ Fehler war:%2</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="507"/>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="508"/>
         <source>
   Provider errors:</source>
         <translation>
@@ -55592,7 +55622,6 @@ Klicken Sie auf &lt;label&gt;OK&lt;/label&gt; um den Layer anzulegen und den Dia
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="65"/>
         <source>&lt;style&gt;
  #toolbarConsole td{
   background: #f6f6f6;
@@ -55761,7 +55790,7 @@ that will be automatically deleted after running.&lt;/li&gt;
  from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation>&lt;style&gt;
+        <translation type="obsolete">&lt;style&gt;
 	#toolbarConsole td{
 		background: #f6f6f6;
 	}
@@ -56102,6 +56131,330 @@ SpatiaLite-Datenbank, die die Erweiterung &lt;i&gt;.sqlite&lt;/i&gt; trägt, zu 
 Die Verbindungen, die Sie festlegen, werden zur weiteren Benutzung gespeichert 
 und in der Liste zur Auswahl angeboten.
 </translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="65"/>
+        <source>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Python Console for QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Settings&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				The QGIS Python Console is an interactive shell for the python command executions. 
+				It also has a python file editor that allows you to edit and save your python scripts. 
+				Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
+				The console is split in two main panes, top and bottom one 
+				resizable by using the horizontal splitter. Output area pane is a widget read-only which 
+				shows the commands output. You can drag and drop or copy and paste text into input area and 
+				execute code snippets from the output pane by selecting some text and clicking on the 
+				&lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
+				No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
+				python shell for input commands.&lt;br&gt;To access to the python file editor use the 
+				&lt;label&gt;Show editor&lt;/label&gt; button 
+				from the toolbar. The editor allows editing and saving python files and it offers basic functionality 
+				for managing your code (comment and 
+				uncomment code, check syntax, share the code via codepad.org and much more).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Console&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
+			The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Import Processing class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
+			(this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Settings&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Further settings for python console:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion:&lt;/label&gt; If checked the code completion is enabled. You can get autocompletion
+from current document, from installed APIs and both from APIs and current document&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion threshold:&lt;/label&gt; Sets the threshold to display the autocompletion list (in chars typed)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Automatic parentheses insertion:&lt;/label&gt; If checked enables the autoclosing for bracket&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto-save script before running:&lt;/label&gt; Allows you to save automatically the
+script to be executed in order to avoid to save it after any modification.
+This action will store a temporary file into the temporary system directory 
+that will be automatically deleted after running.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using preloaded APIs file:&lt;/label&gt; You can choose whether use the preload APIs file or load some APIs files saved on your system.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
+	from the close button. This allows you to save the geometry to be restored to the next start.
+&lt;/p&gt;
+</source>
+        <translation>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Python Konsole für QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Konsole&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Einstellungen&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				Die QGIS Python Konsole ist eine interaktive Shell für Python Kommandoausführungen. 
+				Ebenfalls beinhaltet sie einen Python Dateieditor der das Editieren und speichern von Python Dateien erlaubt. 
+				Konsole und Editor basieren auf PyQScintilla2.&lt;br&gt;
+				Die Konsole ist aufgeteilt in zwei Hauptfenster, Oberes und Unteres welche in der Größe veränderbar sind. Das Ausgabefeld ist ein ein &quot;nur lesen&quot; Feld welches nur die Ausgabe des jeweiligen Kommandos anzeigt. In das Eingabefeld kann per kopieren/einfügen oder drag and drop text eingefügt werden und es können code schnippsel aus dem Ausgabefeld eingefügt werden indem der Text selektiert wird und auf &lt;label&gt;Füge Ausgewähltes ein&lt;/label&gt; aus dem Kontextmenü geklickt wird. 
+				Es spielt hierbei keine Rolle ob der ausgewählte Text den Interpreter Prompt (&gt;&gt;&gt;, ...) beinhaltet. Das Eingabefeld ist die Interaktive Python Shell für Eingabekommandos.&lt;br&gt; Um den Python Dateieditor zu benutzen klicken sie auf &lt;label&gt;Zeige Editor&lt;/label&gt; aus der Toolbar. Mit Hilfe des Editors kann man Python Dateien editieren und abspeichern und er beinhaltet grundlegende Funktionen um den Code zu verwalten (Code kommentieren, unkommentieren, Syntaxprüfung, Codeaustausch mit Hilfe von codepad und vieles mehr).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Konsole&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Hauptfunktionen:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Codevervollständigung, Syntax Highlighting, Calltips für folgende APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; um die Autovervollständigungsliste zu seigen.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; um die Befehlshistorienliste zu zeigen.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Codeschnippseausführung mittels &lt;label&gt;Zeige ausgewähltes&lt;/label&gt; Kommando aus dem Ausgabefeld.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Öffne QGIS API dokumentation mittels Eingabe von &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Öffne PyQGIS Cookbook mittel Eingabe von &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Speichere und Lösche die Historie der Befehle unter Zuhilfenahme des Kontextmenüs des Eingabefeldes. 
+			Die Historie wird in die Datei ~/.qgis2/console_history.txt gespeichert&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Lösche Python Konsole&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importiere Processing class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importiere PyQt4.QtCore class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool zum importieren von PyQt4.QtGui class&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Führe Befehl aus (wirkt wie ein drücken auf die Entertaste)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Einstellungen&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Hilfe&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Hauptfunktionen:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Codevervollständigung, Syntax Highlighting, Calltips für folgende APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; zeigt die Autovervollständigungsliste.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Austausch von Codeteilen mittels codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntaxprüfung.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Objektinspector: ein Klassen und Funktionsbrowser.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Gehe zu einer Objektdefinition mittels Mausklick. (aus dem Objektinspektor)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Ausführung von Codeteilen mittels &lt;label&gt;Zeige ausgewähltes&lt;/label&gt; Kommando.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Führe das Ganze script aus mittels &lt;label&gt;Run script&lt;/label&gt; Kommando 
+			(Dies erzeugt eine Bytekompilierte Datei mit dem Anhang .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Einstellungen&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Weitere Einstellungen für die Python Konsole:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autovervollständigung:&lt;/label&gt; Wenn markiert ist die Codevervollständigung aktiviert. Die Vervollständigung funktioniert aus dem aktuellen Dokument, aus den installierten APIs und beides (Dokument und APIs)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Autovervollständigung Schwellenwert:&lt;/label&gt; Setzt den Schwellenwert ab wieviel eingegebenen Buchstaben die Autovervollständigung einsetzt.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Automatische Klammerneinfügung:&lt;/label&gt; Wenn gesetzt werden Klammern automatisch geschlossen&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto-save script vor Start:&lt;/label&gt; Erlaubt das Script automatisch abzuspeichern bevor es gestartet wird.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Benutze geladene APIs Datei:&lt;/label&gt; Es kann zwischen bereits geladenen API Dateien oder APIs zum Laden aus dem Dateisystem ausgewählt werden.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Benutze vorbereitete APIs Datei:&lt;/label&gt; Wenn ausgewählt wird die *.pap Datei für die Codevervollständigung genutzt. Um eine solche Datei vorzubereiten muss zumindest eine *.api Datei geladen und dann compiliert werden mittels &lt;label&gt;Compiliere Apis...&lt;/label&gt; Knopf.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Notiz:&lt;/b&gt; Um den Status des Konsolenwidgets zu speichern muss die Konsole über den schliessen Knopf geschlossen werden. Dies erlaubt die Wiederherstellung des Fensterstatus beim nächsten Start.
+&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="285"/>
