@@ -104,7 +104,7 @@ const QString QgsLegacyHelpers::convertEditType( QgsVectorLayer::EditType editTy
     {
       widgetType = "DateTime";
       cfg.insert( "display_format", editTypeElement.attribute( "dateFormat" ) );
-      cfg.insert( "field_format", "yyyy-mm-dd" );
+      cfg.insert( "field_format", "yyyy-MM-dd" );
       break;
     }
 
