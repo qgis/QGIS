@@ -22,6 +22,7 @@ Required build deps:
 - GDAL/OGR >= 1.4.x
 - Qwt >= 5.0 & (< 6.1 with internal QwtPolar)
 - expat >= 1.95
+- QScintilla2
 -
 
 Optional dependencies:
