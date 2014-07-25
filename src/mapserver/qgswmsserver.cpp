@@ -972,7 +972,8 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
       }
 
       //skip layer if not visible at current map scale
-      if ( currentLayer->hasScaleBasedVisibility() && ( currentLayer->minimumScale() > scaleDenominator || currentLayer->maximumScale() < scaleDenominator ) )
+      bool useScaleConstraint = ( scaleDenominator > 0 && currentLayer->hasScaleBasedVisibility() );
+      if ( useScaleConstraint && ( currentLayer->minimumScale() > scaleDenominator || currentLayer->maximumScale() < scaleDenominator ) )
       {
         continue;
       }
@@ -1480,6 +1481,10 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
 
     searchRect.set( infoPoint->x() - searchRadius, infoPoint->y() - searchRadius,
                     infoPoint->x() + searchRadius, infoPoint->y() + searchRadius );
+  }
+  else
+  {
+    searchRect = layerRect;
   }
 
   //do a select with searchRect and go through all the features
@@ -1994,7 +1999,7 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
           continue;
         }
 
-        QgsRectangle layerExtent = mapLayer->extent();
+        QgsRectangle layerExtent = mMapRenderer->layerToMapCoordinates(mapLayer, mapLayer->extent());
         if ( filterExtent.isEmpty() )
         {
           filterExtent = layerExtent;
