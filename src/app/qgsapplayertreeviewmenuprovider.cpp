@@ -89,7 +89,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       // define layer datum transform
       if ( mCanvas->mapSettings().hasCrsTransformEnabled() && ( layer->crs() != mCanvas->mapSettings().destinationCrs() ) )
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetDatumTransform.png" ), tr( "Set layer datum transform" ), QgisApp::instance(), SLOT( setLayerDatumTransform() ) );
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetDatumTransform.png" ), tr( "Set Layer Datum Transform" ), QgisApp::instance(), SLOT( setLayerDatumTransform() ) );
 
       menu->addSeparator();
 

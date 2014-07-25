@@ -6973,8 +6973,15 @@ void QgisApp::setLayerDatumTransform()
   if ( !currentLayer )
     return;
 
+  int oldSrcDT = mMapCanvas->mapSettings().datumTransformStore().transformation(currentLayer)->sourceDatumTransform();
+  int oldDestDT = mMapCanvas->mapSettings().datumTransformStore().transformation(currentLayer)->destinationDatumTransform();
   mMapCanvas->getDatumTransformInfo( currentLayer, currentLayer->crs().authid(), mMapCanvas->mapSettings().destinationCrs().authid(), true);
-
+  if (oldSrcDT != mMapCanvas->mapSettings().datumTransformStore().transformation(currentLayer)->sourceDatumTransform() ||
+      oldDestDT != mMapCanvas->mapSettings().datumTransformStore().transformation(currentLayer)->destinationDatumTransform() )
+  {
+    QgsProject::instance()->setDirty( true );
+    currentLayer->clearCacheImage();
+  }
 }
 
 void QgisApp::legendLayerZoomNative()
