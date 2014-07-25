@@ -1815,10 +1815,10 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
   }
 }
 
-void QgsMapCanvas::zoomByFactor( double scaleFactor )
+void QgsMapCanvas::zoomByFactor( double scaleFactor , const QgsPoint* center )
 {
   QgsRectangle r = mapSettings().visibleExtent();
-  r.scale( scaleFactor );
+  r.scale( scaleFactor, center );
   setExtent( r );
   refresh();
 }
