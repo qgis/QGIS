@@ -2422,22 +2422,22 @@ Haluatko varmasti jatkaa?</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSelectByLocation.ui" line="66"/>
         <source>Include input features that touch the selection features</source>
-        <translation type="unfinished"/>
+        <translation>Ota  mukaan syötettävät ominaisuudet jotka koskettavat valinnan ominaisuuksia</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSelectByLocation.ui" line="76"/>
         <source>Include input features that overlap/cross the selection features</source>
-        <translation type="unfinished"/>
+        <translation>Ota mukaan syötettävät ominaisuudet jotka ovat päällekkäisiä tai risteävät valinnan ominaisuuksia kanssa</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSelectByLocation.ui" line="86"/>
         <source>Include input features completely within the selection features</source>
-        <translation type="unfinished"/>
+        <translation>Ota mukaan syötettävät ominaisuudet jotka ovat valinnan ominaisuuksien sisällä</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSelectByLocation.ui" line="96"/>
         <source>Only selected features</source>
-        <translation type="unfinished"/>
+        <translation>Vain valitut ominaisuudet</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
@@ -6370,12 +6370,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="885"/>
         <source>Select Feature(s)</source>
-        <translation type="unfinished"/>
+        <translation>Valitse ominaisuus(det)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="888"/>
         <source>Select Features by area or single click</source>
-        <translation type="unfinished"/>
+        <translation>Valitse omainaisuus alueena tai yksittäisellä klikkauksella</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1104"/>
@@ -7268,7 +7268,8 @@ Toimii nyt aktiivisesti muokattavalle tasolle</translation>
     <message>
         <source>The selected model could not be loaded.
 See the log for more information.</source>
-        <translation type="unfinished"/>
+        <translation>Valittua mallia ei voitu ladata.
+Katso lokia lisäinformaation saamiseksi.</translation>
     </message>
     <message>
         <source>Model doesn&apos;t contains any algorithms and/or parameters and can&apos;t be executed</source>
@@ -11502,7 +11503,7 @@ Vastaus oli:
     <message>
         <location filename="../src/core/qgslegendsettings.cpp" line="4"/>
         <source>Legend</source>
-        <translation type="unfinished"/>
+        <translation>Selite</translation>
     </message>
 </context>
 <context>
@@ -15322,7 +15323,7 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
     <message>
         <location filename="../src/gui/qgscolorbutton.cpp" line="315"/>
         <source>Pick color</source>
-        <translation type="unfinished"/>
+        <translation>Valitse väri</translation>
     </message>
 </context>
 <context>
@@ -16931,7 +16932,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
         <location filename="../src/core/composer/qgscomposerhtml.cpp" line="128"/>
         <location filename="../src/core/composer/qgscomposerhtml.cpp" line="148"/>
         <source>HTML fetch %1 failed with error %2</source>
-        <translation type="unfinished"/>
+        <translation>HTML haku %1 epäonnistui virheenä %2</translation>
     </message>
 </context>
 <context>
@@ -16974,7 +16975,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="149"/>
         <source>Evaluate expressions changed</source>
-        <translation type="unfinished"/>
+        <translation>Lausekkeiden laskenta muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="167"/>
@@ -16984,24 +16985,24 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="185"/>
         <source>Page break distance changed</source>
-        <translation type="unfinished"/>
+        <translation>Sivun katkon etäisyys muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="203"/>
         <source>HTML changed</source>
-        <translation type="unfinished"/>
+        <translation>HTML muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="222"/>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="246"/>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="293"/>
         <source>HTML source changed</source>
-        <translation type="unfinished"/>
+        <translation>HTML lähdekoodi muuttunut</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="285"/>
         <source>Insert expression</source>
-        <translation type="unfinished"/>
+        <translation>Lisää lauseke</translation>
     </message>
 </context>
 <context>
@@ -17029,32 +17030,32 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="57"/>
         <source>HTML Source</source>
-        <translation type="unfinished"/>
+        <translation>HTML lähdekoodi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="69"/>
         <source>If checked, expressions inside [% %] tags will be evaluated prior to rendering the HTML</source>
-        <translation type="unfinished"/>
+        <translation>Jos merkattu, lauseke [% %] tagien sisällä lasketaan ennenkuin HTML hahmottaminen tehdään</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="72"/>
         <source>Evaluate QGIS expressions in HTML source</source>
-        <translation type="unfinished"/>
+        <translation>Toteuta QGIS lausekkeet HTML lähdekoodissa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="100"/>
         <source>Source:</source>
-        <translation type="unfinished"/>
+        <translation>Lähdekoodi:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="117"/>
         <source>Insert an expression</source>
-        <translation type="unfinished"/>
+        <translation>Lisää lauseke</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="127"/>
         <source>Frames</source>
-        <translation type="unfinished"/>
+        <translation>Raamit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="142"/>
@@ -17217,7 +17218,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="477"/>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="512"/>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="314"/>
@@ -18028,7 +18029,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
         <location filename="../src/core/composer/qgscomposermap.cpp" line="1325"/>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="1466"/>
         <source>Grid %1</source>
-        <translation type="unfinished"/>
+        <translation>Ruudukko %1</translation>
     </message>
 </context>
 <context>
@@ -18072,7 +18073,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1294"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1674"/>
         <source>Markers</source>
-        <translation type="unfinished"/>
+        <translation>Markkerit</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="66"/>
@@ -18151,76 +18152,76 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1092"/>
         <source>Grid %1</source>
-        <translation type="unfinished"/>
+        <translation>Ruudukko %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1094"/>
         <source>Add map grid</source>
-        <translation type="unfinished"/>
+        <translation>Lisää kartan ruudukko</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1201"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1268"/>
         <source>Draw &quot;%1&quot; grid</source>
-        <translation type="unfinished"/>
+        <translation>Piirrä &quot;%1&quot; ruudukko</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1357"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1624"/>
         <source>Map unit</source>
-        <translation type="unfinished"/>
+        <translation>Karttayksikkö</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1361"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1628"/>
         <source>Millimeter</source>
-        <translation type="unfinished"/>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1365"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1632"/>
         <source>Centimeter</source>
-        <translation type="unfinished"/>
+        <translation>Senttimetri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1370"/>
         <source>change...</source>
-        <translation type="unfinished"/>
+        <translation>Vaihda...</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1434"/>
         <source>Grid markers style changed</source>
-        <translation type="unfinished"/>
+        <translation>Ruudukon markkereiden tyyli muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1514"/>
         <source>Cross width changed</source>
-        <translation type="unfinished"/>
+        <translation>Ristin leveyttä muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1528"/>
         <source>Frame width changed</source>
-        <translation type="unfinished"/>
+        <translation>Raamin leveyttä muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1623"/>
         <source>Changed grid unit</source>
-        <translation type="unfinished"/>
+        <translation>Muutettu raamin yksikköä</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1647"/>
         <source>Grid blend mode changed</source>
-        <translation type="unfinished"/>
+        <translation>Ruudukon sekoitus tapaa muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1713"/>
         <source>Grid CRS changed</source>
-        <translation type="unfinished"/>
+        <translation>Ruudukon koordinaattijärjestelmää muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1824"/>
         <source>Annotation color changed</source>
-        <translation type="unfinished"/>
+        <translation>Kommentoinnin väriä muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1918"/>
@@ -18428,7 +18429,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="271"/>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="298"/>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="314"/>
@@ -18516,7 +18517,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="952"/>
         <source>Marker style</source>
-        <translation type="unfinished"/>
+        <translation>Markkerin tyyli</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1017"/>
@@ -18568,42 +18569,42 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="394"/>
         <source>Grids</source>
-        <translation type="unfinished"/>
+        <translation>Ruudukot</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="405"/>
         <source>Add a new grid</source>
-        <translation type="unfinished"/>
+        <translation>Lisää uusi ruudukko</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="419"/>
         <source>Remove selected grid</source>
-        <translation type="unfinished"/>
+        <translation>Poista valittu ruudukko</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="433"/>
         <source>Move selected grid up</source>
-        <translation type="unfinished"/>
+        <translation>Siirrä valittu ruudukko ylös</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="447"/>
         <source>Move selected grid down</source>
-        <translation type="unfinished"/>
+        <translation>Siirrä valittu ruudukko alas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="479"/>
         <source>Draw grid</source>
-        <translation type="unfinished"/>
+        <translation>Piirrä ruudukko</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="500"/>
         <source>Grid type</source>
-        <translation type="unfinished"/>
+        <translation>Ruudukon tyyppi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="513"/>
         <source>CRS</source>
-        <translation type="unfinished"/>
+        <translation>koordinaattijärjestelmä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="520"/>
@@ -18615,32 +18616,32 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="527"/>
         <source>Interval units</source>
-        <translation type="unfinished"/>
+        <translation>Intervallien yksiköt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="535"/>
         <source>Map unit</source>
-        <translation type="unfinished"/>
+        <translation>Karttayksikkö</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="540"/>
         <source>Millimeter</source>
-        <translation type="unfinished"/>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="545"/>
         <source>Centimeter</source>
-        <translation type="unfinished"/>
+        <translation>Senttimetri</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="687"/>
         <source>No frame</source>
-        <translation type="unfinished"/>
+        <translation>Ei raameja</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="692"/>
         <source>Zebra</source>
-        <translation type="unfinished"/>
+        <translation>Zebra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="775"/>
@@ -18685,7 +18686,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="899"/>
         <source>Font color</source>
-        <translation type="unfinished"/>
+        <translation>Kirjaimen väri</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="913"/>
@@ -19116,22 +19117,22 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="56"/>
         <source>Select fill color</source>
-        <translation type="unfinished"/>
+        <translation>Valitse täyttöväri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="58"/>
         <source>Select alternate fill color</source>
-        <translation type="unfinished"/>
+        <translation>Valitse toissijainen täyttöväri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="60"/>
         <source>Select font color</source>
-        <translation type="unfinished"/>
+        <translation>Valitse kirjaimen väri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="62"/>
         <source>Select stroke color</source>
-        <translation type="unfinished"/>
+        <translation>Valitse korostuksen väri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="91"/>
@@ -19188,7 +19189,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="357"/>
         <source>Scalebar secondary color changed</source>
-        <translation type="unfinished"/>
+        <translation>Mittakaavajanan toissijainen väri muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="374"/>
@@ -19395,7 +19396,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="443"/>
         <source>Secondary fill color...</source>
-        <translation type="unfinished"/>
+        <translation>Toissijainen täyttöväri...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="450"/>
@@ -19546,12 +19547,12 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="43"/>
         <source>Select header font color</source>
-        <translation type="unfinished"/>
+        <translation>Valitse otsikon kirjaimen väri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="45"/>
         <source>Select content font color</source>
-        <translation type="unfinished"/>
+        <translation>Valitse sisällön kirjaimen väri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="171"/>
@@ -19580,7 +19581,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="237"/>
         <source>Table header font color</source>
-        <translation type="unfinished"/>
+        <translation>Taulun otsikon kirjaimen väri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="259"/>
@@ -19590,7 +19591,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="272"/>
         <source>Table content font color</source>
-        <translation type="unfinished"/>
+        <translation>Taulun sisällön kirjaimen väri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="284"/>
@@ -19648,7 +19649,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="132"/>
         <source>Feature filtering</source>
-        <translation type="unfinished"/>
+        <translation>Ominaisuuksien suodatus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="171"/>
@@ -19660,39 +19661,39 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="330"/>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="367"/>
         <source>Color</source>
-        <translation type="unfinished"/>
+        <translation>Väri</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="275"/>
         <source>Fonts and text styling</source>
-        <translation type="unfinished"/>
+        <translation>Kirjain ja tekstin tyyli</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="287"/>
         <source>Table heading</source>
-        <translation type="unfinished"/>
+        <translation>Taulun otsikko</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="323"/>
         <source>Alignment</source>
-        <translation type="unfinished"/>
+        <translation>Kohdistus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="337"/>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="388"/>
         <source>Font</source>
-        <translation type="unfinished"/>
+        <translation>Kirjain</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="344"/>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="381"/>
         <source>Choose font...</source>
-        <translation type="unfinished"/>
+        <translation>Valitse kirjain...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="361"/>
         <source>Table contents</source>
-        <translation type="unfinished"/>
+        <translation>Taulun sisältö</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="144"/>
@@ -20215,7 +20216,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="230"/>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="267"/>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="108"/>
@@ -20265,12 +20266,12 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="436"/>
         <source>Snap tolerance</source>
-        <translation type="unfinished"/>
+        <translation>Kohdistustoleranssi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="443"/>
         <source> px</source>
-        <translation type="unfinished"/>
+        <translation> px</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="297"/>
@@ -20285,12 +20286,12 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="349"/>
         <source>Guides and Grid</source>
-        <translation type="unfinished"/>
+        <translation>Oppaat ja ruudukko</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="373"/>
         <source>Grid spacing</source>
-        <translation type="unfinished"/>
+        <translation>Ruudukon välit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="386"/>
@@ -37179,17 +37180,17 @@ Aina verkosta: lataa aina verkosta äläkä tarkista onko välimuistin merkintä
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3153"/>
         <source>Grid and guide defaults</source>
-        <translation type="unfinished"/>
+        <translation>Ruudukon ja opaan oletusarvot</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3159"/>
         <source>Grid spacing</source>
-        <translation type="unfinished"/>
+        <translation>Ruudukon välit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3220"/>
         <source> px</source>
-        <translation type="unfinished"/>
+        <translation> px</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3301"/>
@@ -41920,7 +41921,7 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="399"/>
         <source>Project file</source>
-        <translation type="unfinished"/>
+        <translation>Projektitiedosto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="523"/>
@@ -56191,7 +56192,7 @@ The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table al
 The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
 The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
 </source>
-        <translation>&lt;h3&gt;Attribuutti taulu&lt;/h3&gt;
+        <translation>&lt;h3&gt;Attribuuttitaulu&lt;/h3&gt;
 Attribuutti taululla näyetään valitus tason ominaisuudet. Jokainen taulun rivi esittää yhtä kartan ominaisuutta näyttäen attribuutit useissa sarakkeissa. Taulun ominaisuuksia voidaan etsiä, valita, siirellä tai jopa muokata. Oletuksen attribuuttitaululla on erillinen ikkuna. Jos avasit sen etkä voi nähdä sitä enää, on se luultavasti piilossa QGIS pääikkunan takana. Saat sen myös telakoituna ikkunana, merkkaamalla &lt;label&gt;Avaa attribuuttitaulu telakkaikkunassa&lt;/label&gt; asetusten muokkauksessa &lt;label&gt;Asetukset &gt; Asetukset &gt; Tiedonlähteet&lt;/label&gt;.&lt;p&gt;
 
 Tsojen ominaisuuksien kokonaismäärä, suodatettujen ominaisuuksien ja valittujen ominaisuuksien määrät on tilostettu ikkunan otsikkoon.&lt;p&gt;
@@ -60951,7 +60952,19 @@ None
 &lt;pre&gt;attribute( $atlasfeature, 'name' ) &amp;rarr; returns value stored in 'name' attribute for the current atlas feature&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"/>
+        <translation>&lt;h3&gt;$atlasfeature funktio&lt;/h3&gt;
+Atlas generoinissa, palauttaa nykyisen ominaisuuden joka on iteroitu yli  kattavan tason. Tätä voidaan käyttää yhdessä &apos;attribute&apos; funktion
+kanssa palauttamaan attribuutti arvot nykyisesta atlas ominaisuudesta.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$atlasfeature&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;attribute( $atlasfeature, &apos;name&apos; ) &amp;rarr; palauttaa arvon joka on talletettu &apos;name&apos; attribuuttiin nykyiselle atlas ominaisuudelle&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="69"/>
@@ -60969,7 +60982,19 @@ None
 &lt;pre&gt;attribute( $currentfeature, 'name' ) &amp;rarr; returns value stored in 'name' attribute for the current feature&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"/>
+        <translation>&lt;h3&gt;$currentfeature funktio&lt;/h3&gt;
+Palauttaa nykyisen evaluoidun ominaisuuden. Tätä voidaan käyttää &apos;attribute&apos; funktiossa evaluoimaan attribuuttien arvot nykyisesta ominaisuudesta.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$currentfeature&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; palauttaa nykyisen ominaisuuden attribuuttiin &apos;name&apos; talletetun arvon&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="109"/>
@@ -61047,7 +61072,20 @@ attribute_name &amp;rarr; name of attribute to be returned
 &lt;pre&gt;attribute( $currentfeature, 'name' ) &amp;rarr; returns value stored in 'name' attribute for the current feature&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"/>
+        <translation>&lt;h3&gt;attribute funktio&lt;/h3&gt;
+Palauttaa ominaisuuden määritettyyn attribuuttiin talletetun arvo.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;attribute( feature, attribute_name )&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+feature &amp;rarr; ominaisuus&lt;br /&gt;
+attribute_name &amp;rarr; palautettavan attribuutin nimi
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; palauttaa arvon joka on talletettu &apos;name&apos; attribuuutiin nykyisessa ominaisuudessa&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="947"/>

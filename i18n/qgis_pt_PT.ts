@@ -1074,7 +1074,7 @@ inteiros únicos</translation>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="252"/>
         <source>Retrieve 
 columns</source>
-        <translation>Recuperar
+        <translation>Obter
 colunas</translation>
     </message>
     <message>
@@ -36868,7 +36868,7 @@ Sempre rede: Carrega sempre a partir de rede e não verifica se a cache tem uma 
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1077"/>
         <source>Reset the User Interface settings, to reset QGIS to it&apos;s default view</source>
-        <translation>Reiniciar as configurações da Interface do Utilizador, para reiniciar o |qg| para sua visão padrão</translation>
+        <translation>Reiniciar as configurações da Interface do Utilizador, para reiniciar o QGIS para sua visão padrão</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1093"/>

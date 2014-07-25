@@ -27,7 +27,7 @@
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished"/>
+        <translation>Valor</translation>
     </message>
     <message>
         <source>Providers</source>
@@ -777,7 +777,7 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="125"/>
         <source>Create geometry column</source>
-        <translation>Crea un camp geomètric</translation>
+        <translation>Crea columna de geometria</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="188"/>
@@ -979,7 +979,7 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="222"/>
         <source>Geometry column</source>
-        <translation>Columna geomètrica</translation>
+        <translation>Columna de geometria</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="238"/>
@@ -1064,7 +1064,7 @@ enters únics</translation>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="210"/>
         <source>Geometry column</source>
-        <translation>Columna de geometries</translation>
+        <translation>Columna de geometria</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="252"/>
@@ -1134,7 +1134,7 @@ les columnes</translation>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="53"/>
         <source>Add geometry column</source>
-        <translation>Afegeix un camp geomètric</translation>
+        <translation>Afegeix columna de geometria</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="60"/>
@@ -2496,12 +2496,12 @@ Esteu segur que voleu continuar?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="14"/>
         <source>Processing options</source>
-        <translation type="unfinished"/>
+        <translation>Opcions de processament</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="26"/>
         <source>Enter setting name to filter list</source>
-        <translation>Introduïu els ajustus per filtrar la llista</translation>
+        <translation>Introduïu el nom del paràmetre per filtrar la llista</translation>
     </message>
 </context>
 <context>
@@ -2555,7 +2555,7 @@ Esteu segur que voleu continuar?</translation>
     </message>
     <message>
         <source>set geometry column name</source>
-        <translation type="unfinished"/>
+        <translation>estableix el nom de la columna de geometria</translation>
     </message>
     <message>
         <source>Good</source>
@@ -2702,7 +2702,7 @@ Esteu segur que voleu continuar?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="14"/>
         <source>Processing modeler</source>
-        <translation type="unfinished"/>
+        <translation>Modelador de processos</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="34"/>
@@ -2717,7 +2717,7 @@ Esteu segur que voleu continuar?</translation>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="91"/>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="108"/>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="44"/>
@@ -2737,12 +2737,12 @@ Esteu segur que voleu continuar?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="88"/>
         <source>Edit model help</source>
-        <translation type="unfinished"/>
+        <translation>Edita l&apos;ajuda del model</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="105"/>
         <source>Run model</source>
-        <translation type="unfinished"/>
+        <translation>Executa el model</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="147"/>
@@ -4851,7 +4851,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished"/>
+        <translation>Exporta/Afegeix columnes de geometria</translation>
     </message>
     <message>
         <source>Input vector layer</source>
@@ -7160,7 +7160,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>There are unsaved changes in model. Close modeler without saving?</source>
-        <translation type="unfinished"/>
+        <translation>Hi ha canvis sense desar al model. Vols tancar el modelador sense desar-los?</translation>
     </message>
     <message>
         <source>Empty model</source>
@@ -7235,7 +7235,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished"/>
+        <translation>Paràmetres</translation>
     </message>
 </context>
 <context>
@@ -9791,7 +9791,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="23"/>
         <source>Layers</source>
-        <translation type="unfinished"/>
+        <translation>Capes</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="36"/>
@@ -9882,7 +9882,7 @@ Only %1 of %2 features written.</source>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="41"/>
         <location filename="../src/plugins/zonal_statistics/qgszonalstatisticsplugin.cpp" line="28"/>
         <source>Raster</source>
-        <translation type="unfinished"/>
+        <translation>Ràster</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayerrenderer.cpp" line="46"/>
@@ -9897,7 +9897,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="65"/>
         <source>Version 3.1.9</source>
-        <translation type="unfinished"/>
+        <translation>Versió 3.1.9</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="33"/>
@@ -11601,12 +11601,12 @@ Response was:
     <message>
         <location filename="../src/app/qgisapp.cpp" line="631"/>
         <source>Browser</source>
-        <translation type="unfinished"/>
+        <translation>Explorador</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="636"/>
         <source>Browser (2)</source>
-        <translation type="unfinished"/>
+        <translation>Explorador (2)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="644"/>
@@ -11854,7 +11854,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2293"/>
         <source>Layers</source>
-        <translation type="unfinished"/>
+        <translation>Capes</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2325"/>
@@ -12904,7 +12904,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7213"/>
         <source>Would you like more information?</source>
-        <translation type="unfinished"/>
+        <translation>Voleu més informació?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7216"/>
@@ -14634,7 +14634,7 @@ Database:%2</source>
     <message>
         <location filename="../src/browser/qgsbrowserbase.ui" line="17"/>
         <source>QGIS Browser</source>
-        <translation type="unfinished"/>
+        <translation>Explorador del QGIS</translation>
     </message>
     <message>
         <location filename="../src/browser/qgsbrowserbase.ui" line="79"/>
@@ -14810,7 +14810,7 @@ Database:%2</source>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="14"/>
         <source>Browser</source>
-        <translation type="unfinished"/>
+        <translation>Explorador</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="54"/>
@@ -19665,7 +19665,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="138"/>
         <source>Layers</source>
-        <translation type="unfinished"/>
+        <translation>Capes</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="143"/>
@@ -20634,7 +20634,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="57"/>
         <source>Parameters</source>
-        <translation type="unfinished"/>
+        <translation>Paràmetres</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="167"/>
@@ -20674,7 +20674,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="106"/>
         <source>Parameters:</source>
-        <translation type="unfinished"/>
+        <translation>Paràmetres:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="113"/>
@@ -23031,7 +23031,7 @@ Leave empty to automatically apply the maximum value.</source>
     <message>
         <location filename="../src/core/qgsdataitem.cpp" line="598"/>
         <source>folder</source>
-        <translation type="unfinished"/>
+        <translation>directori</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdataitem.cpp" line="603"/>
@@ -25598,122 +25598,122 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="28"/>
         <source>A5 (148x210 mm)</source>
-        <translation type="unfinished"/>
+        <translation>A5 (148 x 210 mm)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="29"/>
         <source>A4 (210x297 mm)</source>
-        <translation type="unfinished"/>
+        <translation>A4 (210 x 297 mm)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="30"/>
         <source>A3 (297x420 mm)</source>
-        <translation type="unfinished"/>
+        <translation>A3 (297 x 420 mm)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="31"/>
         <source>A2 (420x594 mm)</source>
-        <translation type="unfinished"/>
+        <translation>A2 (420 x 594 mm)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="32"/>
         <source>A1 (594x841 mm)</source>
-        <translation type="unfinished"/>
+        <translation>A1 (594 x 841 mm)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="33"/>
         <source>A0 (841x1189 mm)</source>
-        <translation type="unfinished"/>
+        <translation>A0 (841 x 1189 mm)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="34"/>
         <source>B5 (176 x 250 mm)</source>
-        <translation type="unfinished"/>
+        <translation>B5 (176 x 250 mm)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="35"/>
         <source>B4 (250 x 353 mm)</source>
-        <translation type="unfinished"/>
+        <translation>B4 (250 x 353 mm)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="36"/>
         <source>B3 (353 x 500 mm)</source>
-        <translation type="unfinished"/>
+        <translation>B3 (353 x 500 mm)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="37"/>
         <source>B2 (500 x 707 mm)</source>
-        <translation type="unfinished"/>
+        <translation>B2 (500 x 707 mm)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="38"/>
         <source>B1 (707 x 1000 mm)</source>
-        <translation type="unfinished"/>
+        <translation>B1 (707 x 1000 mm)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="39"/>
         <source>B0 (1000 x 1414 mm)</source>
-        <translation type="unfinished"/>
+        <translation>B0 (1000 x 1414 mm)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="41"/>
         <source>Legal (8.5x14 inches)</source>
-        <translation type="unfinished"/>
+        <translation>Legal (8,5 x 14 polzades)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="42"/>
         <source>ANSI A (Letter; 8.5x11 inches)</source>
-        <translation type="unfinished"/>
+        <translation>ANSI A (Letter; 8,5 x 11 polzades)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="43"/>
         <source>ANSI B (Tabloid; 11x17 inches)</source>
-        <translation type="unfinished"/>
+        <translation>ANSI B (Tabloid; 11 x 17 polzades)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="44"/>
         <source>ANSI C (17x22 inches)</source>
-        <translation type="unfinished"/>
+        <translation>ANSI C (17 x 22 polzades)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="45"/>
         <source>ANSI D (22x34 inches)</source>
-        <translation type="unfinished"/>
+        <translation>ANSI D (22 x 34 polzades)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="46"/>
         <source>ANSI E (34x44 inches)</source>
-        <translation type="unfinished"/>
+        <translation>ANSI E (34 x 44 polzades)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="47"/>
         <source>Arch A (9x12 inches)</source>
-        <translation type="unfinished"/>
+        <translation>Arch A (9 x 12 polzades)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="48"/>
         <source>Arch B (12x18 inches)</source>
-        <translation type="unfinished"/>
+        <translation>Arch B (12 x 18 polzades)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="49"/>
         <source>Arch C (18x24 inches)</source>
-        <translation type="unfinished"/>
+        <translation>Arch C (18x24 polzades)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="50"/>
         <source>Arch D (24x36 inches)</source>
-        <translation type="unfinished"/>
+        <translation>Arch D (24 x 36 polzades)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="51"/>
         <source>Arch E (36x48 inches)</source>
-        <translation type="unfinished"/>
+        <translation>Arch E (36 x 48 polzades)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="52"/>
         <source>Arch E1 (30x42 inches)</source>
-        <translation type="unfinished"/>
+        <translation>Arch E1 (30 x 42 polzades)</translation>
     </message>
 </context>
 <context>
@@ -25721,73 +25721,73 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="14"/>
         <source>Configure Georeferencer</source>
-        <translation type="unfinished"/>
+        <translation>Configura el georeferenciador</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="20"/>
         <source>Point tip</source>
-        <translation type="unfinished"/>
+        <translation>Indicador dels punts</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="26"/>
         <source>Show IDs</source>
-        <translation type="unfinished"/>
+        <translation>Mostra les IDs</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="33"/>
         <source>Show coords</source>
-        <translation type="unfinished"/>
+        <translation>Mostra les coordenades</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="43"/>
         <source>Residual units</source>
-        <translation type="unfinished"/>
+        <translation>Unitats residuals</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="49"/>
         <source>Pixels</source>
-        <translation type="unfinished"/>
+        <translation>Píxels</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="56"/>
         <source>Use map units if possible</source>
-        <translation type="unfinished"/>
+        <translation>Utilitza les unitats del mapa si és possible</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="66"/>
         <source>PDF report</source>
-        <translation type="unfinished"/>
+        <translation>Informe en PDF</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="74"/>
         <source>Left margin</source>
-        <translation type="unfinished"/>
+        <translation>Marge esquerre</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="84"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="102"/>
         <source> mm</source>
-        <translation type="unfinished"/>
+        <translation> mm</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="95"/>
         <source>Right margin</source>
-        <translation type="unfinished"/>
+        <translation>Marge dret</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="114"/>
         <source>Show Georeferencer window docked</source>
-        <translation type="unfinished"/>
+        <translation>Mostra la finestra del georeferenciador acoblada</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="131"/>
         <source>PDF map</source>
-        <translation type="unfinished"/>
+        <translation>Mapa en PDF</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="139"/>
         <source>Paper size</source>
-        <translation type="unfinished"/>
+        <translation>Mida del paper</translation>
     </message>
 </context>
 <context>
@@ -25795,7 +25795,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefdescriptiondialogbase.ui" line="14"/>
         <source>Description georeferencer</source>
-        <translation type="unfinished"/>
+        <translation>Descripció del georeferenciador</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefdescriptiondialogbase.ui" line="46"/>
@@ -25804,7 +25804,11 @@ Please reselect a valid file.</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Droid Sans'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -25814,7 +25818,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="113"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="128"/>
         <source>&amp;Georeferencer</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Georeferenciador</translation>
     </message>
 </context>
 <context>
@@ -25822,12 +25826,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="130"/>
         <source>Georeferencer</source>
-        <translation type="unfinished"/>
+        <translation>Georeferenciador</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="213"/>
         <source>All other files (*)</source>
-        <translation type="unfinished"/>
+        <translation>Resta de fitxers (*)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="219"/>
@@ -25837,29 +25841,29 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="228"/>
         <source>%1 is not a supported raster data source</source>
-        <translation type="unfinished"/>
+        <translation>%1 no és una font de dades ràster compatible</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="233"/>
         <source>Unsupported Data Source</source>
-        <translation type="unfinished"/>
+        <translation>Font de dades incompatible</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="243"/>
         <source>Raster loaded: %1</source>
-        <translation type="unfinished"/>
+        <translation>S&apos;ha carregat el ràster: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="244"/>
         <source>Georeferencer - %1</source>
-        <translation type="unfinished"/>
+        <translation>Georeferenciador - %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="313"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1034"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1734"/>
         <source>Transform: </source>
-        <translation type="unfinished"/>
+        <translation>Transformació:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="367"/>
@@ -25874,39 +25878,39 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1885"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1899"/>
         <source>Info</source>
-        <translation type="unfinished"/>
+        <translation>Informació</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="367"/>
         <source>GDAL scripting is not supported for %1 transformation</source>
-        <translation type="unfinished"/>
+        <translation>La creació d&apos;scripts de GDAL no està permesa per la transformació %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="562"/>
         <source>Load GCP points</source>
-        <translation type="unfinished"/>
+        <translation>Carrega els punts PCT</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="563"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="581"/>
         <source>GCP file</source>
-        <translation type="unfinished"/>
+        <translation>Arxiu de PCT</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="574"/>
         <source>No GCP points to save</source>
-        <translation type="unfinished"/>
+        <translation>No hi ha punts PCT per desar</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="579"/>
         <source>Save GCP points</source>
-        <translation type="unfinished"/>
+        <translation>Desa els punts PCT</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="601"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1857"/>
         <source>Please load raster to be georeferenced</source>
-        <translation type="unfinished"/>
+        <translation>Carregueu un ràster per georeferenciar</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="872"/>
@@ -25917,83 +25921,83 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="969"/>
         <source>Panels</source>
-        <translation type="unfinished"/>
+        <translation>Subfinestres</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="974"/>
         <source>Toolbars</source>
-        <translation type="unfinished"/>
+        <translation>Barres d&apos;eines</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1035"/>
         <source>Current transform parametrisation</source>
-        <translation type="unfinished"/>
+        <translation>Parametrització de la transformació actual</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1040"/>
         <source>Coordinate: </source>
-        <translation type="unfinished"/>
+        <translation>Coordenada:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1041"/>
         <source>Current map coordinate</source>
-        <translation type="unfinished"/>
+        <translation>Coordenada actual del mapa</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1137"/>
         <source>None</source>
-        <translation type="unfinished"/>
+        <translation>Cap</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1138"/>
         <source>Coordinate of image(column/line)</source>
-        <translation type="unfinished"/>
+        <translation>Coordenada de la imatge (columna/fila)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1239"/>
         <source>Unable to open GCP points file %1</source>
-        <translation type="unfinished"/>
+        <translation>No es pot obrir el fitxer de punts PCT %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1253"/>
         <source>Save GCPs</source>
-        <translation type="unfinished"/>
+        <translation>Desa els PCTs</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1254"/>
         <source>Save GCP points?</source>
-        <translation type="unfinished"/>
+        <translation>Voleu desar els punts PCT?</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1288"/>
         <source>Failed to get linear transform parameters</source>
-        <translation type="unfinished"/>
+        <translation>No s&apos;han pogut obtenir els paràmetres de la transformació lineal</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1298"/>
         <source>World file exists</source>
-        <translation type="unfinished"/>
+        <translation>L&apos;arxiu de georeferenciació ja existeix</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1299"/>
         <source>&lt;p&gt;The selected file already seems to have a world file! Do you want to replace it with the new world file?&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt;L&apos;arxiu seleccionat ja té un arxiu de georeferenciació! Voleu substituir-lo amb el nou arxiu de georeferenciació?&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1335"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1899"/>
         <source>Failed to compute GCP transform: Transform is not solvable</source>
-        <translation type="unfinished"/>
+        <translation>No s&apos;ha pogut calcular la transformació PCT: la transformació no es pot resoldre.</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1367"/>
         <source>Error</source>
-        <translation type="unfinished"/>
+        <translation>Error</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1368"/>
         <source>Could not write to %1</source>
-        <translation type="unfinished"/>
+        <translation>No s&apos;ha pogut escriure a %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1509"/>
@@ -26001,153 +26005,153 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1615"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1673"/>
         <source>map units</source>
-        <translation type="unfinished"/>
+        <translation>unitats del mapa</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1513"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1619"/>
         <source>pixels</source>
-        <translation type="unfinished"/>
+        <translation>píxels</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1624"/>
         <source>Transformation parameters</source>
-        <translation type="unfinished"/>
+        <translation>Paràmetres de la transformació</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1641"/>
         <source>Translation x</source>
-        <translation type="unfinished"/>
+        <translation>Translació x</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1641"/>
         <source>Translation y</source>
-        <translation type="unfinished"/>
+        <translation>Translació y</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1641"/>
         <source>Scale x</source>
-        <translation type="unfinished"/>
+        <translation>Escala x</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1641"/>
         <source>Scale y</source>
-        <translation type="unfinished"/>
+        <translation>Escala y</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1641"/>
         <source>Rotation [degrees]</source>
-        <translation type="unfinished"/>
+        <translation>Rotació [graus]</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1641"/>
         <source>Mean error [%1]</source>
-        <translation type="unfinished"/>
+        <translation>Error mitjà [%1]</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1660"/>
         <source>Residuals</source>
-        <translation type="unfinished"/>
+        <translation>Residuals</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1692"/>
         <source>yes</source>
-        <translation type="unfinished"/>
+        <translation>sí</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1696"/>
         <source>no</source>
-        <translation type="unfinished"/>
+        <translation>no</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1741"/>
         <source>Translation (%1, %2)</source>
-        <translation type="unfinished"/>
+        <translation>Translació (%1, %2)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1742"/>
         <source>Scale (%1, %2)</source>
-        <translation type="unfinished"/>
+        <translation>Escala (%1, %2)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1743"/>
         <source>Rotation: %1</source>
-        <translation type="unfinished"/>
+        <translation>Rotació: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1750"/>
         <source>Mean error: %1</source>
-        <translation type="unfinished"/>
+        <translation>Error mitjà: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1763"/>
         <source>Copy in clipboard</source>
-        <translation type="unfinished"/>
+        <translation>Copia al porta-retalls</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1769"/>
         <source>%1</source>
-        <translation type="unfinished"/>
+        <translation>%1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1776"/>
         <source>GDAL script</source>
-        <translation type="unfinished"/>
+        <translation>Script de GDAL</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1866"/>
         <source>Please set transformation type</source>
-        <translation type="unfinished"/>
+        <translation>Definiu el tipus de transformació</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1876"/>
         <source>Please set output raster name</source>
-        <translation type="unfinished"/>
+        <translation>Definiu el nom del ràster de sortida</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1885"/>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation type="unfinished"/>
+        <translation>%1 requereix com a mínim %2 PCTs. Definiu-ne més.</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1978"/>
         <source>Linear</source>
-        <translation type="unfinished"/>
+        <translation>Lineal</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1980"/>
         <source>Helmert</source>
-        <translation type="unfinished"/>
+        <translation>Helmert</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1982"/>
         <source>Polynomial 1</source>
-        <translation type="unfinished"/>
+        <translation>Polinòmica 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1984"/>
         <source>Polynomial 2</source>
-        <translation type="unfinished"/>
+        <translation>Polinòmica 2</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1986"/>
         <source>Polynomial 3</source>
-        <translation type="unfinished"/>
+        <translation>Polinòmica 3</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1988"/>
         <source>Thin plate spline (TPS)</source>
-        <translation type="unfinished"/>
+        <translation>Thin plate spline (TPS)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1990"/>
         <source>Projective</source>
-        <translation type="unfinished"/>
+        <translation>Projectiva</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1992"/>
         <source>Not set</source>
-        <translation type="unfinished"/>
+        <translation>Sense definir</translation>
     </message>
 </context>
 <context>
@@ -26155,40 +26159,40 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="14"/>
         <source>Georeferencer</source>
-        <translation type="unfinished"/>
+        <translation> Georeferenciador</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="30"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="80"/>
         <source>File</source>
-        <translation type="unfinished"/>
+        <translation>Fitxer</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="44"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="126"/>
         <source>View</source>
-        <translation type="unfinished"/>
+        <translation>Visualitza</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="58"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="106"/>
         <source>Edit</source>
-        <translation type="unfinished"/>
+        <translation>Edita</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="66"/>
         <source>Settings</source>
-        <translation type="unfinished"/>
+        <translation>Configuració</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="158"/>
         <source>GCP table</source>
-        <translation type="unfinished"/>
+        <translation>Taula de PCT</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="169"/>
         <source>toolBar</source>
-        <translation type="unfinished"/>
+        <translation>Barra d&apos;eines</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="182"/>
@@ -26199,52 +26203,52 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="188"/>
         <source>Ctrl+O</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="193"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="196"/>
         <source>Zoom In</source>
-        <translation type="unfinished"/>
+        <translation>Amplia</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="199"/>
         <source>Ctrl++</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl++</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="204"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="207"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"/>
+        <translation>Redueix</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="210"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="215"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="218"/>
         <source>Zoom to Layer</source>
-        <translation type="unfinished"/>
+        <translation>Escala a la capa</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="221"/>
         <source>Ctrl+Shift+F</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Maj+F</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="226"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="229"/>
         <source>Pan</source>
-        <translation type="unfinished"/>
+        <translation>Desplaça</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="234"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="237"/>
         <source>Transformation settings</source>
-        <translation type="unfinished"/>
+        <translation>Paràmetres de la transformació</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="242"/>
@@ -26255,121 +26259,121 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="248"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="253"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="256"/>
         <source>Delete point</source>
-        <translation type="unfinished"/>
+        <translation>Elimina un punt</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="259"/>
         <source>Ctrl+D</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+D</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="264"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="267"/>
         <source>Quit</source>
-        <translation type="unfinished"/>
+        <translation>Surt</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="272"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="275"/>
         <source>Start georeferencing</source>
-        <translation type="unfinished"/>
+        <translation>Inicia la georeferenciació</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="278"/>
         <source>Ctrl+G</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+G</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="283"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="286"/>
         <source>Generate GDAL script</source>
-        <translation type="unfinished"/>
+        <translation>Genera un script de GDAL</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="289"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="297"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="300"/>
         <source>Link Georeferencer to QGIS</source>
-        <translation type="unfinished"/>
+        <translation>Enllaça el georeferenciador amb el QGIS</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="308"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="311"/>
         <source>Link QGIS to Georeferencer</source>
-        <translation type="unfinished"/>
+        <translation>Enllaça el QGIS amb el georeferenciador</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="316"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="319"/>
         <source>Save GCP points as...</source>
-        <translation type="unfinished"/>
+        <translation>Desa els punts PCT com a...</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="322"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="327"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="330"/>
         <source>Load GCP points</source>
-        <translation type="unfinished"/>
+        <translation>Carrega els punts PCT</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="333"/>
         <source>Ctrl+L</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+L</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="338"/>
         <source>Configure Georeferencer</source>
-        <translation type="unfinished"/>
+        <translation>Configura el georeferenciador</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="341"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="346"/>
         <source>Raster properties</source>
-        <translation type="unfinished"/>
+        <translation>Propietats del ràster</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="351"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="354"/>
         <source>Move GCP point</source>
-        <translation type="unfinished"/>
+        <translation>Mou un punt PCT</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="359"/>
         <source>Zoom Next</source>
-        <translation type="unfinished"/>
+        <translation>Escala següent</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="364"/>
         <source>Zoom Last</source>
-        <translation type="unfinished"/>
+        <translation>Escala anterior</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="369"/>
         <source>Local histogram stretch</source>
-        <translation type="unfinished"/>
+        <translation>Estirament de l&apos;histograma local</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="374"/>
         <source>Full histogram stretch</source>
-        <translation type="unfinished"/>
+        <translation>Estirament de l&apos;histograma complet</translation>
     </message>
 </context>
 <context>
@@ -29459,7 +29463,7 @@ or change the following values</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="139"/>
         <source>Browser</source>
-        <translation type="unfinished"/>
+        <translation>Explorador</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="164"/>
@@ -33820,7 +33824,7 @@ not displayed</source>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="160"/>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="360"/>
         <source>Geometry column</source>
-        <translation type="unfinished"/>
+        <translation>Columna de geometria</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="161"/>
@@ -33915,7 +33919,7 @@ not displayed</source>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="31"/>
         <source>Geometry column</source>
-        <translation type="unfinished"/>
+        <translation>Columna de geometria</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="32"/>
@@ -34424,7 +34428,7 @@ Extended error information:
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="412"/>
         <source>Error Creating Geometry Column</source>
-        <translation type="unfinished"/>
+        <translation>S&apos;ha produït un error en crear la columna de geometria</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="413"/>
@@ -34490,7 +34494,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="125"/>
         <source>Geometry column</source>
-        <translation type="unfinished"/>
+        <translation>Columna de geometria</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="144"/>
@@ -35159,7 +35163,7 @@ Extended error information:
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="60"/>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="461"/>
         <source>Layers</source>
-        <translation type="unfinished"/>
+        <translation>Capes</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="74"/>
@@ -38608,7 +38612,7 @@ Error: %2</source>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="210"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="409"/>
         <source>Geometry column</source>
-        <translation type="unfinished"/>
+        <translation>Columna de geometria</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="211"/>
@@ -38703,7 +38707,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="30"/>
         <source>Geometry column</source>
-        <translation type="unfinished"/>
+        <translation>Columna de geometria</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="31"/>
@@ -39245,7 +39249,7 @@ Error: %2</source>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="197"/>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="376"/>
         <source>Geometry column</source>
-        <translation type="unfinished"/>
+        <translation>Columna de geometria</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="198"/>
@@ -39789,7 +39793,7 @@ You need to restart QGIS in order to reload it.</source>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="172"/>
         <source>Parameters</source>
-        <translation type="unfinished"/>
+        <translation>Paràmetres</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="185"/>
@@ -41244,7 +41248,7 @@ Proceed?</source>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1597"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1598"/>
         <source>Parameters:</source>
-        <translation type="unfinished"/>
+        <translation>Paràmetres:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1597"/>
@@ -46450,7 +46454,7 @@ SQL: %1</source>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="88"/>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="220"/>
         <source>Geometry column</source>
-        <translation type="unfinished"/>
+        <translation>Columna de geometria</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="89"/>
@@ -46595,7 +46599,7 @@ but implies better performance thereafter.</source>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitetablemodel.cpp" line="27"/>
         <source>Geometry column</source>
-        <translation type="unfinished"/>
+        <translation>Columna de geometria</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitetablemodel.cpp" line="28"/>
@@ -47380,18 +47384,18 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="128"/>
         <source>Geometry column name</source>
-        <translation type="unfinished"/>
+        <translation>Nom de la columna de geometria</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="141"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="144"/>
         <source>Set the geometry column name to the default value</source>
-        <translation type="unfinished"/>
+        <translation>Estableix el nom de la columna de geometria al valor per defecte</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="147"/>
         <source>Use default geometry column name</source>
-        <translation type="unfinished"/>
+        <translation>Utilitza el nom per defecte de la columna de geometria</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="154"/>
@@ -47499,7 +47503,24 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;Hem treballat durament per fer arribar aquest programari a les teves mans. Veus totes les característiques tan interessants que té? Tens una sensació difosa i càlida quan el fas servir? El QGIS és el resultat d&apos;una feina feta amb amor per un equip dedicat de desenvolupadors. Volem que el copiïs i el comparteixis i que el facis arribar a tanta gent com et sigui possible. Si el QGIS t&apos;està fent estalviar diners o t&apos;agrada la nostra feina i tens la disponibilitat financera per ajudar-nos, si us plau, considera la possibilitat de patrocinar el desenvolupament del QGIS. Fem servir els diners dels patrocinadors per sufragar les despeses i viatges relacionats amb la nostra &quot;hackfest&quot; bianual i, a nivell general, per donar suport a tots els objectius del nostre projecte. &lt;br /&gt;&lt;br /&gt;Si us plau, dóna un cop d&apos;ull a la&lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;pàgina web de patrocini del QGIS&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; per obtenir més detalls. A la &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/about/sponsorship.html#list-of-sponsors&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;pàgina de patrocinadors&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; pots veure-hi les grans persones i empreses que ens estan ajudant econòmicament - moltíssimes gràcies a tots!&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/gold.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/aas_300wide.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/silver.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/vorarlberg.png&quot; /&gt; &lt;img src=&quot;:/images/sponsors/sponsors/gaia.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/bronze.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt; &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -50846,7 +50867,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="60"/>
         <source>Layers</source>
-        <translation type="unfinished"/>
+        <translation>Capes</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="72"/>

@@ -2435,7 +2435,7 @@ Er du sikker på at du vil fortsette?</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSelectByLocation.ui" line="96"/>
         <source>Only selected features</source>
-        <translation type="unfinished"/>
+        <translation>Kun valgte objekter</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
@@ -6372,7 +6372,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="885"/>
         <source>Select Feature(s)</source>
-        <translation type="unfinished"/>
+        <translation>Velg objekt(er)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="888"/>
@@ -8566,43 +8566,43 @@ Feil(%2): %3</translation>
         <location filename="../src/core/qgsexpression.cpp" line="65"/>
         <source>second|seconds</source>
         <comment>list of words separated by | which reference years</comment>
-        <translation type="unfinished"/>
+        <translation>sekund/sekunder</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="66"/>
         <source>minute|minutes</source>
         <comment>list of words separated by | which reference minutes</comment>
-        <translation type="unfinished"/>
+        <translation>minutt/minutter</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="67"/>
         <source>hour|hours</source>
         <comment>list of words separated by | which reference minutes hours</comment>
-        <translation type="unfinished"/>
+        <translation>time/timer</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="68"/>
         <source>day|days</source>
         <comment>list of words separated by | which reference days</comment>
-        <translation type="unfinished"/>
+        <translation>dag/dager</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="69"/>
         <source>week|weeks</source>
         <comment>wordlist separated by | which reference weeks</comment>
-        <translation type="unfinished"/>
+        <translation>uke/uker</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="70"/>
         <source>month|months</source>
         <comment>list of words separated by | which reference months</comment>
-        <translation type="unfinished"/>
+        <translation>måned/måneder</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="71"/>
         <source>year|years</source>
         <comment>list of words separated by | which reference years</comment>
-        <translation type="unfinished"/>
+        <translation>år/år</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2659"/>
@@ -10816,7 +10816,7 @@ Vil du angi stien (GISBASE) til din GRASS-installasjon?</translation>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1810"/>
         <source>Storage and eXchange Format</source>
-        <translation type="unfinished"/>
+        <translation>Storage and eXchange Format</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1815"/>
@@ -11507,7 +11507,7 @@ Svaret var:
     <message>
         <location filename="../src/core/qgslegendsettings.cpp" line="4"/>
         <source>Legend</source>
-        <translation type="unfinished"/>
+        <translation>Tegnforklaring</translation>
     </message>
 </context>
 <context>
@@ -15329,7 +15329,7 @@ Skal de eksisterende klassene slettes før klassifisering?
     <message>
         <location filename="../src/gui/qgscolorbutton.cpp" line="315"/>
         <source>Pick color</source>
-        <translation type="unfinished"/>
+        <translation>Velg farge</translation>
     </message>
 </context>
 <context>
@@ -16373,7 +16373,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="432"/>
         <source>Ctrl+Shift+G</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Shift+G</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="437"/>
@@ -16996,7 +16996,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="203"/>
         <source>HTML changed</source>
-        <translation type="unfinished"/>
+        <translation>HTML endret</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="222"/>
@@ -17008,7 +17008,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="285"/>
         <source>Insert expression</source>
-        <translation type="unfinished"/>
+        <translation>Skriv inn uttrykk</translation>
     </message>
 </context>
 <context>
@@ -17036,7 +17036,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="57"/>
         <source>HTML Source</source>
-        <translation type="unfinished"/>
+        <translation>HTML kilde</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="69"/>
@@ -17051,17 +17051,17 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="100"/>
         <source>Source:</source>
-        <translation type="unfinished"/>
+        <translation>Kilde:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="117"/>
         <source>Insert an expression</source>
-        <translation type="unfinished"/>
+        <translation>Sett inn et uttrykk...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="127"/>
         <source>Frames</source>
-        <translation type="unfinished"/>
+        <translation>Rammer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="142"/>
@@ -17224,7 +17224,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="477"/>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="512"/>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="314"/>
@@ -18035,7 +18035,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="1325"/>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="1466"/>
         <source>Grid %1</source>
-        <translation type="unfinished"/>
+        <translation>Rutenett %1</translation>
     </message>
 </context>
 <context>
@@ -18079,7 +18079,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1294"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1674"/>
         <source>Markers</source>
-        <translation type="unfinished"/>
+        <translation>Markører</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="66"/>
@@ -18158,7 +18158,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1092"/>
         <source>Grid %1</source>
-        <translation type="unfinished"/>
+        <translation>Rutenett %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1094"/>
@@ -18175,24 +18175,24 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1357"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1624"/>
         <source>Map unit</source>
-        <translation type="unfinished"/>
+        <translation>Kartenhet</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1361"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1628"/>
         <source>Millimeter</source>
-        <translation type="unfinished"/>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1365"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1632"/>
         <source>Centimeter</source>
-        <translation type="unfinished"/>
+        <translation>Centimeter</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1370"/>
         <source>change...</source>
-        <translation type="unfinished"/>
+        <translation>endre...</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1434"/>
@@ -18435,7 +18435,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="271"/>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="298"/>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="314"/>
@@ -18523,7 +18523,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="952"/>
         <source>Marker style</source>
-        <translation type="unfinished"/>
+        <translation>Markørstil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1017"/>
@@ -18575,7 +18575,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="394"/>
         <source>Grids</source>
-        <translation type="unfinished"/>
+        <translation>Rutenett</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="405"/>
@@ -18610,7 +18610,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="513"/>
         <source>CRS</source>
-        <translation type="unfinished"/>
+        <translation>CRS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="520"/>
@@ -18622,27 +18622,27 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="527"/>
         <source>Interval units</source>
-        <translation type="unfinished"/>
+        <translation>Intervall enheter</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="535"/>
         <source>Map unit</source>
-        <translation type="unfinished"/>
+        <translation>Kartenhet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="540"/>
         <source>Millimeter</source>
-        <translation type="unfinished"/>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="545"/>
         <source>Centimeter</source>
-        <translation type="unfinished"/>
+        <translation>Centimeter</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="687"/>
         <source>No frame</source>
-        <translation type="unfinished"/>
+        <translation>Ingen ramme</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="692"/>
@@ -18692,7 +18692,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="899"/>
         <source>Font color</source>
-        <translation type="unfinished"/>
+        <translation>Skriftfarge</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="913"/>
@@ -19667,7 +19667,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="330"/>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="367"/>
         <source>Color</source>
-        <translation type="unfinished"/>
+        <translation>Farge</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="275"/>
@@ -19682,24 +19682,24 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="323"/>
         <source>Alignment</source>
-        <translation type="unfinished"/>
+        <translation>Justering</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="337"/>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="388"/>
         <source>Font</source>
-        <translation type="unfinished"/>
+        <translation>Skrift</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="344"/>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="381"/>
         <source>Choose font...</source>
-        <translation type="unfinished"/>
+        <translation>Velg skrift...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="361"/>
         <source>Table contents</source>
-        <translation type="unfinished"/>
+        <translation>Tabellinnhold</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="144"/>
@@ -20222,7 +20222,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="230"/>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="267"/>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="108"/>
@@ -20272,12 +20272,12 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="436"/>
         <source>Snap tolerance</source>
-        <translation type="unfinished"/>
+        <translation>Festetoleranse</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="443"/>
         <source> px</source>
-        <translation type="unfinished"/>
+        <translation>px</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="297"/>
@@ -20297,7 +20297,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="373"/>
         <source>Grid spacing</source>
-        <translation type="unfinished"/>
+        <translation>Rutenettavstand</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="386"/>
@@ -30238,7 +30238,7 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="747"/>
         <source>No attributes.</source>
-        <translation type="unfinished"/>
+        <translation>Ingen attributter</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="957"/>
@@ -37183,12 +37183,12 @@ Alltid nettverk: last alltid fra nettverk og sjekk ikke om hurtiglageret har en 
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3159"/>
         <source>Grid spacing</source>
-        <translation type="unfinished"/>
+        <translation>Rutenettavstand</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3220"/>
         <source> px</source>
-        <translation type="unfinished"/>
+        <translation>px</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3301"/>
@@ -41921,7 +41921,7 @@ Fortsette?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="399"/>
         <source>Project file</source>
-        <translation type="unfinished"/>
+        <translation>Prosjektfil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="523"/>
@@ -45014,7 +45014,7 @@ standardavvik ×</translation>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="82"/>
         <source>(no selection)</source>
-        <translation type="unfinished"/>
+        <translation>(ingen utvalg)</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="108"/>
@@ -48357,12 +48357,12 @@ Overskriv?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="758"/>
         <source>All Symbols</source>
-        <translation type="unfinished"/>
+        <translation>Alle symboler</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="768"/>
         <source>Groups</source>
-        <translation type="unfinished"/>
+        <translation>Grupper</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="769"/>
@@ -48372,7 +48372,7 @@ Overskriv?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="776"/>
         <source>Smart Groups</source>
-        <translation type="unfinished"/>
+        <translation>Smart-grupper</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="883"/>
@@ -63097,7 +63097,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     </message>
     <message>
         <source>Median:</source>
-        <translation type="unfinished"/>
+        <translation>Median:</translation>
     </message>
     <message>
         <source>Observed mean distance:</source>

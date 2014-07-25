@@ -3244,27 +3244,27 @@ Dodatak neće biti omogućen.</translation>
     </message>
     <message>
         <source>PCT to RGB</source>
-        <translation type="unfinished"/>
+        <translation>PCT u RGB</translation>
     </message>
     <message>
         <source>Convert an 8bit paletted image to 24bit RGB</source>
-        <translation type="unfinished"/>
+        <translation>Pretvori 8bit paletiranu sliku u 24bit RGB</translation>
     </message>
     <message>
         <source>Extraction</source>
-        <translation type="unfinished"/>
+        <translation>Izvlačenje</translation>
     </message>
     <message>
         <source>Contour</source>
-        <translation type="unfinished"/>
+        <translation>Kontura</translation>
     </message>
     <message>
         <source>Builds vector contour lines from a DEM</source>
-        <translation type="unfinished"/>
+        <translation>Izrađuje vektorske slojnice iz DEM-a</translation>
     </message>
     <message>
         <source>Clipper</source>
-        <translation type="unfinished"/>
+        <translation>Obrezivač</translation>
     </message>
     <message>
         <source>Analysis</source>
@@ -3276,11 +3276,11 @@ Dodatak neće biti omogućen.</translation>
     </message>
     <message>
         <source>Removes small raster polygons</source>
-        <translation type="unfinished"/>
+        <translation>Uklanja male rasterske poligone</translation>
     </message>
     <message>
         <source>Near black</source>
-        <translation type="unfinished"/>
+        <translation>Gotovo crno</translation>
     </message>
     <message>
         <source>Convert nearly black/white borders to exact value</source>
@@ -14231,7 +14231,7 @@ Parser error:
         <location filename="../src/ui/qgsattributetabledialog.ui" line="481"/>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="660"/>
         <source>Apply</source>
-        <translation type="unfinished"/>
+        <translation>Primjeni</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="516"/>
@@ -14242,7 +14242,7 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="523"/>
         <source>Table View</source>
-        <translation type="unfinished"/>
+        <translation>Pregled tablice</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="574"/>
@@ -14258,12 +14258,12 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="605"/>
         <source>Advanced Filter (Expression)</source>
-        <translation type="unfinished"/>
+        <translation>Napredno filtriranje (Izraz)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="608"/>
         <source>Use the Expression Builder to define the filter</source>
-        <translation type="unfinished"/>
+        <translation>Definiraj filter uz pomoć izrađivača izraza</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="611"/>
@@ -14273,22 +14273,22 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="620"/>
         <source>Show All Features</source>
-        <translation type="unfinished"/>
+        <translation>Prikaži sve elemente</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="629"/>
         <source>Show Selected Features</source>
-        <translation type="unfinished"/>
+        <translation>Prikaži odabrane elemente</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="652"/>
         <source>Show Edited and New Features</source>
-        <translation type="unfinished"/>
+        <translation>Prikaži uređivane i nove elemente</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="638"/>
         <source>Show Features Visible On Map</source>
-        <translation type="unfinished"/>
+        <translation>Prikaži elemente vidljive na karti</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="452"/>
@@ -14410,7 +14410,7 @@ Parser error:
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="754"/>
         <source>Error filtering</source>
-        <translation type="unfinished"/>
+        <translation>Pogreška pri filtriranju</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="499"/>
@@ -14449,7 +14449,7 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="43"/>
         <source>Label on top</source>
-        <translation type="unfinished"/>
+        <translation>Oznaka na vrhu</translation>
     </message>
 </context>
 <context>
@@ -14457,22 +14457,22 @@ Parser error:
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="43"/>
         <source>Normal</source>
-        <translation type="unfinished"/>
+        <translation>Normalno</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="45"/>
         <source>Lighten</source>
-        <translation type="unfinished"/>
+        <translation>Posvijetli</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="46"/>
         <source>Screen</source>
-        <translation type="unfinished"/>
+        <translation>Ekran</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="47"/>
         <source>Dodge</source>
-        <translation type="unfinished"/>
+        <translation>Izmakni</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="48"/>
@@ -14482,17 +14482,17 @@ Parser error:
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="50"/>
         <source>Darken</source>
-        <translation type="unfinished"/>
+        <translation>Potamni</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="51"/>
         <source>Multiply</source>
-        <translation type="unfinished"/>
+        <translation>Pomnoži</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="52"/>
         <source>Burn</source>
-        <translation type="unfinished"/>
+        <translation>Spali</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="54"/>
@@ -14502,12 +14502,12 @@ Parser error:
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="55"/>
         <source>Soft light</source>
-        <translation type="unfinished"/>
+        <translation>Mekano svjetlo</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="56"/>
         <source>Hard light</source>
-        <translation type="unfinished"/>
+        <translation>Jako svjetlo</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="58"/>
@@ -14517,7 +14517,7 @@ Parser error:
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="59"/>
         <source>Subtract</source>
-        <translation type="unfinished"/>
+        <translation>Oduzmi</translation>
     </message>
 </context>
 <context>
@@ -14711,7 +14711,7 @@ Database:%2</source>
     <message>
         <location filename="../src/browser/qgsbrowserbase.ui" line="208"/>
         <source>F5</source>
-        <translation type="unfinished"/>
+        <translation>F5</translation>
     </message>
     <message>
         <location filename="../src/browser/qgsbrowserbase.ui" line="220"/>
@@ -14753,7 +14753,7 @@ Database:%2</source>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="254"/>
         <source>Case Sensitive</source>
-        <translation type="unfinished"/>
+        <translation>Osjetljivo na veličinu slova</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="261"/>
@@ -14763,7 +14763,7 @@ Database:%2</source>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="264"/>
         <source>Normal</source>
-        <translation type="unfinished"/>
+        <translation>Normalno</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="269"/>
@@ -15070,7 +15070,7 @@ Database:%2</source>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="81"/>
         <source>Change...</source>
-        <translation type="unfinished"/>
+        <translation>Izmijeni...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="88"/>
@@ -15080,7 +15080,7 @@ Database:%2</source>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="105"/>
         <source>Invert</source>
-        <translation type="unfinished"/>
+        <translation>Izokreni</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="150"/>
@@ -15115,7 +15115,7 @@ Database:%2</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="396"/>
         <source>Random colors</source>
-        <translation type="unfinished"/>
+        <translation>Nasumične boje</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="441"/>
@@ -15207,7 +15207,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/gui/qgscollapsiblegroupbox.cpp" line="194"/>
         <source>Ctrl (or Alt)-click to toggle all</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl (ili Alt)-klik za promjenu svega</translation>
     </message>
 </context>
 <context>
@@ -15215,7 +15215,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/gui/qgscolorbutton.cpp" line="69"/>
         <source>Select Color</source>
-        <translation type="unfinished"/>
+        <translation>Odaberi boju</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolorbutton.cpp" line="310"/>
@@ -15238,7 +15238,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="35"/>
         <source>Select Color</source>
-        <translation type="unfinished"/>
+        <translation>Odaberi boju</translation>
     </message>
 </context>
 <context>
@@ -15247,7 +15247,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="58"/>
         <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="67"/>
         <source>Random colors</source>
-        <translation type="unfinished"/>
+        <translation>Nasumične boje</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="59"/>
@@ -15315,37 +15315,37 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="226"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Izreži</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="228"/>
         <source>Cut</source>
-        <translation type="unfinished"/>
+        <translation>Izreži</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="231"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Kopiraj</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="233"/>
         <source>Copy</source>
-        <translation type="unfinished"/>
+        <translation>Kopiraj</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="236"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Zalijepi</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="238"/>
         <source>Paste</source>
-        <translation type="unfinished"/>
+        <translation>Zalijepi</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="241"/>
         <source>Edit</source>
-        <translation type="unfinished"/>
+        <translation>Uredi</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="264"/>
@@ -15416,12 +15416,12 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="360"/>
         <source>Atlas</source>
-        <translation type="unfinished"/>
+        <translation>Atlas</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="384"/>
         <source>Settings</source>
-        <translation type="unfinished"/>
+        <translation>Postavke</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="390"/>
@@ -15438,7 +15438,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         <location filename="../src/app/composer/qgscomposer.cpp" line="817"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="829"/>
         <source>%1%</source>
-        <translation type="unfinished"/>
+        <translation>%1%</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="503"/>
@@ -15448,7 +15448,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="507"/>
         <source>Item properties</source>
-        <translation type="unfinished"/>
+        <translation>Osobine stavke</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="511"/>
@@ -15470,17 +15470,17 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="799"/>
         <source>x: %1 mm</source>
-        <translation type="unfinished"/>
+        <translation>x: %1 mm</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="800"/>
         <source>y: %1 mm</source>
-        <translation type="unfinished"/>
+        <translation>y: %1 mm</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="801"/>
         <source>page: %3</source>
-        <translation type="unfinished"/>
+        <translation>stranica: %3</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="914"/>
@@ -15615,13 +15615,14 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1701"/>
         <source>Memory Allocation Error</source>
-        <translation type="unfinished"/>
+        <translation>Pogreška pri alokaciji memorije</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1702"/>
         <source>Trying to create image #%1( %2x%3 @ %4dpi ) may result in a memory overflow.
 Please try a lower resolution or a smaller papersize</source>
-        <translation type="unfinished"/>
+        <translation>Pokušaj stvaranja slike #%1( %2x%3 @ %4dpi ) može rezultirati prelijevanjem memorije.
+Pokušajte s nižom rezolucijom ili manjom veličinom papira</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1723"/>

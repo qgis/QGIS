@@ -5502,7 +5502,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui" line="28"/>
         <source>Symbol layer type</source>
-        <translation>Tipo layer del simbolo</translation>
+        <translation>Tipo simbolo del vettore</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui" line="51"/>
@@ -14564,7 +14564,7 @@ Errore di analisi:
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="48"/>
         <source>Addition</source>
-        <translation>Addizione</translation>
+        <translation>Addiziona</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="50"/>
@@ -23350,7 +23350,7 @@ Errore di elaborazione:
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="74"/>
         <source>Symbol layer symbology</source>
-        <translation>Simbologia layer dei simboli</translation>
+        <translation>Simbologia simboli del vettore</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="96"/>
@@ -43934,7 +43934,7 @@ Clicca sul pulsante di aiuto per avere opzioni di creazione valide per questo fo
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="252"/>
         <source>Layer source</source>
-        <translation>Layer sorgente</translation>
+        <translation>Sorgente layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="274"/>
@@ -45145,7 +45145,7 @@ deviazione standard ×</translation>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="113"/>
         <source>Feature blending mode</source>
-        <translation>Modalità elementi fusione</translation>
+        <translation>Modalità fusione elementi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="120"/>
@@ -50507,7 +50507,7 @@ L&apos;errore è: %2</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="322"/>
         <source>Layer source</source>
-        <translation>Layer sorgente</translation>
+        <translation>Sorgente layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="347"/>
@@ -50711,7 +50711,7 @@ L&apos;errore è: %2</translation>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="91"/>
         <source>Symbol layer symbology</source>
-        <translation>Simbologia layer dei simboli</translation>
+        <translation>Simbologia simboli del vettore</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="135"/>

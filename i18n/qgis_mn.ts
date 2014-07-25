@@ -23,15 +23,15 @@
     </message>
     <message>
         <source>Setting</source>
-        <translation type="unfinished"/>
+        <translation>Тохиргоо</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished"/>
+        <translation>Утга</translation>
     </message>
     <message>
         <source>Providers</source>
-        <translation type="unfinished"/>
+        <translation>Нийлүүлэгч</translation>
     </message>
     <message>
         <source>Wrong value</source>
@@ -48,7 +48,7 @@
     <name>ConnectionItem</name>
     <message>
         <source>Unable to connect</source>
-        <translation type="unfinished"/>
+        <translation>Холбогдох боломжгүй байна</translation>
     </message>
 </context>
 <context>
@@ -79,7 +79,7 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="133"/>
         <source>Coordinate in your selected CRS (lat,lon or east,north)</source>
-        <translation type="unfinished"/>
+        <translation>Сонгосон CRS дэх солбицол (Уртраг, өргөрөг эсвэл абцис, ординат)</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="137"/>
@@ -111,70 +111,70 @@
     <name>DBManager</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"/>
+        <translation>Уучлаарай</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation type="unfinished"/>
+        <translation>Өгөгдлийн сан сонгогдоогүй эсвэл та холбогдоогүй байна.</translation>
     </message>
     <message>
         <source>Select the table you want export to file.</source>
-        <translation type="unfinished"/>
+        <translation>Ажил болгох хадгалах хүснэгтийг сонгоно уу.</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"/>
+        <translation>ӨС-ийн Менежер</translation>
     </message>
     <message>
         <source>Info</source>
-        <translation type="unfinished"/>
+        <translation>Мэдээ</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished"/>
+        <translation>Хүснэгт</translation>
     </message>
     <message>
         <source>Preview</source>
-        <translation type="unfinished"/>
+        <translation>Урьдчилан харах</translation>
     </message>
     <message>
         <source>&amp;Database</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Өгөгдлийн сан</translation>
     </message>
     <message>
         <source>&amp;Schema</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Бүдүүвч</translation>
     </message>
     <message>
         <source>&amp;Table</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Хүснэгт</translation>
     </message>
     <message>
         <source>&amp;Refresh</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Сэргээх</translation>
     </message>
     <message>
         <source>&amp;SQL window</source>
-        <translation type="unfinished"/>
+        <translation>&amp;SQL цонх</translation>
     </message>
     <message>
         <source>&amp;Exit</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Гарах</translation>
     </message>
     <message>
         <source>&amp;Import layer/file</source>
-        <translation type="unfinished"/>
+        <translation>Давхарга/ажил &amp;оруулах</translation>
     </message>
     <message>
         <source>&amp;Export to file</source>
-        <translation type="unfinished"/>
+        <translation>Ажил руу &amp;гаргах</translation>
     </message>
 </context>
 <context>
     <name>DBManagerPlugin</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"/>
+        <translation>Уучлаарай</translation>
     </message>
     <message>
         <source>Unable to find a valid unique field</source>
@@ -182,15 +182,15 @@
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished"/>
+        <translation>Хуулах</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"/>
+        <translation>ӨС-ийн Менежер</translation>
     </message>
     <message>
         <source>Server version: </source>
-        <translation type="unfinished"/>
+        <translation>Серверийн хувилбар:</translation>
     </message>
     <message>
         <source>Host:</source>
@@ -198,11 +198,11 @@
     </message>
     <message>
         <source>User:</source>
-        <translation type="unfinished"/>
+        <translation>Хэрэглэгч:</translation>
     </message>
     <message>
         <source>Library:</source>
-        <translation type="unfinished"/>
+        <translation>Номын сан:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; geometry_columns table doesn't exist!
@@ -211,23 +211,23 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>create new schemas</source>
-        <translation type="unfinished"/>
+        <translation>шинэ бүдүүвч үүсгэх</translation>
     </message>
     <message>
         <source>create temporary tables</source>
-        <translation type="unfinished"/>
+        <translation>түр зуурын хүснэгт үүсгэх</translation>
     </message>
     <message>
         <source>Not connected</source>
-        <translation type="unfinished"/>
+        <translation>Холбогдоогүй байна</translation>
     </message>
     <message>
         <source>Connection details</source>
-        <translation type="unfinished"/>
+        <translation>Холболтын дэлгэрэнгүй</translation>
     </message>
     <message>
         <source>General info</source>
-        <translation type="unfinished"/>
+        <translation>Ерөнхий мэдээ</translation>
     </message>
     <message>
         <source>&lt;warning&gt; %s support not enabled!</source>
@@ -235,23 +235,23 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>&lt;warning&gt; This user has no privileges!</source>
-        <translation type="unfinished"/>
+        <translation>&lt;warning&gt; Энэ хэрэглэгч ямар нэгэн эрхгүй байна!</translation>
     </message>
     <message>
         <source>User has privileges:</source>
-        <translation type="unfinished"/>
+        <translation>Хэрэглэгчийн эрхүүд:</translation>
     </message>
     <message>
         <source>Privileges</source>
-        <translation type="unfinished"/>
+        <translation>Эрхүүд</translation>
     </message>
     <message>
         <source>Owner:</source>
-        <translation type="unfinished"/>
+        <translation>Эзэмшигч:</translation>
     </message>
     <message>
         <source>Comment:</source>
-        <translation type="unfinished"/>
+        <translation>Тайлбар:</translation>
     </message>
     <message>
         <source>create new objects</source>
@@ -275,19 +275,19 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished"/>
+        <translation>Харагдалт</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished"/>
+        <translation>Хүснэгт</translation>
     </message>
     <message>
         <source>Rows:</source>
-        <translation type="unfinished"/>
+        <translation>Мөр: </translation>
     </message>
     <message>
         <source>Unknown (&lt;a href=&quot;action:rows/count&quot;&gt;find out&lt;/a&gt;)</source>
-        <translation type="unfinished"/>
+        <translation>Үлмэдэгдэх (&lt;a href=&quot;action:rows/count&quot;&gt;олдсон&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Name</source>
@@ -295,7 +295,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>Төрөл</translation>
     </message>
     <message>
         <source>Null</source>
@@ -303,23 +303,23 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"/>
+        <translation>Өгөгдмөл</translation>
     </message>
     <message>
         <source>Column(s)</source>
-        <translation type="unfinished"/>
+        <translation>Багана(ууд)</translation>
     </message>
     <message>
         <source>Function</source>
-        <translation type="unfinished"/>
+        <translation>Функц</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This is not a spatial table.</source>
-        <translation type="unfinished"/>
+        <translation>&lt;warning&gt; Орон зайн хүснэгт биш байна.</translation>
     </message>
     <message>
         <source>Fields</source>
-        <translation type="unfinished"/>
+        <translation>Талбар</translation>
     </message>
     <message>
         <source>Constraints</source>
@@ -327,7 +327,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Indexes</source>
-        <translation type="unfinished"/>
+        <translation>Индексүүд</translation>
     </message>
     <message>
         <source>Triggers</source>
@@ -339,23 +339,23 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Column:</source>
-        <translation type="unfinished"/>
+        <translation>Багана:</translation>
     </message>
     <message>
         <source>Geometry:</source>
-        <translation type="unfinished"/>
+        <translation>Геометр:</translation>
     </message>
     <message>
         <source>Dimension:</source>
-        <translation type="unfinished"/>
+        <translation>Хэмжээс:</translation>
     </message>
     <message>
         <source>Undefined</source>
-        <translation type="unfinished"/>
+        <translation>Тодорхойлогдоогүй</translation>
     </message>
     <message>
         <source>Spatial ref:</source>
-        <translation type="unfinished"/>
+        <translation>Оронзайн тогт:</translation>
     </message>
     <message>
         <source>Estimated extent:</source>
@@ -363,7 +363,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>(unknown) (&lt;a href=&quot;action:extent/get&quot;&gt;find out&lt;/a&gt;)</source>
-        <translation type="unfinished"/>
+        <translation>(үл мэдэгдэх) (&lt;a href=&quot;action:extent/get&quot;&gt;олдсон&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Extent:</source>
@@ -379,7 +379,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Pages:</source>
-        <translation type="unfinished"/>
+        <translation>Хуудас:</translation>
     </message>
     <message>
         <source>Rows (estimation):</source>
@@ -387,19 +387,19 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Privileges:</source>
-        <translation type="unfinished"/>
+        <translation>Эрхүүд:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have usage privileges for this schema!</source>
-        <translation type="unfinished"/>
+        <translation>&lt;warning&gt; Хэрэглэгч нь энэ бүдүүвчид хандах эрхгүй байна!</translation>
     </message>
     <message>
         <source>Rows (counted):</source>
-        <translation type="unfinished"/>
+        <translation>Мөрүүд (тоолсон):</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has read-only privileges.</source>
-        <translation type="unfinished"/>
+        <translation>&lt;warning&gt; Энэ хэрэглэгч зөвхөн-унших эрхтэй байна.</translation>
     </message>
     <message>
         <source>&lt;warning&gt; There&apos;s a significant difference between estimated and real row count. Consider running &lt;a href=&quot;action:vacuumanalyze/run&quot;&gt;VACUUM ANALYZE&lt;/a&gt;.</source>
@@ -425,19 +425,19 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished"/>
+        <translation>Урт</translation>
     </message>
     <message>
         <source>Enabled</source>
-        <translation type="unfinished"/>
+        <translation>Идэвхжсэн</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished"/>
+        <translation>Тийм</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished"/>
+        <translation>Үгүй</translation>
     </message>
     <message>
         <source>&lt;a href=&quot;action:triggers/enable&quot;&gt;Enable all triggers&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Disable all triggers&lt;/a&gt;</source>
@@ -445,11 +445,11 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Definition</source>
-        <translation type="unfinished"/>
+        <translation>Тодорхойлолт</translation>
     </message>
     <message>
         <source>Rules</source>
-        <translation type="unfinished"/>
+        <translation>Дүрмүүд</translation>
     </message>
     <message>
         <source>&amp;Versioning</source>
@@ -457,7 +457,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>&amp;Table</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Хүснэгт</translation>
     </message>
     <message>
         <source>&quot;{0}&quot; not found</source>
@@ -485,19 +485,19 @@ Query:
     </message>
     <message>
         <source>&amp;Re-connect</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Дахин-холбогдох</translation>
     </message>
     <message>
         <source>&amp;Database</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Өгөгдлийн сан</translation>
     </message>
     <message>
         <source>&amp;Create schema</source>
-        <translation type="unfinished"/>
+        <translation>Бүдүүвч &amp;Үүсгэх</translation>
     </message>
     <message>
         <source>&amp;Schema</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Бүдүүвч</translation>
     </message>
     <message>
         <source>&amp;Delete (empty) schema</source>
@@ -537,7 +537,7 @@ Query:
     </message>
     <message>
         <source>New schema</source>
-        <translation type="unfinished"/>
+        <translation>Шинэ бүдүүвч</translation>
     </message>
     <message>
         <source>Enter new schema name</source>
@@ -549,7 +549,7 @@ Query:
     </message>
     <message>
         <source>hey!</source>
-        <translation type="unfinished"/>
+        <translation>хүүе!</translation>
     </message>
     <message>
         <source>Really delete schema %s?</source>
@@ -605,7 +605,7 @@ Query:
     </message>
     <message>
         <source>Check</source>
-        <translation type="unfinished"/>
+        <translation>Шалгах</translation>
     </message>
     <message>
         <source>Primary key</source>
@@ -625,14 +625,14 @@ Query:
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"/>
+        <translation>Үлмэдэгдэх</translation>
     </message>
 </context>
 <context>
     <name>DBModel</name>
     <message>
         <source>Databases</source>
-        <translation type="unfinished"/>
+        <translation>Өгөгдлийн сан</translation>
     </message>
     <message>
         <source>Invalid layer</source>
@@ -647,11 +647,11 @@ Query:
     <name>DBTree</name>
     <message>
         <source>Rename</source>
-        <translation type="unfinished"/>
+        <translation>Нэр өөрчлөх</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished"/>
+        <translation>Устгах</translation>
     </message>
     <message>
         <source>Add to canvas</source>
@@ -49735,7 +49735,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="615"/>
         <source>Creation of spatial index successful</source>
-        <translation type="unfinished"/>
+        <translation>Оронзайн индекс амжилттай үүслээ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="620"/>
@@ -49771,7 +49771,7 @@ Error was:%2</source>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="709"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="747"/>
         <source>Default Style</source>
-        <translation type="unfinished"/>
+        <translation>Өгөгдмөл Загвар</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="681"/>
@@ -49969,7 +49969,7 @@ Error was:%2</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="137"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="140"/>
         <source>Fields</source>
-        <translation type="unfinished"/>
+        <translation>Талбар</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="89"/>
@@ -49992,7 +49992,7 @@ Error was:%2</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="161"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="164"/>
         <source>Display</source>
-        <translation type="unfinished"/>
+        <translation>Дэлгэц</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="149"/>
@@ -50108,17 +50108,17 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="972"/>
         <source>Insert field</source>
-        <translation type="unfinished"/>
+        <translation>Талбар оруулах</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="990"/>
         <source>HTML</source>
-        <translation type="unfinished"/>
+        <translation>HTML</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1014"/>
         <source>Field</source>
-        <translation type="unfinished"/>
+        <translation>Талбар</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="289"/>
@@ -50140,12 +50140,12 @@ Error was:%2</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1259"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1354"/>
         <source>Title</source>
-        <translation type="unfinished"/>
+        <translation>Гарчиг</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1269"/>
         <source>Abstract</source>
-        <translation type="unfinished"/>
+        <translation>Хураангуй</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="173"/>
@@ -50296,7 +50296,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="273"/>
         <source>Layer</source>
-        <translation type="unfinished"/>
+        <translation>Давхарга</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="141"/>
@@ -50316,12 +50316,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="181"/>
         <source>1:</source>
-        <translation type="unfinished"/>
+        <translation>1:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="174"/>
         <source>Scale</source>
-        <translation type="unfinished"/>
+        <translation>Масштаб</translation>
     </message>
 </context>
 <context>
@@ -50376,12 +50376,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/providers/wcs/qgswcsdataitems.cpp" line="90"/>
         <source>Edit...</source>
-        <translation type="unfinished"/>
+        <translation>Засах...</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsdataitems.cpp" line="94"/>
         <source>Delete</source>
-        <translation type="unfinished"/>
+        <translation>Устгах</translation>
     </message>
 </context>
 <context>
@@ -50389,7 +50389,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/providers/wcs/qgswcsdataitems.cpp" line="251"/>
         <source>New Connection...</source>
-        <translation type="unfinished"/>
+        <translation>Шинэ холболт...</translation>
     </message>
 </context>
 <context>
@@ -50418,17 +50418,17 @@ Error was:%2</source>
     <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="102"/>
         <source>Edit...</source>
-        <translation type="unfinished"/>
+        <translation>Засах...</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="106"/>
         <source>Delete</source>
-        <translation type="unfinished"/>
+        <translation>Устгах</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="116"/>
         <source>Modify WFS connection</source>
-        <translation type="unfinished"/>
+        <translation>WFS холболтыг өөрчлөх</translation>
     </message>
 </context>
 <context>
@@ -50489,12 +50489,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="167"/>
         <source>New Connection...</source>
-        <translation type="unfinished"/>
+        <translation>Шинэ холболт...</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="189"/>
         <source>Create a new WFS connection</source>
-        <translation type="unfinished"/>
+        <translation>Шинэ WFS холболт үүсгэх</translation>
     </message>
 </context>
 <context>
@@ -50517,7 +50517,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="204"/>
         <source>Network Error</source>
-        <translation type="unfinished"/>
+        <translation>Сүлжээний алдаа</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="205"/>
@@ -50532,12 +50532,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="207"/>
         <source>Error</source>
-        <translation type="unfinished"/>
+        <translation>Алдаа</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="267"/>
         <source>No Layers</source>
-        <translation type="unfinished"/>
+        <translation>Давхаргууд байхгүй байна</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="267"/>
@@ -50547,12 +50547,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="276"/>
         <source>Create a new WFS connection</source>
-        <translation type="unfinished"/>
+        <translation>Шинэ WFS холболт үүсгэх</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="288"/>
         <source>Modify WFS connection</source>
-        <translation type="unfinished"/>
+        <translation>WFS холболтыг өөрчлөх</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="299"/>
@@ -50567,12 +50567,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="529"/>
         <source>Load connections</source>
-        <translation type="unfinished"/>
+        <translation>Холболтыг ачааллах</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="530"/>
         <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished"/>
+        <translation>XML ажил (*.xml *XML)</translation>
     </message>
 </context>
 <context>
@@ -50596,7 +50596,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="108"/>
         <source>Server connections</source>
-        <translation type="unfinished"/>
+        <translation>Серверийн Холболт</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="122"/>
@@ -50606,7 +50606,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="129"/>
         <source>&amp;New</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Шинэ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="139"/>
@@ -50626,7 +50626,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="175"/>
         <source>Load</source>
-        <translation type="unfinished"/>
+        <translation>Дуудах</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="182"/>
@@ -50636,7 +50636,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="185"/>
         <source>Save</source>
-        <translation type="unfinished"/>
+        <translation>Хадгалах</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="216"/>
@@ -50651,7 +50651,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="68"/>
         <source>Change ...</source>
-        <translation type="unfinished"/>
+        <translation>Өөрчлөх ...</translation>
     </message>
 </context>
 <context>
@@ -50682,12 +50682,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="210"/>
         <source>Edit...</source>
-        <translation type="unfinished"/>
+        <translation>Засах...</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="214"/>
         <source>Delete</source>
-        <translation type="unfinished"/>
+        <translation>Устгах</translation>
     </message>
 </context>
 <context>
@@ -50695,7 +50695,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="395"/>
         <source>New Connection...</source>
-        <translation type="unfinished"/>
+        <translation>Шинэ холболт...</translation>
     </message>
 </context>
 <context>
@@ -50842,7 +50842,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1206"/>
         <source>network error: %1</source>
-        <translation type="unfinished"/>
+        <translation>сүлжээний алдаа: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1229"/>
@@ -50983,7 +50983,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="259"/>
         <source>10</source>
-        <translation type="unfinished"/>
+        <translation>10</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="270"/>
@@ -50998,7 +50998,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="279"/>
         <source>Up</source>
-        <translation type="unfinished"/>
+        <translation>Дээшээ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="286"/>
@@ -51008,7 +51008,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="289"/>
         <source>Down</source>
-        <translation type="unfinished"/>
+        <translation>Доошоо</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="313"/>
@@ -51045,7 +51045,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="388"/>
         <source>Server Search</source>
-        <translation type="unfinished"/>
+        <translation>Сервер Хайх</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="397"/>

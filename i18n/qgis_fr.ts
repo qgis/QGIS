@@ -5327,7 +5327,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="29"/>
         <source>Input point layer</source>
-        <translation>Couche de points de saisie</translation>
+        <translation>Couche de points en entrée</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="39"/>
@@ -5399,7 +5399,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="261"/>
         <source>Decay ratio</source>
-        <translation>Ratio de corruption</translation>
+        <translation>Taux de décroissance</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="269"/>
@@ -56851,7 +56851,7 @@ Dévelopé par Paolo L. Scala, Barbara Rita Barricelli, Marco PadulaCNR, Milan U
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="116"/>
         <source>eVis Event Browser</source>
-        <translation>Navigateur eVis d&apos;évenement</translation>
+        <translation>Navigateur d’évènements eVis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="120"/>
@@ -56861,12 +56861,12 @@ Dévelopé par Paolo L. Scala, Barbara Rita Barricelli, Marco PadulaCNR, Milan U
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="121"/>
         <source>Open an Event Browers and display the selected feature</source>
-        <translation>Ouvrir le navigateur d&apos;évenement et afficher l&apos;entité sélectionné</translation>
+        <translation>Ouvrir le navigateur d’évènements et afficher l&apos;entité sélectionnée</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="122"/>
         <source>Open an Event Browser to explore the current layer&apos;s features</source>
-        <translation>Ouvrir le navigateur d&apos;évenement etparcourir les entités de la couche</translation>
+        <translation>Ouvrir le navigateur d’évènements et parcourir les entités de la couche</translation>
     </message>
 </context>
 <context>
@@ -57150,7 +57150,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="140"/>
         <source>Generic Event Browser</source>
-        <translation>Navigateur d&apos;évenements génériques</translation>
+        <translation>Navigateur d’évènements génériques</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="164"/>
@@ -57201,7 +57201,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="316"/>
         <source>Event Browser - Displaying records 01 of %1</source>
-        <translation>Navigateur d&apos;évenement - Affichage des enregistrements 01 sur %1</translation>
+        <translation>Navigateur d’évènements - Affichage des enregistrements 01 sur %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="803"/>
@@ -57212,7 +57212,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1016"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1038"/>
         <source>Event Browser - Displaying records %1 of %2</source>
-        <translation>Navigateur d&apos;évenement - Affichage des enregistrements %1 sur %2</translation>
+        <translation>Navigateur d’évènements - Affichage des enregistrements %1 sur %2</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1111"/>
@@ -57230,7 +57230,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="34"/>
         <source>Display</source>
-        <translation>Affiché</translation>
+        <translation>Affichage</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="63"/>
@@ -57495,7 +57495,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="855"/>
         <source>File extension and external application in which to load a document of that type</source>
-        <translation>Extension de fichier et application externe utilisé pour charger un document de ce type</translation>
+        <translation>Extension de fichier et application externe utilisées pour charger un document de ce type</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="880"/>

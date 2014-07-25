@@ -23,15 +23,15 @@
     </message>
     <message>
         <source>Setting</source>
-        <translation type="unfinished"/>
+        <translation>إعدادات</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished"/>
+        <translation>قيمة</translation>
     </message>
     <message>
         <source>Providers</source>
-        <translation type="unfinished"/>
+        <translation>موفري</translation>
     </message>
     <message>
         <source>Wrong value</source>
@@ -48,7 +48,7 @@
     <name>ConnectionItem</name>
     <message>
         <source>Unable to connect</source>
-        <translation type="unfinished"/>
+        <translation>تعذر الاتصال</translation>
     </message>
 </context>
 <context>
@@ -111,98 +111,98 @@
     <name>DBManager</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"/>
+        <translation>آسف </translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation type="unfinished"/>
+        <translation>لا توجد قاعدة بيانات محددة أو لست متصلا بها.</translation>
     </message>
     <message>
         <source>Select the table you want export to file.</source>
-        <translation type="unfinished"/>
+        <translation>حدد الجدول الذي تريد تصدير إلى ملف.</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"/>
+        <translation>إدارة قاعدة البيانات</translation>
     </message>
     <message>
         <source>Info</source>
-        <translation type="unfinished"/>
+        <translation>معلومات</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished"/>
+        <translation>جدول</translation>
     </message>
     <message>
         <source>Preview</source>
-        <translation type="unfinished"/>
+        <translation>معاينة</translation>
     </message>
     <message>
         <source>&amp;Database</source>
-        <translation type="unfinished"/>
+        <translation>&amp;قاعدة بيانات</translation>
     </message>
     <message>
         <source>&amp;Schema</source>
-        <translation type="unfinished"/>
+        <translation>المخطط</translation>
     </message>
     <message>
         <source>&amp;Table</source>
-        <translation type="unfinished"/>
+        <translation>&amp;جدول</translation>
     </message>
     <message>
         <source>&amp;Refresh</source>
-        <translation type="unfinished"/>
+        <translation>&amp;أنعشْ</translation>
     </message>
     <message>
         <source>&amp;SQL window</source>
-        <translation type="unfinished"/>
+        <translation>&amp;نافذة SQL</translation>
     </message>
     <message>
         <source>&amp;Exit</source>
-        <translation type="unfinished"/>
+        <translation>&amp;خروج</translation>
     </message>
     <message>
         <source>&amp;Import layer/file</source>
-        <translation type="unfinished"/>
+        <translation>استيراد طبقة / ملف</translation>
     </message>
     <message>
         <source>&amp;Export to file</source>
-        <translation type="unfinished"/>
+        <translation>&amp;تصدير إلى ملف</translation>
     </message>
 </context>
 <context>
     <name>DBManagerPlugin</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"/>
+        <translation>آسف </translation>
     </message>
     <message>
         <source>Unable to find a valid unique field</source>
-        <translation type="unfinished"/>
+        <translation>غير قادر على العثور على حقل فريد صالح</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished"/>
+        <translation>نسخ</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"/>
+        <translation>إدارة قاعدة البيانات</translation>
     </message>
     <message>
         <source>Server version: </source>
-        <translation type="unfinished"/>
+        <translation>إصدار الخادم:</translation>
     </message>
     <message>
         <source>Host:</source>
-        <translation type="unfinished"/>
+        <translation>المضيف</translation>
     </message>
     <message>
         <source>User:</source>
-        <translation type="unfinished"/>
+        <translation>المستخدم:</translation>
     </message>
     <message>
         <source>Library:</source>
-        <translation type="unfinished"/>
+        <translation>مكتبة:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; geometry_columns table doesn't exist!
@@ -211,23 +211,23 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>create new schemas</source>
-        <translation type="unfinished"/>
+        <translation>إنشاء مخططات جديدة</translation>
     </message>
     <message>
         <source>create temporary tables</source>
-        <translation type="unfinished"/>
+        <translation>إنشاء جداول مؤقتة</translation>
     </message>
     <message>
         <source>Not connected</source>
-        <translation type="unfinished"/>
+        <translation>غير متصل</translation>
     </message>
     <message>
         <source>Connection details</source>
-        <translation type="unfinished"/>
+        <translation>تفاصيل الاتصال</translation>
     </message>
     <message>
         <source>General info</source>
-        <translation type="unfinished"/>
+        <translation>معلومات عامة</translation>
     </message>
     <message>
         <source>&lt;warning&gt; %s support not enabled!</source>
@@ -239,19 +239,19 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>User has privileges:</source>
-        <translation type="unfinished"/>
+        <translation>مستخدم لديه امتيازات:</translation>
     </message>
     <message>
         <source>Privileges</source>
-        <translation type="unfinished"/>
+        <translation>امتيازات</translation>
     </message>
     <message>
         <source>Owner:</source>
-        <translation type="unfinished"/>
+        <translation>مالك:</translation>
     </message>
     <message>
         <source>Comment:</source>
-        <translation type="unfinished"/>
+        <translation>التعليق:</translation>
     </message>
     <message>
         <source>create new objects</source>
@@ -263,7 +263,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Schema details</source>
-        <translation type="unfinished"/>
+        <translation>تفاصيل المخطط</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has no privileges to access this schema!</source>
@@ -271,19 +271,19 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Relation type:</source>
-        <translation type="unfinished"/>
+        <translation>نوع العلاقة:</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished"/>
+        <translation>عرض</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished"/>
+        <translation>جدول</translation>
     </message>
     <message>
         <source>Rows:</source>
-        <translation type="unfinished"/>
+        <translation>الصفوف</translation>
     </message>
     <message>
         <source>Unknown (&lt;a href=&quot;action:rows/count&quot;&gt;find out&lt;/a&gt;)</source>
@@ -291,75 +291,75 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"/>
+        <translation>اﻷسم</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>نوع</translation>
     </message>
     <message>
         <source>Null</source>
-        <translation type="unfinished"/>
+        <translation>Null</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"/>
+        <translation>افتراضي</translation>
     </message>
     <message>
         <source>Column(s)</source>
-        <translation type="unfinished"/>
+        <translation>العمود (الأعمدة)</translation>
     </message>
     <message>
         <source>Function</source>
-        <translation type="unfinished"/>
+        <translation>وظيفة</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This is not a spatial table.</source>
-        <translation type="unfinished"/>
+        <translation>هذا ليس جدول مكانية.&lt;warning&gt;</translation>
     </message>
     <message>
         <source>Fields</source>
-        <translation type="unfinished"/>
+        <translation>الحقول</translation>
     </message>
     <message>
         <source>Constraints</source>
-        <translation type="unfinished"/>
+        <translation>القيود</translation>
     </message>
     <message>
         <source>Indexes</source>
-        <translation type="unfinished"/>
+        <translation>المؤشرات</translation>
     </message>
     <message>
         <source>Triggers</source>
-        <translation type="unfinished"/>
+        <translation>أحداث</translation>
     </message>
     <message>
         <source>View definition</source>
-        <translation type="unfinished"/>
+        <translation>تعريف طريقة العرض</translation>
     </message>
     <message>
         <source>Column:</source>
-        <translation type="unfinished"/>
+        <translation>عمود:</translation>
     </message>
     <message>
         <source>Geometry:</source>
-        <translation type="unfinished"/>
+        <translation>هندسة:</translation>
     </message>
     <message>
         <source>Dimension:</source>
-        <translation type="unfinished"/>
+        <translation>الأبعاد:</translation>
     </message>
     <message>
         <source>Undefined</source>
-        <translation type="unfinished"/>
+        <translation>غير مُعرّف</translation>
     </message>
     <message>
         <source>Spatial ref:</source>
-        <translation type="unfinished"/>
+        <translation>المرجع المكاني:</translation>
     </message>
     <message>
         <source>Estimated extent:</source>
-        <translation type="unfinished"/>
+        <translation>مدى المقدرة:</translation>
     </message>
     <message>
         <source>(unknown) (&lt;a href=&quot;action:extent/get&quot;&gt;find out&lt;/a&gt;)</source>
@@ -367,7 +367,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Extent:</source>
-        <translation type="unfinished"/>
+        <translation>الامتداد </translation>
     </message>
     <message>
         <source>&lt;warning&gt; There isn&apos;t entry in geometry_columns!</source>
@@ -379,15 +379,15 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Pages:</source>
-        <translation type="unfinished"/>
+        <translation>الصفحات</translation>
     </message>
     <message>
         <source>Rows (estimation):</source>
-        <translation type="unfinished"/>
+        <translation>الصفوف (تقدير):</translation>
     </message>
     <message>
         <source>Privileges:</source>
-        <translation type="unfinished"/>
+        <translation>امتيازات:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have usage privileges for this schema!</source>
@@ -395,7 +395,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Rows (counted):</source>
-        <translation type="unfinished"/>
+        <translation>الصفوف (عد):</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has read-only privileges.</source>
@@ -411,7 +411,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Scripts:</source>
-        <translation type="unfinished"/>
+        <translation>نص برمجي:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; Version of installed scripts doesn't match version of released scripts!
@@ -425,19 +425,19 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished"/>
+        <translation>طول</translation>
     </message>
     <message>
         <source>Enabled</source>
-        <translation type="unfinished"/>
+        <translation>ممكن</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished"/>
+        <translation>نعم</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished"/>
+        <translation>لا</translation>
     </message>
     <message>
         <source>&lt;a href=&quot;action:triggers/enable&quot;&gt;Enable all triggers&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Disable all triggers&lt;/a&gt;</source>
@@ -445,115 +445,119 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Definition</source>
-        <translation type="unfinished"/>
+        <translation>تعريف</translation>
     </message>
     <message>
         <source>Rules</source>
-        <translation type="unfinished"/>
+        <translation>قواعد</translation>
     </message>
     <message>
         <source>&amp;Versioning</source>
-        <translation type="unfinished"/>
+        <translation>&amp;تعيين الإصدار </translation>
     </message>
     <message>
         <source>&amp;Table</source>
-        <translation type="unfinished"/>
+        <translation>&amp;جدول</translation>
     </message>
     <message>
         <source>&quot;{0}&quot; not found</source>
-        <translation type="unfinished"/>
+        <translation>&quot;{0}&quot; لم يتم العثور</translation>
     </message>
     <message>
         <source>Filename:</source>
-        <translation type="unfinished"/>
+        <translation>اسم الملف:</translation>
     </message>
     <message>
         <source>SQLite version:</source>
-        <translation type="unfinished"/>
+        <translation>نسخة SQLite</translation>
     </message>
     <message>
         <source>Error:
 %s</source>
-        <translation type="unfinished"/>
+        <translation>خطأ:
+%s</translation>
     </message>
     <message>
         <source>
 
 Query:
 %s</source>
-        <translation type="unfinished"/>
+        <translation>
+
+تساؤل:
+%s</translation>
     </message>
     <message>
         <source>&amp;Re-connect</source>
-        <translation type="unfinished"/>
+        <translation>&amp;إعادة الاتصال</translation>
     </message>
     <message>
         <source>&amp;Database</source>
-        <translation type="unfinished"/>
+        <translation>&amp;قاعدة بيانات</translation>
     </message>
     <message>
         <source>&amp;Create schema</source>
-        <translation type="unfinished"/>
+        <translation>&amp;إنشاء مخططات</translation>
     </message>
     <message>
         <source>&amp;Schema</source>
-        <translation type="unfinished"/>
+        <translation>&amp;المخطط</translation>
     </message>
     <message>
         <source>&amp;Delete (empty) schema</source>
-        <translation type="unfinished"/>
+        <translation>&amp;حذف المخطط  (فارغة)</translation>
     </message>
     <message>
         <source>Delete selected item</source>
-        <translation type="unfinished"/>
+        <translation>حذف العنصر المختار</translation>
     </message>
     <message>
         <source>&amp;Create table</source>
-        <translation type="unfinished"/>
+        <translation>&amp;بناء جدول</translation>
     </message>
     <message>
         <source>&amp;Edit table</source>
-        <translation type="unfinished"/>
+        <translation>&amp;تحرير الجدول</translation>
     </message>
     <message>
         <source>&amp;Delete table/view</source>
-        <translation type="unfinished"/>
+        <translation>&amp;حذف الجدول / عرض</translation>
     </message>
     <message>
         <source>&amp;Empty table</source>
-        <translation type="unfinished"/>
+        <translation>&amp;جدول فارغ</translation>
     </message>
     <message>
         <source>&amp;Move to schema</source>
-        <translation type="unfinished"/>
+        <translation>&amp;الانتقال إلى المخطط</translation>
     </message>
     <message>
         <source>Cannot delete the selected item.</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن حذف العنصر المحدد.</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation type="unfinished"/>
+        <translation>لا توجد قاعدة بيانات محددة أو لست متصلا بها.</translation>
     </message>
     <message>
         <source>New schema</source>
-        <translation type="unfinished"/>
+        <translation>مخطط جديد</translation>
     </message>
     <message>
         <source>Enter new schema name</source>
-        <translation type="unfinished"/>
+        <translation>إدخال اسم  مخطط جديد:</translation>
     </message>
     <message>
         <source>Select an empty SCHEMA for deletion.</source>
-        <translation type="unfinished"/>
+        <translation>حدد مخطط فارغة للحذف.</translation>
     </message>
     <message>
         <source>hey!</source>
-        <translation type="unfinished"/>
+        <translation>اهلا!</translation>
     </message>
     <message>
         <source>Really delete schema %s?</source>
-        <translation type="unfinished"/>
+        <translation>حقا حذف المخطط ٪s؟</translation>
     </message>
     <message>
         <source>Select a TABLE for editation.</source>
@@ -561,23 +565,23 @@ Query:
     </message>
     <message>
         <source>Select a TABLE/VIEW for deletion.</source>
-        <translation type="unfinished"/>
+        <translation>حدد الجدول / العرض للحذف.</translation>
     </message>
     <message>
         <source>Really delete table/view %s?</source>
-        <translation type="unfinished"/>
+        <translation>حقا حذف الجدول / العرض ٪s؟</translation>
     </message>
     <message>
         <source>Select a TABLE to empty it.</source>
-        <translation type="unfinished"/>
+        <translation>حدد جدولا لتفريغه.</translation>
     </message>
     <message>
         <source>Really delete all items from table %s?</source>
-        <translation type="unfinished"/>
+        <translation>حقا حذف كافة العناصر من الجدول ٪s؟</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW.</source>
-        <translation type="unfinished"/>
+        <translation>حدد الجدول / العرض.</translation>
     </message>
     <message>
         <source>Do you want to %s all triggers?</source>
@@ -601,65 +605,65 @@ Query:
     </message>
     <message>
         <source>Spatial Index</source>
-        <translation type="unfinished"/>
+        <translation>مؤشر مكانى</translation>
     </message>
     <message>
         <source>Check</source>
-        <translation type="unfinished"/>
+        <translation>اختيار</translation>
     </message>
     <message>
         <source>Primary key</source>
-        <translation type="unfinished"/>
+        <translation>المفتاح الرئيسى</translation>
     </message>
     <message>
         <source>Foreign key</source>
-        <translation type="unfinished"/>
+        <translation>مفتاح خارجي</translation>
     </message>
     <message>
         <source>Unique</source>
-        <translation type="unfinished"/>
+        <translation>فريد</translation>
     </message>
     <message>
         <source>Exclusion</source>
-        <translation type="unfinished"/>
+        <translation>استبعاد</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"/>
+        <translation>مجهول</translation>
     </message>
 </context>
 <context>
     <name>DBModel</name>
     <message>
         <source>Databases</source>
-        <translation type="unfinished"/>
+        <translation>قواعد بيانات</translation>
     </message>
     <message>
         <source>Invalid layer</source>
-        <translation type="unfinished"/>
+        <translation>الطبقة الغير صحيحة</translation>
     </message>
     <message>
         <source>Unable to load the layer %s</source>
-        <translation type="unfinished"/>
+        <translation>غير قادر على تحميل الطبقة %s</translation>
     </message>
 </context>
 <context>
     <name>DBTree</name>
     <message>
         <source>Rename</source>
-        <translation type="unfinished"/>
+        <translation>إعادة تسمية</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished"/>
+        <translation>إلغاء</translation>
     </message>
     <message>
         <source>Add to canvas</source>
-        <translation type="unfinished"/>
+        <translation>إضافة إلى اللوحة</translation>
     </message>
     <message>
         <source>Re-connect</source>
-        <translation type="unfinished"/>
+        <translation>إعادة الاتصال</translation>
     </message>
 </context>
 <context>
@@ -25072,67 +25076,67 @@ gray = no data
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="904"/>
         <source>save layer after every feature added</source>
-        <translation type="unfinished"/>
+        <translation>حفظ طبقة بعد كل ميزة إضافية</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="907"/>
         <source>Automatically save added feature</source>
-        <translation type="unfinished"/>
+        <translation>حفظ تلقائيا الميزة الإضافية</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="926"/>
         <source>save GPS data (NMEA sentences) to a file</source>
-        <translation type="unfinished"/>
+        <translation>حفظ البيانات GPS (الجمل NMEA) إلى ملف</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="929"/>
         <source>Log File</source>
-        <translation type="unfinished"/>
+        <translation>ملف السجل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="978"/>
         <source>browse for log file</source>
-        <translation type="unfinished"/>
+        <translation>تصفح لملف السجل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="991"/>
         <source>Map centering</source>
-        <translation type="unfinished"/>
+        <translation>توسيط الخريطة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="1006"/>
         <source>when leaving</source>
-        <translation type="unfinished"/>
+        <translation>عند المغادرة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="1027"/>
         <source>% of map extent</source>
-        <translation type="unfinished"/>
+        <translation>٪ من امتداد الخريطة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="1048"/>
         <source>never</source>
-        <translation type="unfinished"/>
+        <translation>بتاتاً</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="1055"/>
         <source>always</source>
-        <translation type="unfinished"/>
+        <translation>دائما</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="1068"/>
         <source>Cursor</source>
-        <translation type="unfinished"/>
+        <translation>المؤشر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="1123"/>
         <source>Small</source>
-        <translation type="unfinished"/>
+        <translation>صغير</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="1149"/>
         <source>Large</source>
-        <translation type="unfinished"/>
+        <translation>كبير</translation>
     </message>
 </context>
 <context>
@@ -25140,55 +25144,56 @@ gray = no data
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="94"/>
         <source>&amp;GPS Tools</source>
-        <translation type="unfinished"/>
+        <translation>&amp;أدوات GPS</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="96"/>
         <source>&amp;Create new GPX layer</source>
-        <translation type="unfinished"/>
+        <translation>&amp;إنشاء طبقة GPX جديدة</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="100"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="101"/>
         <source>Creates a new GPX layer and displays it on the map canvas</source>
-        <translation type="unfinished"/>
+        <translation>نشاء طبقة GPX جديدة وعرضها على لوحة الخريطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="107"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="218"/>
         <source>&amp;GPS</source>
-        <translation type="unfinished"/>
+        <translation>&amp;GPS</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="172"/>
         <source>Save new GPX file as...</source>
-        <translation type="unfinished"/>
+        <translation>حفظ الملف GPX الجديدة كما ...</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="174"/>
         <source>GPS eXchange file</source>
-        <translation type="unfinished"/>
+        <translation>GPS تنسيق التبادل</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="185"/>
         <source>Could not create file</source>
-        <translation type="unfinished"/>
+        <translation>تعذر إنشاء الملف</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="186"/>
         <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
-        <translation type="unfinished"/>
+        <translation>غير قادر على إنشاء ملف GPX مع اسم معين. حاول مرة أخرى مع اسم آخر أو في دليل آخر.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="231"/>
         <source>GPX Loader</source>
-        <translation type="unfinished"/>
+        <translation>محمل GPX</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="232"/>
         <source>Unable to read the selected file.
 Please reselect a valid file.</source>
-        <translation type="unfinished"/>
+        <translation>غير قادر على قراءة الملف المحدد.
+يرجى إعادة تحديد ملف صالح.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="276"/>
@@ -25196,7 +25201,7 @@ Please reselect a valid file.</source>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="438"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="528"/>
         <source>Could not start process</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن أن تبدأ العملية</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="277"/>
@@ -25204,13 +25209,13 @@ Please reselect a valid file.</source>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="439"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="529"/>
         <source>Could not start GPSBabel!</source>
-        <translation type="unfinished"/>
+        <translation>تعذر بدء تشغيل GPSBabel!</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="282"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="353"/>
         <source>Importing data...</source>
-        <translation type="unfinished"/>
+        <translation>استيراد البيانات ...</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="282"/>
@@ -25218,81 +25223,89 @@ Please reselect a valid file.</source>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="444"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="534"/>
         <source>Cancel</source>
-        <translation type="unfinished"/>
+        <translation>إالغاء</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="297"/>
         <source>Could not import data from %1!
 
 </source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن استيراد البيانات من٪ 1!
+
+</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="300"/>
         <source>Error importing data</source>
-        <translation type="unfinished"/>
+        <translation>خطأ في استيراد البيانات</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="366"/>
         <source>Could not convert data from %1!
 
 </source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن تحويل البيانات من٪ 1!
+
+</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="369"/>
         <source>Error converting data</source>
-        <translation type="unfinished"/>
+        <translation>خطأ في تحويل البيانات</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="426"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="516"/>
         <source>Not supported</source>
-        <translation type="unfinished"/>
+        <translation>غير معتمد</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="427"/>
         <source>This device does not support downloading of %1.</source>
-        <translation type="unfinished"/>
+        <translation>لا يدعم هذا الجهاز تحميل ٪1.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="444"/>
         <source>Downloading data...</source>
-        <translation type="unfinished"/>
+        <translation>تنزيل البيانات...</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="457"/>
         <source>Could not download data from GPS!
 
 </source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن تحميل البيانات من نظام تحديد المواقع!
+
+</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="459"/>
         <source>Error downloading data</source>
-        <translation type="unfinished"/>
+        <translation>خطأ في تنزيل البيانات</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="517"/>
         <source>This device does not support uploading of %1.</source>
-        <translation type="unfinished"/>
+        <translation>لا يدعم هذا الجهاز تحميل من ٪1.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="534"/>
         <source>Uploading data...</source>
-        <translation type="unfinished"/>
+        <translation>تحميل البيانات ...</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="547"/>
         <source>Error while uploading data to GPS!
 
 </source>
-        <translation type="unfinished"/>
+        <translation>حدث خطأ أثناء تحميل البيانات إلى نظام تحديد المواقع!
+
+</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="549"/>
         <source>Error uploading data</source>
-        <translation type="unfinished"/>
+        <translation>خطأ في تحميل البيانات</translation>
     </message>
 </context>
 <context>
@@ -25301,26 +25314,26 @@ Please reselect a valid file.</source>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="105"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="299"/>
         <source>Waypoints</source>
-        <translation type="unfinished"/>
+        <translation>الاحداثيات</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="106"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="301"/>
         <source>Routes</source>
-        <translation type="unfinished"/>
+        <translation>الطرق</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="107"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="303"/>
         <source>Tracks</source>
-        <translation type="unfinished"/>
+        <translation>المسارات</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="164"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="314"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="421"/>
         <source>Choose a file name to save under</source>
-        <translation type="unfinished"/>
+        <translation>اختيار اسم ملف لحفظ تحت</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="166"/>
@@ -25328,43 +25341,43 @@ Please reselect a valid file.</source>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="316"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="423"/>
         <source>GPS eXchange format</source>
-        <translation type="unfinished"/>
+        <translation>GPS تنسيق التبادل</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="257"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="405"/>
         <source>Select GPX file</source>
-        <translation type="unfinished"/>
+        <translation>حدد الملف GPX</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="275"/>
         <source>Select file and format to import</source>
-        <translation type="unfinished"/>
+        <translation>حدد الملف وتنسيق لاستيراد</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="358"/>
         <source>Waypoints from a route</source>
-        <translation type="unfinished"/>
+        <translation>إحداثيات من الطريق</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="359"/>
         <source>Waypoints from a track</source>
-        <translation type="unfinished"/>
+        <translation>الإحداثيات من المسار</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="360"/>
         <source>Route from waypoints</source>
-        <translation type="unfinished"/>
+        <translation>الطريق من الإحداثيات</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="361"/>
         <source>Track from waypoints</source>
-        <translation type="unfinished"/>
+        <translation>المسار من الإحداثيات</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="407"/>
         <source>GPS eXchange format (*.gpx)</source>
-        <translation type="unfinished"/>
+        <translation>GPS تنسيق التبادل (*.gpx)</translation>
     </message>
 </context>
 <context>
@@ -25372,150 +25385,150 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="14"/>
         <source>GPS Tools</source>
-        <translation type="unfinished"/>
+        <translation>أدوات GPS</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="29"/>
         <source>Load GPX file</source>
-        <translation type="unfinished"/>
+        <translation>تحميل ملف GPX</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="37"/>
         <source>File</source>
-        <translation type="unfinished"/>
+        <translation>ملف</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="50"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="162"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="556"/>
         <source>Browse...</source>
-        <translation type="unfinished"/>
+        <translation>استعرض...</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="61"/>
         <source>Feature types</source>
-        <translation type="unfinished"/>
+        <translation>أنواع ميزة</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="74"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="332"/>
         <source>Waypoints</source>
-        <translation type="unfinished"/>
+        <translation>الاحداثيات</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="87"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="337"/>
         <source>Routes</source>
-        <translation type="unfinished"/>
+        <translation>الطرق</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="100"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="342"/>
         <source>Tracks</source>
-        <translation type="unfinished"/>
+        <translation>المسارات</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="139"/>
         <source>Import other file</source>
-        <translation type="unfinished"/>
+        <translation>استيراد ملف أخرى</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="145"/>
         <source>File to import</source>
-        <translation type="unfinished"/>
+        <translation>ملف للاستيراد</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="169"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="315"/>
         <source>Feature type</source>
-        <translation type="unfinished"/>
+        <translation>نوع الميزة</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="189"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="350"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="596"/>
         <source>Layer name</source>
-        <translation type="unfinished"/>
+        <translation>اسم طبقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="202"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="583"/>
         <source>GPX output file</source>
-        <translation type="unfinished"/>
+        <translation>ملف الإخراج GPX</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="215"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="376"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="635"/>
         <source>Save As...</source>
-        <translation type="unfinished"/>
+        <translation>حفظ بإسم</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="235"/>
         <source>(Note: Selecting correct file type in browser dialog important!)</source>
-        <translation type="unfinished"/>
+        <translation>(ملاحظة: تحديد نوع الملف الصحيح في الحوار متصفح مهم!)</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="243"/>
         <source>Download from GPS</source>
-        <translation type="unfinished"/>
+        <translation>تحميل من GPS</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="249"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="441"/>
         <source>GPS device</source>
-        <translation type="unfinished"/>
+        <translation>جهاز GPS</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="275"/>
         <source>Edit devices...</source>
-        <translation type="unfinished"/>
+        <translation>تحرير الأجهزة ...</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="282"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="480"/>
         <source>Port</source>
-        <translation type="unfinished"/>
+        <translation>منفذ</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="308"/>
         <source>Refresh</source>
-        <translation type="unfinished"/>
+        <translation>أنعشْ</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="363"/>
         <source>Output file</source>
-        <translation type="unfinished"/>
+        <translation>ملف الإخراج</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="397"/>
         <source>Upload to GPS</source>
-        <translation type="unfinished"/>
+        <translation>تحميلها على نظام تحديد المواقع</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="409"/>
         <source>Data layer</source>
-        <translation type="unfinished"/>
+        <translation>بيانات الطبقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="467"/>
         <source>Edit devices</source>
-        <translation type="unfinished"/>
+        <translation>تحرير الأجهزة</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="533"/>
         <source>GPX Conversions</source>
-        <translation type="unfinished"/>
+        <translation>التحويلات GPX</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="539"/>
         <source>GPX input file</source>
-        <translation type="unfinished"/>
+        <translation>إدخال ملف GPX</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="563"/>
         <source>Conversion</source>
-        <translation type="unfinished"/>
+        <translation>تحويل </translation>
     </message>
 </context>
 <context>
@@ -25523,17 +25536,17 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/providers/gpx/qgsgpxprovider.cpp" line="83"/>
         <source>Bad URI - you need to specify the feature type.</source>
-        <translation type="unfinished"/>
+        <translation>URI سيئ - تحتاج إلى تحديد نوع الميزة.</translation>
     </message>
     <message>
         <location filename="../src/providers/gpx/qgsgpxprovider.cpp" line="127"/>
         <source>GPS eXchange file</source>
-        <translation type="unfinished"/>
+        <translation>GPS تنسيق التبادل</translation>
     </message>
     <message>
         <location filename="../src/providers/gpx/qgsgpxprovider.cpp" line="499"/>
         <source>Digitized in QGIS</source>
-        <translation type="unfinished"/>
+        <translation>تَحويل إلى أرقام في QGIS</translation>
     </message>
 </context>
 <context>
@@ -25541,17 +25554,17 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="242"/>
         <source>Dataset Description</source>
-        <translation type="unfinished"/>
+        <translation>وصف البيانات</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="263"/>
         <source>Band %1</source>
-        <translation type="unfinished"/>
+        <translation>شريط 1%</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="297"/>
         <source>X: %1 Y: %2 Bands: %3</source>
-        <translation type="unfinished"/>
+        <translation>X: %1 Y: %2 Bands: %3</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="294"/>
@@ -25586,7 +25599,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2510"/>
         <source>Cannot get GDAL raster band: %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن الحصول على الشريط GDAL للطبقة الشبكية: % 1</translation>
     </message>
 </context>
 <context>
@@ -25638,122 +25651,122 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="28"/>
         <source>A5 (148x210 mm)</source>
-        <translation type="unfinished"/>
+        <translation>A5 (148x210 مم)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="29"/>
         <source>A4 (210x297 mm)</source>
-        <translation type="unfinished"/>
+        <translation>A4 (210x297 مم)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="30"/>
         <source>A3 (297x420 mm)</source>
-        <translation type="unfinished"/>
+        <translation>A3 (297x420 مم)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="31"/>
         <source>A2 (420x594 mm)</source>
-        <translation type="unfinished"/>
+        <translation>A2 (420x594 مم)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="32"/>
         <source>A1 (594x841 mm)</source>
-        <translation type="unfinished"/>
+        <translation>A1 (594x841 مم)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="33"/>
         <source>A0 (841x1189 mm)</source>
-        <translation type="unfinished"/>
+        <translation>A0 (841x1189 مم)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="34"/>
         <source>B5 (176 x 250 mm)</source>
-        <translation type="unfinished"/>
+        <translation>B5 (176 x 250 مم)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="35"/>
         <source>B4 (250 x 353 mm)</source>
-        <translation type="unfinished"/>
+        <translation>B4 (250 x 353 مم)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="36"/>
         <source>B3 (353 x 500 mm)</source>
-        <translation type="unfinished"/>
+        <translation>B3 (353 x 500 مم)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="37"/>
         <source>B2 (500 x 707 mm)</source>
-        <translation type="unfinished"/>
+        <translation>B2 (500 x 707 مم)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="38"/>
         <source>B1 (707 x 1000 mm)</source>
-        <translation type="unfinished"/>
+        <translation>B1 (707 x 1000 مم)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="39"/>
         <source>B0 (1000 x 1414 mm)</source>
-        <translation type="unfinished"/>
+        <translation>B0 (1000 x 1414 مم)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="41"/>
         <source>Legal (8.5x14 inches)</source>
-        <translation type="unfinished"/>
+        <translation>Legal (8.5x14 بوصة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="42"/>
         <source>ANSI A (Letter; 8.5x11 inches)</source>
-        <translation type="unfinished"/>
+        <translation>ANSI A (Letter; 8.5x11  بوصة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="43"/>
         <source>ANSI B (Tabloid; 11x17 inches)</source>
-        <translation type="unfinished"/>
+        <translation>ANSI B (Tabloid; 11x17 بوصة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="44"/>
         <source>ANSI C (17x22 inches)</source>
-        <translation type="unfinished"/>
+        <translation>ANSI C (17x22 بوصة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="45"/>
         <source>ANSI D (22x34 inches)</source>
-        <translation type="unfinished"/>
+        <translation>ANSI D (22x34 بوصة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="46"/>
         <source>ANSI E (34x44 inches)</source>
-        <translation type="unfinished"/>
+        <translation>ANSI E (34x44 بوصة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="47"/>
         <source>Arch A (9x12 inches)</source>
-        <translation type="unfinished"/>
+        <translation>Arch A (9x12 بوصة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="48"/>
         <source>Arch B (12x18 inches)</source>
-        <translation type="unfinished"/>
+        <translation>Arch B (12x18 بوصة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="49"/>
         <source>Arch C (18x24 inches)</source>
-        <translation type="unfinished"/>
+        <translation>Arch C (18x24 بوصة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="50"/>
         <source>Arch D (24x36 inches)</source>
-        <translation type="unfinished"/>
+        <translation>Arch D (24x36 بوصة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="51"/>
         <source>Arch E (36x48 inches)</source>
-        <translation type="unfinished"/>
+        <translation>Arch E (36x48 بوصة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialog.cpp" line="52"/>
         <source>Arch E1 (30x42 inches)</source>
-        <translation type="unfinished"/>
+        <translation>Arch E1 (30x42 بوصة)</translation>
     </message>
 </context>
 <context>
@@ -25761,58 +25774,58 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="14"/>
         <source>Configure Georeferencer</source>
-        <translation type="unfinished"/>
+        <translation>تكوين Georeferencer</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="20"/>
         <source>Point tip</source>
-        <translation type="unfinished"/>
+        <translation>طرف نقطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="26"/>
         <source>Show IDs</source>
-        <translation type="unfinished"/>
+        <translation>عرض المعرفات</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="33"/>
         <source>Show coords</source>
-        <translation type="unfinished"/>
+        <translation>عرض الاحداثيات</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="43"/>
         <source>Residual units</source>
-        <translation type="unfinished"/>
+        <translation>الوحدات المتبقية</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="49"/>
         <source>Pixels</source>
-        <translation type="unfinished"/>
+        <translation>البكسلات</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="56"/>
         <source>Use map units if possible</source>
-        <translation type="unfinished"/>
+        <translation>استخدام وحدات الخريطة إذا كان ذلك ممكنا</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="66"/>
         <source>PDF report</source>
-        <translation type="unfinished"/>
+        <translation>تقرير PDF</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="74"/>
         <source>Left margin</source>
-        <translation type="unfinished"/>
+        <translation>الهامش الأيسر</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="84"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="102"/>
         <source> mm</source>
-        <translation type="unfinished"/>
+        <translation>مم</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="95"/>
         <source>Right margin</source>
-        <translation type="unfinished"/>
+        <translation>الهامش الأيمن</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="114"/>
@@ -25822,12 +25835,12 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="131"/>
         <source>PDF map</source>
-        <translation type="unfinished"/>
+        <translation>الخريطة PDF</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="139"/>
         <source>Paper size</source>
-        <translation type="unfinished"/>
+        <translation>حجم الصفحة</translation>
     </message>
 </context>
 <context>
@@ -25835,7 +25848,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefdescriptiondialogbase.ui" line="14"/>
         <source>Description georeferencer</source>
-        <translation type="unfinished"/>
+        <translation>وصف المرجعية الجغرافية</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefdescriptiondialogbase.ui" line="46"/>
@@ -25854,7 +25867,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="113"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="128"/>
         <source>&amp;Georeferencer</source>
-        <translation type="unfinished"/>
+        <translation>&amp;المرجعية الجغرافية</translation>
     </message>
 </context>
 <context>
@@ -25862,44 +25875,44 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="130"/>
         <source>Georeferencer</source>
-        <translation type="unfinished"/>
+        <translation>المرجعية الجغرافية</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="213"/>
         <source>All other files (*)</source>
-        <translation type="unfinished"/>
+        <translation>جميع الملفات الأخرى (*)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="219"/>
         <source>Open raster</source>
-        <translation type="unfinished"/>
+        <translation>فتح الطبقة الشبكية</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="228"/>
         <source>%1 is not a supported raster data source</source>
-        <translation type="unfinished"/>
+        <translation>٪1 ليس مصدر البيانات النقطية المدعومة</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="233"/>
         <source>Unsupported Data Source</source>
-        <translation type="unfinished"/>
+        <translation>مصدر البيانات غير معتمد</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="243"/>
         <source>Raster loaded: %1</source>
-        <translation type="unfinished"/>
+        <translation>تحميل الطبقة الشبكية: ٪1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="244"/>
         <source>Georeferencer - %1</source>
-        <translation type="unfinished"/>
+        <translation>المرجعية الجغرافية - 1%</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="313"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1034"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1734"/>
         <source>Transform: </source>
-        <translation type="unfinished"/>
+        <translation>تحويل:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="367"/>
@@ -25914,126 +25927,126 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1885"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1899"/>
         <source>Info</source>
-        <translation type="unfinished"/>
+        <translation>معلومات</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="367"/>
         <source>GDAL scripting is not supported for %1 transformation</source>
-        <translation type="unfinished"/>
+        <translation>البرمجةGDAL  غير معتمد ل٪ 1 التحول</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="562"/>
         <source>Load GCP points</source>
-        <translation type="unfinished"/>
+        <translation>تحميل نقاط GCP</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="563"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="581"/>
         <source>GCP file</source>
-        <translation type="unfinished"/>
+        <translation>ملف GCP</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="574"/>
         <source>No GCP points to save</source>
-        <translation type="unfinished"/>
+        <translation>لا توجد نقاط GCP للحفظ</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="579"/>
         <source>Save GCP points</source>
-        <translation type="unfinished"/>
+        <translation>حفظ النقاط GCP</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="601"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1857"/>
         <source>Please load raster to be georeferenced</source>
-        <translation type="unfinished"/>
+        <translation>يرجى تحميل الطبقة الشبكية لتصبح ذات مرجعية الجغرافية</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="872"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="994"/>
         <source>Help</source>
-        <translation type="unfinished"/>
+        <translation>مساعدة</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="969"/>
         <source>Panels</source>
-        <translation type="unfinished"/>
+        <translation>الواح</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="974"/>
         <source>Toolbars</source>
-        <translation type="unfinished"/>
+        <translation>مزلاق الادواة</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1035"/>
         <source>Current transform parametrisation</source>
-        <translation type="unfinished"/>
+        <translation>تحويل المعايير والثوابت الحالية</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1040"/>
         <source>Coordinate: </source>
-        <translation type="unfinished"/>
+        <translation>احداثيات:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1041"/>
         <source>Current map coordinate</source>
-        <translation type="unfinished"/>
+        <translation>احداثيات الخريطة الحالية</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1137"/>
         <source>None</source>
-        <translation type="unfinished"/>
+        <translation>لا شيء</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1138"/>
         <source>Coordinate of image(column/line)</source>
-        <translation type="unfinished"/>
+        <translation>احداثيات الصورة (عمود / خط)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1239"/>
         <source>Unable to open GCP points file %1</source>
-        <translation type="unfinished"/>
+        <translation>غير قادر على فتح GCP ملف نقاط ٪1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1253"/>
         <source>Save GCPs</source>
-        <translation type="unfinished"/>
+        <translation>حفظ  GCPs</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1254"/>
         <source>Save GCP points?</source>
-        <translation type="unfinished"/>
+        <translation>حفظ نقاط GCP؟</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1288"/>
         <source>Failed to get linear transform parameters</source>
-        <translation type="unfinished"/>
+        <translation>فشلت في الحصول على تحويل خطي البارامترات</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1298"/>
         <source>World file exists</source>
-        <translation type="unfinished"/>
+        <translation>ملف العالم موجود</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1299"/>
         <source>&lt;p&gt;The selected file already seems to have a world file! Do you want to replace it with the new world file?&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;/p&gt;يبدو أن الملف المحدد بالفعل لديك ملف العالم! هل تريد استبداله بالملف العالم الجديد؟&lt;p&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1335"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1899"/>
         <source>Failed to compute GCP transform: Transform is not solvable</source>
-        <translation type="unfinished"/>
+        <translation>فشل لحساب GCP تحويل: تحويل غير قابلة للحل</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1367"/>
         <source>Error</source>
-        <translation type="unfinished"/>
+        <translation>خطأ</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1368"/>
         <source>Could not write to %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن الكتابة إلى٪ 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1509"/>
@@ -26041,153 +26054,153 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1615"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1673"/>
         <source>map units</source>
-        <translation type="unfinished"/>
+        <translation>وحدات الخريطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1513"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1619"/>
         <source>pixels</source>
-        <translation type="unfinished"/>
+        <translation>البكسلات</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1624"/>
         <source>Transformation parameters</source>
-        <translation type="unfinished"/>
+        <translation> تحويل المعلمات</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1641"/>
         <source>Translation x</source>
-        <translation type="unfinished"/>
+        <translation>ترجمة x</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1641"/>
         <source>Translation y</source>
-        <translation type="unfinished"/>
+        <translation>ترجمة y</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1641"/>
         <source>Scale x</source>
-        <translation type="unfinished"/>
+        <translation>مقياس x</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1641"/>
         <source>Scale y</source>
-        <translation type="unfinished"/>
+        <translation>مقياس y</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1641"/>
         <source>Rotation [degrees]</source>
-        <translation type="unfinished"/>
+        <translation>دوران  [درجة]</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1641"/>
         <source>Mean error [%1]</source>
-        <translation type="unfinished"/>
+        <translation>يعني خطأ [٪ 1]</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1660"/>
         <source>Residuals</source>
-        <translation type="unfinished"/>
+        <translation>المتبقية</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1692"/>
         <source>yes</source>
-        <translation type="unfinished"/>
+        <translation>نعم</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1696"/>
         <source>no</source>
-        <translation type="unfinished"/>
+        <translation>لا</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1741"/>
         <source>Translation (%1, %2)</source>
-        <translation type="unfinished"/>
+        <translation>الترجمة (٪1، ٪2)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1742"/>
         <source>Scale (%1, %2)</source>
-        <translation type="unfinished"/>
+        <translation>مقياس (٪1، ٪2)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1743"/>
         <source>Rotation: %1</source>
-        <translation type="unfinished"/>
+        <translation>دوران: ٪1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1750"/>
         <source>Mean error: %1</source>
-        <translation type="unfinished"/>
+        <translation>يعني خطأ: ٪1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1763"/>
         <source>Copy in clipboard</source>
-        <translation type="unfinished"/>
+        <translation>نسخة في الحافظة</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1769"/>
         <source>%1</source>
-        <translation type="unfinished"/>
+        <translation>%1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1776"/>
         <source>GDAL script</source>
-        <translation type="unfinished"/>
+        <translation>نص برمجي GDAL</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1866"/>
         <source>Please set transformation type</source>
-        <translation type="unfinished"/>
+        <translation>يرجى تحديد نوع التحول</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1876"/>
         <source>Please set output raster name</source>
-        <translation type="unfinished"/>
+        <translation>يرجى تحديد اسم الانتاج الطبقة الشبكية</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1885"/>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation type="unfinished"/>
+        <translation>٪ 1 يتطلب ما لا يقل عن 2٪ GCPs. يرجى تحديد أكثر</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1978"/>
         <source>Linear</source>
-        <translation type="unfinished"/>
+        <translation>خطي</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1980"/>
         <source>Helmert</source>
-        <translation type="unfinished"/>
+        <translation>هيلمرت</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1982"/>
         <source>Polynomial 1</source>
-        <translation type="unfinished"/>
+        <translation>متعدد الحدود 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1984"/>
         <source>Polynomial 2</source>
-        <translation type="unfinished"/>
+        <translation>متعدد الحدود 2</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1986"/>
         <source>Polynomial 3</source>
-        <translation type="unfinished"/>
+        <translation>متعدد الحدود 3</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1988"/>
         <source>Thin plate spline (TPS)</source>
-        <translation type="unfinished"/>
+        <translation> شريحة اللوحة الرقيقة (TPS)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1990"/>
         <source>Projective</source>
-        <translation type="unfinished"/>
+        <translation>اسقاطي</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1992"/>
         <source>Not set</source>
-        <translation type="unfinished"/>
+        <translation>لم تحدد</translation>
     </message>
 </context>
 <context>
@@ -26195,146 +26208,146 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="14"/>
         <source>Georeferencer</source>
-        <translation type="unfinished"/>
+        <translation>المرجعية الجغرافية</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="30"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="80"/>
         <source>File</source>
-        <translation type="unfinished"/>
+        <translation>ملف</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="44"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="126"/>
         <source>View</source>
-        <translation type="unfinished"/>
+        <translation>عرض</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="58"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="106"/>
         <source>Edit</source>
-        <translation type="unfinished"/>
+        <translation>تعديل</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="66"/>
         <source>Settings</source>
-        <translation type="unfinished"/>
+        <translation>إعدادات</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="158"/>
         <source>GCP table</source>
-        <translation type="unfinished"/>
+        <translation>جدول GCP</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="169"/>
         <source>toolBar</source>
-        <translation type="unfinished"/>
+        <translation>شريط الأدوات</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="182"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="185"/>
         <source>Open raster</source>
-        <translation type="unfinished"/>
+        <translation>فتح الطبقة الشبكية</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="188"/>
         <source>Ctrl+O</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="193"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="196"/>
         <source>Zoom In</source>
-        <translation type="unfinished"/>
+        <translation>تكبير</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="199"/>
         <source>Ctrl++</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl++</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="204"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="207"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"/>
+        <translation>تصغير</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="210"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="215"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="218"/>
         <source>Zoom to Layer</source>
-        <translation type="unfinished"/>
+        <translation>تكبير إلى الطبقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="221"/>
         <source>Ctrl+Shift+F</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Shift+F</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="226"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="229"/>
         <source>Pan</source>
-        <translation type="unfinished"/>
+        <translation>عموم</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="234"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="237"/>
         <source>Transformation settings</source>
-        <translation type="unfinished"/>
+        <translation> تحويل الاعدادات</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="242"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="245"/>
         <source>Add point</source>
-        <translation type="unfinished"/>
+        <translation>إضافة نقطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="248"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="253"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="256"/>
         <source>Delete point</source>
-        <translation type="unfinished"/>
+        <translation>حذف نقطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="259"/>
         <source>Ctrl+D</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+D</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="264"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="267"/>
         <source>Quit</source>
-        <translation type="unfinished"/>
+        <translation>إنهاء</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="272"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="275"/>
         <source>Start georeferencing</source>
-        <translation type="unfinished"/>
+        <translation>تشغيل المرجعية الجغرافية</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="278"/>
         <source>Ctrl+G</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+G</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="283"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="286"/>
         <source>Generate GDAL script</source>
-        <translation type="unfinished"/>
+        <translation>أنتاج نص برمجي GDAL</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="289"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="297"/>
@@ -26352,64 +26365,64 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="316"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="319"/>
         <source>Save GCP points as...</source>
-        <translation type="unfinished"/>
+        <translation>حفظ النقاط GCP كما ...</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="322"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="327"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="330"/>
         <source>Load GCP points</source>
-        <translation type="unfinished"/>
+        <translation>تحميل نقاط GCP</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="333"/>
         <source>Ctrl+L</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+L</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="338"/>
         <source>Configure Georeferencer</source>
-        <translation type="unfinished"/>
+        <translation>تكوين المرجعية الجغرافية</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="341"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="346"/>
         <source>Raster properties</source>
-        <translation type="unfinished"/>
+        <translation>خصائص الطبقة الشبكية</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="351"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="354"/>
         <source>Move GCP point</source>
-        <translation type="unfinished"/>
+        <translation>نقل النقاط GCP</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="359"/>
         <source>Zoom Next</source>
-        <translation type="unfinished"/>
+        <translation>تكبير التالى</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="364"/>
         <source>Zoom Last</source>
-        <translation type="unfinished"/>
+        <translation>أخر تضخيم</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="369"/>
         <source>Local histogram stretch</source>
-        <translation type="unfinished"/>
+        <translation>تمديد الرسم البياني المحلي</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="374"/>
         <source>Full histogram stretch</source>
-        <translation type="unfinished"/>
+        <translation>تمديد الرسم البياني الكلي</translation>
     </message>
 </context>
 <context>
@@ -26417,48 +26430,48 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="71"/>
         <source>GDAL files</source>
-        <translation type="unfinished"/>
+        <translation>ملفات Gdal</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="72"/>
         <source>DEM files</source>
-        <translation type="unfinished"/>
+        <translation>ملفات DEM</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="73"/>
         <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="427"/>
         <source>All files</source>
-        <translation type="unfinished"/>
+        <translation>جميع الملفات </translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="75"/>
         <source>Open raster file</source>
-        <translation type="unfinished"/>
+        <translation>فتح الطبقة الشبكية</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="93"/>
         <source>Invalid Path: The file is either unreadable or does not exist</source>
-        <translation type="unfinished"/>
+        <translation>مسار غير صالح: الملف إما غير قابل للقراءة أو غير موجود</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="120"/>
         <source>Invalid URL: </source>
-        <translation type="unfinished"/>
+        <translation>رابط غير صالح</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="190"/>
         <source>Do you want to add the datasource anyway?</source>
-        <translation type="unfinished"/>
+        <translation>هل تريد إضافة مصدر بيانات على أي حال؟</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="424"/>
         <source>Open 3D model file</source>
-        <translation type="unfinished"/>
+        <translation>فتح ملف نموذج 3D</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="426"/>
         <source>Model files</source>
-        <translation type="unfinished"/>
+        <translation>ملفات نموذج</translation>
     </message>
 </context>
 <context>
@@ -26466,44 +26479,44 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="29"/>
         <source>Globe Settings</source>
-        <translation type="unfinished"/>
+        <translation>إعدادات الغلوب</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="125"/>
         <source>Elevation</source>
-        <translation type="unfinished"/>
+        <translation>ارْتفاع</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="322"/>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="358"/>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>نوع</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="375"/>
         <source>Raster</source>
-        <translation type="unfinished"/>
+        <translation>طبقة شبكية</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="380"/>
         <source>TMS</source>
-        <translation type="unfinished"/>
+        <translation>TMS</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="191"/>
         <source>URL/File</source>
-        <translation type="unfinished"/>
+        <translation>رابط / الملف</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="242"/>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="495"/>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="143"/>
         <source>Up</source>
-        <translation type="unfinished"/>
+        <translation>أعلى</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="50"/>
@@ -26553,27 +26566,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="150"/>
         <source>Down</source>
-        <translation type="unfinished"/>
+        <translation>أسفل</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="170"/>
         <source>Add</source>
-        <translation type="unfinished"/>
+        <translation>أضف</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="177"/>
         <source>Remove</source>
-        <translation type="unfinished"/>
+        <translation>حذف</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="333"/>
         <source>Cache</source>
-        <translation type="unfinished"/>
+        <translation>تخزين مؤقت</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="344"/>
         <source>Path</source>
-        <translation type="unfinished"/>
+        <translation>مسار</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="389"/>
@@ -26603,72 +26616,72 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="441"/>
         <source>Model</source>
-        <translation type="unfinished"/>
+        <translation>نموذج</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="447"/>
         <source>Point Layer</source>
-        <translation type="unfinished"/>
+        <translation>طبقة نقطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="457"/>
         <source>3D Model</source>
-        <translation type="unfinished"/>
+        <translation>نموذج 3D</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="513"/>
         <source>Stereo</source>
-        <translation type="unfinished"/>
+        <translation>ستيريو</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="519"/>
         <source>Stereo Mode</source>
-        <translation type="unfinished"/>
+        <translation>وضع الستيريو</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="526"/>
         <source>Screen distance (m)</source>
-        <translation type="unfinished"/>
+        <translation>مسافة الشاشة (م)</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="549"/>
         <source>Screen width (m)</source>
-        <translation type="unfinished"/>
+        <translation>عرض الشاشة (م)</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="569"/>
         <source>Split stereo horizontal separation (px)</source>
-        <translation type="unfinished"/>
+        <translation>فصل الانقسام الأفقي للستيريو  (بكسل)</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="576"/>
         <source>Split stereo vertical separation (px)</source>
-        <translation type="unfinished"/>
+        <translation>فصل الانقسام العمودي للستيريو  (بكسل)</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="583"/>
         <source>Split stereo vertical eye mapping</source>
-        <translation type="unfinished"/>
+        <translation>تقسيم رأسي لرسم الخرائط</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="620"/>
         <source>Screen height (m)</source>
-        <translation type="unfinished"/>
+        <translation>ارتفاع الشاشة (م)</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="673"/>
         <source>Eye separation (m)</source>
-        <translation type="unfinished"/>
+        <translation>فصل العين (م)</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="702"/>
         <source>Reset to defaults</source>
-        <translation type="unfinished"/>
+        <translation>إعادة للتعيين الافتراضي</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="709"/>
         <source>Split stereo horizontal eye mapping</source>
-        <translation type="unfinished"/>
+        <translation>تقسيم أفقي لرسم الخرائط</translation>
     </message>
 </context>
 <context>
@@ -26677,12 +26690,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/core/qgsgml.cpp" line="105"/>
         <source>Loading GML data
 %1</source>
-        <translation type="unfinished"/>
+        <translation>تحميل البيانات GML
+%1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgml.cpp" line="105"/>
         <source>Abort</source>
-        <translation type="unfinished"/>
+        <translation>إجهاض</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgml.cpp" line="126"/>
@@ -26791,17 +26805,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="192"/>
         <source>Symbol</source>
-        <translation type="unfinished"/>
+        <translation>رمز</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="192"/>
         <source>Value</source>
-        <translation type="unfinished"/>
+        <translation>قيمة</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="192"/>
         <source>Label</source>
-        <translation type="unfinished"/>
+        <translation>رمز</translation>
     </message>
 </context>
 <context>
@@ -26809,12 +26823,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="138"/>
         <source>Column</source>
-        <translation type="unfinished"/>
+        <translation>عمود</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="83"/>
         <source>Symbol</source>
-        <translation type="unfinished"/>
+        <translation>رمز</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="99"/>
@@ -26824,42 +26838,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="125"/>
         <source>Classes</source>
-        <translation type="unfinished"/>
+        <translation>الفئات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="31"/>
         <source>Color ramp</source>
-        <translation type="unfinished"/>
+        <translation>تدرج الألوان</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="41"/>
         <source>Mode</source>
-        <translation type="unfinished"/>
+        <translation>النمط</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="55"/>
         <source>Equal Interval</source>
-        <translation type="unfinished"/>
+        <translation>الفاصل المتساوي</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="60"/>
         <source>Quantile (Equal Count)</source>
-        <translation type="unfinished"/>
+        <translation>المساواة (المساواة في عدد)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="65"/>
         <source>Natural Breaks (Jenks)</source>
-        <translation type="unfinished"/>
+        <translation>الفواصل الطبيعية (جنكس)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="70"/>
         <source>Standard Deviation</source>
-        <translation type="unfinished"/>
+        <translation>الانحراف المعياري</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="75"/>
         <source>Pretty Breaks</source>
-        <translation type="unfinished"/>
+        <translation>فواصل جميلة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="150"/>
@@ -26869,49 +26883,49 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="218"/>
         <source>Classify</source>
-        <translation type="unfinished"/>
+        <translation>تصنيف</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="225"/>
         <source>Add class</source>
-        <translation type="unfinished"/>
+        <translation>إضافة فئة </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="232"/>
         <source>Delete</source>
-        <translation type="unfinished"/>
+        <translation>إلغاء</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="239"/>
         <source>Delete all</source>
-        <translation type="unfinished"/>
+        <translation>حذف الكل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="259"/>
         <source>Advanced</source>
-        <translation type="unfinished"/>
+        <translation>متقدم </translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="431"/>
         <source>Symbol levels...</source>
-        <translation type="unfinished"/>
+        <translation>مستويات الرمز...</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="501"/>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="503"/>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="535"/>
         <source>Error</source>
-        <translation type="unfinished"/>
+        <translation>خطأ</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="501"/>
         <source>There are no available color ramps. You can add them in Style Manager.</source>
-        <translation type="unfinished"/>
+        <translation>وهناك لا يوجد سلالم الألوان المتاحة. يمكنك إضافتها في إدارة الأنماط.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="503"/>
         <source>The selected color ramp is not available.</source>
-        <translation type="unfinished"/>
+        <translation>منحدر اللون المحدد غير متوفر.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="525"/>
@@ -26927,7 +26941,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="535"/>
         <source>Renderer creation has failed.</source>
-        <translation type="unfinished"/>
+        <translation>فشل إنشاء العارض.</translation>
     </message>
 </context>
 <context>
@@ -26935,37 +26949,37 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="122"/>
         <source>Column</source>
-        <translation type="unfinished"/>
+        <translation>حقل</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="123"/>
         <source>Value</source>
-        <translation type="unfinished"/>
+        <translation>قيمة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="124"/>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>نوع</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="159"/>
         <source>Layer</source>
-        <translation type="unfinished"/>
+        <translation>طبقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="271"/>
         <source>Warning</source>
-        <translation type="unfinished"/>
+        <translation>تحذير </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="272"/>
         <source>ERROR</source>
-        <translation type="unfinished"/>
+        <translation>خطأ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="276"/>
         <source>OK</source>
-        <translation type="unfinished"/>
+        <translation>أجل</translation>
     </message>
 </context>
 <context>
@@ -26973,47 +26987,47 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="43"/>
         <source>GRASS Attributes</source>
-        <translation type="unfinished"/>
+        <translation>الخواص GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="80"/>
         <source>Tab 1</source>
-        <translation type="unfinished"/>
+        <translation>تبويب 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="112"/>
         <source>result</source>
-        <translation type="unfinished"/>
+        <translation>النتيجة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="182"/>
         <source>Update database record</source>
-        <translation type="unfinished"/>
+        <translation>تحديث سجل قاعدة البيانات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="185"/>
         <source>Update</source>
-        <translation type="unfinished"/>
+        <translation>تحديث </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="210"/>
         <source>Add new category using settings in GRASS Edit toolbox</source>
-        <translation type="unfinished"/>
+        <translation>إضافة فئة جديدة باستخدام الإعدادات في GRASS تحرير الأدوات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="213"/>
         <source>New</source>
-        <translation type="unfinished"/>
+        <translation>جديد</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="238"/>
         <source>Delete selected category</source>
-        <translation type="unfinished"/>
+        <translation>حذف الفئة المختارة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="241"/>
         <source>Delete</source>
-        <translation type="unfinished"/>
+        <translation>حذف</translation>
     </message>
 </context>
 <context>
@@ -27021,49 +27035,49 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="49"/>
         <source>Tools</source>
-        <translation type="unfinished"/>
+        <translation>أدوات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="53"/>
         <source>Add selected map to canvas</source>
-        <translation type="unfinished"/>
+        <translation>إضافة الخريطة المختارة إلى اللوحة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="61"/>
         <source>Copy selected map</source>
-        <translation type="unfinished"/>
+        <translation>نسخ الخريطة المختارة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="69"/>
         <source>Rename selected map</source>
-        <translation type="unfinished"/>
+        <translation>إعادة تسمية الخريطة المختارة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="77"/>
         <source>Delete selected map</source>
-        <translation type="unfinished"/>
+        <translation>حذف الخريطة المختارة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="85"/>
         <source>Set current region to selected map</source>
-        <translation type="unfinished"/>
+        <translation>تعيين المنطقة الحالية في الخريطة المختارة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="93"/>
         <source>Refresh</source>
-        <translation type="unfinished"/>
+        <translation>أنعشْ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="273"/>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="348"/>
         <source>New name</source>
-        <translation type="unfinished"/>
+        <translation>إسم جديد</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="274"/>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="349"/>
         <source>New name for layer &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>اسم جديد للطبقة &quot;٪1&quot;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="290"/>
@@ -27071,12 +27085,12 @@ Press cancel to abort breaks calculation or OK to continue.</source>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="474"/>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="516"/>
         <source>Warning</source>
-        <translation type="unfinished"/>
+        <translation>تحذير </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="291"/>
         <source>Cannot copy map %1@%2</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن نسخ الخريطة %1@%2</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="292"/>
@@ -27088,12 +27102,12 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="366"/>
         <source>Cannot rename map %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن إعادة تسمية الخريطة 1%</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="421"/>
         <source>Information</source>
-        <translation type="unfinished"/>
+        <translation>معلومة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="422"/>
@@ -27103,7 +27117,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="436"/>
         <source>Question</source>
-        <translation type="unfinished"/>
+        <translation>سؤال</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="437"/>
@@ -27114,12 +27128,12 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="475"/>
         <source>Cannot delete map %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن حذف الخريطة ٪1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="517"/>
         <source>Cannot write new region</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن كتابة منطقة جديدة</translation>
     </message>
 </context>
 <context>
@@ -27137,212 +27151,212 @@ Press cancel to abort breaks calculation or OK to continue.</source>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1471"/>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1534"/>
         <source>Warning</source>
-        <translation type="unfinished"/>
+        <translation>تحذير </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="235"/>
         <source>You are not owner of the mapset, cannot open the vector for editing.</source>
-        <translation type="unfinished"/>
+        <translation>أنت لست صاحب الخريطة، لا يمكن فتح الطبقة الخطية للتحرير.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="241"/>
         <source>Cannot open vector for update.</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن فتح الطبقة الخطية للتحرير</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="253"/>
         <source>Edit tools</source>
-        <translation type="unfinished"/>
+        <translation>أدوات التحرير</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="256"/>
         <source>New point</source>
-        <translation type="unfinished"/>
+        <translation>نقطة جديدة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="262"/>
         <source>New line</source>
-        <translation type="unfinished"/>
+        <translation>خط جديد</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="268"/>
         <source>New boundary</source>
-        <translation type="unfinished"/>
+        <translation>حد جديد</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="274"/>
         <source>New centroid</source>
-        <translation type="unfinished"/>
+        <translation>مركز ثقل جديد</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="280"/>
         <source>Move vertex</source>
-        <translation type="unfinished"/>
+        <translation>تحريك القمة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="286"/>
         <source>Add vertex</source>
-        <translation type="unfinished"/>
+        <translation>إضافة قمة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="292"/>
         <source>Delete vertex</source>
-        <translation type="unfinished"/>
+        <translation>حذف قمة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="298"/>
         <source>Move element</source>
-        <translation type="unfinished"/>
+        <translation>نقل العنصر</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="304"/>
         <source>Split line</source>
-        <translation type="unfinished"/>
+        <translation>فصل الخط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="310"/>
         <source>Delete element</source>
-        <translation type="unfinished"/>
+        <translation>حذف العنصر</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="316"/>
         <source>Edit attributes</source>
-        <translation type="unfinished"/>
+        <translation>تحرير السمات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="321"/>
         <source>Close</source>
-        <translation type="unfinished"/>
+        <translation>إغلاق</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="404"/>
         <source>Background</source>
-        <translation type="unfinished"/>
+        <translation>خلفية</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="405"/>
         <source>Highlight</source>
-        <translation type="unfinished"/>
+        <translation>تمييز</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="406"/>
         <source>Dynamic</source>
-        <translation type="unfinished"/>
+        <translation>حَرَكِي</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="407"/>
         <source>Point</source>
-        <translation type="unfinished"/>
+        <translation>نقطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="408"/>
         <source>Line</source>
-        <translation type="unfinished"/>
+        <translation>خط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="409"/>
         <source>Boundary (no area)</source>
-        <translation type="unfinished"/>
+        <translation>الحدود (لا توجد منطقة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="410"/>
         <source>Boundary (1 area)</source>
-        <translation type="unfinished"/>
+        <translation>الحدود (1 منطقة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="411"/>
         <source>Boundary (2 areas)</source>
-        <translation type="unfinished"/>
+        <translation>الحدود (2 منطقة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="412"/>
         <source>Centroid (in area)</source>
-        <translation type="unfinished"/>
+        <translation>نقطة المركزية (في المنطقة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="413"/>
         <source>Centroid (outside area)</source>
-        <translation type="unfinished"/>
+        <translation>نقطة المركزية (خارج المنطقة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="414"/>
         <source>Centroid (duplicate in area)</source>
-        <translation type="unfinished"/>
+        <translation>نقطة المركزية (مكررة في المنطقة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="415"/>
         <source>Node (1 line)</source>
-        <translation type="unfinished"/>
+        <translation>عقدة (1 خط)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="416"/>
         <source>Node (2 lines)</source>
-        <translation type="unfinished"/>
+        <translation>عقدة (2 خطوط)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="546"/>
         <source>Next not used</source>
-        <translation type="unfinished"/>
+        <translation>المقبل ليس متستخدم</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="547"/>
         <source>Manual entry</source>
-        <translation type="unfinished"/>
+        <translation>إدخال يدوي</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="548"/>
         <source>No category</source>
-        <translation type="unfinished"/>
+        <translation>لا توجد فئة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="698"/>
         <source>Info</source>
-        <translation type="unfinished"/>
+        <translation>معلومات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="698"/>
         <source>The table was created</source>
-        <translation type="unfinished"/>
+        <translation>تم إنشاء الجدل</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1397"/>
         <source>Tool not yet implemented.</source>
-        <translation type="unfinished"/>
+        <translation>أداة لم تنفذ حتى الآن.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1419"/>
         <source>Cannot check orphan record: %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن التحقق من السجل اليتيم : ٪1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1426"/>
         <source>Orphan record was left in attribute table. &lt;br&gt;Delete the record?</source>
-        <translation type="unfinished"/>
+        <translation>سجل يتيم ترك في الجدول السمة.  &lt;br&gt; إحذف السجل؟</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1437"/>
         <source>Cannot delete orphan record: </source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن حذف السجل اليتيم</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1471"/>
         <source>Cannot describe table for field %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن وصف حقل الجدول ٪1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1904"/>
         <source>Left: %1</source>
-        <translation type="unfinished"/>
+        <translation>اليسار: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1906"/>
         <source> -- Middle: %1</source>
-        <translation type="unfinished"/>
+        <translation>--الوسط: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1908"/>
         <source> -- Right: %1</source>
-        <translation type="unfinished"/>
+        <translation>--يمين: %1</translation>
     </message>
 </context>
 <context>
@@ -27353,17 +27367,17 @@ Press cancel to abort breaks calculation or OK to continue.</source>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="462"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="473"/>
         <source>Select line segment</source>
-        <translation type="unfinished"/>
+        <translation>حدد شريحة الخط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="458"/>
         <source>New vertex position</source>
-        <translation type="unfinished"/>
+        <translation>موقع القمة الجديد</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="458"/>
         <source>Release</source>
-        <translation type="unfinished"/>
+        <translation>الإصدار</translation>
     </message>
 </context>
 <context>
@@ -27371,7 +27385,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="873"/>
         <source>Select element</source>
-        <translation type="unfinished"/>
+        <translation>حدد العنصر</translation>
     </message>
 </context>
 <context>
@@ -27379,95 +27393,95 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="13"/>
         <source>GRASS Edit</source>
-        <translation type="unfinished"/>
+        <translation>تحرير GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="40"/>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="84"/>
         <source>Category</source>
-        <translation type="unfinished"/>
+        <translation>الفئة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="54"/>
         <source>Mode</source>
-        <translation type="unfinished"/>
+        <translation>النمط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="107"/>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="335"/>
         <source>Layer</source>
-        <translation type="unfinished"/>
+        <translation>طبقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="154"/>
         <source>Settings</source>
-        <translation type="unfinished"/>
+        <translation>إعدادات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="162"/>
         <source>Snapping in screen pixels</source>
-        <translation type="unfinished"/>
+        <translation>العض في الشاشة بكسل</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="213"/>
         <source>Symbology</source>
-        <translation type="unfinished"/>
+        <translation>الرموز</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="227"/>
         <source>Line width</source>
-        <translation type="unfinished"/>
+        <translation>سُمك الخط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="250"/>
         <source>Marker size</source>
-        <translation type="unfinished"/>
+        <translation>صانع الكبر</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="295"/>
         <source>Disp</source>
-        <translation type="unfinished"/>
+        <translation>Disp</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="300"/>
         <source>Color</source>
-        <translation type="unfinished"/>
+        <translation>لـون</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="305"/>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="388"/>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>نوع</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="310"/>
         <source>Index</source>
-        <translation type="unfinished"/>
+        <translation>المؤشر</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="327"/>
         <source>Table</source>
-        <translation type="unfinished"/>
+        <translation>جدول</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="383"/>
         <source>Column</source>
-        <translation type="unfinished"/>
+        <translation>حقل</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="393"/>
         <source>Length</source>
-        <translation type="unfinished"/>
+        <translation>طول</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="416"/>
         <source>Add Column</source>
-        <translation type="unfinished"/>
+        <translation>إضافة عمود </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="423"/>
         <source>Create / Alter Table</source>
-        <translation type="unfinished"/>
+        <translation>بناء / تغير الجدول</translation>
     </message>
 </context>
 <context>
@@ -27477,17 +27491,17 @@ Press cancel to abort breaks calculation or OK to continue.</source>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="754"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="761"/>
         <source>Select element</source>
-        <translation type="unfinished"/>
+        <translation>حدد العنصر</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="750"/>
         <source>Delete selected / select next</source>
-        <translation type="unfinished"/>
+        <translation>حذف المختار / حدد المقبل</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="750"/>
         <source>Release selected</source>
-        <translation type="unfinished"/>
+        <translation>الإصدار المختار</translation>
     </message>
 </context>
 <context>
@@ -27498,17 +27512,17 @@ Press cancel to abort breaks calculation or OK to continue.</source>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="593"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="604"/>
         <source>Select vertex</source>
-        <translation type="unfinished"/>
+        <translation>اختيار قمة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="589"/>
         <source>Delete vertex</source>
-        <translation type="unfinished"/>
+        <translation>حذف قمة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="589"/>
         <source>Release vertex</source>
-        <translation type="unfinished"/>
+        <translation>إصدار قمة</translation>
     </message>
 </context>
 <context>
@@ -27519,17 +27533,17 @@ Press cancel to abort breaks calculation or OK to continue.</source>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="669"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="678"/>
         <source>Select element</source>
-        <translation type="unfinished"/>
+        <translation>حدد العنصر</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="665"/>
         <source>New location</source>
-        <translation type="unfinished"/>
+        <translation>موقع جديد</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="665"/>
         <source>Release selected</source>
-        <translation type="unfinished"/>
+        <translation>Release selected</translation>
     </message>
 </context>
 <context>
@@ -27539,12 +27553,12 @@ Press cancel to abort breaks calculation or OK to continue.</source>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="293"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="330"/>
         <source>Select vertex</source>
-        <translation type="unfinished"/>
+        <translation>اختيار قمة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="319"/>
         <source>Select new position</source>
-        <translation type="unfinished"/>
+        <translation>حدد موقع جديد</translation>
     </message>
 </context>
 <context>
@@ -27556,18 +27570,18 @@ Press cancel to abort breaks calculation or OK to continue.</source>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="235"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="239"/>
         <source>New vertex</source>
-        <translation type="unfinished"/>
+        <translation>قمة جديدة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="235"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="239"/>
         <source>Undo last vertex</source>
-        <translation type="unfinished"/>
+        <translation>التراجع عن القمة الماضية</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="239"/>
         <source>Close line</source>
-        <translation type="unfinished"/>
+        <translation>إغلاق الخط</translation>
     </message>
 </context>
 <context>
@@ -27575,12 +27589,12 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="72"/>
         <source>New centroid</source>
-        <translation type="unfinished"/>
+        <translation>مركز ثقل جديد</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="74"/>
         <source>New point</source>
-        <translation type="unfinished"/>
+        <translation>نقطة جديدة</translation>
     </message>
 </context>
 <context>
@@ -27589,23 +27603,23 @@ Press cancel to abort breaks calculation or OK to continue.</source>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="777"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="819"/>
         <source>Select position on line</source>
-        <translation type="unfinished"/>
+        <translation>حدد موقع على الخط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="840"/>
         <source>Split the line</source>
-        <translation type="unfinished"/>
+        <translation>فصل الخط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="840"/>
         <source>Release the line</source>
-        <translation type="unfinished"/>
+        <translation>إصدار الخط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="844"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="856"/>
         <source>Select point on line</source>
-        <translation type="unfinished"/>
+        <translation>حدد نقطة على الخط</translation>
     </message>
 </context>
 <context>
@@ -27613,32 +27627,32 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="113"/>
         <source>Cancel</source>
-        <translation type="unfinished"/>
+        <translation>إالغاء</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="142"/>
         <source>Ok</source>
-        <translation type="unfinished"/>
+        <translation>أجل</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="147"/>
         <source>&lt;font color=&apos;red&apos;&gt;Enter a name!&lt;/font&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;font color=&apos;red&apos;&gt;أدخل اسما!&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="158"/>
         <source>&lt;font color=&apos;red&apos;&gt;This is name of the source!&lt;/font&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;font color=&apos;red&apos;&gt;هذا هو اسم المصدر!&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="164"/>
         <source>&lt;font color=&apos;red&apos;&gt;Exists!&lt;/font&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;font color=&apos;red&apos;&gt;موجودة!&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="165"/>
         <source>Overwrite</source>
-        <translation type="unfinished"/>
+        <translation>اكتب فوقه</translation>
     </message>
 </context>
 <context>
@@ -27646,142 +27660,142 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="81"/>
         <source>Mapcalc tools</source>
-        <translation type="unfinished"/>
+        <translation>الأدوات حساب خريطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="84"/>
         <source>Add map</source>
-        <translation type="unfinished"/>
+        <translation>أضف خريطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="91"/>
         <source>Add constant value</source>
-        <translation type="unfinished"/>
+        <translation>إضافة قيمة ثابتة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="98"/>
         <source>Add operator or function</source>
-        <translation type="unfinished"/>
+        <translation>إضافة علامة عملية أو عملية</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="105"/>
         <source>Add connection</source>
-        <translation type="unfinished"/>
+        <translation>إضافة اتصال</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="112"/>
         <source>Select item</source>
-        <translation type="unfinished"/>
+        <translation>اختر العنضر</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="119"/>
         <source>Delete selected item</source>
-        <translation type="unfinished"/>
+        <translation>حذف العنصر المختار</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="129"/>
         <source>Open</source>
-        <translation type="unfinished"/>
+        <translation>فتح</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="134"/>
         <source>Save</source>
-        <translation type="unfinished"/>
+        <translation>احفظ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="140"/>
         <source>Save as</source>
-        <translation type="unfinished"/>
+        <translation>حفظ بإسم</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="148"/>
         <source>Addition</source>
-        <translation type="unfinished"/>
+        <translation>جمع</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="149"/>
         <source>Subtraction</source>
-        <translation type="unfinished"/>
+        <translation>طرح</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="150"/>
         <source>Multiplication</source>
-        <translation type="unfinished"/>
+        <translation>ضرب</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="151"/>
         <source>Division</source>
-        <translation type="unfinished"/>
+        <translation>قسمة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="152"/>
         <source>Modulus</source>
-        <translation type="unfinished"/>
+        <translation>مُعامِل</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="153"/>
         <source>Exponentiation</source>
-        <translation type="unfinished"/>
+        <translation>رفع</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="156"/>
         <source>Equal</source>
-        <translation type="unfinished"/>
+        <translation>يساوي</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="157"/>
         <source>Not equal</source>
-        <translation type="unfinished"/>
+        <translation>لا يساوي</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="158"/>
         <source>Greater than</source>
-        <translation type="unfinished"/>
+        <translation>أكبر من</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="159"/>
         <source>Greater than or equal</source>
-        <translation type="unfinished"/>
+        <translation>أكبر من أو يساوي</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="160"/>
         <source>Less than</source>
-        <translation type="unfinished"/>
+        <translation>أصغر من</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="161"/>
         <source>Less than or equal</source>
-        <translation type="unfinished"/>
+        <translation>أصغر من أو يساوي</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="162"/>
         <source>And</source>
-        <translation type="unfinished"/>
+        <translation>و</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="163"/>
         <source>Or</source>
-        <translation type="unfinished"/>
+        <translation>أو</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="166"/>
         <source>Absolute value of x</source>
-        <translation type="unfinished"/>
+        <translation>القيمة المطلقة ل x</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="167"/>
         <source>Inverse tangent of x (result is in degrees)</source>
-        <translation type="unfinished"/>
+        <translation>المماس x معكوس (النتيجة بالدرجة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="168"/>
         <source>Inverse tangent of y/x (result is in degrees)</source>
-        <translation type="unfinished"/>
+        <translation>المماس x/y معكوس (النتيجة بالدرجة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="169"/>
         <source>Current column of moving window (starts with 1)</source>
-        <translation type="unfinished"/>
+        <translation>العمود الحالي من النافذة المتحركة (يبدأ مع 1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="170"/>
@@ -27791,22 +27805,22 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="171"/>
         <source>Convert x to double-precision floating point</source>
-        <translation type="unfinished"/>
+        <translation>تحويل x إلى الدقة المزدوجة الفاصلة العائمة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="172"/>
         <source>Current east-west resolution</source>
-        <translation type="unfinished"/>
+        <translation>الدقة الحالية بين الشرق والغرب</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="173"/>
         <source>Exponential function of x</source>
-        <translation type="unfinished"/>
+        <translation>عملية رفع ل x</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="174"/>
         <source>x to the power y</source>
-        <translation type="unfinished"/>
+        <translation>x قوة y</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="175"/>
@@ -27816,37 +27830,37 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="176"/>
         <source>Decision: 1 if x not zero, 0 otherwise</source>
-        <translation type="unfinished"/>
+        <translation>القرار: 1 إذا كان x ليس صفرا، 0 خلاف ذلك</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="177"/>
         <source>Decision: a if x not zero, 0 otherwise</source>
-        <translation type="unfinished"/>
+        <translation>القرار: أ إذا كان x ليس صفرا، 0 خلاف ذلك</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="178"/>
         <source>Decision: a if x not zero, b otherwise</source>
-        <translation type="unfinished"/>
+        <translation>القرار: أ إذا كان x غير الصفر، ب خلاف ذلك</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="179"/>
         <source>Decision: a if x &gt; 0, b if x is zero, c if x &lt; 0</source>
-        <translation type="unfinished"/>
+        <translation>القرار: أ إذا كان x&gt;0، ب إذا كان x هو صفر، ج إذا كان x&lt;0</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="180"/>
         <source>Convert x to integer [ truncates ]</source>
-        <translation type="unfinished"/>
+        <translation> تحويل x إلى عدد صحيح [باقتطاع]</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="181"/>
         <source>Check if x = NULL</source>
-        <translation type="unfinished"/>
+        <translation>التدقيق إذا كان x = NULL</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="182"/>
         <source>Natural log of x</source>
-        <translation type="unfinished"/>
+        <translation>السجل الطبيعي ل x</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="183"/>
@@ -27857,55 +27871,55 @@ Press cancel to abort breaks calculation or OK to continue.</source>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="184"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="185"/>
         <source>Largest value</source>
-        <translation type="unfinished"/>
+        <translation>أكبر قيمة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="186"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="187"/>
         <source>Median value</source>
-        <translation type="unfinished"/>
+        <translation>القيمة المتوسطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="188"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="189"/>
         <source>Smallest value</source>
-        <translation type="unfinished"/>
+        <translation>أصغر قيمة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="190"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="191"/>
         <source>Mode value</source>
-        <translation type="unfinished"/>
+        <translation>قيمة الوضع</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="192"/>
         <source>1 if x is zero, 0 otherwise</source>
-        <translation type="unfinished"/>
+        <translation>1 إذا كان x هو صفر، 0 خلاف ذلك</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="193"/>
         <source>Current north-south resolution</source>
-        <translation type="unfinished"/>
+        <translation>الدقة الحالية بين الشمال والجنوب</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="194"/>
         <source>NULL value</source>
-        <translation type="unfinished"/>
+        <translation>القيمة NULL</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="195"/>
         <source>Random value between a and b</source>
-        <translation type="unfinished"/>
+        <translation>قيمة عشوائية بين أ و ب</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="196"/>
         <source>Round x to nearest integer</source>
-        <translation type="unfinished"/>
+        <translation>إختر عشوائية لx  أقرب عدد صحيح</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="197"/>
         <source>Current row of moving window (Starts with 1)</source>
-        <translation type="unfinished"/>
+        <translation>الصف الحالي من النافذة المتحركة (يبدأ مع 1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="198"/>
@@ -27917,29 +27931,29 @@ Press cancel to abort breaks calculation or OK to continue.</source>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="199"/>
         <source>Square root of x</source>
         <comment>sqrt(x)</comment>
-        <translation type="unfinished"/>
+        <translation>الجذر التربيعي ل x</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="200"/>
         <source>Tangent of x (x is in degrees)</source>
         <comment>tan(x)</comment>
-        <translation type="unfinished"/>
+        <translation>المماس x (النتيجة بالدرجة)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="201"/>
         <source>Current x-coordinate of moving window</source>
-        <translation type="unfinished"/>
+        <translation>الإحداثيات الحالية X للنافذة المتحركة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="202"/>
         <source>Current y-coordinate of moving window</source>
-        <translation type="unfinished"/>
+        <translation>الإحداثيات الحالية Y للنافذة المتحركة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="213"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1368"/>
         <source>Output</source>
-        <translation type="unfinished"/>
+        <translation>المخرجات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="489"/>
@@ -27954,91 +27968,94 @@ Press cancel to abort breaks calculation or OK to continue.</source>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1280"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1294"/>
         <source>Warning</source>
-        <translation type="unfinished"/>
+        <translation>تحذير </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="489"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="544"/>
         <source>Cannot get current region</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن الحصول على المنطقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="521"/>
         <source>Cannot check region of map %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن أن التحقق من المنطقة على الخريطة 1٪</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="579"/>
         <source>Cannot get region of map %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن الحصول على المنطقة من الخريطة ٪1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="783"/>
         <source>No GRASS raster maps currently in QGIS</source>
-        <translation type="unfinished"/>
+        <translation> لا توجد خرائط طبقات شبكية GRASS حاليا في QGIS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1083"/>
         <source>Cannot create &apos;mapcalc&apos; directory in current mapset.</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن إنشاء &apos;حاسب الخريطة&apos; الدليل في مجموعة الخريطة الحالية.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1093"/>
         <source>New mapcalc</source>
-        <translation type="unfinished"/>
+        <translation> حاسب خريطة جديد</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1094"/>
         <source>Enter new mapcalc name:</source>
-        <translation type="unfinished"/>
+        <translation>إدخال اسم  حاسب الخريطة جديد:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1101"/>
         <source>Enter vector name</source>
-        <translation type="unfinished"/>
+        <translation>إدخال اسم الطبقة الخطية</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1109"/>
         <source>The file already exists. Overwrite?</source>
-        <translation type="unfinished"/>
+        <translation>الملف موجود مسبقاً. هل تريد الكتابة عليه؟</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1128"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1146"/>
         <source>Save mapcalc</source>
-        <translation type="unfinished"/>
+        <translation>حفظ حاسب الخريطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1128"/>
         <source>File name empty</source>
-        <translation type="unfinished"/>
+        <translation>اسم ملف فارغ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1147"/>
         <source>Cannot open mapcalc file</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن فتح ملف حاسب الخريطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1274"/>
         <source>The mapcalc schema (%1) not found.</source>
-        <translation type="unfinished"/>
+        <translation>مخطط حاسب الخريطة (٪ 1) غير موجود.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1280"/>
         <source>Cannot open mapcalc schema (%1)</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن فتح مخطط حاسب الخريطة (٪1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1292"/>
         <source>Cannot read mapcalc schema (%1):</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن قراءة مخطط حاسب الخريطة (٪1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1293"/>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"/>
+        <translation>
+%1
+
+في السطر٪2 العمود 3٪ </translation>
     </message>
 </context>
 <context>
@@ -28046,12 +28063,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalcbase.ui" line="13"/>
         <source>MainWindow</source>
-        <translation type="unfinished"/>
+        <translation>النافذة الرئيسية</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalcbase.ui" line="22"/>
         <source>Output</source>
-        <translation type="unfinished"/>
+        <translation>المخرجات</translation>
     </message>
 </context>
 <context>
@@ -28059,7 +28076,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="159"/>
         <source>Module: %1</source>
-        <translation type="unfinished"/>
+        <translation>المنهاج: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="173"/>
@@ -28074,23 +28091,23 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1684"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1758"/>
         <source>Warning</source>
-        <translation type="unfinished"/>
+        <translation>تحذير </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="173"/>
         <source>The module file (%1) not found.</source>
-        <translation type="unfinished"/>
+        <translation>ملف المنهاج (٪ 1) غير موجود.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="178"/>
         <source>Cannot open module file (%1)</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن فتح ملف المنهاج (٪1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="186"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1274"/>
         <source>Cannot read module file (%1)</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن قراءة ملف المنهاج (٪1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="187"/>
@@ -28098,94 +28115,96 @@ at line %2 column %3</source>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"/>
+        <translation>
+%1
+في السطر٪2 العمود 3٪ </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="220"/>
         <source>Module %1 not found</source>
-        <translation type="unfinished"/>
+        <translation>المنهاج &apos;٪ 1&apos; غير موجود</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="265"/>
         <source>Cannot find man page %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن العثور على الصفحة الرئيسية 1٪</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="266"/>
         <source>Please ensure you have the GRASS documentation installed.</source>
-        <translation type="unfinished"/>
+        <translation>يرجى التأكد من لديك وثائق GRASS مثبتة.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1263"/>
         <source>Not available, description not found (%1)</source>
-        <translation type="unfinished"/>
+        <translation>غير متوفرة، لم يتم العثور على الوصف (٪1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1267"/>
         <source>Not available, cannot open description (%1)</source>
-        <translation type="unfinished"/>
+        <translation>غير متوفرة، لا يمكن فتح الوصف (٪ 1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1279"/>
         <source>Not available, incorrect description (%1)</source>
-        <translation type="unfinished"/>
+        <translation>غير متوفرة، وصف غير صحيحة (٪1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1489"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1794"/>
         <source>Run</source>
-        <translation type="unfinished"/>
+        <translation>تشغيل</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1521"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1550"/>
         <source>Cannot get input region</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن الحصول إدخال في المنطقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1532"/>
         <source>Input %1 outside current region!</source>
-        <translation type="unfinished"/>
+        <translation>مدخلات 1٪ خارج المنطقة الحالية!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1537"/>
         <source>Use Input Region</source>
-        <translation type="unfinished"/>
+        <translation>استخدام المدخلات المنطقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1565"/>
         <source>Output %1 exists! Overwrite?</source>
-        <translation type="unfinished"/>
+        <translation>الإخراج ٪1 موجود! الكتابة؟</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1684"/>
         <source>Cannot find module %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن العثور على ٪1 منهاج</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1758"/>
         <source>Cannot start module: %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن بدء تشغيل الوحدة النمطية: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1763"/>
         <source>Stop</source>
-        <translation type="unfinished"/>
+        <translation>إيقاف</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1776"/>
         <source>&lt;B&gt;Successfully finished&lt;/B&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;B&gt;الانتهاء بنجاح&lt;/B&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1785"/>
         <source>&lt;B&gt;Finished with error&lt;/B&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;B&gt;انتهت مع خطأ&lt;/B&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1790"/>
         <source>&lt;B&gt;Module crashed or killed&lt;/B&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;B&gt;وحدة تحطمت أو قتلت&lt;/B&gt;</translation>
     </message>
 </context>
 <context>
@@ -28193,42 +28212,42 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="13"/>
         <source>GRASS Module</source>
-        <translation type="unfinished"/>
+        <translation>الوحدة النمطية GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="20"/>
         <source>Options</source>
-        <translation type="unfinished"/>
+        <translation>إختيارات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="25"/>
         <source>Output</source>
-        <translation type="unfinished"/>
+        <translation>المخرجات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="47"/>
         <source>Manual</source>
-        <translation type="unfinished"/>
+        <translation>يدوي</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="78"/>
         <source>TextLabel</source>
-        <translation type="unfinished"/>
+        <translation>تسمية نصية</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="116"/>
         <source>Run</source>
-        <translation type="unfinished"/>
+        <translation>تشغيل</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="139"/>
         <source>View output</source>
-        <translation type="unfinished"/>
+        <translation>عرض المخرجات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="159"/>
         <source>Close</source>
-        <translation type="unfinished"/>
+        <translation>إغلاق</translation>
     </message>
 </context>
 <context>
@@ -28236,12 +28255,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3568"/>
         <source>Attribute field</source>
-        <translation type="unfinished"/>
+        <translation>حقل السمة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3581"/>
         <source>Warning</source>
-        <translation type="unfinished"/>
+        <translation>تحذير </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3581"/>
@@ -28254,7 +28273,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3769"/>
         <source>File</source>
-        <translation type="unfinished"/>
+        <translation>ملف</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3891"/>
@@ -28279,32 +28298,32 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3324"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3515"/>
         <source>Warning</source>
-        <translation type="unfinished"/>
+        <translation>تحذير </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3309"/>
         <source>Cannot find layeroption %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن العثور على خيار طبقة 1٪</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3324"/>
         <source>Cannot find whereoption %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن أن معرفة أين الخيار 1٪</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3337"/>
         <source>Password</source>
-        <translation type="unfinished"/>
+        <translation>كلمة السر</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3372"/>
         <source>Select a layer</source>
-        <translation type="unfinished"/>
+        <translation>حدد الطبقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3516"/>
         <source>PostGIS driver in OGR does not support schemas!&lt;br&gt;Only the table name will be used.&lt;br&gt;It can result in wrong input if more tables of the same name&lt;br&gt;are present in the database.</source>
-        <translation type="unfinished"/>
+        <translation>المشغل PostGIS في OGR لا يدعم المخططات!&lt;br&gt;وسوف يستخدم فقط اسم الجدول.&lt;br&gt;ويمكن أن يؤدي إلى إدخال خاطئ إذا كان أكثر الجداول التي تحمل الاسم نفسه&lt;br&gt;موجودة في قاعدة البيانات.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3543"/>
@@ -28317,7 +28336,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2553"/>
         <source>Input</source>
-        <translation type="unfinished"/>
+        <translation>إدخال</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2577"/>
@@ -28327,48 +28346,48 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3003"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3042"/>
         <source>Warning</source>
-        <translation type="unfinished"/>
+        <translation>تحذير </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2577"/>
         <source>Cannot find typeoption %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن العثور على خيار النوع 1٪</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2586"/>
         <source>Cannot find values for typeoption %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن العثور على قيم خيار النوع 1٪</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2659"/>
         <source>Cannot find layeroption %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن العثور على خيار الطبقة 1٪</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2676"/>
         <source>GRASS element %1 not supported</source>
-        <translation type="unfinished"/>
+        <translation>العنصرGRASS  ٪ 1 غير مدعوم</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2699"/>
         <source>Use region of this map</source>
-        <translation type="unfinished"/>
+        <translation>استخدم منطقة من هذه الخريطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2772"/>
         <source>Select a layer</source>
-        <translation type="unfinished"/>
+        <translation>حدد الطبقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2924"/>
         <source>%1 (band %2)</source>
-        <translation type="unfinished"/>
+        <translation>٪1 (٪2 شريط)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3003"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3042"/>
         <source>Cannot get provider</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن الحصول على الموفر</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3156"/>
@@ -28381,33 +28400,33 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2310"/>
         <source>Browse</source>
-        <translation type="unfinished"/>
+        <translation>استعرض</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2328"/>
         <source>Output file</source>
-        <translation type="unfinished"/>
+        <translation>ملف الإخراج</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2328"/>
         <source>GeoTIFF</source>
-        <translation type="unfinished"/>
+        <translation>GeoTIFF</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2427"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2445"/>
         <source>Warning</source>
-        <translation type="unfinished"/>
+        <translation>تحذير </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2427"/>
         <source>Cannot parse version_min %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن تحليل أصغر إصدار ٪1 </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2445"/>
         <source>Cannot parse version_max %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن تحليل أخر إصدار ٪1 </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2491"/>
@@ -28420,7 +28439,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3658"/>
         <source>Selected categories</source>
-        <translation type="unfinished"/>
+        <translation>الميزات المحددة</translation>
     </message>
 </context>
 <context>
@@ -28444,17 +28463,17 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1148"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1180"/>
         <source>Warning</source>
-        <translation type="unfinished"/>
+        <translation>تحذير </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="331"/>
         <source>Cannot find module %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن العثور على ٪1 منهاج</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="366"/>
         <source>Cannot start module %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن بدء تشغيل الوحدة النمطية %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="369"/>
@@ -28464,82 +28483,85 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="434"/>
         <source>Cannot read module description (%1):</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن قراءة وصف المنهاج (٪1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="435"/>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"/>
+        <translation>
+%1
+
+في السطر٪2 العمود 3٪ </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="462"/>
         <source>Region</source>
-        <translation type="unfinished"/>
+        <translation>المنطقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="464"/>
         <source>Input layers</source>
-        <translation type="unfinished"/>
+        <translation>إدخال الطبقات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="465"/>
         <source>Current map canvas</source>
-        <translation type="unfinished"/>
+        <translation>لوحة الخريطةِ الحالية</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="532"/>
         <source>Cannot find key %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن العثور على المفتاح ٪1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="653"/>
         <source>&lt;&lt; Hide advanced options</source>
-        <translation type="unfinished"/>
+        <translation>&lt;&lt; إخفاء الخيارات المتقدمة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="658"/>
         <source>Show advanced options &gt;&gt;</source>
-        <translation type="unfinished"/>
+        <translation>إظهار الخيارات المتقدمة &gt;&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="692"/>
         <source>Item with key %1 not found</source>
-        <translation type="unfinished"/>
+        <translation>العنصر مع المفتاح ٪ 1 لم يتم العثور عليه</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="708"/>
         <source>Item with id %1 not found</source>
-        <translation type="unfinished"/>
+        <translation>العنصر مع العرف ٪ 1 لم يتم العثور عليه</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="967"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1060"/>
         <source>Cannot get current region</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن الحصول على المنطقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1000"/>
         <source>Cannot check region of map %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن أن التحقق من المنطقة على الخريطة 1٪</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1043"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1148"/>
         <source>Cannot set region</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن تغيير المنطقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1081"/>
         <source>Cannot get selected layer</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن تحديد الطبقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1093"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1103"/>
         <source>Cannot get provider</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن الحصول على الموفر</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1118"/>
@@ -28549,12 +28571,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1138"/>
         <source>Cannot get raster provider</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن الحصول على موفر الطبقة الشبكية</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1180"/>
         <source>Cannot set region of map %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن تحيين على المنطقة من الخريطة ٪1</translation>
     </message>
 </context>
 <context>
@@ -28562,60 +28584,60 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="120"/>
         <source>Database</source>
-        <translation type="unfinished"/>
+        <translation>قواعد بيانات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="123"/>
         <source>Location 1</source>
-        <translation type="unfinished"/>
+        <translation>الموقع 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="125"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="134"/>
         <source>System mapset</source>
-        <translation type="unfinished"/>
+        <translation>نظام مجموعة الخرائط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="127"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="129"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="136"/>
         <source>User&apos;s mapset</source>
-        <translation type="unfinished"/>
+        <translation>مستخدمي مجموعة الخرائط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="132"/>
         <source>Location 2</source>
-        <translation type="unfinished"/>
+        <translation>الموقع 2</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="188"/>
         <source>Enter path to GRASS database</source>
-        <translation type="unfinished"/>
+        <translation>أدخل المسار إلى قاعدة البيانات GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="196"/>
         <source>The directory doesn&apos;t exist!</source>
-        <translation type="unfinished"/>
+        <translation>الدليل غير موجود!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="226"/>
         <source>No writable locations, the database is not writable!</source>
-        <translation type="unfinished"/>
+        <translation>لا مواقع للكتابة، وقاعدة البيانات غير قابلة للكتابة!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="343"/>
         <source>Enter location name!</source>
-        <translation type="unfinished"/>
+        <translation>أدخل اسم الموقع!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="350"/>
         <source>The location exists!</source>
-        <translation type="unfinished"/>
+        <translation>الموقع موجود!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="477"/>
         <source>Selected projection is not supported by GRASS!</source>
-        <translation type="unfinished"/>
+        <translation>الإسقاط المختار غير معتمد في GRASS!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="512"/>
@@ -28630,49 +28652,51 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1075"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1084"/>
         <source>Warning</source>
-        <translation type="unfinished"/>
+        <translation>تحذير </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="512"/>
         <source>Cannot create projection.</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن صناعة الإسقاط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="560"/>
         <source>Cannot reproject previously set region, default region set.</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن إعادة إسقاط مسبقا تعيين المنطقة، تغير الإعدادات التفضلية للمنطقة.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="687"/>
         <source>North must be greater than south</source>
-        <translation type="unfinished"/>
+        <translation>يجب أن يكون الشمال أكبر من الجنوب</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="692"/>
         <source>East must be greater than west</source>
-        <translation type="unfinished"/>
+        <translation>يجب أن يكون الغرب أكبر من الشرق </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="737"/>
         <source>Regions file (%1) not found.</source>
-        <translation type="unfinished"/>
+        <translation>ملف المناطق (٪1) غير موجود.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="743"/>
         <source>Cannot open locations file (%1)</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن فتح ملف المواقع (٪1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="753"/>
         <source>Cannot read locations file (%1):</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن قراءة ملف المواقع (٪1):</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="754"/>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"/>
+        <translation>
+%1
+في السطر٪2 العمود 3٪ </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="856"/>
@@ -28680,90 +28704,90 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1076"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1085"/>
         <source>Cannot create QgsCoordinateReferenceSystem</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن إنشاء QgsCoordinateReferenceSystem</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="893"/>
         <source>Cannot reproject selected region.</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن إعادة إسقاط المنطقة المحددة.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="986"/>
         <source>Cannot reproject region</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن إسقاط المنطقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1207"/>
         <source>Enter mapset name.</source>
-        <translation type="unfinished"/>
+        <translation>أدخل اسم مجموعة الخرائط.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1217"/>
         <source>The mapset already exists</source>
-        <translation type="unfinished"/>
+        <translation>مجموعة الخرائط موجود بالفعل</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1235"/>
         <source>Database: </source>
-        <translation type="unfinished"/>
+        <translation>قاعدة بيانات:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1246"/>
         <source>Location: </source>
-        <translation type="unfinished"/>
+        <translation>الموقع:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1248"/>
         <source>Mapset: </source>
-        <translation type="unfinished"/>
+        <translation>مجموعة الخرائط:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1287"/>
         <source>Create location</source>
-        <translation type="unfinished"/>
+        <translation>إنشاء موقع</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1288"/>
         <source>Cannot create new location: %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن إنشاء موقع جديد: ٪1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1314"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1324"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1331"/>
         <source>Create mapset</source>
-        <translation type="unfinished"/>
+        <translation>إنشاء مجموعة خرائط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1315"/>
         <source>Cannot create new mapset directory</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن إنشاء دليل جديد لمجموعة الخرائط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1324"/>
         <source>Cannot open DEFAULT_WIND</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن فتح DEFAULT_WIND</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1331"/>
         <source>Cannot open WIND</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن فتح WIND</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1353"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1358"/>
         <source>New mapset</source>
-        <translation type="unfinished"/>
+        <translation>مجموعة الخرائط جديدة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1354"/>
         <source>New mapset successfully created, but cannot be opened: %1</source>
-        <translation type="unfinished"/>
+        <translation>مجموعة الخرائط الجديدة تم إنشاؤها بنجاح، ولكن لا يمكن فتحها:٪ 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1359"/>
         <source>New mapset successfully created and set as current working mapset.</source>
-        <translation type="unfinished"/>
+        <translation>مجموعة الخرائط الجديدة تم إنشاؤها بنجاح يتم العمل عليها حاليا.</translation>
     </message>
 </context>
 <context>
@@ -28771,27 +28795,27 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="13"/>
         <source>New Mapset</source>
-        <translation type="unfinished"/>
+        <translation>مجموعة الخرائط جديدة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="17"/>
         <source>GRASS Database</source>
-        <translation type="unfinished"/>
+        <translation>قاعدة بيانات GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="39"/>
         <source>Tree</source>
-        <translation type="unfinished"/>
+        <translation>شجرة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="44"/>
         <source>Comment</source>
-        <translation type="unfinished"/>
+        <translation>التعليق</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="52"/>
         <source>Example directory tree:</source>
-        <translation type="unfinished"/>
+        <translation>مثال شجرة الدليل:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="59"/>
@@ -28805,23 +28829,23 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="561"/>
         <source>Database Error</source>
-        <translation type="unfinished"/>
+        <translation>خطأ فى قواعد البيانات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="586"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2668"/>
         <source>Database:</source>
-        <translation type="unfinished"/>
+        <translation>قاعدة بيانات:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="596"/>
         <source>Browse...</source>
-        <translation type="unfinished"/>
+        <translation>استعرض...</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="607"/>
         <source>Select existing directory or create a new one:</source>
-        <translation type="unfinished"/>
+        <translation>حدد الدليل الموجود أو إنشأ واحدا جديدا:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="633"/>
@@ -28831,22 +28855,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="639"/>
         <source>Location</source>
-        <translation type="unfinished"/>
+        <translation>الموقع</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="654"/>
         <source>Select location</source>
-        <translation type="unfinished"/>
+        <translation>تحديد موقع</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="671"/>
         <source>Create new location</source>
-        <translation type="unfinished"/>
+        <translation>إنشاء موقع جديد</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1147"/>
         <source>Location Error</source>
-        <translation type="unfinished"/>
+        <translation>خطأ في الموقع</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1163"/>
@@ -28861,27 +28885,27 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1188"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1688"/>
         <source>Projection</source>
-        <translation type="unfinished"/>
+        <translation>اسقاط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1669"/>
         <source>Projection Error</source>
-        <translation type="unfinished"/>
+        <translation>خطأ في الاسقاط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1676"/>
         <source>Coordinate system</source>
-        <translation type="unfinished"/>
+        <translation>نظام الإحداثيات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1695"/>
         <source>Not defined</source>
-        <translation type="unfinished"/>
+        <translation>لم يعرف</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1716"/>
         <source>Default GRASS Region</source>
-        <translation type="unfinished"/>
+        <translation>المنطقة GRASS الافتراضية</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1747"/>
@@ -28895,63 +28919,63 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1798"/>
         <source>Set current QGIS extent</source>
-        <translation type="unfinished"/>
+        <translation>تعيين حد QGIS الحالي</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1827"/>
         <source>Set</source>
-        <translation type="unfinished"/>
+        <translation>تعيين</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1839"/>
         <source>Region Error</source>
-        <translation type="unfinished"/>
+        <translation>خطأ في المنطقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1870"/>
         <source>S</source>
-        <translation type="unfinished"/>
+        <translation>ج</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1906"/>
         <source>W</source>
-        <translation type="unfinished"/>
+        <translation>ش</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1945"/>
         <source>E</source>
-        <translation type="unfinished"/>
+        <translation>غ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1981"/>
         <source>N</source>
-        <translation type="unfinished"/>
+        <translation>ش</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2033"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2587"/>
         <source>Mapset</source>
-        <translation type="unfinished"/>
+        <translation>مجموعة الخرائط:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2041"/>
         <source>New mapset:</source>
-        <translation type="unfinished"/>
+        <translation>مجموعة الخرائط جديدة:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2526"/>
         <source>Mapset Error</source>
-        <translation type="unfinished"/>
+        <translation>خطأ في مجموعة الخرائط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2567"/>
         <source>&lt;p align=&quot;center&quot;&gt;Existing mapsets&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p align=&quot;center&quot;&gt;مجموعة الخرائط موجودة&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2592"/>
         <source>Owner</source>
-        <translation type="unfinished"/>
+        <translation>مالك</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2625"/>
@@ -28965,17 +28989,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2650"/>
         <source>Create New Mapset</source>
-        <translation type="unfinished"/>
+        <translation>إنشاء مجموعة خرائط جديدة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2687"/>
         <source>Location:</source>
-        <translation type="unfinished"/>
+        <translation>الموقع:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2706"/>
         <source>Mapset:</source>
-        <translation type="unfinished"/>
+        <translation>مجموعة الخرائط:</translation>
     </message>
 </context>
 <context>
@@ -28983,82 +29007,82 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="61"/>
         <source>GrassVector</source>
-        <translation type="unfinished"/>
+        <translation>طبقة خطية GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="62"/>
         <source>0.1</source>
-        <translation type="unfinished"/>
+        <translation>0.1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="63"/>
         <source>GRASS layer</source>
-        <translation type="unfinished"/>
+        <translation>طبقة GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="64"/>
         <source>Plugins</source>
-        <translation type="unfinished"/>
+        <translation>برامج الوصلات الخارجية</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="147"/>
         <source>Add GRASS raster layer</source>
-        <translation type="unfinished"/>
+        <translation>إضافة طبقة الشبكية GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="152"/>
         <source>Open GRASS tools</source>
-        <translation type="unfinished"/>
+        <translation>فتح أدوات GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="154"/>
         <source>Display Current Grass Region</source>
-        <translation type="unfinished"/>
+        <translation>عرض المنطقة الحالية Grass</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="159"/>
         <source>Edit Current Grass Region</source>
-        <translation type="unfinished"/>
+        <translation>تحرير المنطقة الحالية Grass</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="162"/>
         <source>Edit Grass Vector layer</source>
-        <translation type="unfinished"/>
+        <translation>تحرير الطبقة الخطية GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="137"/>
         <source>Open Mapset</source>
-        <translation type="unfinished"/>
+        <translation>فتح مجموعة الخرائط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="139"/>
         <source>New Mapset</source>
-        <translation type="unfinished"/>
+        <translation>مجموعة الخرائط جديدة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="141"/>
         <source>Close Mapset</source>
-        <translation type="unfinished"/>
+        <translation>غلق مجموعة الخرائط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="144"/>
         <source>Add GRASS Vector Layer</source>
-        <translation type="unfinished"/>
+        <translation>إضافة طبقة خطية GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="146"/>
         <source>Adds a GRASS vector layer to the map canvas</source>
-        <translation type="unfinished"/>
+        <translation>إنشاء طبقة خطية GRASS إلى لوحة الخريطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="149"/>
         <source>Adds a GRASS raster layer to the map canvas</source>
-        <translation type="unfinished"/>
+        <translation>إضافة طبقة الشبكية GRASS الى لوحة الخريطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="150"/>
         <source>Open GRASS Tools</source>
-        <translation type="unfinished"/>
+        <translation>فتح أدوات GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="156"/>
@@ -29068,17 +29092,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="161"/>
         <source>Edit the current GRASS region</source>
-        <translation type="unfinished"/>
+        <translation>تحرير المنطقة الحالية Grass</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="164"/>
         <source>Edit the currently selected GRASS vector layer.</source>
-        <translation type="unfinished"/>
+        <translation>تحرير الطبقة الخطية الحالية المحدد GRASS .</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="165"/>
         <source>Create New Grass Vector</source>
-        <translation type="unfinished"/>
+        <translation>طبقة خطية GRASS جديدة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="181"/>
@@ -29102,12 +29126,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="856"/>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="857"/>
         <source>&amp;GRASS</source>
-        <translation type="unfinished"/>
+        <translation>&amp;GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="193"/>
         <source>GRASS</source>
-        <translation type="unfinished"/>
+        <translation>GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="358"/>
@@ -29126,7 +29150,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="820"/>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="829"/>
         <source>Warning</source>
-        <translation type="unfinished"/>
+        <translation>تحذير </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="358"/>
@@ -29136,45 +29160,46 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="365"/>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن فتح الطبقة الخطية % 1 في مجموعة الخرائط % 2</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="405"/>
         <source>Cannot open GRASS vector:
  %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن فتح الطبقة الخطية GRASS:
+ % 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="476"/>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="543"/>
         <source>GRASS Edit is already running.</source>
-        <translation type="unfinished"/>
+        <translation>GRASS المحرر يشتغل بالفعل.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="551"/>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="552"/>
         <source>New vector name</source>
-        <translation type="unfinished"/>
+        <translation>اسم الطبقة الخطية جديد</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="579"/>
         <source>Cannot create new vector: %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن إنشاء طبقة الخطية جديدة: ٪1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="597"/>
         <source>New vector created but cannot be opened by data provider.</source>
-        <translation type="unfinished"/>
+        <translation>طبقة خطية جديدة تم إنشاؤها ولكن لا يمكن فتحها عن طريق موفر البيانات.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="611"/>
         <source>Cannot start editing.</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن بدء التحرير</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="617"/>
         <source>Cannot open vector for update.</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن فتح الطبقة الخطية للتحرير</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="650"/>
@@ -29184,27 +29209,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="661"/>
         <source>Cannot read current region: %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن الحصول على المنطقة: 1%</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="750"/>
         <source>Cannot open the mapset. %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن فتح الخريطة %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="766"/>
         <source>Cannot close mapset. %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن غلق الخريطة: % 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="820"/>
         <source>Cannot close current mapset. %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن غلق الخريطة  الحالية: % 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="829"/>
         <source>Cannot open GRASS mapset. %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن فتح مجموعة الخرائط GRASS % 1</translation>
     </message>
 </context>
 <context>
@@ -29225,17 +29250,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="67"/>
         <source>Groups not yet supported</source>
-        <translation type="unfinished"/>
+        <translation>مجموعات غير معتمدة حتى الآن</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="439"/>
         <source>Format not supported</source>
-        <translation type="unfinished"/>
+        <translation>تنسيق غير معتمد</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="456"/>
         <source>Cannot read data</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن قراءة البيانات</translation>
     </message>
 </context>
 <context>
@@ -29245,7 +29270,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="250"/>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="507"/>
         <source>Warning</source>
-        <translation type="unfinished"/>
+        <translation>تحذير </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="242"/>
@@ -29255,12 +29280,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="250"/>
         <source>Cannot read current region: %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن الحصول على المنطقة: 1%</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="507"/>
         <source>Cannot write region</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن كتابة المنطقة</translation>
     </message>
 </context>
 <context>
@@ -29268,32 +29293,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="14"/>
         <source>GRASS Region Settings</source>
-        <translation type="unfinished"/>
+        <translation>إعدادات المنطقة GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="20"/>
         <source>Extent</source>
-        <translation type="unfinished"/>
+        <translation>الامتداد </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="32"/>
         <source>North</source>
-        <translation type="unfinished"/>
+        <translation>الشمال</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="51"/>
         <source>West</source>
-        <translation type="unfinished"/>
+        <translation>الغرب</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="67"/>
         <source>East</source>
-        <translation type="unfinished"/>
+        <translation>الشرق</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="83"/>
         <source>South</source>
-        <translation type="unfinished"/>
+        <translation>الجنوب</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="96"/>
@@ -29304,42 +29329,42 @@ or change the following values</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="107"/>
         <source>Resolution</source>
-        <translation type="unfinished"/>
+        <translation>الدقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="113"/>
         <source>Cell width</source>
-        <translation type="unfinished"/>
+        <translation>عرض الخلية</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="126"/>
         <source>Cell height</source>
-        <translation type="unfinished"/>
+        <translation>ارتفاع الخلية</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="139"/>
         <source>Columns</source>
-        <translation type="unfinished"/>
+        <translation>الأعمدة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="149"/>
         <source>Rows</source>
-        <translation type="unfinished"/>
+        <translation>الصفوف</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="165"/>
         <source>Border</source>
-        <translation type="unfinished"/>
+        <translation>الحدود</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="171"/>
         <source>Color</source>
-        <translation type="unfinished"/>
+        <translation>لـون</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="178"/>
         <source>Width</source>
-        <translation type="unfinished"/>
+        <translation>عرض</translation>
     </message>
 </context>
 <context>
@@ -29347,12 +29372,12 @@ or change the following values</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="67"/>
         <source>Select GRASS Vector Layer</source>
-        <translation type="unfinished"/>
+        <translation>حدد الطبقة الخطية GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="74"/>
         <source>Select GRASS Raster Layer</source>
-        <translation type="unfinished"/>
+        <translation>حدد الطبقة الشبكية GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="81"/>
@@ -29377,27 +29402,27 @@ or change the following values</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="406"/>
         <source>Wrong GISDBASE</source>
-        <translation type="unfinished"/>
+        <translation>Wrong GISDBASE</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="426"/>
         <source>Select a map.</source>
-        <translation type="unfinished"/>
+        <translation>إختر خريطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="427"/>
         <source>No map</source>
-        <translation type="unfinished"/>
+        <translation>لا توجد خريطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="435"/>
         <source>No layer</source>
-        <translation type="unfinished"/>
+        <translation>لا توجد طبقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="436"/>
         <source>No layers available in this map</source>
-        <translation type="unfinished"/>
+        <translation>لا توجد طبقات متاحة في هذه الخريطة</translation>
     </message>
 </context>
 <context>
@@ -29405,27 +29430,27 @@ or change the following values</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="14"/>
         <source>Add GRASS Layer</source>
-        <translation type="unfinished"/>
+        <translation>إضافة طبقة GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="20"/>
         <source>Gisdbase</source>
-        <translation type="unfinished"/>
+        <translation>Gisdbase</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="40"/>
         <source>Location</source>
-        <translation type="unfinished"/>
+        <translation>الموقع</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="50"/>
         <source>Mapset</source>
-        <translation type="unfinished"/>
+        <translation>مجموعة الخرائط</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="60"/>
         <source>Map name</source>
-        <translation type="unfinished"/>
+        <translation>اسم الخريطة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="67"/>
@@ -29435,12 +29460,12 @@ or change the following values</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="77"/>
         <source>Layer</source>
-        <translation type="unfinished"/>
+        <translation>طبقة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="97"/>
         <source>Browse...</source>
-        <translation type="unfinished"/>
+        <translation>استعرض...</translation>
     </message>
 </context>
 <context>
@@ -29448,24 +29473,24 @@ or change the following values</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="40"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="41"/>
         <source>Ctrl+Shift+C</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Shift+C</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="57"/>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="82"/>
         <source>Warning</source>
-        <translation type="unfinished"/>
+        <translation>تحذير </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="57"/>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="82"/>
         <source>Cannot rename the lock file %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن إعادة تسمية الملف القفل ٪1</translation>
     </message>
 </context>
 <context>
@@ -29473,43 +29498,43 @@ or change the following values</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="58"/>
         <source>GRASS Tools</source>
-        <translation type="unfinished"/>
+        <translation>أدوات GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="70"/>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="119"/>
         <source>GRASS Tools: %1/%2</source>
-        <translation type="unfinished"/>
+        <translation>GRASS أدوات : %1/%2</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="124"/>
         <source>GRASS Direct Tools</source>
-        <translation type="unfinished"/>
+        <translation>الأدوات المباشرة GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="137"/>
         <source>Modules Tree</source>
-        <translation type="unfinished"/>
+        <translation>شجرة الوحدات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="138"/>
         <source>Modules List</source>
-        <translation type="unfinished"/>
+        <translation>قائمة الوحدات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="139"/>
         <source>Browser</source>
-        <translation type="unfinished"/>
+        <translation>متصفح</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="164"/>
         <source>Direct Modules Tree</source>
-        <translation type="unfinished"/>
+        <translation>شجرة الوحدات المباشرة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="165"/>
         <source>Direct Modules List</source>
-        <translation type="unfinished"/>
+        <translation>قائمة الوحدات المباشرة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="218"/>
@@ -29522,7 +29547,7 @@ or change the following values</source>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="287"/>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="299"/>
         <source>Warning</source>
-        <translation type="unfinished"/>
+        <translation>تحذير </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="227"/>
@@ -29532,24 +29557,26 @@ or change the following values</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="282"/>
         <source>The config file (%1) not found.</source>
-        <translation type="unfinished"/>
+        <translation>ملف التكوين (٪1) غير موجود.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="287"/>
         <source>Cannot open config file (%1).</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن فتح ملف التكوين (٪1).</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="296"/>
         <source>Cannot read config file (%1):</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن قراءة ملف التكوين (٪1):</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="297"/>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"/>
+        <translation>
+%1
+في السطر٪2 العمود ٪3</translation>
     </message>
 </context>
 <context>
@@ -29557,39 +29584,39 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="20"/>
         <source>Grass Tools</source>
-        <translation type="unfinished"/>
+        <translation>أدوات GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="30"/>
         <source>Modules Tree</source>
-        <translation type="unfinished"/>
+        <translation>شجرة الوحدات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="46"/>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="101"/>
         <source>1</source>
-        <translation type="unfinished"/>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="55"/>
         <source>Modules List</source>
-        <translation type="unfinished"/>
+        <translation>قائمة الوحدات</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="61"/>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="116"/>
         <source>Filter</source>
-        <translation type="unfinished"/>
+        <translation>تصفية</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="85"/>
         <source>Direct Modules Tree</source>
-        <translation type="unfinished"/>
+        <translation>شجرة الوحدات المباشرة</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="110"/>
         <source>Direct Modules List</source>
-        <translation type="unfinished"/>
+        <translation>قائمة الوحدات المباشرة</translation>
     </message>
 </context>
 <context>
@@ -29597,60 +29624,61 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="39"/>
         <source>Add feature</source>
-        <translation type="unfinished"/>
+        <translation>إضافة الميزات</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="56"/>
         <source>Start editing failed</source>
-        <translation type="unfinished"/>
+        <translation>بدء تحرير الحقل</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="57"/>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن فتح الموفر للتحرير</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="79"/>
         <source>Stop editing</source>
-        <translation type="unfinished"/>
+        <translation>ايقاف التحرير</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="80"/>
         <source>Do you want to save the changes to layer %1?</source>
-        <translation type="unfinished"/>
+        <translation>هل تريد حفظ التغييرات إلى الطبقة 1٪؟</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="104"/>
         <source>Error</source>
-        <translation type="unfinished"/>
+        <translation>خطأ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="105"/>
         <source>Problems during roll back</source>
-        <translation type="unfinished"/>
+        <translation>مشاكل أثناء العودة إلى الحالة السابقة</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="133"/>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="154"/>
         <source>Commit errors</source>
-        <translation type="unfinished"/>
+        <translation>أخطاء في التنفيذ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="134"/>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="155"/>
         <source>Could not commit changes to layer %1</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن تنفيذ التغييرات للطبقة 1٪</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="136"/>
         <source>Errors: %1
 </source>
-        <translation type="unfinished"/>
+        <translation>خطأ: %1
+</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="143"/>
         <source>Show more</source>
-        <translation type="unfinished"/>
+        <translation>إظهار المزيد</translation>
     </message>
 </context>
 <context>
@@ -29658,58 +29686,58 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="68"/>
         <source>Browse</source>
-        <translation type="unfinished"/>
+        <translation>استعرض</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="83"/>
         <source>Layer name</source>
-        <translation type="unfinished"/>
+        <translation>اسم طبقة</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="84"/>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>نوع</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="85"/>
         <source>Provider</source>
-        <translation type="unfinished"/>
+        <translation>موفر</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="86"/>
         <source>Datasource</source>
-        <translation type="unfinished"/>
+        <translation>مصدر البيانات</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="97"/>
         <source>none</source>
-        <translation type="unfinished"/>
+        <translation>لا شيء</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="251"/>
         <source>Select file to replace &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>حدد الملف للتبديل &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="256"/>
         <source>Please select exactly one file.</source>
-        <translation type="unfinished"/>
+        <translation>الرجاء اختيار ملف واحد بالضبط.</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="266"/>
         <source>Select new directory of selected files</source>
-        <translation type="unfinished"/>
+        <translation>حدد الدليل الجديد من الملفات المحددة</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="268"/>
         <source>All files (*)</source>
-        <translation type="unfinished"/>
+        <translation>جميع الملفات (*)</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="329"/>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="348"/>
         <source>Unhandled layer will be lost.</source>
-        <translation type="unfinished"/>
+        <translation>سيتم فقدان الطبقة الغير معالجة.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgshandlebadlayers.cpp" line="330"/>
@@ -29724,7 +29752,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/ui/qgshandlebadlayersbase.ui" line="14"/>
         <source>Handle bad layers</source>
-        <translation type="unfinished"/>
+        <translation>التعامل مع الطبقات السيئة</translation>
     </message>
 </context>
 <context>
@@ -29732,12 +29760,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="44"/>
         <source>Handle bad layers</source>
-        <translation type="unfinished"/>
+        <translation>التعامل مع الطبقات السيئة</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="45"/>
         <source>%1 of %2 bad layers were not fixable.</source>
-        <translation type="unfinished"/>
+        <translation>٪ 1 من٪ 2 طبقات سيئة ليست قابلة للتثبيت.</translation>
     </message>
 </context>
 <context>
@@ -29745,7 +29773,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="76"/>
         <source>QGIS Help</source>
-        <translation type="unfinished"/>
+        <translation>المساعد QGIS</translation>
     </message>
 </context>
 <context>
@@ -29753,7 +29781,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/helpviewer/qgshelpviewerbase.ui" line="14"/>
         <source>QGIS Help</source>
-        <translation type="unfinished"/>
+        <translation>المساعد QGIS</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewerbase.ui" line="32"/>
@@ -29766,17 +29794,17 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgshtmlannotationdialog.cpp" line="26"/>
         <source>HTML annotation</source>
-        <translation type="unfinished"/>
+        <translation>شرح HTML</translation>
     </message>
     <message>
         <location filename="../src/app/qgshtmlannotationdialog.cpp" line="38"/>
         <source>Delete</source>
-        <translation type="unfinished"/>
+        <translation>إلغاء</translation>
     </message>
     <message>
         <location filename="../src/app/qgshtmlannotationdialog.cpp" line="77"/>
         <source>html</source>
-        <translation type="unfinished"/>
+        <translation>html</translation>
     </message>
 </context>
 <context>
@@ -29789,57 +29817,57 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="323"/>
         <source>Received %1 of %2 bytes</source>
-        <translation type="unfinished"/>
+        <translation>تلقى٪ 1 من٪ 2 بايت</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="327"/>
         <source>Received %1 bytes (total unknown)</source>
-        <translation type="unfinished"/>
+        <translation>تلقى٪ 1 بايت (الجميع غير معروف)</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="359"/>
         <source>HTTP response completed, however there was an error: %1</source>
-        <translation type="unfinished"/>
+        <translation>الاستجابة HTTP انتهت، ولكن كان هناك خطأ :٪1</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="410"/>
         <source>HTTP transaction completed, however there was an error: %1</source>
-        <translation type="unfinished"/>
+        <translation>المعاملة HTTP انتهت، ولكن كان هناك خطأ :٪1</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="439"/>
         <source>Not connected</source>
-        <translation type="unfinished"/>
+        <translation>غير متصل</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="445"/>
         <source>Looking up &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>البحث حتى &apos;٪ 1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="451"/>
         <source>Connecting to &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>جار الاتصال &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="457"/>
         <source>Sending request &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>إرسال الطلب &apos;٪1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="463"/>
         <source>Receiving reply</source>
-        <translation type="unfinished"/>
+        <translation>تلقي الرد</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="469"/>
         <source>Response is complete</source>
-        <translation type="unfinished"/>
+        <translation>استجابة كاملة</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="475"/>
         <source>Closing down connection</source>
-        <translation type="unfinished"/>
+        <translation>إغلاق الاتصال</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgshttptransaction.cpp" line="485"/>
@@ -29854,12 +29882,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/interpolation/qgsidwinterpolatordialogbase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"/>
+        <translation>حوار</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsidwinterpolatordialogbase.ui" line="28"/>
         <source>Distance coefficient P</source>
-        <translation type="unfinished"/>
+        <translation>المسافة ضارب P</translation>
     </message>
 </context>
 <context>
@@ -29867,32 +29895,32 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="14"/>
         <source>Identify Results</source>
-        <translation type="unfinished"/>
+        <translation>تحديد النتائج</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="101"/>
         <source>Layer</source>
-        <translation type="unfinished"/>
+        <translation>طبقة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="106"/>
         <source>FID</source>
-        <translation type="unfinished"/>
+        <translation>FID</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="111"/>
         <source>Attribute</source>
-        <translation type="unfinished"/>
+        <translation>السمة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="116"/>
         <source>Value</source>
-        <translation type="unfinished"/>
+        <translation>قيمة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="137"/>
         <source>Expand tree.</source>
-        <translation type="unfinished"/>
+        <translation>توسيع الشجرة.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="140"/>
@@ -29903,62 +29931,62 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="213"/>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="233"/>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="193"/>
         <source>Clear Results</source>
-        <translation type="unfinished"/>
+        <translation>اضح النتائج</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="263"/>
         <source>Help</source>
-        <translation type="unfinished"/>
+        <translation>المساعدة </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="277"/>
         <source>Select identify mode</source>
-        <translation type="unfinished"/>
+        <translation>اختر تحديد الوضع</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="280"/>
         <source>Mode</source>
-        <translation type="unfinished"/>
+        <translation>النمط</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="28"/>
         <source>Select view mode for raster layers</source>
-        <translation type="unfinished"/>
+        <translation>حدد وضع العرض للطبقات الشبكية</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="31"/>
         <source>View</source>
-        <translation type="unfinished"/>
+        <translation>مشاهدة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="310"/>
         <source>Auto open form</source>
-        <translation type="unfinished"/>
+        <translation>فتح النموذج تلقائيا</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="151"/>
         <source>Collapse tree.</source>
-        <translation type="unfinished"/>
+        <translation>طي الشجرة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="165"/>
         <source>New results will be expanded by default.</source>
-        <translation type="unfinished"/>
+        <translation>سيتم توسيع النتائج الجديدة بشكل تلقائي.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="210"/>
         <source>Copy selected feature to clipboard.</source>
-        <translation type="unfinished"/>
+        <translation>نسخة الميزة المحدد إلى الحافظة.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="230"/>
         <source>Print selected HTML response.</source>
-        <translation type="unfinished"/>
+        <translation>طباعة الاستجابة HTML المحددة.</translation>
     </message>
 </context>
 <context>
@@ -29966,48 +29994,48 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="267"/>
         <source>Identify Results</source>
-        <translation type="unfinished"/>
+        <translation>تحديد النتائج</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="279"/>
         <source>Feature</source>
-        <translation type="unfinished"/>
+        <translation>الميزة</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="280"/>
         <source>Value</source>
-        <translation type="unfinished"/>
+        <translation>قيمة</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="296"/>
         <source>Current layer</source>
-        <translation type="unfinished"/>
+        <translation>الطبقة الحالية</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="297"/>
         <source>Top down, stop at first</source>
-        <translation type="unfinished"/>
+        <translation>أعلى إلى أسفل، وقوف في البداية</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="298"/>
         <source>Top down</source>
-        <translation type="unfinished"/>
+        <translation>أعلى إلى أسفل</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="299"/>
         <source>Layer selection</source>
-        <translation type="unfinished"/>
+        <translation>اختيار طبقة</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="444"/>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="760"/>
         <source>(Derived)</source>
-        <translation type="unfinished"/>
+        <translation>(مشتق)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="459"/>
         <source>(Actions)</source>
-        <translation type="unfinished"/>
+        <translation>(إجراء)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="465"/>
@@ -30015,7 +30043,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="951"/>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1317"/>
         <source>Edit feature form</source>
-        <translation type="unfinished"/>
+        <translation>تحرير ميزة الشكل</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="465"/>
@@ -30023,62 +30051,62 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="951"/>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1317"/>
         <source>View feature form</source>
-        <translation type="unfinished"/>
+        <translation>عرض الميزة الشكل</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="305"/>
         <source>Table</source>
-        <translation type="unfinished"/>
+        <translation>جدول</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="304"/>
         <source>Tree</source>
-        <translation type="unfinished"/>
+        <translation>شجرة</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="306"/>
         <source>Graph</source>
-        <translation type="unfinished"/>
+        <translation>رسم بياني</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="438"/>
         <source>feature id</source>
-        <translation type="unfinished"/>
+        <translation>معرف الميزة</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="698"/>
         <source>Format</source>
-        <translation type="unfinished"/>
+        <translation>التنسيق</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="747"/>
         <source>No attributes.</source>
-        <translation type="unfinished"/>
+        <translation>لا توجد خواص</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="957"/>
         <source>Zoom to feature</source>
-        <translation type="unfinished"/>
+        <translation>تكبير إلى الميزة</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="958"/>
         <source>Copy feature</source>
-        <translation type="unfinished"/>
+        <translation>نسخ الميزة</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="959"/>
         <source>Toggle feature selection</source>
-        <translation type="unfinished"/>
+        <translation>ثبت الميزة  المختارة</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="962"/>
         <source>Copy attribute value</source>
-        <translation type="unfinished"/>
+        <translation>نسخ قيمة السمة</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="963"/>
         <source>Copy feature attributes</source>
-        <translation type="unfinished"/>
+        <translation>نسخ سمات الميزة </translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="976"/>
@@ -30088,57 +30116,57 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="984"/>
         <source>Clear results</source>
-        <translation type="unfinished"/>
+        <translation>اضح النتائج</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="985"/>
         <source>Clear highlights</source>
-        <translation type="unfinished"/>
+        <translation>اضح التمييز</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="986"/>
         <source>Highlight all</source>
-        <translation type="unfinished"/>
+        <translation>تمييز الكل</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="987"/>
         <source>Highlight layer</source>
-        <translation type="unfinished"/>
+        <translation>تمييز الطبقة</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="990"/>
         <source>Activate layer</source>
-        <translation type="unfinished"/>
+        <translation>تمكين الطبقة</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="991"/>
         <source>Layer properties...</source>
-        <translation type="unfinished"/>
+        <translation>خصائص الطبقة ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="994"/>
         <source>Expand all</source>
-        <translation type="unfinished"/>
+        <translation>توسيع الكل</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="995"/>
         <source>Collapse all</source>
-        <translation type="unfinished"/>
+        <translation>طي الكل</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1585"/>
         <source>Attributes changed</source>
-        <translation type="unfinished"/>
+        <translation>تغيرت السمات</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1744"/>
         <source>Cannot print</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن الطباعة</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1744"/>
         <source>Cannot print this item</source>
-        <translation type="unfinished"/>
+        <translation>لا يمكن طباعة العنصر</translation>
     </message>
 </context>
 <context>
@@ -30146,7 +30174,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="93"/>
         <source>Print</source>
-        <translation type="unfinished"/>
+        <translation>طباعة</translation>
     </message>
 </context>
 <context>
@@ -30154,7 +30182,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="211"/>
         <source>Loading...</source>
-        <translation type="unfinished"/>
+        <translation>تحميل...</translation>
     </message>
 </context>
 <context>
@@ -30162,7 +30190,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsimagewarper.cpp" line="233"/>
         <source>Progress indication</source>
-        <translation type="unfinished"/>
+        <translation>مؤشر التقدم</translation>
     </message>
 </context>
 <context>
@@ -30171,7 +30199,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="60"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="364"/>
         <source>Triangular interpolation (TIN)</source>
-        <translation type="unfinished"/>
+        <translation>الاستيفاء الثلاثي (TIN)</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="61"/>
@@ -30182,39 +30210,39 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="112"/>
         <source>No input data for interpolation</source>
-        <translation type="unfinished"/>
+        <translation>لا توجد بيانات إدخال للاستيفاء</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="112"/>
         <source>Please add one or more input layers</source>
-        <translation type="unfinished"/>
+        <translation>يرجى إضافة واحد أو أكثر من الطبقات المدخلة</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="121"/>
         <source>Output file name invalid</source>
-        <translation type="unfinished"/>
+        <translation>اسم ملف الإخراج غير صالحة</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="121"/>
         <source>Please enter a valid output file name</source>
-        <translation type="unfinished"/>
+        <translation>الرجاء إدخال اسم ملف الإخراج.</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="171"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="284"/>
         <source>Break lines</source>
-        <translation type="unfinished"/>
+        <translation>خطوط الفصم</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="175"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="283"/>
         <source>Structure lines</source>
-        <translation type="unfinished"/>
+        <translation>خطوط الهيكل</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="282"/>
         <source>Points</source>
-        <translation type="unfinished"/>
+        <translation>نقاط </translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="311"/>
@@ -30227,123 +30255,123 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="20"/>
         <source>Interpolation plugin</source>
-        <translation type="unfinished"/>
+        <translation>برنامج المساعد الاستنتاج</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="32"/>
         <source>Input</source>
-        <translation type="unfinished"/>
+        <translation>إدخال</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="38"/>
         <source>Vector layers</source>
-        <translation type="unfinished"/>
+        <translation>طبقات خطية</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="58"/>
         <source>Interpolation attribute</source>
-        <translation type="unfinished"/>
+        <translation>سمة الاستيفاء</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="78"/>
         <source>Use z-Coordinate for interpolation</source>
-        <translation type="unfinished"/>
+        <translation>استخدم الإحداثية z الاستيفاء</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="85"/>
         <source>Add</source>
-        <translation type="unfinished"/>
+        <translation>إضافة</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="92"/>
         <source>Remove</source>
-        <translation type="unfinished"/>
+        <translation>حذف</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="100"/>
         <source>Vector layer</source>
-        <translation type="unfinished"/>
+        <translation>طبقة الخطية</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="105"/>
         <source>Attribute</source>
-        <translation type="unfinished"/>
+        <translation>السمة</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="110"/>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>نوع</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="127"/>
         <source>Output</source>
-        <translation type="unfinished"/>
+        <translation>المخرجات</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="133"/>
         <source>Interpolation method</source>
-        <translation type="unfinished"/>
+        <translation>طريقة الاستيفاء</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="146"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="307"/>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="157"/>
         <source>Number of columns</source>
-        <translation type="unfinished"/>
+        <translation>عدد الأعمدة</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="174"/>
         <source>Number of rows</source>
-        <translation type="unfinished"/>
+        <translation>عدد الصفوف</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="191"/>
         <source>Cellsize X</source>
-        <translation type="unfinished"/>
+        <translation>حجم الخلية X</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="211"/>
         <source>Cellsize Y</source>
-        <translation type="unfinished"/>
+        <translation>حجم الخلية Y</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="233"/>
         <source>X min</source>
-        <translation type="unfinished"/>
+        <translation>X اﻷدنى </translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="246"/>
         <source>X max</source>
-        <translation type="unfinished"/>
+        <translation>X الأقصى</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="259"/>
         <source>Y min</source>
-        <translation type="unfinished"/>
+        <translation>Y اﻷدنى </translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="272"/>
         <source>Y max</source>
-        <translation type="unfinished"/>
+        <translation>Y الأقصى</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="285"/>
         <source>Set to current extent</source>
-        <translation type="unfinished"/>
+        <translation>تعيين الحد الحالي</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="294"/>
         <source>Output file </source>
-        <translation type="unfinished"/>
+        <translation>ملف الإخراج</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="314"/>
         <source>Add result to project</source>
-        <translation type="unfinished"/>
+        <translation>إضافة النتيجة إلى المشروع</translation>
     </message>
 </context>
 <context>
@@ -30353,7 +30381,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="49"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="55"/>
         <source>&amp;Interpolation</source>
-        <translation type="unfinished"/>
+        <translation>&amp;الاستنتاج</translation>
     </message>
 </context>
 <context>
@@ -30370,17 +30398,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsinvertedpolygonrendererwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"/>
+        <translation>شكل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsinvertedpolygonrendererwidgetbase.ui" line="22"/>
         <source>Sub renderer:</source>
-        <translation type="unfinished"/>
+        <translation>فرع العارض:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsinvertedpolygonrendererwidgetbase.ui" line="37"/>
         <source>Merge polygons before rendering (slow)</source>
-        <translation type="unfinished"/>
+        <translation>دمج المضلعات قبل تقديم (بطيئة)</translation>
     </message>
 </context>
 <context>
@@ -30393,12 +30421,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsludialogbase.ui" line="23"/>
         <source>Lower value</source>
-        <translation type="unfinished"/>
+        <translation>أقل قيمة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsludialogbase.ui" line="36"/>
         <source>Upper value</source>
-        <translation type="unfinished"/>
+        <translation>القيمة العليا</translation>
     </message>
 </context>
 <context>
@@ -30406,7 +30434,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabeldialog.cpp" line="226"/>
         <source>Auto</source>
-        <translation type="unfinished"/>
+        <translation>تلقائي</translation>
     </message>
 </context>
 <context>
@@ -30414,63 +30442,63 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="20"/>
         <source>Form1</source>
-        <translation type="unfinished"/>
+        <translation>الشكل 1</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="30"/>
         <source>Label Properties</source>
-        <translation type="unfinished"/>
+        <translation>خصائص التسمية</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="54"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="513"/>
         <source>Placement</source>
-        <translation type="unfinished"/>
+        <translation>موضع</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="63"/>
         <source>Below Right</source>
-        <translation type="unfinished"/>
+        <translation>أسفل اليمين</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="70"/>
         <source>Right</source>
-        <translation type="unfinished"/>
+        <translation>اليمين</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="77"/>
         <source>Below</source>
-        <translation type="unfinished"/>
+        <translation>تحت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="84"/>
         <source>Over</source>
-        <translation type="unfinished"/>
+        <translation>فوق</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="94"/>
         <source>Above</source>
-        <translation type="unfinished"/>
+        <translation>أعلى</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="101"/>
         <source>Left</source>
-        <translation type="unfinished"/>
+        <translation>اليسار</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="108"/>
         <source>Below Left</source>
-        <translation type="unfinished"/>
+        <translation>أسفل اليسار</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="115"/>
         <source>Above Right</source>
-        <translation type="unfinished"/>
+        <translation>أعلى اليمين</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="122"/>
         <source>Above Left</source>
-        <translation type="unfinished"/>
+        <translation>أعلى اليسار</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="132"/>
@@ -30480,168 +30508,168 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="144"/>
         <source>Maximum</source>
-        <translation type="unfinished"/>
+        <translation>الأقصى</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="154"/>
         <source>Minimum</source>
-        <translation type="unfinished"/>
+        <translation>الأدنى </translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="176"/>
         <source>Buffer labels</source>
-        <translation type="unfinished"/>
+        <translation>تسميات المخزن المؤقت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="188"/>
         <source>Buffer size</source>
-        <translation type="unfinished"/>
+        <translation>حجم المخزن المؤقت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="202"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="289"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="413"/>
         <source>In points</source>
-        <translation type="unfinished"/>
+        <translation>في نقطة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="207"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="294"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="418"/>
         <source>In map units</source>
-        <translation type="unfinished"/>
+        <translation>في وحدات الخريطة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="215"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="445"/>
         <source>Color</source>
-        <translation type="unfinished"/>
+        <translation>لـون</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="237"/>
         <source>%</source>
-        <translation type="unfinished"/>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="240"/>
         <source>Transparency </source>
-        <translation type="unfinished"/>
+        <translation>شفافية</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="256"/>
         <source>Offset</source>
-        <translation type="unfinished"/>
+        <translation>انحراف</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="262"/>
         <source>X offset </source>
-        <translation type="unfinished"/>
+        <translation>انحراف X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="275"/>
         <source>Y offset </source>
-        <translation type="unfinished"/>
+        <translation>انحراف Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="305"/>
         <source>Basic label options</source>
-        <translation type="unfinished"/>
+        <translation>خيارات التسمية الأساسية</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="311"/>
         <source>Field containing label</source>
-        <translation type="unfinished"/>
+        <translation>الحقل الذي يحتوي التسمية</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="331"/>
         <source>Default label</source>
-        <translation type="unfinished"/>
+        <translation>التسمية الافتراضية</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="351"/>
         <source>Font size</source>
-        <translation type="unfinished"/>
+        <translation>حجم الخط</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="364"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="532"/>
         <source>Angle (deg)</source>
-        <translation type="unfinished"/>
+        <translation>زاوية (درجة)</translation>
     </message>
     <message utf8="true">
         <location filename="../src/ui/qgslabeldialogbase.ui" line="399"/>
         <source>°</source>
-        <translation type="unfinished"/>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="432"/>
         <source>Font</source>
-        <translation type="unfinished"/>
+        <translation>نوع الخط:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="452"/>
         <source>Multiline labels?</source>
-        <translation type="unfinished"/>
+        <translation>تسميات متعددة الأسطر؟</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="462"/>
         <source>Label only selected features</source>
-        <translation type="unfinished"/>
+        <translation>تسمية الميزات المحددة فقط</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="477"/>
         <source>Advanced</source>
-        <translation type="unfinished"/>
+        <translation>متقدم </translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="501"/>
         <source>Data defined placement</source>
-        <translation type="unfinished"/>
+        <translation>موضع البيانات المعرفة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="548"/>
         <source>Data defined properties</source>
-        <translation type="unfinished"/>
+        <translation>خصائص البيانات المعرفة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="560"/>
         <source>&amp;Font family</source>
-        <translation type="unfinished"/>
+        <translation>&amp;عائلة الخط</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="579"/>
         <source>&amp;Bold</source>
-        <translation type="unfinished"/>
+        <translation>&amp;خط عريض</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="598"/>
         <source>&amp;Italic</source>
-        <translation type="unfinished"/>
+        <translation>&amp;خط مائل </translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="617"/>
         <source>&amp;Underline</source>
-        <translation type="unfinished"/>
+        <translation>&amp;مسطر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="636"/>
         <source>&amp;Size</source>
-        <translation type="unfinished"/>
+        <translation>&amp;حجم</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="655"/>
         <source>Size units</source>
-        <translation type="unfinished"/>
+        <translation>حجم الوحدات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="674"/>
         <source>&amp;Color</source>
-        <translation type="unfinished"/>
+        <translation>&amp;لـون</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="690"/>
         <source>Strikeout</source>
-        <translation type="unfinished"/>
+        <translation>شطب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="703"/>
@@ -30651,47 +30679,47 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="724"/>
         <source>Transparency:</source>
-        <translation type="unfinished"/>
+        <translation>شفافية:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="747"/>
         <source>Size:</source>
-        <translation type="unfinished"/>
+        <translation>حجم:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="763"/>
         <source>Data defined position</source>
-        <translation type="unfinished"/>
+        <translation>موقع البيانات المعرفة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="775"/>
         <source>X Coordinate</source>
-        <translation type="unfinished"/>
+        <translation>احداثيات X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="794"/>
         <source>Y Coordinate</source>
-        <translation type="unfinished"/>
+        <translation>احداثيات Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="813"/>
         <source>X Offset (pts)</source>
-        <translation type="unfinished"/>
+        <translation>انحراف X (نقاط)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="832"/>
         <source>Y Offset (pts)</source>
-        <translation type="unfinished"/>
+        <translation>انحراف Y (نقاط)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="868"/>
         <source>Preview:</source>
-        <translation type="unfinished"/>
+        <translation>معاينة:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="877"/>
         <source>QGIS Rocks!</source>
-        <translation type="unfinished"/>
+        <translation>الصخور QGIS!</translation>
     </message>
 </context>
 <context>
@@ -30699,17 +30727,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabelpropertydialog.cpp" line="75"/>
         <source>Expression result</source>
-        <translation type="unfinished"/>
+        <translation>تعبير النتيجة</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelpropertydialog.cpp" line="114"/>
         <source>Font color</source>
-        <translation type="unfinished"/>
+        <translation>لون الخط</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelpropertydialog.cpp" line="115"/>
         <source>Buffer color</source>
-        <translation type="unfinished"/>
+        <translation>لون العازلة</translation>
     </message>
 </context>
 <context>
@@ -30717,150 +30745,152 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="14"/>
         <source>Label properties</source>
-        <translation type="unfinished"/>
+        <translation>خصائص التسمية</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="22"/>
         <source>Text</source>
-        <translation type="unfinished"/>
+        <translation>نص</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="34"/>
         <source>Font</source>
-        <translation type="unfinished"/>
+        <translation>نوع الخط:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="40"/>
         <source>Available typeface styles</source>
-        <translation type="unfinished"/>
+        <translation>يتوفر أساليب مواجهة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="75"/>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="356"/>
         <source>Size</source>
-        <translation type="unfinished"/>
+        <translation>حجم</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="100"/>
         <source>Style</source>
-        <translation type="unfinished"/>
+        <translation>نمط</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="130"/>
         <source>Underlined text</source>
-        <translation type="unfinished"/>
+        <translation>النص المسطر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="133"/>
         <source>U</source>
-        <translation type="unfinished"/>
+        <translation>U</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="164"/>
         <source>Strikeout text</source>
-        <translation type="unfinished"/>
+        <translation>شطب النص</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="167"/>
         <source>S</source>
-        <translation type="unfinished"/>
+        <translation>S</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="210"/>
         <source>Bold text
 (data defined only, overrides Style)</source>
-        <translation type="unfinished"/>
+        <translation>تغليظ
+(بيانات محددة فقط، يتجاوز النمط)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="214"/>
         <source>B</source>
-        <translation type="unfinished"/>
+        <translation>B</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="245"/>
         <source>Italic text
 (data defined only, overrides Style)</source>
-        <translation type="unfinished"/>
+        <translation>الخط المائل
+(بيانات محددة فقط، يتجاوز النمط)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="249"/>
         <source>I</source>
-        <translation type="unfinished"/>
+        <translation>I</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="264"/>
         <source>Display</source>
-        <translation type="unfinished"/>
+        <translation>عرض</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="278"/>
         <source>Scale-based</source>
-        <translation type="unfinished"/>
+        <translation>الشريط الأساسي</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="288"/>
         <source>Min </source>
-        <translation type="unfinished"/>
+        <translation>أدنى </translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="304"/>
         <source>Max </source>
-        <translation type="unfinished"/>
+        <translation>أقصى</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="322"/>
         <source>Show label</source>
-        <translation type="unfinished"/>
+        <translation>أظهر التسمية</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="329"/>
         <source>Ignores priority and permits collisions/overlaps</source>
-        <translation type="unfinished"/>
+        <translation>تجاهل الأولوية وسمح بالاصطدامات / التداخل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="332"/>
         <source>Always show (exceptions above)</source>
-        <translation type="unfinished"/>
+        <translation>أظهر دائما (الاستثناءات المذكورة أعلاه)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="342"/>
         <source>Buffer</source>
-        <translation type="unfinished"/>
+        <translation>مخزن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="391"/>
         <source>Position</source>
-        <translation type="unfinished"/>
+        <translation>الموضع</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="403"/>
         <source>Label distance</source>
-        <translation type="unfinished"/>
+        <translation>رمز المسافة</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="423"/>
         <source>X Coordinate</source>
-        <translation type="unfinished"/>
+        <translation>احداثيات X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="449"/>
         <source>Y Coordinate</source>
-        <translation type="unfinished"/>
+        <translation>احداثيات Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="475"/>
         <source>Horizontal alignment</source>
-        <translation type="unfinished"/>
+        <translation>محاذاة أفقية</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="495"/>
         <source>Vertical alignment</source>
-        <translation type="unfinished"/>
+        <translation>محاذاة رأسية</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="515"/>
         <source>Rotation</source>
-        <translation type="unfinished"/>
+        <translation>دوران</translation>
     </message>
 </context>
 <context>
@@ -30868,7 +30898,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="55"/>
         <source>points</source>
-        <translation type="unfinished"/>
+        <translation>نقاط </translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="55"/>
@@ -30883,7 +30913,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgslabelinggui.cpp" line="64"/>
         <location filename="../src/app/qgslabelinggui.cpp" line="65"/>
         <source>map units</source>
-        <translation type="unfinished"/>
+        <translation>وحدات الخريطة</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="56"/>
@@ -30897,27 +30927,27 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgslabelinggui.cpp" line="64"/>
         <location filename="../src/app/qgslabelinggui.cpp" line="65"/>
         <source>mm</source>
-        <translation type="unfinished"/>
+        <translation>مم</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="59"/>
         <source>% of length</source>
-        <translation type="unfinished"/>
+        <translation>٪ من طول</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="393"/>
         <source>%1 not found. Default substituted.</source>
-        <translation type="unfinished"/>
+        <translation>٪ 1 غير موجود. استبداله افتراضيا .</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="394"/>
         <source>Chosen font</source>
-        <translation type="unfinished"/>
+        <translation>الخط المختار</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="827"/>
         <source>string </source>
-        <translation type="unfinished"/>
+        <translation>سلسلة أحرف</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="832"/>
@@ -30932,7 +30962,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="881"/>
         <source>double [0.0-10.0]</source>
-        <translation type="unfinished"/>
+        <translation>عدد مزدوج [0.0-10.0]</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="903"/>

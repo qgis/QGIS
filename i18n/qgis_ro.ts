@@ -111,7 +111,7 @@
     <name>DBManager</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"/>
+        <translation>Ne pare rău</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
@@ -119,7 +119,7 @@
     </message>
     <message>
         <source>Select the table you want export to file.</source>
-        <translation type="unfinished"/>
+        <translation>Selectați tabelul pe care doriți să-l exportați ca fișier.</translation>
     </message>
     <message>
         <source>DB Manager</source>
@@ -127,7 +127,7 @@
     </message>
     <message>
         <source>Info</source>
-        <translation type="unfinished"/>
+        <translation>Informaţii</translation>
     </message>
     <message>
         <source>Table</source>
@@ -163,18 +163,18 @@
     </message>
     <message>
         <source>&amp;Import layer/file</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Importare strat/fişier</translation>
     </message>
     <message>
         <source>&amp;Export to file</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Exportare în fișier</translation>
     </message>
 </context>
 <context>
     <name>DBManagerPlugin</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"/>
+        <translation>Ne pare rău</translation>
     </message>
     <message>
         <source>Unable to find a valid unique field</source>
@@ -194,7 +194,7 @@
     </message>
     <message>
         <source>Host:</source>
-        <translation type="unfinished"/>
+        <translation>Gazdă:</translation>
     </message>
     <message>
         <source>User:</source>
@@ -207,15 +207,16 @@
     <message>
         <source>&lt;warning&gt; geometry_columns table doesn't exist!
 This table is essential for many GIS applications for enumeration of tables.</source>
-        <translation type="unfinished"/>
+        <translation>&lt;warning&gt; tabelul geometry_columns nu există!
+Acesta este esențial aplicațiilor GIS, pentru enumerarea tebelelor.</translation>
     </message>
     <message>
         <source>create new schemas</source>
-        <translation type="unfinished"/>
+        <translation>creează o nouă schemă</translation>
     </message>
     <message>
         <source>create temporary tables</source>
-        <translation type="unfinished"/>
+        <translation>creează o tabelă temporară</translation>
     </message>
     <message>
         <source>Not connected</source>
@@ -391,7 +392,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have usage privileges for this schema!</source>
-        <translation type="unfinished"/>
+        <translation>&lt;warning&gt; Acest utilizator nu are privilegii de utilizare pentru această schemă!</translation>
     </message>
     <message>
         <source>Rows (counted):</source>
@@ -399,19 +400,19 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>&lt;warning&gt; This user has read-only privileges.</source>
-        <translation type="unfinished"/>
+        <translation>&lt;warning&gt; Acest utilizator are privilegii numai de citire.</translation>
     </message>
     <message>
         <source>&lt;warning&gt; There&apos;s a significant difference between estimated and real row count. Consider running &lt;a href=&quot;action:vacuumanalyze/run&quot;&gt;VACUUM ANALYZE&lt;/a&gt;.</source>
-        <translation type="unfinished"/>
+        <translation>&lt;warning&gt; Există o diferență semnificativă între numărul estimat de rânduri și cel real. Luați în considerare rularea unei &lt;a href=&quot;action:vacuumanalyze/run&quot;&gt;ANALIZE VACUUM&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>&lt;warning&gt; No primary key defined for this table!</source>
-        <translation type="unfinished"/>
+        <translation>&lt;warning&gt; Nu s-a definit nici o cheie primară pentru acest tabel!</translation>
     </message>
     <message>
         <source>Scripts:</source>
-        <translation type="unfinished"/>
+        <translation>Script-uri:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; Version of installed scripts doesn't match version of released scripts!
@@ -453,7 +454,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>&amp;Versioning</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Versionare</translation>
     </message>
     <message>
         <source>&amp;Table</source>
@@ -461,7 +462,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>&quot;{0}&quot; not found</source>
-        <translation type="unfinished"/>
+        <translation>&quot;{0}&quot; nu a fost găsit</translation>
     </message>
     <message>
         <source>Filename:</source>
@@ -497,7 +498,7 @@ Interogare:
     </message>
     <message>
         <source>&amp;Create schema</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Creare schemă</translation>
     </message>
     <message>
         <source>&amp;Schema</source>
@@ -505,15 +506,15 @@ Interogare:
     </message>
     <message>
         <source>&amp;Delete (empty) schema</source>
-        <translation type="unfinished"/>
+        <translation>Ștergere schemă (vidă)</translation>
     </message>
     <message>
         <source>Delete selected item</source>
-        <translation type="unfinished"/>
+        <translation>Ştergere element selectat</translation>
     </message>
     <message>
         <source>&amp;Create table</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Creare tabel</translation>
     </message>
     <message>
         <source>&amp;Edit table</source>
@@ -521,11 +522,11 @@ Interogare:
     </message>
     <message>
         <source>&amp;Delete table/view</source>
-        <translation type="unfinished"/>
+        <translation>Ștergere tabelă/vedere</translation>
     </message>
     <message>
         <source>&amp;Empty table</source>
-        <translation type="unfinished"/>
+        <translation>Golir&amp;e tabelă</translation>
     </message>
     <message>
         <source>&amp;Move to schema</source>
@@ -553,19 +554,19 @@ Interogare:
     </message>
     <message>
         <source>hey!</source>
-        <translation type="unfinished"/>
+        <translation>hei!</translation>
     </message>
     <message>
         <source>Really delete schema %s?</source>
-        <translation type="unfinished"/>
+        <translation>Sigur doriţi ștergerea schemei %s?</translation>
     </message>
     <message>
         <source>Select a TABLE for editation.</source>
-        <translation type="unfinished"/>
+        <translation>Selectați o TABELĂ pentru editare.</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW for deletion.</source>
-        <translation type="unfinished"/>
+        <translation>Selectați o TABELĂ/VEDERE pentru ștergere.</translation>
     </message>
     <message>
         <source>Really delete table/view %s?</source>
@@ -573,7 +574,7 @@ Interogare:
     </message>
     <message>
         <source>Select a TABLE to empty it.</source>
-        <translation type="unfinished"/>
+        <translation>Selectați o TABELĂ pentru golire.</translation>
     </message>
     <message>
         <source>Really delete all items from table %s?</source>
@@ -581,7 +582,7 @@ Interogare:
     </message>
     <message>
         <source>Select a TABLE/VIEW.</source>
-        <translation type="unfinished"/>
+        <translation>Selectați o TABELĂ/VEDERE.</translation>
     </message>
     <message>
         <source>Do you want to %s all triggers?</source>
@@ -625,7 +626,7 @@ Interogare:
     </message>
     <message>
         <source>Exclusion</source>
-        <translation type="unfinished"/>
+        <translation>Excludere</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -640,7 +641,7 @@ Interogare:
     </message>
     <message>
         <source>Invalid layer</source>
-        <translation type="unfinished"/>
+        <translation>Strat nevalid</translation>
     </message>
     <message>
         <source>Unable to load the layer %s</source>
@@ -2136,14 +2137,18 @@ Acest lucru poate conduce la rezultate neașteptate.</translation>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"/>
+        <translation>Eroare de încărcare a fişierului de ieşire de tip shape:
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"/>
+        <translation>S-a creat fişierul shape de ieşire:
+%s
+
+Doriţi să adăugaţi noul strat la cuprins?</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
@@ -2197,17 +2202,19 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Could not replace geometry of feature with id %s</source>
-        <translation type="unfinished"/>
+        <translation>Nu se poate înlocui geometria entității cu id-ul %s</translation>
     </message>
     <message>
         <source>Could not eliminate features with these ids:
 %s</source>
-        <translation type="unfinished"/>
+        <translation>Nu se putea elimina entitățile cu aceste id-uri:
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s</source>
-        <translation type="unfinished"/>
+        <translation>S-a creat fişierul shape de ieşire:
+%s</translation>
     </message>
     <message>
         <source>Line intersections</source>
@@ -2224,7 +2231,8 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>Created output shapefiles in folder:
 %s</source>
-        <translation type="unfinished"/>
+        <translation>S-a creat fişierul shape de ieşire în folderul:
+%s</translation>
     </message>
     <message>
         <source>Please specify input unique ID field</source>
@@ -2370,7 +2378,7 @@ Sigur doriți să continuați?</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished"/>
+        <translation>Vă rog să specificaţi un strat de intrare</translation>
     </message>
     <message>
         <source>Simplify results</source>
@@ -2425,7 +2433,7 @@ Sigur doriți să continuați?</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSelectByLocation.ui" line="96"/>
         <source>Only selected features</source>
-        <translation type="unfinished"/>
+        <translation>Doar entitățile selectate</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
@@ -2456,11 +2464,11 @@ Sigur doriți să continuați?</translation>
     <name>DlgAddGeometryColumn</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"/>
+        <translation>Ne pare rău</translation>
     </message>
     <message>
         <source>field name must not be empty</source>
-        <translation type="unfinished"/>
+        <translation>câmpul nume nu poate rămâne vid</translation>
     </message>
 </context>
 <context>
@@ -2468,22 +2476,22 @@ Sigur doriți să continuați?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="14"/>
         <source>Autofill settings</source>
-        <translation type="unfinished"/>
+        <translation>Setări de auto-umplere</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="20"/>
         <source>Autofill mode</source>
-        <translation type="unfinished"/>
+        <translation>Mod de auto-umplere</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="28"/>
         <source>Do not autofill</source>
-        <translation type="unfinished"/>
+        <translation>Fără auto-umplere</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="33"/>
         <source>Fill with numbers</source>
-        <translation type="unfinished"/>
+        <translation>Umplere cu numere</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="38"/>
@@ -2524,15 +2532,15 @@ Sigur doriți să continuați?</translation>
     <name>DlgCreateTable</name>
     <message>
         <source>&amp;Create</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Creare</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"/>
+        <translation>Ne pare rău</translation>
     </message>
     <message>
         <source>no field selected</source>
-        <translation type="unfinished"/>
+        <translation>nici un câmp nu a fost selectat</translation>
     </message>
     <message>
         <source>field is at top already</source>
@@ -2540,7 +2548,7 @@ Sigur doriți să continuați?</translation>
     </message>
     <message>
         <source>No field selected</source>
-        <translation type="unfinished"/>
+        <translation>Nici un câmp nu a fost selectat</translation>
     </message>
     <message>
         <source>field is at bottom already</source>
@@ -2548,15 +2556,15 @@ Sigur doriți să continuați?</translation>
     </message>
     <message>
         <source>select schema!</source>
-        <translation type="unfinished"/>
+        <translation>selectare schemă!</translation>
     </message>
     <message>
         <source>enter table name!</source>
-        <translation type="unfinished"/>
+        <translation>introduceți numele tabelei!</translation>
     </message>
     <message>
         <source>add some fields!</source>
-        <translation type="unfinished"/>
+        <translation>adăugați câteva câmpuri</translation>
     </message>
     <message>
         <source>set geometry column name</source>
@@ -2564,18 +2572,18 @@ Sigur doriți să continuați?</translation>
     </message>
     <message>
         <source>Good</source>
-        <translation type="unfinished"/>
+        <translation>Bine</translation>
     </message>
     <message>
         <source>everything went fine</source>
-        <translation type="unfinished"/>
+        <translation>totul a mers bine</translation>
     </message>
 </context>
 <context>
     <name>DlgExportVector</name>
     <message>
         <source>Choose where to save the file</source>
-        <translation type="unfinished"/>
+        <translation>Selectaţi locul pentru a salva fișierul</translation>
     </message>
     <message>
         <source>Shapefiles</source>
@@ -2587,7 +2595,7 @@ Sigur doriți să continuați?</translation>
     </message>
     <message>
         <source>Output table name is required</source>
-        <translation type="unfinished"/>
+        <translation>Numele tabelei de ieșire este obligatoriu</translation>
     </message>
     <message>
         <source>Invalid source srid: must be an integer</source>
@@ -2633,7 +2641,7 @@ Sigur doriți să continuați?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgGetScriptsAndModels.ui" line="86"/>
         <source>about:blank</source>
-        <translation type="unfinished"/>
+        <translation>about:blank</translation>
     </message>
 </context>
 <context>
@@ -3089,7 +3097,7 @@ geometry column - column with unique integer values</source>
     <name>FieldsCalculatorDialog</name>
     <message>
         <source>[Save to temporary file]</source>
-        <translation>[Salvează în fișier temporar]</translation>
+        <translation>[Salvare într-un fișier temporar]</translation>
     </message>
     <message>
         <source>Save file</source>
@@ -4970,13 +4978,16 @@ Please choose another field...</source>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"/>
+        <translation>Eroare de încărcare a fişierului shape de ieşire:
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s
 %s</source>
-        <translation type="unfinished"/>
+        <translation>S-a creat fişierul shape de ieşire:
+%s
+%s</translation>
     </message>
     <message>
         <source>Layer &apos;{0}&apos; updated</source>
@@ -5094,12 +5105,15 @@ Please choose another field...</source>
         <source>Created output shapefile:
 %s
 %s%s</source>
-        <translation type="unfinished"/>
+        <translation>S-a creat fişierul shape de ieşire:
+%s
+%s%s</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"/>
+        <translation>Eroare de încărcare a fişierului shape de ieşire:
+%s</translation>
     </message>
     <message>
         <source>
@@ -5109,7 +5123,7 @@ Avertismente:</translation>
     </message>
     <message>
         <source>Symmetrical difference</source>
-        <translation type="unfinished"/>
+        <translation>Diferență simetrică</translation>
     </message>
     <message>
         <source>
@@ -5696,7 +5710,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="520"/>
         <source>&amp;Open...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Deschidere...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="532"/>
@@ -5836,7 +5850,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="802"/>
         <source>Merge Attributes of Selected Features</source>
-        <translation type="unfinished"/>
+        <translation>Unificați atributele entităților selectate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="814"/>
@@ -5846,7 +5860,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="826"/>
         <source>Rotate Point Symbols</source>
-        <translation type="unfinished"/>
+        <translation>Rotește simbolurile punctelor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="831"/>
@@ -6172,7 +6186,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2182"/>
         <source>Normal</source>
-        <translation type="unfinished"/>
+        <translation>Normal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2185"/>
@@ -6247,7 +6261,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1335"/>
         <source>Set Project CRS from Layer</source>
-        <translation type="unfinished"/>
+        <translation>Setează CRS-ul proiectului din cel al stratului</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1340"/>
@@ -6303,7 +6317,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../src/ui/qgisapp.ui" line="2110"/>
         <location filename="../src/ui/qgisapp.ui" line="2113"/>
         <source>Open Field Calculator</source>
-        <translation type="unfinished"/>
+        <translation>Deschidere calculator pentru câmpuri</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2122"/>
@@ -6343,7 +6357,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="885"/>
         <source>Select Feature(s)</source>
-        <translation type="unfinished"/>
+        <translation>Selectare entitate(ăți)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="888"/>
@@ -6460,7 +6474,8 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../src/ui/qgisapp.ui" line="1565"/>
         <source>Rotate Label
 Ctl (Cmd) increments by 15 deg.</source>
-        <translation type="unfinished"/>
+        <translation>Rotire etichetă
+Tasta Ctrl (Cmd) rotește cu 15 grade</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1578"/>
@@ -6616,7 +6631,10 @@ Ctl (Cmd) increments by 15 deg.</source>
 Click or marquee on label to pin
 Shift unpins, Ctl (Cmd) toggles state
 Acts on all editable layers</source>
-        <translation type="unfinished"/>
+        <translation>Blocare/Deblocare etichete
+Clic pe etichetă pentru blocare
+Shift deblochează, Ctrl (Cmd) inversează
+Valabil pentru toate straturile editabile</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1820"/>
@@ -6628,7 +6646,7 @@ Acts on all editable layers</source>
         <location filename="../src/ui/qgisapp.ui" line="1832"/>
         <location filename="../src/ui/qgisapp.ui" line="1835"/>
         <source>New Blank Project</source>
-        <translation type="unfinished"/>
+        <translation>Proiect nou, vid</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1844"/>
@@ -6678,7 +6696,7 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1916"/>
         <source>SVG annotation</source>
-        <translation type="unfinished"/>
+        <translation>Adnotare SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1925"/>
@@ -6726,7 +6744,7 @@ Acts on currently active editable layer</source>
         <location filename="../src/ui/qgisapp.ui" line="2030"/>
         <location filename="../src/ui/qgisapp.ui" line="2033"/>
         <source>Rotate Feature(s)</source>
-        <translation type="unfinished"/>
+        <translation>Rotire entitate(tăți)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2038"/>
@@ -6813,27 +6831,27 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Load</source>
-        <translation type="unfinished"/>
+        <translation>Încărcare</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished"/>
+        <translation>Salvare</translation>
     </message>
     <message>
         <source>eXtensible Markup Language (*.xml *.XML)</source>
-        <translation type="unfinished"/>
+        <translation>eXtensible Markup Language (*.xml *.XML)</translation>
     </message>
     <message>
         <source>Save connections</source>
-        <translation type="unfinished"/>
+        <translation>Salvare conexiune</translation>
     </message>
     <message>
         <source>Load connections</source>
-        <translation type="unfinished"/>
+        <translation>Încărcare conexiuni</translation>
     </message>
     <message>
         <source>Save Connections</source>
-        <translation type="unfinished"/>
+        <translation>Salvare conexiuni</translation>
     </message>
     <message>
         <source>Saved to %s</source>
@@ -6898,92 +6916,92 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="53"/>
         <source>-180</source>
-        <translation type="unfinished"/>
+        <translation>-180</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="60"/>
         <source>90</source>
-        <translation type="unfinished"/>
+        <translation>90</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="70"/>
         <source>Records</source>
-        <translation type="unfinished"/>
+        <translation>Înregistrări</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="87"/>
         <source>-90</source>
-        <translation type="unfinished"/>
+        <translation>-90</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="94"/>
         <source>180</source>
-        <translation type="unfinished"/>
+        <translation>180</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="104"/>
         <source>        From</source>
-        <translation type="unfinished"/>
+        <translation>Din</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="111"/>
         <source>Keywords</source>
-        <translation type="unfinished"/>
+        <translation>Cuvinte cheie</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="121"/>
         <source>Results</source>
-        <translation type="unfinished"/>
+        <translation>Rezultate</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="127"/>
         <source>&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="134"/>
         <source>&lt;&lt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;&lt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="141"/>
         <source>Add WCS</source>
-        <translation type="unfinished"/>
+        <translation>Adaugă WCS</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="148"/>
         <source>Add WMS/WMTS</source>
-        <translation type="unfinished"/>
+        <translation>Adaugă WMS/WMTS</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="158"/>
         <source>&lt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="165"/>
         <source>Add WFS</source>
-        <translation type="unfinished"/>
+        <translation>Adaugă WFS</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="172"/>
         <source>Abstract</source>
-        <translation type="unfinished"/>
+        <translation>Rezumat</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="186"/>
         <source>Double click to see full record information</source>
-        <translation type="unfinished"/>
+        <translation>Efectuați dublu-clic pentru a vedea informații completete despre înregistrare</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="211"/>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>Tip</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="216"/>
         <source>Title</source>
-        <translation type="unfinished"/>
+        <translation>Titlu</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="224"/>
@@ -6993,12 +7011,12 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="231"/>
         <source>&gt;&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&gt;&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="254"/>
         <source>Services</source>
-        <translation type="unfinished"/>
+        <translation>Servicii</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="263"/>
@@ -7013,37 +7031,37 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="277"/>
         <source>New</source>
-        <translation type="unfinished"/>
+        <translation>Nou</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="284"/>
         <source>Edit</source>
-        <translation type="unfinished"/>
+        <translation>Editare</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="291"/>
         <source>Delete</source>
-        <translation type="unfinished"/>
+        <translation>Ştergere</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="298"/>
         <source>Save</source>
-        <translation type="unfinished"/>
+        <translation>Salvare</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="312"/>
         <source>Add default services</source>
-        <translation type="unfinished"/>
+        <translation>Adăugare servicii predefinite</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="319"/>
         <source>Load</source>
-        <translation type="unfinished"/>
+        <translation>Încărcare</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="327"/>
         <source>Settings</source>
-        <translation type="unfinished"/>
+        <translation>Setări</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="339"/>
@@ -7084,19 +7102,19 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Remove service %s?</source>
-        <translation type="unfinished"/>
+        <translation>Se elimină serviciul %s?</translation>
     </message>
     <message>
         <source>Confirm delete</source>
-        <translation type="unfinished"/>
+        <translation>Confirmare ștergere</translation>
     </message>
     <message>
         <source>%s exists.  Overwrite?</source>
-        <translation type="unfinished"/>
+        <translation>%s există. Se suprascrie?</translation>
     </message>
     <message>
         <source>Loading connections</source>
-        <translation type="unfinished"/>
+        <translation>Încarcare conexiuni</translation>
     </message>
     <message>
         <source>Search error</source>
@@ -7108,7 +7126,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Connection error</source>
-        <translation type="unfinished"/>
+        <translation>Eroare de conectare</translation>
     </message>
     <message>
         <source>Connection error: %s</source>
@@ -7116,7 +7134,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>0 results</source>
-        <translation type="unfinished"/>
+        <translation>0 rezultate</translation>
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
@@ -7132,7 +7150,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Navigation</source>
-        <translation type="unfinished"/>
+        <translation>Navigaţie</translation>
     </message>
     <message>
         <source>Start of results. Go to end?</source>
@@ -7140,19 +7158,19 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Error connecting to %s: %s</source>
-        <translation type="unfinished"/>
+        <translation>Eroare de conectare la %s: %s</translation>
     </message>
     <message>
         <source>Connection %s exists. Overwrite?</source>
-        <translation type="unfinished"/>
+        <translation>Conexiunea %s există. Se suprascrie?</translation>
     </message>
     <message>
         <source>Saving server</source>
-        <translation type="unfinished"/>
+        <translation>Salvare server</translation>
     </message>
     <message>
         <source>GetRecords error</source>
-        <translation type="unfinished"/>
+        <translation>Eroare GetRecords</translation>
     </message>
     <message>
         <source>Error getting response: %s</source>
@@ -7160,19 +7178,19 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Error connecting to service: %s</source>
-        <translation type="unfinished"/>
+        <translation>Eroare de conectare la serviciul: %s</translation>
     </message>
     <message>
         <source>Value Error: %s</source>
-        <translation type="unfinished"/>
+        <translation>Valoare eronată: %s</translation>
     </message>
     <message>
         <source>Unknown Error: %s</source>
-        <translation type="unfinished"/>
+        <translation>Eroare necunoscută: %s</translation>
     </message>
     <message>
         <source>CSW Connection error</source>
-        <translation type="unfinished"/>
+        <translation>Eroare de conectare la CSW</translation>
     </message>
 </context>
 <context>
@@ -7187,19 +7205,19 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>There are unsaved changes in model. Close modeler without saving?</source>
-        <translation type="unfinished"/>
+        <translation>Există modificări nesalvate în model. Se închide modelatorul fără salvare?</translation>
     </message>
     <message>
         <source>Empty model</source>
-        <translation type="unfinished"/>
+        <translation>Model vid</translation>
     </message>
     <message>
         <source>Save Model As Image</source>
-        <translation type="unfinished"/>
+        <translation>Salvare model ca imagine</translation>
     </message>
     <message>
         <source>PNG files (*.png *.PNG)</source>
-        <translation type="unfinished"/>
+        <translation>Fișiere PNG (*.png *.PNG)</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -7207,15 +7225,15 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Please enter group and model names before saving</source>
-        <translation type="unfinished"/>
+        <translation>Vă rugăm să introduceţi numele pentru grup și pentru model, înainte de salvare:</translation>
     </message>
     <message>
         <source>Save Model</source>
-        <translation type="unfinished"/>
+        <translation>Salvare model</translation>
     </message>
     <message>
         <source>Processing models (*.model)</source>
-        <translation type="unfinished"/>
+        <translation>Procesare modele (*.model)</translation>
     </message>
     <message>
         <source>I/O error</source>
@@ -7224,16 +7242,18 @@ Acts on currently active editable layer</source>
     <message>
         <source>Unable to save edits. Reason:
  %s</source>
-        <translation type="unfinished"/>
+        <translation>Nu se pot salva editările. Motivul:
+%s</translation>
     </message>
     <message>
         <source>Can&apos;t save model</source>
-        <translation type="unfinished"/>
+        <translation>Nu se poate salva modelul</translation>
     </message>
     <message>
         <source>The selected model could not be loaded.
 See the log for more information.</source>
-        <translation type="unfinished"/>
+        <translation>Modelul selectat nu a putut fi încărcat.
+Citiți jurnalul, pentru mai multe informații.</translation>
     </message>
     <message>
         <source>Model doesn&apos;t contains any algorithms and/or parameters and can&apos;t be executed</source>
@@ -7245,19 +7265,19 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Model saved</source>
-        <translation type="unfinished"/>
+        <translation>Model salvat</translation>
     </message>
     <message>
         <source>Model was correctly saved.</source>
-        <translation type="unfinished"/>
+        <translation>Modelul a fost salvat în mod corect.</translation>
     </message>
     <message>
         <source>Open Model</source>
-        <translation type="unfinished"/>
+        <translation>Deschidere model</translation>
     </message>
     <message>
         <source>Could not open model</source>
-        <translation type="unfinished"/>
+        <translation>Nu se poate deschide modelul</translation>
     </message>
     <message>
         <source>Parameters</source>
@@ -7268,15 +7288,15 @@ See the log for more information.</source>
     <name>MultipleInputDialog</name>
     <message>
         <source>Select all</source>
-        <translation type="unfinished"/>
+        <translation>Selectează tot</translation>
     </message>
     <message>
         <source>Clear selection</source>
-        <translation type="unfinished"/>
+        <translation>Ştergere selecţie</translation>
     </message>
     <message>
         <source>Toggle selection</source>
-        <translation type="unfinished"/>
+        <translation>Inversare editare</translation>
     </message>
 </context>
 <context>
@@ -7289,16 +7309,16 @@ See the log for more information.</source>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/newconnectiondialog.ui" line="20"/>
         <source>Name</source>
-        <translation type="unfinished"/>
+        <translation>Nume</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/newconnectiondialog.ui" line="30"/>
         <source>URL</source>
-        <translation type="unfinished"/>
+        <translation>URL</translation>
     </message>
     <message>
         <source>Save connection</source>
-        <translation type="unfinished"/>
+        <translation>Salvare conexiune</translation>
     </message>
     <message>
         <source>Both Name and URL must be provided</source>
@@ -7306,7 +7326,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Overwrite %s?</source>
-        <translation type="unfinished"/>
+        <translation>Se suprascrie %s?</translation>
     </message>
 </context>
 <context>
@@ -7320,7 +7340,7 @@ See the log for more information.</source>
     <name>NumberInputDialog</name>
     <message>
         <source>[Enter your formula here]</source>
-        <translation type="unfinished"/>
+        <translation>[Introduceţi formula aici]</translation>
     </message>
     <message>
         <source>Values from data layers extents</source>
@@ -7380,7 +7400,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Wrong expression</source>
-        <translation type="unfinished"/>
+        <translation>Expresie eronată</translation>
     </message>
     <message>
         <source>The expression entered is not correct</source>
@@ -7429,15 +7449,15 @@ See the log for more information.</source>
     <name>OutputSelectionPanel</name>
     <message>
         <source>[Save to temporary file]</source>
-        <translation type="unfinished"/>
+        <translation>[Salvare într-un fișier temporar]</translation>
     </message>
     <message>
         <source>Save to a temporary file</source>
-        <translation type="unfinished"/>
+        <translation>Salvare într-un fișier temporar</translation>
     </message>
     <message>
         <source>Save to file...</source>
-        <translation type="unfinished"/>
+        <translation>Salvare în fişierul...</translation>
     </message>
     <message>
         <source>Save to memory layer</source>
@@ -7445,11 +7465,11 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Save file</source>
-        <translation type="unfinished"/>
+        <translation>Salvare fişier</translation>
     </message>
     <message>
         <source>Select directory</source>
-        <translation type="unfinished"/>
+        <translation>Selectare director</translation>
     </message>
 </context>
 <context>
@@ -7464,7 +7484,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"/>
+        <translation>Ne pare rău</translation>
     </message>
     <message>
         <source>Select a TABLE for vacuum analyze.</source>
@@ -7500,7 +7520,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Done</source>
-        <translation type="unfinished"/>
+        <translation>Terminat</translation>
     </message>
 </context>
 <context>
@@ -7511,11 +7531,11 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Toolbox</source>
-        <translation type="unfinished"/>
+        <translation>Instrumentar</translation>
     </message>
     <message>
         <source>Graphical modeler</source>
-        <translation type="unfinished"/>
+        <translation>Modelator grafic</translation>
     </message>
     <message>
         <source>History and log</source>
@@ -7552,7 +7572,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Execute</source>
-        <translation type="unfinished"/>
+        <translation>Execută</translation>
     </message>
     <message>
         <source>Execute as batch process</source>
@@ -7751,7 +7771,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Script was correctly saved.</source>
-        <translation type="unfinished"/>
+        <translation>Script-ul a fost salvat în mod corect.</translation>
     </message>
     <message>
         <source>Click on button to restore all tabs from last session.</source>
@@ -7759,7 +7779,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Restore tabs</source>
-        <translation type="unfinished"/>
+        <translation>Restaurare file</translation>
     </message>
     <message>
         <source>Close</source>
@@ -7767,36 +7787,37 @@ See the log for more information.</source>
     </message>
     <message>
         <source>List all tabs</source>
-        <translation type="unfinished"/>
+        <translation>Listează toate filele</translation>
     </message>
     <message>
         <source>New Editor</source>
-        <translation type="unfinished"/>
+        <translation>Editor nou</translation>
     </message>
     <message>
         <source>Close Tab</source>
-        <translation type="unfinished"/>
+        <translation>Închidere filă</translation>
     </message>
     <message>
         <source>Close All</source>
-        <translation type="unfinished"/>
+        <translation>Închide tot</translation>
     </message>
     <message>
         <source>Close Others</source>
-        <translation type="unfinished"/>
+        <translation>Închide toate celelalte</translation>
     </message>
     <message>
         <source>Save As</source>
-        <translation type="unfinished"/>
+        <translation>Salvare ca</translation>
     </message>
     <message>
         <source>The file {0} could not be opened. Error: {1}
 </source>
-        <translation type="unfinished"/>
+        <translation>Fişierul {0} nu a putut fi deschis. Eroare4: {1}
+</translation>
     </message>
     <message>
         <source>Untitled-{0}</source>
-        <translation type="unfinished"/>
+        <translation>Fără titlu-{0}</translation>
     </message>
     <message>
         <source>Python Console: Save File</source>
@@ -7810,7 +7831,9 @@ See the log for more information.</source>
         <source>Unable to restore the file: 
 {0}
 </source>
-        <translation type="unfinished"/>
+        <translation>Nu se poate restaura fişierul:
+{0}
+</translation>
     </message>
     <message>
         <source>Python {0} on {1}
@@ -9942,7 +9965,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="232"/>
         <source>Fitting a projective transform requires at least 4 corresponding points.</source>
-        <translation type="unfinished"/>
+        <translation>Potrivirea unei transformări proiective necesită cel puțin 4 puncte corespunzătoare.</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="76"/>
@@ -10603,7 +10626,7 @@ Doriţi să specificaţi calea (GISBASE) către instalarea GRASS?</translation>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1384"/>
         <source>Cannot get projection </source>
-        <translation type="unfinished"/>
+        <translation>Nu se poate obține proiecția</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1448"/>
@@ -10938,7 +10961,7 @@ Database error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3345"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
-        <translation type="unfinished"/>
+        <translation>Nu se poate salva stilul stratului. Nu este posibilă crearea tabelului destinație în baza de date. Poate că acest lucru se datorează permisiunilor tabelului (user=%1). Vă rugăm să contactați administratorul bazei de date</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3393"/>
@@ -10960,7 +10983,7 @@ Database error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3445"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
-        <translation type="unfinished"/>
+        <translation>Nu se poate salva stilul stratului. Nu este posibilă inserarea unei noi înregistrări în tabelul cu stiluri. Poate că acest lucru se datorează permisiunilor tabelului (user=%1). Vă rugăm să contactați administratorul bazei de date</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3492"/>
@@ -11072,7 +11095,7 @@ SQL: %1</source>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5225"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database.</source>
-        <translation type="unfinished"/>
+        <translation>Nu se poate salva stilul stratului. Nu este posibilă crearea tabelului destinație în baza de date.</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5287"/>
@@ -11519,7 +11542,7 @@ Response was:
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="225"/>
         <source>Invalid file descriptor (port was not opened correctly)</source>
-        <translation type="unfinished"/>
+        <translation>Descriptor nevalid de fișier (portul nu a fost deschis în mod corect)</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="226"/>
@@ -11850,7 +11873,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1787"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
-        <translation type="unfinished"/>
+        <translation>Această pictogramă arată dacă transformarea &quot;din zbor&quot; a sistemului de coordonate de referință este activată sau nu. Faceți clic pe pictogramă pentru a se afișa fereastra proprietăților proiectului, în care puteți modifica acest comportament.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1791"/>
@@ -12148,12 +12171,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3487"/>
         <source>Open Template Project</source>
-        <translation type="unfinished"/>
+        <translation>Deschidere proiect șablon</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3512"/>
         <source>Auto-open Project</source>
-        <translation type="unfinished"/>
+        <translation>Auto-deschidere proiect</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3545"/>
@@ -12163,12 +12186,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3568"/>
         <source>Not valid project file: %1</source>
-        <translation type="unfinished"/>
+        <translation>Fișier de proiect nevalid: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3581"/>
         <source>Project failed to open: %1</source>
-        <translation type="unfinished"/>
+        <translation>Proiectul nu s-a putut deschide: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3588"/>
@@ -12194,17 +12217,17 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3684"/>
         <source>Choose a QGIS project file to open</source>
-        <translation type="unfinished"/>
+        <translation>Alegeţi un fişier de proiect QGIS, pentru a-l deschide</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3721"/>
         <source>Loading project: %1</source>
-        <translation type="unfinished"/>
+        <translation>Încărcare proiect: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3735"/>
         <source>Unable to open project</source>
-        <translation type="unfinished"/>
+        <translation>Nu se poate deschide proiectul</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3790"/>
@@ -12214,7 +12237,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3791"/>
         <source>project macros have been disabled.</source>
-        <translation type="unfinished"/>
+        <translation>comenzile macro ale proiectului au fost dezactivate.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3782"/>
@@ -12224,29 +12247,29 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3814"/>
         <source>Project loaded</source>
-        <translation type="unfinished"/>
+        <translation>Proiect încărcat</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3841"/>
         <source>Choose a QGIS project file</source>
-        <translation type="unfinished"/>
+        <translation>Alegeţi un fişier de proiect QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3873"/>
         <location filename="../src/app/qgisapp.cpp" line="3927"/>
         <source>Saved project to: %1</source>
-        <translation type="unfinished"/>
+        <translation>Proiect salvat în: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3885"/>
         <location filename="../src/app/qgisapp.cpp" line="3934"/>
         <source>Unable to save project %1</source>
-        <translation type="unfinished"/>
+        <translation>Nu se poate salva proiectul %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3906"/>
         <source>Choose a file name to save the QGIS project file as</source>
-        <translation type="unfinished"/>
+        <translation>Alegeţi un nume de fişier pentru a salva fișierul de proiect QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4073"/>
@@ -13009,7 +13032,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7741"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
-        <translation type="unfinished"/>
+        <translation>Proiectul are strat(uri) puse în mod de editare, ale căror modificări NU vor fi salvate!</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7765"/>
@@ -13096,7 +13119,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9549"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt;Acest fișier de proiect a fost salvat de către o versiune mai veche de QGIS. Atunci când veți salva acest fișier de proiect, QGIS îl va actualiza la cea mai recentă versiune, eventual făcându-l inutil pentru versiunile mai vechi de QGIS.&lt;p&gt;Chiar dacă dezvoltatorii QGIS încearcă să mențină compatibilitatea, unele din informațiile fișierului vechiului proiect ar putea fi pierdute. Pentru a îmbunătăți calitatea aplicației QGIS, am aprecia dacă ați trimite un raport de eroare la %3. Asigurați-vă că ați inclus fișierul vechiului proiect, și că ați precizat versiunea de QGIS afectată de eroare. &lt;p&gt;Pentru a inhiba apariția acestui avertisment la deschiderea unui fișier de proiect mai vechi, debifați caseta &apos;%5&apos; din meniul %4.&lt;p&gt;Versiunea fișierului de proiect: %1&lt;br&gt;Versiunea curentă de QGIS: %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9565"/>
@@ -13107,17 +13130,17 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9566"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
-        <translation type="unfinished"/>
+        <translation>Avertizare la deschiderea unui fișier de proiect salvat cu o versiune mai veche de QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9567"/>
         <source>Project file is older</source>
-        <translation type="unfinished"/>
+        <translation>Fişierul proiectului este vechi</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9571"/>
         <source>This project file was saved by an older version of QGIS</source>
-        <translation type="unfinished"/>
+        <translation>Acest fișier de proiect a fost salvat de o versiune mai veche de QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9905"/>
@@ -15765,7 +15788,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="3285"/>
         <source>Project contains WMS layers</source>
-        <translation type="unfinished"/>
+        <translation>Proiectul conține straturi WMS</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="3286"/>
@@ -16745,12 +16768,12 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="683"/>
         <source>&amp;Save Project</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Salvare Proiect</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="686"/>
         <source>Save project</source>
-        <translation type="unfinished"/>
+        <translation>Salvare Proiect</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="689"/>
@@ -20374,7 +20397,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="614"/>
         <source>The source spatial reference system (CRS) is not valid. The coordinates can not be reprojected. The CRS is: %1</source>
-        <translation type="unfinished"/>
+        <translation>Sistemul de referință spațial (CRS) sursă nu este valid. Coordonatele nu pot fi reproiectate. CRS-ul este: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="616"/>
@@ -20385,7 +20408,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="621"/>
         <source>The destination spatial reference system (CRS) is not valid. The coordinates can not be reprojected. The CRS is: %1</source>
-        <translation type="unfinished"/>
+        <translation>Sistemul de referință spațial (CRS) destinație nu este valid. Coordonatele nu pot fi reproiectate. CRS-ul este: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="676"/>
@@ -21884,7 +21907,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="244"/>
         <source>File type string in %1 is not correctly formatted</source>
-        <translation type="unfinished"/>
+        <translation>Șirul de tip fișier din %1 nu este corect formatat</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="344"/>
@@ -25597,12 +25620,12 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/gui/qgsgenericprojectionselector.cpp" line="50"/>
         <source>This layer appears to have no projection specification.</source>
-        <translation type="unfinished"/>
+        <translation>Acest strat pare să nu aibă nici o specificație despre proiecție.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsgenericprojectionselector.cpp" line="51"/>
         <source>By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.</source>
-        <translation type="unfinished"/>
+        <translation>În mod implicit, acest strat va avea proiecția setată la cea a proiectului, dar s-ar putea trece peste acest lucru prin selectarea unei proiecții diferite mai jos.</translation>
     </message>
 </context>
 <context>
@@ -26180,7 +26203,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1990"/>
         <source>Projective</source>
-        <translation type="unfinished"/>
+        <translation>Proiectiv</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1992"/>
@@ -28613,7 +28636,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="477"/>
         <source>Selected projection is not supported by GRASS!</source>
-        <translation type="unfinished"/>
+        <translation>Proiecția selectată nu este acceptată de către GRASS!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="512"/>
@@ -28633,12 +28656,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="512"/>
         <source>Cannot create projection.</source>
-        <translation type="unfinished"/>
+        <translation>Nu se poate crea proiecția.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="560"/>
         <source>Cannot reproject previously set region, default region set.</source>
-        <translation type="unfinished"/>
+        <translation>Nu se poate reproiecta regiunea stabilită anterior, setați regiunea implicită.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="687"/>
@@ -28683,12 +28706,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="893"/>
         <source>Cannot reproject selected region.</source>
-        <translation type="unfinished"/>
+        <translation>Nu se poate reproiecta regiunea selectată.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="986"/>
         <source>Cannot reproject region</source>
-        <translation type="unfinished"/>
+        <translation>Nu se poate reproiecta regiunea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1207"/>
@@ -29704,7 +29727,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="256"/>
         <source>Please select exactly one file.</source>
-        <translation type="unfinished"/>
+        <translation>Vă rog să selectați doar un singur fișier.</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="266"/>
@@ -30354,7 +30377,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="314"/>
         <source>Add result to project</source>
-        <translation type="unfinished"/>
+        <translation>Adăugați rezultatele la proiect</translation>
     </message>
 </context>
 <context>
@@ -32979,7 +33002,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolrotatefeature.cpp" line="202"/>
         <source>Features Rotated</source>
-        <translation type="unfinished"/>
+        <translation>Entități rotite</translation>
     </message>
 </context>
 <context>
@@ -32987,7 +33010,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolrotatelabel.cpp" line="174"/>
         <source>Rotated label</source>
-        <translation type="unfinished"/>
+        <translation>Etichetă rotită</translation>
     </message>
 </context>
 <context>
@@ -33015,7 +33038,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="193"/>
         <source>Rotate symbol</source>
-        <translation type="unfinished"/>
+        <translation>Rotire simbol</translation>
     </message>
 </context>
 <context>
@@ -45477,12 +45500,12 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="206"/>
         <source>Evaluation error</source>
-        <translation type="unfinished"/>
+        <translation>Eroare de evaluare</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="231"/>
         <source>Error during search</source>
-        <translation type="unfinished"/>
+        <translation>Eroare de căutare</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="256"/>
@@ -45545,7 +45568,7 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="461"/>
         <source>Select attribute</source>
-        <translation type="unfinished"/>
+        <translation>Selectare atribut</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="461"/>
@@ -46761,12 +46784,12 @@ but implies better performance thereafter.</source>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="168"/>
         <source>Selected geometries</source>
-        <translation type="unfinished"/>
+        <translation>Selectare geometrii</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="204"/>
         <source>%1)Query</source>
-        <translation type="unfinished"/>
+        <translation>%1)Interogare</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="206"/>
@@ -46940,7 +46963,7 @@ CRS of map is %1.
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="32"/>
         <source>Spatial Query</source>
-        <translation type="unfinished"/>
+        <translation>Interogare spaţială</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="45"/>
@@ -47165,17 +47188,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="139"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished"/>
+        <translation>Confirmare ștergere</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="166"/>
         <source>Add Shapefiles</source>
-        <translation type="unfinished"/>
+        <translation>Adăugare fișiere shape</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="168"/>
         <source>Shapefiles</source>
-        <translation type="unfinished"/>
+        <translation>Fișiere shape</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="168"/>
@@ -48847,7 +48870,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="117"/>
         <source>In the Print Composer you can rotate a map by setting its rotation value in the tab &lt;strong&gt;Item Properties -&gt; Map -&gt; Main properties&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
-        <translation type="unfinished"/>
+        <translation>În Compozitorul de hărți, puteți roti o hartă prin setarea valorii sale de rotație în fila &lt;strong&gt;Item Properties -&gt; Map -&gt; Main properties&lt;/strong&gt;. Pentru a plasa o săgeată a nordului în compoziția dvs., puteți utiliza instrumentul &lt;strong&gt;Add Image&lt;/strong&gt;. După selecția și plasarea săgeții nordului, puteți aduce un cadru specific unei hărți, prin bifarea opțiunii &lt;strong&gt;Sync with map&lt;/strong&gt;, urmată de selectarea cadrului hărții. Ori de câte ori schimbați valoarea de rotație a unei hărți, săgeata nordului își va ajusta automat poziția.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="146"/>
@@ -52955,7 +52978,8 @@ Reason phrase: %2</source>
     <message>
         <source>Unable to save edits. Reason:
  %s</source>
-        <translation type="unfinished"/>
+        <translation>Nu se pot salva editările. Motivul:
+%s</translation>
     </message>
 </context>
 <context>
@@ -53402,13 +53426,16 @@ Reason phrase: %2</source>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"/>
+        <translation>Eroare de încărcare a fişierului shape de ieşire:
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s
 %s</source>
-        <translation type="unfinished"/>
+        <translation>S-a creat fişierul shape de ieşire:
+%s
+%s</translation>
     </message>
     <message>
         <source>Feature</source>
@@ -53842,7 +53869,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="147"/>
         <source>Rotate marker</source>
-        <translation>Rotiţi markerul</translation>
+        <translation>Rotire marker</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="154"/>
@@ -54928,7 +54955,159 @@ that will be automatically deleted after running.&lt;/li&gt;
 	from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"/>
+        <translation>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Consola Python pentru QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Consola&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Setări&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				Consola Python QGIS oferă un mediu interactiv pentru execuția comanzilor Python.
+				Ea dispune, de asemenea, de un editor de fișiere, care permite editarea și salvarea script-urilor Python. 
+				Atât consola cât și editorul se bazează pe pachetul PyQScintilla2.&lt;br&gt;
+				Consola este împărțită în două panouri principale, sus și jos, redimensionabile. Panoul din zona de ieșire afișează rezultatul comenzii. Aveți posibilitatea de a glisa, copia sau lipi texte în zona de intrare și de a rula fragmente de cod, prin selectarea unui text, urmată de alegerea comenzii &lt;label&gt;Enter selected&lt;/label&gt; din meniul contextual.
+				Nu contează dacă textul selectat conține promptul de interpretare (&gt;&gt;&gt;, ...). Panoul din zona de intrare este un mediu interactiv pentru introducerea comenzilor python.&lt;br&gt;Pentru a accesa editorul de fișiere python folosiți butonul &lt;label&gt;Show editor&lt;/label&gt; din bara de instrumente. Editorul permite editarea și salvarea fișierelor Python, oferind funcționalități de bază pentru gestionarea codului (comentarea și decomentarea codului, verificarea sintaxei, partajarea codului prin intermediul codepad.org, și multe altele).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Consola&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Caracteristici principale:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Auto-completare cod, evidențiere sintaxă și calltips pentru următoarele API-uri:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; pentru a vedea lista de auto-completare.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; pentru a vedea istoricul comenzilor.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Execuția fragmentelor de cod cu ajutorul comenzii &lt;label&gt;Enter selected&lt;/label&gt; din panoul de ieșire.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Accesarea documentației Open QGIS API, tastând &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Accesarea Open PyQGIS Cookbook, tastând &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Salvarea și ștergerea istoricului comenzilor, din meniul contextual al panoului de intrare. 
+			Istoricul se va salva în fișierul ~/.qgis2/console_history.txt&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Instrumentar:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Golire consolă python&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importare clasă de procesare&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importare clasă PyQt4.QtCore&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Instrument pentru importarea clasei PyQt4.QtGui&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Rulare comandă (similar cu apăsarea tastei Enter)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Setari&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Ajutor&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editorul&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Caracteristici principale:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Auto-completare cod, evidențiere sintaxă și calltips pentru următoarele API-uri:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; pentru a vedea lista de auto-completare.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Partajarea fragmentelor de cod via codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Verificare sintaxă.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Inspector de obiecte: un navigator pentru clase și funcții.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Ajungerea la definiția unui obiect printr-un singur clic. (din Inspectorul de obiecte)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Executarea fragmentelor de cod cu ajutorul comenzii &lt;label&gt;Enter selected&lt;/label&gt;&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Executarea întregului script cu ajutorul comenzii &lt;label&gt;Run script&lt;/label&gt; (acest lucru va crea un fișier compilat la nivel de byte, având extensia .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Setări&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Setări suplimentare pentru consola python:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autocompletare:&lt;/label&gt; Dacă s-a bifat, atunci este activată auto-completarea codului. Se poate obține autocompletarea atât din documentul curent, din API-urile instalate, cât și din ambele&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;prag de auto-completare:&lt;/label&gt; Stabilește pragul de afișare a listei de autocompletare (numărul de caractere tastate)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Inserarea automată a parentezelor:&lt;/label&gt; Dacă s-a bifat, atunci este activată auto-închiderea parantezelor&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto-salvarea scriptului, înainte de execuție:&lt;/label&gt; Permite salvarea automată a script-ului ce urmează a fi rulat, pentru a se evita salvarea sa după fiecare modificare. Această acțiune va stoca un fișier temporar într-un folder de sistem provizoriu, care va fi șters automat după rulare.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Folosirea fișierelor API preîncărcate:&lt;/label&gt; Puteți alege dacă să folosiți fișiere API preîncărcate sau să încărcați unele fișiere API salvate în sistemul dvs.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Folosirea fișierelor API pregătite:&lt;/label&gt; Dacă se va bifa, fișierele *.pap for fi folosite în completarea codului. Pentru a genera un fișier API pregătit, trebuie să încărcați cel puțin un fișier *.api și să-l compilați, apăsând butonul &lt;label&gt;Compile Apis...&lt;/label&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Note:&lt;/b&gt; Pentru a salva starea Consolei Python, trebuie să o închideți de la butonul de închidere. Acest lucru vă permite salvarea geometriei, ea urmând a fi restaurată la următoarea pornire.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="921"/>
@@ -61055,7 +61234,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="225"/>
         <source>Generate surface</source>
-        <translation type="unfinished"/>
+        <translation>Generare suprafață</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="226"/>
@@ -61080,7 +61259,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="230"/>
         <source>Help</source>
-        <translation type="unfinished"/>
+        <translation>Ajutor</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="231"/>
@@ -61255,7 +61434,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="265"/>
         <source>Import text file</source>
-        <translation type="unfinished"/>
+        <translation>Importare fișier text</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="266"/>
@@ -61310,7 +61489,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="276"/>
         <source>Join table to existing vector table</source>
-        <translation type="unfinished"/>
+        <translation>Adaugă un nou tabel la tabelul vectorului</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="277"/>
@@ -61340,7 +61519,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="282"/>
         <source>Loaded layer</source>
-        <translation type="unfinished"/>
+        <translation>Strat încărcat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="283"/>
@@ -61395,7 +61574,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="293"/>
         <source>Mask</source>
-        <translation type="unfinished"/>
+        <translation>Mască</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="294"/>
@@ -61415,7 +61594,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="297"/>
         <source>Mosaic up to 4 images</source>
-        <translation type="unfinished"/>
+        <translation>Mozaic de până la 4 imagini</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="298"/>
@@ -61470,7 +61649,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="308"/>
         <source>Output Shapefile</source>
-        <translation type="unfinished"/>
+        <translation>Fişier shape de ieşire</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="309"/>
@@ -61510,7 +61689,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="316"/>
         <source>Perform affine transformation (shift, scale and rotate, or GPCs) on vector</source>
-        <translation type="unfinished"/>
+        <translation>Executați o transformare afină (deplasare, scalare și rotire, sau GPCs) asupra vectorului.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="317"/>
