@@ -31,7 +31,7 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
-from processing.parameters.ParameterRaster import ParameterRaster
+from processing.core.parameters import ParameterRaster
 
 class lascolor(LAStoolsAlgorithm):
 

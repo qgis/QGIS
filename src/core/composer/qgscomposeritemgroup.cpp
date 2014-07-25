@@ -17,6 +17,7 @@
 
 #include "qgscomposeritemgroup.h"
 #include "qgscomposition.h"
+#include "qgscomposerutils.h"
 #include "qgslogger.h"
 
 #include <QPen>
@@ -134,7 +135,7 @@ void QgsComposerItemGroup::setSceneRect( const QRectF& rectangle )
   {
     //each item needs to be scaled relatively to the final size of the group
     QRectF itemRect = mapRectFromItem(( *item_it ), ( *item_it )->rect() );
-    QgsComposition::relativeResizeRect( itemRect, rect(), newRect );
+    QgsComposerUtils::relativeResizeRect( itemRect, rect(), newRect );
 
     QPointF newPos = mapToScene( itemRect.topLeft() );
     ( *item_it )->setSceneRect( QRectF( newPos.x(), newPos.y(), itemRect.width(), itemRect.height() ) );

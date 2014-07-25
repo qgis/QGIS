@@ -16,10 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
+from processing.core.parameters import ParameterMultipleInput
 from processing.algs.saga.SagaAlgorithm import SagaAlgorithm
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterString import ParameterString
+from processing.core.parameters import ParameterString
 from processing.algs.saga.SagaGroupNameDecorator import SagaGroupNameDecorator
 
 __author__ = 'Victor Olaya'
@@ -31,8 +31,8 @@ __copyright__ = '(C) 2014, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4 import QtGui
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.outputs.OutputRaster import OutputRaster
+from processing.core.parameters import ParameterRaster
+from processing.core.outputs import OutputRaster
 from processing.tools.system import *
 
 
@@ -58,10 +58,10 @@ class RasterCalculator(SagaAlgorithm):
         self.name = 'Raster calculator'
         self.cmdname = 'Grid Calculator'
         self.undecoratedGroup = "grid_calculus"
-        self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup) 
+        self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
         self.addParameter(ParameterRaster(self.GRIDS, 'Main input layers'))
         self.addParameter(ParameterMultipleInput(self.XGRIDS, 'Additional layers',
-                          ParameterMultipleInput.TYPE_RASTER, False))
+                          ParameterMultipleInput.TYPE_RASTER, True))
         self.addParameter(ParameterString(self.FORMULA, "Formula"))
         self.addOutput(OutputRaster(self.RESULT, "Result"))
 

@@ -29,10 +29,10 @@ from PyQt4 import QtGui
 from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterRaster import ParameterRaster
+from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterRaster
 from Grass7Utils import Grass7Utils
 from processing.tools.system import *
 from processing.tools import dataobjects

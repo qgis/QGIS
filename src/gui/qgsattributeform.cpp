@@ -301,7 +301,7 @@ void QgsAttributeForm::init()
   {
     delete w;
   }
-  delete this->layout();
+  delete layout();
 
   // Get a layout
   setLayout( new QGridLayout( this ) );
@@ -366,11 +366,13 @@ void QgsAttributeForm::init()
     formWidget->setLayout( gridLayout );
 
     // put the form into a scroll area to nicely handle cases with lots of attributes
+
     QScrollArea* scrollArea = new QScrollArea( this );
     scrollArea->setWidget( formWidget );
     scrollArea->setWidgetResizable( true );
     scrollArea->setFrameShape( QFrame::NoFrame );
     scrollArea->setFrameShadow( QFrame::Plain );
+    scrollArea->setFocusProxy( this );
     layout()->addWidget( scrollArea );
 
     int row = 0;
@@ -382,29 +384,32 @@ void QgsAttributeForm::init()
 
       const QString widgetType = mLayer->editorWidgetV2( idx );
 
-      if ( widgetType != "Hidden" )
+      if ( widgetType == "Hidden" )
+        continue;
+
+      const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( idx );
+      bool labelOnTop = mLayer->labelOnTop( idx );
+
+      // This will also create the widget
+      QWidget *l = new QLabel( fieldName );
+      QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, idx, widgetConfig, 0, this, mContext );
+      QWidget *w = eww ? eww->widget() : new QLabel( QString( "<p style=\"color: red; font-style: italic;\">Failed to create widget with type '%1'</p>" ).arg( widgetType ) );
+
+      if ( w )
+        w->setObjectName( field.name() );
+
+      if ( eww )
+        addWidgetWrapper( eww );
+
+      if ( labelOnTop )
       {
-        const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( idx );
-        bool labelOnTop = mLayer->labelOnTop( idx );
-
-        // This will also create the widget
-        QWidget *l = new QLabel( fieldName );
-        QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, idx, widgetConfig, 0, this, mContext );
-        QWidget *w = eww ? eww->widget() : new QLabel( QString( "<p style=\"color: red; font-style: italic;\">Failed to create widget with type '%1'</p>" ).arg( widgetType ) );
-
-        if ( eww )
-          mWidgets.append( eww );
-
-        if ( labelOnTop )
-        {
-          gridLayout->addWidget( l, row++, 0, 1, 2 );
-          gridLayout->addWidget( w, row++, 0, 1, 2 );
-        }
-        else
-        {
-          gridLayout->addWidget( l, row, 0 );
-          gridLayout->addWidget( w, row++, 1 );
-        }
+        gridLayout->addWidget( l, row++, 0, 1, 2 );
+        gridLayout->addWidget( w, row++, 0, 1, 2 );
+      }
+      else
+      {
+        gridLayout->addWidget( l, row, 0 );
+        gridLayout->addWidget( w, row++, 1 );
       }
     }
 
@@ -522,11 +527,14 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
 
         QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, fldIdx, widgetConfig, 0, this, mContext );
         newWidget = eww->widget();
-        mWidgets.append( eww );
+        addWidgetWrapper( eww );
+
+        newWidget->setObjectName( mLayer->pendingFields()[ fldIdx ].name() );
       }
 
       labelOnTop = mLayer->labelOnTop( fieldDef->idx() );
       labelText = mLayer->attributeDisplayName( fieldDef->idx() );
+
       break;
     }
 
@@ -618,6 +626,25 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
   return newWidget;
 }
 
+void QgsAttributeForm::addWidgetWrapper( QgsEditorWidgetWrapper* eww )
+{
+  Q_FOREACH( QgsWidgetWrapper* ww, mWidgets )
+  {
+    QgsEditorWidgetWrapper* meww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
+    if ( meww )
+    {
+      if ( meww->field() == eww->field() )
+      {
+        connect( meww, SIGNAL( valueChanged( QVariant ) ), eww, SLOT( setValue( QVariant ) ) );
+        connect( eww, SIGNAL( valueChanged( QVariant ) ), meww, SLOT( setValue( QVariant ) ) );
+        break;
+      }
+    }
+  }
+
+  mWidgets.append( eww );
+}
+
 void QgsAttributeForm::createWrappers()
 {
   QList<QWidget*> myWidgets = findChildren<QWidget*>();
@@ -650,7 +677,7 @@ void QgsAttributeForm::createWrappers()
           int idx = mLayer->fieldNameIndex( field.name() );
 
           QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, idx, widgetConfig, myWidget, this, mContext );
-          mWidgets.append( eww );
+          addWidgetWrapper( eww );
         }
       }
     }
@@ -659,12 +686,22 @@ void QgsAttributeForm::createWrappers()
 
 void QgsAttributeForm::connectWrappers()
 {
+  bool isFirstEww = true;
+
   Q_FOREACH( QgsWidgetWrapper* ww, mWidgets )
   {
     QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
 
     if ( eww )
+    {
+      if ( isFirstEww )
+      {
+        setFocusProxy( eww->widget() );
+        isFirstEww = false;
+      }
+
       connect( eww, SIGNAL( valueChanged( const QVariant& ) ), this, SLOT( onAttributeChanged( const QVariant& ) ) );
+    }
   }
 }
 

@@ -120,9 +120,12 @@ ENDIF (ISLIB)
 # QScintilla2
 
 IF (@QSCINTILLA_LIBRARY@ MATCHES ".*libqscintilla2.dylib")
-	MESSAGE (STATUS "Copying QScintilla2 library...")
-	EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@QSCINTILLA_LIBRARY@" "${QLIBDIR}/libqscintilla2.dylib")
-	# nothing to update in QGIS
+    MESSAGE (STATUS "Copying QScintilla2 library and updating library paths...")
+    EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@QSCINTILLA_LIBRARY@" "${QLIBDIR}/libqscintilla2.dylib")
+    GET_INSTALL_NAME ("@QSCINTILLA_LIBRARY@" "libqscintilla2" QSCI_CHG)
+    IF (QSCI_CHG)
+        UPDATEQGISPATHS (${QSCI_CHG} libqscintilla2.dylib)
+    ENDIF (QSCI_CHG)
 ENDIF ()
 
 # PyQt

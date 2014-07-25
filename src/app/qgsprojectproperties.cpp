@@ -463,7 +463,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   grpPythonMacros->setChecked( !pythonMacros.isEmpty() );
   if ( !pythonMacros.isEmpty() )
   {
-    ptePythonMacros->setPlainText( pythonMacros );
+    ptePythonMacros->setText( pythonMacros );
   }
   else
   {
@@ -867,7 +867,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "DefaultStyles", "/RandomColors", cbxStyleRandomColors->isChecked() );
 
   // store project macros
-  QString pythonMacros = ptePythonMacros->toPlainText();
+  QString pythonMacros = ptePythonMacros->text();
   if ( !grpPythonMacros->isChecked() || pythonMacros.isEmpty() )
   {
     pythonMacros = QString::null;
@@ -1467,9 +1467,9 @@ void QgsProjectProperties::editSymbol( QComboBox* cbo )
 void QgsProjectProperties::resetPythonMacros()
 {
   grpPythonMacros->setChecked( false );
-  ptePythonMacros->setPlainText( "def openProject():\n    pass\n\n" \
-                                 "def saveProject():\n    pass\n\n" \
-                                 "def closeProject():\n    pass\n" );
+  ptePythonMacros->setText( "def openProject():\n    pass\n\n" \
+                            "def saveProject():\n    pass\n\n" \
+                            "def closeProject():\n    pass\n" );
 }
 
 void QgsProjectProperties::populateEllipsoidList()

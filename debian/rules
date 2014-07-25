@@ -226,13 +226,15 @@ override_dh_install:
 
 	# remove unwanted files
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/installdox
-	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/jquery.js
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/html/jquery.js
 
 	# Don't include a copy of the world.tif also included in osgearth-data
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/globe/world.tif
 
 	# remove extra license files
 	-find $(CURDIR)/debian/tmp/usr/share/qgis/resources/cpt-city-qgis-min/ -name COPYING.xml -delete
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/LICENSE
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/db_manager/LICENSE
 
 	# Man pages are installed by dh_installman
 	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qgis.1
@@ -257,7 +259,7 @@ override_dh_compress:
 	dh_compress --exclude=pdf
 
 override_dh_makeshlibs:
-	dh_makeshlibs -Xqgis-plugin-grass -- -c0 -v$(QGIS_VERSION)
+	dh_makeshlibs -Xqgis-plugin-grass -Xlibqgis-customwidgets$(QGIS_ABI) -- -c0 -v$(QGIS_VERSION)
 
 override_dh_shlibdeps:
 	dh_shlibdeps -l/usr/lib/$(GRASS)/lib

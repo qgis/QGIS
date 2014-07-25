@@ -36,27 +36,12 @@ from PyQt4 import QtCore, QtGui, QtWebKit
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.WrongHelpFileException import WrongHelpFileException
 from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.gui.UnthreadedAlgorithmExecutor import \
-        UnthreadedAlgorithmExecutor
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.parameters.ParameterFixedTable import ParameterFixedTable
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterRange import ParameterRange
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterCrs import ParameterCrs
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterString import ParameterString
-from processing.outputs.OutputRaster import OutputRaster
-from processing.outputs.OutputVector import OutputVector
-from processing.outputs.OutputTable import OutputTable
+from processing.gui.AlgorithmExecutor import runalg, runalgIterating
+from processing.core.parameters import *
+from processing.core.outputs import OutputRaster
+from processing.core.outputs import OutputVector
+from processing.core.outputs import OutputTable
 from processing.tools import dataobjects
 from qgis.utils import iface
 
@@ -101,18 +86,15 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.webView = QtWebKit.QWebView()
         html = None
         url = None
-        try:
-            isText, help = self.alg.help()
-            if help is not None:
-                if isText:
-                    html = help;
-                else:
-                    url = QtCore.QUrl(help)
+        isText, help = self.alg.help()
+        if help is not None:
+            if isText:
+                html = help;
             else:
-                html = '<h2>Sorry, no help is available for this \
-                        algorithm.</h2>'
-        except WrongHelpFileException, e:
-            html = e.args[0]
+                url = QtCore.QUrl(help)
+        else:
+            html = '<h2>Sorry, no help is available for this \
+                    algorithm.</h2>'
         try:
             if html:
                 self.webView.setHtml(html)
@@ -249,7 +231,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             except:
                 pass
             if self.iterateParam:
-                if UnthreadedAlgorithmExecutor.runalgIterating(self.alg,
+                if runalgIterating(self.alg,
                         self.iterateParam, self):
                     self.finish()
                 else:
@@ -260,7 +242,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 if command:
                     ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM,
                             command)
-                if UnthreadedAlgorithmExecutor.runalg(self.alg, self):
+                if runalg(self.alg, self):
                     self.finish()
                 else:
                     QApplication.restoreOverrideCursor()

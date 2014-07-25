@@ -20,6 +20,7 @@
 
 class QgsComposerHtml;
 class QgsComposerFrame;
+class QgsCodeEditorHTML;
 
 class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerHtmlWidgetBase
 {
@@ -32,8 +33,13 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     void on_mUrlLineEdit_editingFinished();
     void on_mFileToolButton_clicked();
     void on_mResizeModeComboBox_currentIndexChanged( int index );
+    void on_mEvaluateExpressionsCheckbox_toggled( bool checked );
     void on_mUseSmartBreaksCheckBox_toggled( bool checked );
     void on_mMaxDistanceSpinBox_valueChanged( double val );
+    void htmlEditorChanged();
+    void on_mRadioManualSource_clicked( bool checked );
+    void on_mRadioUrlSource_clicked( bool checked );
+    void on_mInsertExpressionButton_clicked();
 
     void on_mReloadPushButton_clicked();
     void on_mAddFramePushButton_clicked();
@@ -41,12 +47,20 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     /**Sets the GUI elements to the values of mHtmlItem*/
     void setGuiElementValues();
 
+  protected:
+    QgsComposerItem::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget );
+
+  protected slots:
+    /**Initializes data defined buttons to current atlas coverage layer*/
+    void populateDataDefinedButtons();
+
   private:
     QgsComposerHtmlWidget();
     void blockSignals( bool block );
 
     QgsComposerHtml* mHtml;
     QgsComposerFrame* mFrame;
+    QgsCodeEditorHTML *mHtmlEditor;
 };
 
 #endif // QGSCOMPOSERHTMLWIDGET_H

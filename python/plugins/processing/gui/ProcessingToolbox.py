@@ -57,7 +57,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
                                    'Advanced interface'])
         settings = QSettings()
         if not settings.contains(self.USE_CATEGORIES):
-            settings.setValue(self.USE_CATEGORIES, False)
+            settings.setValue(self.USE_CATEGORIES, True)
         useCategories = settings.value(self.USE_CATEGORIES, type=bool)
         if useCategories:
             self.modeComboBox.setCurrentIndex(0)

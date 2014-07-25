@@ -32,7 +32,7 @@ from PyQt4.QtGui import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
-from processing.parameters.ParameterString import ParameterString
+from processing.core.parameters import ParameterString
 from processing.algs.qgis import postgis_utils
 
 

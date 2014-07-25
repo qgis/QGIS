@@ -18,6 +18,7 @@
 #include "qgscomposerattributetable.h"
 #include "qgscomposertablecolumn.h"
 #include "qgscomposermap.h"
+#include "qgscomposerutils.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 
@@ -462,6 +463,8 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
     c.setAscending( sortColumns.at( i ).second );
     qStableSort( attributeMaps.begin(), attributeMaps.end(), c );
   }
+
+  adjustFrameToSize();
   return true;
 }
 
@@ -484,22 +487,10 @@ void QgsComposerAttributeTable::setSceneRect( const QRectF& rectangle )
   //update rect for data defined size and position
   QRectF evaluatedRect = evalItemRect( rectangle );
 
-  double titleHeight =  2 * mGridStrokeWidth + 2 * mLineTextDistance + fontAscentMillimeters( mHeaderFont );
-  double attributeHeight = mGridStrokeWidth + 2 * mLineTextDistance + fontAscentMillimeters( mContentFont );
-  if (( evaluatedRect.height() - titleHeight ) > 0 )
-  {
-    mMaximumNumberOfFeatures = ( evaluatedRect.height() - titleHeight ) / attributeHeight;
-  }
-  else
-  {
-    mMaximumNumberOfFeatures = 0;
-  }
   QgsComposerItem::setSceneRect( evaluatedRect );
 
   //refresh table attributes, since number of features has likely changed
   refreshAttributes();
-
-  emit maximumNumberOfFeaturesChanged( mMaximumNumberOfFeatures );
 }
 
 void QgsComposerAttributeTable::setSortAttributes( const QList<QPair<int, bool> > att )

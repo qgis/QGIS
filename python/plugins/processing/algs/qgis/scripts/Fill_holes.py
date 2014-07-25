@@ -5,7 +5,6 @@
 
 from qgis.core import *
 from PyQt4.QtCore import *
-from processing.core.VectorWriter import VectorWriter
 from shapely.geometry import Polygon, MultiPolygon
 from shapely.wkb import loads
 from shapely.wkt import dumps
@@ -16,8 +15,8 @@ polyPrder = polyLayer.dataProvider()
 n = polyLayer.featureCount()
 l = 0
 
-writer = VectorWriter(Results, None, polyPrder.fields(),
-					  QGis.WKBMultiPolygon, polyPrder.crs())
+writer = processing.VectorWriter(Results, None, polyPrder.fields(),
+					  QGis.WKBMultiPolygon, polyPrder.crs())					
 
 
 resgeom = QgsGeometry()

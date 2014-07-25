@@ -37,21 +37,20 @@ from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
-from processing.gui.UnthreadedAlgorithmExecutor import \
-        UnthreadedAlgorithmExecutor
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterCrs import ParameterCrs
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterFixedTable import ParameterFixedTable
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.outputs.OutputNumber import OutputNumber
-from processing.outputs.OutputString import OutputString
-from processing.outputs.OutputHTML import OutputHTML
+from processing.gui.AlgorithmExecutor import runalg
+from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterTable
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterCrs
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterFixedTable
+from processing.core.parameters import ParameterMultipleInput
+from processing.core.outputs import OutputNumber
+from processing.core.outputs import OutputString
+from processing.core.outputs import OutputHTML
 from processing.tools.system import *
 
 
@@ -210,7 +209,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             self.setBaseText('Processing algorithm ' + str(i + 1) + '/'
                              + str(len(self.algs)) + '...')
             self.setInfo('<b>Algorithm %s starting...</b>' % alg.name)
-            if UnthreadedAlgorithmExecutor.runalg(alg, self) and not self.canceled:
+            if runalg(alg, self) and not self.canceled:
                 if self.load[i]:
                     handleAlgorithmResults(alg, self, False)
                 self.setInfo('Algorithm %s correctly executed...' % alg.name)

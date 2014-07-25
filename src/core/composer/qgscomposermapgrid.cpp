@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscomposermapgrid.h"
+#include "qgscomposerutils.h"
 #include "qgsclipper.h"
 #include "qgsgeometry.h"
 #include "qgscomposermap.h"
@@ -653,9 +654,9 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
     return;
   }
   QgsComposerMap::Border frameBorder = borderForLineCoord( pos );
-  double textWidth = mComposerMap->textWidthMillimeters( mGridAnnotationFont, annotationString );
+  double textWidth = QgsComposerUtils::textWidthMM( mGridAnnotationFont, annotationString );
   //relevant for annotations is the height of digits
-  double textHeight = mComposerMap->fontHeightCharacterMM( mGridAnnotationFont, QChar( '0' ) );
+  double textHeight = QgsComposerUtils::fontHeightCharacterMM( mGridAnnotationFont, QChar( '0' ) );
   double xpos = pos.x();
   double ypos = pos.y();
   int rotation = 0;
@@ -818,7 +819,7 @@ void QgsComposerMapGrid::drawAnnotation( QPainter* p, const QPointF& pos, int ro
   p->save();
   p->translate( pos );
   p->rotate( rotation );
-  mComposerMap->drawText( p, 0, 0, annotationText, mGridAnnotationFont, mGridAnnotationFontColor );
+  QgsComposerUtils::drawText( p, QPointF( 0, 0 ), annotationText, mGridAnnotationFont, mGridAnnotationFontColor );
   p->restore();
 }
 
@@ -1268,7 +1269,7 @@ double QgsComposerMapGrid::maxExtension() const
   QStringList::const_iterator coordIt = coordStrings.constBegin();
   for ( ; coordIt != coordStrings.constEnd(); ++coordIt )
   {
-    currentExtension = qMax( mComposerMap->textWidthMillimeters( mGridAnnotationFont, *coordIt ), mComposerMap->fontAscentMillimeters( mGridAnnotationFont ) );
+    currentExtension = qMax( QgsComposerUtils::textWidthMM( mGridAnnotationFont, *coordIt ), QgsComposerUtils::fontAscentMM( mGridAnnotationFont ) );
     maxExtension = qMax( maxExtension, currentExtension );
   }
 
@@ -1388,8 +1389,6 @@ QgsComposerMap::GridAnnotationDirection QgsComposerMapGrid::gridAnnotationDirect
       return mBottomGridAnnotationDirection;
       break;
   }
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
 }
 
 int QgsComposerMapGrid::crsGridParams( QgsRectangle& crsRect, QgsCoordinateTransform& inverseTransform ) const

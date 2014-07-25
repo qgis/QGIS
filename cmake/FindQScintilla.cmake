@@ -25,12 +25,11 @@ IF(EXISTS QSCINTILLA_VERSION_STR)
 ELSE(EXISTS QSCINTILLA_VERSION_STR)
 
   FIND_PATH(QSCINTILLA_INCLUDE_DIR
-    NAMES qsciglobal.h
+    NAMES Qsci/qsciglobal.h
     PATHS
       "${QT_INCLUDE_DIR}"
       /usr/local/include
       /usr/include
-    PATH_SUFFIXES Qsci
     )
 
   FIND_LIBRARY(QSCINTILLA_LIBRARY
@@ -56,7 +55,7 @@ ELSE(EXISTS QSCINTILLA_VERSION_STR)
   IF(QSCINTILLA_INCLUDE_DIR AND NOT EXISTS QSCINTILLA_VERSION_STR)
     # get QScintilla2 version from header, is optinally retrieved via bindings
     # with Qsci PyQt4 module
-    FILE(READ ${QSCINTILLA_INCLUDE_DIR}/qsciglobal.h qsci_header)
+    FILE(READ ${QSCINTILLA_INCLUDE_DIR}/Qsci/qsciglobal.h qsci_header)
     STRING(REGEX REPLACE "^.*QSCINTILLA_VERSION_STR +\"([^\"]+)\".*$" "\\1" QSCINTILLA_VERSION_STR "${qsci_header}")
   ENDIF(QSCINTILLA_INCLUDE_DIR AND NOT EXISTS QSCINTILLA_VERSION_STR)
 

@@ -24,9 +24,9 @@ __copyright__ = '(C) 2014, Agresta S. Coop'
 __revision__ = '$Format:%H$'
 
 import os
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterString import ParameterString
-from processing.outputs.OutputFile import OutputFile
+from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterString
+from processing.core.outputs import OutputFile
 from FusionUtils import FusionUtils
 from FusionAlgorithm import FusionAlgorithm
 

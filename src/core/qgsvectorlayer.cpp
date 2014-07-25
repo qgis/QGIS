@@ -43,6 +43,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
+#include "qgsexpressionfieldbuffer.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfield.h"
@@ -51,6 +52,7 @@
 #include "qgslabel.h"
 #include "qgslegacyhelpers.h"
 #include "qgslogger.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
@@ -169,6 +171,8 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
       setRendererV2( QgsFeatureRendererV2::defaultRenderer( geometryType() ) );
     }
 
+    setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
+
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
   }
 
@@ -200,6 +204,7 @@ QgsVectorLayer::~QgsVectorLayer()
   delete mDataProvider;
   delete mEditBuffer;
   delete mJoinBuffer;
+  delete mExpressionFieldBuffer;
   delete mCache;
   delete mLabel;
   delete mDiagramLayerSettings;
@@ -1301,6 +1306,10 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   }
   mJoinBuffer->readXml( layer_node );
 
+  if ( !mExpressionFieldBuffer )
+    mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
+  mExpressionFieldBuffer->readXml( layer_node );
+
   updateFields();
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
 
@@ -1321,6 +1330,8 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   {
     return false;
   }
+
+  setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
   return mValid;               // should be true if read successfully
 
@@ -1354,7 +1365,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       mWkbType = mDataProvider->geometryType();
 
       mJoinBuffer = new QgsVectorLayerJoinBuffer();
-
+      mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
       updateFields();
 
       // look at the fields in the layer and set the primary
@@ -1465,6 +1476,9 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
   //save joins
   mJoinBuffer->writeXml( layer_node, document );
+
+  // save expression fields
+  mExpressionFieldBuffer->writeXml( layer_node, document );
 
   // renderer specific settings
   QString errorMsg;
@@ -1844,21 +1858,12 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     }
   }
 
-  //edit types
-  QDomElement editTypesElement = doc.createElement( "edittypes" );
-
-  Q_FOREACH( QgsField field, pendingFields().toList() )
-  {
-    QDomElement editTypeElement = doc.createElement( "edittype" );
-    editTypeElement.setAttribute( "name", field.name() );
-    editTypeElement.setAttribute( "editable", mFieldEditables[field.name()] ? 1 : 0 );
-    editTypeElement.setAttribute( "labelontop", mLabelOnTop[field.name()] ? 1 : 0 );
-
-
-    editTypesElement.appendChild( editTypeElement );
-  }
-
-  node.appendChild( editTypesElement );
+  // FIXME
+  // edittypes are written to the layerNode
+  // by slot QgsEditorWidgetRegistry::writeMapLayer()
+  // triggered by signal QgsProject::writeMapLayer()
+  // still other editing settings are written here,
+  // although they are not part of symbology either
 
   QDomElement efField  = doc.createElement( "editform" );
   QDomText efText = doc.createTextNode( QgsProject::instance()->writePath( mEditForm ) );
@@ -2575,6 +2580,14 @@ QString QgsVectorLayer::editForm()
 
 void QgsVectorLayer::setEditForm( QString ui )
 {
+  if ( ui.isEmpty() || ui.isNull() )
+  {
+    setEditorLayout( GeneratedLayout );
+  }
+  else
+  {
+    setEditorLayout( UiFileLayout );
+  }
   mEditForm = ui;
 }
 
@@ -2624,7 +2637,8 @@ bool QgsVectorLayer::fieldEditable( int idx )
   const QgsFields &fields = pendingFields();
   if ( idx >= 0 && idx < fields.count() )
   {
-    if ( mUpdatedFields.fieldOrigin( idx ) == QgsFields::OriginJoin )
+    if ( mUpdatedFields.fieldOrigin( idx ) == QgsFields::OriginJoin
+         || mUpdatedFields.fieldOrigin( idx ) == QgsFields::OriginExpression )
       return false;
     return mFieldEditables.value( fields[idx].name(), true );
   }
@@ -2733,6 +2747,22 @@ const QList< QgsVectorJoinInfo >& QgsVectorLayer::vectorJoins() const
   return mJoinBuffer->vectorJoins();
 }
 
+void QgsVectorLayer::addExpressionField( const QString& exp, const QgsField& fld )
+{
+  mExpressionFieldBuffer->addExpression( exp, fld );
+  updateFields();
+  int idx = mUpdatedFields.indexFromName( fld.name() );
+  emit( attributeAdded( idx ) );
+}
+
+void QgsVectorLayer::removeExpressionField( int index )
+{
+  int oi = mUpdatedFields.fieldOriginIndex( index );
+  mExpressionFieldBuffer->removeExpression( oi );
+  updateFields();
+  emit( attributeDeleted( index ) );
+}
+
 void QgsVectorLayer::updateFields()
 {
   if ( !mDataProvider )
@@ -2747,6 +2777,9 @@ void QgsVectorLayer::updateFields()
   // joined fields
   if ( mJoinBuffer && mJoinBuffer->containsJoins() )
     mJoinBuffer->updateFields( mUpdatedFields );
+
+  if ( mExpressionFieldBuffer )
+    mExpressionFieldBuffer->updateFields( mUpdatedFields );
 
   emit updatedFields();
 }
@@ -2785,10 +2818,10 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
 
     return vl->dataProvider()->uniqueValues( sourceLayerIndex, uniqueValues, limit );
   }
-  else if ( origin == QgsFields::OriginEdit )
+  else if ( origin == QgsFields::OriginEdit || origin == QgsFields::OriginExpression )
   {
     // the layer is editable, but in certain cases it can still be avoided going through all features
-    if ( mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mAddedFeatures.isEmpty() && !mEditBuffer->mDeletedAttributeIds.contains( index ) && mEditBuffer->mChangedAttributeValues.isEmpty() )
+    if ( origin == QgsFields::OriginEdit && mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mAddedFeatures.isEmpty() && !mEditBuffer->mDeletedAttributeIds.contains( index ) && mEditBuffer->mChangedAttributeValues.isEmpty() )
     {
       return mDataProvider->uniqueValues( index, uniqueValues, limit );
     }
@@ -2845,7 +2878,7 @@ QVariant QgsVectorLayer::minimumValue( int index )
 
     return vl->minimumValue( sourceLayerIndex );
   }
-  else if ( origin == QgsFields::OriginEdit )
+  else if ( origin == QgsFields::OriginEdit || origin == QgsFields::OriginExpression )
   {
     // the layer is editable, but in certain cases it can still be avoided going through all features
     if ( mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mAddedFeatures.isEmpty() && !mEditBuffer->mDeletedAttributeIds.contains( index ) && mEditBuffer->mChangedAttributeValues.isEmpty() )

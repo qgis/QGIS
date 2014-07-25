@@ -64,11 +64,11 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 
   if ( mLayer->actions()->size() > 0 )
   {
-    dialog->dialog()->setContextMenuPolicy( Qt::ActionsContextMenu );
+    dialog->setContextMenuPolicy( Qt::ActionsContextMenu );
 
-    QAction *a = new QAction( tr( "Run actions" ), dialog->dialog() );
+    QAction *a = new QAction( tr( "Run actions" ), dialog );
     a->setEnabled( false );
-    dialog->dialog()->addAction( a );
+    dialog->addAction( a );
 
     for ( int i = 0; i < mLayer->actions()->size(); i++ )
     {
@@ -77,11 +77,11 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
       if ( !action.runable() )
         continue;
 
-      QgsFeatureAction *a = new QgsFeatureAction( action.name(), *f, mLayer, i, -1, dialog->dialog() );
-      dialog->dialog()->addAction( a );
+      QgsFeatureAction *a = new QgsFeatureAction( action.name(), *f, mLayer, i, -1, dialog );
+      dialog->addAction( a );
       connect( a, SIGNAL( triggered() ), a, SLOT( execute() ) );
 
-      QAbstractButton *pb = dialog->dialog()->findChild<QAbstractButton *>( action.name() );
+      QAbstractButton *pb = dialog->findChild<QAbstractButton *>( action.name() );
       if ( pb )
         connect( pb, SIGNAL( clicked() ), a, SLOT( execute() ) );
     }
@@ -118,7 +118,8 @@ bool QgsFeatureAction::editFeature()
   else
   {
     QgsAttributes src = mFeature.attributes();
-    dialog->setIsAddDialog( true );
+    if ( !mFeature.isValid() )
+      dialog->setIsAddDialog( true );
 
     if ( dialog->exec() )
     {

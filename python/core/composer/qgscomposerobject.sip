@@ -36,7 +36,9 @@ class QgsComposerObject : QObject
     MapXMin, /*< map extent x minimum */
     MapYMin, /*< map extent y minimum */
     MapXMax, /*< map extent x maximum */
-    MapYMax /*< map extent y maximum */
+    MapYMax, /*< map extent y maximum */
+    //composer picture
+    PictureSource /*< picture source url */
   };
 
   /** Specifies whether the value returned by a function should be the original, user
@@ -76,7 +78,7 @@ class QgsComposerObject : QObject
      * @param property data defined property to return
      * @note this method was added in version 2.5
     */
-    QgsDataDefined* dataDefinedProperty( const DataDefinedProperty property );
+    QgsDataDefined* dataDefinedProperty( const DataDefinedProperty property ) const;
 
     /**Sets parameters for a data defined property for the item
      * @param property data defined property to set
@@ -92,6 +94,16 @@ class QgsComposerObject : QObject
 
     /**Triggers a redraw for the item*/
     virtual void repaint();
+
+    /**Refreshes a data defined property for the item by reevaluating the property's value
+     * and redrawing the item with this new value.
+     * @param property data defined property to refresh. If property is set to
+     * QgsComposerItem::AllProperties then all data defined properties for the item will be
+     * refreshed.
+     * @note this method was added in version 2.5
+    */
+    virtual void refreshDataDefinedProperty( const DataDefinedProperty property = AllProperties );
+
 
   protected:
 

@@ -21,6 +21,7 @@
 #include <QTextStream>
 
 #include "qgsdataitem.h"
+#include "qgsmaplayerlegend.h"
 #include "qgspluginlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
@@ -47,7 +48,7 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *pare
 
 QgsLayerTreeModel::~QgsLayerTreeModel()
 {
-  foreach ( QList<QgsLayerTreeModelSymbologyNode*> nodeL, mSymbologyNodes )
+  foreach ( QList<QgsLayerTreeModelLegendNode*> nodeL, mSymbologyNodes )
     qDeleteAll( nodeL );
   mSymbologyNodes.clear();
 }
@@ -61,9 +62,9 @@ QgsLayerTreeNode* QgsLayerTreeModel::index2node( const QModelIndex& index ) cons
   return qobject_cast<QgsLayerTreeNode*>( obj );
 }
 
-QgsLayerTreeModelSymbologyNode* QgsLayerTreeModel::index2symnode( const QModelIndex& index )
+QgsLayerTreeModelLegendNode* QgsLayerTreeModel::index2symnode( const QModelIndex& index )
 {
-  return qobject_cast<QgsLayerTreeModelSymbologyNode*>( reinterpret_cast<QObject*>( index.internalPointer() ) );
+  return qobject_cast<QgsLayerTreeModelLegendNode*>( reinterpret_cast<QObject*>( index.internalPointer() ) );
 }
 
 
@@ -104,7 +105,7 @@ QModelIndex QgsLayerTreeModel::index( int row, int column, const QModelIndex &pa
 
   if ( !n )
   {
-    QgsLayerTreeModelSymbologyNode* sym = index2symnode( parent );
+    QgsLayerTreeModelLegendNode* sym = index2symnode( parent );
     Q_ASSERT( sym );
     return QModelIndex(); // have no children
   }
@@ -133,7 +134,7 @@ QModelIndex QgsLayerTreeModel::parent( const QModelIndex &child ) const
 
   if ( !n )
   {
-    QgsLayerTreeModelSymbologyNode* sym = index2symnode( child );
+    QgsLayerTreeModelLegendNode* sym = index2symnode( child );
     Q_ASSERT( sym );
     parentNode = sym->parent();
   }
@@ -155,29 +156,9 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
   if ( !index.isValid() )
     return QVariant();
 
-  if ( QgsLayerTreeModelSymbologyNode* sym = index2symnode( index ) )
+  if ( QgsLayerTreeModelLegendNode* sym = index2symnode( index ) )
   {
-    if ( role == Qt::DisplayRole )
-      return sym->name();
-    else if ( role == Qt::DecorationRole )
-      return sym->icon();
-    else if ( role == Qt::CheckStateRole )
-    {
-      QgsLayerTreeLayer *nodeL = layerNodeForSymbologyNode( index );
-      if ( !nodeL || !nodeL->childrenCheckable() )
-        return QVariant();
-
-      if ( !nodeL->isVisible() )
-        return Qt::PartiallyChecked;
-
-      QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( nodeL->layer() );
-      QgsFeatureRendererV2* r = vlayer->rendererV2();
-      if ( !r )
-        return QVariant();
-
-      return r->legendSymbolItemChecked( index.row() ) ? Qt::Checked : Qt::Unchecked;
-    }
-    return QVariant();
+    return sym->data( role );
   }
 
   QgsLayerTreeNode* node = index2node( index );
@@ -292,13 +273,9 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
     return rootFlags;
   }
 
-  if ( index2symnode( index ) )
+  if ( QgsLayerTreeModelLegendNode* symn = index2symnode( index ) )
   {
-    QgsLayerTreeLayer *nodeL = layerNodeForSymbologyNode( index );
-    if ( nodeL && nodeL->childrenCheckable() )
-      return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
-    else
-      return Qt::ItemIsEnabled; // | Qt::ItemIsSelectable;
+    return symn->flags();
   }
 
   Qt::ItemFlags f = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -327,29 +304,13 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
 
 bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value, int role )
 {
-  QgsLayerTreeModelSymbologyNode *sym = index2symnode( index );
+  QgsLayerTreeModelLegendNode *sym = index2symnode( index );
   if ( sym )
   {
-    if ( role != Qt::CheckStateRole )
-      return false;
-
-    QgsLayerTreeLayer *nodeL = layerNodeForSymbologyNode( index );
-    if ( !nodeL || !nodeL->childrenCheckable() )
-      return false;
-
-    QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( nodeL->layer() );
-    QgsFeatureRendererV2* r = vlayer->rendererV2();
-    if ( !r )
-      return false;
-
-    r->checkLegendSymbolItem( index.row(), value == Qt::Checked );
-
-    emit dataChanged( index, index );
-
-    if ( nodeL->isVisible() )
-      vlayer->clearCacheImage();
-
-    return true;
+    bool res = sym->setData( value, role );
+    if ( res )
+      emit dataChanged( index, index );
+    return res;
   }
 
   QgsLayerTreeNode* node = index2node( index );
@@ -465,7 +426,7 @@ bool QgsLayerTreeModel::isIndexSymbologyNode( const QModelIndex& index ) const
 
 QgsLayerTreeLayer* QgsLayerTreeModel::layerNodeForSymbologyNode( const QModelIndex& index ) const
 {
-  QgsLayerTreeModelSymbologyNode* symNode = index2symnode( index );
+  QgsLayerTreeModelLegendNode* symNode = index2symnode( index );
   return symNode ? symNode->parent() : 0;
 }
 
@@ -614,7 +575,7 @@ void QgsLayerTreeModel::nodeLayerLoaded()
   connectToLayer( nodeLayer );
 }
 
-void QgsLayerTreeModel::layerRendererChanged()
+void QgsLayerTreeModel::layerLegendChanged()
 {
   if ( !testFlag( ShowSymbology ) )
     return;
@@ -663,126 +624,18 @@ void QgsLayerTreeModel::addSymbologyToLayer( QgsLayerTreeLayer* nodeL )
   if ( !nodeL->layer() )
     return;
 
-  if ( nodeL->layer()->type() == QgsMapLayer::VectorLayer )
-  {
-    addSymbologyToVectorLayer( nodeL );
-  }
-  else if ( nodeL->layer()->type() == QgsMapLayer::RasterLayer )
-  {
-    addSymbologyToRasterLayer( nodeL );
-  }
-  else if ( nodeL->layer()->type() == QgsMapLayer::PluginLayer )
-  {
-    addSymbologyToPluginLayer( nodeL );
-  }
-}
-
-
-void QgsLayerTreeModel::addSymbologyToVectorLayer( QgsLayerTreeLayer* nodeL )
-{
-  QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( nodeL->layer() );
-  QgsFeatureRendererV2* r = vlayer->rendererV2();
-  if ( !r )
+  QgsMapLayerLegend* layerLegend = nodeL->layer()->legend();
+  if ( !layerLegend )
     return;
 
-  QList<QgsLayerTreeModelSymbologyNode*>& lst = mSymbologyNodes[nodeL];
+  QList<QgsLayerTreeModelLegendNode*> lstNew = layerLegend->createLayerTreeModelLegendNodes( nodeL );
 
-  bool showFeatureCount = nodeL->customProperty( "showFeatureCount", 0 ).toBool();
-  if ( showFeatureCount )
-  {
-    vlayer->countSymbolFeatures();
-  }
-  QSize iconSize( 16, 16 );
-  QgsLegendSymbolList items = r->legendSymbolItems();
-  nodeL->setChildrenCheckable( r->legendSymbolItemsCheckable() );
-  if ( items.count() == 0 )
-    return;
+  beginInsertRows( node2index( nodeL ), 0, lstNew.count() - 1 );
 
-  beginInsertRows( node2index( nodeL ), 0, items.count() - 1 );
+  foreach ( QgsLayerTreeModelLegendNode* n, lstNew )
+    n->setParent( nodeL );
 
-  typedef QPair<QString, QgsSymbolV2*> XY;
-  foreach ( XY item, items )
-  {
-    QString label = item.first;
-    QIcon icon;
-    if ( item.second )
-      icon = QgsSymbolLayerV2Utils::symbolPreviewPixmap( item.second, iconSize );
-    if ( showFeatureCount && item.second )
-      label += QString( " [%1]" ).arg( vlayer->featureCount( item.second ) );
-    lst << new QgsLayerTreeModelSymbologyNode( nodeL, label, icon );
-  }
-
-  endInsertRows();
-}
-
-
-void QgsLayerTreeModel::addSymbologyToRasterLayer( QgsLayerTreeLayer* nodeL )
-{
-  QgsRasterLayer* rlayer = static_cast<QgsRasterLayer*>( nodeL->layer() );
-
-  QgsLegendColorList rasterItemList = rlayer->legendSymbologyItems();
-
-  QList<QgsLayerTreeModelSymbologyNode*>& lst = mSymbologyNodes[nodeL];
-
-  // temporary solution for WMS. Ideally should be done with a delegate.
-  if ( rlayer->providerType() == "wms" )
-  {
-    QImage img = rlayer->dataProvider()->getLegendGraphic( 1000 ); // dummy scale - should not be required!
-    if ( !img.isNull() )
-      lst << new QgsLayerTreeModelSymbologyNode( nodeL, tr( "Double-click to view legend" ) );
-  }
-
-  if ( rasterItemList.count() == 0 )
-    return;
-
-  // Paletted raster may have many colors, for example UInt16 may have 65536 colors
-  // and it is very slow, so we limit max count
-  QSize iconSize( 16, 16 );
-  int count = 0;
-  int max_count = 1000;
-  int total_count = qMin( max_count + 1, rasterItemList.count() );
-
-  beginInsertRows( node2index( nodeL ), 0, total_count - 1 );
-
-  for ( QgsLegendColorList::const_iterator itemIt = rasterItemList.constBegin();
-        itemIt != rasterItemList.constEnd(); ++itemIt, ++count )
-  {
-    QPixmap pix( iconSize );
-    pix.fill( itemIt->second );
-    lst << new QgsLayerTreeModelSymbologyNode( nodeL, itemIt->first, QIcon( pix ) );
-
-    if ( count == max_count )
-    {
-      pix.fill( Qt::transparent );
-      QString label = tr( "following %1 items\nnot displayed" ).arg( rasterItemList.size() - max_count );
-      lst << new QgsLayerTreeModelSymbologyNode( nodeL, label, QIcon( pix ) );
-      break;
-    }
-  }
-
-  endInsertRows();
-}
-
-
-void QgsLayerTreeModel::addSymbologyToPluginLayer( QgsLayerTreeLayer* nodeL )
-{
-  QgsPluginLayer* player = static_cast<QgsPluginLayer*>( nodeL->layer() );
-
-  QList<QgsLayerTreeModelSymbologyNode*>& lst = mSymbologyNodes[nodeL];
-
-  QSize iconSize( 16, 16 );
-  QgsLegendSymbologyList symbologyList = player->legendSymbologyItems( iconSize );
-
-  if ( symbologyList.count() == 0 )
-    return;
-
-  beginInsertRows( node2index( nodeL ), 0, symbologyList.count() - 1 );
-
-  typedef QPair<QString, QPixmap> XY;
-  foreach ( XY item, symbologyList )
-  {
-    lst << new QgsLayerTreeModelSymbologyNode( nodeL, item.first, QIcon( item.second ) );
-  }
+  mSymbologyNodes[nodeL] = lstNew;
 
   endInsertRows();
 }
@@ -811,7 +664,7 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer* nodeLayer )
   }
 
   QgsMapLayer* layer = nodeLayer->layer();
-  connect( layer, SIGNAL( rendererChanged() ), this, SLOT( layerRendererChanged() ), Qt::UniqueConnection );
+  connect( layer, SIGNAL( legendChanged() ), this, SLOT( layerLegendChanged() ), Qt::UniqueConnection );
 
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {

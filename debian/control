@@ -257,17 +257,19 @@ Description: collection of data providers to QGIS - architecture-independent fil
  .
  This package contains architecture-independent files for the QGIS providers.
 
-Package: qgis-mapserver
+Package: qgis-server
 Architecture: any
+Replaces: qgis-mapserver
+Provides: qgis-mapserver
 Depends:
  qgis-providers (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
-Description: QGIS mapserver
+Description: QGIS server
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the QGIS mapserver.
+ This package contains the QGIS server.
 
 Package: libqgis-customwidgets{QGIS_ABI}
 Architecture: any

@@ -34,13 +34,13 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
     GeoAlgorithmExecutionException
-from processing.parameters.ParameterFactory import ParameterFactory
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.outputs.OutputFactory import OutputFactory
+from processing.core.parameters import getParameterFromString
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterNumber
+from processing.core.outputs import getOutputFromString
 from processing.tools.system import *
 from TauDEMUtils import TauDEMUtils
 
@@ -72,10 +72,10 @@ class TauDEMAlgorithm(GeoAlgorithm):
             try:
                 line = line.strip('\n').strip()
                 if line.startswith('Parameter'):
-                    param = ParameterFactory.getFromString(line)
+                    param = getParameterFromString(line)
                     self.addParameter(param)
                 else:
-                    self.addOutput(OutputFactory.getFromString(line))
+                    self.addOutput(getOutputFromString(line))
                 line = lines.readline().strip('\n').strip()
             except Exception, e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,

@@ -35,10 +35,10 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
     GeoAlgorithmExecutionException
 
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.outputs.OutputRaster import OutputRaster
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterSelection
+from processing.core.outputs import OutputRaster
 
 from processing.tools.system import *
 
@@ -69,7 +69,7 @@ class DinfDistDown(GeoAlgorithm):
         }
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
         self.name = 'D-Infinity Distance Down'

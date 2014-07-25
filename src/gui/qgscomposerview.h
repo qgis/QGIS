@@ -229,8 +229,10 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     /**Zoom composition from a mouse wheel event*/
     void wheelZoom( QWheelEvent * event );
-    /**Redraws the rubber band*/
-    void updateRubberBand( QPointF & pos );
+    /**Redraws the rectangular rubber band*/
+    void updateRubberBandRect( QPointF & pos, const bool constrainSquare = false, const bool fromCenter = false );
+    /**Redraws the linear rubber band*/
+    void updateRubberBandLine( const QPointF & pos, const bool constrainAngles = false );
     /**Removes the rubber band and cleans up*/
     void removeRubberBand();
 

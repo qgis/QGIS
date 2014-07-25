@@ -112,6 +112,19 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void on_mAnnotationFontButton_clicked();
     void on_mAnnotationFontColorButton_colorChanged( const QColor &color );
 
+    //overviews
+    void on_mAddOverviewPushButton_clicked();
+    void on_mRemoveOverviewPushButton_clicked();
+    void on_mOverviewUpButton_clicked();
+    void on_mOverviewDownButton_clicked();
+    QgsComposerMapOverview* currentOverview();
+    void on_mOverviewCheckBox_toggled( bool state );
+    void on_mOverviewListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous );
+    void on_mOverviewListWidget_itemChanged( QListWidgetItem* item );
+    void setOverviewItemsEnabled( bool enabled );
+    void setOverviewItems( const QgsComposerMapOverview* overview );
+    void blockOverviewItemsSignals( bool block );
+
   protected:
     void showEvent( QShowEvent * event );
 
@@ -155,7 +168,6 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void initAnnotationPositionBox( QComboBox* c, QgsComposerMap::GridAnnotationPosition pos );
     void initAnnotationDirectionBox( QComboBox* c, QgsComposerMap::GridAnnotationDirection dir );
 
-    void updateOverviewSymbolMarker();
     void updateGridLineSymbolMarker( const QgsComposerMapGrid* grid );
     void updateGridMarkerSymbolMarker( const QgsComposerMapGrid* grid );
 
@@ -177,6 +189,12 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     QListWidgetItem* addGridListItem( const QString& id, const QString& name );
 
     void loadGridEntries();
+
+    QListWidgetItem* addOverviewListItem( const QString& id, const QString& name );
+
+    void loadOverviewEntries();
+
+    void updateOverviewFrameSymbolMarker( const QgsComposerMapOverview* overview );
 };
 
 #endif

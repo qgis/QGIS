@@ -18,6 +18,7 @@
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 #include "qgscomposermapgrid.h"
+#include "qgscomposermapoverview.h"
 #include "qgscomposermapwidget.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
@@ -133,10 +134,9 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
   connect( mYMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mYMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mYMaxLineEdit, SLOT( setDisabled( bool ) ) );
 
-  updateOverviewSymbolMarker();
-
   updateGuiElements();
   loadGridEntries();
+  loadOverviewEntries();
   blockAllSignals( false );
 }
 
@@ -597,16 +597,6 @@ void QgsComposerMapWidget::updateGuiElements()
     mDrawCanvasItemsCheckBox->setCheckState( Qt::Unchecked );
   }
 
-  //overview frame
-  int overviewMapFrameId = mComposerMap->overviewFrameMapId();
-  mOverviewFrameMapComboBox->setCurrentIndex( mOverviewFrameMapComboBox->findData( overviewMapFrameId ) );
-  //overview frame blending mode
-  mOverviewBlendModeComboBox->setBlendMode( mComposerMap->overviewBlendMode() );
-  //overview inverted
-  mOverviewInvertCheckbox->setChecked( mComposerMap->overviewInverted() );
-  //center overview
-  mOverviewCenterCheckbox->setChecked( mComposerMap->overviewCentered() );
-
   //atlas controls
   mAtlasCheckBox->setChecked( mComposerMap->atlasDriven() );
   mAtlasMarginSpinBox->setValue( static_cast<int>( mComposerMap->atlasMargin() * 100 ) );
@@ -631,6 +621,7 @@ void QgsComposerMapWidget::updateGuiElements()
 
   populateDataDefinedButtons();
   loadGridEntries();
+  loadOverviewEntries();
   blockAllSignals( false );
 }
 
@@ -713,6 +704,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mAtlasFixedScaleRadio->blockSignals( b );
   mAtlasMarginRadio->blockSignals( b );
   blockGridItemsSignals( b );
+  blockOverviewItemsSignals( b );
 }
 
 void QgsComposerMapWidget::toggleFrameControls( bool frameEnabled )
@@ -783,105 +775,6 @@ void QgsComposerMapWidget::on_mDrawCanvasItemsCheckBox_stateChanged( int state )
   mComposerMap->cache();
   mComposerMap->update();
   mUpdatePreviewButton->setEnabled( true );
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mOverviewFrameMapComboBox_currentIndexChanged( const QString& text )
-{
-  if ( !mComposerMap )
-  {
-    return;
-  }
-
-  if ( text == tr( "None" ) )
-  {
-    mComposerMap->setOverviewFrameMap( -1 );
-  }
-
-  //get composition
-  const QgsComposition* composition = mComposerMap->composition();
-  if ( !composition )
-  {
-    return;
-  }
-
-  //extract id
-  int id;
-  bool conversionOk;
-  QStringList textSplit = text.split( " " );
-  if ( textSplit.size() < 1 )
-  {
-    return;
-  }
-
-  QString idString = textSplit.at( textSplit.size() - 1 );
-  id = idString.toInt( &conversionOk );
-
-  if ( !conversionOk )
-  {
-    return;
-  }
-
-  const QgsComposerMap* composerMap = composition->getComposerMapById( id );
-  if ( !composerMap )
-  {
-    return;
-  }
-
-  mComposerMap->setOverviewFrameMap( id );
-  mComposerMap->update();
-}
-
-void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
-{
-  if ( !mComposerMap )
-  {
-    return;
-  }
-
-  QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( mComposerMap->overviewFrameMapSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
-
-  //QgsSymbolV2PropertiesDialog d( mComposerMap->overviewFrameMapSymbol(), 0, this );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    mComposerMap->beginCommand( tr( "Overview frame style changed" ) );
-    mComposerMap->setOverviewFrameMapSymbol( newSymbol );
-    updateOverviewSymbolMarker();
-    mComposerMap->endCommand();
-  }
-  else
-  {
-    delete newSymbol;
-  }
-}
-
-void QgsComposerMapWidget::on_mOverviewBlendModeComboBox_currentIndexChanged( int index )
-{
-  Q_UNUSED( index );
-  if ( mComposerMap )
-  {
-    mComposerMap->setOverviewBlendMode( mOverviewBlendModeComboBox->blendMode() );
-  }
-
-}
-void QgsComposerMapWidget::on_mOverviewInvertCheckbox_toggled( bool state )
-{
-  if ( mComposerMap )
-  {
-    mComposerMap->setOverviewInverted( state );
-  }
-}
-
-void QgsComposerMapWidget::on_mOverviewCenterCheckbox_toggled( bool state )
-{
-  if ( mComposerMap )
-  {
-    mComposerMap->setOverviewCentered( state );
-  }
-  mComposerMap->beginCommand( tr( "Overview centering mode changed" ) );
-  mComposerMap->cache();
-  mComposerMap->update();
   mComposerMap->endCommand();
 }
 
@@ -998,15 +891,6 @@ void QgsComposerMapWidget::initAnnotationDirectionBox( QComboBox* c, QgsComposer
   }
 }
 
-void QgsComposerMapWidget::updateOverviewSymbolMarker()
-{
-  if ( mComposerMap )
-  {
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerMap->overviewFrameMapSymbol(), mOverviewFrameStyleButton->iconSize() );
-    mOverviewFrameStyleButton->setIcon( icon );
-  }
-}
-
 void QgsComposerMapWidget::refreshMapComboBox()
 {
   if ( !mComposerMap )
@@ -1036,7 +920,6 @@ void QgsComposerMapWidget::refreshMapComboBox()
       mOverviewFrameMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ), ( *mapItemIt )->id() );
     }
   }
-
 
   if ( !saveComboText.isEmpty() )
   {
@@ -1925,6 +1808,377 @@ void QgsComposerMapWidget::on_mGridCheckBox_toggled( bool state )
     grid->setGridEnabled( false );
   }
   mComposerMap->updateBoundingRect();
+  mComposerMap->update();
+  mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mAddOverviewPushButton_clicked()
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  QString itemName = tr( "Overview %1" ).arg( mComposerMap->overviewCount() + 1 );
+  QgsComposerMapOverview* overview = new QgsComposerMapOverview( itemName, mComposerMap );
+  mComposerMap->beginCommand( tr( "Add map overview" ) );
+  mComposerMap->addOverview( overview );
+  mComposerMap->endCommand();
+  mComposerMap->update();
+
+  addOverviewListItem( overview->id(), overview->name() );
+  mOverviewListWidget->setCurrentRow( 0 );
+}
+
+void QgsComposerMapWidget::on_mRemoveOverviewPushButton_clicked()
+{
+  QListWidgetItem* item = mOverviewListWidget->currentItem();
+  if ( !item )
+  {
+    return;
+  }
+
+  mComposerMap->removeOverview( item->text() );
+  QListWidgetItem* delItem = mOverviewListWidget->takeItem( mOverviewListWidget->row( item ) );
+  delete delItem;
+  mComposerMap->update();
+}
+
+void QgsComposerMapWidget::on_mOverviewUpButton_clicked()
+{
+  QListWidgetItem* item = mOverviewListWidget->currentItem();
+  if ( !item )
+  {
+    return;
+  }
+
+  int row = mOverviewListWidget->row( item );
+  if ( row < 1 )
+  {
+    return;
+  }
+  mOverviewListWidget->takeItem( row );
+  mOverviewListWidget->insertItem( row - 1, item );
+  mOverviewListWidget->setCurrentItem( item );
+  mComposerMap->moveOverviewUp( item->text() );
+}
+
+void QgsComposerMapWidget::on_mOverviewDownButton_clicked()
+{
+  QListWidgetItem* item = mOverviewListWidget->currentItem();
+  if ( !item )
+  {
+    return;
+  }
+
+  int row = mOverviewListWidget->row( item );
+  if ( mOverviewListWidget->count() <= row )
+  {
+    return;
+  }
+  mOverviewListWidget->takeItem( row );
+  mOverviewListWidget->insertItem( row + 1, item );
+  mOverviewListWidget->setCurrentItem( item );
+  mComposerMap->moveOverviewDown( item->text() );
+}
+
+QgsComposerMapOverview* QgsComposerMapWidget::currentOverview()
+{
+  if ( !mComposerMap )
+  {
+    return 0;
+  }
+
+  QListWidgetItem* item = mOverviewListWidget->currentItem();
+  if ( !item )
+  {
+    return 0;
+  }
+
+  return mComposerMap->mapOverview( item->data( Qt::UserRole ).toString() );
+}
+
+void QgsComposerMapWidget::on_mOverviewListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous )
+{
+  Q_UNUSED( previous );
+  if ( !current )
+  {
+    mOverviewCheckBox->setEnabled( false );
+    return;
+  }
+
+  mOverviewCheckBox->setEnabled( true );
+  setOverviewItems( mComposerMap->constMapOverview( current->data( Qt::UserRole ).toString() ) );
+}
+
+void QgsComposerMapWidget::on_mOverviewListWidget_itemChanged( QListWidgetItem* item )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  QgsComposerMapOverview* overview = mComposerMap->mapOverview( item->data( Qt::UserRole ).toString() );
+  if ( !overview )
+  {
+    return;
+  }
+
+  overview->setName( item->text() );
+  if ( item->isSelected() )
+  {
+    //update check box title if item is current item
+    mOverviewCheckBox->setTitle( QString( tr( "Draw \"%1\" overview" ) ).arg( overview->name() ) );
+  }
+}
+
+void QgsComposerMapWidget::setOverviewItemsEnabled( bool enabled )
+{
+  mOverviewFrameMapLabel->setEnabled( enabled );
+  mOverviewFrameMapComboBox->setEnabled( enabled );
+  mOverviewFrameStyleLabel->setEnabled( enabled );
+  mOverviewFrameStyleButton->setEnabled( enabled );
+  mOverviewBlendModeLabel->setEnabled( enabled );
+  mOverviewBlendModeComboBox->setEnabled( enabled );
+  mOverviewInvertCheckbox->setEnabled( enabled );
+  mOverviewCenterCheckbox->setEnabled( enabled );
+}
+
+void QgsComposerMapWidget::blockOverviewItemsSignals( bool block )
+{
+  //grid
+  mOverviewFrameMapComboBox->blockSignals( block );
+  mOverviewFrameStyleButton->blockSignals( block );
+  mOverviewBlendModeComboBox->blockSignals( block );
+  mOverviewInvertCheckbox->blockSignals( block );
+  mOverviewCenterCheckbox->blockSignals( block );
+}
+
+void QgsComposerMapWidget::setOverviewItems( const QgsComposerMapOverview* overview )
+{
+  if ( !overview )
+  {
+    return;
+  }
+
+  blockOverviewItemsSignals( true );
+
+  mOverviewCheckBox->setTitle( QString( tr( "Draw \"%1\" overview" ) ).arg( overview->name() ) );
+  mOverviewCheckBox->setChecked( overview->enabled() );
+
+  //overview frame
+  refreshMapComboBox();
+  int overviewMapFrameId = overview->frameMapId();
+  mOverviewFrameMapComboBox->setCurrentIndex( mOverviewFrameMapComboBox->findData( overviewMapFrameId ) );
+  //overview frame blending mode
+  mOverviewBlendModeComboBox->setBlendMode( overview->blendMode() );
+  //overview inverted
+  mOverviewInvertCheckbox->setChecked( overview->inverted() );
+  //center overview
+  mOverviewCenterCheckbox->setChecked( overview->centered() );
+
+  //frame style
+  updateOverviewFrameSymbolMarker( overview );
+
+  blockOverviewItemsSignals( false );
+}
+
+void QgsComposerMapWidget::updateOverviewFrameSymbolMarker( const QgsComposerMapOverview* overview )
+{
+  if ( overview )
+  {
+    QgsFillSymbolV2* nonConstSymbol = const_cast<QgsFillSymbolV2*>( overview->frameSymbol() ); //bad
+    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( nonConstSymbol, mOverviewFrameStyleButton->iconSize() );
+    mOverviewFrameStyleButton->setIcon( icon );
+  }
+}
+
+QListWidgetItem* QgsComposerMapWidget::addOverviewListItem( const QString& id, const QString& name )
+{
+  QListWidgetItem* item = new QListWidgetItem( name, 0 );
+  item->setData( Qt::UserRole, id );
+  item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
+  mOverviewListWidget->insertItem( 0, item );
+  return item;
+}
+
+void QgsComposerMapWidget::loadOverviewEntries()
+{
+  //save selection
+  QSet<QString> selectedIds;
+  QList<QListWidgetItem*> itemSelection = mOverviewListWidget->selectedItems();
+  QList<QListWidgetItem*>::const_iterator sIt = itemSelection.constBegin();
+  for ( ; sIt != itemSelection.constEnd(); ++sIt )
+  {
+    selectedIds.insert(( *sIt )->data( Qt::UserRole ).toString() );
+  }
+
+  mOverviewListWidget->clear();
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  //load all composer overviews into list widget
+  QList< QgsComposerMapOverview* > overviews = mComposerMap->mapOverviews();
+  QList< QgsComposerMapOverview* >::const_iterator overviewIt = overviews.constBegin();
+  for ( ; overviewIt != overviews.constEnd(); ++overviewIt )
+  {
+    QListWidgetItem* item = addOverviewListItem(( *overviewIt )->id(), ( *overviewIt )->name() );
+    if ( selectedIds.contains(( *overviewIt )->id() ) )
+    {
+      item->setSelected( true );
+      mOverviewListWidget->setCurrentItem( item );
+    }
+  }
+
+  if ( mOverviewListWidget->currentItem() )
+  {
+    on_mOverviewListWidget_currentItemChanged( mOverviewListWidget->currentItem(), 0 );
+  }
+  else
+  {
+    on_mOverviewListWidget_currentItemChanged( 0, 0 );
+  }
+}
+
+void QgsComposerMapWidget::on_mOverviewCheckBox_toggled( bool state )
+{
+  QgsComposerMapOverview* overview = currentOverview();
+  if ( !overview )
+  {
+    return;
+  }
+
+  mComposerMap->beginCommand( tr( "Overview checkbox toggled" ) );
+  if ( state )
+  {
+    overview->setEnabled( true );
+  }
+  else
+  {
+    overview->setEnabled( false );
+  }
+  mComposerMap->update();
+  mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mOverviewFrameMapComboBox_currentIndexChanged( const QString& text )
+{
+  QgsComposerMapOverview* overview = currentOverview();
+  if ( !overview )
+  {
+    return;
+  }
+
+  int id;
+
+  if ( text == tr( "None" ) )
+  {
+    id = -1;
+  }
+  else
+  {
+
+    //get composition
+    const QgsComposition* composition = mComposerMap->composition();
+    if ( !composition )
+    {
+      return;
+    }
+
+    //extract id
+    bool conversionOk;
+    QStringList textSplit = text.split( " " );
+    if ( textSplit.size() < 1 )
+    {
+      return;
+    }
+
+    QString idString = textSplit.at( textSplit.size() - 1 );
+    id = idString.toInt( &conversionOk );
+
+    if ( !conversionOk )
+    {
+      return;
+    }
+
+    const QgsComposerMap* composerMap = composition->getComposerMapById( id );
+    if ( !composerMap )
+    {
+      return;
+    }
+  }
+
+  mComposerMap->beginCommand( tr( "Overview map changed" ) );
+  overview->setFrameMap( id );
+  mComposerMap->update();
+  mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
+{
+  QgsComposerMapOverview* overview = currentOverview();
+  if ( !overview )
+  {
+    return;
+  }
+
+  QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( overview->frameSymbol()->clone() );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
+
+  if ( d.exec() == QDialog::Accepted )
+  {
+    mComposerMap->beginCommand( tr( "Overview frame style changed" ) );
+    overview->setFrameSymbol( newSymbol );
+    updateOverviewFrameSymbolMarker( overview );
+    mComposerMap->endCommand();
+    mComposerMap->update();
+  }
+  else
+  {
+    delete newSymbol;
+  }
+}
+
+void QgsComposerMapWidget::on_mOverviewBlendModeComboBox_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+  QgsComposerMapOverview* overview = currentOverview();
+  if ( !overview )
+  {
+    return;
+  }
+
+  mComposerMap->beginCommand( tr( "Overview blend mode changed" ) );
+  overview->setBlendMode( mOverviewBlendModeComboBox->blendMode() );
+  mComposerMap->update();
+  mComposerMap->endCommand();
+}
+void QgsComposerMapWidget::on_mOverviewInvertCheckbox_toggled( bool state )
+{
+  QgsComposerMapOverview* overview = currentOverview();
+  if ( !overview )
+  {
+    return;
+  }
+
+  mComposerMap->beginCommand( tr( "Overview inverted toggled" ) );
+  overview->setInverted( state );
+  mComposerMap->update();
+  mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mOverviewCenterCheckbox_toggled( bool state )
+{
+  QgsComposerMapOverview* overview = currentOverview();
+  if ( !overview )
+  {
+    return;
+  }
+
+  mComposerMap->beginCommand( tr( "Overview centered toggled" ) );
+  overview->setCentered( state );
   mComposerMap->update();
   mComposerMap->endCommand();
 }

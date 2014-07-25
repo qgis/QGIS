@@ -27,7 +27,7 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
-from processing.parameters.ParameterNumber import ParameterNumber
+from processing.core.parameters import ParameterNumber
 
 class blast2iso(LAStoolsAlgorithm):
 

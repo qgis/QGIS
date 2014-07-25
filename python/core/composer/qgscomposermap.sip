@@ -319,7 +319,7 @@ class QgsComposerMap : QgsComposerItem
     void updateBoundingRect();
 
     /* reimplement setFrameOutlineWidth, so that updateBoundingRect() is called after setting the frame width */
-    virtual void setFrameOutlineWidth( double outlineWidth );
+    virtual void setFrameOutlineWidth( const double outlineWidth );
 
     /**Sets length of the cros segments (if grid style is cross)
     @note this function was added in version 1.4*/
@@ -513,5 +513,5 @@ class QgsComposerMap : QgsComposerItem
 
     void overviewExtentChanged();
 
-    virtual void refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 };

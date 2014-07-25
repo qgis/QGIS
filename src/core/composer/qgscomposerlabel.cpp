@@ -17,6 +17,7 @@
 
 #include "qgscomposerlabel.h"
 #include "qgscomposition.h"
+#include "qgscomposerutils.h"
 #include "qgsexpression.h"
 #include "qgsnetworkaccessmanager.h"
 
@@ -148,15 +149,11 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
   else
   {
-    painter->setPen( QPen( QColor( mFontColor ) ) );
     painter->setFont( mFont );
-
-    QFontMetricsF fontSize( mFont );
-
     //debug
     //painter->setPen( QColor( Qt::red ) );
     //painter->drawRect( painterRect );
-    drawText( painter, painterRect, textToDraw, mFont, mHAlignment, mVAlignment, Qt::TextWordWrap );
+    QgsComposerUtils::drawText( painter, painterRect, textToDraw, mFont, mFontColor, mHAlignment, mVAlignment, Qt::TextWordWrap );
   }
 
   painter->restore();
@@ -259,8 +256,8 @@ void QgsComposerLabel::setFont( const QFont& f )
 
 void QgsComposerLabel::adjustSizeToText()
 {
-  double textWidth = textWidthMillimeters( mFont, displayText() );
-  double fontHeight = fontHeightMillimeters( mFont );
+  double textWidth = QgsComposerUtils::textWidthMM( mFont, displayText() );
+  double fontHeight = QgsComposerUtils::fontHeightMM( mFont );
 
   double penWidth = hasFrame() ? pen().widthF() : 0;
 

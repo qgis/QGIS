@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 
 import os
 from LAStoolsUtils import LAStoolsUtils
-from processing.parameters.ParameterExtent import ParameterExtent
+from processing.core.parameters import ParameterExtent
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 from qgis.core import QgsMapLayer, QgsMapLayerRegistry, QgsVectorLayer
 

@@ -126,6 +126,10 @@ qgscharacterselectdialog.cpp
 qgscollapsiblegroupbox.cpp
 qgscolorbutton.cpp
 qgscolordialog.cpp
+qgscodeeditor.cpp
+qgscodeeditorpython.cpp
+qgscodeeditorsql.cpp
+qgscodeeditorhtml.cpp
 qgscomposerruler.cpp
 qgscomposerview.cpp
 qgsprevieweffect.cpp
@@ -316,6 +320,10 @@ qgsblendmodecombobox.h
 qgsbusyindicatordialog.h
 qgscharacterselectdialog.h
 qgscollapsiblegroupbox.h
+qgscodeeditor.h
+qgscodeeditorpython.h
+qgscodeeditorsql.h
+qgscodeeditorhtml.h
 qgscolordialog.h
 qgsprevieweffect.h
 qgscomposerruler.h
@@ -668,6 +676,7 @@ TARGET_LINK_LIBRARIES(qgis_gui
 
 IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)
+  ADD_DEFINITIONS(-DQSCINTILLA_DLL)
 ENDIF(WIN32)
 
 # install

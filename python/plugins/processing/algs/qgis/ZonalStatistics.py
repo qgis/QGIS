@@ -30,12 +30,12 @@ import numpy
 from osgeo import gdal, ogr, osr
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.outputs.OutputVector import OutputVector
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterBoolean
+from processing.core.outputs import OutputVector
 from processing.tools.raster import mapToPixel
 from processing.tools import dataobjects, vector
 

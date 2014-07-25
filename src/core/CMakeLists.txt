@@ -75,6 +75,7 @@ SET(QGIS_CORE_SRCS
   qgserror.cpp
   qgsexpression.cpp
   qgsexpression_texts.cpp
+  qgsexpressionfieldbuffer.cpp
   qgsfeature.cpp
   qgsfeatureiterator.cpp
   qgsfeaturerequest.cpp
@@ -96,6 +97,7 @@ SET(QGIS_CORE_SRCS
   qgslegendsettings.cpp
   qgslogger.cpp
   qgsmaplayer.cpp
+  qgsmaplayerlegend.cpp
   qgsmaplayerregistry.cpp
   qgsmaprenderer.cpp
   qgsmaprenderercache.cpp
@@ -171,6 +173,7 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposerpicture.cpp
   composer/qgscomposermap.cpp
   composer/qgscomposermapgrid.cpp
+  composer/qgscomposermapoverview.cpp
   composer/qgscomposertable.cpp
   composer/qgscomposertablecolumn.cpp  
   composer/qgscomposerattributetable.cpp
@@ -336,6 +339,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsgmlschema.h
   qgshttptransaction.h
   qgsmaplayer.h
+  qgsmaplayerlegend.h
   qgsmaplayerregistry.h
   qgsmaprenderer.h
   qgsmaprenderercache.h
@@ -362,10 +366,10 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgsaddremoveitemcommand.h
   composer/qgscomposerlegend.h
   composer/qgscomposermap.h
+  composer/qgscomposermapoverview.h
   composer/qgscomposerpicture.h
   composer/qgscomposerscalebar.h
   composer/qgscomposerobject.h
-  composer/qgscomposerutils.h
   composer/qgscomposeritem.h
   composer/qgscomposeritemgroup.h
   composer/qgscomposermousehandles.h  
@@ -451,6 +455,7 @@ SET(QGIS_CORE_HDRS
   qgserror.h
   qgsexception.h
   qgsexpression.h
+  qgsexpressionfieldbuffer.h
   qgsfeature.h
   qgsfeatureiterator.h
   qgsfeaturerequest.h
@@ -470,6 +475,7 @@ SET(QGIS_CORE_HDRS
   qgslegendsettings.h
   qgslogger.h
   qgsmaplayer.h
+  qgsmaplayerlegend.h
   qgsmaplayerregistry.h
   qgsmaprenderer.h
   qgsmaprenderercache.h
@@ -729,6 +735,7 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${QT_QTNETWORK_LIBRARY}
   ${QT_QTSVG_LIBRARY}
   ${QT_QTWEBKIT_LIBRARY}
+  ${QSCINTILLA_LIBRARY}
 
   ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}

@@ -22,7 +22,6 @@
 #include "qgsattributeform.h"
 
 #include <QDialog>
-#include <QPointer>
 
 class QLayout;
 
@@ -33,7 +32,7 @@ class QgsHighlight;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 
-class GUI_EXPORT QgsAttributeDialog : public QObject
+class GUI_EXPORT QgsAttributeDialog : public QDialog
 {
     Q_OBJECT
 
@@ -83,7 +82,14 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
      */
     void setHighlight( QgsHighlight *h );
 
-    QDialog *dialog() { return mDialog; }
+    /**
+     * @brief Returns reference to self. Only here for legacy compliance
+     *
+     * @return this
+     *
+     * @deprecated Do not use. Just use this object itself. Or QgsAttributeForm if you want to embed.
+     */
+    Q_DECL_DEPRECATED QDialog *dialog() { return this; }
 
     QgsAttributeForm* attributeForm() { return mAttributeForm; }
 
@@ -115,25 +121,13 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
   public slots:
     void accept();
 
-    //! Show the dialog and block the application until the dialog is closed. Ownership of this object is not changed.
-    int exec();
-
     //! Show the dialog non-blocking. Reparents this dialog to be a child of the dialog form and is deleted when
     //! closed.
-    void show();
-
-  protected:
-    bool eventFilter( QObject *obj, QEvent *e );
-
-  private slots:
-    void onDialogFinished( int result );
+    void show( bool autoDelete = true );
 
   private:
     void init( QgsVectorLayer* layer, QgsFeature* feature, QgsAttributeEditorContext& context, QWidget* parent );
 
-    // Using a guarded pointer we can savely delete the dialog in the destructor even
-    // when the dialog is this object's parent
-    QPointer<QDialog> mDialog;
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field
     QgsHighlight *mHighlight;

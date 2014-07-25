@@ -14,11 +14,13 @@
  ***************************************************************************/
 #include "qgspluginlayer.h"
 
+#include "qgsmaplayerlegend.h"
 #include "qgsmaplayerrenderer.h"
 
 QgsPluginLayer::QgsPluginLayer( QString layerType, QString layerName )
     : QgsMapLayer( PluginLayer, layerName ), mPluginLayerType( layerType )
 {
+  setLegend( QgsMapLayerLegend::defaultPluginLegend( this ) );
 }
 
 QString QgsPluginLayer::pluginLayerType()

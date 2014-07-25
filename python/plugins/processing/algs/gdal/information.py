@@ -26,9 +26,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.outputs.OutputHTML import OutputHTML
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterBoolean
+from processing.core.outputs import OutputHTML
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 

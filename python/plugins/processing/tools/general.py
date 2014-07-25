@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import *
 from processing.core.Processing import Processing
 from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.parameters.ParameterSelection import ParameterSelection
+from processing.core.parameters import ParameterSelection
 
 
 def alglist(text=None):

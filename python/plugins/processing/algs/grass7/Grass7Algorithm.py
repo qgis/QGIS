@@ -37,25 +37,11 @@ from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.WrongHelpFileException import WrongHelpFileException
 from processing.core.GeoAlgorithmExecutionException import \
     GeoAlgorithmExecutionException
 
-from processing.parameters.ParameterFactory import ParameterFactory
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.outputs.OutputRaster import OutputRaster
-from processing.outputs.OutputHTML import OutputHTML
-from processing.outputs.OutputVector import OutputVector
-from processing.outputs.OutputFactory import OutputFactory
-from processing.outputs.OutputFile import OutputFile
+from processing.core.parameters import *
+from processing.core.outputs import *
 
 from Grass7Utils import Grass7Utils
 
@@ -97,26 +83,22 @@ class Grass7Algorithm(GeoAlgorithm):
 
     def getParameterDescriptions(self):
         descs = {}
+        _, helpfile = self.help()        
         try:
-            _, helpfile = self.help()
-        except WrongHelpFileException:
-            return descs
-        if helpfile:
-            try:
-                infile = open(helpfile)
-                lines = infile.readlines()
-                for i in range(len(lines)):
-                    if lines[i].startswith('<DT><b>'):
-                        for param in self.parameters:
-                            searchLine = '<b>' + param.name + '</b>'
-                            if searchLine in lines[i]:
-                                i += 1
-                                descs[param.name] = (lines[i])[4:-6]
-                                break
+            infile = open(helpfile)
+            lines = infile.readlines()
+            for i in range(len(lines)):
+                if lines[i].startswith('<DT><b>'):
+                    for param in self.parameters:
+                        searchLine = '<b>' + param.name + '</b>'
+                        if searchLine in lines[i]:
+                            i += 1
+                            descs[param.name] = (lines[i])[4:-6]
+                            break
 
-                infile.close()
-            except Exception:
-                pass
+            infile.close()
+        except Exception:
+            pass
         return descs
 
     def defineCharacteristicsFromFile(self):
@@ -130,11 +112,12 @@ class Grass7Algorithm(GeoAlgorithm):
         hasRasterOutput = False
         hasVectorInput = False
         vectorOutputs = 0
+        line = lines.readline().strip('\n').strip()
         while line != '':
             try:
                 line = line.strip('\n').strip()
                 if line.startswith('Parameter'):
-                    parameter = ParameterFactory.getFromString(line)
+                    parameter = getParameterFromString(line)
                     self.addParameter(parameter)
                     if isinstance(parameter, ParameterVector):
                         hasVectorInput = True
@@ -142,11 +125,11 @@ class Grass7Algorithm(GeoAlgorithm):
                         and parameter.datatype < 3:
                         hasVectorInput = True
                 elif line.startswith('*Parameter'):
-                    param = ParameterFactory.getFromString(line[1:])
+                    param = getParameterFromString(line[1:])
                     param.isAdvanced = True
                     self.addParameter(param)
                 else:
-                    output = OutputFactory.getFromString(line)
+                    output = getOutputFromString(line)
                     self.addOutput(output)
                     if isinstance(output, OutputRaster):
                         hasRasterOutput = True

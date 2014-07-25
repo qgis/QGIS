@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>225</width>
-    <height>190</height>
+    <width>487</width>
+    <height>416</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,81 +18,142 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QLabel" name="textLabel1">
+    <widget class="QRadioButton" name="mButtonProviderField">
      <property name="text">
-      <string>N&amp;ame</string>
+      <string>Provider Field</string>
      </property>
-     <property name="buddy">
-      <cstring>mNameEdit</cstring>
+     <property name="checked">
+      <bool>true</bool>
      </property>
+     <attribute name="buttonGroup">
+      <string notr="true">mFieldModeButtonGroup</string>
+     </attribute>
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QLineEdit" name="mNameEdit"/>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="textLabel1_2">
+    <widget class="QRadioButton" name="mButtonVirtualField">
      <property name="text">
-      <string>Comment</string>
+      <string>Virtual Field</string>
      </property>
-     <property name="buddy">
-      <cstring>mCommentEdit</cstring>
-     </property>
+     <attribute name="buttonGroup">
+      <string notr="true">mFieldModeButtonGroup</string>
+     </attribute>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QLineEdit" name="mCommentEdit"/>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="textLabel2">
-     <property name="text">
-      <string>Type</string>
-     </property>
-     <property name="buddy">
-      <cstring>mTypeBox</cstring>
-     </property>
+   <item row="1" column="0" colspan="2">
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QFormLayout" name="formLayout">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+      </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item row="2" column="0">
+       <widget class="QLabel" name="mExpressionLabel">
+        <property name="toolTip">
+         <string>Define an expression which will be used to calculate this field.</string>
+        </property>
+        <property name="text">
+         <string>Expression</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="textLabel1">
+        <property name="text">
+         <string>N&amp;ame</string>
+        </property>
+        <property name="buddy">
+         <cstring>mNameEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="mNameEdit"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="textLabel1_2">
+        <property name="text">
+         <string>Comment</string>
+        </property>
+        <property name="buddy">
+         <cstring>mCommentEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="mCommentEdit"/>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="textLabel2">
+        <property name="text">
+         <string>Type</string>
+        </property>
+        <property name="buddy">
+         <cstring>mTypeBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QComboBox" name="mTypeBox"/>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLabel" name="mTypeName">
+        <property name="text">
+         <string>Type</string>
+        </property>
+        <property name="buddy">
+         <cstring>mTypeBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="mLengthLabel">
+        <property name="text">
+         <string>Width</string>
+        </property>
+        <property name="buddy">
+         <cstring>mLength</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QSpinBox" name="mLength"/>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="mPrecLabel">
+        <property name="text">
+         <string>Precision</string>
+        </property>
+        <property name="buddy">
+         <cstring>mPrec</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QSpinBox" name="mPrec"/>
+      </item>
+      <item row="2" column="1">
+       <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true"/>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QComboBox" name="mTypeBox"/>
-   </item>
-   <item row="3" column="1">
-    <widget class="QLabel" name="mTypeName">
-     <property name="text">
-      <string>Type</string>
+   <item row="8" column="0" colspan="2">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
-     <property name="buddy">
-      <cstring>mTypeBox</cstring>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
      </property>
-    </widget>
+    </spacer>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="mLengthLabel">
-     <property name="text">
-      <string>Width</string>
-     </property>
-     <property name="buddy">
-      <cstring>mLength</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QSpinBox" name="mLength"/>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="mPrecLabel">
-     <property name="text">
-      <string>Precision</string>
-     </property>
-     <property name="buddy">
-      <cstring>mPrec</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QSpinBox" name="mPrec"/>
-   </item>
-   <item row="6" column="1">
+   <item row="9" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
@@ -102,12 +163,15 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
-  <tabstop>mNameEdit</tabstop>
-  <tabstop>mCommentEdit</tabstop>
-  <tabstop>mTypeBox</tabstop>
-  <tabstop>mLength</tabstop>
-  <tabstop>mPrec</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
@@ -145,4 +209,7 @@
    </hints>
   </connection>
  </connections>
+ <buttongroups>
+  <buttongroup name="mFieldModeButtonGroup"/>
+ </buttongroups>
 </ui>

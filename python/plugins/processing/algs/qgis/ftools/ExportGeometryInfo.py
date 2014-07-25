@@ -29,9 +29,9 @@ from PyQt4.QtCore import *
 from qgis.core import *
 from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.outputs.OutputVector import OutputVector
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterSelection
+from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 

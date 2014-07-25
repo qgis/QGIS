@@ -129,3 +129,15 @@ void QgsTextEditWidget::setValue( const QVariant& value )
   if ( mLineEdit )
     mLineEdit->setText( v );
 }
+
+void QgsTextEditWidget::setEnabled( bool enabled )
+{
+  if ( mTextEdit )
+    mTextEdit->setReadOnly( !enabled );
+
+  if ( mPlainTextEdit )
+    mPlainTextEdit->setReadOnly( !enabled );
+
+  if ( mLineEdit )
+    mLineEdit->setReadOnly( !enabled );
+}

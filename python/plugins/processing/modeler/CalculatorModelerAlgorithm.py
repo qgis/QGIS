@@ -29,9 +29,9 @@ from PyQt4 import QtCore, QtGui
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
-from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.outputs.OutputNumber import OutputNumber
+from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterNumber
+from processing.core.outputs import OutputNumber
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerAlgorithm import Algorithm
 

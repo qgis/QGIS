@@ -23,27 +23,8 @@
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
+class QgsLayerTreeModelLegendNode;
 class QgsMapLayer;
-
-/** internal class, not in public API */
-class QgsLayerTreeModelSymbologyNode : public QObject
-{
-    Q_OBJECT
-  public:
-    QgsLayerTreeModelSymbologyNode( QgsLayerTreeLayer* parent, const QString& name, const QIcon& icon = QIcon() )
-        : mParent( parent ), mName( name ), mIcon( icon ) {}
-
-    QgsLayerTreeLayer* parent() const { return mParent; }
-    QString name() const { return mName; }
-    QIcon icon() const { return mIcon; }
-
-    // TODO: ref to renderer
-
-  protected:
-    QgsLayerTreeLayer* mParent;
-    QString mName;
-    QIcon mIcon;
-};
 
 
 /**
@@ -155,16 +136,13 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void nodeVisibilityChanged( QgsLayerTreeNode* node );
 
     void nodeLayerLoaded();
-    void layerRendererChanged();
+    void layerLegendChanged();
 
     void layerNeedsUpdate();
 
   protected:
     void removeSymbologyFromLayer( QgsLayerTreeLayer* nodeLayer );
     void addSymbologyToLayer( QgsLayerTreeLayer* nodeL );
-    void addSymbologyToVectorLayer( QgsLayerTreeLayer* nodeL );
-    void addSymbologyToRasterLayer( QgsLayerTreeLayer* nodeL );
-    void addSymbologyToPluginLayer( QgsLayerTreeLayer* nodeL );
 
     void connectToLayer( QgsLayerTreeLayer* nodeLayer );
     void disconnectFromLayer( QgsLayerTreeLayer* nodeLayer );
@@ -172,7 +150,7 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! emit dataChanged() for layer tree node items
     void recursivelyEmitDataChanged( const QModelIndex& index = QModelIndex() );
 
-    static QgsLayerTreeModelSymbologyNode* index2symnode( const QModelIndex& index );
+    static QgsLayerTreeModelLegendNode* index2symnode( const QModelIndex& index );
 
     static const QIcon& iconGroup();
 
@@ -182,7 +160,7 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Set of flags for the model
     Flags mFlags;
     //! Data structure for storage of symbology nodes for each layer
-    QMap<QgsLayerTreeLayer*, QList<QgsLayerTreeModelSymbologyNode*> > mSymbologyNodes;
+    QMap<QgsLayerTreeLayer*, QList<QgsLayerTreeModelLegendNode*> > mSymbologyNodes;
     //! Current index - will be underlined
     QPersistentModelIndex mCurrentIndex;
     //! Minimal number of nodes when symbology should be automatically collapsed. -1 = disabled

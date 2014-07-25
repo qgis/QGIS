@@ -21,6 +21,8 @@ QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf
     : QgsComposerItem( x, y, width, height, c )
     , mMultiFrame( mf )
 {
+  //repaint frame when multiframe content changes
+  connect( mf, SIGNAL( contentsChanged() ), this, SLOT( repaint() ) );
 }
 
 QgsComposerFrame::QgsComposerFrame()
@@ -41,6 +43,7 @@ bool QgsComposerFrame::writeXML( QDomElement& elem, QDomDocument & doc ) const
   frameElem.setAttribute( "sectionWidth", QString::number( mSection.width() ) );
   frameElem.setAttribute( "sectionHeight", QString::number( mSection.height() ) );
   elem.appendChild( frameElem );
+
   return _writeXML( frameElem, doc );
 }
 

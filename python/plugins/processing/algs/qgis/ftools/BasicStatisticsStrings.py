@@ -29,10 +29,10 @@ import codecs
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.outputs.OutputHTML import OutputHTML
-from processing.outputs.OutputNumber import OutputNumber
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTableField
+from processing.core.outputs import OutputHTML
+from processing.core.outputs import OutputNumber
 from processing.tools import dataobjects, vector
 
 

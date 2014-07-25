@@ -30,9 +30,12 @@ class TestQgsComposerHtml: public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
-    void table(); //test if rendering of the composition with composr map is correct
+    void sourceMode(); //test if rendering manual HTML works
+    void evalExpressions(); //test if rendering with expressions works
+    void evalExpressionsOff(); //test if rendering with expressions disabled works
+    void table(); //test if rendering a HTML url works
     void tableMultiFrame(); //tests multiframe capabilities of composer html
-    void htmlMultiFrameSmarkBreak(); //tests smart page breaks in html multi frame
+    void htmlMultiFrameSmartBreak(); //tests smart page breaks in html multi frame
   private:
     QgsComposition* mComposition;
     QgsMapSettings mMapSettings;
@@ -69,6 +72,59 @@ void TestQgsComposerHtml::init()
 void TestQgsComposerHtml::cleanup()
 {
 
+}
+
+void TestQgsComposerHtml::sourceMode()
+{
+  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  htmlFrame->setFrameEnabled( true );
+  htmlItem->addFrame( htmlFrame );
+  htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
+  htmlItem->setHtml( QString( "<p><i>Test manual <b>html</b></i></p>" ) );
+  htmlItem->loadHtml();
+
+  QgsCompositionChecker checker( "composerhtml_manual", mComposition );
+  bool result = checker.testComposition( mReport );
+  mComposition->removeMultiFrame( htmlItem );
+  delete htmlItem;
+  QVERIFY( result );
+}
+
+void TestQgsComposerHtml::evalExpressions()
+{
+  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  htmlFrame->setFrameEnabled( true );
+  htmlItem->addFrame( htmlFrame );
+  htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
+  htmlItem->setEvaluateExpressions( true );
+  htmlItem->setHtml( QString( "<p>Test expressions = <i>[% 1 + 2 + 3%]</i></p>" ) );
+  htmlItem->loadHtml();
+
+  QgsCompositionChecker checker( "composerhtml_expressions_enabled", mComposition );
+  bool result = checker.testComposition( mReport );
+  mComposition->removeMultiFrame( htmlItem );
+  delete htmlItem;
+  QVERIFY( result );
+}
+
+void TestQgsComposerHtml::evalExpressionsOff()
+{
+  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  htmlFrame->setFrameEnabled( true );
+  htmlItem->addFrame( htmlFrame );
+  htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
+  htmlItem->setEvaluateExpressions( false );
+  htmlItem->setHtml( QString( "<p>Test expressions = <i>[% 1 + 2 + 3%]</i></p>" ) );
+  htmlItem->loadHtml();
+
+  QgsCompositionChecker checker( "composerhtml_expressions_disabled", mComposition );
+  bool result = checker.testComposition( mReport );
+  mComposition->removeMultiFrame( htmlItem );
+  delete htmlItem;
+  QVERIFY( result );
 }
 
 void TestQgsComposerHtml::table()
@@ -112,7 +168,7 @@ void TestQgsComposerHtml::tableMultiFrame()
   QVERIFY( result );
 }
 
-void TestQgsComposerHtml::htmlMultiFrameSmarkBreak()
+void TestQgsComposerHtml::htmlMultiFrameSmartBreak()
 {
   QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
   QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 10, 10, 100, 50 );

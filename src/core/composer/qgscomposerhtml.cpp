@@ -18,20 +18,28 @@
 #include "qgscomposition.h"
 #include "qgsaddremovemultiframecommand.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsmessagelog.h"
+#include "qgsexpression.h"
+#include "qgslogger.h"
 
 #include <QCoreApplication>
 #include <QPainter>
 #include <QWebFrame>
 #include <QWebPage>
 #include <QImage>
+#include <QNetworkReply>
 
 QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): QgsComposerMultiFrame( c, createUndoCommands ),
+    mContentMode( QgsComposerHtml::Url ),
     mWebPage( 0 ),
     mLoaded( false ),
     mHtmlUnitsToMM( 1.0 ),
     mRenderedPage( 0 ),
+    mEvaluateExpressions( true ),
     mUseSmartBreaks( true ),
-    mMaxBreakDistance( 10 )
+    mMaxBreakDistance( 10 ),
+    mExpressionFeature( 0 ),
+    mExpressionLayer( 0 )
 {
   mHtmlUnitsToMM = htmlUnitsToMM();
   mWebPage = new QWebPage();
@@ -40,17 +48,34 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): 
   if ( mComposition )
   {
     QObject::connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( handleFrameRemoval( QgsComposerItem* ) ) );
-    connect( mComposition, SIGNAL( refreshItemsTriggered() ), this, SLOT( loadHtml() ) );
   }
+
+  // data defined strings
+  mDataDefinedNames.insert( QgsComposerObject::SourceUrl, QString( "dataDefinedSourceUrl" ) );
+
+  if ( mComposition && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
+  {
+    //a html item added while atlas preview is enabled needs to have the expression context set,
+    //otherwise fields in the html aren't correctly evaluated until atlas preview feature changes (#9457)
+    setExpressionContext( mComposition->atlasComposition().currentFeature(), mComposition->atlasComposition().coverageLayer() );
+  }
+
+  //connect to atlas feature changes
+  //to update the expression context
+  connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshExpressionContext() ) );
+
 }
 
 QgsComposerHtml::QgsComposerHtml(): QgsComposerMultiFrame( 0, false ),
+    mContentMode( QgsComposerHtml::Url ),
     mWebPage( 0 ),
     mLoaded( false ),
     mHtmlUnitsToMM( 1.0 ),
     mRenderedPage( 0 ),
     mUseSmartBreaks( true ),
-    mMaxBreakDistance( 10 )
+    mMaxBreakDistance( 10 ),
+    mExpressionFeature( 0 ),
+    mExpressionLayer( 0 )
 {
 }
 
@@ -71,15 +96,121 @@ void QgsComposerHtml::setUrl( const QUrl& url )
   loadHtml();
 }
 
+void QgsComposerHtml::setHtml( const QString html )
+{
+  mHtml = html;
+}
+
+void QgsComposerHtml::setEvaluateExpressions( bool evaluateExpressions )
+{
+  mEvaluateExpressions = evaluateExpressions;
+  loadHtml();
+}
+
+QString QgsComposerHtml::fetchHtml( QUrl url )
+{
+  QUrl nextUrlToFetch = url;
+  QNetworkReply* reply = 0;
+
+  //loop until fetched valid html
+  while ( 1 )
+  {
+    //set contents
+    QNetworkRequest request( nextUrlToFetch );
+    reply = QgsNetworkAccessManager::instance()->get( request );
+    connect( reply, SIGNAL( finished() ), this, SLOT( frameLoaded() ) );
+    //pause until HTML fetch
+    mLoaded = false;
+    while ( !mLoaded )
+    {
+      qApp->processEvents();
+    }
+
+    if ( reply->error() != QNetworkReply::NoError )
+    {
+      QgsMessageLog::logMessage( tr( "HTML fetch %1 failed with error %2" ).arg( reply->url().toString() ).arg( reply->errorString() ) );
+      reply->deleteLater();
+      return QString();
+    }
+
+    QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+    if ( redirect.isNull() )
+    {
+      //no error or redirect, got target
+      break;
+    }
+
+    //redirect, so fetch redirect target
+    nextUrlToFetch = redirect.toUrl();
+    reply->deleteLater();
+  }
+
+  QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+  if ( !status.isNull() && status.toInt() >= 400 )
+  {
+    QgsMessageLog::logMessage( tr( "HTML fetch %1 failed with error %2" ).arg( reply->url().toString() ).arg( status.toString() ) );
+    reply->deleteLater();
+    return QString();
+  }
+
+  QByteArray array = reply->readAll();
+  reply->deleteLater();
+  mFetchedHtml = QString( array );
+  return mFetchedHtml;
+}
+
 void QgsComposerHtml::loadHtml()
 {
-  if ( !mWebPage || mUrl.isEmpty() )
+  if ( !mWebPage )
   {
     return;
   }
 
+  QString loadedHtml;
+  switch ( mContentMode )
+  {
+    case QgsComposerHtml::Url:
+    {
+
+      QString currentUrl = mUrl.toString();
+
+      //data defined url set?
+      QVariant exprVal;
+      if ( dataDefinedEvaluate( QgsComposerObject::SourceUrl, exprVal ) )
+      {
+        currentUrl = exprVal.toString().trimmed();;
+        QgsDebugMsg( QString( "exprVal Source Url:%1" ).arg( currentUrl ) );
+      }
+      if ( currentUrl.isEmpty() )
+      {
+        return;
+      }
+      if ( currentUrl != mLastFetchedUrl )
+      {
+        loadedHtml = fetchHtml( QUrl( currentUrl ) );
+        mLastFetchedUrl = currentUrl;
+      }
+      else
+      {
+        loadedHtml = mFetchedHtml;
+      }
+      break;
+    }
+    case QgsComposerHtml::ManualHtml:
+      loadedHtml = mHtml;
+      break;
+  }
+
+  //evaluate expressions
+  if ( mEvaluateExpressions )
+  {
+    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, mExpressionFeature, mExpressionLayer );
+  }
+
   mLoaded = false;
-  mWebPage->mainFrame()->load( mUrl );
+  //set html, using the specified url as base if in Url mode
+  mWebPage->mainFrame()->setHtml( loadedHtml, mContentMode == QgsComposerHtml::Url ? QUrl( mLastFetchedUrl ) : QUrl() );
+
   while ( !mLoaded )
   {
     qApp->processEvents();
@@ -109,6 +240,8 @@ void QgsComposerHtml::loadHtml()
 
   recalculateFrameSizes();
   emit changed();
+  //trigger a repaint
+  emit contentsChanged();
 }
 
 void QgsComposerHtml::frameLoaded( bool ok )
@@ -282,7 +415,10 @@ void QgsComposerHtml::setMaxBreakDistance( double maxBreakDistance )
 bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
   QDomElement htmlElem = doc.createElement( "ComposerHtml" );
+  htmlElem.setAttribute( "contentMode",  QString::number(( int ) mContentMode ) );
   htmlElem.setAttribute( "url", mUrl.toString() );
+  htmlElem.setAttribute( "html", mHtml );
+  htmlElem.setAttribute( "evaluateExpressions", mEvaluateExpressions ? "true" : "false" );
   htmlElem.setAttribute( "useSmartBreaks", mUseSmartBreaks ? "true" : "false" );
   htmlElem.setAttribute( "maxBreakDistance", QString::number( mMaxBreakDistance ) );
 
@@ -301,14 +437,59 @@ bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& 
     return false;
   }
 
+  bool contentModeOK;
+  mContentMode = ( QgsComposerHtml::ContentMode )itemElem.attribute( "contentMode" ).toInt( &contentModeOK );
+  if ( !contentModeOK )
+  {
+    mContentMode = QgsComposerHtml::Url;
+  }
+  mEvaluateExpressions = itemElem.attribute( "evaluateExpressions", "true" ) == "true" ? true : false;
   mUseSmartBreaks = itemElem.attribute( "useSmartBreaks", "true" ) == "true" ? true : false;
   mMaxBreakDistance = itemElem.attribute( "maxBreakDistance", "10" ).toDouble();
-
+  mHtml = itemElem.attribute( "html" );
   //finally load the set url
   QString urlString = itemElem.attribute( "url" );
   if ( !urlString.isEmpty() )
   {
-    setUrl( QUrl( urlString ) );
+    mUrl = urlString;
   }
+  loadHtml();
+
+  //since frames had to be created before, we need to emit a changed signal to refresh the widget
+  emit changed();
   return true;
+}
+
+void QgsComposerHtml::setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer )
+{
+  mExpressionFeature = feature;
+  mExpressionLayer = layer;
+}
+
+void QgsComposerHtml::refreshExpressionContext()
+{
+  QgsVectorLayer * vl = 0;
+  QgsFeature* feature = 0;
+
+  if ( mComposition->atlasComposition().enabled() )
+  {
+    vl = mComposition->atlasComposition().coverageLayer();
+  }
+  if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
+  {
+    feature = mComposition->atlasComposition().currentFeature();
+  }
+
+  setExpressionContext( feature, vl );
+  loadHtml();
+}
+
+void QgsComposerHtml::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
+{
+  //updates data defined properties and redraws item to match
+  if ( property == QgsComposerObject::SourceUrl || property == QgsComposerObject::AllProperties )
+  {
+    loadHtml();
+  }
+  QgsComposerObject::refreshDataDefinedProperty( property );
 }

@@ -84,4 +84,9 @@ class QgsComposerMultiFrame: QgsComposerObject
 
   signals:
     void changed();
+    
+    /**Emitted when the contents of the multi frame have changed and the frames
+     * must be redrawn.
+    */
+    void contentsChanged();
 };

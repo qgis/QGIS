@@ -307,7 +307,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void zoomScale( double scale );
 
     //! Zoom with the factor supplied. Factor > 1 zooms out, interval (0,1) zooms in
-    void zoomByFactor( double scaleFactor );
+    //! If point is given, re-center on it
+    void zoomByFactor( double scaleFactor, const QgsPoint *center = 0 );
 
     //! Zooms in/out with a given center
     void zoomWithCenter( int x, int y, bool zoomIn );

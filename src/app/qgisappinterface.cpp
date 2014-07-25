@@ -628,7 +628,7 @@ QDialog* QgisAppInterface::getFeatureForm( QgsVectorLayer *l, QgsFeature &featur
   myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( l, &feature, false, NULL, true );
-  return dialog->dialog();
+  return dialog;
 }
 
 QgsVectorLayerTools* QgisAppInterface::vectorLayerTools()

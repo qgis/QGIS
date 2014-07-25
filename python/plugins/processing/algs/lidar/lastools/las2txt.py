@@ -27,8 +27,8 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
-from processing.parameters.ParameterString import ParameterString
-from processing.outputs.OutputFile import OutputFile
+from processing.core.parameters import ParameterString
+from processing.core.outputs import OutputFile
 
 class las2txt(LAStoolsAlgorithm):
 

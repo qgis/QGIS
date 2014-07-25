@@ -30,8 +30,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 
-from processing.parameters.ParameterVector import ParameterVector
-from processing.outputs.OutputHTML import OutputHTML
+from processing.core.parameters import ParameterVector
+from processing.core.outputs import OutputHTML
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm

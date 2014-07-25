@@ -174,6 +174,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     QWidget* createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeEditorContext& context, QString& labelText, bool& labelOnTop );
 
+    void addWidgetWrapper( QgsEditorWidgetWrapper* eww );
+
     /**
      * Creates widget wrappers for all suitable widgets found.
      * Called once maximally.

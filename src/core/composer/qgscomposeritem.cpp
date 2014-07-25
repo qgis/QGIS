@@ -101,7 +101,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
   setPos( x, y );
 }
 
-void QgsComposerItem::init( bool manageZValue )
+void QgsComposerItem::init( const bool manageZValue )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   //set default pen and brush
@@ -399,13 +399,19 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   return true;
 }
 
-void QgsComposerItem::setFrameEnabled( bool drawFrame )
+void QgsComposerItem::setFrameEnabled( const bool drawFrame )
 {
+  if ( drawFrame == mFrame )
+  {
+    //no change
+    return;
+  }
+
   mFrame = drawFrame;
   emit frameChanged();
 }
 
-void QgsComposerItem::setFrameOutlineWidth( double outlineWidth )
+void QgsComposerItem::setFrameOutlineWidth( const double outlineWidth )
 {
   QPen itemPen = pen();
   if ( itemPen.widthF() == outlineWidth )
@@ -418,7 +424,7 @@ void QgsComposerItem::setFrameOutlineWidth( double outlineWidth )
   emit frameChanged();
 }
 
-void QgsComposerItem::setFrameJoinStyle( Qt::PenJoinStyle style )
+void QgsComposerItem::setFrameJoinStyle( const Qt::PenJoinStyle style )
 {
   if ( mFrameJoinStyle == style )
   {
@@ -516,12 +522,12 @@ void QgsComposerItem::drawFrame( QPainter* p )
   }
 }
 
-void QgsComposerItem::setPositionLock( bool lock )
+void QgsComposerItem::setPositionLock( const bool lock )
 {
   mItemPositionLocked = lock;
 }
 
-double QgsComposerItem::itemRotation( QgsComposerObject::PropertyValueType valueType ) const
+double QgsComposerItem::itemRotation( const PropertyValueType valueType ) const
 {
   return valueType == QgsComposerObject::EvaluatedValue ? mEvaluatedItemRotation : mItemRotation;
 }
@@ -788,7 +794,7 @@ void QgsComposerItem::setBackgroundColor( const QColor& backgroundColor )
   setBrush( QBrush( mBackgroundColor, Qt::SolidPattern ) );
 }
 
-void QgsComposerItem::setBlendMode( QPainter::CompositionMode blendMode )
+void QgsComposerItem::setBlendMode( const QPainter::CompositionMode blendMode )
 {
   mBlendMode = blendMode;
   // Update the composer effect to use the new blend mode
@@ -814,13 +820,13 @@ void QgsComposerItem::refreshBlendMode()
   mEffect->setCompositionMode( blendMode );
 }
 
-void QgsComposerItem::setTransparency( int transparency )
+void QgsComposerItem::setTransparency( const int transparency )
 {
   mTransparency = transparency;
   refreshTransparency( true );
 }
 
-void QgsComposerItem::refreshTransparency( bool updateItem )
+void QgsComposerItem::refreshTransparency( const bool updateItem )
 {
   int transparency = mTransparency;
 
@@ -846,7 +852,7 @@ void QgsComposerItem::refreshTransparency( bool updateItem )
   }
 }
 
-void QgsComposerItem::setEffectsEnabled( bool effectsEnabled )
+void QgsComposerItem::setEffectsEnabled( const bool effectsEnabled )
 {
   //enable or disable the QgsComposerEffect applied to this item
   mEffectsEnabled = effectsEnabled;
@@ -855,77 +861,46 @@ void QgsComposerItem::setEffectsEnabled( bool effectsEnabled )
 
 void QgsComposerItem::drawText( QPainter* p, double x, double y, const QString& text, const QFont& font, const QColor& c ) const
 {
-  QFont textFont = scaledFontPixelSize( font );
-
-  p->save();
-  p->setFont( textFont );
-  p->setPen( c );
-  double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
-  p->scale( scaleFactor, scaleFactor );
-  p->drawText( QPointF( x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE ), text );
-  p->restore();
+  QgsComposerUtils::drawText( p, QPointF( x, y ), text, font, c );
 }
 
 void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment, Qt::AlignmentFlag valignment, int flags ) const
 {
-  QFont textFont = scaledFontPixelSize( font );
-
-  QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE,
-                     rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
-
-  p->save();
-  p->setFont( textFont );
-  double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
-  p->scale( scaleFactor, scaleFactor );
-  p->drawText( scaledRect, halignment | valignment | flags, text );
-  p->restore();
+  QgsComposerUtils::drawText( p, rect, text, font, QColor(), halignment, valignment, flags );
 }
 double QgsComposerItem::textWidthMillimeters( const QFont& font, const QString& text ) const
 {
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetricsF fontMetrics( metricsFont );
-  return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
+  return QgsComposerUtils::textWidthMM( font, text );
 }
 
 double QgsComposerItem::fontHeightCharacterMM( const QFont& font, const QChar& c ) const
 {
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetricsF fontMetrics( metricsFont );
-  return ( fontMetrics.boundingRect( c ).height() / FONT_WORKAROUND_SCALE );
+  return QgsComposerUtils::fontHeightCharacterMM( font, c );
 }
 
 double QgsComposerItem::fontAscentMillimeters( const QFont& font ) const
 {
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetricsF fontMetrics( metricsFont );
-  return ( fontMetrics.ascent() / FONT_WORKAROUND_SCALE );
+  return QgsComposerUtils::fontAscentMM( font );
 }
 
 double QgsComposerItem::fontDescentMillimeters( const QFont& font ) const
 {
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetricsF fontMetrics( metricsFont );
-  return ( fontMetrics.descent() / FONT_WORKAROUND_SCALE );
+  return QgsComposerUtils::fontDescentMM( font );
 }
 
 double QgsComposerItem::fontHeightMillimeters( const QFont& font ) const
 {
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetricsF fontMetrics( metricsFont );
-  return ( fontMetrics.height() / FONT_WORKAROUND_SCALE );
+  return QgsComposerUtils::fontHeightMM( font );
 }
 
 double QgsComposerItem::pixelFontSize( double pointSize ) const
 {
-  return ( pointSize * 0.3527 );
+  return QgsComposerUtils::pointsToMM( pointSize );
 }
 
 QFont QgsComposerItem::scaledFontPixelSize( const QFont& font ) const
 {
-  QFont scaledFont = font;
-  double pixelSize = pixelFontSize( font.pointSizeF() ) * FONT_WORKAROUND_SCALE + 0.5;
-  scaledFont.setPixelSize( pixelSize );
-  return scaledFont;
+  return QgsComposerUtils::scaledFontPixelSize( font );
 }
 
 double QgsComposerItem::horizontalViewScaleFactor() const
@@ -980,14 +955,14 @@ double QgsComposerItem::lockSymbolSize() const
   return lockSymbolSize;
 }
 
-void QgsComposerItem::setRotation( double r )
+void QgsComposerItem::setRotation( const double r )
 {
   //kept for api compatibility with QGIS 2.0
   //remove after 2.0 series
   setItemRotation( r, true );
 }
 
-void QgsComposerItem::setItemRotation( double r, bool adjustPosition )
+void QgsComposerItem::setItemRotation( const double r, const bool adjustPosition )
 {
   if ( r >= 360 )
   {
@@ -1001,7 +976,7 @@ void QgsComposerItem::setItemRotation( double r, bool adjustPosition )
   refreshRotation( true, adjustPosition );
 }
 
-void QgsComposerItem::refreshRotation( bool updateItem , bool adjustPosition )
+void QgsComposerItem::refreshRotation( const bool updateItem , const bool adjustPosition )
 {
   double rotation = mItemRotation;
 
@@ -1276,7 +1251,7 @@ void QgsComposerItem::repaint()
   update();
 }
 
-void QgsComposerItem::refreshDataDefinedProperty( QgsComposerObject::DataDefinedProperty property )
+void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
 {
   //update data defined properties and redraw item to match
   if ( property == QgsComposerObject::PositionX || property == QgsComposerObject::PositionY ||
@@ -1299,8 +1274,6 @@ void QgsComposerItem::refreshDataDefinedProperty( QgsComposerObject::DataDefined
     refreshBlendMode();
   }
 
-  //TODO
-//  QgsComposerBaseItem::refreshDataDefinedPropert
   update();
 }
 
@@ -1310,7 +1283,7 @@ void QgsComposerItem::setId( const QString& id )
   mId = id;
 }
 
-void QgsComposerItem::setIsGroupMember( bool isGroupMember )
+void QgsComposerItem::setIsGroupMember( const bool isGroupMember )
 {
   mIsGroupMember = isGroupMember;
   setFlag( QGraphicsItem::ItemIsSelectable, !isGroupMember ); //item in groups cannot be selected

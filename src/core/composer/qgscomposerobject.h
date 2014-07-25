@@ -63,7 +63,11 @@ class CORE_EXPORT QgsComposerObject: public QObject
       MapXMin, /*< map extent x minimum */
       MapYMin, /*< map extent y minimum */
       MapXMax, /*< map extent x maximum */
-      MapYMax /*< map extent y maximum */
+      MapYMax, /*< map extent y maximum */
+      //composer picture
+      PictureSource, /*< picture source url */
+      //html item
+      SourceUrl /*< html source utl */
     };
 
     /** Specifies whether the value returned by a function should be the original, user
@@ -104,14 +108,14 @@ class CORE_EXPORT QgsComposerObject: public QObject
      * @param property data defined property to return
      * @note this method was added in version 2.5
     */
-    QgsDataDefined* dataDefinedProperty( const DataDefinedProperty property );
+    QgsDataDefined* dataDefinedProperty( const DataDefinedProperty property ) const;
 
     /**Sets parameters for a data defined property for the item
      * @param property data defined property to set
      * @param active true if data defined property is active, false if it is disabled
      * @param useExpression true if the expression should be used
      * @param expression expression for data defined property
-     * @field field name if the data defined property should take its value from a field
+     * @param field field name if the data defined property should take its value from a field
      * @note this method was added in version 2.5
     */
     void setDataDefinedProperty( const DataDefinedProperty property, const bool active, const bool useExpression, const QString &expression, const QString &field );
@@ -128,7 +132,7 @@ class CORE_EXPORT QgsComposerObject: public QObject
      * refreshed.
      * @note this method was added in version 2.5
     */
-    virtual void refreshDataDefinedProperty( DataDefinedProperty property = AllProperties );
+    virtual void refreshDataDefinedProperty( const DataDefinedProperty property = AllProperties );
 
   protected:
 
@@ -143,9 +147,7 @@ class CORE_EXPORT QgsComposerObject: public QObject
      * @param expressionValue QVariant for storing the evaluated value
      * @note this method was added in version 2.5
     */
-    bool dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue );
-
-    //some helpful utility functions
+    bool dataDefinedEvaluate( const QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue );
 
   signals:
     /**Emitted when the item changes. Signifies that the item widgets must update the

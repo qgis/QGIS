@@ -26,9 +26,9 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import unittest
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterCrs import ParameterCrs
-from processing.parameters.ParameterExtent import ParameterExtent
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterCrs
+from processing.core.parameters import ParameterExtent
 
 
 class ParametersTest(unittest.TestCase):

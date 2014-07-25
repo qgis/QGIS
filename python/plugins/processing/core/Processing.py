@@ -35,13 +35,11 @@ from qgis.utils import iface
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.SilentProgress import SilentProgress
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.gui.UnthreadedAlgorithmExecutor import \
-        UnthreadedAlgorithmExecutor
+from processing.gui.AlgorithmExecutor import runalg
 from processing.modeler.ModelerAlgorithmProvider import \
         ModelerAlgorithmProvider
 from processing.modeler.ModelerOnlyAlgorithmProvider import \
@@ -323,10 +321,10 @@ class Processing:
         elif cursor.shape() != Qt.WaitCursor:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
-        progress = SilentProgress()
+        progress = None
         if iface is not None :
             progress = MessageBarProgress()
-        ret = UnthreadedAlgorithmExecutor.runalg(alg, progress)
+        ret = runalg(alg, progress)
         if onFinish is not None and ret:
             onFinish(alg, progress)
         QApplication.restoreOverrideCursor()

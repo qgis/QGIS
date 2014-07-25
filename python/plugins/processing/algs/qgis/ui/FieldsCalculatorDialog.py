@@ -37,8 +37,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
-from processing.gui.UnthreadedAlgorithmExecutor import \
-        UnthreadedAlgorithmExecutor
+from processing.gui.AlgorithmExecutor import runalg
 from processing.tools import dataobjects
 from processing.gui.Postprocessing import handleAlgorithmResults
 
@@ -197,7 +196,7 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM,
                                      self.alg.getAsCommand())
-                ret = UnthreadedAlgorithmExecutor.runalg(self.alg, self)
+                ret = runalg(self.alg, self)
                 QApplication.restoreOverrideCursor()
                 if ret:
                     handleAlgorithmResults(self.alg,

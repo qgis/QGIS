@@ -29,28 +29,28 @@ import os
 from PyQt4 import QtGui
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import getHtmlFromHelpFile
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterCrs import ParameterCrs
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterFactory import ParameterFactory
-from processing.outputs.OutputTable import OutputTable
-from processing.outputs.OutputVector import OutputVector
-from processing.outputs.OutputRaster import OutputRaster
-from processing.outputs.OutputNumber import OutputNumber
-from processing.outputs.OutputString import OutputString
-from processing.outputs.OutputHTML import OutputHTML
-from processing.outputs.OutputFile import OutputFile
-from processing.outputs.OutputDirectory import OutputDirectory
-from processing.outputs.OutputFactory import OutputFactory
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterTable
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterCrs
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterFile
+from processing.core.parameters import getParameterFromString
+from processing.core.outputs import OutputTable
+from processing.core.outputs import OutputVector
+from processing.core.outputs import OutputRaster
+from processing.core.outputs import OutputNumber
+from processing.core.outputs import OutputString
+from processing.core.outputs import OutputHTML
+from processing.core.outputs import OutputFile
+from processing.core.outputs import OutputDirectory
+from processing.core.outputs import getOutputFromString
 from processing.script.WrongScriptException import WrongScriptException
 
 class ScriptAlgorithm(GeoAlgorithm):
@@ -236,13 +236,13 @@ class ScriptAlgorithm(GeoAlgorithm):
     def processDescriptionParameterLine(self, line):
         try:
             if line.startswith('Parameter'):
-                self.addParameter(ParameterFactory.getFromString(line))
+                self.addParameter(getParameterFromString(line))
             elif line.startswith('*Parameter'):
-                param = ParameterFactory.getFromString(line[1:])
+                param = getParameterFromString(line[1:])
                 param.isAdvanced = True
                 self.addParameter(param)
             else:
-                self.addOutput(OutputFactory.getFromString(line))
+                self.addOutput(getOutputFromString(line))
         except Exception:
             raise WrongScriptException('Could not load script:'
                                        + self.descriptionFile or ''
@@ -256,9 +256,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         ns = {}
         ns['progress'] = progress
 
-        print self.parameters
         for param in self.parameters:
-            print param.name
             ns[param.name] = param.value
 
         for out in self.outputs:
