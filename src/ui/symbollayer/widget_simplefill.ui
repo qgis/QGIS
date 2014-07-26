@@ -37,7 +37,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsColorButton" name="btnChangeColor">
+      <widget class="QgsColorButtonV2" name="btnChangeColor">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -69,7 +69,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsColorButton" name="btnChangeBorderColor">
+      <widget class="QgsColorButtonV2" name="btnChangeBorderColor">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -245,9 +245,9 @@
    <header>qgspenstylecombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>

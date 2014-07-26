@@ -125,7 +125,9 @@ qgsbusyindicatordialog.cpp
 qgscharacterselectdialog.cpp
 qgscollapsiblegroupbox.cpp
 qgscolorbutton.cpp
+qgscolorbuttonv2.cpp
 qgscolordialog.cpp
+qgscolorswatchgrid.cpp
 qgscodeeditor.cpp
 qgscodeeditorpython.cpp
 qgscodeeditorsql.cpp
@@ -221,6 +223,8 @@ ENDIF (WITH_TOUCH)
 SET(QGIS_GUI_MOC_HDRS
 
 qgscolorbutton.h
+qgscolorbuttonv2.h
+qgscolorswatchgrid.h
 
 raster/qgsrasterminmaxwidget.h
 raster/qgspalettedrendererwidget.h

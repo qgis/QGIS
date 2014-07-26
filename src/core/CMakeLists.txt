@@ -59,6 +59,8 @@ SET(QGIS_CORE_SRCS
   qgscacheindex.cpp
   qgscacheindexfeatureid.cpp
   qgsclipper.cpp
+  qgscolorscheme.cpp
+  qgscolorschemeregistry.cpp
   qgscontexthelp.cpp
   qgscontexthelp_texts.cpp
   qgscoordinatereferencesystem.cpp
@@ -439,6 +441,8 @@ SET(QGIS_CORE_HDRS
   qgscacheindex.h
   qgscacheindexfeatureid.h
   qgsclipper.h
+  qgscolorscheme.h
+  qgscolorschemeregistry.h
   qgscontexthelp.h
   qgscoordinatereferencesystem.h
   qgscoordinatetransform.h

@@ -324,7 +324,7 @@
      </property>
      <layout class="QFormLayout" name="formLayout_4">
       <item row="0" column="0" colspan="2">
-       <widget class="QgsColorButton" name="mFrameColorButton">
+       <widget class="QgsColorButtonV2" name="mFrameColorButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -401,7 +401,7 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QgsColorButton" name="mBackgroundColorButton">
+       <widget class="QgsColorButtonV2" name="mBackgroundColorButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -544,9 +544,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDataDefinedButton</class>

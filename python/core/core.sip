@@ -16,6 +16,8 @@
 %Include qgsattributeaction.sip
 %Include qgsbrowsermodel.sip
 %Include qgsclipper.sip
+%Include qgscolorscheme.sip
+%Include qgscolorschemeregistry.sip
 %Include qgscontexthelp.sip
 %Include qgscoordinatereferencesystem.sip
 %Include qgscoordinatetransform.sip
