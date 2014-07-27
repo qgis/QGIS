@@ -88,7 +88,7 @@
      <addaction name="mActionDecorationNorthArrow"/>
      <addaction name="mActionDecorationCopyright"/>
     </widget>
-    <widget class="QMenu" name="menuPreview_Mode">
+    <widget class="QMenu" name="mMenuPreviewMode">
      <property name="title">
       <string>Preview Mode</string>
      </property>
@@ -115,7 +115,7 @@
     <addaction name="mActionZoomActualSize"/>
     <addaction name="separator"/>
     <addaction name="menuDecorations"/>
-    <addaction name="menuPreview_Mode"/>
+    <addaction name="mMenuPreviewMode"/>
     <addaction name="mActionMapTips"/>
     <addaction name="mActionNewBookmark"/>
     <addaction name="mActionShowBookmarks"/>
