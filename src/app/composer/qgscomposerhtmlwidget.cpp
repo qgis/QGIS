@@ -20,6 +20,7 @@
 #include "qgscomposition.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgscodeeditorhtml.h"
+#include "qgscodeeditorcss.h"
 #include <QFileDialog>
 #include <QSettings>
 
@@ -30,9 +31,13 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
 
   //setup html editor
   mHtmlEditor = new QgsCodeEditorHTML( this );
-
   connect( mHtmlEditor, SIGNAL( textChanged() ), this, SLOT( htmlEditorChanged() ) );
   htmlEditorLayout->addWidget( mHtmlEditor );
+
+  //setup stylesheet editor
+  mStylesheetEditor = new QgsCodeEditorCSS( this );
+  connect( mStylesheetEditor, SIGNAL( textChanged() ), this, SLOT( stylesheetEditorChanged() ) );
+  stylesheetEditorLayout->addWidget( mStylesheetEditor );
 
   blockSignals( true );
   mResizeModeComboBox->addItem( tr( "Use existing frames" ), QgsComposerMultiFrame::UseExistingFrames );
@@ -87,6 +92,8 @@ void QgsComposerHtmlWidget::blockSignals( bool block )
   mUseSmartBreaksCheckBox->blockSignals( block );
   mMaxDistanceSpinBox->blockSignals( block );
   mHtmlEditor->blockSignals( block );
+  mStylesheetEditor->blockSignals( block );
+  mUserStylesheetCheckBox->blockSignals( block );
   mRadioManualSource->blockSignals( block );
   mRadioUrlSource->blockSignals( block );
   mEvaluateExpressionsCheckbox->blockSignals( block );
@@ -219,6 +226,42 @@ void QgsComposerHtmlWidget::htmlEditorChanged()
 
 }
 
+void QgsComposerHtmlWidget::stylesheetEditorChanged()
+{
+  if ( !mHtml )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mHtml->composition();
+  if ( composition )
+  {
+    blockSignals( true );
+    composition->beginMultiFrameCommand( mHtml, tr( "User stylesheet changed" ) );
+    mHtml->setUserStylesheet( mStylesheetEditor->text() );
+    composition->endMultiFrameCommand();
+    blockSignals( false );
+  }
+}
+
+void QgsComposerHtmlWidget::on_mUserStylesheetCheckBox_toggled( bool checked )
+{
+  if ( !mHtml )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mHtml->composition();
+  if ( composition )
+  {
+    blockSignals( true );
+    composition->beginMultiFrameCommand( mHtml, tr( "User stylesheet toggled" ) );
+    mHtml->setUserStylesheetEnabled( checked );
+    composition->endMultiFrameCommand();
+    blockSignals( false );
+  }
+}
+
 void QgsComposerHtmlWidget::on_mRadioManualSource_clicked( bool checked )
 {
   if ( !mHtml )
@@ -327,6 +370,16 @@ void QgsComposerHtmlWidget::on_mReloadPushButton_clicked()
   mHtml->loadHtml();
 }
 
+void QgsComposerHtmlWidget::on_mReloadPushButton2_clicked()
+{
+  if ( !mHtml )
+  {
+    return;
+  }
+
+  mHtml->loadHtml();
+}
+
 void QgsComposerHtmlWidget::on_mAddFramePushButton_clicked()
 {
   if ( !mHtml || !mFrame )
@@ -373,6 +426,9 @@ void QgsComposerHtmlWidget::setGuiElementValues()
   mRadioManualSource->setChecked( mHtml->contentMode() == QgsComposerHtml::ManualHtml );
   mHtmlEditor->setEnabled( mHtml->contentMode() == QgsComposerHtml::ManualHtml );
   mInsertExpressionButton->setEnabled( mHtml->contentMode() == QgsComposerHtml::ManualHtml );
+
+  mUserStylesheetCheckBox->setChecked( mHtml->userStylesheetEnabled() );
+  mStylesheetEditor->setText( mHtml->userStylesheet() );
 
   populateDataDefinedButtons();
 

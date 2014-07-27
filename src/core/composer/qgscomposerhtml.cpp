@@ -39,7 +39,8 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): 
     mUseSmartBreaks( true ),
     mMaxBreakDistance( 10 ),
     mExpressionFeature( 0 ),
-    mExpressionLayer( 0 )
+    mExpressionLayer( 0 ),
+    mEnableUserStylesheet( false )
 {
   mHtmlUnitsToMM = htmlUnitsToMM();
   mWebPage = new QWebPage();
@@ -210,6 +211,20 @@ void QgsComposerHtml::loadHtml()
   mLoaded = false;
   //set html, using the specified url as base if in Url mode
   mWebPage->mainFrame()->setHtml( loadedHtml, mContentMode == QgsComposerHtml::Url ? QUrl( mLastFetchedUrl ) : QUrl() );
+
+  //set user stylesheet
+  QWebSettings* settings = mWebPage->settings();
+  if ( mEnableUserStylesheet && ! mUserStylesheet.isEmpty() )
+  {
+    QByteArray ba;
+    ba.append( mUserStylesheet.toUtf8() );
+    QUrl cssFileURL = QUrl( "data:text/css;charset=utf-8;base64," + ba.toBase64() );
+    settings->setUserStyleSheetUrl( cssFileURL );
+  }
+  else
+  {
+    settings->setUserStyleSheetUrl( QUrl() );
+  }
 
   while ( !mLoaded )
   {
@@ -412,6 +427,20 @@ void QgsComposerHtml::setMaxBreakDistance( double maxBreakDistance )
   emit changed();
 }
 
+void QgsComposerHtml::setUserStylesheet( const QString stylesheet )
+{
+  mUserStylesheet = stylesheet;
+}
+
+void QgsComposerHtml::setUserStylesheetEnabled( const bool stylesheetEnabled )
+{
+  if ( mEnableUserStylesheet != stylesheetEnabled )
+  {
+    mEnableUserStylesheet = stylesheetEnabled;
+    loadHtml();
+  }
+}
+
 bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
   QDomElement htmlElem = doc.createElement( "ComposerHtml" );
@@ -421,6 +450,8 @@ bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc, bool igno
   htmlElem.setAttribute( "evaluateExpressions", mEvaluateExpressions ? "true" : "false" );
   htmlElem.setAttribute( "useSmartBreaks", mUseSmartBreaks ? "true" : "false" );
   htmlElem.setAttribute( "maxBreakDistance", QString::number( mMaxBreakDistance ) );
+  htmlElem.setAttribute( "stylesheet", mUserStylesheet );
+  htmlElem.setAttribute( "stylesheetEnabled", mEnableUserStylesheet ? "true" : "false" );
 
   bool state = _writeXML( htmlElem, doc, ignoreFrames );
   elem.appendChild( htmlElem );
@@ -447,6 +478,9 @@ bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& 
   mUseSmartBreaks = itemElem.attribute( "useSmartBreaks", "true" ) == "true" ? true : false;
   mMaxBreakDistance = itemElem.attribute( "maxBreakDistance", "10" ).toDouble();
   mHtml = itemElem.attribute( "html" );
+  mUserStylesheet = itemElem.attribute( "stylesheet" );
+  mEnableUserStylesheet = itemElem.attribute( "stylesheetEnabled", "false" ) == "true" ? true : false;
+
   //finally load the set url
   QString urlString = itemElem.attribute( "url" );
   if ( !urlString.isEmpty() )

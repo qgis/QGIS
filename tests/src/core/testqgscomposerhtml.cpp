@@ -31,6 +31,7 @@ class TestQgsComposerHtml: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void sourceMode(); //test if rendering manual HTML works
+    void userStylesheets(); //test if user stylesheets work
     void evalExpressions(); //test if rendering with expressions works
     void evalExpressionsOff(); //test if rendering with expressions disabled works
     void table(); //test if rendering a HTML url works
@@ -85,6 +86,27 @@ void TestQgsComposerHtml::sourceMode()
   htmlItem->loadHtml();
 
   QgsCompositionChecker checker( "composerhtml_manual", mComposition );
+  bool result = checker.testComposition( mReport );
+  mComposition->removeMultiFrame( htmlItem );
+  delete htmlItem;
+  QVERIFY( result );
+}
+
+void TestQgsComposerHtml::userStylesheets()
+{
+  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  htmlFrame->setFrameEnabled( true );
+  htmlItem->addFrame( htmlFrame );
+  htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
+  htmlItem->setHtml( QString( "<p><i>Test user stylesheets <b>html</b></i></p>" ) );
+
+  //set user stylesheet
+  htmlItem->setUserStylesheet( QString( "b { color: red; } i { color: green; }" ) );
+  //setting user stylesheet enabled automatically loads html
+  htmlItem->setUserStylesheetEnabled( true );
+
+  QgsCompositionChecker checker( "composerhtml_userstylesheet", mComposition );
   bool result = checker.testComposition( mReport );
   mComposition->removeMultiFrame( htmlItem );
   delete htmlItem;

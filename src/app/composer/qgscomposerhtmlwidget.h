@@ -21,6 +21,7 @@
 class QgsComposerHtml;
 class QgsComposerFrame;
 class QgsCodeEditorHTML;
+class QgsCodeEditorCSS;
 
 class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerHtmlWidgetBase
 {
@@ -37,11 +38,14 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     void on_mUseSmartBreaksCheckBox_toggled( bool checked );
     void on_mMaxDistanceSpinBox_valueChanged( double val );
     void htmlEditorChanged();
+    void stylesheetEditorChanged();
+    void on_mUserStylesheetCheckBox_toggled( bool checked );
     void on_mRadioManualSource_clicked( bool checked );
     void on_mRadioUrlSource_clicked( bool checked );
     void on_mInsertExpressionButton_clicked();
 
     void on_mReloadPushButton_clicked();
+    void on_mReloadPushButton2_clicked();
     void on_mAddFramePushButton_clicked();
 
     /**Sets the GUI elements to the values of mHtmlItem*/
@@ -61,6 +65,7 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     QgsComposerHtml* mHtml;
     QgsComposerFrame* mFrame;
     QgsCodeEditorHTML *mHtmlEditor;
+    QgsCodeEditorCSS *mStylesheetEditor;
 };
 
 #endif // QGSCOMPOSERHTMLWIDGET_H

@@ -144,6 +144,43 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see useSmartBreaks
      */
     double maxBreakDistance() const;
+    
+    /**Sets the user stylesheet CSS rules to use while rendering the HTML content. These
+     * allow for overriding the styles specified within the HTML source. Setting the stylesheet
+     * using this function does not automatically refresh the item's contents. Call loadHtml
+     * to trigger a refresh of the item after setting the stylesheet rules.
+     * @param stylesheet CSS rules for user stylesheet
+     * @see userStylesheet
+     * @see setUserStylesheetEnabled
+     * @see loadHtml
+     * @note added in 2.5
+     */
+    void setUserStylesheet( const QString stylesheet );
+
+    /**Returns the user stylesheet CSS rules used while rendering the HTML content. These
+     * overriding the styles specified within the HTML source.
+     * @returns CSS rules for user stylesheet
+     * @see setUserStylesheet
+     * @see userStylesheetEnabled
+     * @note added in 2.5
+     */
+    QString userStylesheet() const;
+
+    /**Sets whether user stylesheets are enabled for the HTML content.
+     * @param stylesheetEnabled set to true to enable user stylesheets
+     * @see userStylesheetEnabled
+     * @see setUserStylesheet
+     * @note added in 2.5
+     */
+    void setUserStylesheetEnabled( const bool stylesheetEnabled );
+
+    /**Returns whether user stylesheets are enabled for the HTML content.
+     * @returns true if user stylesheets are enabled
+     * @see setUserStylesheetEnabled
+     * @see userStylesheet
+     * @note added in 2.5
+     */
+    bool userStylesheetEnabled() const;
 
   public slots:
 

@@ -130,6 +130,7 @@ qgscodeeditor.cpp
 qgscodeeditorpython.cpp
 qgscodeeditorsql.cpp
 qgscodeeditorhtml.cpp
+qgscodeeditorcss.cpp
 qgscomposerruler.cpp
 qgscomposerview.cpp
 qgsprevieweffect.cpp
@@ -324,6 +325,7 @@ qgscodeeditor.h
 qgscodeeditorpython.h
 qgscodeeditorsql.h
 qgscodeeditorhtml.h
+qgscodeeditorcss.h
 qgscolordialog.h
 qgsprevieweffect.h
 qgscomposerruler.h

@@ -30,6 +30,7 @@
 %Include qgscodeeditorpython.sip
 %Include qgscodeeditorsql.sip
 %Include qgscodeeditorhtml.sip
+%Include qgscodeeditorcss.sip
 %End
 %Include qgscolorbutton.sip
 %Include qgscolordialog.sip

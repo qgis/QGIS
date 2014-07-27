@@ -45,9 +45,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-101</y>
         <width>391</width>
-        <height>384</height>
+        <height>461</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -208,6 +208,34 @@
             </property>
             <property name="singleStep">
              <double>1.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mUserStylesheetCheckBox">
+         <property name="title">
+          <string>User stylesheet</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <layout class="QVBoxLayout" name="stylesheetEditorLayout"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="mReloadPushButton2">
+            <property name="text">
+             <string>Update HTML</string>
             </property>
            </widget>
           </item>
