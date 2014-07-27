@@ -440,10 +440,14 @@ void QgsColorButtonV2::prepareMenu()
   mMenu->addAction( pasteColorAction );
   connect( pasteColorAction, SIGNAL( triggered() ), this, SLOT( pasteColor() ) );
 
+#ifndef Q_WS_MAC
+  //disabled for OSX, as it is impossible to grab the mouse under OSX
+  //see note for QWidget::grabMouse() re OSX Cocoa
+  //http://qt-project.org/doc/qt-4.8/qwidget.html#grabMouse
   QAction* pickColorAction = new QAction( tr( "Pick color" ), this );
   mMenu->addAction( pickColorAction );
   connect( pickColorAction, SIGNAL( triggered() ), this, SLOT( activatePicker() ) );
-
+#endif
   QAction* chooseColorAction = new QAction( tr( "Choose color..." ), this );
   mMenu->addAction( chooseColorAction );
   connect( chooseColorAction, SIGNAL( triggered() ), this, SLOT( showColorDialog() ) );
