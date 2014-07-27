@@ -928,16 +928,16 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
   }
 
   bool shiftModifier = false;
-  bool controlModifier = false;
+  bool altModifier = false;
   if ( e->modifiers() & Qt::ShiftModifier )
   {
     //shift key depressed
     shiftModifier = true;
   }
-  if ( e->modifiers() & Qt::ControlModifier )
+  if ( e->modifiers() & Qt::AltModifier )
   {
-    //control key depressed
-    controlModifier = true;
+    //alt key depressed
+    altModifier = true;
   }
 
   mMouseCurrentXY = e->pos();
@@ -1002,7 +1002,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       case AddTable:
         //adjust rubber band item
       {
-        updateRubberBandRect( scenePoint, shiftModifier, controlModifier );
+        updateRubberBandRect( scenePoint, shiftModifier, altModifier );
         break;
       }
 

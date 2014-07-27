@@ -558,28 +558,19 @@ void QgsComposerMouseHandles::setViewportCursor( Qt::CursorShape cursor )
 
 void QgsComposerMouseHandles::mouseMoveEvent( QGraphicsSceneMouseEvent* event )
 {
-  bool shiftModifier = false;
-  bool controlModifier = false;
-  if ( event->modifiers() & Qt::ShiftModifier )
-  {
-    //shift key depressed
-    shiftModifier = true;
-  }
-  if ( event->modifiers() & Qt::ControlModifier )
-  {
-    //shift key depressed
-    controlModifier = true;
-  }
-
   if ( mIsDragging )
   {
     //currently dragging a selection
-    dragMouseMove( event->lastScenePos(), shiftModifier, controlModifier );
+    //if shift depressed, constrain movement to horizontal/vertical
+    //if control depressed, ignore snapping
+    dragMouseMove( event->lastScenePos(), event->modifiers() & Qt::ShiftModifier, event->modifiers() & Qt::ControlModifier );
   }
   else if ( mIsResizing )
   {
     //currently resizing a selection
-    resizeMouseMove( event->lastScenePos(), shiftModifier, controlModifier );
+    //lock aspect ratio if shift depressed
+    //resize from center if alt depressed
+    resizeMouseMove( event->lastScenePos(), event->modifiers() & Qt::ShiftModifier, event->modifiers() & Qt::AltModifier );
   }
 
   mLastMouseEventPos = event->lastScenePos();
