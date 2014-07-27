@@ -1787,7 +1787,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
 
   if ( dt.size() ==1 )
   {
-    //one datum transform faound use that one
+    //one datum transform found use that one
     if ( dt[0].size() > 0 )
     {
       srcTransform = dt.at( 0 ).at( 0 );

@@ -6980,7 +6980,10 @@ void QgisApp::setLayerDatumTransform()
       oldDestDT != mMapCanvas->mapSettings().datumTransformStore().transformation(currentLayer)->destinationDatumTransform() )
   {
     QgsProject::instance()->setDirty( true );
-    currentLayer->clearCacheImage();
+    //currentLayer->clearCacheImage();
+    connect( this, SIGNAL( changedDatumTransformation() ), currentLayer, SIGNAL( repaintRequested()) );
+    emit changedDatumTransformation();
+    disconnect( this, SIGNAL( changedDatumTransformation() ), currentLayer, SIGNAL( repaintRequested()) );
   }
 }
 
