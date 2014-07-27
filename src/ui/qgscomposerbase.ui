@@ -328,6 +328,10 @@
    </property>
   </action>
   <action name="mActionShowGrid">
+   <property name="icon">
+    <iconset resource="../../python/plugins/fTools/resources.qrc">
+     <normaloff>:/icons/default/vector_grid.png</normaloff>:/icons/default/vector_grid.png</iconset>
+   </property>
    <property name="text">
     <string>Show Grid</string>
    </property>
@@ -744,6 +748,10 @@
    </property>
   </action>
   <action name="mActionDeleteSelection">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
+   </property>
    <property name="text">
     <string>&amp;Delete</string>
    </property>
@@ -755,6 +763,10 @@
    </property>
   </action>
   <action name="mActionDeselectAll">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeselectAll.svg</normaloff>:/images/themes/default/mActionDeselectAll.svg</iconset>
+   </property>
    <property name="text">
     <string>De&amp;select All</string>
    </property>
@@ -777,6 +789,10 @@
    </property>
   </action>
   <action name="mActionInvertSelection">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionInvertSelection.png</normaloff>:/images/themes/default/mActionInvertSelection.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Invert Selection</string>
    </property>
@@ -934,6 +950,7 @@
  </widget>
  <resources>
   <include location="../../images/images.qrc"/>
+  <include location="../../python/plugins/fTools/resources.qrc"/>
  </resources>
  <connections/>
 </ui>
