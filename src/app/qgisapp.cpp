@@ -1468,6 +1468,14 @@ void QgisApp::createMenus()
     mSettingsMenu->insertSeparator( before );
   }
 
+
+#ifdef Q_WS_MAC
+  //disabled for OSX - see #10761
+  //also see http://qt-project.org/forums/viewthread/3630 QGraphicsEffects are not well supported on OSX
+  mMenuPreviewMode->menuAction()->setVisible( false );
+#endif
+
+
 #ifdef Q_WS_MAC
 
   // keep plugins from hijacking About and Preferences application menus
