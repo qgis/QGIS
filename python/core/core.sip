@@ -65,6 +65,7 @@
 %Include qgsmessageoutput.sip
 %Include qgsmimedatautils.sip
 %Include qgsnetworkaccessmanager.sip
+%Include qgsnetworkcontentfetcher.sip
 %Include qgsofflineediting.sip
 %Include qgsogcutils.sip
 %Include qgsowsconnection.sip
