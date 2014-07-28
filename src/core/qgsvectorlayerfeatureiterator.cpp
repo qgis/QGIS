@@ -507,12 +507,12 @@ void QgsVectorLayerFeatureIterator::prepareExpressions()
             attrs.append( mSource->mFields.fieldNameIndex( col ) );
           }
 
-          if ( exp->needsGeometry() )
-          {
-            mRequest.setFlags( mRequest.flags() & ~QgsFeatureRequest::NoGeometry );
-          }
-
           mRequest.setSubsetOfAttributes( mRequest.subsetOfAttributes() + attrs );
+        }
+
+        if ( exp->needsGeometry() )
+        {
+          mRequest.setFlags( mRequest.flags() & ~QgsFeatureRequest::NoGeometry );
         }
       }
     }
