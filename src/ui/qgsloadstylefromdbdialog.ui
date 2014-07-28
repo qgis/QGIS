@@ -47,7 +47,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QTableWidget" name="mOthersTable"/>
+      <widget class="QTableWidget" name="mOthersTable">
+       <property name="sortingEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
