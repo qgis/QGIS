@@ -29,6 +29,7 @@
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
 #include "qgscomposerlabel.h"
+#include "qgscomposermodel.h"
 #include "qgscomposerattributetable.h"
 #include "qgsaddremovemultiframecommand.h"
 #include "qgscomposermultiframecommand.h"
@@ -42,6 +43,7 @@
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsdatadefined.h"
+#include "qgslogger.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -98,6 +100,8 @@ void QgsComposition::init()
   mActiveMultiFrameCommand = 0;
   mAtlasMode = QgsComposition::AtlasOff;
   mPreventCursorChange = false;
+  mItemsModel = 0;
+  mUndoStack = new QUndoStack();
 
   //data defined strings
   mDataDefinedNames.insert( QgsComposerObject::PresetPaperSize, QString( "dataDefinedPaperSize" ) );
@@ -135,6 +139,8 @@ void QgsComposition::init()
   //load default composition settings
   loadDefaults();
   loadSettings();
+
+  mItemsModel = new QgsComposerModel( this );
 }
 
 
@@ -166,11 +172,13 @@ QgsComposition::QgsComposition()
     mActiveMultiFrameCommand( 0 ),
     mAtlasComposition( this ),
     mAtlasMode( QgsComposition::AtlasOff ),
-    mPreventCursorChange( false )
+    mPreventCursorChange( false ),
+    mItemsModel( 0 )
 {
   //load default composition settings
   loadDefaults();
   loadSettings();
+  mItemsModel = new QgsComposerModel( this );
 }*/
 
 QgsComposition::~QgsComposition()
@@ -185,10 +193,18 @@ QgsComposition::~QgsComposition()
   // make sure that all composer items are removed before
   // this class is deconstructed - to avoid segfaults
   // when composer items access in destructor composition that isn't valid anymore
-  clear();
+  QList<QGraphicsItem*> itemList = items();
+  qDeleteAll( itemList );
+
+  //order is important here - we need to delete model last so that all items have already
+  //been deleted. Deleting the undo stack will also delete any items which have been
+  //removed from the scene, so this needs to be done before deleting the model
+  delete mUndoStack;
+
   delete mActiveItemCommand;
   delete mActiveMultiFrameCommand;
   delete mPageStyleSymbol;
+  delete mItemsModel;
 }
 
 void QgsComposition::loadDefaults()
@@ -839,10 +855,10 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
       delete cItem;
     }
   }
-  mItemZList.clear();
+  mItemsModel->clear();
 
   mPages.clear();
-  mUndoStack.clear();
+  mUndoStack->clear();
 
   QDomDocument importDoc;
   if ( substitutionMap )
@@ -941,7 +957,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   //if we are adding items to a composition which already contains items, we need to make sure
   //these items are placed at the top of the composition and that zValues are not duplicated
   //so, calculate an offset which needs to be added to the zValue of created items
-  int zOrderOffset = mItemZList.size();
+  int zOrderOffset = mItemsModel->zOrderListSize();
 
   QPointF pasteShiftPos;
   QgsComposerItem* lastPastedItem = 0;
@@ -1254,7 +1270,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   //Since this function adds items grouped by type, and each item is added to end of
   //z order list in turn, it will now be inconsistent with the actual order of items in the scene.
   //Make sure z order list matches the actual order of items in the scene.
-  refreshZList();
+  mItemsModel->rebuildZList();
 
   if ( lastPastedItem )
   {
@@ -1272,8 +1288,9 @@ void QgsComposition::addItemToZList( QgsComposerItem* item )
   {
     return;
   }
-  mItemZList.push_back( item );
-  item->setZValue( mItemZList.size() );
+
+  //model handles changes to z list
+  mItemsModel->addItemAtTop( item );
 }
 
 void QgsComposition::removeItemFromZList( QgsComposerItem* item )
@@ -1282,16 +1299,25 @@ void QgsComposition::removeItemFromZList( QgsComposerItem* item )
   {
     return;
   }
-  mItemZList.removeAll( item );
+
+  //model handles changes to z list
+  mItemsModel->removeItem( item );
 }
 
 void QgsComposition::raiseSelectedItems()
 {
   QList<QgsComposerItem*> selectedItems = selectedComposerItems();
   QList<QgsComposerItem*>::iterator it = selectedItems.begin();
+  bool itemsRaised = false;
   for ( ; it != selectedItems.end(); ++it )
   {
-    raiseItem( *it );
+    itemsRaised = itemsRaised | raiseItem( *it );
+  }
+
+  if ( !itemsRaised )
+  {
+    //no change
+    return;
   }
 
   //update all positions
@@ -1299,61 +1325,23 @@ void QgsComposition::raiseSelectedItems()
   update();
 }
 
-void QgsComposition::raiseItem( QgsComposerItem* item )
+bool QgsComposition::raiseItem( QgsComposerItem* item )
 {
-  //search item
-  QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
-  if ( it.findNext( item ) )
-  {
-    it.remove();
-    while ( it.hasNext() )
-    {
-      //search through item z list to find next item which is present in the scene
-      //(deleted items still exist in the z list so that they can be restored to their correct stacking order,
-      //but since they are not in the scene they should be ignored here)
-      it.next();
-      if ( it.value() && it.value()->scene() )
-      {
-        break;
-      }
-    }
-    it.insert( item );
-  }
+  //model handles reordering items
+  return mItemsModel->reorderItemUp( item );
 }
 
 QgsComposerItem* QgsComposition::getComposerItemAbove( QgsComposerItem* item ) const
 {
-  //search item z list for selected item
-  QLinkedListIterator<QgsComposerItem*> it( mItemZList );
-  if ( it.findNext( item ) )
-  {
-    //return next item (list is sorted from lowest->highest items)
-    if ( it.hasNext() )
-    {
-      return it.next();
-    }
-  }
-  return 0;
+  return mItemsModel->getComposerItemAbove( item );
 }
 
-QgsComposerItem* QgsComposition::getComposerItemBelow( QgsComposerItem *item ) const
+QgsComposerItem* QgsComposition::getComposerItemBelow( QgsComposerItem* item ) const
 {
-  //search item z list for selected item
-  QLinkedListIterator<QgsComposerItem*> it( mItemZList );
-  if ( it.findNext( item ) )
-  {
-    //move position to before selected item
-    it.previous();
-    //now find previous item, since list is sorted from lowest->highest items
-    if ( it.hasPrevious() )
-    {
-      return it.previous();
-    }
-  }
-  return 0;
+  return mItemsModel->getComposerItemBelow( item );
 }
 
-void QgsComposition::selectNextByZOrder( const ZValueDirection direction )
+void QgsComposition::selectNextByZOrder( ZValueDirection direction )
 {
   QgsComposerItem* previousSelectedItem = 0;
   QList<QgsComposerItem*> selectedItems = selectedComposerItems();
@@ -1394,9 +1382,16 @@ void QgsComposition::lowerSelectedItems()
 {
   QList<QgsComposerItem*> selectedItems = selectedComposerItems();
   QList<QgsComposerItem*>::iterator it = selectedItems.begin();
+  bool itemsLowered = false;
   for ( ; it != selectedItems.end(); ++it )
   {
-    lowerItem( *it );
+    itemsLowered = itemsLowered | lowerItem( *it );
+  }
+
+  if ( !itemsLowered )
+  {
+    //no change
+    return;
   }
 
   //update all positions
@@ -1404,36 +1399,26 @@ void QgsComposition::lowerSelectedItems()
   update();
 }
 
-void QgsComposition::lowerItem( QgsComposerItem* item )
+bool QgsComposition::lowerItem( QgsComposerItem* item )
 {
-  //search item
-  QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
-  if ( it.findNext( item ) )
-  {
-    it.remove();
-    while ( it.hasPrevious() )
-    {
-      //search through item z list to find previous item which is present in the scene
-      //(deleted items still exist in the z list so that they can be restored to their correct stacking order,
-      //but since they are not in the scene they should be ignored here)
-      it.previous();
-      if ( it.value() && it.value()->scene() )
-      {
-        break;
-      }
-    }
-    it.insert( item );
-  }
+  //model handles reordering items
+  return mItemsModel->reorderItemDown( item );
 }
 
 void QgsComposition::moveSelectedItemsToTop()
 {
   QList<QgsComposerItem*> selectedItems = selectedComposerItems();
   QList<QgsComposerItem*>::iterator it = selectedItems.begin();
-
+  bool itemsRaised = false;
   for ( ; it != selectedItems.end(); ++it )
   {
-    moveItemToTop( *it );
+    itemsRaised = itemsRaised | moveItemToTop( *it );
+  }
+
+  if ( !itemsRaised )
+  {
+    //no change
+    return;
   }
 
   //update all positions
@@ -1441,24 +1426,26 @@ void QgsComposition::moveSelectedItemsToTop()
   update();
 }
 
-void QgsComposition::moveItemToTop( QgsComposerItem* item )
+bool QgsComposition::moveItemToTop( QgsComposerItem* item )
 {
-  //search item
-  QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
-  if ( it.findNext( item ) )
-  {
-    it.remove();
-  }
-  mItemZList.push_back( item );
+  //model handles reordering items
+  return mItemsModel->reorderItemToTop( item );
 }
 
 void QgsComposition::moveSelectedItemsToBottom()
 {
   QList<QgsComposerItem*> selectedItems = selectedComposerItems();
   QList<QgsComposerItem*>::iterator it = selectedItems.begin();
+  bool itemsLowered = false;
   for ( ; it != selectedItems.end(); ++it )
   {
-    moveItemToBottom( *it );
+    itemsLowered = itemsLowered | moveItemToBottom( *it );
+  }
+
+  if ( !itemsLowered )
+  {
+    //no change
+    return;
   }
 
   //update all positions
@@ -1466,15 +1453,10 @@ void QgsComposition::moveSelectedItemsToBottom()
   update();
 }
 
-void QgsComposition::moveItemToBottom( QgsComposerItem* item )
+bool QgsComposition::moveItemToBottom( QgsComposerItem* item )
 {
-  //search item
-  QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
-  if ( it.findNext( item ) )
-  {
-    it.remove();
-  }
-  mItemZList.push_front( item );
+  //model handles reordering items
+  return mItemsModel->reorderItemToBottom( item );
 }
 
 void QgsComposition::alignSelectedItemsLeft()
@@ -1503,7 +1485,7 @@ void QgsComposition::alignSelectedItemsLeft()
     ( *align_it )->setPos( minXCoordinate, ( *align_it )->pos().y() );
     subcommand->saveAfterState();
   }
-  mUndoStack.push( parentCommand );
+  mUndoStack->push( parentCommand );
   QgsProject::instance()->dirty( true );
 }
 
@@ -1533,7 +1515,7 @@ void QgsComposition::alignSelectedItemsHCenter()
     ( *align_it )->setPos( averageXCoord - ( *align_it )->rect().width() / 2.0, ( *align_it )->pos().y() );
     subcommand->saveAfterState();
   }
-  mUndoStack.push( parentCommand );
+  mUndoStack->push( parentCommand );
   QgsProject::instance()->dirty( true );
 }
 
@@ -1563,7 +1545,7 @@ void QgsComposition::alignSelectedItemsRight()
     ( *align_it )->setPos( maxXCoordinate - ( *align_it )->rect().width(), ( *align_it )->pos().y() );
     subcommand->saveAfterState();
   }
-  mUndoStack.push( parentCommand );
+  mUndoStack->push( parentCommand );
   QgsProject::instance()->dirty( true );
 }
 
@@ -1592,7 +1574,7 @@ void QgsComposition::alignSelectedItemsTop()
     ( *align_it )->setPos(( *align_it )->pos().x(), minYCoordinate );
     subcommand->saveAfterState();
   }
-  mUndoStack.push( parentCommand );
+  mUndoStack->push( parentCommand );
   QgsProject::instance()->dirty( true );
 }
 
@@ -1620,7 +1602,7 @@ void QgsComposition::alignSelectedItemsVCenter()
     ( *align_it )->setPos(( *align_it )->pos().x(), averageYCoord - ( *align_it )->rect().height() / 2 );
     subcommand->saveAfterState();
   }
-  mUndoStack.push( parentCommand );
+  mUndoStack->push( parentCommand );
   QgsProject::instance()->dirty( true );
 }
 
@@ -1648,7 +1630,7 @@ void QgsComposition::alignSelectedItemsBottom()
     ( *align_it )->setPos(( *align_it )->pos().x(), maxYCoord - ( *align_it )->rect().height() );
     subcommand->saveAfterState();
   }
-  mUndoStack.push( parentCommand );
+  mUndoStack->push( parentCommand );
   QgsProject::instance()->dirty( true );
 }
 
@@ -1666,7 +1648,7 @@ void QgsComposition::lockSelectedItems()
   }
 
   clearSelection();
-  mUndoStack.push( parentCommand );
+  mUndoStack->push( parentCommand );
   QgsProject::instance()->dirty( true );
 }
 
@@ -1695,14 +1677,14 @@ void QgsComposition::unlockAllItems()
       subcommand->saveAfterState();
     }
   }
-  mUndoStack.push( parentCommand );
+  mUndoStack->push( parentCommand );
   QgsProject::instance()->dirty( true );
 }
 
 void QgsComposition::updateZValues( const bool addUndoCommands )
 {
-  int counter = 1;
-  QLinkedList<QgsComposerItem*>::iterator it = mItemZList.begin();
+  int counter = mItemsModel->zOrderListSize();
+  QList<QgsComposerItem*>::const_iterator it = mItemsModel->zOrderList()->constBegin();
   QgsComposerItem* currentItem = 0;
 
   QUndoCommand* parentCommand = 0;
@@ -1710,7 +1692,7 @@ void QgsComposition::updateZValues( const bool addUndoCommands )
   {
     parentCommand = new QUndoCommand( tr( "Item z-order changed" ) );
   }
-  for ( ; it != mItemZList.end(); ++it )
+  for ( ; it != mItemsModel->zOrderList()->constEnd(); ++it )
   {
     currentItem = *it;
     if ( currentItem )
@@ -1727,64 +1709,19 @@ void QgsComposition::updateZValues( const bool addUndoCommands )
         subcommand->saveAfterState();
       }
     }
-    ++counter;
+    --counter;
   }
   if ( addUndoCommands )
   {
-    mUndoStack.push( parentCommand );
+    mUndoStack->push( parentCommand );
     QgsProject::instance()->dirty( true );
   }
 }
 
-void QgsComposition::sortZList()
-{
-  if ( mItemZList.size() < 2 )
-  {
-    return;
-  }
-
-  QLinkedList<QgsComposerItem*>::const_iterator lIt = mItemZList.constBegin();
-  QLinkedList<QgsComposerItem*> sortedList;
-
-  for ( ; lIt != mItemZList.constEnd(); ++lIt )
-  {
-    QLinkedList<QgsComposerItem*>::iterator insertIt = sortedList.begin();
-    for ( ; insertIt != sortedList.end(); ++insertIt )
-    {
-      if (( *lIt )->zValue() < ( *insertIt )->zValue() )
-      {
-        break;
-      }
-    }
-    sortedList.insert( insertIt, ( *lIt ) );
-  }
-
-  mItemZList = sortedList;
-}
-
 void QgsComposition::refreshZList()
 {
-  QLinkedList<QgsComposerItem*> sortedList;
-
-  //rebuild the item z order list based on the current zValues of items in the scene
-
-  //get items in descending zValue order
-  QList<QGraphicsItem*> itemList = items();
-  QList<QGraphicsItem*>::iterator itemIt = itemList.begin();
-  for ( ; itemIt != itemList.end(); ++itemIt )
-  {
-    QgsComposerItem* composerItem = dynamic_cast<QgsComposerItem*>( *itemIt );
-    if ( composerItem )
-    {
-      if ( composerItem->type() != QgsComposerItem::ComposerPaper && composerItem->type() != QgsComposerItem::ComposerFrame )
-      {
-        //since the z order list is in ascending zValue order (opposite order to itemList), we prepend each item
-        sortedList.prepend( composerItem );
-      }
-    }
-  }
-
-  mItemZList = sortedList;
+  //model handles changes to item z order list
+  mItemsModel->rebuildZList();
 
   //Finally, rebuild the zValue of all items to remove any duplicate zValues and make sure there's
   //no missing zValues.
@@ -2118,7 +2055,7 @@ void QgsComposition::endCommand()
     mActiveItemCommand->saveAfterState();
     if ( mActiveItemCommand->containsChange() ) //protect against empty commands
     {
-      mUndoStack.push( mActiveItemCommand );
+      mUndoStack->push( mActiveItemCommand );
       QgsProject::instance()->dirty( true );
     }
     else
@@ -2163,7 +2100,7 @@ void QgsComposition::endMultiFrameCommand()
     mActiveMultiFrameCommand->saveAfterState();
     if ( mActiveMultiFrameCommand->containsChange() )
     {
-      mUndoStack.push( mActiveMultiFrameCommand );
+      mUndoStack->push( mActiveMultiFrameCommand );
       QgsProject::instance()->dirty( true );
     }
     else
@@ -2288,15 +2225,17 @@ void QgsComposition::addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFra
   emit composerHtmlFrameAdded( html, frame );
 }
 
-void QgsComposition::removeComposerItem( QgsComposerItem* item, const bool createCommand )
+void QgsComposition::removeComposerItem( QgsComposerItem* item, const bool createCommand, const bool removeGroupItems )
 {
   QgsComposerMap* map = dynamic_cast<QgsComposerMap *>( item );
 
   if ( !map || !map->isDrawing() ) //don't delete a composer map while it draws
   {
+    mItemsModel->setItemRemoved( item );
     removeItem( item );
+
     QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup*>( item );
-    if ( itemGroup )
+    if ( itemGroup && removeGroupItems )
     {
       //add add/remove item command for every item in the group
       QUndoCommand* parentCommand = new QUndoCommand( tr( "Remove item group" ) );

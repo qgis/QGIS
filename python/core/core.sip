@@ -135,6 +135,7 @@
 %Include composer/qgscomposertablecolumn.sip
 %Include composer/qgscomposerutils.sip
 %Include composer/qgscomposition.sip
+%Include composer/qgscomposermodel.sip
 %Include composer/qgsatlascomposition.sip
 %Include composer/qgsdoubleboxscalebarstyle.sip
 %Include composer/qgslegendmodel.sip

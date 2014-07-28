@@ -32,6 +32,7 @@
 #include "qgscomposerframe.h"
 #include "qgsdatadefined.h"
 #include "qgscomposerutils.h"
+#include "qgscomposermodel.h"
 
 #include <limits>
 #include "qgsapplication.h"
@@ -51,6 +52,7 @@
 QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue )
     : QgsComposerObject( composition )
     , QGraphicsRectItem( 0 )
+    , mRemovedFromComposition( false )
     , mBoundingResizeRectangle( 0 )
     , mHAlignSnapItem( 0 )
     , mVAlignSnapItem( 0 )
@@ -77,6 +79,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
 QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue )
     : QgsComposerObject( composition )
     , QGraphicsRectItem( 0, 0, width, height, 0 )
+    , mRemovedFromComposition( false )
     , mBoundingResizeRectangle( 0 )
     , mHAlignSnapItem( 0 )
     , mVAlignSnapItem( 0 )
@@ -113,7 +116,12 @@ void QgsComposerItem::init( const bool manageZValue )
   //let z-Value be managed by composition
   if ( mComposition && manageZValue )
   {
+    mCompositionManagesZValue = true;
     mComposition->addItemToZList( this );
+  }
+  else
+  {
+    mCompositionManagesZValue = false;
   }
 
   // Setup composer effect
@@ -148,7 +156,7 @@ void QgsComposerItem::init( const bool manageZValue )
 
 QgsComposerItem::~QgsComposerItem()
 {
-  if ( mComposition )
+  if ( mComposition && mCompositionManagesZValue )
   {
     mComposition->removeItemFromZList( this );
   }
@@ -527,7 +535,18 @@ void QgsComposerItem::drawFrame( QPainter* p )
 
 void QgsComposerItem::setPositionLock( const bool lock )
 {
+  if ( lock == mItemPositionLocked )
+  {
+    return;
+  }
+
   mItemPositionLocked = lock;
+
+  //inform model that id data has changed
+  if ( mComposition )
+  {
+    mComposition->itemsModel()->updateItemLockStatus( this );
+  }
 }
 
 double QgsComposerItem::itemRotation( const PropertyValueType valueType ) const
@@ -1282,8 +1301,21 @@ void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataD
 
 void QgsComposerItem::setId( const QString& id )
 {
+  if ( id == mId )
+  {
+    return;
+  }
+
   setToolTip( id );
   mId = id;
+
+  //inform model that id data has changed
+  if ( mComposition )
+  {
+    mComposition->itemsModel()->updateItemDisplayName( this );
+  }
+
+  emit itemChanged();
 }
 
 void QgsComposerItem::setIsGroupMember( const bool isGroupMember )
@@ -1335,5 +1367,17 @@ QString QgsComposerItem::displayName() const
 
 void QgsComposerItem::setVisibility( const bool visible )
 {
+  if ( visible == isVisible() )
+  {
+    //nothing to do
+    return;
+  }
+
   QGraphicsItem::setVisible( visible );
+
+  //inform model that id data has changed
+  if ( mComposition )
+  {
+    mComposition->itemsModel()->updateItemVisibility( this );
+  }
 }

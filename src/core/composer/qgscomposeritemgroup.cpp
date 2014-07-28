@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
 #include "qgslogger.h"
+#include "qgscomposermodel.h"
 
 #include <QPen>
 #include <QPainter>
@@ -32,11 +33,14 @@ QgsComposerItemGroup::QgsComposerItemGroup( QgsComposition* c )
 
 QgsComposerItemGroup::~QgsComposerItemGroup()
 {
+  //loop through group members and remove them from the scene
   QSet<QgsComposerItem*>::iterator itemIt = mItems.begin();
   for ( ; itemIt != mItems.end(); ++itemIt )
   {
     if ( *itemIt )
     {
+      //inform model that we are about to remove an item from the scene
+      mComposition->itemsModel()->setItemRemoved( *itemIt );
       mComposition->removeItem( *itemIt );
       ( *itemIt )->setIsGroupMember( false );
     }

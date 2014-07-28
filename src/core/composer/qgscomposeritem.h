@@ -106,6 +106,24 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /** return correct graphics item type. Added in v1.7 */
     virtual int type() const { return ComposerItem; }
 
+    /**Returns whether this item has been removed from the composition. Items removed
+     * from the composition are not deleted so that they can be restored via an undo
+     * command.
+     * @returns true if the item has been removed from the composition
+     * @note added in QGIS 2.5
+     * @see setIsRemoved
+     */
+    virtual bool isRemoved() const { return mRemovedFromComposition; }
+
+    /**Sets whether this item has been removed from the composition. Items removed
+     * from the composition are not deleted so that they can be restored via an undo
+     * command.
+     * @param removed set to true if the item has been removed from the composition
+     * @note added in QGIS 2.5
+     * @see isRemoved
+     */
+    void setIsRemoved( const bool removed ) { mRemovedFromComposition = removed; }
+
     /** \brief Set selected, selected item should be highlighted */
     virtual void setSelected( bool s );
 
@@ -538,6 +556,8 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 
   protected:
+    /**True if item has been removed from the composition*/
+    bool mRemovedFromComposition;
 
     QgsComposerItem::MouseMoveAction mCurrentMouseMoveAction;
     /**Start point of the last mouse move action (in scene coordinates)*/
@@ -702,6 +722,8 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     QString mUuid;
     // name (temporary when loaded from template)
     QString mTemplateUuid;
+    // true if composition manages the z value for this item
+    bool mCompositionManagesZValue;
 
     /**Refresh item's rotation, considering data defined rotation setting
       *@param updateItem set to false to prevent the item being automatically updated

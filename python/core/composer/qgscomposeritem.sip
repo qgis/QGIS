@@ -149,6 +149,24 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
 
     /** return correct graphics item type. Added in v1.7 */
     virtual int type() const;
+	
+    /**Returns whether this item has been removed from the composition. Items removed
+     * from the composition are not deleted so that they can be restored via an undo
+     * command.
+     * @returns true if the item has been removed from the composition
+     * @note added in QGIS 2.5
+     * @see setIsRemoved
+     */
+    virtual bool isRemoved() const;
+
+    /**Sets whether this item has been removed from the composition. Items removed
+     * from the composition are not deleted so that they can be restored via an undo
+     * command.
+     * @param removed set to true if the item has been removed from the composition
+     * @note added in QGIS 2.5
+     * @see isRemoved
+     */
+    void setIsRemoved( const bool removed );
 
     /** \brief Set selected, selected item should be highlighted */
     virtual void setSelected( bool s );

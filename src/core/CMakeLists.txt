@@ -194,6 +194,7 @@ SET(QGIS_CORE_SRCS
   composer/qgsticksscalebarstyle.cpp
   composer/qgscomposerhtml.cpp
   composer/qgscomposermultiframe.cpp
+  composer/qgscomposermodel.cpp
   composer/qgscomposition.cpp
   
   dxf/qgsdxfexport.cpp
@@ -383,6 +384,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposermultiframe.h
   composer/qgscomposereffect.h
   composer/qgsatlascomposition.h
+  composer/qgscomposermodel.h
   composer/qgscomposition.h
 
   composer/qgslegendmodel.h

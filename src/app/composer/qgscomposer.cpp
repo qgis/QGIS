@@ -25,6 +25,7 @@
 #include "qgscomposerview.h"
 #include "qgscomposition.h"
 #include "qgscompositionwidget.h"
+#include "qgscomposermodel.h"
 #include "qgsatlascompositionwidget.h"
 #include "qgscomposerarrow.h"
 #include "qgscomposerarrowwidget.h"
@@ -88,6 +89,8 @@
 #include <QProgressDialog>
 #include <QShortcut>
 
+//For model testing
+//#include "modeltest.h"
 
 // sort function for QList<QAction*>, e.g. menu listings
 static bool cmpByText_( QAction* a, QAction* b )
@@ -521,11 +524,15 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mAtlasDock = new QDockWidget( tr( "Atlas generation" ), this );
   mAtlasDock->setObjectName( "AtlasDock" );
   mPanelMenu->addAction( mAtlasDock->toggleViewAction() );
+  mItemsDock = new QDockWidget( tr( "Items" ), this );
+  mItemsDock->setObjectName( "ItemsDock" );
+  mPanelMenu->addAction( mItemsDock->toggleViewAction() );
 
   mGeneralDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
   mItemDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
   mUndoDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
   mAtlasDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
+  mItemsDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
 
   createCompositionWidget();
 
@@ -533,10 +540,26 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mUndoView = new QUndoView( mComposition->undoStack(), this );
   mUndoDock->setWidget( mUndoView );
 
+  //items tree widget
+  mItemsTreeView = new QTreeView( mItemsDock );
+  mItemsTreeView->setModel( mComposition->itemsModel() );
+  //for testing:
+  //new ModelTest( mComposition->itemsModel(), this );
+
+  mItemsTreeView->setColumnWidth( 0, 30 );
+  mItemsTreeView->setColumnWidth( 1, 30 );
+  mItemsTreeView->header()->setResizeMode( 0, QHeaderView::Fixed );
+  mItemsTreeView->header()->setResizeMode( 1, QHeaderView::Fixed );
+  mItemsTreeView->header()->setMovable( false );
+  mItemsTreeView->setIndentation( 0 );
+  mItemsDock->setWidget( mItemsTreeView );
+  connect( mItemsTreeView->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), mComposition->itemsModel(), SLOT( setSelected( QModelIndex ) ) );
+
   addDockWidget( Qt::RightDockWidgetArea, mItemDock );
   addDockWidget( Qt::RightDockWidgetArea, mGeneralDock );
   addDockWidget( Qt::RightDockWidgetArea, mUndoDock );
   addDockWidget( Qt::RightDockWidgetArea, mAtlasDock );
+  addDockWidget( Qt::RightDockWidgetArea, mItemsDock );
 
   QgsAtlasCompositionWidget* atlasWidget = new QgsAtlasCompositionWidget( mGeneralDock, mComposition );
   mAtlasDock->setWidget( atlasWidget );
@@ -545,11 +568,13 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mGeneralDock->show();
   mUndoDock->show();
   mAtlasDock->show();
+  mItemsDock->show();
 
   tabifyDockWidget( mGeneralDock, mUndoDock );
   tabifyDockWidget( mItemDock, mUndoDock );
   tabifyDockWidget( mGeneralDock, mItemDock );
   tabifyDockWidget( mItemDock, mAtlasDock );
+  tabifyDockWidget( mItemDock, mItemsDock );
 
   mGeneralDock->raise();
 
@@ -3046,6 +3071,12 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
 
   //default printer page setup
   setPrinterPageDefaults();
+
+  //setup items tree view
+  mItemsTreeView->setModel( mComposition->itemsModel() );
+  mItemsTreeView->setColumnWidth( 0, 30 );
+  mItemsTreeView->setColumnWidth( 1, 30 );
+  connect( mItemsTreeView->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), mComposition->itemsModel(), SLOT( setSelected( QModelIndex ) ) );
 
   setSelectionTool();
 }

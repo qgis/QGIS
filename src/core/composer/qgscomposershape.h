@@ -61,7 +61,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 
     //setters and getters
     QgsComposerShape::Shape shapeType() const { return mShape; }
-    void setShapeType( QgsComposerShape::Shape s ) { mShape = s; }
+    void setShapeType( QgsComposerShape::Shape s );
 
     /**Sets radius for rounded rectangle corners. Added in v2.1 */
     void setCornerRadius( double radius );

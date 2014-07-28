@@ -50,6 +50,7 @@ class QSizeGrip;
 class QUndoView;
 class QComboBox;
 class QLabel;
+class QTreeView;
 
 /** \ingroup MapComposer
  * \brief A gui for composing a printable map.
@@ -130,6 +131,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void atlasPreviewFeatureChanged();
 
   public slots:
+
     //! Zoom to full extent of the paper
     void on_mActionZoomAll_triggered();
 
@@ -566,6 +568,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QDockWidget* mUndoDock;
     QDockWidget* mGeneralDock;
     QDockWidget* mAtlasDock;
+    QDockWidget* mItemsDock;
+
+    QTreeView* mItemsTreeView;
 
     QMenu* mPanelMenu;
     QMenu* mToolbarMenu;

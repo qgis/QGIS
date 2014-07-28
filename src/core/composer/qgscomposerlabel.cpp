@@ -20,6 +20,7 @@
 #include "qgscomposerutils.h"
 #include "qgsexpression.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgscomposermodel.h"
 
 #include <QCoreApplication>
 #include <QDate>
@@ -187,6 +188,28 @@ void QgsComposerLabel::setText( const QString& text )
 {
   mText = text;
   emit itemChanged();
+
+  if ( mComposition && id().isEmpty() && !mHtmlState )
+  {
+    //notify the model that the display name has changed
+    mComposition->itemsModel()->updateItemDisplayName( this );
+  }
+}
+
+void QgsComposerLabel::setHtmlState( int state )
+{
+  if ( state == mHtmlState )
+  {
+    return;
+  }
+
+  mHtmlState = state;
+
+  if ( mComposition && id().isEmpty() )
+  {
+    //notify the model that the display name has changed
+    mComposition->itemsModel()->updateItemDisplayName( this );
+  }
 }
 
 void QgsComposerLabel::setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions )

@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgscomposermodel.h"
 #include <QPainter>
 
 QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerItem( composition ),
@@ -389,6 +390,22 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
   }
   emit itemChanged();
   return true;
+}
+
+void QgsComposerShape::setShapeType( QgsComposerShape::Shape s )
+{
+  if ( s == mShape )
+  {
+    return;
+  }
+
+  mShape = s;
+
+  if ( mComposition && id().isEmpty() )
+  {
+    //notify the model that the display name has changed
+    mComposition->itemsModel()->updateItemDisplayName( this );
+  }
 }
 
 void QgsComposerShape::setCornerRadius( double radius )

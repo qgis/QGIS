@@ -301,15 +301,17 @@ class QgsComposition : QGraphicsScene
     /**Removes item from z list. Usually called from destructor of QgsComposerItem*/
     void removeItemFromZList( QgsComposerItem* item );
 
-    //functions to move selected items in hierarchy
-    void raiseSelectedItems();
-    void raiseItem( QgsComposerItem* item );
+    //returns true if successful
+    bool raiseItem( QgsComposerItem* item );
     void lowerSelectedItems();
-    void lowerItem( QgsComposerItem* item );
+    //returns true if successful
+    bool lowerItem( QgsComposerItem* item );
     void moveSelectedItemsToTop();
-    void moveItemToTop( QgsComposerItem* item );
+    //returns true if successful
+    bool moveItemToTop( QgsComposerItem* item );
     void moveSelectedItemsToBottom();
-    void moveItemToBottom( QgsComposerItem* item );
+    //returns true if successful
+    bool moveItemToBottom( QgsComposerItem* item );
 
     //functions to find items by their position in the z list
     void selectNextByZOrder( ZValueDirection direction );
@@ -331,10 +333,14 @@ class QgsComposition : QGraphicsScene
     void unlockAllItems();
 
     /**Sorts the zList. The only time where this function needs to be called is from QgsComposer
-     after reading all the items from xml file*/
-    void sortZList();
+     * after reading all the items from xml file
+     * @note deprecated, see @refreshZList instead
+    */
+    void sortZList() /Deprecated/;
 
-    /**Rebuilds the z order list based on current order of items in scene*/
+    /**Rebuilds the z order list by adding any item which are present in the composition
+     * but missing from the z order list.
+    */
     void refreshZList();
 
     /**Snaps a scene coordinate point to grid*/
@@ -396,7 +402,7 @@ class QgsComposition : QGraphicsScene
     void addComposerHtmlFrame( QgsComposerHtml* html /Transfer/, QgsComposerFrame* frame /Transfer/);
 
     /**Remove item from the graphics scene. Additionally to QGraphicsScene::removeItem, this function considers undo/redo command*/
-    void removeComposerItem( QgsComposerItem* item, const bool createCommand = true );
+    void removeComposerItem( QgsComposerItem* item, const bool createCommand = true, const bool removeGroupItems = true );
 
     /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
     void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, const QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
@@ -487,6 +493,12 @@ class QgsComposition : QGraphicsScene
     */
     void setDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
 
+	/**Returns the items model attached to the composition
+     * @returns QgsComposerModel for composition
+     * @note this method was added in version 2.5
+    */
+    QgsComposerModel * itemsModel();
+	
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );

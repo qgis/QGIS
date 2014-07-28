@@ -1752,7 +1752,8 @@ void QgsComposerView::ungroupItems()
     if ( itemGroup )
     {
       itemGroup->removeItems();
-      composition()->removeItem( *itemIter );
+      composition()->removeComposerItem( *itemIter, false, false );
+
       delete( *itemIter );
       emit itemRemoved( *itemIter );
     }

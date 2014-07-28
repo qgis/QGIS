@@ -59,6 +59,7 @@ class QgsVectorLayer;
 class QgsComposer;
 class QgsFillSymbolV2;
 class QgsDataDefined;
+class QgsComposerModel;
 
 /** \ingroup MapComposer
  * Graphics scene for map printing. The class manages the paper item which always
@@ -238,7 +239,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     int snapTolerance() const { return mSnapTolerance; }
 
     /**Returns pointer to undo/redo command storage*/
-    QUndoStack* undoStack() { return &mUndoStack; }
+    QUndoStack* undoStack() { return mUndoStack; }
 
     /**Returns the topmost composer item. Ignores mPaperItem*/
     QgsComposerItem* composerItemAt( const QPointF & position ) const;
@@ -366,13 +367,18 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     //functions to move selected items in hierarchy
     void raiseSelectedItems();
-    void raiseItem( QgsComposerItem* item );
+
+    //returns true if successful
+    bool raiseItem( QgsComposerItem* item );
     void lowerSelectedItems();
-    void lowerItem( QgsComposerItem* item );
+    //returns true if successful
+    bool lowerItem( QgsComposerItem* item );
     void moveSelectedItemsToTop();
-    void moveItemToTop( QgsComposerItem* item );
+    //returns true if successful
+    bool moveItemToTop( QgsComposerItem* item );
     void moveSelectedItemsToBottom();
-    void moveItemToBottom( QgsComposerItem* item );
+    //returns true if successful
+    bool moveItemToBottom( QgsComposerItem* item );
 
     //functions to find items by their position in the z list
     void selectNextByZOrder( const ZValueDirection direction );
@@ -394,10 +400,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void unlockAllItems();
 
     /**Sorts the zList. The only time where this function needs to be called is from QgsComposer
-     after reading all the items from xml file*/
-    void sortZList();
+     * after reading all the items from xml file
+     * @note deprecated, see @refreshZList instead
+    */
+    Q_DECL_DEPRECATED void sortZList() {};
 
-    /**Rebuilds the z order list based on current order of items in scene*/
+    /**Rebuilds the z order list by adding any item which are present in the composition
+     * but missing from the z order list.
+    */
     void refreshZList();
 
     /**Snaps a scene coordinate point to grid*/
@@ -459,7 +469,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame );
 
     /**Remove item from the graphics scene. Additionally to QGraphicsScene::removeItem, this function considers undo/redo command*/
-    void removeComposerItem( QgsComposerItem* item, const bool createCommand = true );
+    void removeComposerItem( QgsComposerItem* item, const bool createCommand = true, const bool removeGroupItems = true );
 
     /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
     void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, const QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
@@ -550,6 +560,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     */
     void setDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
 
+    /**Returns the items model attached to the composition
+     * @returns QgsComposerModel for composition
+     * @note this method was added in version 2.5
+    */
+    QgsComposerModel * itemsModel() { return mItemsModel; }
+
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
@@ -598,9 +614,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     QgsFillSymbolV2* mPageStyleSymbol;
     void createDefaultPageStyleSymbol();
 
-    /**Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)*/
-    QLinkedList<QgsComposerItem*> mItemZList;
-
     /**List multiframe objects*/
     QSet<QgsComposerMultiFrame*> mMultiFrames;
 
@@ -638,7 +651,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     QgsComposerMouseHandles* mSelectionHandles;
 
-    QUndoStack mUndoStack;
+    QUndoStack* mUndoStack;
 
     QgsComposerItemCommand* mActiveItemCommand;
     QgsComposerMultiFrameCommand* mActiveMultiFrameCommand;
@@ -649,6 +662,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     QgsComposition::AtlasMode mAtlasMode;
 
     bool mPreventCursorChange;
+
+    QgsComposerModel * mItemsModel;
 
     /**Map of data defined properties for the composition to string name to use when exporting composition to xml*/
     QMap< QgsComposerObject::DataDefinedProperty, QString > mDataDefinedNames;
