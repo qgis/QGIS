@@ -137,6 +137,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mCache( new QgsGeometryCache() )
     , mEditBuffer( 0 )
     , mJoinBuffer( 0 )
+    , mExpressionFieldBuffer( 0 )
     , mDiagramRenderer( 0 )
     , mDiagramLayerSettings( 0 )
     , mValidExtent( false )
