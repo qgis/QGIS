@@ -223,6 +223,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes )
 void QgsFeatureAction::onFeatureSaved( const QgsFeature& feature )
 {
   QgsAttributeForm* form = qobject_cast<QgsAttributeForm*>( sender() );
+  Q_UNUSED( form ) // only used for Q_ASSERT
   Q_ASSERT( form );
 
   mFeatureSaved = true;

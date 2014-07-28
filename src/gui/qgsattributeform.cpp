@@ -245,6 +245,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
 
 void QgsAttributeForm::onAttributeAdded( int idx )
 {
+  Q_UNUSED( idx ) // only used for Q_ASSERT
   if ( mFeature.isValid() )
   {
     QgsAttributes attrs = mFeature.attributes();
