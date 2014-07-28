@@ -517,6 +517,15 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     */
     virtual QString displayName() const;
     
+    /**Sets visibility for item.
+     * @param visible set to true to show item, false to hide item
+     * @note QGraphicsItem::setVisible should not be called directly
+     * on a QgsComposerItem, as some item types (eg groups) need to override
+     * the visibility toggle.
+     * @note added in version 2.5
+    */
+    virtual void setVisibility( const bool visible );   
+    
     /**Returns whether this item is part of a group
      * @returns true if item is in a group
      * @note added in version 2.5

@@ -185,7 +185,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
     composerItemElem.setAttribute( "frame", "false" );
   }
 
-  //frame
+  //background
   if ( mBackground )
   {
     composerItemElem.setAttribute( "background", "true" );
@@ -211,6 +211,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( "itemRotation",  QString::number( mItemRotation ) );
   composerItemElem.setAttribute( "uuid", mUuid );
   composerItemElem.setAttribute( "id", mId );
+  composerItemElem.setAttribute( "visibility", isVisible() );
   //position lock for mouse moves/resizes
   if ( mItemPositionLocked )
   {
@@ -222,7 +223,6 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   }
 
   composerItemElem.setAttribute( "lastValidViewScaleFactor", QString::number( mLastValidViewScaleFactor ) );
-
 
   //frame color
   QDomElement frameColorElem = doc.createElement( "FrameColor" );
@@ -309,6 +309,9 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   {
     setPositionLock( false );
   }
+
+  //visibility
+  setVisibility( itemElem.attribute( "visibility", "1" ) != "0" );
 
   //position
   int page;
@@ -1328,4 +1331,9 @@ QString QgsComposerItem::displayName() const
   }
 
   return tr( "<item>" );
+}
+
+void QgsComposerItem::setVisibility( const bool visible )
+{
+  QGraphicsItem::setVisible( visible );
 }

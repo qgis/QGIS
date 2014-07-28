@@ -144,6 +144,18 @@ void QgsComposerItemGroup::setSceneRect( const QRectF& rectangle )
   QgsComposerItem::setSceneRect( rectangle );
 }
 
+void QgsComposerItemGroup::setVisibility( const bool visible )
+{
+  //also set visibility for all items within the group
+  QSet<QgsComposerItem*>::iterator item_it = mItems.begin();
+  for ( ; item_it != mItems.end(); ++item_it )
+  {
+    ( *item_it )->setVisibility( visible );
+  }
+  //lastly set visibility for group item itself
+  QgsComposerItem::setVisibility( visible );
+}
+
 void QgsComposerItemGroup::drawFrame( QPainter* p )
 {
   if ( !mComposition )
