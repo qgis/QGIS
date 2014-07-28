@@ -382,6 +382,25 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
   return true;
 }
 
+QString QgsComposerLabel::displayName() const
+{
+  if ( !id().isEmpty() )
+  {
+    return id();
+  }
+
+  //if no id, default to portion of label text
+  QString text = displayText();
+  if ( text.length() > 25 )
+  {
+    return QString( tr( "%1..." ) ).arg( text.left( 25 ) );
+  }
+  else
+  {
+    return text;
+  }
+}
+
 void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, double& xShift, double& yShift ) const
 {
   //keep alignment point constant

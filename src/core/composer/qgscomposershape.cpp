@@ -423,3 +423,26 @@ void QgsComposerShape::setSceneRect( const QRectF& rectangle )
   updateBoundingRect();
   update();
 }
+
+QString QgsComposerShape::displayName() const
+{
+  if ( !id().isEmpty() )
+  {
+    return id();
+  }
+
+  switch ( mShape )
+  {
+    case Ellipse:
+      return tr( "<ellipse>" );
+      break;
+    case Rectangle:
+      return tr( "<rectangle>" );
+      break;
+    case Triangle:
+      return tr( "<triangle>" );
+      break;
+  }
+
+  return tr( "<shape>" );
+}

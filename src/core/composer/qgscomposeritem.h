@@ -464,6 +464,15 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     */
     QString uuid() const { return mUuid; }
 
+    /**Get item display name. This is the item's id if set, and if
+     * not, a user-friendly string identifying item type.
+     * @returns display name for item
+     * @see id
+     * @see setId
+     * @note added in version 2.5
+    */
+    virtual QString displayName() const;
+
     /**Returns whether this item is part of a group
      * @returns true if item is in a group
      * @note added in version 2.5

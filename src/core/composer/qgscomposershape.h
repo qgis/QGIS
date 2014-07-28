@@ -89,6 +89,9 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     */
     void setSceneRect( const QRectF& rectangle );
 
+    //Overriden to return shape type
+    virtual QString displayName() const;
+
   protected:
     /* reimplement drawFrame, since it's not a rect, but a custom shape */
     virtual void drawFrame( QPainter* p );

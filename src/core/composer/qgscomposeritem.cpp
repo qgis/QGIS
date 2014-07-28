@@ -1288,3 +1288,44 @@ void QgsComposerItem::setIsGroupMember( const bool isGroupMember )
   mIsGroupMember = isGroupMember;
   setFlag( QGraphicsItem::ItemIsSelectable, !isGroupMember ); //item in groups cannot be selected
 }
+
+QString QgsComposerItem::displayName() const
+{
+  //return id, if it's not empty
+  if ( ! id().isEmpty() )
+  {
+    return id();
+  }
+
+  //for unnamed items, default to item type
+  //(note some item types override this method to provide their own defaults)
+  switch ( type() )
+  {
+    case ComposerArrow:
+      return tr( "<arrow>" );
+    case ComposerItemGroup:
+      return tr( "<group>" );
+    case ComposerLabel:
+      return tr( "<label>" );
+    case ComposerLegend:
+      return tr( "<legend>" );
+    case ComposerMap:
+      return tr( "<map>" );
+    case ComposerPicture:
+      return tr( "<picture>" );
+    case ComposerScaleBar:
+      return tr( "<scale bar>" );
+    case ComposerShape:
+      return tr( "<shape>" );
+    case ComposerTable:
+      return tr( "<table>" );
+    case ComposerAttributeTable:
+      return tr( "<attribute table>" );
+    case ComposerTextTable:
+      return tr( "<text table>" );
+    case ComposerFrame:
+      return tr( "<frame>" );
+  }
+
+  return tr( "<item>" );
+}
