@@ -2135,10 +2135,24 @@ void QgsComposition::cancelCommand()
   mActiveItemCommand = 0;
 }
 
-void QgsComposition::beginMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text )
+void QgsComposition::beginMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, const QgsComposerMultiFrameMergeCommand::Context c )
 {
   delete mActiveMultiFrameCommand;
-  mActiveMultiFrameCommand = new QgsComposerMultiFrameCommand( multiFrame, text );
+
+  if ( !multiFrame )
+  {
+    mActiveMultiFrameCommand = 0;
+    return;
+  }
+
+  if ( c == QgsComposerMultiFrameMergeCommand::Unknown )
+  {
+    mActiveMultiFrameCommand = new QgsComposerMultiFrameCommand( multiFrame, text );
+  }
+  else
+  {
+    mActiveMultiFrameCommand = new QgsComposerMultiFrameMergeCommand( c, multiFrame, text );
+  }
   mActiveMultiFrameCommand->savePreviousState();
 }
 

@@ -200,7 +200,7 @@ void QgsComposerHtmlWidget::on_mMaxDistanceSpinBox_valueChanged( double val )
   if ( composition )
   {
     blockSignals( true );
-    composition->beginMultiFrameCommand( mHtml, tr( "Page break distance changed" ) );
+    composition->beginMultiFrameCommand( mHtml, tr( "Page break distance changed" ), QgsComposerMultiFrameMergeCommand::HtmlBreakDistance );
     mHtml->setMaxBreakDistance( val );
     composition->endMultiFrameCommand();
     blockSignals( false );
@@ -218,7 +218,7 @@ void QgsComposerHtmlWidget::htmlEditorChanged()
   if ( composition )
   {
     blockSignals( true );
-    composition->beginMultiFrameCommand( mHtml, tr( "HTML changed" ) );
+    composition->beginMultiFrameCommand( mHtml, tr( "HTML changed" ), QgsComposerMultiFrameMergeCommand::HtmlSource );
     mHtml->setHtml( mHtmlEditor->text() );
     composition->endMultiFrameCommand();
     blockSignals( false );
@@ -237,7 +237,7 @@ void QgsComposerHtmlWidget::stylesheetEditorChanged()
   if ( composition )
   {
     blockSignals( true );
-    composition->beginMultiFrameCommand( mHtml, tr( "User stylesheet changed" ) );
+    composition->beginMultiFrameCommand( mHtml, tr( "User stylesheet changed" ), QgsComposerMultiFrameMergeCommand::HtmlStylesheet );
     mHtml->setUserStylesheet( mStylesheetEditor->text() );
     composition->endMultiFrameCommand();
     blockSignals( false );

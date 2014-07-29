@@ -30,6 +30,7 @@
 
 #include "qgsaddremoveitemcommand.h"
 #include "qgscomposeritemcommand.h"
+#include "qgscomposermultiframecommand.h"
 #include "qgsatlascomposition.h"
 #include "qgspaperitem.h"
 #include "qgscomposerobject.h"
@@ -430,7 +431,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Deletes current command*/
     void cancelCommand();
 
-    void beginMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text );
+    void beginMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, const QgsComposerMultiFrameMergeCommand::Context c = QgsComposerMultiFrameMergeCommand::Unknown );
     void endMultiFrameCommand();
 
     /**Adds multiframe. The object is owned by QgsComposition until removeMultiFrame is called*/
