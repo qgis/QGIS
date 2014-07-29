@@ -3745,7 +3745,7 @@ QString QgsGeometry::exportToWkt() const
   }
 }
 
-QString QgsGeometry::exportToGeoJSON() const
+QString QgsGeometry::exportToGeoJSON( const int &precision ) const
 {
   QgsDebugMsg( "entered." );
 
@@ -3776,8 +3776,8 @@ QString QgsGeometry::exportToGeoJSON() const
       wkbPtr >> x >> y;
 
       wkt += "{ \"type\": \"Point\", \"coordinates\": ["
-             + qgsDoubleToString( x ) + ", "
-             + qgsDoubleToString( y )
+             + qgsDoubleToString( x, precision ) + ", "
+             + qgsDoubleToString( y, precision )
              + "] }";
       return wkt;
     }
@@ -3801,7 +3801,7 @@ QString QgsGeometry::exportToGeoJSON() const
         if ( hasZValue )
           wkbPtr += sizeof( double );
 
-        wkt += "[" + qgsDoubleToString( x ) + ", " + qgsDoubleToString( y ) + "]";
+        wkt += "[" + qgsDoubleToString( x, precision ) + ", " + qgsDoubleToString( y, precision ) + "]";
       }
       wkt += " ] }";
       return wkt;
@@ -3839,7 +3839,7 @@ QString QgsGeometry::exportToGeoJSON() const
           if ( hasZValue )
             wkbPtr += sizeof( double );
 
-          wkt += "[" + qgsDoubleToString( x ) + ", " + qgsDoubleToString( y ) + "]";
+          wkt += "[" + qgsDoubleToString( x, precision ) + ", " + qgsDoubleToString( y, precision ) + "]";
         }
         wkt += " ]";
       }
@@ -3865,7 +3865,7 @@ QString QgsGeometry::exportToGeoJSON() const
         if ( hasZValue )
           wkbPtr += sizeof( double );
 
-        wkt += "[" + qgsDoubleToString( x ) + ", " + qgsDoubleToString( y ) + "]";
+        wkt += "[" + qgsDoubleToString( x, precision ) + ", " + qgsDoubleToString( y, precision ) + "]";
       }
       wkt += " ] }";
       return wkt;
@@ -3899,7 +3899,7 @@ QString QgsGeometry::exportToGeoJSON() const
           if ( hasZValue )
             wkbPtr += sizeof( double );
 
-          wkt += "[" + qgsDoubleToString( x ) + ", " + qgsDoubleToString( y ) + "]";
+          wkt += "[" + qgsDoubleToString( x, precision ) + ", " + qgsDoubleToString( y, precision ) + "]";
         }
         wkt += " ]";
       }
@@ -3946,7 +3946,7 @@ QString QgsGeometry::exportToGeoJSON() const
             if ( hasZValue )
               wkbPtr += sizeof( double );
 
-            wkt += "[" + qgsDoubleToString( x ) + ", " + qgsDoubleToString( y ) + "]";
+            wkt += "[" + qgsDoubleToString( x, precision ) + ", " + qgsDoubleToString( y, precision ) + "]";
           }
           wkt += " ]";
         }
