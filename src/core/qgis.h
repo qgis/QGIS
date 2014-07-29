@@ -313,9 +313,9 @@ inline void ( *cast_to_fptr( void *p ) )()
 //
 // return a string representation of a double
 //
-inline QString qgsDoubleToString( const double &a )
+inline QString qgsDoubleToString( const double &a, const int &precision = 17 )
 {
-  return QString::number( a, 'f', 17 ).remove( QRegExp( "\\.?0+$" ) );
+  return QString::number( a, 'f', precision ).remove( QRegExp( "\\.?0+$" ) );
 }
 
 //

@@ -369,12 +369,13 @@ class QgsGeometry
      */
     QString exportToWkt() const;
 
-    /** Exports the geometry to mGeoJSON
-     *  @return true in case of success and false else
+    /** Exports the geometry to GeoJSON
+     *  @return a QString representing the geometry as GeoJSON
      *  @note added in 1.8
      *  @note python binding added in 1.9
+     *  @note precision parameter added in 2.4
      */
-    QString exportToGeoJSON() const;
+    QString exportToGeoJSON( const int &precision = 17 ) const;
 
     /** try to convert the geometry to the requested type
      * @param destType the geometry type to be converted to

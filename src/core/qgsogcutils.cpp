@@ -993,7 +993,7 @@ QgsRectangle QgsOgcUtils::rectangleFromGMLEnvelope( const QDomNode& envelopeNode
   return rect;
 }
 
-QDomElement QgsOgcUtils::rectangleToGMLBox( QgsRectangle* box, QDomDocument& doc )
+QDomElement QgsOgcUtils::rectangleToGMLBox( QgsRectangle* box, QDomDocument& doc, const int &precision )
 {
   if ( !box )
   {
@@ -1006,13 +1006,13 @@ QDomElement QgsOgcUtils::rectangleToGMLBox( QgsRectangle* box, QDomDocument& doc
   coordElem.setAttribute( "ts", " " );
 
   QString coordString;
-  coordString += qgsDoubleToString( box->xMinimum() );
+  coordString += qgsDoubleToString( box->xMinimum(), precision );
   coordString += ",";
-  coordString += qgsDoubleToString( box->yMinimum() );
+  coordString += qgsDoubleToString( box->yMinimum(), precision );
   coordString += " ";
-  coordString += qgsDoubleToString( box->xMaximum() );
+  coordString += qgsDoubleToString( box->xMaximum(), precision );
   coordString += ",";
-  coordString += qgsDoubleToString( box->yMaximum() );
+  coordString += qgsDoubleToString( box->yMaximum(), precision );
 
   QDomText coordText = doc.createTextNode( coordString );
   coordElem.appendChild( coordText );
@@ -1021,7 +1021,7 @@ QDomElement QgsOgcUtils::rectangleToGMLBox( QgsRectangle* box, QDomDocument& doc
   return boxElem;
 }
 
-QDomElement QgsOgcUtils::rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument& doc )
+QDomElement QgsOgcUtils::rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument& doc, const int &precision )
 {
   if ( !env )
   {
@@ -1032,17 +1032,17 @@ QDomElement QgsOgcUtils::rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument
   QString posList;
 
   QDomElement lowerCornerElem = doc.createElement( "gml:lowerCorner" );
-  posList = qgsDoubleToString( env->xMinimum() );
+  posList = qgsDoubleToString( env->xMinimum(), precision );
   posList += " ";
-  posList += qgsDoubleToString( env->yMinimum() );
+  posList += qgsDoubleToString( env->yMinimum(), precision );
   QDomText lowerCornerText = doc.createTextNode( posList );
   lowerCornerElem.appendChild( lowerCornerText );
   envElem.appendChild( lowerCornerElem );
 
   QDomElement upperCornerElem = doc.createElement( "gml:upperCorner" );
-  posList = qgsDoubleToString( env->xMaximum() );
+  posList = qgsDoubleToString( env->xMaximum(), precision );
   posList += " ";
-  posList += qgsDoubleToString( env->yMaximum() );
+  posList += qgsDoubleToString( env->yMaximum(), precision );
   QDomText upperCornerText = doc.createTextNode( posList );
   upperCornerElem.appendChild( upperCornerText );
   envElem.appendChild( upperCornerElem );
@@ -1050,7 +1050,7 @@ QDomElement QgsOgcUtils::rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument
   return envElem;
 }
 
-QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc, QString format )
+QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc, QString format, const int &precision )
 {
   if ( !geometry || !geometry->asWkb() )
     return QDomElement();
@@ -1100,7 +1100,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
 
       double x, y;
       wkbPtr >> x >> y;
-      QDomText coordText = doc.createTextNode( qgsDoubleToString( x ) + cs + qgsDoubleToString( y ) );
+      QDomText coordText = doc.createTextNode( qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision ) );
 
       coordElem.appendChild( coordText );
       pointElem.appendChild( coordElem );
@@ -1124,7 +1124,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
 
         double x, y;
         wkbPtr >> x >> y;
-        QDomText coordText = doc.createTextNode( qgsDoubleToString( x ) + cs + qgsDoubleToString( y ) );
+        QDomText coordText = doc.createTextNode( qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision ) );
 
         coordElem.appendChild( coordText );
         pointElem.appendChild( coordElem );
@@ -1159,7 +1159,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
 
         double x, y;
         wkbPtr >> x >> y;
-        coordString += qgsDoubleToString( x ) + cs + qgsDoubleToString( y );
+        coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
 
         if ( hasZValue )
         {
@@ -1201,7 +1201,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
           double x, y;
           wkbPtr >> x >> y;
 
-          coordString += qgsDoubleToString( x ) + cs + qgsDoubleToString( y );
+          coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
 
           if ( hasZValue )
           {
@@ -1257,7 +1257,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
           double x, y;
           wkbPtr >> x >> y;
 
-          coordString += qgsDoubleToString( x ) + cs + qgsDoubleToString( y );
+          coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
           if ( hasZValue )
           {
             wkbPtr += sizeof( double );
@@ -1316,7 +1316,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
             double x, y;
             wkbPtr >> x >> y;
 
-            coordString += qgsDoubleToString( x ) + cs + qgsDoubleToString( y );
+            coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
 
             if ( hasZValue )
             {
@@ -1339,9 +1339,9 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
   }
 }
 
-QDomElement QgsOgcUtils::geometryToGML( QgsGeometry *geometry, QDomDocument &doc )
+QDomElement QgsOgcUtils::geometryToGML( QgsGeometry *geometry, QDomDocument &doc, const int &precision )
 {
-  return geometryToGML( geometry, doc, "GML2" );
+  return geometryToGML( geometry, doc, "GML2", precision );
 }
 
 QDomElement QgsOgcUtils::createGMLCoordinates( const QgsPolyline &points, QDomDocument &doc )
