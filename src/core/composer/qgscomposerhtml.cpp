@@ -441,6 +441,11 @@ void QgsComposerHtml::setUserStylesheetEnabled( const bool stylesheetEnabled )
   }
 }
 
+QString QgsComposerHtml::displayName() const
+{
+  return tr( "<html frame>" );
+}
+
 bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
   QDomElement htmlElem = doc.createElement( "ComposerHtml" );

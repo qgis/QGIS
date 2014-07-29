@@ -181,6 +181,8 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @note added in 2.5
      */
     bool userStylesheetEnabled() const;
+    
+    virtual QString displayName() const;
 
   public slots:
 

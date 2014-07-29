@@ -1913,6 +1913,16 @@ QPolygonF QgsComposerMap::visibleExtentPolygon() const
   return poly;
 }
 
+QString QgsComposerMap::displayName() const
+{
+  if ( !QgsComposerItem::id().isEmpty() )
+  {
+    return QgsComposerItem::id();
+  }
+
+  return tr( "Map %1" ).arg( mId );
+}
+
 void QgsComposerMap::addGrid( QgsComposerMapGrid* grid )
 {
   mGrids.append( grid );
@@ -2094,11 +2104,11 @@ QList<QgsComposerMapOverview *> QgsComposerMap::mapOverviews() const
 
 void QgsComposerMap::connectMapOverviewSignals()
 {
-    QList< QgsComposerMapOverview* >::const_iterator it = mOverviews.begin();
-    for ( ; it != mOverviews.end(); ++it )
-    {
-      (*it)->connectSignals();
-    }
+  QList< QgsComposerMapOverview* >::const_iterator it = mOverviews.begin();
+  for ( ; it != mOverviews.end(); ++it )
+  {
+    ( *it )->connectSignals();
+  }
 }
 
 void QgsComposerMap::requestedExtent( QgsRectangle& extent )

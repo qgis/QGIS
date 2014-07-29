@@ -23,4 +23,7 @@ class QgsComposerFrame: QgsComposerItem
     int type() const;
 
     QgsComposerMultiFrame* multiFrame() const;
+    
+    //Overriden to allow multiframe to set display name
+    virtual QString displayName() const;
 };

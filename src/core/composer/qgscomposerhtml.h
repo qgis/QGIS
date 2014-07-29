@@ -205,6 +205,8 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      */
     bool userStylesheetEnabled() const { return mEnableUserStylesheet; }
 
+    virtual QString displayName() const;
+
   public slots:
 
     /**Reloads the html source from the url and redraws the item.

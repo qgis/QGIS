@@ -539,6 +539,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     */
     QPolygonF visibleExtentPolygon() const;
 
+    //overriden to show "Map 1" type names
+    virtual QString displayName() const;
+
     /**Adds new map grid (takes ownership)*/
     void addGrid( QgsComposerMapGrid* grid );
     void removeGrid( const QString& name );
@@ -568,7 +571,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     void connectMapOverviewSignals();
 
-signals:
+  signals:
     void extentChanged();
 
     /**Is emitted on rotation change to notify north arrow pictures*/

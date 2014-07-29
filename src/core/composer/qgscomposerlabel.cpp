@@ -391,6 +391,10 @@ QString QgsComposerLabel::displayName() const
 
   //if no id, default to portion of label text
   QString text = displayText();
+  if ( text.isEmpty() || mHtmlState )
+  {
+    return tr( "<label>" );
+  }
   if ( text.length() > 25 )
   {
     return QString( tr( "%1..." ) ).arg( text.left( 25 ) );

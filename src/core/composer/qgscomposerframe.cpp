@@ -62,6 +62,21 @@ bool QgsComposerFrame::readXML( const QDomElement& itemElem, const QDomDocument&
   return _readXML( composerItem, doc );
 }
 
+QString QgsComposerFrame::displayName() const
+{
+  if ( !id().isEmpty() )
+  {
+    return id();
+  }
+
+  if ( mMultiFrame )
+  {
+    return mMultiFrame->displayName();
+  }
+
+  return tr( "<frame>" );
+}
+
 void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
   Q_UNUSED( itemStyle );

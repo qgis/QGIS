@@ -184,6 +184,11 @@ QgsComposerFrame* QgsComposerMultiFrame::createNewFrame( QgsComposerFrame* curre
   return newFrame;
 }
 
+QString QgsComposerMultiFrame::displayName() const
+{
+  return tr( "<frame>" );
+}
+
 void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
 {
   QgsComposerFrame* frame = dynamic_cast<QgsComposerFrame*>( item );

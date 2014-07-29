@@ -94,6 +94,12 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      */
     QgsComposerFrame* createNewFrame( QgsComposerFrame* currentFrame, QPointF pos, QSizeF size );
 
+    /**Get multiframe display name.
+     * @returns display name for item
+     * @note added in version 2.5
+    */
+    virtual QString displayName() const;
+
   public slots:
 
     /**Recalculates the portion of the multiframe item which is shown in each of it's
