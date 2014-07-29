@@ -368,7 +368,7 @@ class QgsComposition : QGraphicsScene
     /**Deletes current command*/
     void cancelCommand();
 
-    void beginMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text );
+    void beginMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, const QgsComposerMultiFrameMergeCommand::Context c = QgsComposerMultiFrameMergeCommand::Unknown );
     void endMultiFrameCommand();
 
     /**Adds multiframe. The object is owned by QgsComposition until removeMultiFrame is called*/
