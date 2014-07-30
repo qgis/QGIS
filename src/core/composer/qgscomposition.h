@@ -241,13 +241,20 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Returns pointer to undo/redo command storage*/
     QUndoStack* undoStack() { return mUndoStack; }
 
-    /**Returns the topmost composer item. Ignores mPaperItem*/
-    QgsComposerItem* composerItemAt( const QPointF & position ) const;
-
-    /**Returns the highest composer item at a specified position which is below a specified item. Ignores mPaperItem
-      @note Added in QGIS 2.1
+    /**Returns the topmost composer item at a specified position. Ignores paper items.
+     * @param position point to search for item at
+     * @param ignoreLocked set to true to ignore locked items
+     * @returns composer item at position
     */
-    QgsComposerItem* composerItemAt( const QPointF & position, const QgsComposerItem* belowItem ) const;
+    QgsComposerItem* composerItemAt( const QPointF & position, const bool ignoreLocked = false ) const;
+
+    /**Returns the topmost composer item at a specified position which is below a specified item. Ignores paper items.
+     * @param position point to search for item at
+     * @param belowItem item to search below
+     * @param ignoreLocked set to true to ignore locked items
+     * @returns composer item at position which is below specified item
+    */
+    QgsComposerItem* composerItemAt( const QPointF & position, const QgsComposerItem* belowItem, const bool ignoreLocked = false ) const;
 
     /** Returns the page number (0-based) given a coordinate */
     int pageNumberAt( const QPointF& position ) const;

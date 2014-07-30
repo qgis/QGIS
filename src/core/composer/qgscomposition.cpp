@@ -444,12 +444,12 @@ void QgsComposition::setStatusMessage( const QString & message )
   emit statusMsgChanged( message );
 }
 
-QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position ) const
+QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position , const bool ignoreLocked ) const
 {
-  return composerItemAt( position, 0 );
+  return composerItemAt( position, 0, ignoreLocked );
 }
 
-QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position, const QgsComposerItem* belowItem ) const
+QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position, const QgsComposerItem* belowItem, const bool ignoreLocked ) const
 {
   //get a list of items which intersect the specified position, in descending z order
   QList<QGraphicsItem*> itemList;
@@ -465,7 +465,7 @@ QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position, const
     {
       // If we are not checking for a an item below a specified item, or if we've
       // already found that item, then we've found our target
-      if ( ! belowItem || foundBelowItem )
+      if (( ! belowItem || foundBelowItem ) && ( !ignoreLocked || !composerItem->positionLock() ) )
       {
         return composerItem;
       }

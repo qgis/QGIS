@@ -208,19 +208,19 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       if ( previousSelectedItem )
       {
         //select highest item just below previously selected item at position of event
-        selectedItem = composition()->composerItemAt( scenePoint, previousSelectedItem );
+        selectedItem = composition()->composerItemAt( scenePoint, previousSelectedItem, true );
 
         //if we didn't find a lower item we'll use the top-most as fall-back
         //this duplicates mapinfo/illustrator/etc behaviour where ctrl-clicks are "cyclic"
         if ( !selectedItem )
         {
-          selectedItem = composition()->composerItemAt( scenePoint );
+          selectedItem = composition()->composerItemAt( scenePoint, true );
         }
       }
       else
       {
         //select topmost item at position of event
-        selectedItem = composition()->composerItemAt( scenePoint );
+        selectedItem = composition()->composerItemAt( scenePoint, true );
       }
 
       if ( !selectedItem )
@@ -1506,7 +1506,7 @@ void QgsComposerView::wheelEvent( QWheelEvent* event )
 
     QPointF scenePoint = mapToScene( event->pos() );
     //select topmost item at position of event
-    QgsComposerItem* theItem = composition()->composerItemAt( scenePoint );
+    QgsComposerItem* theItem = composition()->composerItemAt( scenePoint, true );
     if ( theItem )
     {
       if ( theItem->isSelected() )
