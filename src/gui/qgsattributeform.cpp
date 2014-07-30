@@ -65,7 +65,8 @@ void QgsAttributeForm::hideButtonBox()
   mButtonBox->hide();
 
   // Make sure that changes are taken into account if somebody tries to figure out if there have been some
-  connect( mLayer, SIGNAL( beforeModifiedCheck() ), this, SLOT( save() ) );
+  if ( !mIsAddDialog )
+    connect( mLayer, SIGNAL( beforeModifiedCheck() ), this, SLOT( save() ) );
 }
 
 void QgsAttributeForm::showButtonBox()
@@ -73,6 +74,12 @@ void QgsAttributeForm::showButtonBox()
   mButtonBox->show();
 
   disconnect( mLayer, SIGNAL( beforeModifiedCheck() ), this, SLOT( save() ) );
+}
+
+void QgsAttributeForm::disconnectButtonBox()
+{
+  disconnect( mButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+  disconnect( mButtonBox, SIGNAL( rejected() ), this, SLOT( resetValues() ) );
 }
 
 void QgsAttributeForm::addInterface( QgsAttributeFormInterface* iface )

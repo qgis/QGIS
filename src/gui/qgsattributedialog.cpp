@@ -102,6 +102,7 @@ void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, QgsAt
   setLayout( new QGridLayout() );
   layout()->setMargin( 0 );
   mAttributeForm = new QgsAttributeForm( layer, *feature, context, parent );
+  mAttributeForm->disconnectButtonBox();
   layout()->addWidget( mAttributeForm );
   QDialogButtonBox* buttonBox = mAttributeForm->findChild<QDialogButtonBox*>();
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );

@@ -47,6 +47,12 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void showButtonBox();
 
     /**
+     * Disconnects the button box (Ok/Cancel) from the accept/resetValues slots
+     * If this method is called, you have to create these connections from outside
+     */
+    void disconnectButtonBox();
+
+    /**
      * Takes ownership
      * @param iface
      */
