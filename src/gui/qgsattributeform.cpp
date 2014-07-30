@@ -154,7 +154,9 @@ bool QgsAttributeForm::save()
       {
         QVariant dstVar = dst[eww->fieldIdx()];
         QVariant srcVar = eww->value();
-        if ( dstVar != srcVar && srcVar.isValid() )
+        // need to check dstVar.isNull() != srcVar.isNull()
+        // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
+        if ( ( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() )
         {
           dst[eww->fieldIdx()] = srcVar;
 
@@ -192,7 +194,7 @@ bool QgsAttributeForm::save()
         int n = 0;
         for ( int i = 0; i < dst.count(); ++i )
         {
-          if ( dst[i] == src[i] || !dst[i].isValid() )
+          if ( ( dst[i] == src[i] && dst[i].isNull() == src[i].isNull() ) || !dst[i].isValid() )
           {
             QgsDebugMsg( "equal or invalid destination" );
             QgsDebugMsg( QString( "dst:'%1' (type:%2,isNull:%3,isValid:%4)" )
