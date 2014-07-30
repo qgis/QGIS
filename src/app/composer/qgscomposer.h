@@ -34,6 +34,7 @@ class QgsComposerRuler;
 class QgsComposerScaleBar;
 class QgsComposerShape;
 class QgsComposerAttributeTable;
+class QgsComposerAttributeTableV2;
 class QgsComposerView;
 class QgsComposition;
 class QgsMapCanvas;
@@ -191,6 +192,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Add attribute table
     void on_mActionAddTable_triggered();
+
+    //! Add attribute table
+    void on_mActionAddAttributeTable_triggered();
 
     void on_mActionAddHtml_triggered();
 
@@ -386,6 +390,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     /**Adds a composer table to the item/widget map and creates a configuration widget*/
     void addComposerTable( QgsComposerAttributeTable* table );
+
+    /**Adds a composer table v2 to the item/widget map and creates a configuration widget*/
+    void addComposerTableV2( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame );
 
     /**Adds composer html and creates a configuration widget*/
     void addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame );

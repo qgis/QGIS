@@ -31,6 +31,7 @@
 #include "qgscomposerlabel.h"
 #include "qgscomposermodel.h"
 #include "qgscomposerattributetable.h"
+#include "qgscomposerattributetablev2.h"
 #include "qgsaddremovemultiframecommand.h"
 #include "qgscomposermultiframecommand.h"
 #include "qgspaintenginehack.h"
@@ -2141,6 +2142,12 @@ void QgsComposition::endMultiFrameCommand()
   }
 }
 
+void QgsComposition::cancelMultiFrameCommand()
+{
+  delete mActiveMultiFrameCommand;
+  mActiveMultiFrameCommand = 0;
+}
+
 void QgsComposition::addMultiFrame( QgsComposerMultiFrame* multiFrame )
 {
   mMultiFrames.insert( multiFrame );
@@ -2253,6 +2260,16 @@ void QgsComposition::addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFra
   connect( frame, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
 
   emit composerHtmlFrameAdded( html, frame );
+}
+
+void QgsComposition::addComposerTableFrame( QgsComposerAttributeTableV2 *table, QgsComposerFrame *frame )
+{
+  addItem( frame );
+
+  updateBounds();
+  connect( frame, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
+  emit composerTableFrameAdded( table, frame );
 }
 
 void QgsComposition::removeComposerItem( QgsComposerItem* item, const bool createCommand, const bool removeGroupItems )
@@ -2419,6 +2436,11 @@ void QgsComposition::sendItemAddedSignal( QgsComposerItem* item )
     if ( html )
     {
       emit composerHtmlFrameAdded( html, frame );
+    }
+    QgsComposerAttributeTableV2* table = dynamic_cast<QgsComposerAttributeTableV2*>( mf );
+    if ( table )
+    {
+      emit composerTableFrameAdded( table, frame );
     }
     emit selectedItemChanged( frame );
     return;

@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsattributeselectiondialog.h"
-#include "qgscomposerattributetable.h"
+#include "qgscomposerattributetablev2.h"
 #include "qgscomposerattributetablemodel.h"
+#include "qgscomposerattributetablemodelv2.h"
 #include "qgsvectorlayer.h"
 #include "qgsfieldexpressionwidget.h"
 #include <QCheckBox>
@@ -219,13 +220,17 @@ void QgsComposerColumnSortOrderDelegate::updateEditorGeometry( QWidget* editor, 
 
 // QgsAttributeSelectionDialog
 
-QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTable* table, QgsVectorLayer* vLayer,
+QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTableV2* table, QgsVectorLayer* vLayer,
     QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f ),
     mComposerTable( table ),
+    mComposerTableV1( 0 ),
     mVectorLayer( vLayer ),
     mColumnModel( 0 ),
+    mColumnModelV1( 0 ),
     mSortedProxyModel( 0 ),
+    mSortedProxyModelV1( 0 ),
     mAvailableSortProxyModel( 0 ),
+    mAvailableSortProxyModelV1( 0 ),
     mColumnAlignmentDelegate( 0 ),
     mColumnSortOrderDelegate( 0 )
 {
@@ -237,7 +242,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
   if ( mComposerTable )
   {
     //set up models, views and delegates
-    mColumnModel = new QgsComposerAttributeTableColumnModel( mComposerTable , mColumnsTableView );
+    mColumnModel = new QgsComposerAttributeTableColumnModelV2( mComposerTable , mColumnsTableView );
     mColumnsTableView->setModel( mColumnModel );
     mColumnsTableView->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
 
@@ -246,7 +251,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
     mColumnAlignmentDelegate = new QgsComposerColumnAlignmentDelegate( mColumnsTableView );
     mColumnsTableView->setItemDelegateForColumn( 2, mColumnAlignmentDelegate );
 
-    mAvailableSortProxyModel = new QgsComposerTableSortColumnsProxyModel( mComposerTable, QgsComposerTableSortColumnsProxyModel::ShowUnsortedColumns, mSortColumnComboBox );
+    mAvailableSortProxyModel = new QgsComposerTableSortColumnsProxyModelV2( mComposerTable, QgsComposerTableSortColumnsProxyModelV2::ShowUnsortedColumns, mSortColumnComboBox );
     mAvailableSortProxyModel->setSourceModel( mColumnModel );
     mSortColumnComboBox->setModel( mAvailableSortProxyModel );
     mSortColumnComboBox->setModelColumn( 0 );
@@ -254,11 +259,62 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
     mColumnSortOrderDelegate = new QgsComposerColumnSortOrderDelegate( mSortColumnTableView );
     mSortColumnTableView->setItemDelegateForColumn( 1, mColumnSortOrderDelegate );
 
-    mSortedProxyModel = new QgsComposerTableSortColumnsProxyModel( mComposerTable, QgsComposerTableSortColumnsProxyModel::ShowSortedColumns, mSortColumnTableView );
+    mSortedProxyModel = new QgsComposerTableSortColumnsProxyModelV2( mComposerTable, QgsComposerTableSortColumnsProxyModelV2::ShowSortedColumns, mSortColumnTableView );
     mSortedProxyModel->setSourceModel( mColumnModel );
     mSortedProxyModel->sort( 0, Qt::AscendingOrder );
     mSortColumnTableView->setSortingEnabled( false );
     mSortColumnTableView->setModel( mSortedProxyModel );
+    mSortColumnTableView->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
+  }
+
+  mOrderComboBox->insertItem( 0, tr( "Ascending" ) );
+  mOrderComboBox->insertItem( 1, tr( "Descending" ) );
+}
+
+QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTable *table, QgsVectorLayer *vLayer, QWidget *parent, Qt::WindowFlags f )
+    : QDialog( parent, f ),
+    mComposerTable( 0 ),
+    mComposerTableV1( table ),
+    mVectorLayer( vLayer ),
+    mColumnModel( 0 ),
+    mColumnModelV1( 0 ),
+    mSortedProxyModel( 0 ),
+    mSortedProxyModelV1( 0 ),
+    mAvailableSortProxyModel( 0 ),
+    mAvailableSortProxyModelV1( 0 ),
+    mColumnAlignmentDelegate( 0 ),
+    mColumnSortOrderDelegate( 0 )
+{
+  setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/AttributeSelectionDialog/geometry" ).toByteArray() );
+
+  if ( mComposerTableV1 )
+  {
+    //set up models, views and delegates
+    mColumnModelV1 = new QgsComposerAttributeTableColumnModel( mComposerTableV1 , mColumnsTableView );
+    mColumnsTableView->setModel( mColumnModelV1 );
+    mColumnsTableView->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
+
+    mColumnSourceDelegate = new QgsComposerColumnSourceDelegate( vLayer, mColumnsTableView );
+    mColumnsTableView->setItemDelegateForColumn( 0, mColumnSourceDelegate );
+    mColumnAlignmentDelegate = new QgsComposerColumnAlignmentDelegate( mColumnsTableView );
+    mColumnsTableView->setItemDelegateForColumn( 2, mColumnAlignmentDelegate );
+
+    mAvailableSortProxyModelV1 = new QgsComposerTableSortColumnsProxyModel( mComposerTableV1, QgsComposerTableSortColumnsProxyModel::ShowUnsortedColumns, mSortColumnComboBox );
+    mAvailableSortProxyModelV1->setSourceModel( mColumnModelV1 );
+    mSortColumnComboBox->setModel( mAvailableSortProxyModelV1 );
+    mSortColumnComboBox->setModelColumn( 0 );
+
+    mColumnSortOrderDelegate = new QgsComposerColumnSortOrderDelegate( mSortColumnTableView );
+    mSortColumnTableView->setItemDelegateForColumn( 1, mColumnSortOrderDelegate );
+
+    mSortedProxyModelV1 = new QgsComposerTableSortColumnsProxyModel( mComposerTableV1, QgsComposerTableSortColumnsProxyModel::ShowSortedColumns, mSortColumnTableView );
+    mSortedProxyModelV1->setSourceModel( mColumnModelV1 );
+    mSortedProxyModelV1->sort( 0, Qt::AscendingOrder );
+    mSortColumnTableView->setSortingEnabled( false );
+    mSortColumnTableView->setModel( mSortedProxyModelV1 );
     mSortColumnTableView->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
   }
 
@@ -274,63 +330,86 @@ QgsAttributeSelectionDialog::~QgsAttributeSelectionDialog()
 
 void QgsAttributeSelectionDialog::on_mRemoveColumnPushButton_clicked()
 {
-  if ( !mComposerTable )
+  if ( mComposerTable )
   {
-    return;
+    //remove selected row from model
+    QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
+    int selectedRow = viewSelection.indexes().at( 0 ).row();
+    mColumnModel->removeRow( selectedRow );
+  }
+  if ( mComposerTableV1 )
+  {
+    //remove selected row from model
+    QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
+    int selectedRow = viewSelection.indexes().at( 0 ).row();
+    mColumnModelV1->removeRow( selectedRow );
   }
 
-  //remove selected row from model
-  QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-  int selectedRow = viewSelection.indexes().at( 0 ).row();
-  mColumnModel->removeRow( selectedRow );
 }
 
 void QgsAttributeSelectionDialog::on_mAddColumnPushButton_clicked()
 {
-  if ( !mComposerTable )
+  if ( mComposerTable )
   {
-    return;
+    //add a new row to the model
+    mColumnModel->insertRow( mColumnModel->rowCount() );
   }
-
-  //add a new row to the model
-  mColumnModel->insertRow( mColumnModel->rowCount() );
+  else if ( mComposerTableV1 )
+  {
+    //add a new row to the model
+    mColumnModelV1->insertRow( mColumnModelV1->rowCount() );
+  }
 }
 
 void QgsAttributeSelectionDialog::on_mColumnUpPushButton_clicked()
 {
-  if ( !mComposerTable )
+  if ( mComposerTable )
   {
-    return;
+    //move selected row up
+    QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
+    int selectedRow = viewSelection.indexes().at( 0 ).row();
+    mColumnModel->moveRow( selectedRow, QgsComposerAttributeTableColumnModelV2::ShiftUp );
   }
-
-  //move selected row up
-  QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-  int selectedRow = viewSelection.indexes().at( 0 ).row();
-  mColumnModel->moveRow( selectedRow, QgsComposerAttributeTableColumnModel::ShiftUp );
+  else if ( mComposerTableV1 )
+  {
+    //move selected row up
+    QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
+    int selectedRow = viewSelection.indexes().at( 0 ).row();
+    mColumnModelV1->moveRow( selectedRow, QgsComposerAttributeTableColumnModel::ShiftUp );
+  }
 }
 
 void QgsAttributeSelectionDialog::on_mColumnDownPushButton_clicked()
 {
-  if ( !mComposerTable )
+  if ( mComposerTable )
   {
-    return;
+    //move selected row down
+    QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
+    int selectedRow = viewSelection.indexes().at( 0 ).row();
+    mColumnModel->moveRow( selectedRow, QgsComposerAttributeTableColumnModelV2::ShiftDown );
+  }
+  else if ( mComposerTableV1 )
+  {
+    //move selected row down
+    QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
+    int selectedRow = viewSelection.indexes().at( 0 ).row();
+    mColumnModelV1->moveRow( selectedRow, QgsComposerAttributeTableColumnModel::ShiftDown );
   }
 
-  //move selected row down
-  QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-  int selectedRow = viewSelection.indexes().at( 0 ).row();
-  mColumnModel->moveRow( selectedRow, QgsComposerAttributeTableColumnModel::ShiftDown );
 }
 
 void QgsAttributeSelectionDialog::on_mResetColumnsPushButton_clicked()
 {
-  if ( !mComposerTable )
+  if ( mComposerTable )
   {
-    return;
+    //reset columns to match vector layer's fields
+    mColumnModel->resetToLayer();
   }
-
-  //reset columns to match vector layer's fields
-  mColumnModel->resetToLayer();
+  else if ( mComposerTableV1 )
+  {
+    //reset columns to match vector layer's fields
+    mColumnModelV1->resetToLayer();
+  }
 
   mSortColumnComboBox->setCurrentIndex( 0 );
 }
@@ -338,83 +417,126 @@ void QgsAttributeSelectionDialog::on_mResetColumnsPushButton_clicked()
 void QgsAttributeSelectionDialog::on_mAddSortColumnPushButton_clicked()
 {
   //add column to sort order widget
-  if ( !mComposerTable )
+  if ( mComposerTable )
   {
-    return;
+    QgsComposerTableColumn* column = mAvailableSortProxyModel->columnFromRow( mSortColumnComboBox->currentIndex() );
+    if ( ! column )
+    {
+      return;
+    }
+
+    mColumnModel->setColumnAsSorted( column, mOrderComboBox->currentIndex() == 0 ? Qt::AscendingOrder : Qt::DescendingOrder );
+
+    //required so that rows can be reordered if initially no rows were shown in the table view
+    mSortedProxyModel->resetFilter();
+  }
+  else if ( mComposerTableV1 )
+  {
+    QgsComposerTableColumn* column = mAvailableSortProxyModelV1->columnFromRow( mSortColumnComboBox->currentIndex() );
+    if ( ! column )
+    {
+      return;
+    }
+
+    mColumnModelV1->setColumnAsSorted( column, mOrderComboBox->currentIndex() == 0 ? Qt::AscendingOrder : Qt::DescendingOrder );
+
+    //required so that rows can be reordered if initially no rows were shown in the table view
+    mSortedProxyModelV1->resetFilter();
   }
 
-  QgsComposerTableColumn* column = mAvailableSortProxyModel->columnFromRow( mSortColumnComboBox->currentIndex() );
-  if ( ! column )
-  {
-    return;
-  }
-
-  mColumnModel->setColumnAsSorted( column, mOrderComboBox->currentIndex() == 0 ? Qt::AscendingOrder : Qt::DescendingOrder );
-
-  //required so that rows can be reordered if initially no rows were shown in the table view
-  mSortedProxyModel->resetFilter();
 }
 
 void QgsAttributeSelectionDialog::on_mRemoveSortColumnPushButton_clicked()
 {
   //remove selected rows from sort order widget
-  if ( !mComposerTable )
-  {
-    return;
-  }
 
   QItemSelection sortSelection( mSortColumnTableView->selectionModel()->selection() );
   QModelIndex selectedIndex = sortSelection.indexes().at( 0 );
   int rowToRemove = selectedIndex.row();
 
   //find corresponding column
-  QgsComposerTableColumn * column = mSortedProxyModel->columnFromIndex( selectedIndex );
+  QgsComposerTableColumn * column = 0;
+  if ( mComposerTable )
+  {
+    column = mSortedProxyModel->columnFromIndex( selectedIndex );
+  }
+  else if ( mComposerTableV1 )
+  {
+    column = mSortedProxyModelV1->columnFromIndex( selectedIndex );
+  }
+
   if ( !column )
   {
     return;
   }
 
   //set column as unsorted
-  mColumnModel->setColumnAsUnsorted( column );
-
+  if ( mComposerTable )
+  {
+    mColumnModel->setColumnAsUnsorted( column );
+  }
+  else if ( mComposerTableV1 )
+  {
+    mColumnModelV1->setColumnAsUnsorted( column );
+  }
   //set next row as selected
   mSortColumnTableView->selectRow( rowToRemove );
 }
 
 void QgsAttributeSelectionDialog::on_mSortColumnUpPushButton_clicked()
 {
-  if ( !mComposerTable )
-  {
-    return;
-  }
-
   //find selected row
   QItemSelection sortSelection( mSortColumnTableView->selectionModel()->selection() );
   QModelIndex selectedIndex = sortSelection.indexes().at( 0 );
-  QgsComposerTableColumn * column = mSortedProxyModel->columnFromIndex( selectedIndex );
 
-  if ( !column )
+  if ( mComposerTable )
   {
-    return;
+    QgsComposerTableColumn * column = mSortedProxyModel->columnFromIndex( selectedIndex );
+
+    if ( !column )
+    {
+      return;
+    }
+    mColumnModel->moveColumnInSortRank( column, QgsComposerAttributeTableColumnModelV2::ShiftUp );
   }
-  mColumnModel->moveColumnInSortRank( column, QgsComposerAttributeTableColumnModel::ShiftUp );
+  else if ( mComposerTableV1 )
+  {
+    QgsComposerTableColumn * column = mSortedProxyModelV1->columnFromIndex( selectedIndex );
+
+    if ( !column )
+    {
+      return;
+    }
+    mColumnModelV1->moveColumnInSortRank( column, QgsComposerAttributeTableColumnModel::ShiftUp );
+  }
 }
 
 void QgsAttributeSelectionDialog::on_mSortColumnDownPushButton_clicked()
 {
-  if ( !mComposerTable )
-  {
-    return;
-  }
+
 
   //find selected row
   QItemSelection sortSelection( mSortColumnTableView->selectionModel()->selection() );
   QModelIndex selectedIndex = sortSelection.indexes().at( 0 );
-  QgsComposerTableColumn * column = mSortedProxyModel->columnFromIndex( selectedIndex );
 
-  if ( !column )
+  if ( mComposerTable )
   {
-    return;
+    QgsComposerTableColumn * column = mSortedProxyModel->columnFromIndex( selectedIndex );
+
+    if ( !column )
+    {
+      return;
+    }
+    mColumnModel->moveColumnInSortRank( column, QgsComposerAttributeTableColumnModelV2::ShiftDown );
   }
-  mColumnModel->moveColumnInSortRank( column, QgsComposerAttributeTableColumnModel::ShiftDown );
+  else if ( mComposerTableV1 )
+  {
+    QgsComposerTableColumn * column = mSortedProxyModelV1->columnFromIndex( selectedIndex );
+
+    if ( !column )
+    {
+      return;
+    }
+    mColumnModelV1->moveColumnInSortRank( column, QgsComposerAttributeTableColumnModel::ShiftDown );
+  }
 }

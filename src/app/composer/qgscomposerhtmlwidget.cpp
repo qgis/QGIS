@@ -25,7 +25,10 @@
 #include <QSettings>
 
 
-QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame ): QgsComposerItemBaseWidget( 0, html ), mHtml( html ), mFrame( frame )
+QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame )
+    : QgsComposerItemBaseWidget( 0, html )
+    , mHtml( html )
+    , mFrame( frame )
 {
   setupUi( this );
 
