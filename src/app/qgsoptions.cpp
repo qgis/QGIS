@@ -725,7 +725,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
 
   //grid and guide defaults
   mGridResolutionSpinBox->setValue( settings.value( "/Composer/defaultSnapGridResolution", 10.0 ).toDouble() );
-  mSnapToleranceSpinBox->setValue( settings.value( "/Composer/defaultSnapTolerancePixels", 10 ).toInt() );
+  mSnapToleranceSpinBox->setValue( settings.value( "/Composer/defaultSnapTolerancePixels", 5 ).toInt() );
   mOffsetXSpinBox->setValue( settings.value( "/Composer/defaultSnapGridOffsetX", 0 ).toDouble() );
   mOffsetYSpinBox->setValue( settings.value( "/Composer/defaultSnapGridOffsetY", 0 ).toDouble() );
 

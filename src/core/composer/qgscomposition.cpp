@@ -213,7 +213,7 @@ void QgsComposition::loadDefaults()
   mSnapGridResolution = settings.value( "/Composer/defaultSnapGridResolution", 10.0 ).toDouble();
   mSnapGridOffsetX = settings.value( "/Composer/defaultSnapGridOffsetX", 0 ).toDouble();
   mSnapGridOffsetY = settings.value( "/Composer/defaultSnapGridOffsetY", 0 ).toDouble();
-  mSnapTolerance = settings.value( "/Composer/defaultSnapTolerancePixels", 10 ).toInt();
+  mSnapTolerance = settings.value( "/Composer/defaultSnapTolerancePixels", 5 ).toInt();
 }
 
 void QgsComposition::updateBounds()
