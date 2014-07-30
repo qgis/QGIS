@@ -39,9 +39,9 @@ def getParameterFromString(s):
     return clazz(*params)
 
 def parseBool(s):
-    if s == str(None):
+    if s == unicode(None):
         return None
-    return str(s).lower() == str(True).lower()
+    return unicode(s).lower() == unicode(True).lower()
 
 
 class Parameter:
@@ -69,7 +69,7 @@ class Parameter:
         Returns true if the value passed is correct for the type
         of parameter.
         """
-        self.value = str(obj)
+        self.value = unicode(obj)
         return True
 
     def __str__(self):
@@ -81,7 +81,7 @@ class Parameter:
         entered in the console if calling an algorithm using the
         Processing.runalg() method.
         """
-        return str(self.value)
+        return unicode(self.value)
 
     def parameterName(self):
         return self.__module__.split('.')[-1]
@@ -102,7 +102,7 @@ class ParameterBoolean(Parameter):
             self.value = self.default
             return True
         if isinstance(value, basestring):
-            self.value = str(value).lower() == str(True).lower()
+            self.value = unicode(value).lower() == unicode(True).lower()
         else:
             self.value = bool(value)
         return True
@@ -122,18 +122,18 @@ class ParameterCrs(Parameter):
             return True
 
         # TODO: check it is a valid authid
-        self.value = str(value)
+        self.value = unicode(value)
         return True
 
     def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"'
+        return '"' + unicode(self.value) + '"'
 
 
 class ParameterDataObject(Parameter):
 
     def getValueAsCommandLineParameter(self):
         if self.value is None:
-            return str(None)
+            return unicode(None)
         else:
             if not isWindows():
                 return '"' + unicode(self.value) + '"'
@@ -168,7 +168,7 @@ class ParameterExtent(Parameter):
             return False
 
     def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"'
+        return '"' + unicode(self.value) + '"'
 
 class ParameterFile(Parameter):
 
@@ -214,7 +214,7 @@ class ParameterFixedTable(Parameter):
         return True
 
     def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"'
+        return '"' + unicode(self.value) + '"'
 
     @staticmethod
     def tableToString(table):
@@ -362,7 +362,7 @@ class ParameterNumber(Parameter):
                  default=0.0):
         Parameter.__init__(self, name, description)
         try:
-            self.default = int(str(default))
+            self.default = int(unicode(default))
             self.isInteger = True
         except:
             self.default = float(default)
@@ -415,7 +415,7 @@ class ParameterRange(Parameter):
             return False
 
     def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"'
+        return '"' + unicode(self.value) + '"'
 
 
 class ParameterRaster(ParameterDataObject):

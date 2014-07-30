@@ -53,7 +53,7 @@ class Output(object):
         # in a vector layer). In the case of layers, hidden outputs are
         # not loaded into QGIS after the algorithm is executed. Other
         # outputs not representing layers or tables should always be hidden.
-        self.hidden = str(hidden).lower() == str(True).lower()
+        self.hidden = unicode(hidden).lower() == unicode(True).lower()
 
         # This value indicates whether the output has to be opened
         # after being produced by the algorithm or not
@@ -64,12 +64,12 @@ class Output(object):
 
     def getValueAsCommandLineParameter(self):
         if self.value is None:
-            return str(None)
+            return unicode(None)
         else:
             if not isWindows():
-                return '"' + str(self.value) + '"'
+                return '"' + unicode(self.value) + '"'
             else:
-                return '"' + str(self.value).replace('\\', '\\\\') + '"'
+                return '"' + unicode(self.value).replace('\\', '\\\\') + '"'
 
     def setValue(self, value):
         try:
@@ -99,7 +99,7 @@ class OutputExtent(Output):
             if value is not None and isinstance(value, basestring):
                 value = value.strip()
             else:
-                self.value = ','.join([str(v) for v in value])
+                self.value = ','.join([unicode(v) for v in value])
             return True
         except:
             return False

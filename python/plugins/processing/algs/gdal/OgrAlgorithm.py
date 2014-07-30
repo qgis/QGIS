@@ -54,15 +54,15 @@ class OgrAlgorithm(GdalAlgorithm):
         if provider == 'spatialite':
             # dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
             regex = re.compile("dbname='(.+)'")
-            r = regex.search(str(layer.source()))
+            r = regex.search(unicode(layer.source()))
             ogrstr = r.groups()[0]
         elif provider == 'postgres':
             # dbname='ktryjh_iuuqef' host=spacialdb.com port=9999
             # user='ktryjh_iuuqef' password='xyqwer' sslmode=disable
             # key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON
             # table="t4" (geom) sql=
-            s = re.sub(''' sslmode=.+''', '', str(layer.source()))
+            s = re.sub(''' sslmode=.+''', '', unicode(layer.source()))
             ogrstr = 'PG:%s' % s
         else:
-            ogrstr = str(layer.source())
+            ogrstr = unicode(layer.source())
         return ogrstr
