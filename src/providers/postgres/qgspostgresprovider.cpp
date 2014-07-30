@@ -2024,7 +2024,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           }
           else
           {
-            sql += quotedValue( siter->toString() );
+            sql += quotedValue( *siter );
           }
         }
         catch ( PGFieldNotFound )
