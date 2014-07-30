@@ -152,16 +152,10 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
   QPointF snappedScenePoint = composition()->snapPointToGrid( scenePoint );
   mMousePressStartPos = e->pos();
 
-  //lock/unlock position of item with right click
   if ( e->button() == Qt::RightButton )
   {
-    QgsComposerItem* selectedItem = composition()->composerItemAt( scenePoint );
-    if ( selectedItem )
-    {
-      bool lock = selectedItem->positionLock() ? false : true;
-      selectedItem->setPositionLock( lock );
-      selectedItem->update();
-    }
+    //ignore right clicks for now
+    //TODO - show context menu
     return;
   }
   else if ( e->button() == Qt::MidButton )
