@@ -1676,7 +1676,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         }
         else
         {
-          values += delim + quotedValue( v.toString() );
+          values += delim + quotedValue( v );
         }
       }
       else
