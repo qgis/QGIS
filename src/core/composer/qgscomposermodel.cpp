@@ -204,6 +204,7 @@ bool QgsComposerModel::setData( const QModelIndex & index, const QVariant & valu
     case LockStatus:
       //second column is item lock state
       item->setPositionLock( value.toBool() );
+      item->setSelected( false );
       emit dataChanged( index, index );
       return true;
 
