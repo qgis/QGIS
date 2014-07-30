@@ -1674,6 +1674,10 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
                     .arg( delim )
                     .arg( quotedValue( v.toString() ) );
         }
+        else if ( v.isNull() )
+        {
+          values += QString( "%1NULL" ).arg( delim );
+        }
         else
         {
           values += delim + quotedValue( v.toString() );
