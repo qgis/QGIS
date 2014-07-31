@@ -168,7 +168,7 @@ def load(fileName, name=None, crs=None, style=None):
     else:
         qgslayer = QgsRasterLayer(fileName, name)
         if qgslayer.isValid():
-            if crs is not None:
+            if crs is not None and qgslayer.crs() is None:
                 qgslayer.setCrs(crs, False)
             if style is None:
                 style = ProcessingConfig.getSetting(
