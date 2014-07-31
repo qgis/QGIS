@@ -21,6 +21,7 @@
 #include "qgscomposerlegenditem.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
+#include "qgscomposermodel.h"
 #include "qgslegendrenderer.h"
 #include "qgslogger.h"
 #include <QDomDocument>
@@ -101,7 +102,16 @@ void QgsComposerLegend::adjustBoxSize()
   }
 }
 
-void QgsComposerLegend::setTitle( const QString& t ) { mSettings.setTitle( t ); }
+void QgsComposerLegend::setTitle( const QString& t )
+{
+  mSettings.setTitle( t );
+
+  if ( mComposition && id().isEmpty() )
+  {
+    //notify the model that the display name has changed
+    mComposition->itemsModel()->updateItemDisplayName( this );
+  }
+}
 QString QgsComposerLegend::title() const { return mSettings.title(); }
 
 Qt::AlignmentFlag QgsComposerLegend::titleAlignment() const { return mSettings.titleAlignment(); }
@@ -333,6 +343,29 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
 
   emit itemChanged();
   return true;
+}
+
+QString QgsComposerLegend::displayName() const
+{
+  if ( !id().isEmpty() )
+  {
+    return id();
+  }
+
+  //if no id, default to portion of title text
+  QString text = mSettings.title();
+  if ( text.isEmpty() )
+  {
+    return tr( "<legend>" );
+  }
+  if ( text.length() > 25 )
+  {
+    return QString( tr( "%1..." ) ).arg( text.left( 25 ) );
+  }
+  else
+  {
+    return text;
+  }
 }
 
 void QgsComposerLegend::setComposerMap( const QgsComposerMap* map )

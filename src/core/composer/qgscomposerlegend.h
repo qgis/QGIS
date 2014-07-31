@@ -139,6 +139,9 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
+    //Overriden to show legend title
+    virtual QString displayName() const;
+
   public slots:
     /**Data changed*/
     void synchronizeWithModel();
