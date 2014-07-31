@@ -28,6 +28,11 @@
      </column>
      <column>
       <property name="text">
+       <string>score</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string/>
       </property>
      </column>
