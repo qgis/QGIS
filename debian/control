@@ -26,7 +26,7 @@ Build-Depends:
  pkg-config,
  pyqt4-dev-tools,
  python,
- python-central (>=0.5),
+ python-central (>=0.5) | python-all-dev,
  python-dev,
  python-qt4-dev (>= 4.1.0),
  python-sip-dev (>= 4.5.0) | python-sip4-dev (>= 4.5.0) | sip4 (>= 4.5),
