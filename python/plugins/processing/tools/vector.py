@@ -343,23 +343,38 @@ def checkMinDistance(point, index, distance, points):
 
     return True
 
-
-
 from PyQt4.QtCore import *
 from qgis.core import *
+
+GEOM_TYPE_MAP = {
+    QGis.WKBPoint: 'Point',
+    QGis.WKBLineString: 'LineString',
+    QGis.WKBPolygon: 'Polygon',
+    QGis.WKBMultiPoint: 'MultiPoint',
+    QGis.WKBMultiLineString: 'MultiLineString',
+    QGis.WKBMultiPolygon: 'MultiPolygon',
+    }
+
+TYPE_MAP = {
+    str : QVariant.String,
+    float: QVariant.Double,
+    int: QVariant.Int
+    }
+
+def _fieldName(self, f):
+    if isinstance(f, basestring):
+        return f
+    return f.name()
+
+def _toQgsField(self, f):
+    if isinstance(f, QgsField):
+        return f
+    return QgsField(f[0], TYPE_MAP.get(f[1], QVariant.String))
 
 class VectorWriter:
 
     MEMORY_LAYER_PREFIX = 'memory:'
 
-    TYPE_MAP = {
-        QGis.WKBPoint: 'Point',
-        QGis.WKBLineString: 'LineString',
-        QGis.WKBPolygon: 'Polygon',
-        QGis.WKBMultiPoint: 'MultiPoint',
-        QGis.WKBMultiLineString: 'MultiLineString',
-        QGis.WKBMultiPolygon: 'MultiPolygon',
-        }
 
     def __init__(self, fileName, encoding, fields, geometryType,
                  crs, options=None):
@@ -375,10 +390,10 @@ class VectorWriter:
         if self.fileName.startswith(self.MEMORY_LAYER_PREFIX):
             self.isMemory = True
 
-            uri = self.TYPE_MAP[geometryType]
+            uri = self.GEOM_TYPE_MAP[geometryType]
             if crs.isValid():
                 uri += '?crs=' + crs.authid() + '&'
-            fieldsdesc = ['field=' + str(f.name()) for f in fields]
+            fieldsdesc = ['field=' + _fieldName(f) for f in fields]
 
             fieldsstring = '&'.join(fieldsdesc)
             uri += fieldsstring
@@ -400,7 +415,7 @@ class VectorWriter:
 
             qgsfields = QgsFields()
             for field in fields:
-                qgsfields.append(field)
+                qgsfields.append(_toQgsField(field))
 
             self.writer = QgsVectorFileWriter(self.fileName, encoding,
                 qgsfields, geometryType, crs, OGRCodes[extension])
@@ -410,7 +425,7 @@ class VectorWriter:
             self.writer.addFeatures([feature])
         else:
             self.writer.addFeature(feature)
-            
+
 import csv
 import codecs
 import cStringIO
@@ -465,4 +480,4 @@ class UnicodeWriter:
 
     def writerows(self, rows):
         for row in rows:
-            self.writerow(row)            
+            self.writerow(row)

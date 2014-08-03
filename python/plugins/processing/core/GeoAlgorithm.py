@@ -109,7 +109,8 @@ class GeoAlgorithm:
         """Returns the help with the description of this algorithm.
         It returns a tuple boolean, string. IF the boolean value is true, it means that
         the string contains the actual description. If false, it is an url or path to a file
-        where the description is stored.
+        where the description is stored. In both cases, the string or the content of the file
+        have to be HTML, ready to be set into the help display component.
 
         Returns None if there is no help file available.
 
