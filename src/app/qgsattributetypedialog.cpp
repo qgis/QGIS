@@ -77,6 +77,8 @@ QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
 {
   QSettings settings;
   settings.setValue( "/Windows/QgsAttributeTypeDialog/geometry", saveGeometry() );
+
+  qDeleteAll( mEditorConfigWidgets.values() );
 }
 
 const QString QgsAttributeTypeDialog::editorWidgetV2Type()

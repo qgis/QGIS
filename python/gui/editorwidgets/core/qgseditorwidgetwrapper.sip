@@ -72,7 +72,7 @@ class QgsEditorWidgetWrapper : QObject
     static QgsEditorWidgetWrapper* fromWidget( QWidget* widget );
 
   protected:
-    virtual QWidget* createWidget( QWidget* parent ) = 0 /Factory/;
+    virtual QWidget* createWidget( QWidget* parent ) = 0;
 
     virtual void initWidget( QWidget* editor );
 
