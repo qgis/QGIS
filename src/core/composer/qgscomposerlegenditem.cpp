@@ -166,6 +166,18 @@ QgsComposerSymbolV2Item::~QgsComposerSymbolV2Item()
   delete mSymbolV2;
 }
 
+QVariant QgsComposerSymbolV2Item::data( int role ) const
+{
+  if ( role == Qt::DecorationRole )
+  {
+    if ( mIcon.isNull() )
+      mIcon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mSymbolV2, QSize( 30, 30 ) );
+    return mIcon;
+  }
+  else
+    return QgsComposerBaseSymbolItem::data( role );
+}
+
 QStandardItem* QgsComposerSymbolV2Item::clone() const
 {
   QgsComposerSymbolV2Item* cloneItem = new QgsComposerSymbolV2Item();

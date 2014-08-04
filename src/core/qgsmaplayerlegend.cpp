@@ -194,6 +194,66 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
   return nodes;
 }
 
+/*
+#include "qgscomposerlegenditem.h"
+
+QList<QgsComposerBaseSymbolItem*> QgsDefaultVectorLayerLegend::createLegendModelItems( QgsComposerLayerItem* layerItem )
+{
+  QList<QgsComposerBaseSymbolItem*> items;
+
+  QgsFeatureRendererV2* renderer = mLayer->rendererV2();
+  if ( !renderer )
+    return items;
+
+  if ( layerItem->showFeatureCount() )
+  {
+    if ( !mLayer->countSymbolFeatures() )
+    {
+      QgsDebugMsg( "Cannot get feature counts" );
+    }
+  }
+
+  double scaleDenominator = -1;
+  QString rule;
+  // TODO: new method for legend symbol items (symbol + label + scale + rule)
+  QgsLegendSymbolList lst = renderer->legendSymbolItems( scaleDenominator, rule );
+  QgsLegendSymbolList::const_iterator symbolIt = lst.constBegin();
+  int row = 0;
+  for ( ; symbolIt != lst.constEnd(); ++symbolIt )
+  {
+    if ( scaleDenominator == -1 && rule.isEmpty() )
+    {
+      QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( QString() );
+
+      // Get userText from old item if exists
+      QgsComposerSymbolV2Item* oldSymbolItem = dynamic_cast<QgsComposerSymbolV2Item*>( layerItem->child( row, 0 ) );
+      if ( oldSymbolItem )
+      {
+        currentSymbolItem->setUserText( oldSymbolItem->userText() );
+      }
+
+      currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      if ( symbolIt->second )
+      {
+        currentSymbolItem->setSymbolV2( symbolIt->second->clone() );
+      }
+      layerItem->setChild( row, 0, currentSymbolItem );
+
+      // updateSymbolV2ItemText needs layer set
+      updateSymbolV2ItemText( currentSymbolItem );
+    }
+    else
+    {
+      QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( QString() );
+      currentSymbolItem->setSymbolV2( symbolIt->second->clone() );
+      layerItem->setChild( row, 0, currentSymbolItem );
+      currentSymbolItem->setText( symbolIt->first );
+    }
+
+    row++;
+  }
+}*/
+
 
 // -------------------------------------------------------------------------
 

@@ -102,6 +102,8 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
     QIcon mIcon;
 };
 
+class QgsComposerLayerItem;
+class QgsComposerBaseSymbolItem;
 
 /**
  * The QgsMapLayerLegend class is abstract interface for implementations
@@ -125,8 +127,11 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
 
     // TODO: support for layer tree view delegates
 
-    // TODO: support for legend renderer
-
+    /**
+     * Return list of legend model items to be used in QgsLegendRenderer.
+     * Ownership is transferred to the caller.
+     */
+    virtual QList<QgsComposerBaseSymbolItem*> createLegendModelItems( QgsComposerLayerItem* layerItem ) { Q_UNUSED( layerItem ); return QList<QgsComposerBaseSymbolItem*>(); }
 
     //! Create new legend implementation for vector layer
     static QgsMapLayerLegend* defaultVectorLegend( QgsVectorLayer* vl );
@@ -152,6 +157,8 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
     explicit QgsDefaultVectorLayerLegend( QgsVectorLayer* vl );
 
     virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer );
+
+    //virtual QList<QgsComposerBaseSymbolItem*> createLegendModelItems( QgsComposerLayerItem* layerItem );
 
   private:
     QgsVectorLayer* mLayer;

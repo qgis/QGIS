@@ -129,8 +129,12 @@ class CORE_EXPORT QgsComposerSymbolV2Item : public QgsComposerBaseSymbolItem
   public:
     QgsComposerSymbolV2Item();
     QgsComposerSymbolV2Item( const QString& text );
+    //! @deprecated
     QgsComposerSymbolV2Item( const QIcon& icon, const QString& text );
     virtual ~QgsComposerSymbolV2Item();
+
+    //! lazy creation of icon
+    virtual QVariant data( int role ) const;
 
     virtual QStandardItem* clone() const;
 
@@ -149,6 +153,7 @@ class CORE_EXPORT QgsComposerSymbolV2Item : public QgsComposerBaseSymbolItem
 
   private:
     QgsSymbolV2* mSymbolV2;
+    mutable QIcon mIcon;
 };
 
 class CORE_EXPORT QgsComposerRasterSymbolItem : public QgsComposerBaseSymbolItem
@@ -228,6 +233,10 @@ class CORE_EXPORT QgsComposerGroupItem: public QgsComposerLegendItem
 
 };
 
+/**
+ * Item used for 2nd column of the legend model for layers and groups to indicate
+ * style of the item (e.g. hidden, group, sub-group)
+ */
 class CORE_EXPORT QgsComposerStyleItem: public QStandardItem
 {
   public:
