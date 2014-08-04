@@ -12,7 +12,8 @@ class QgsMapToolIdentify : QgsMapTool
       ActiveLayer,
       TopDownStopAtFirst,
       TopDownAll,
-      LayerSelection
+      LayerSelection,
+      FeatureSelection
     };
 
     enum LayerType
