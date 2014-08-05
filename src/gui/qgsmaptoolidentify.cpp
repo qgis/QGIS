@@ -100,7 +100,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
   {
     // fill map of layer / identify results
     mLayerIdResults.clear();
-    QList<IdentifyResult> idResult = identify( x, y, TopDownAll );
+    QList<IdentifyResult> idResult = identify( x, y, TopDownAll, layerList, layerType );
     QList<IdentifyResult>::const_iterator it = idResult.constBegin();
     for ( ; it != idResult.constEnd(); ++it )
     {
