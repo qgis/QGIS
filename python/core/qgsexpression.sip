@@ -6,6 +6,7 @@ class QgsExpression
 
   public:
     QgsExpression( const QString& expr );
+    QgsExpression( const QString& expr, const QgsField& targetField );
     ~QgsExpression();
 
     //! Returns true if an error occurred when parsing the input expression
@@ -86,6 +87,9 @@ class QgsExpression
     //! Return calculator used for distance and area calculations
     //! (used by internal functions)
     QgsDistanceArea *geomCalculator();
+
+    //! Set the target field. The calculated values will then be cast to this field's type.
+    void setTargetField( const QgsField& targetField );
 
     //! Sets the geometry calculator used in evaluation of expressions,
     // instead of the default.

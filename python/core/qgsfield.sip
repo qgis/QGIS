@@ -110,6 +110,16 @@ public:
 
     /**Formats string for display*/
     QString displayString( const QVariant& v ) const;
+
+
+    /**
+     * Converts the provided variant to a compatible format
+     *
+     * @param v  The value to convert
+     *
+     * @return   True if the conversion was successful
+     */
+    bool convertCompatible( QVariant& v ) const;
 }; // class QgsField
 
 

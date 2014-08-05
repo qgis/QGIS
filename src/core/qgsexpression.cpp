@@ -1837,6 +1837,19 @@ QgsExpression::QgsExpression( const QString& expr )
     Q_ASSERT( mRootNode );
 }
 
+QgsExpression::QgsExpression( const QString& expr, const QgsField& targetField )
+  : mRowNumber( 0 )
+  , mScale( 0 )
+  , mExp( expr )
+  , mCalc( 0 )
+  , mTargetField( targetField )
+{
+  mRootNode = ::parseExpression( expr, mParserErrorString );
+
+  if ( mParserErrorString.isNull() )
+    Q_ASSERT( mRootNode );
+}
+
 QgsExpression::~QgsExpression()
 {
   delete mCalc;
@@ -1911,7 +1924,16 @@ QVariant QgsExpression::evaluate( const QgsFeature* f )
     return QVariant();
   }
 
-  return mRootNode->eval( this, f );
+  QVariant result = mRootNode->eval( this, f );
+
+  // If the target field is not set or we can convert the result
+  // return the result
+  // If it's not possible, return an invalid QVariant (error)
+  if ( mTargetField.type() == QVariant::Invalid ||
+       mTargetField.convertCompatible( result ) )
+    return result;
+  else
+    return QVariant();
 }
 
 QVariant QgsExpression::evaluate( const QgsFeature* f, const QgsFields& fields )

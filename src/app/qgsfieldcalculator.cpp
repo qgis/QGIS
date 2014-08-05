@@ -177,6 +177,8 @@ void QgsFieldCalculator::accept()
     }
   }
 
+  exp.setTargetField( mVectorLayer->pendingFields()[mAttributeId] );
+
   if ( mAttributeId == -1 )
   {
     mVectorLayer->destroyEditCommand();
