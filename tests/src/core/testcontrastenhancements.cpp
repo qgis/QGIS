@@ -103,5 +103,5 @@ void TestContrastEnhancements::linearMinMaxEnhancementTest()
   QVERIFY( 255.0 == myEnhancement.enhance( 240.0 ) );
 }
 QTEST_MAIN( TestContrastEnhancements )
-#include "moc_testcontrastenhancements.cxx"
+#include "testcontrastenhancements.moc"
 

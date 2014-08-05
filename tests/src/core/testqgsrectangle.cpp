@@ -87,7 +87,7 @@ void TestQgsRectangle::regression6194()
 };
 
 QTEST_MAIN( TestQgsRectangle )
-#include "moc_testqgsrectangle.cxx"
+#include "testqgsrectangle.moc"
 
 
 

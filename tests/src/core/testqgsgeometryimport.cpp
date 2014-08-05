@@ -239,5 +239,5 @@ bool TestQgsGeometryImport::compareLineStrings( const QgsPolyline& polyline, QVa
 }
 
 QTEST_MAIN( TestQgsGeometryImport )
-#include "moc_testqgsgeometryimport.cxx"
+#include "testqgsgeometryimport.moc"
 

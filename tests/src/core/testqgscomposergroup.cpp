@@ -176,4 +176,4 @@ void TestQgsComposerGroup::undoRedo()
 }
 
 QTEST_MAIN( TestQgsComposerGroup )
-#include "moc_testqgscomposergroup.cxx"
+#include "testqgscomposergroup.moc"

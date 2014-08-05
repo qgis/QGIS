@@ -584,4 +584,4 @@ void TestQgsRasterLayer::setRenderer()
 }
 
 QTEST_MAIN( TestQgsRasterLayer )
-#include "moc_testqgsrasterlayer.cxx"
+#include "testqgsrasterlayer.moc"

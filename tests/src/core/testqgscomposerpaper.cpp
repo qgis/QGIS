@@ -132,4 +132,4 @@ void TestQgsComposerPaper::markerLinePaper()
 }
 
 QTEST_MAIN( TestQgsComposerPaper )
-#include "moc_testqgscomposerpaper.cxx"
+#include "testqgscomposerpaper.moc"

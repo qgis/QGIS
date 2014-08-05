@@ -27,7 +27,7 @@ class Test[testClassCamelCaseName]: public QObject
 };
 
 QTEST_MAIN( Test[testClassCamelCaseName] )
-#include "test[testClassLowerCaseName].moc.cpp"
+#include "test[testClassLowerCaseName].moc"
 
 
 

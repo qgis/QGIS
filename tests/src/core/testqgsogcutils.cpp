@@ -347,4 +347,4 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
 
 
 QTEST_MAIN( TestQgsOgcUtils )
-#include "moc_testqgsogcutils.cxx"
+#include "testqgsogcutils.moc"

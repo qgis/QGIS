@@ -186,4 +186,4 @@ void TestQgsRasterFileWriter::logError( QString msg )
 }
 
 QTEST_MAIN( TestQgsRasterFileWriter )
-#include "moc_testqgsrasterfilewriter.cxx"
+#include "testqgsrasterfilewriter.moc"

@@ -160,4 +160,4 @@ void Regression1141::diacriticalTest()
 
 
 QTEST_MAIN( Regression1141 )
-#include "moc_regression1141.cxx"
+#include "regression1141.moc"

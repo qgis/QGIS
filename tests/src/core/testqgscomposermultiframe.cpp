@@ -349,4 +349,4 @@ void TestQgsComposerMultiFrame::undoRedoRemovedFrame()
 }
 
 QTEST_MAIN( TestQgsComposerMultiFrame )
-#include "moc_testqgscomposermultiframe.cxx"
+#include "testqgscomposermultiframe.moc"

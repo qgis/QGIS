@@ -229,4 +229,4 @@ void TestQgsVectorDataProvider::featureAtId()
 
 QTEST_MAIN( TestQgsVectorDataProvider )
 
-#include "moc_testqgsvectordataprovider.cxx"
+#include "testqgsvectordataprovider.moc"

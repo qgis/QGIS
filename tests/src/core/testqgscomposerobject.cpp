@@ -231,4 +231,4 @@ bool TestQgsComposerObject::renderCheck( QString testName, QImage &image, int mi
 }
 
 QTEST_MAIN( TestQgsComposerObject )
-#include "moc_testqgscomposerobject.cxx"
+#include "testqgscomposerobject.moc"

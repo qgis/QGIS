@@ -534,4 +534,4 @@ void TestQgsPoint::onSegment()
 }
 
 QTEST_MAIN( TestQgsPoint )
-#include "moc_testqgspoint.cxx"
+#include "testqgspoint.moc"

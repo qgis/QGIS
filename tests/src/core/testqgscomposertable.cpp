@@ -506,5 +506,5 @@ void TestQgsComposerTable::attributeTableVisibleOnly()
 }
 
 QTEST_MAIN( TestQgsComposerTable )
-#include "moc_testqgscomposertable.cxx"
+#include "testqgscomposertable.moc"
 

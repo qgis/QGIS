@@ -130,4 +130,4 @@ void TestQgsScaleComboBox::cleanup()
 };
 
 QTEST_MAIN( TestQgsScaleComboBox )
-#include "moc_testqgsscalecombobox.cxx"
+#include "testqgsscalecombobox.moc"

@@ -287,4 +287,4 @@ bool TestQgsGradients::imageCheck( QString theTestType )
 }
 
 QTEST_MAIN( TestQgsGradients )
-#include "moc_testqgsgradients.cxx"
+#include "testqgsgradients.moc"

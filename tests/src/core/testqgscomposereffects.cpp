@@ -108,4 +108,4 @@ void TestQgsComposerEffects::transparency()
 }
 
 QTEST_MAIN( TestQgsComposerEffects )
-#include "moc_testqgscomposereffects.cxx"
+#include "testqgscomposereffects.moc"

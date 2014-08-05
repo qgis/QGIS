@@ -222,4 +222,4 @@ bool TestQgsRenderers::imageCheck( QString theTestType )
 }
 
 QTEST_MAIN( TestQgsRenderers )
-#include "moc_testqgsrenderers.cxx"
+#include "testqgsrenderers.moc"

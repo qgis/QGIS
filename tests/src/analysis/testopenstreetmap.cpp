@@ -190,4 +190,4 @@ void TestOpenStreetMap::importAndQueries()
 
 QTEST_MAIN( TestOpenStreetMap )
 
-#include "moc_testopenstreetmap.cxx"
+#include "testopenstreetmap.moc"

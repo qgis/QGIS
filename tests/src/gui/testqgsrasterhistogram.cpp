@@ -293,4 +293,4 @@ int TestRasterHistogram::testFile( QString theTestType,
 
 
 QTEST_MAIN( TestRasterHistogram )
-#include "moc_testqgsrasterhistogram.cxx"
+#include "testqgsrasterhistogram.moc"

@@ -223,4 +223,4 @@ bool TestQgsBlendModes::imageCheck( QString theTestType )
 }
 
 QTEST_MAIN( TestQgsBlendModes )
-#include "moc_testqgsblendmodes.cxx"
+#include "testqgsblendmodes.moc"

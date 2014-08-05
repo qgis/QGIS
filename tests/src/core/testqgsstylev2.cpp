@@ -428,4 +428,4 @@ void TestStyleV2::testParseColorList()
 
 
 QTEST_MAIN( TestStyleV2 )
-#include "moc_testqgsstylev2.cxx"
+#include "testqgsstylev2.moc"

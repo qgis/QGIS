@@ -162,7 +162,7 @@ void TestQgsDistanceArea::unit_conversions()
 };
 
 QTEST_MAIN( TestQgsDistanceArea )
-#include "moc_testqgsdistancearea.cxx"
+#include "testqgsdistancearea.moc"
 
 
 

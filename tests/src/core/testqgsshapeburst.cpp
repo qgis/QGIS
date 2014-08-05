@@ -242,4 +242,4 @@ bool TestQgsShapeburst::imageCheck( QString theTestType )
 }
 
 QTEST_MAIN( TestQgsShapeburst )
-#include "moc_testqgsshapeburst.cxx"
+#include "testqgsshapeburst.moc"

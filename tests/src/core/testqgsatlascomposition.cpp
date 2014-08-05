@@ -471,4 +471,4 @@ void TestQgsAtlasComposition::test_remove_layer()
 }
 
 QTEST_MAIN( TestQgsAtlasComposition )
-#include "moc_testqgsatlascomposition.cxx"
+#include "testqgsatlascomposition.moc"

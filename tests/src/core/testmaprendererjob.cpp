@@ -276,4 +276,4 @@ void TestQgsMapRendererJob::testCache()
 
 
 QTEST_MAIN( TestQgsMapRendererJob )
-#include "moc_testmaprendererjob.cxx"
+#include "testmaprendererjob.moc"

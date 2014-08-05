@@ -209,4 +209,4 @@ void TestQgsComposerLabel::marginMethods()
 }
 
 QTEST_MAIN( TestQgsComposerLabel )
-#include "moc_testqgscomposerlabel.cxx"
+#include "testqgscomposerlabel.moc"

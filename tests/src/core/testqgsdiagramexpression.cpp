@@ -176,4 +176,4 @@ class TestQgsDiagramExpression: public QObject
 };
 
 QTEST_MAIN( TestQgsDiagramExpression )
-#include "moc_testqgsdiagramexpression.cxx"
+#include "testqgsdiagramexpression.moc"

@@ -123,4 +123,4 @@ void Regression992::regression992()
 }
 
 QTEST_MAIN( Regression992 )
-#include "moc_regression992.cxx"
+#include "regression992.moc"

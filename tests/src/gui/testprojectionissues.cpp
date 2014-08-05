@@ -102,4 +102,4 @@ void TestProjectionIssues::issue5895()
 };
 
 QTEST_MAIN( TestProjectionIssues )
-#include "moc_testprojectionissues.cxx"
+#include "testprojectionissues.moc"

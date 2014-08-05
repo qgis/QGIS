@@ -195,6 +195,6 @@ void TestQgsMapRenderer::performanceTest()
 }
 
 QTEST_MAIN( TestQgsMapRenderer )
-#include "moc_testqgsmaprenderer.cxx"
+#include "testqgsmaprenderer.moc"
 
 

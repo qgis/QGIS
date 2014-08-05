@@ -584,4 +584,4 @@ void TestQgsComposerMapGrid::annotationFormats()
 
 
 QTEST_MAIN( TestQgsComposerMapGrid )
-#include "moc_testqgscomposermapgrid.cxx"
+#include "testqgscomposermapgrid.moc"

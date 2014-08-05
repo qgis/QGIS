@@ -461,4 +461,4 @@ void TestQgsCoordinateReferenceSystem::debugPrint(
 }
 
 QTEST_MAIN( TestQgsCoordinateReferenceSystem )
-#include "moc_testqgscoordinatereferencesystem.cxx"
+#include "testqgscoordinatereferencesystem.moc"

@@ -130,4 +130,4 @@ void TestQgsVectorAnalyzer::layerExtent()
 }
 
 QTEST_MAIN( TestQgsVectorAnalyzer )
-#include "moc_testqgsvectoranalyzer.cxx"
+#include "testqgsvectoranalyzer.moc"

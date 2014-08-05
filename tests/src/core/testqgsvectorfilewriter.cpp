@@ -390,5 +390,5 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
 }
 
 QTEST_MAIN( TestQgsVectorFileWriter )
-#include "moc_testqgsvectorfilewriter.cxx"
+#include "testqgsvectorfilewriter.moc"
 

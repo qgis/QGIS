@@ -55,11 +55,9 @@ ENDIF (APPLE)
 
 MACRO (ADD_QGIS_TEST testname testsrc)
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
-  SET(qgis_${testname}_MOC_CPPS ${testsrc})
-  QT4_WRAP_CPP(qgis_${testname}_MOC_SRCS ${qgis_${testname}_MOC_CPPS})
   ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
   ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  ADD_DEPENDENCIES(qgis_${testname} qgis_${testname}moc)
+  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(qgis_${testname}
     ${QT_QTXML_LIBRARY}
     ${QT_QTCORE_LIBRARY}

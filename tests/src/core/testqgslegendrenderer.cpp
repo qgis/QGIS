@@ -251,4 +251,4 @@ void TestQgsLegendRenderer::testThreeColumns()
 
 
 QTEST_MAIN( TestQgsLegendRenderer )
-#include "moc_testqgslegendrenderer.cxx"
+#include "testqgslegendrenderer.moc"

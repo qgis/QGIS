@@ -167,4 +167,4 @@ void TestQgsDataItem::testDirItemChildren()
 }
 
 QTEST_MAIN( TestQgsDataItem )
-#include "moc_testqgsdataitem.cxx"
+#include "testqgsdataitem.moc"

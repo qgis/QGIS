@@ -538,4 +538,4 @@ void TestZipLayer::testZipItemVRT()
 }
 
 QTEST_MAIN( TestZipLayer )
-#include "moc_testziplayer.cxx"
+#include "testziplayer.moc"

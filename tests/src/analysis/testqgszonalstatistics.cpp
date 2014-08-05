@@ -117,4 +117,4 @@ void TestQgsZonalStatistics::testStatistics()
 }
 
 QTEST_MAIN( TestQgsZonalStatistics )
-#include "moc_testqgszonalstatistics.cxx"
+#include "testqgszonalstatistics.moc"

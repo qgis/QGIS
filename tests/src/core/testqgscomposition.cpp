@@ -242,5 +242,5 @@ void TestQgsComposition::pageIsEmpty()
 }
 
 QTEST_MAIN( TestQgsComposition )
-#include "moc_testqgscomposition.cxx"
+#include "testqgscomposition.moc"
 

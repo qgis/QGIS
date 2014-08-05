@@ -157,4 +157,4 @@ void TestQgsNetworkContentFetcher::contentLoaded()
 }
 
 QTEST_MAIN( TestQgsNetworkContentFetcher )
-#include "moc_testqgsnetworkcontentfetcher.cxx"
+#include "testqgsnetworkcontentfetcher.moc"

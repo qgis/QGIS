@@ -86,4 +86,4 @@ bool TestQgsClipper::checkBoundingBox( QPolygonF polygon, QgsRectangle clipRect 
 }
 
 QTEST_MAIN( TestQgsClipper )
-#include "moc_testqgsclipper.cxx"
+#include "testqgsclipper.moc"

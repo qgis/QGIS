@@ -100,4 +100,4 @@ void TestQgisAppClipboard::copyPaste()
 }
 
 QTEST_MAIN( TestQgisAppClipboard )
-#include "moc_testqgisappclipboard.cxx"
+#include "testqgisappclipboard.moc"

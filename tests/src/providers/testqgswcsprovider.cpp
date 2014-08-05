@@ -160,4 +160,4 @@ bool TestQgsWcsProvider::read( QString theIdentifier, QString theWcsUri, QString
 }
 
 QTEST_MAIN( TestQgsWcsProvider )
-#include "moc_testqgswcsprovider.cxx"
+#include "testqgswcsprovider.moc"

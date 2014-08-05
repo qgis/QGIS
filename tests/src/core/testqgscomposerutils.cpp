@@ -682,4 +682,4 @@ bool TestQgsComposerUtils::renderCheck( QString testName, QImage &image, int mis
 }
 
 QTEST_MAIN( TestQgsComposerUtils )
-#include "moc_testqgscomposerutils.cxx"
+#include "testqgscomposerutils.moc"

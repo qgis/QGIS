@@ -171,4 +171,4 @@ void TestQgsComposerScaleBar::tick()
 };
 
 QTEST_MAIN( TestQgsComposerScaleBar )
-#include "moc_testqgscomposerscalebar.cxx"
+#include "testqgscomposerscalebar.moc"

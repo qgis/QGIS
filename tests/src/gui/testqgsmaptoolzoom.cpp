@@ -86,7 +86,7 @@ void TestQgsMapToolZoom::zeroDragArea()
 }
 
 QTEST_MAIN( TestQgsMapToolZoom )
-#include "moc_testqgsmaptoolzoom.cxx"
+#include "testqgsmaptoolzoom.moc"
 
 
 

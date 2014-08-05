@@ -178,4 +178,4 @@ void TestQgsRasterSubLayer::checkStats()
 
 
 QTEST_MAIN( TestQgsRasterSubLayer )
-#include "moc_testqgsrastersublayer.cxx"
+#include "testqgsrastersublayer.moc"

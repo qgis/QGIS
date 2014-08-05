@@ -74,4 +74,4 @@ void TestQgsProject::testReadPath()
 
 
 QTEST_MAIN( TestQgsProject )
-#include "moc_testqgsproject.cxx"
+#include "testqgsproject.moc"

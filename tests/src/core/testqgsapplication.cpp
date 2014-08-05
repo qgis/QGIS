@@ -64,5 +64,5 @@ void TestQgsApplication::checkGdalSkip()
 }
 
 QTEST_MAIN( TestQgsApplication )
-#include "moc_testqgsapplication.cxx"
+#include "testqgsapplication.moc"
 

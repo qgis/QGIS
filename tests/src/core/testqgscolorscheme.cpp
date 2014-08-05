@@ -155,4 +155,4 @@ void TestQgsColorScheme::clone()
 }
 
 QTEST_MAIN( TestQgsColorScheme )
-#include "moc_testqgscolorscheme.cxx"
+#include "testqgscolorscheme.moc"
