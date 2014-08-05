@@ -192,6 +192,7 @@ void QgsLayerTreeViewDefaultActions::zoomToGroup()
 void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const QList<QgsMapLayer*>& layers )
 {
   QgsRectangle extent;
+  extent.setMinimal();
 
   for ( int i = 0; i < layers.size(); ++i )
   {
@@ -208,14 +209,14 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
       layerExtent = vLayer->extent();
     }
 
+    if ( layerExtent.isNull() )
+      continue;
+
     //transform extent if otf-projection is on
     if ( canvas->hasCrsTransformEnabled() )
       layerExtent = canvas->mapSettings().layerExtentToOutputExtent( layer, layerExtent );
 
-    if ( i == 0 )
-      extent = layerExtent;
-    else
-      extent.combineExtentWith( &layerExtent );
+    extent.combineExtentWith( &layerExtent );
   }
 
   if ( extent.isNull() )
