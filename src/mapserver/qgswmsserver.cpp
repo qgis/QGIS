@@ -2161,12 +2161,6 @@ void QgsWMSServer::drawRasterSymbol( QgsComposerLegendItem* item, QPainter* p, d
     return;
   }
 
-  QgsRasterLayer* layer = qobject_cast< QgsRasterLayer* >( QgsMapLayerRegistry::instance()->mapLayer( rasterItem->layerID() ) );
-  if ( !layer )
-  {
-    return;
-  }
-
   p->setBrush( QBrush( rasterItem->color() ) );
   p->drawRect( QRectF( boxSpace, currentY + yDownShift, symbolWidth, symbolHeight ) );
 }

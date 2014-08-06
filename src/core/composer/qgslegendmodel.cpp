@@ -20,6 +20,7 @@
 #include "qgsfield.h"
 #include "qgslayertree.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
@@ -33,7 +34,10 @@
 #include <QSettings>
 #include <QMessageBox>
 
-QgsLegendModel::QgsLegendModel(): QStandardItemModel(), mAutoUpdate( true )
+QgsLegendModel::QgsLegendModel()
+  : QStandardItemModel()
+  , mScaleDenominator( -1 )
+  , mAutoUpdate( true )
 {
   setColumnCount( 2 );
 
@@ -127,6 +131,8 @@ void QgsLegendModel::setLayerSetAndGroups( const QStringList& layerIds, const QL
 void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenominator, QString rule )
 {
   mLayerIds = layerIds;
+  mScaleDenominator = scaleDenominator;
+  mRule = rule;
 
   //for now clear the model and add the new entries
   clear();
@@ -164,250 +170,6 @@ QStandardItem* QgsLegendModel::addGroup( QString text, int position, QStandardIt
   return groupItem;
 }
 
-int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer, double scaleDenominator, QString rule )
-{
-  QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( layerItem );
-
-  if ( !layerItem || !lItem || !vlayer )
-  {
-    return 1;
-  }
-
-  QgsFeatureRendererV2* renderer = vlayer->rendererV2();
-  if ( !renderer )
-  {
-    return 2;
-  }
-
-  if ( lItem->showFeatureCount() )
-  {
-    if ( !vlayer->countSymbolFeatures() )
-    {
-      QgsDebugMsg( "Cannot get feature counts" );
-    }
-  }
-
-  QgsLegendSymbolList lst = renderer->legendSymbolItems( scaleDenominator, rule );
-  QgsLegendSymbolList::const_iterator symbolIt = lst.constBegin();
-  int row = 0;
-  for ( ; symbolIt != lst.constEnd(); ++symbolIt )
-  {
-    if ( scaleDenominator == -1 && rule.isEmpty() )
-    {
-      QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( "" );
-
-      // Get userText from old item if exists
-      QgsComposerSymbolV2Item* oldSymbolItem = dynamic_cast<QgsComposerSymbolV2Item*>( layerItem->child( row, 0 ) );
-      if ( oldSymbolItem )
-      {
-        currentSymbolItem->setUserText( oldSymbolItem->userText() );
-      }
-
-      currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-      if ( symbolIt->second )
-      {
-        currentSymbolItem->setSymbolV2( symbolIt->second->clone() );
-      }
-      layerItem->setChild( row, 0, currentSymbolItem );
-
-      // updateSymbolV2ItemText needs layer set
-      updateSymbolV2ItemText( currentSymbolItem );
-    }
-    else
-    {
-      QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( "" );
-      currentSymbolItem->setSymbolV2( symbolIt->second->clone() );
-      layerItem->setChild( row, 0, currentSymbolItem );
-      currentSymbolItem->setText( symbolIt->first );
-    }
-
-    row++;
-  }
-
-  // Don't remove row on getLegendGraphic (read only with filter)
-  if ( scaleDenominator == -1 && rule.isEmpty() )
-  {
-    // Delete following old items (if current number of items decreased)
-    for ( int i = layerItem->rowCount() - 1; i >= row; --i )
-    {
-      layerItem->removeRow( i );
-    }
-  }
-
-  return 0;
-}
-
-int QgsLegendModel::addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* rlayer )
-{
-  if ( !layerItem || !rlayer )
-  {
-    return 1;
-  }
-
-  QgsRasterLayer* rasterLayer = qobject_cast<QgsRasterLayer *>( rlayer );
-  if ( !rasterLayer )
-  {
-    return 2;
-  }
-
-  QgsDebugMsg( QString( "layer providertype:: %1" ).arg( rasterLayer->providerType() ) );
-  if ( rasterLayer->providerType() == "wms" )
-  {
-    QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem( "" );
-    // GetLegendGraphics in case of WMS service... image can return null if GetLegendGraphics
-    // is not supported by the server
-    // double currentScale = legend()->canvas()->scale();
-    // BEWARE getLegendGraphic() COULD BE USED WITHOUT SCALE PARAMETER IF IT WAS ALREADY CALLED WITH
-    // THIS PARAMETER FROM A COMPONENT THAT CAN RECOVER CURRENT SCALE => LEGEND IN THE DESKTOP
-    // OTHERWISE IT RETURN A INVALID PIXMAP (QPixmap().isNull() == False)
-    QImage legendGraphic = rasterLayer->dataProvider()->getLegendGraphic();
-    if ( !legendGraphic.isNull() )
-    {
-      QgsDebugMsg( QString( "downloaded legend with dimension width:" ) + QString::number( legendGraphic.width() ) + QString( " and Height:" ) + QString::number( legendGraphic.height() ) );
-      if ( mHasTopLevelWindow )
-      {
-        currentSymbolItem->setIcon( QIcon( QPixmap::fromImage( legendGraphic ) ) );
-      }
-    }
-    else
-    {
-      currentSymbolItem->setText( tr( "No Legend Available" ) );
-    }
-
-    currentSymbolItem->setLayerID( rasterLayer->id() );
-    currentSymbolItem->setColor( QColor() );
-    layerItem->removeRows( 0, layerItem->rowCount() );
-    layerItem->setChild( layerItem->rowCount(), 0, currentSymbolItem );
-  }
-  else
-  {
-    QList< QPair< QString, QColor > > rasterItemList = rasterLayer->legendSymbologyItems();
-    QList< QPair< QString, QColor > >::const_iterator itemIt = rasterItemList.constBegin();
-    int row = 0;
-    for ( ; itemIt != rasterItemList.constEnd(); ++itemIt )
-    {
-      QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem( itemIt->first );
-
-      QgsComposerRasterSymbolItem* oldSymbolItem = dynamic_cast<QgsComposerRasterSymbolItem*>( layerItem->child( row, 0 ) );
-      if ( oldSymbolItem )
-      {
-        currentSymbolItem->setUserText( oldSymbolItem->userText() );
-        currentSymbolItem->setText( currentSymbolItem->userText() );
-      }
-
-      if ( mHasTopLevelWindow )
-      {
-        QPixmap itemPixmap( 20, 20 );
-        itemPixmap.fill( itemIt->second );
-        currentSymbolItem->setIcon( QIcon( itemPixmap ) );
-      }
-      currentSymbolItem->setLayerID( rasterLayer->id() );
-
-      QColor itemColor = itemIt->second;
-
-      //determine raster layer opacity, and adjust item color opacity to match
-      QgsRasterRenderer* rasterRenderer = rasterLayer->renderer();
-      int opacity = 255;
-      if ( rasterRenderer )
-      {
-        opacity = rasterRenderer->opacity() * 255.0;
-      }
-      itemColor.setAlpha( opacity );
-
-      currentSymbolItem->setColor( itemColor );
-
-      int currentRowCount = layerItem->rowCount();
-      layerItem->setChild( currentRowCount, 0, currentSymbolItem );
-      row++;
-    }
-
-    // Delete following old items (if current number of items decreased)
-    for ( int i = layerItem->rowCount() - 1; i >= row; --i )
-    {
-      layerItem->removeRow( i );
-    }
-  }
-
-  return 0;
-}
-
-void QgsLegendModel::updateSymbolV2ItemText( QStandardItem* symbolItem )
-{
-  QgsComposerSymbolV2Item* sv2Item = dynamic_cast<QgsComposerSymbolV2Item*>( symbolItem );
-  if ( !sv2Item ) return;
-
-  QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( sv2Item->parent() );
-  if ( !lItem ) return;
-
-  QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
-  if ( !mapLayer ) return;
-
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
-  if ( !vLayer ) return;
-
-  QgsFeatureRendererV2* renderer = vLayer->rendererV2();
-  if ( !renderer ) return;
-
-  if ( lItem->showFeatureCount() ) vLayer->countSymbolFeatures();
-
-  QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
-
-  QPair<QString, QgsSymbolV2*> symbol = symbolList.value( symbolItem->row() );
-
-  QString label = sv2Item->userText().isEmpty() ? symbol.first : sv2Item->userText();
-
-  if ( renderer->type() == "singleSymbol" )
-  {
-    if ( !sv2Item->userText().isEmpty() )
-    {
-      label = sv2Item->userText();
-    }
-    else if ( !lItem->userText().isEmpty() )
-    {
-      label = lItem->userText();
-    }
-    else if ( !vLayer->title().isEmpty() )
-    {
-      label = vLayer->title();
-    }
-    else
-    {
-      label = vLayer->name();
-    }
-  }
-
-  if ( lItem->showFeatureCount() )
-  {
-    // Add counts to multi symbols layers only or labeled single symbols,
-    // so that single symbol layers are still drawn on single line
-    if ( symbolList.size() > 1 || !label.isEmpty() )
-    {
-      label += QString( " [%1]" ).arg( vLayer->featureCount( symbol.second ) );
-    }
-  }
-  symbolItem->setText( label );
-}
-
-void QgsLegendModel::updateRasterSymbolItemText( QStandardItem* symbolItem )
-{
-  QgsComposerRasterSymbolItem* rItem = dynamic_cast<QgsComposerRasterSymbolItem*>( symbolItem );
-  if ( !rItem ) return;
-
-  QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( rItem->parent() );
-  if ( !lItem ) return;
-
-  QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
-  if ( !mapLayer ) return;
-
-  QgsRasterLayer* rLayer = qobject_cast<QgsRasterLayer*>( mapLayer );
-  if ( !rLayer ) return;
-
-  QPair< QString, QColor> symbol = rLayer->legendSymbologyItems().value( symbolItem->row() );
-
-  QString label = rItem->userText().isEmpty() ? symbol.first : rItem->userText();
-
-  symbolItem->setText( label );
-}
 
 void QgsLegendModel::updateItem( QStandardItem* item )
 {
@@ -444,29 +206,7 @@ void QgsLegendModel::updateItemText( QStandardItem* item )
     return;
   }
 
-  QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( cItem );
-  if ( lItem )
-  {
-    updateLayerItemText( lItem );
-    return;
-  }
-
-  QgsComposerSymbolV2Item* sv2Item = dynamic_cast<QgsComposerSymbolV2Item*>( cItem );
-  if ( sv2Item )
-  {
-    updateSymbolV2ItemText( sv2Item );
-    return;
-  }
-
-  QgsComposerRasterSymbolItem* rItem = dynamic_cast<QgsComposerRasterSymbolItem*>( cItem );
-  if ( rItem )
-  {
-    updateRasterSymbolItemText( rItem );
-    return;
-  }
-
-  // group
-  cItem->setText( cItem->userText() );
+  emit dataChanged( cItem->index(), cItem->index() );
 }
 
 void QgsLegendModel::updateLayer( QStandardItem* layerItem )
@@ -475,47 +215,16 @@ void QgsLegendModel::updateLayer( QStandardItem* layerItem )
   QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( layerItem );
   if ( lItem )
   {
-    QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
-    if ( mapLayer )
+    emit dataChanged( lItem->index(), lItem->index() );
+
+    QgsMapLayer* mapLayer = lItem->mapLayer();
+    if ( mapLayer && mapLayer->legend() )
     {
-      updateLayerItemText( lItem );
-
-      QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
-      if ( vLayer )
-      {
-        addVectorLayerItemsV2( lItem, vLayer );
-      }
-
-      QgsRasterLayer* rLayer = qobject_cast<QgsRasterLayer*>( mapLayer );
-      if ( rLayer )
-      {
-        addRasterLayerItems( lItem, rLayer );
-      }
+      mapLayer->legend()->createLegendModelItems( lItem );
     }
   }
 }
 
-void QgsLegendModel::updateLayerItemText( QStandardItem* layerItem )
-{
-  QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( layerItem );
-  if ( !lItem ) return;
-
-  QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
-  if ( !mapLayer ) return;
-
-  QString label = lItem->userText().isEmpty() ? mapLayer->name() : lItem->userText();
-
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
-  if ( vLayer )
-  {
-    addVectorLayerItemsV2( lItem, vLayer );
-    if ( lItem->showFeatureCount() )
-    {
-      label += QString( " [%1]" ).arg( vLayer->featureCount() );
-    }
-  }
-  lItem->setText( label );
-}
 
 void QgsLegendModel::removeLayer( const QString& layerId )
 {
@@ -547,6 +256,9 @@ void QgsLegendModel::removeLayer( const QString& layerId )
 
 void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator, QString rule, QStandardItem* parentItem )
 {
+  Q_UNUSED( scaleDenominator );
+  Q_UNUSED( rule );
+
   if ( !theMapLayer )
   {
     return;
@@ -562,29 +274,18 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator
     layerItem->setUserText( theMapLayer->title() );
   }
   layerItem->setLayerID( theMapLayer->id() );
-  layerItem->setDefaultStyle( scaleDenominator, rule );
   layerItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
   QList<QStandardItem *> itemsList;
   itemsList << layerItem << new QgsComposerStyleItem( layerItem );
   parentItem->appendRow( itemsList );
 
-  switch ( theMapLayer->type() )
+  theMapLayer->legend()->createLegendModelItems( layerItem );
+
+  if ( theMapLayer->type() == QgsMapLayer::VectorLayer )
   {
-    case QgsMapLayer::VectorLayer:
-    {
-      QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( theMapLayer );
-      if ( vl )
-      {
-        addVectorLayerItemsV2( layerItem, vl, scaleDenominator, rule );
-      }
-      break;
-    }
-    case QgsMapLayer::RasterLayer:
-      addRasterLayerItems( layerItem, theMapLayer );
-      break;
-    default:
-      break;
+    // hide title by default for single symbol
+    layerItem->setStyle( layerItem->rowCount() > 1 ? QgsComposerLegendStyle::Subgroup : QgsComposerLegendStyle::Hidden );
   }
 
   if ( mAutoUpdate )

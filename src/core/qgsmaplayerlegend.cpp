@@ -194,16 +194,16 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
   return nodes;
 }
 
-/*
 #include "qgscomposerlegenditem.h"
 
-QList<QgsComposerBaseSymbolItem*> QgsDefaultVectorLayerLegend::createLegendModelItems( QgsComposerLayerItem* layerItem )
+void QgsDefaultVectorLayerLegend::createLegendModelItems( QgsComposerLayerItem* layerItem )
 {
-  QList<QgsComposerBaseSymbolItem*> items;
+  if ( !layerItem || !mLayer )
+    return;
 
   QgsFeatureRendererV2* renderer = mLayer->rendererV2();
   if ( !renderer )
-    return items;
+    return;
 
   if ( layerItem->showFeatureCount() )
   {
@@ -213,46 +213,37 @@ QList<QgsComposerBaseSymbolItem*> QgsDefaultVectorLayerLegend::createLegendModel
     }
   }
 
-  double scaleDenominator = -1;
-  QString rule;
-  // TODO: new method for legend symbol items (symbol + label + scale + rule)
-  QgsLegendSymbolList lst = renderer->legendSymbolItems( scaleDenominator, rule );
-  QgsLegendSymbolList::const_iterator symbolIt = lst.constBegin();
-  int row = 0;
-  for ( ; symbolIt != lst.constEnd(); ++symbolIt )
+  // Remember old user texts
+  QHash<int, QString> oldUserTexts;
+  for ( int i = 0; i < layerItem->rowCount(); ++i )
   {
-    if ( scaleDenominator == -1 && rule.isEmpty() )
-    {
-      QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( QString() );
-
-      // Get userText from old item if exists
-      QgsComposerSymbolV2Item* oldSymbolItem = dynamic_cast<QgsComposerSymbolV2Item*>( layerItem->child( row, 0 ) );
-      if ( oldSymbolItem )
-      {
-        currentSymbolItem->setUserText( oldSymbolItem->userText() );
-      }
-
-      currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-      if ( symbolIt->second )
-      {
-        currentSymbolItem->setSymbolV2( symbolIt->second->clone() );
-      }
-      layerItem->setChild( row, 0, currentSymbolItem );
-
-      // updateSymbolV2ItemText needs layer set
-      updateSymbolV2ItemText( currentSymbolItem );
-    }
-    else
-    {
-      QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( QString() );
-      currentSymbolItem->setSymbolV2( symbolIt->second->clone() );
-      layerItem->setChild( row, 0, currentSymbolItem );
-      currentSymbolItem->setText( symbolIt->first );
-    }
-
-    row++;
+    QgsComposerSymbolV2Item* oldSymbolItem = dynamic_cast<QgsComposerSymbolV2Item*>( layerItem->child( i, 0 ) );
+    if ( oldSymbolItem && !oldSymbolItem->userText().isEmpty() )
+      oldUserTexts.insert( oldSymbolItem->ruleIndex(), oldSymbolItem->userText() );
   }
-}*/
+
+  int row = 0;
+  foreach ( const QgsLegendSymbolItemV2& item, renderer->legendSymbolItemsV2() )
+  {
+    QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( item );
+    layerItem->setChild( row++, 0, currentSymbolItem );
+  }
+
+  // Restore previously used user texts
+  for ( QHash<int, QString>::const_iterator it = oldUserTexts.begin(); it != oldUserTexts.end(); ++it )
+  {
+    QgsComposerSymbolV2Item* item = QgsComposerSymbolV2Item::findItemByRuleIndex( layerItem, it.key() );
+    if ( item )
+      item->setUserText( it.value() );
+  }
+
+  // Delete following old items (if current number of items decreased)
+  for ( int i = layerItem->rowCount() - 1; i >= row; --i )
+  {
+    layerItem->removeRow( i );
+  }
+
+}
 
 
 // -------------------------------------------------------------------------
@@ -303,6 +294,63 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultRasterLayerLegend::createLayerTree
   }
 
   return nodes;
+}
+
+void QgsDefaultRasterLayerLegend::createLegendModelItems( QgsComposerLayerItem* layerItem )
+{
+  if ( !layerItem || !mLayer )
+    return;
+
+  QgsDebugMsg( QString( "layer providertype:: %1" ).arg( mLayer->providerType() ) );
+  if ( mLayer->providerType() == "wms" )
+  {
+    // GetLegendGraphics in case of WMS service... image can return null if GetLegendGraphics
+    // is not supported by the server
+    // double currentScale = legend()->canvas()->scale();
+    // BEWARE getLegendGraphic() COULD BE USED WITHOUT SCALE PARAMETER IF IT WAS ALREADY CALLED WITH
+    // THIS PARAMETER FROM A COMPONENT THAT CAN RECOVER CURRENT SCALE => LEGEND IN THE DESKTOP
+    // OTHERWISE IT RETURN A INVALID PIXMAP (QPixmap().isNull() == False)
+    QImage legendGraphic = mLayer->dataProvider()->getLegendGraphic();
+    if ( !legendGraphic.isNull() )
+    {
+      QgsDebugMsg( QString( "downloaded legend with dimension width:" ) + QString::number( legendGraphic.width() ) + QString( " and Height:" ) + QString::number( legendGraphic.height() ) );
+    }
+
+    QgsComposerRasterImageItem* currentSymbolItem = new QgsComposerRasterImageItem( legendGraphic );
+
+    layerItem->removeRows( 0, layerItem->rowCount() );
+    layerItem->setChild( layerItem->rowCount(), 0, currentSymbolItem );
+  }
+  else
+  {
+    QList< QPair< QString, QColor > > rasterItemList = mLayer->legendSymbologyItems();
+    QList< QPair< QString, QColor > >::const_iterator itemIt = rasterItemList.constBegin();
+    int row = 0;
+    for ( ; itemIt != rasterItemList.constEnd(); ++itemIt )
+    {
+      //determine raster layer opacity, and adjust item color opacity to match
+      QColor itemColor = itemIt->second;
+      QgsRasterRenderer* rasterRenderer = mLayer->renderer();
+      itemColor.setAlpha( rasterRenderer ? rasterRenderer->opacity() * 255.0 : 255 );
+
+      QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem( itemColor, itemIt->first );
+
+      QgsComposerRasterSymbolItem* oldSymbolItem = dynamic_cast<QgsComposerRasterSymbolItem*>( layerItem->child( row, 0 ) );
+      if ( oldSymbolItem )
+      {
+        currentSymbolItem->setUserText( oldSymbolItem->userText() );
+      }
+
+      layerItem->setChild( row++, 0, currentSymbolItem );
+    }
+
+    // Delete following old items (if current number of items decreased)
+    for ( int i = layerItem->rowCount() - 1; i >= row; --i )
+    {
+      layerItem->removeRow( i );
+    }
+  }
+
 }
 
 

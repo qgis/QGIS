@@ -532,6 +532,22 @@ QgsLegendSymbolList QgsFeatureRendererV2::legendSymbolItems( double scaleDenomin
   return QgsLegendSymbolList();
 }
 
+QgsLegendSymbolListV2 QgsFeatureRendererV2::legendSymbolItemsV2() const
+{
+  QgsLegendSymbolList lst = const_cast<QgsFeatureRendererV2*>( this )->legendSymbolItems();
+  QgsLegendSymbolListV2 lst2;
+  int i = 0;
+  for ( QgsLegendSymbolList::const_iterator it = lst.begin(); it != lst.end(); ++it, ++i )
+  {
+    QgsLegendSymbolItemV2 item;
+    item.symbol = it->second ? it->second->clone() : 0;
+    item.label = it->first;
+    item.index = i;
+    lst2 << item;
+  }
+  return lst2;
+}
+
 void QgsFeatureRendererV2::setVertexMarkerAppearance( int type, int size )
 {
   mCurrentVertexMarkerType = type;

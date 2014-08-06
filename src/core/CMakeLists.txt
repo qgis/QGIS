@@ -20,6 +20,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgssymbollayerv2.cpp
   symbology-ng/qgssymbollayerv2registry.cpp
   symbology-ng/qgssymbollayerv2utils.cpp
+  symbology-ng/qgslegendsymbolitemv2.cpp
   symbology-ng/qgslinesymbollayerv2.cpp
   symbology-ng/qgsmarkersymbollayerv2.cpp
   symbology-ng/qgsfillsymbollayerv2.cpp
@@ -612,6 +613,7 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgsellipsesymbollayerv2.h
   symbology-ng/qgsfillsymbollayerv2.h
   symbology-ng/qgsgraduatedsymbolrendererv2.h
+  symbology-ng/qgslegendsymbolitemv2.h
   symbology-ng/qgslinesymbollayerv2.h
   symbology-ng/qgsmarkersymbollayerv2.h
   symbology-ng/qgspointdisplacementrenderer.h

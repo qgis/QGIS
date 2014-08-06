@@ -390,6 +390,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void setLegend( QgsMapLayerLegend* legend );
     /**
+     * Can be null.
      * @note added in 2.6
      */
     QgsMapLayerLegend* legend() const;

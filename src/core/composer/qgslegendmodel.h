@@ -24,6 +24,7 @@
 
 class QDomDocument;
 class QDomElement;
+class QgsComposerLayerItem;
 class QgsLayerTreeGroup;
 class QgsMapLayer;
 class QgsSymbolV2;
@@ -114,21 +115,13 @@ class CORE_EXPORT QgsLegendModel : public QStandardItemModel
     void layersChanged();
 
   private:
-    /**Adds classification items of vector layers using new symbology*/
-    int addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer, double scaleDenominator = -1, QString rule = "" );
-
-    /**Adds item of raster layer
-     @return 0 in case of success*/
-    int addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* rlayer );
-
-    void updateLayerItemText( QStandardItem* layerItem );
-    void updateSymbolV2ItemText( QStandardItem* symbolItem );
-    void updateRasterSymbolItemText( QStandardItem* symbolItem );
 
     void addGroupFromLayerTree( QgsLayerTreeGroup* parentGroup, QStandardItem* parentItem );
 
   protected:
     QStringList mLayerIds;
+    double mScaleDenominator;
+    QString mRule;
     /**True if this application has toplevel windows (normally true). If this is false, this means that the application
        might not have a running x-server on unix systems and so QPixmap and QIcon cannot be used*/
     bool mHasTopLevelWindow;

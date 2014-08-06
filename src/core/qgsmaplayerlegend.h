@@ -131,7 +131,7 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
      * Return list of legend model items to be used in QgsLegendRenderer.
      * Ownership is transferred to the caller.
      */
-    virtual QList<QgsComposerBaseSymbolItem*> createLegendModelItems( QgsComposerLayerItem* layerItem ) { Q_UNUSED( layerItem ); return QList<QgsComposerBaseSymbolItem*>(); }
+    virtual void createLegendModelItems( QgsComposerLayerItem* layerItem ) { Q_UNUSED( layerItem ); }
 
     //! Create new legend implementation for vector layer
     static QgsMapLayerLegend* defaultVectorLegend( QgsVectorLayer* vl );
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 
     virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer );
 
-    //virtual QList<QgsComposerBaseSymbolItem*> createLegendModelItems( QgsComposerLayerItem* layerItem );
+    virtual void createLegendModelItems( QgsComposerLayerItem* layerItem );
 
   private:
     QgsVectorLayer* mLayer;
@@ -174,6 +174,8 @@ class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
     explicit QgsDefaultRasterLayerLegend( QgsRasterLayer* rl );
 
     virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer );
+
+    virtual void createLegendModelItems( QgsComposerLayerItem* layerItem );
 
   private:
     QgsRasterLayer* mLayer;

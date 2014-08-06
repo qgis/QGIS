@@ -4,11 +4,13 @@
 
 #include "qgsapplication.h"
 #include "qgscategorizedsymbolrendererv2.h"
+#include "qgscomposerlegenditem.h"
 #include "qgsfontutils.h"
 #include "qgslayertree.h"
 #include "qgslegendmodel.h"
 #include "qgsmaplayerregistry.h"
 #include "qgslegendrenderer.h"
+#include "qgsrasterlayer.h"
 #include "qgsrenderchecker.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsvectorlayer.h"
@@ -74,16 +76,19 @@ class TestQgsLegendRenderer : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
 
+    void testModel();
+
     void testBasic();
     void testBigMarker();
     void testLongSymbolText();
-    void testTwoColumns();
+    void testThreeColumns();
 
   private:
     QgsLayerTreeGroup* mRoot;
     QgsVectorLayer* mVL1; // line
     QgsVectorLayer* mVL2; // polygon
     QgsVectorLayer* mVL3; // point
+    QgsRasterLayer* mRL;
 };
 
 
@@ -117,6 +122,11 @@ void TestQgsLegendRenderer::init()
   mVL3 = new QgsVectorLayer( "Point", "Point Layer", "memory" );
   QgsMapLayerRegistry::instance()->addMapLayer( mVL3 );
 
+  static char raster_array[] = { 1, 2, 2, 1 };
+  QString rasterUri = QString( "MEM:::DATAPOINTER=%1,PIXELS=2,LINES=2" ).arg( (qulonglong) raster_array );
+  mRL = new QgsRasterLayer( rasterUri, "Raster Layer", "gdal" );
+  QgsMapLayerRegistry::instance()->addMapLayer( mRL );
+
   QgsCategoryList cats;
   QgsMarkerSymbolV2* sym3_1 = new QgsMarkerSymbolV2();
   sym3_1->setColor( Qt::red );
@@ -135,6 +145,7 @@ void TestQgsLegendRenderer::init()
   grp1->addLayer( mVL1 );
   grp1->addLayer( mVL2 );
   mRoot->addLayer( mVL3 );
+  mRoot->addLayer( mRL );
 }
 
 void TestQgsLegendRenderer::cleanup()
@@ -143,6 +154,26 @@ void TestQgsLegendRenderer::cleanup()
   mRoot = 0;
 
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
+}
+
+
+void TestQgsLegendRenderer::testModel()
+{
+  QgsLegendModel legendModel;
+  legendModel.setLayerSetAndGroups( mRoot );
+
+  QStandardItem* iVL1 = legendModel.invisibleRootItem()->child( 0 )->child( 0 );
+  QVERIFY( iVL1 );
+  QgsComposerLayerItem* itemVL1 = dynamic_cast<QgsComposerLayerItem*>( iVL1 );
+  QVERIFY( itemVL1 );
+
+  QgsComposerSymbolV2Item* itemS1 = dynamic_cast<QgsComposerSymbolV2Item*>( iVL1->child( 0 ) );
+  QVERIFY( itemS1 );
+  QCOMPARE( legendModel.data( itemS1->index(), Qt::DisplayRole ).toString(), QString( "Line Layer" ) );
+
+  // set user text
+  itemS1->setUserText( "Hurray" );
+  QCOMPARE( legendModel.data( itemS1->index(), Qt::DisplayRole ).toString(), QString( "Hurray" ) );
 }
 
 
@@ -195,15 +226,15 @@ void TestQgsLegendRenderer::testLongSymbolText()
   _verifyImage( testName );
 }
 
-void TestQgsLegendRenderer::testTwoColumns()
+void TestQgsLegendRenderer::testThreeColumns()
 {
-  QString testName = "legend_two_columns";
+  QString testName = "legend_three_columns";
 
   QgsLegendModel legendModel;
   legendModel.setLayerSetAndGroups( mRoot );
 
   QgsLegendSettings settings;
-  settings.setColumnCount( 2 );
+  settings.setColumnCount( 3 );
   _setStandardTestFont( settings );
   _renderLegend( testName, &legendModel, settings );
   _verifyImage( testName );
