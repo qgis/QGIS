@@ -367,8 +367,14 @@ class ParameterNumber(Parameter):
         except:
             self.default = float(default)
             self.isInteger = False
-        self.min = int(minValue) if self.isInteger else float(minValue)
-        self.max = int(maxValue) if self.isInteger else float(maxValue)
+        if minValue is not None:
+            self.min = int(minValue) if self.isInteger else float(minValue)
+        else:
+            self.min = None
+        if maxValue is not None:
+            self.max = int(maxValue) if self.isInteger else float(maxValue)
+        else:
+            self.max = None
         self.value = None
 
     def setValue(self, n):
