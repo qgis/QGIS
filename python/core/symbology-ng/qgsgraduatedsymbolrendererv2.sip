@@ -167,11 +167,11 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     //! item in symbology was checked
     // @note added in 2.5
-    virtual bool legendSymbolItemChecked( int index );
+    virtual bool legendSymbolItemChecked( QString key );
 
     //! item in symbology was checked
     // @note added in 2.5
-    virtual void checkLegendSymbolItem( int index, bool state = true );
+    virtual void checkLegendSymbolItem( QString key, bool state = true );
 
 
 

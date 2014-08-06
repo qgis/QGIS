@@ -376,13 +376,13 @@ QSizeF QgsComposerSymbolV2Item::drawSymbol( const QgsLegendSettings& settings, I
                  qMax( height + 2 * heightOffset, settings.symbolSize().height() ) );
 }
 
-QgsComposerSymbolV2Item* QgsComposerSymbolV2Item::findItemByRuleIndex( QgsComposerLayerItem* parentLayerItem, int ruleIndex )
+QgsComposerSymbolV2Item* QgsComposerSymbolV2Item::findItemByRuleKey( QgsComposerLayerItem* parentLayerItem, QString ruleKey )
 {
   for ( int i = 0; i < parentLayerItem->rowCount(); ++i )
   {
     if ( QgsComposerSymbolV2Item* sItem = dynamic_cast<QgsComposerSymbolV2Item*>( parentLayerItem->child( 0 ) ) )
     {
-      if ( sItem->ruleIndex() == ruleIndex )
+      if ( sItem->ruleKey() == ruleKey )
         return sItem;
     }
   }

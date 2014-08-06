@@ -754,17 +754,22 @@ bool QgsCategorizedSymbolRendererV2::legendSymbolItemsCheckable() const
   return true;
 }
 
-bool QgsCategorizedSymbolRendererV2::legendSymbolItemChecked( int index )
+bool QgsCategorizedSymbolRendererV2::legendSymbolItemChecked( QString key )
 {
-  if ( index >= 0 && index < mCategories.size() )
+  bool ok;
+  int index = key.toInt( &ok );
+  if ( ok && index >= 0 && index < mCategories.size() )
     return mCategories[ index ].renderState();
   else
     return true;
 }
 
-void QgsCategorizedSymbolRendererV2::checkLegendSymbolItem( int index, bool state )
+void QgsCategorizedSymbolRendererV2::checkLegendSymbolItem( QString key, bool state )
 {
-  updateCategoryRenderState( index, state );
+  bool ok;
+  int index = key.toInt( &ok );
+  if ( ok )
+    updateCategoryRenderState( index, state );
 }
 
 QgsMarkerSymbolV2 QgsCategorizedSymbolRendererV2::sSkipRender;

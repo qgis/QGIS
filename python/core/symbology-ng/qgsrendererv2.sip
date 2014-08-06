@@ -133,11 +133,11 @@ class QgsFeatureRendererV2
 
     //! items of symbology items in legend is checked
     //! @node added in 2.5
-    virtual bool legendSymbolItemChecked( int index );
+    virtual bool legendSymbolItemChecked( QString key );
 
     //! item in symbology was checked
     //! @node added in 2.5
-    virtual void checkLegendSymbolItem( int index, bool state = true );
+    virtual void checkLegendSymbolItem( QString key, bool state = true );
 
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5

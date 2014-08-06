@@ -4,16 +4,15 @@
 
 QgsLegendSymbolItemV2::QgsLegendSymbolItemV2()
   : symbol( 0 )
-  , index( -1 )
   , scaleDenomMin( -1 )
   , scaleDenomMax( -1 )
 {
 }
 
-QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( QgsSymbolV2* s, const QString& lbl, int idx )
+QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( QgsSymbolV2* s, const QString& lbl, const QString& k )
   : symbol( s )
   , label( lbl )
-  , index( idx )
+  , key( k )
   , scaleDenomMin( -1 )
   , scaleDenomMax( -1 )
 {
@@ -21,7 +20,6 @@ QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( QgsSymbolV2* s, const QString& lbl
 
 QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( const QgsLegendSymbolItemV2& other )
   : symbol( 0 )
-  , index( -1 )
   , scaleDenomMin( -1 )
   , scaleDenomMax( -1 )
 {
@@ -41,7 +39,7 @@ QgsLegendSymbolItemV2& QgsLegendSymbolItemV2::operator=( const QgsLegendSymbolIt
   delete symbol;
   symbol = other.symbol ? other.symbol->clone() : 0;
   label = other.label;
-  index = other.index;
+  key = other.key;
   scaleDenomMin = other.scaleDenomMin;
   scaleDenomMax = other.scaleDenomMax;
 

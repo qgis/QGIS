@@ -68,11 +68,11 @@ bool QgsLayerTreeModelLegendNode::setData( const QVariant& value, int role )
 // -------------------------------------------------------------------------
 
 
-QgsSymbolV2LegendNode::QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, QgsSymbolV2* symbol, const QString& label, int rendererRef )
+QgsSymbolV2LegendNode::QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, QgsSymbolV2* symbol, const QString& label, const QString& ruleKey )
     : QgsLayerTreeModelLegendNode( nodeLayer )
-    , mSymbol( symbol )
+    , mSymbol( symbol ? symbol->clone() : 0 )
     , mLabel( label )
-    , mRendererRef( rendererRef )
+    , mRuleKey( ruleKey )
 {
   if ( nodeLayer->customProperty( "showFeatureCount", 0 ).toBool() && symbol )
   {
@@ -80,6 +80,11 @@ QgsSymbolV2LegendNode::QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, QgsS
     if ( vl )
       mLabel += QString( " [%1]" ).arg( vl->featureCount( symbol ) );
   }
+}
+
+QgsSymbolV2LegendNode::~QgsSymbolV2LegendNode()
+{
+  delete mSymbol;
 }
 
 Qt::ItemFlags QgsSymbolV2LegendNode::flags() const
@@ -116,7 +121,7 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
     if ( !vlayer || !vlayer->rendererV2() )
       return QVariant();
 
-    return vlayer->rendererV2()->legendSymbolItemChecked( mRendererRef ) ? Qt::Checked : Qt::Unchecked;
+    return vlayer->rendererV2()->legendSymbolItemChecked( mRuleKey ) ? Qt::Checked : Qt::Unchecked;
   }
 
   return QVariant();
@@ -134,7 +139,7 @@ bool QgsSymbolV2LegendNode::setData( const QVariant& value, int role )
   if ( !vlayer || !vlayer->rendererV2() )
     return false;
 
-  vlayer->rendererV2()->checkLegendSymbolItem( mRendererRef, value == Qt::Checked );
+  vlayer->rendererV2()->checkLegendSymbolItem( mRuleKey, value == Qt::Checked );
 
   if ( mParent->isVisible() )
     vlayer->clearCacheImage();
@@ -185,10 +190,9 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
 
   nodeLayer->setChildrenCheckable( r->legendSymbolItemsCheckable() );
 
-  int k = 0;
   foreach ( const QgsLegendSymbolItemV2& i, r->legendSymbolItemsV2() )
   {
-    nodes.append( new QgsSymbolV2LegendNode( nodeLayer, i.symbol, i.label, k++ ) );
+    nodes.append( new QgsSymbolV2LegendNode( nodeLayer, i.symbol, i.label, i.key ) );
   }
   return nodes;
 }
@@ -213,12 +217,12 @@ void QgsDefaultVectorLayerLegend::createLegendModelItems( QgsComposerLayerItem* 
   }
 
   // Remember old user texts
-  QHash<int, QString> oldUserTexts;
+  QHash<QString, QString> oldUserTexts;
   for ( int i = 0; i < layerItem->rowCount(); ++i )
   {
     QgsComposerSymbolV2Item* oldSymbolItem = dynamic_cast<QgsComposerSymbolV2Item*>( layerItem->child( i, 0 ) );
     if ( oldSymbolItem && !oldSymbolItem->userText().isEmpty() )
-      oldUserTexts.insert( oldSymbolItem->ruleIndex(), oldSymbolItem->userText() );
+      oldUserTexts.insert( oldSymbolItem->ruleKey(), oldSymbolItem->userText() );
   }
 
   int row = 0;
@@ -229,9 +233,9 @@ void QgsDefaultVectorLayerLegend::createLegendModelItems( QgsComposerLayerItem* 
   }
 
   // Restore previously used user texts
-  for ( QHash<int, QString>::const_iterator it = oldUserTexts.begin(); it != oldUserTexts.end(); ++it )
+  for ( QHash<QString, QString>::const_iterator it = oldUserTexts.begin(); it != oldUserTexts.end(); ++it )
   {
-    QgsComposerSymbolV2Item* item = QgsComposerSymbolV2Item::findItemByRuleIndex( layerItem, it.key() );
+    QgsComposerSymbolV2Item* item = QgsComposerSymbolV2Item::findItemByRuleKey( layerItem, it.key() );
     if ( item )
       item->setUserText( it.value() );
   }

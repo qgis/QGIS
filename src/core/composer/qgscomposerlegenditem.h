@@ -163,11 +163,11 @@ class CORE_EXPORT QgsComposerSymbolV2Item : public QgsComposerBaseSymbolItem
      it is possible that it differs from mSymbolHeight */
     QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
 
-
-    int ruleIndex() const { return mItem.index; }
+    //! @note added in 2.6
+    QString ruleKey() const { return mItem.key; }
 
     //! @note added in 2.6
-    static QgsComposerSymbolV2Item* findItemByRuleIndex( QgsComposerLayerItem* parentLayerItem, int ruleIndex );
+    static QgsComposerSymbolV2Item* findItemByRuleKey( QgsComposerLayerItem* parentLayerItem, QString ruleKey );
 
   private:
 

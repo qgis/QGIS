@@ -1233,17 +1233,22 @@ bool QgsGraduatedSymbolRendererV2::legendSymbolItemsCheckable() const
   return true;
 }
 
-bool QgsGraduatedSymbolRendererV2::legendSymbolItemChecked( int index )
+bool QgsGraduatedSymbolRendererV2::legendSymbolItemChecked( QString key )
 {
-  if ( index >= 0 && index < mRanges.size() )
+  bool ok;
+  int index = key.toInt( &ok );
+  if ( ok && index >= 0 && index < mRanges.size() )
     return mRanges[ index ].renderState();
   else
     return true;
 }
 
-void QgsGraduatedSymbolRendererV2::checkLegendSymbolItem( int index, bool state )
+void QgsGraduatedSymbolRendererV2::checkLegendSymbolItem( QString key, bool state )
 {
-  updateRangeRenderState( index, state );
+  bool ok;
+  int index = key.toInt( &ok );
+  if ( ok )
+    updateRangeRenderState( index, state );
 }
 
 
