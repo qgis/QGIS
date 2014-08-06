@@ -25,7 +25,10 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import csv
 import uuid
+import codecs
+import cStringIO
 
 from PyQt4.QtCore import *
 from qgis.core import *
@@ -343,9 +346,6 @@ def checkMinDistance(point, index, distance, points):
 
     return True
 
-from PyQt4.QtCore import *
-from qgis.core import *
-
 GEOM_TYPE_MAP = {
     QGis.WKBPoint: 'Point',
     QGis.WKBLineString: 'LineString',
@@ -425,10 +425,6 @@ class VectorWriter:
             self.writer.addFeatures([feature])
         else:
             self.writer.addFeature(feature)
-
-import csv
-import codecs
-import cStringIO
 
 
 class TableWriter:
