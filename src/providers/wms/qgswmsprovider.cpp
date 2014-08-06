@@ -3069,7 +3069,7 @@ void QgsWmsProvider::getLegendGraphicReplyFinished()
         mGetLegendGraphicReply->deleteLater();
         QgsDebugMsg( QString( "redirected GetLegendGraphic: %1" ).arg( redirect.toString() ) );
         mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
-        mIdentifyReply->setProperty( "eventLoop", QVariant::fromValue( qobject_cast<QObject *>( loop ) ) );
+        mGetLegendGraphicReply->setProperty( "eventLoop", QVariant::fromValue( qobject_cast<QObject *>( loop ) ) );
 
         connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
         connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
