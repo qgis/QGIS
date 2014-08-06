@@ -704,8 +704,10 @@ Qt::ItemFlags QgsRuleBasedRendererV2Model::flags( const QModelIndex &index ) con
   // allow drop only at first column
   Qt::ItemFlag drop = ( index.column() == 0 ? Qt::ItemIsDropEnabled : Qt::NoItemFlags );
 
+  Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
+
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable |
-         Qt::ItemIsEditable |
+         Qt::ItemIsEditable | checkable |
          Qt::ItemIsDragEnabled | drop;
 }
 
@@ -797,6 +799,12 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
       default: return QVariant();
     }
   }
+  else if ( role == Qt::CheckStateRole )
+  {
+    if ( index.column() != 0 )
+      return QVariant();
+    return rule->checkState() ? Qt::Checked : Qt::Unchecked;
+  }
   else
     return QVariant();
 }
@@ -868,10 +876,20 @@ QModelIndex QgsRuleBasedRendererV2Model::parent( const QModelIndex &index ) cons
 
 bool QgsRuleBasedRendererV2Model::setData( const QModelIndex & index, const QVariant & value, int role )
 {
-  if ( !index.isValid() || role != Qt::EditRole )
+  if ( !index.isValid() )
     return false;
 
   QgsRuleBasedRendererV2::Rule* rule = ruleForIndex( index );
+
+  if ( role == Qt::CheckStateRole )
+  {
+    rule->setCheckState( value.toInt() == Qt::Checked );
+    emit dataChanged( index, index );
+    return true;
+  }
+
+  if ( role != Qt::EditRole )
+    return false;
 
   switch ( index.column() )
   {

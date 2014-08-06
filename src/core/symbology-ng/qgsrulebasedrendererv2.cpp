@@ -26,15 +26,18 @@
 
 #include <QDomDocument>
 #include <QDomElement>
-
+#include <QUuid>
 
 
 QgsRuleBasedRendererV2::Rule::Rule( QgsSymbolV2* symbol, int scaleMinDenom, int scaleMaxDenom, QString filterExp, QString label, QString description , bool elseRule )
     : mParent( NULL ), mSymbol( symbol )
     , mScaleMinDenom( scaleMinDenom ), mScaleMaxDenom( scaleMaxDenom )
     , mFilterExp( filterExp ), mLabel( label ), mDescription( description )
-    , mElseRule( elseRule ), mFilter( NULL )
+    , mElseRule( elseRule )
+    , mCheckState( true )
+    , mFilter( NULL )
 {
+  mRuleKey = QUuid::createUuid().toString();
   initFilter();
 }
 
@@ -106,6 +109,22 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::takeChildAt( int i )
   rule->mParent = NULL;
   return rule;
   // updateElseRules();
+}
+
+QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::findRuleByKey( QString key )
+{
+  // we could use a hash / map for search if this will be slow...
+
+  if ( key == mRuleKey )
+    return this;
+
+  foreach ( Rule* rule, mChildren )
+  {
+    Rule* r = rule->findRuleByKey( key );
+    if ( r )
+      return r;
+  }
+  return 0;
 }
 
 void QgsRuleBasedRendererV2::Rule::updateElseRules()
@@ -192,6 +211,24 @@ QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems( double scal
   return lst;
 }
 
+QgsLegendSymbolListV2 QgsRuleBasedRendererV2::Rule::legendSymbolItemsV2() const
+{
+  QgsLegendSymbolListV2 lst;
+  if ( mSymbol )
+  {
+    lst << QgsLegendSymbolItemV2( mSymbol->clone(), mLabel, mRuleKey );
+    lst.last().scaleDenomMin = mScaleMinDenom;
+    lst.last().scaleDenomMax = mScaleMaxDenom;
+  }
+
+  for ( RuleList::const_iterator it = mChildren.constBegin(); it != mChildren.constEnd(); ++it )
+  {
+    Rule* rule = *it;
+    lst << rule->legendSymbolItemsV2();
+  }
+  return lst;
+}
+
 
 bool QgsRuleBasedRendererV2::Rule::isFilterOK( QgsFeature& f ) const
 {
@@ -219,6 +256,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::clone() const
 {
   QgsSymbolV2* sym = mSymbol ? mSymbol->clone() : NULL;
   Rule* newrule = new Rule( sym, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mLabel, mDescription );
+  newrule->setCheckState( mCheckState );
   // clone children
   foreach ( Rule* rule, mChildren )
     newrule->appendChild( rule->clone() );
@@ -348,6 +386,9 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
 bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   mActiveChildren.clear();
+
+  if ( ! mCheckState )
+    return false;
 
   // filter out rules which are not compatible with this scale
   if ( !isScaleOK( context.rendererScale() ) )
@@ -847,9 +888,32 @@ QgsLegendSymbologyList QgsRuleBasedRendererV2::legendSymbologyItems( QSize iconS
   return lst;
 }
 
+bool QgsRuleBasedRendererV2::legendSymbolItemsCheckable() const
+{
+  return true;
+}
+
+bool QgsRuleBasedRendererV2::legendSymbolItemChecked( QString key )
+{
+  Rule* rule = mRootRule->findRuleByKey( key );
+  return rule ? rule->checkState() : true;
+}
+
+void QgsRuleBasedRendererV2::checkLegendSymbolItem( QString key, bool state )
+{
+  Rule* rule = mRootRule->findRuleByKey( key );
+  if ( rule )
+    rule->setCheckState( state );
+}
+
 QgsLegendSymbolList QgsRuleBasedRendererV2::legendSymbolItems( double scaleDenominator, QString rule )
 {
   return mRootRule->legendSymbolItems( scaleDenominator, rule );
+}
+
+QgsLegendSymbolListV2 QgsRuleBasedRendererV2::legendSymbolItemsV2() const
+{
+  return mRootRule->legendSymbolItemsV2();
 }
 
 
