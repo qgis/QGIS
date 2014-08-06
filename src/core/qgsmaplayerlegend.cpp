@@ -185,11 +185,10 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
 
   nodeLayer->setChildrenCheckable( r->legendSymbolItemsCheckable() );
 
-  typedef QPair<QString, QgsSymbolV2*> QgsLegendSymbolItem;
   int k = 0;
-  foreach ( const QgsLegendSymbolItem& i, r->legendSymbolItems() )
+  foreach ( const QgsLegendSymbolItemV2& i, r->legendSymbolItemsV2() )
   {
-    nodes.append( new QgsSymbolV2LegendNode( nodeLayer, i.second, i.first, k++ ) );
+    nodes.append( new QgsSymbolV2LegendNode( nodeLayer, i.symbol, i.label, k++ ) );
   }
   return nodes;
 }

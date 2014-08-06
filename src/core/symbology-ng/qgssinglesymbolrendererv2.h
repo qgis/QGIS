@@ -82,6 +82,10 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note not available in python bindings
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() );
 
+    //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
+    //! @node added in 2.6
+    virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
+
   protected:
     QScopedPointer<QgsSymbolV2> mSymbol;
     QScopedPointer<QgsExpression> mRotation;

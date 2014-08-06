@@ -9,6 +9,8 @@ class QgsLegendSymbolItemV2
 {
 public:
   QgsLegendSymbolItemV2();
+  //! construct item, takes ownership of symbol
+  QgsLegendSymbolItemV2( QgsSymbolV2* s, const QString& lbl, int idx );
   ~QgsLegendSymbolItemV2();
   QgsLegendSymbolItemV2( const QgsLegendSymbolItemV2& other );
   QgsLegendSymbolItemV2& operator=( const QgsLegendSymbolItemV2& other );
@@ -16,7 +18,12 @@ public:
   QgsSymbolV2* symbol; //!< owned by the struct
   QString label;
   int index;           //!< identifier of the symbol item (within renderer)
-  // TODO: scale range, rule
+
+  // additional data that may be used for filtering
+
+  int scaleDenomMin;
+  int scaleDenomMax;
+  // TODO: QString rule;
 };
 
 
