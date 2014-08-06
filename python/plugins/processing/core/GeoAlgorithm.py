@@ -372,22 +372,17 @@ class GeoAlgorithm:
         """It checks that all input layers use the same CRS. If so,
         returns True. False otherwise.
         """
-        crs = None
-        layers = dataobjects.getAllLayers()
+        crsList = []
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector,
                           ParameterMultipleInput)):
                 if param.value:
-                    inputlayers = param.value.split(';')
-                    for inputlayer in inputlayers:
-                        for layer in layers:
-                            if layer.source() == inputlayer:
-                                if crs is None:
-                                    crs = layer.crs()
-                                else:
-                                    if crs != layer.crs():
-                                        return False
-        return True
+                    layers = param.value.split(';')
+                    for item in layers:
+                        crs = dataobjects.getObject(item).crs()
+                        if crs not in crsList:
+                            crsList.append(crs)
+        return len(crsList) == 1
 
     def addOutput(self, output):
         # TODO: check that name does not exist
