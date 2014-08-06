@@ -18,6 +18,9 @@
 #include "qgscomposerarrowwidget.h"
 #include "qgscomposerarrow.h"
 #include "qgscomposeritemwidget.h"
+#include "qgssymbolv2selectordialog.h"
+#include "qgsstylev2.h"
+#include "qgssymbolv2.h"
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -58,8 +61,8 @@ void QgsComposerArrowWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
     return;
   }
 
-  mArrow->beginCommand( tr( "Arrow outline width" ), QgsComposerMergeCommand::ArrowOutlineWidth );
-  mArrow->setOutlineWidth( d );
+  mArrow->beginCommand( tr( "Arrow head outline width" ), QgsComposerMergeCommand::ArrowOutlineWidth );
+  mArrow->setArrowHeadOutlineWidth( d );
   mArrow->update();
   mArrow->endCommand();
 }
@@ -77,22 +80,37 @@ void QgsComposerArrowWidget::on_mArrowHeadWidthSpinBox_valueChanged( double d )
   mArrow->endCommand();
 }
 
-void QgsComposerArrowWidget::on_mArrowColorButton_colorChanged( const QColor& newColor )
+void QgsComposerArrowWidget::on_mArrowHeadFillColorButton_colorChanged( const QColor& newColor )
 {
   if ( !mArrow )
   {
     return;
   }
 
-  mArrow->beginCommand( tr( "Arrow color changed" ) );
-  mArrow->setArrowColor( newColor );
+  mArrow->beginCommand( tr( "Arrow head fill color" ) );
+  mArrow->setArrowHeadFillColor( newColor );
+  mArrow->update();
+  mArrow->endCommand();
+}
+
+void QgsComposerArrowWidget::on_mArrowHeadOutlineColorButton_colorChanged( const QColor &newColor )
+{
+  if ( !mArrow )
+  {
+    return;
+  }
+
+  mArrow->beginCommand( tr( "Arrow head outline color" ) );
+  mArrow->setArrowHeadOutlineColor( newColor );
   mArrow->update();
   mArrow->endCommand();
 }
 
 void QgsComposerArrowWidget::blockAllSignals( bool block )
 {
-  mArrowColorButton->blockSignals( block );
+  mLineStyleButton->blockSignals( block );
+  mArrowHeadFillColorButton->blockSignals( block );
+  mArrowHeadOutlineColorButton->blockSignals( block );
   mOutlineWidthSpinBox->blockSignals( block );
   mArrowHeadWidthSpinBox->blockSignals( block );
   mDefaultMarkerRadioButton->blockSignals( block );
@@ -112,10 +130,13 @@ void QgsComposerArrowWidget::setGuiElementValues()
   }
 
   blockAllSignals( true );
-  mArrowColorButton->setColor( mArrow->arrowColor() );
-  mArrowColorButton->setColorDialogTitle( tr( "Select arrow color" ) );
-  mArrowColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
-  mOutlineWidthSpinBox->setValue( mArrow->outlineWidth() );
+  mArrowHeadFillColorButton->setColor( mArrow->arrowHeadFillColor() );
+  mArrowHeadFillColorButton->setColorDialogTitle( tr( "Select arrow head fill color" ) );
+  mArrowHeadFillColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mArrowHeadOutlineColorButton->setColor( mArrow->arrowHeadOutlineColor() );
+  mArrowHeadOutlineColorButton->setColorDialogTitle( tr( "Select arrow head outlnie color" ) );
+  mArrowHeadOutlineColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mOutlineWidthSpinBox->setValue( mArrow->arrowHeadOutlineWidth() );
   mArrowHeadWidthSpinBox->setValue( mArrow->arrowHeadWidth() );
 
   QgsComposerArrow::MarkerMode mode = mArrow->markerMode();
@@ -134,6 +155,9 @@ void QgsComposerArrowWidget::setGuiElementValues()
   }
   mStartMarkerLineEdit->setText( mArrow->startMarker() );
   mEndMarkerLineEdit->setText( mArrow->endMarker() );
+
+  updateLineSymbolMarker();
+
   blockAllSignals( false );
 }
 
@@ -269,4 +293,39 @@ void QgsComposerArrowWidget::on_mEndMarkerToolButton_clicked()
     mEndMarkerLineEdit->setText( svgFileName );
     mArrow->endCommand();
   }
+}
+
+void QgsComposerArrowWidget::on_mLineStyleButton_clicked()
+{
+  if ( !mArrow )
+  {
+    return;
+  }
+
+  QgsLineSymbolV2* newSymbol = dynamic_cast<QgsLineSymbolV2*>( mArrow->lineSymbol()->clone() );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
+
+  if ( d.exec() == QDialog::Accepted )
+  {
+    mArrow->beginCommand( tr( "Arrow line style changed" ) );
+    mArrow->setLineSymbol( newSymbol );
+    updateLineSymbolMarker();
+    mArrow->endCommand();
+    mArrow->update();
+  }
+  else
+  {
+    delete newSymbol;
+  }
+}
+
+void QgsComposerArrowWidget::updateLineSymbolMarker()
+{
+  if ( !mArrow )
+  {
+    return;
+  }
+
+  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mArrow->lineSymbol(), mLineStyleButton->iconSize() );
+  mLineStyleButton->setIcon( icon );
 }
