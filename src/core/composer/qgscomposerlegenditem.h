@@ -45,6 +45,7 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
     {
       GroupItem = QStandardItem::UserType,
       LayerItem,
+      // TODO: unify all item types derived from BaseSymbol item under one value (to allow extensibility)
       SymbologyV2Item,
       RasterSymbolItem,
       RasterImageItem,

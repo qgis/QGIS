@@ -309,7 +309,8 @@ void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
       if ( !item ) continue;
       QgsComposerLegendItem::ItemType type = item->itemType();
       if ( type == QgsComposerLegendItem::SymbologyV2Item ||
-           type == QgsComposerLegendItem::RasterSymbolItem )
+           type == QgsComposerLegendItem::RasterSymbolItem ||
+           type == QgsComposerLegendItem::RasterImageItem )
       {
         QString key = QString( "%1-%2" ).arg(( qulonglong )item->parent() ).arg( atomList[i].column );
         maxSymbolWidth[key] = qMax( atomList[i].nucleons[j].symbolSize.width(), maxSymbolWidth[key] );
@@ -324,7 +325,8 @@ void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
       if ( !item ) continue;
       QgsComposerLegendItem::ItemType type = item->itemType();
       if ( type == QgsComposerLegendItem::SymbologyV2Item ||
-           type == QgsComposerLegendItem::RasterSymbolItem )
+           type == QgsComposerLegendItem::RasterSymbolItem ||
+           type == QgsComposerLegendItem::RasterImageItem )
       {
         QString key = QString( "%1-%2" ).arg(( qulonglong )item->parent() ).arg( atomList[i].column );
         double space = mSettings.style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Right ) +
@@ -425,6 +427,7 @@ double QgsLegendRenderer::spaceAboveAtom( Atom atom )
       break;
     case QgsComposerLegendItem::SymbologyV2Item:
     case QgsComposerLegendItem::RasterSymbolItem:
+    case QgsComposerLegendItem::RasterImageItem:
       // TODO: use Symbol or SymbolLabel Top margin
       return mSettings.style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Top );
       break;
@@ -473,7 +476,8 @@ QSizeF QgsLegendRenderer::drawAtom( Atom atom, QPainter* painter, QPointF point 
       }
     }
     else if ( type == QgsComposerLegendItem::SymbologyV2Item ||
-              type == QgsComposerLegendItem::RasterSymbolItem )
+              type == QgsComposerLegendItem::RasterSymbolItem ||
+              type == QgsComposerLegendItem::RasterImageItem )
     {
       if ( !first )
       {
