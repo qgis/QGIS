@@ -286,6 +286,7 @@ QColor QgsSymbolV2::color() const
 void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size )
 {
   QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( painter );
+  context.setForceVectorOutput( true );
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, 0, 0, mapUnitScale() );
 
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
