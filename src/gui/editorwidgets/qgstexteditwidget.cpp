@@ -30,7 +30,7 @@ QVariant QgsTextEditWidget::value()
 {
   QString v;
 
-  if ( mTextEdit && mTextEdit->document()->isModified() )
+  if ( mTextEdit )
   {
     if ( config( "UseHtml" ).toBool() )
     {
@@ -42,7 +42,7 @@ QVariant QgsTextEditWidget::value()
     }
   }
 
-  if ( mPlainTextEdit && mPlainTextEdit->document()->isModified() )
+  if ( mPlainTextEdit )
   {
     v = mPlainTextEdit->toPlainText();
   }
