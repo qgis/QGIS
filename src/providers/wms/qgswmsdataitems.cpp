@@ -255,7 +255,7 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
     // Attention, the name may be empty
     QgsDebugMsg( QString::number( layerProperty.orderId ) + " " + layerProperty.name + " " + layerProperty.title );
     QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
-    QgsWMSLayerItem * layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + "/" + pathName, mCapabilitiesProperty, mDataSourceUri, layerProperty );
+    QgsWMSLayerItem * layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + "/" + pathName, mCapabilitiesProperty, dataSourceUri, layerProperty );
     mChildren.append( layer );
   }
 
