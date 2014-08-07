@@ -297,6 +297,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   cmbIdentifyMode->addItem( tr( "Top down, stop at first" ), 1 );
   cmbIdentifyMode->addItem( tr( "Top down" ), 2 );
   cmbIdentifyMode->addItem( tr( "Layer selection" ), 3 );
+  cmbIdentifyMode->addItem( tr( "Feature selection" ), 4 );
   cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
   cbxAutoFeatureForm->setChecked( mySettings.value( "/Map/identifyAutoFeatureForm", false ).toBool() );
 

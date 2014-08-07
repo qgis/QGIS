@@ -53,7 +53,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       ActiveLayer,
       TopDownStopAtFirst,
       TopDownAll,
-      LayerSelection
+      LayerSelection,
+      FeatureSelection
     };
 
     enum LayerType

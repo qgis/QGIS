@@ -96,7 +96,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
     mode = static_cast<IdentifyMode>( settings.value( "/Map/identifyMode", 0 ).toInt() );
   }
 
-  if ( mode == LayerSelection )
+  if ( mode == LayerSelection || mode == FeatureSelection )
   {
     // fill map of layer / identify results
     mLayerIdResults.clear();
@@ -115,17 +115,30 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
       }
     }
 
-    if ( mLayerIdResults.size() > 1 )
+    if ( mLayerIdResults.size() > 1
+         || ( mode == FeatureSelection && mLayerIdResults.size() == 1 && mLayerIdResults.values()[0].size() > 1 ) )
     {
-      //fill selection menu with entries from mmLayerIdResults
+      //fill selection menu with entries from mLayerIdResults
       QMenu layerSelectionMenu;
       QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator resultIt = mLayerIdResults.constBegin();
       for ( ; resultIt != mLayerIdResults.constEnd(); ++resultIt )
       {
-        QAction* action = new QAction( QString( "%1 (%2)" ).arg( resultIt.key()->name() ).arg( resultIt.value().size() ), 0 );
-        action->setData( resultIt.key()->id() );
-        //add point/line/polygon icon
+        QAction* action;
+        QMenu* layerMenu;
+        QString title = QString( "%1 (%2)" ).arg( resultIt.key()->name() ).arg( resultIt.value().size() );
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( resultIt.key() );
+
+        if ( vl && mode == FeatureSelection )
+        {
+          layerMenu = new QMenu( title, &layerSelectionMenu );
+          action = layerMenu->menuAction();
+        }
+        else
+        {
+          action = new QAction( title, &layerSelectionMenu );
+        }
+        action->setData( resultIt.key()->id() );
+
         if ( vl )
         {
           switch ( vl->geometryType() )
@@ -142,17 +155,41 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
             default:
               break;
           }
+          if ( mode == FeatureSelection )
+          {
+            QList<IdentifyResult> results = resultIt.value();
+            QList<IdentifyResult>::const_iterator it = results.constBegin();
+            for ( ; it != results.constEnd(); ++it )
+            {
+              QString featureTitle = it->mFeature.attribute( vl->displayField() ).toString();
+              if ( featureTitle.isEmpty() )
+                featureTitle = it->mFeature.id();
+              QAction* subAction = new QAction( QString( "%1" ).arg( featureTitle ), layerMenu );
+              subAction->setData( it->mFeature.id() );
+              connect( subAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+              layerMenu->addAction( subAction );
+            }
+            if ( results.count() > 1 )
+            {
+              layerMenu->addSeparator();
+              QAction* subAction = new QAction( tr( "All (%1)" ).arg( results.count() ), &layerSelectionMenu );
+              subAction->setData( resultIt.key()->id() );
+              layerMenu->addAction( subAction );
+            }
+          }
         }
         else if ( resultIt.key()->type() == QgsMapLayer::RasterLayer )
         {
           action->setIcon( QgsApplication::getThemeIcon( "/mIconRaster.png" ) );
         }
+
         connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
         layerSelectionMenu.addAction( action );
       }
 
       QAction *action = new QAction( tr( "All (%1)" ).arg( idResult.size() ), 0 );
       connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+      layerSelectionMenu.addSeparator();
       layerSelectionMenu.addAction( action );
 
       // exec layer selection menu
@@ -166,11 +203,39 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
         }
         else
         {
+          // layer selection
           QgsMapLayer* selectedLayer = QgsMapLayerRegistry::instance()->mapLayer( selectedAction->data().toString() );
+          // feature selection
+          QgsFeatureId fid;
+          bool featureSelection = false;
+          if ( !selectedLayer )
+          {
+            QMenu* parent = qobject_cast<QMenu*>( selectedAction->parentWidget() );
+            if ( parent )
+            {
+              selectedLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( parent->menuAction()->data().toString() ) );
+              fid = selectedAction->data().toInt( &featureSelection );
+            }
+          }
           QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator sIt = mLayerIdResults.find( selectedLayer );
           if ( sIt != mLayerIdResults.constEnd() )
           {
-            results = sIt.value();
+            if ( featureSelection )
+            {
+              const QList<IdentifyResult>& idList = sIt.value();
+              QList<IdentifyResult>::const_iterator idListIt = idList.constBegin();
+              for ( ; idListIt != idList.constEnd(); ++idListIt )
+              {
+                if ( idListIt->mFeature.id() == fid )
+                {
+                  results = QList<IdentifyResult>() << *idListIt;
+                }
+              }
+            }
+            else
+            {
+              results = sIt.value();
+            }
           }
         }
       }
@@ -659,6 +724,19 @@ void QgsMapToolIdentify::handleMenuHover()
   if ( senderAction )
   {
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( senderAction->data().toString() ) );
+    // if not layer level, try feature level
+    QgsFeatureId fid;
+    bool featureSelection = false;
+    if ( !vl )
+    {
+      QMenu* parent = qobject_cast<QMenu*>( senderAction->parentWidget() );
+      if ( parent )
+      {
+        vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( parent->menuAction()->data().toString() ) );
+        fid = senderAction->data().toInt( &featureSelection );
+      }
+    }
+
     if ( vl )
     {
       QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator lIt = mLayerIdResults.find( vl );
@@ -668,6 +746,8 @@ void QgsMapToolIdentify::handleMenuHover()
         QList<IdentifyResult>::const_iterator idListIt = idList.constBegin();
         for ( ; idListIt != idList.constEnd(); ++idListIt )
         {
+          if ( featureSelection && idListIt->mFeature.id() != fid )
+            continue;
           QgsHighlight *hl = new QgsHighlight( mCanvas, idListIt->mFeature.geometry(), vl );
           hl->setColor( QColor( 255, 0, 0 ) );
           hl->setWidth( 2 );
