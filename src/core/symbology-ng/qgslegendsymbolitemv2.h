@@ -5,7 +5,7 @@
 
 class QgsSymbolV2;
 
-class QgsLegendSymbolItemV2
+class CORE_EXPORT QgsLegendSymbolItemV2
 {
 public:
   QgsLegendSymbolItemV2();
@@ -23,7 +23,6 @@ public:
 
   int scaleDenomMin;
   int scaleDenomMax;
-  // TODO: QString rule;
 };
 
 

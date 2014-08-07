@@ -155,27 +155,8 @@ class QgsWMSServer: public QgsOWSServer
        @param scaleDenominator Filter out layer if scale based visibility does not match (or use -1 if no scale restriction)*/
     QStringList layerSet( const QStringList& layersList, const QStringList& stylesList, const QgsCoordinateReferenceSystem& destCRS, double scaleDenominator = -1 ) const;
 
-    /**Draws graphics if painter != 0 and gives back y dimension, maximum symbol and text width of legend*/
-    double drawLegendGraphics( QPainter* p, double fontOversamplingFactor, QStandardItem* rootItem, double boxSpace, double layerSpace, double layerTitleSpace,
-                               double symbolSpace, double iconLabelSpace, double symbolWidth, double symbolHeight,
-                               const QFont& layerFont, const QFont& itemFont, const QColor& layerFontColor, const QColor& itemFontColor,
-                               double& maxTextWidth, double& maxSymbolWidth );
-
-    //helper functions for GetLegendGraphics
-    /**Draws layer item and subitems
-       @param p painter if the item should be drawn, if 0 the size parameters are calculated only
-       @param maxTextWidth Includes boxSpace (on the right side). If p==0: maximumTextWidth is calculated, if p: maxTextWidth parameter is used for rendering
-       @param maxSymbolWidth Includes boxSpace and iconLabelSpace. If p==0: maximum Symbol width is calculated, if p: maxSymbolWidth is input parameter
-      */
-    void drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p, double& maxTextWidth, double& maxSymbolWidth, double& currentY, const QFont& layerFont,
-                              const QColor& layerFontColor, const QFont& itemFont, const QColor&  itemFontColor, double boxSpace, double layerSpace,
-                              double layerTitleSpace, double symbolSpace, double iconLabelSpace, double symbolWidth, double symbolHeight, double fontOversamplingFactor ) const;
-    /**Draws a symbol. Optionally, maxHeight is adapted (e.g. for large point markers) */
-    void drawLegendSymbolV2( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight, double yDownShift ) const;
-    void drawRasterSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double yDownShift ) const;
-
     /**Read legend parameter from the request or from the first print composer in the project*/
-    void legendParameters( double mmToPixelFactor, double fontOversamplingFactor, double& boxSpace, double& layerSpace, double& layerTitleSpace,
+    void legendParameters( double& boxSpace, double& layerSpace, double& layerTitleSpace,
                            double& symbolSpace, double& iconLabelSpace, double& symbolWidth, double& symbolHeight, QFont& layerFont, QFont& itemFont, QColor& layerFontColor, QColor& itemFontColor );
 
 #if 0

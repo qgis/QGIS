@@ -36,7 +36,6 @@
 
 QgsLegendModel::QgsLegendModel()
   : QStandardItemModel()
-  , mScaleDenominator( -1 )
   , mAutoUpdate( true )
 {
   setColumnCount( 2 );
@@ -131,8 +130,6 @@ void QgsLegendModel::setLayerSetAndGroups( const QStringList& layerIds, const QL
 void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenominator, QString rule )
 {
   mLayerIds = layerIds;
-  mScaleDenominator = scaleDenominator;
-  mRule = rule;
 
   //for now clear the model and add the new entries
   clear();
@@ -144,6 +141,62 @@ void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenom
   {
     currentLayer = QgsMapLayerRegistry::instance()->mapLayer( *idIter );
     addLayer( currentLayer, scaleDenominator, rule );
+  }
+
+  // filter out items where the rule is not matching - used by WMS to get symbol icon for a particular rule
+  if ( !rule.isEmpty() )
+  {
+    for ( int i = rowCount() - 1 ; i >= 0; --i )
+    {
+      QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( invisibleRootItem()->child( i ) );
+      if ( !lItem )
+        continue;
+
+      // remove rules that do not match
+      bool gotMatchingRule = false;
+      for ( int j = 0; j < lItem->rowCount(); ++j )
+      {
+        QgsComposerSymbolV2Item* sItem = dynamic_cast<QgsComposerSymbolV2Item*>( lItem->child( j ) );
+        if ( !sItem )
+          continue;
+
+        if ( sItem->itemData().label == rule )
+        {
+          QStandardItem* takenSItem = lItem->takeChild( j );
+          lItem->removeRows( 0, lItem->rowCount() );
+          lItem->setChild( 0, takenSItem );
+          gotMatchingRule = true;
+          break;
+        }
+      }
+
+      if ( !gotMatchingRule )
+        removeRow( i );
+    }
+  }
+
+  if ( scaleDenominator != -1 )
+  {
+    for ( int i = 0; i < rowCount(); ++i )
+    {
+      QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( invisibleRootItem()->child( i ) );
+      if ( !lItem )
+        continue;
+
+      for ( int j = lItem->rowCount() - 1; j >= 0; --j )
+      {
+        QgsComposerSymbolV2Item* sItem = dynamic_cast<QgsComposerSymbolV2Item*>( lItem->child( j ) );
+        if ( !sItem )
+          continue;
+
+        if ( sItem->itemData().scaleDenomMin > 0 && sItem->itemData().scaleDenomMax > 0 &&
+             ( sItem->itemData().scaleDenomMin > scaleDenominator || sItem->itemData().scaleDenomMax < scaleDenominator ) )
+        {
+          lItem->removeRow( j );
+        }
+      }
+
+    }
   }
 }
 
@@ -256,13 +309,16 @@ void QgsLegendModel::removeLayer( const QString& layerId )
 
 void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator, QString rule, QStandardItem* parentItem )
 {
-  Q_UNUSED( scaleDenominator );
   Q_UNUSED( rule );
 
   if ( !theMapLayer )
   {
     return;
   }
+
+  if ( scaleDenominator != -1 && theMapLayer->hasScaleBasedVisibility() &&
+       ( theMapLayer->minimumScale() > scaleDenominator || theMapLayer->maximumScale() < scaleDenominator ) )
+    return;
 
   if ( !parentItem )
     parentItem = invisibleRootItem();

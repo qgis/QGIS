@@ -20,6 +20,7 @@
 #include "qgscrscache.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
+#include "qgslegendrenderer.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
@@ -557,25 +558,15 @@ QImage* QgsWMSServer::getLegendGraphics()
     return 0;
   }
 
-  //create first image (to find out dpi)
-  QImage* theImage = createImage( 10, 10 );
-  if ( !theImage )
-  {
-    return 0;
-  }
-  double mmToPixelFactor = theImage->dotsPerMeterX() / 1000.0;
-  double maxTextWidth = 0;
-  double maxSymbolWidth = 0;
-  double fontOversamplingFactor = 10.0;
-
   //get icon size, spaces between legend items and font from config parser
   double boxSpace, layerSpace, layerTitleSpace, symbolSpace, iconLabelSpace, symbolWidth, symbolHeight;
   QFont layerFont, itemFont;
   QColor layerFontColor, itemFontColor;
-  legendParameters( mmToPixelFactor, fontOversamplingFactor, boxSpace, layerSpace, layerTitleSpace, symbolSpace,
+  legendParameters( boxSpace, layerSpace, layerTitleSpace, symbolSpace,
                     iconLabelSpace, symbolWidth, symbolHeight, layerFont, itemFont, layerFontColor, itemFontColor );
 
   QString rule;
+  int ruleSymbolWidth = 0, ruleSymbolHeight = 0;
   QMap<QString, QString>::const_iterator ruleIt = mParameters.find( "RULE" );
   if ( ruleIt != mParameters.constEnd() )
   {
@@ -588,7 +579,7 @@ QImage* QgsWMSServer::getLegendGraphics()
       double width = widthIt.value().toDouble( &conversionSuccess );
       if ( conversionSuccess )
       {
-        symbolWidth = width;
+        ruleSymbolWidth = width;
       }
     }
 
@@ -599,7 +590,7 @@ QImage* QgsWMSServer::getLegendGraphics()
       double width = heightIt.value().toDouble( &conversionSuccess );
       if ( conversionSuccess )
       {
-        symbolHeight = width;
+        ruleSymbolHeight = width;
       }
     }
   }
@@ -614,124 +605,110 @@ QImage* QgsWMSServer::getLegendGraphics()
     return 0;
   }
 
+  // find out DPI
+  QImage* tmpImage = createImage( 1, 1 );
+  if ( !tmpImage )
+    return 0;
+  qreal dpmm = tmpImage->dotsPerMeterX() / 1000.0;
+  delete tmpImage;
+
+  // setup legend configuration
+  QgsLegendSettings legendSettings;
+  legendSettings.setTitle( QString() );
+  legendSettings.setBoxSpace( boxSpace );
+  legendSettings.rstyle( QgsComposerLegendStyle::Subgroup ).setMargin( QgsComposerLegendStyle::Top, layerSpace );
+   // TODO: not available: layer title space
+  legendSettings.rstyle( QgsComposerLegendStyle::Symbol ).setMargin( QgsComposerLegendStyle::Top, symbolSpace );
+  legendSettings.rstyle( QgsComposerLegendStyle::SymbolLabel ).setMargin( QgsComposerLegendStyle::Left, iconLabelSpace );
+  legendSettings.setSymbolSize( QSizeF( symbolWidth, symbolHeight ) );
+  legendSettings.rstyle( QgsComposerLegendStyle::Subgroup ).setFont( layerFont );
+  legendSettings.rstyle( QgsComposerLegendStyle::SymbolLabel ).setFont( itemFont );
+  // TODO: not available: layer font color
+  legendSettings.setFontColor( itemFontColor );
+
   if ( !rule.isEmpty() )
   {
     //create second image with the right dimensions
-    QImage* paintImage = createImage( symbolWidth, symbolHeight );
+    QImage* paintImage = createImage( ruleSymbolWidth, ruleSymbolHeight );
 
     //go through the items a second time for painting
     QPainter p( paintImage );
     p.setRenderHint( QPainter::Antialiasing, true );
+    p.scale( dpmm, dpmm );
 
-    QgsComposerLegendItem* currentComposerItem = dynamic_cast<QgsComposerLegendItem*>( rootItem->child( 0 )->child( 0 ) );
+    QgsComposerBaseSymbolItem* currentComposerItem = dynamic_cast<QgsComposerBaseSymbolItem*>( rootItem->child( 0 )->child( 0 ) );
     if ( currentComposerItem != NULL )
     {
-      QgsComposerLegendItem::ItemType type = currentComposerItem->itemType();
-      switch ( type )
-      {
-        case QgsComposerLegendItem::SymbologyV2Item:
-          drawLegendSymbolV2( currentComposerItem, &p, 0., 0., symbolWidth, symbolHeight, 0. );
-          break;
-        case QgsComposerLegendItem::RasterSymbolItem:
-          drawRasterSymbol( currentComposerItem, &p, 0., 0., symbolWidth, symbolHeight, 0. );
-          break;
-        case QgsComposerLegendItem::GroupItem:
-          //QgsDebugMsg( "GroupItem not handled" );
-          break;
-        case QgsComposerLegendItem::LayerItem:
-          //QgsDebugMsg( "GroupItem not handled" );
-          break;
-        case QgsComposerLegendItem::StyleItem:
-          //QgsDebugMsg( "StyleItem not handled" );
-          break;
-      }
+      QgsComposerBaseSymbolItem::ItemContext ctx;
+      ctx.painter = &p;
+      ctx.labelXOffset = 0;
+      ctx.point = QPointF();
+      double itemHeight = ruleSymbolHeight / dpmm;
+      currentComposerItem->drawSymbol( legendSettings, &ctx, itemHeight );
     }
 
     QgsMapLayerRegistry::instance()->removeAllMapLayers();
-    delete theImage;
     return paintImage;
   }
 
-  double currentY = drawLegendGraphics( 0, fontOversamplingFactor, rootItem, boxSpace, layerSpace, layerTitleSpace, symbolSpace,
-                                        iconLabelSpace, symbolWidth, symbolHeight, layerFont, itemFont, layerFontColor, itemFontColor, maxTextWidth,
-                                        maxSymbolWidth );
+  for ( int i = 0; i < rootItem->rowCount(); ++i )
+  {
+    if ( QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( rootItem->child( i ) ) )
+    {
+      // layer titles - hidden or not
+      lItem->setStyle( mDrawLegendLayerLabel ? QgsComposerLegendStyle::Subgroup : QgsComposerLegendStyle::Hidden );
 
-  //create second image with the right dimensions
-  QImage* paintImage = createImage( maxTextWidth + maxSymbolWidth, ceil( currentY ) );
+      // rule item titles
+      if ( !mDrawLegendItemLabel )
+      {
+        for ( int j = 0; j < lItem->rowCount(); ++j )
+        {
+          if ( QgsComposerBaseSymbolItem* sItem = dynamic_cast<QgsComposerBaseSymbolItem*>( lItem->child( j ) ) )
+            sItem->setUserText( " " ); // empty string = no override, so let's use one space
+        }
+      }
+    }
+  }
 
-  //go through the items a second time for painting
+  QgsLegendRenderer legendRenderer( &legendModel, legendSettings );
+  QSizeF minSize = legendRenderer.minimumSize();
+  QSize s( minSize.width() * dpmm, minSize.height() * dpmm );
+
+  QImage* paintImage = createImage( s.width(), s.height() );
+
   QPainter p( paintImage );
   p.setRenderHint( QPainter::Antialiasing, true );
+  p.scale( dpmm, dpmm );
 
-  drawLegendGraphics( &p, fontOversamplingFactor, rootItem, boxSpace, layerSpace, layerTitleSpace, symbolSpace,
-                      iconLabelSpace, symbolWidth, symbolHeight, layerFont, itemFont, layerFontColor, itemFontColor, maxTextWidth,
-                      maxSymbolWidth );
+  legendRenderer.drawLegend( &p );
+
+  p.end();
 
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
-  delete theImage;
   return paintImage;
 }
 
-double QgsWMSServer::drawLegendGraphics( QPainter* p, double fontOversamplingFactor, QStandardItem* rootItem, double boxSpace,
-    double layerSpace, double layerTitleSpace, double symbolSpace, double iconLabelSpace,
-    double symbolWidth, double symbolHeight, const QFont& layerFont, const QFont& itemFont,
-    const QColor& layerFontColor, const QColor& itemFontColor, double& maxTextWidth, double& maxSymbolWidth )
-{
-  if ( !rootItem )
-  {
-    return 0;
-  }
 
-  int numLayerItems = rootItem->rowCount();
-  if ( numLayerItems < 1 )
-  {
-    return 0;
-  }
 
-  double currentY = boxSpace;
-  for ( int i = 0; i < numLayerItems; ++i )
-  {
-    QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( rootItem->child( i ) );
-    if ( layerItem )
-    {
-      if ( i > 0 )
-      {
-        currentY += layerSpace;
-      }
-      drawLegendLayerItem( layerItem, p, maxTextWidth, maxSymbolWidth, currentY, layerFont, layerFontColor, itemFont, itemFontColor,
-                           boxSpace, layerSpace, layerTitleSpace, symbolSpace, iconLabelSpace, symbolWidth, symbolHeight, fontOversamplingFactor );
-    }
-  }
-  currentY += boxSpace;
-  return currentY;
-}
-
-void QgsWMSServer::legendParameters( double mmToPixelFactor, double fontOversamplingFactor, double& boxSpace, double& layerSpace, double& layerTitleSpace,
+void QgsWMSServer::legendParameters( double& boxSpace, double& layerSpace, double& layerTitleSpace,
                                      double& symbolSpace, double& iconLabelSpace, double& symbolWidth, double& symbolHeight,
                                      QFont& layerFont, QFont& itemFont, QColor& layerFontColor, QColor& itemFontColor )
 {
   //spaces between legend elements
   QMap<QString, QString>::const_iterator boxSpaceIt = mParameters.find( "BOXSPACE" );
-  boxSpace = ( boxSpaceIt == mParameters.constEnd() ) ? mConfigParser->legendBoxSpace() * mmToPixelFactor :
-             boxSpaceIt.value().toDouble() * mmToPixelFactor;
+  boxSpace = ( boxSpaceIt == mParameters.constEnd() ) ? mConfigParser->legendBoxSpace() : boxSpaceIt.value().toDouble();
   QMap<QString, QString>::const_iterator layerSpaceIt = mParameters.find( "LAYERSPACE" );
-  layerSpace = ( layerSpaceIt == mParameters.constEnd() ) ? mConfigParser->legendLayerSpace() * mmToPixelFactor :
-               layerSpaceIt.value().toDouble() * mmToPixelFactor;
+  layerSpace = ( layerSpaceIt == mParameters.constEnd() ) ? mConfigParser->legendLayerSpace() : layerSpaceIt.value().toDouble();
   QMap<QString, QString>::const_iterator layerTitleSpaceIt = mParameters.find( "LAYERTITLESPACE" );
-  layerTitleSpace = ( layerTitleSpaceIt == mParameters.constEnd() ) ? mConfigParser->legendLayerTitleSpace() * mmToPixelFactor :
-                    layerTitleSpaceIt.value().toDouble() * mmToPixelFactor;
+  layerTitleSpace = ( layerTitleSpaceIt == mParameters.constEnd() ) ? mConfigParser->legendLayerTitleSpace() : layerTitleSpaceIt.value().toDouble();
   QMap<QString, QString>::const_iterator symbolSpaceIt = mParameters.find( "SYMBOLSPACE" );
-  symbolSpace = ( symbolSpaceIt == mParameters.constEnd() ) ? mConfigParser->legendSymbolSpace() * mmToPixelFactor :
-                symbolSpaceIt.value().toDouble() * mmToPixelFactor;
+  symbolSpace = ( symbolSpaceIt == mParameters.constEnd() ) ? mConfigParser->legendSymbolSpace() : symbolSpaceIt.value().toDouble();
   QMap<QString, QString>::const_iterator iconLabelSpaceIt = mParameters.find( "ICONLABELSPACE" );
-  iconLabelSpace = ( iconLabelSpaceIt == mParameters.constEnd() ) ? mConfigParser->legendIconLabelSpace() * mmToPixelFactor :
-                   iconLabelSpaceIt.value().toDouble() * mmToPixelFactor;
+  iconLabelSpace = ( iconLabelSpaceIt == mParameters.constEnd() ) ? mConfigParser->legendIconLabelSpace() : iconLabelSpaceIt.value().toDouble();
   QMap<QString, QString>::const_iterator symbolWidthIt = mParameters.find( "SYMBOLWIDTH" );
-  symbolWidth = ( symbolWidthIt == mParameters.constEnd() ) ? mConfigParser->legendSymbolWidth() * mmToPixelFactor :
-                symbolWidthIt.value().toDouble() * mmToPixelFactor;
+  symbolWidth = ( symbolWidthIt == mParameters.constEnd() ) ? mConfigParser->legendSymbolWidth() : symbolWidthIt.value().toDouble();
   QMap<QString, QString>::const_iterator symbolHeightIt = mParameters.find( "SYMBOLHEIGHT" );
-  symbolHeight = ( symbolHeightIt == mParameters.constEnd() ) ? mConfigParser->legendSymbolHeight() * mmToPixelFactor :
-                 symbolHeightIt.value().toDouble() * mmToPixelFactor;
+  symbolHeight = ( symbolHeightIt == mParameters.constEnd() ) ? mConfigParser->legendSymbolHeight() : symbolHeightIt.value().toDouble();
 
   //font properties
   layerFont = mConfigParser->legendLayerFont();
@@ -751,14 +728,7 @@ void QgsWMSServer::legendParameters( double mmToPixelFactor, double fontOversamp
     layerFont.setItalic( layerFontItalicIt.value().compare( "TRUE", Qt::CaseInsensitive ) == 0 );
   }
   QMap<QString, QString>::const_iterator layerFontSizeIt = mParameters.find( "LAYERFONTSIZE" );
-  if ( layerFontSizeIt != mParameters.constEnd() )
-  {
-    layerFont.setPixelSize( layerFontSizeIt.value().toDouble() * 0.3528 * mmToPixelFactor * fontOversamplingFactor );
-  }
-  else
-  {
-    layerFont.setPixelSize( layerFont.pointSizeF() * 0.3528 * mmToPixelFactor * fontOversamplingFactor );
-  }
+  layerFont.setPointSizeF( layerFontSizeIt != mParameters.constEnd() ? layerFontSizeIt.value().toDouble() : layerFont.pointSizeF() );
   QMap<QString, QString>::const_iterator layerFontColorIt = mParameters.find( "LAYERFONTCOLOR" );
   if ( layerFontColorIt != mParameters.constEnd() )
   {
@@ -796,14 +766,7 @@ void QgsWMSServer::legendParameters( double mmToPixelFactor, double fontOversamp
     itemFont.setItalic( itemFontItalicIt.value().compare( "TRUE", Qt::CaseInsensitive ) == 0 );
   }
   QMap<QString, QString>::const_iterator itemFontSizeIt = mParameters.find( "ITEMFONTSIZE" );
-  if ( itemFontSizeIt != mParameters.constEnd() )
-  {
-    itemFont.setPixelSize( itemFontSizeIt.value().toDouble() * 0.3528 * mmToPixelFactor * fontOversamplingFactor );
-  }
-  else
-  {
-    itemFont.setPixelSize( itemFont.pointSizeF() * 0.3528 * mmToPixelFactor * fontOversamplingFactor );
-  }
+  itemFont.setPointSizeF( itemFontSizeIt != mParameters.constEnd() ? itemFontSizeIt.value().toDouble() : itemFont.pointSizeF() );
   QMap<QString, QString>::const_iterator itemFontColorIt = mParameters.find( "ITEMFONTCOLOR" );
   if ( itemFontColorIt != mParameters.constEnd() )
   {
@@ -1984,186 +1947,6 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
   return layerKeys;
 }
 
-void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p, double& maxTextWidth, double& maxSymbolWidth, double& currentY, const QFont& layerFont,
-                                        const QColor& layerFontColor, const QFont& itemFont, const QColor&  itemFontColor, double boxSpace, double layerSpace,
-                                        double layerTitleSpace, double symbolSpace, double iconLabelSpace, double symbolWidth, double symbolHeight, double fontOversamplingFactor ) const
-{
-  Q_UNUSED( layerSpace );
-  if ( !item )
-  {
-    return;
-  }
-
-  QFontMetricsF layerFontMetrics( layerFont );
-  if ( mDrawLegendLayerLabel )
-  {
-    currentY += layerFontMetrics.ascent() / fontOversamplingFactor;
-  }
-
-  //draw layer title first
-  if ( p )
-  {
-    if ( mDrawLegendLayerLabel )
-    {
-      p->save();
-      p->scale( 1.0 / fontOversamplingFactor, 1.0 / fontOversamplingFactor );
-      p->setPen( layerFontColor );
-      p->setFont( layerFont );
-      p->drawText( boxSpace * fontOversamplingFactor, currentY * fontOversamplingFactor, item->text() );
-      p->restore();
-    }
-  }
-  else
-  {
-    double layerItemWidth = layerFontMetrics.width( item->text() ) / fontOversamplingFactor + boxSpace;
-    if ( layerItemWidth > maxTextWidth )
-    {
-      if ( mDrawLegendLayerLabel )
-      {
-        maxTextWidth = layerItemWidth;
-      }
-    }
-  }
-
-  if ( mDrawLegendLayerLabel )
-  {
-    currentY += layerTitleSpace;
-  }
-
-  //then draw all the children
-  QFontMetricsF itemFontMetrics( itemFont );
-
-  int nChildItems = item->rowCount();
-  QgsComposerLegendItem* currentComposerItem = 0;
-
-  for ( int i = 0; i < nChildItems; ++i )
-  {
-    currentComposerItem = dynamic_cast<QgsComposerLegendItem*>( item->child( i ) );
-    if ( !currentComposerItem )
-    {
-      continue;
-    }
-
-    double currentSymbolHeight = symbolHeight;
-    double currentSymbolWidth = symbolWidth; //symbol width (without box space and icon/label space
-    double currentTextWidth = 0;
-
-    //if the font is larger than the standard symbol size, try to draw the symbol centered (shifting towards the bottom)
-    double symbolDownShift = ( itemFontMetrics.ascent() / fontOversamplingFactor - symbolHeight ) / 2.0;
-    if ( symbolDownShift < 0 )
-    {
-      symbolDownShift = 0;
-    }
-
-    QgsComposerLegendItem::ItemType type = currentComposerItem->itemType();
-    switch ( type )
-    {
-      case QgsComposerLegendItem::SymbologyV2Item:
-        drawLegendSymbolV2( currentComposerItem, p, boxSpace, currentY, currentSymbolWidth, currentSymbolHeight, symbolDownShift );
-        break;
-      case QgsComposerLegendItem::RasterSymbolItem:
-        drawRasterSymbol( currentComposerItem, p, boxSpace, currentY, currentSymbolWidth, currentSymbolHeight, symbolDownShift );
-        break;
-      case QgsComposerLegendItem::GroupItem:
-        //QgsDebugMsg( "GroupItem not handled" );
-        break;
-      case QgsComposerLegendItem::LayerItem:
-        //QgsDebugMsg( "GroupItem not handled" );
-        break;
-      case QgsComposerLegendItem::StyleItem:
-        //QgsDebugMsg( "StyleItem not handled" );
-        break;
-    }
-
-    if ( mDrawLegendItemLabel )
-    {
-      //finally draw text
-      currentTextWidth = itemFontMetrics.width( currentComposerItem->text() ) / fontOversamplingFactor;
-    }
-    else
-    {
-      currentTextWidth = 0;
-    }
-    double symbolItemHeight = qMax( itemFontMetrics.ascent() / fontOversamplingFactor, currentSymbolHeight );
-
-    if ( p )
-    {
-      if ( mDrawLegendItemLabel )
-      {
-        p->save();
-        p->scale( 1.0 / fontOversamplingFactor, 1.0 / fontOversamplingFactor );
-        p->setPen( itemFontColor );
-        p->setFont( itemFont );
-        p->drawText( maxSymbolWidth * fontOversamplingFactor,
-                     ( currentY + symbolItemHeight / 2.0 ) * fontOversamplingFactor + itemFontMetrics.ascent() / 2.0, currentComposerItem->text() );
-        p->restore();
-      }
-    }
-    else
-    {
-      if ( currentTextWidth > maxTextWidth )
-      {
-        if ( mDrawLegendItemLabel )
-        {
-          maxTextWidth = currentTextWidth;
-        }
-      }
-      double symbolWidth = boxSpace + currentSymbolWidth + iconLabelSpace;
-      if ( symbolWidth > maxSymbolWidth )
-      {
-        maxSymbolWidth = symbolWidth;
-      }
-    }
-
-    currentY += symbolItemHeight;
-    if ( i < ( nChildItems - 1 ) )
-    {
-      currentY += symbolSpace;
-    }
-  }
-}
-
-
-void QgsWMSServer::drawLegendSymbolV2( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth,
-                                       double& symbolHeight, double yDownShift ) const
-{
-  QgsComposerSymbolV2Item* symbolItem = dynamic_cast< QgsComposerSymbolV2Item* >( item );
-  if ( !symbolItem )
-  {
-    return;
-  }
-  QgsSymbolV2* symbol = symbolItem->symbolV2();
-  if ( !symbol )
-  {
-    return;
-  }
-
-  if ( p )
-  {
-    p->save();
-    p->translate( boxSpace, currentY + yDownShift );
-    p->scale( 1.0, 1.0 );
-    symbol->drawPreviewIcon( p, QSize( symbolWidth, symbolHeight ) );
-    p->restore();
-  }
-}
-
-void QgsWMSServer::drawRasterSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double yDownShift ) const
-{
-  if ( !item || ! p )
-  {
-    return;
-  }
-
-  QgsComposerRasterSymbolItem* rasterItem = dynamic_cast< QgsComposerRasterSymbolItem* >( item );
-  if ( !rasterItem )
-  {
-    return;
-  }
-
-  p->setBrush( QBrush( rasterItem->color() ) );
-  p->drawRect( QRectF( boxSpace, currentY + yDownShift, symbolWidth, symbolHeight ) );
-}
 
 QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringList& layerList ) const
 {

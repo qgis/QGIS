@@ -168,6 +168,9 @@ class CORE_EXPORT QgsComposerSymbolV2Item : public QgsComposerBaseSymbolItem
     QString ruleKey() const { return mItem.key; }
 
     //! @note added in 2.6
+    const QgsLegendSymbolItemV2& itemData() const { return mItem; }
+
+    //! @note added in 2.6
     static QgsComposerSymbolV2Item* findItemByRuleKey( QgsComposerLayerItem* parentLayerItem, QString ruleKey );
 
   private:
