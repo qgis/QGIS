@@ -370,6 +370,6 @@ QgsLegendSymbolList QgsSingleSymbolRendererV2::legendSymbolItems( double scaleDe
 QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
 {
   QgsLegendSymbolListV2 lst;
-  lst << QgsLegendSymbolItemV2( mSymbol.data() ? mSymbol->clone() : 0, QString(), 0 );
+  lst << QgsLegendSymbolItemV2( mSymbol.data(), QString(), 0 );
   return lst;
 }

@@ -3,45 +3,66 @@
 #include "qgssymbolv2.h"
 
 QgsLegendSymbolItemV2::QgsLegendSymbolItemV2()
-  : symbol( 0 )
-  , scaleDenomMin( -1 )
-  , scaleDenomMax( -1 )
+    : mSymbol( 0 )
+    , mOriginalSymbolPointer( 0 )
+    , mScaleMinDenom( -1 )
+    , mScaleMaxDenom( -1 )
 {
 }
 
-QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( QgsSymbolV2* s, const QString& lbl, const QString& k )
-  : symbol( s )
-  , label( lbl )
-  , key( k )
-  , scaleDenomMin( -1 )
-  , scaleDenomMax( -1 )
+QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( QgsSymbolV2* symbol, const QString& label, const QString& ruleKey, int scaleMinDenom, int scaleMaxDenom )
+    : mSymbol( symbol ? symbol->clone() : 0 )
+    , mLabel( label )
+    , mKey( ruleKey )
+    , mOriginalSymbolPointer( symbol )
+    , mScaleMinDenom( scaleMinDenom )
+    , mScaleMaxDenom( scaleMaxDenom )
 {
 }
 
 QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( const QgsLegendSymbolItemV2& other )
-  : symbol( 0 )
-  , scaleDenomMin( -1 )
-  , scaleDenomMax( -1 )
+    : mSymbol( 0 )
+    , mOriginalSymbolPointer( 0 )
 {
   *this = other;
 }
 
 QgsLegendSymbolItemV2::~QgsLegendSymbolItemV2()
 {
-  delete symbol;
+  delete mSymbol;
 }
 
-QgsLegendSymbolItemV2& QgsLegendSymbolItemV2::operator=( const QgsLegendSymbolItemV2& other )
+QgsLegendSymbolItemV2& QgsLegendSymbolItemV2::operator=( const QgsLegendSymbolItemV2 & other )
 {
   if ( this == &other )
     return *this;
 
-  delete symbol;
-  symbol = other.symbol ? other.symbol->clone() : 0;
-  label = other.label;
-  key = other.key;
-  scaleDenomMin = other.scaleDenomMin;
-  scaleDenomMax = other.scaleDenomMax;
+  setSymbol( other.mSymbol ? other.mSymbol->clone() : 0 );
+  mLabel = other.mLabel;
+  mKey = other.mKey;
+  mOriginalSymbolPointer = other.mOriginalSymbolPointer;
+  mScaleMinDenom = other.mScaleMinDenom;
+  mScaleMaxDenom = other.mScaleMaxDenom;
 
   return *this;
+}
+
+bool QgsLegendSymbolItemV2::isScaleOK( double scale ) const
+{
+  if ( scale <= 0 )
+    return true;
+  if ( mScaleMinDenom <= 0 && mScaleMaxDenom <= 0 )
+    return true;
+  if ( mScaleMinDenom > 0 && mScaleMinDenom > scale )
+    return false;
+  if ( mScaleMaxDenom > 0 && mScaleMaxDenom < scale )
+    return false;
+  return true;
+}
+
+void QgsLegendSymbolItemV2::setSymbol( QgsSymbolV2* s )
+{
+  delete mSymbol;
+  mSymbol = s ? s->clone() : 0;
+  mOriginalSymbolPointer = s;
 }

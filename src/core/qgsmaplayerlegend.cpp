@@ -68,23 +68,21 @@ bool QgsLayerTreeModelLegendNode::setData( const QVariant& value, int role )
 // -------------------------------------------------------------------------
 
 
-QgsSymbolV2LegendNode::QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, QgsSymbolV2* symbol, const QString& label, const QString& ruleKey )
+QgsSymbolV2LegendNode::QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItemV2& item )
     : QgsLayerTreeModelLegendNode( nodeLayer )
-    , mSymbol( symbol ? symbol->clone() : 0 )
-    , mLabel( label )
-    , mRuleKey( ruleKey )
+    , mItem( item )
 {
-  if ( nodeLayer->customProperty( "showFeatureCount", 0 ).toBool() && symbol )
+  mLabel = mItem.label();
+  if ( nodeLayer->customProperty( "showFeatureCount", 0 ).toBool() && mItem.legacyRuleKey() )
   {
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( nodeLayer->layer() );
     if ( vl )
-      mLabel += QString( " [%1]" ).arg( vl->featureCount( symbol ) );
+      mLabel += QString( " [%1]" ).arg( vl->featureCount( mItem.legacyRuleKey() ) );
   }
 }
 
 QgsSymbolV2LegendNode::~QgsSymbolV2LegendNode()
 {
-  delete mSymbol;
 }
 
 Qt::ItemFlags QgsSymbolV2LegendNode::flags() const
@@ -105,8 +103,8 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
   else if ( role == Qt::DecorationRole )
   {
     QSize iconSize( 16, 16 ); // TODO: configurable
-    if ( mIcon.isNull() && mSymbol )
-      mIcon = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mSymbol, iconSize );
+    if ( mIcon.isNull() && mItem.symbol() )
+      mIcon = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), iconSize );
     return mIcon;
   }
   else if ( role == Qt::CheckStateRole )
@@ -121,7 +119,7 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
     if ( !vlayer || !vlayer->rendererV2() )
       return QVariant();
 
-    return vlayer->rendererV2()->legendSymbolItemChecked( mRuleKey ) ? Qt::Checked : Qt::Unchecked;
+    return vlayer->rendererV2()->legendSymbolItemChecked( mItem.ruleKey() ) ? Qt::Checked : Qt::Unchecked;
   }
 
   return QVariant();
@@ -139,7 +137,7 @@ bool QgsSymbolV2LegendNode::setData( const QVariant& value, int role )
   if ( !vlayer || !vlayer->rendererV2() )
     return false;
 
-  vlayer->rendererV2()->checkLegendSymbolItem( mRuleKey, value == Qt::Checked );
+  vlayer->rendererV2()->checkLegendSymbolItem( mItem.ruleKey(), value == Qt::Checked );
 
   if ( mParent->isVisible() )
     vlayer->clearCacheImage();
@@ -192,7 +190,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
 
   foreach ( const QgsLegendSymbolItemV2& i, r->legendSymbolItemsV2() )
   {
-    nodes.append( new QgsSymbolV2LegendNode( nodeLayer, i.symbol, i.label, i.key ) );
+    nodes.append( new QgsSymbolV2LegendNode( nodeLayer, i ) );
   }
   return nodes;
 }

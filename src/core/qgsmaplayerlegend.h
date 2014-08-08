@@ -61,6 +61,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     QgsLayerTreeLayer* mParent;
 };
 
+#include "qgslegendsymbolitemv2.h"
 
 /**
  * Implementation of legend node interface for displaying preview of vector symbols and their labels
@@ -71,7 +72,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
 {
   public:
-    QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, QgsSymbolV2* symbol, const QString& label, const QString& ruleKey = QString() );
+    QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItemV2& item );
     ~QgsSymbolV2LegendNode();
 
     virtual Qt::ItemFlags flags() const;
@@ -79,10 +80,9 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
     virtual bool setData( const QVariant& value, int role );
 
   private:
-    QgsSymbolV2* mSymbol;
+    QgsLegendSymbolItemV2 mItem;
     mutable QIcon mIcon; // cached symbol preview
     QString mLabel;
-    QString mRuleKey;
 };
 
 

@@ -216,9 +216,7 @@ QgsLegendSymbolListV2 QgsRuleBasedRendererV2::Rule::legendSymbolItemsV2() const
   QgsLegendSymbolListV2 lst;
   if ( mSymbol )
   {
-    lst << QgsLegendSymbolItemV2( mSymbol->clone(), mLabel, mRuleKey );
-    lst.last().scaleDenomMin = mScaleMinDenom;
-    lst.last().scaleDenomMax = mScaleMaxDenom;
+    lst << QgsLegendSymbolItemV2( mSymbol, mLabel, mRuleKey, mScaleMinDenom, mScaleMaxDenom );
   }
 
   for ( RuleList::const_iterator it = mChildren.constBegin(); it != mChildren.constEnd(); ++it )

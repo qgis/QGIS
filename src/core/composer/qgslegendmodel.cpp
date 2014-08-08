@@ -35,8 +35,8 @@
 #include <QMessageBox>
 
 QgsLegendModel::QgsLegendModel()
-  : QStandardItemModel()
-  , mAutoUpdate( true )
+    : QStandardItemModel()
+    , mAutoUpdate( true )
 {
   setColumnCount( 2 );
 
@@ -160,7 +160,7 @@ void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenom
         if ( !sItem )
           continue;
 
-        if ( sItem->itemData().label == rule )
+        if ( sItem->itemData().label() == rule )
         {
           QStandardItem* takenSItem = lItem->takeChild( j );
           lItem->removeRows( 0, lItem->rowCount() );
@@ -189,13 +189,9 @@ void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenom
         if ( !sItem )
           continue;
 
-        if ( sItem->itemData().scaleDenomMin > 0 && sItem->itemData().scaleDenomMax > 0 &&
-             ( sItem->itemData().scaleDenomMin > scaleDenominator || sItem->itemData().scaleDenomMax < scaleDenominator ) )
-        {
+        if ( !sItem->itemData().isScaleOK( scaleDenominator ) )
           lItem->removeRow( j );
-        }
       }
-
     }
   }
 }

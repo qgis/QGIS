@@ -156,7 +156,7 @@ class CORE_EXPORT QgsComposerSymbolV2Item : public QgsComposerBaseSymbolItem
       @deprecated */
     Q_DECL_DEPRECATED void setSymbolV2( QgsSymbolV2* s );
     /** @deprecated */
-    Q_DECL_DEPRECATED QgsSymbolV2* symbolV2() const { return mItem.symbol; }
+    Q_DECL_DEPRECATED QgsSymbolV2* symbolV2() const { return mItem.symbol(); }
 
     ItemType itemType() const { return SymbologyV2Item; }
 
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsComposerSymbolV2Item : public QgsComposerBaseSymbolItem
     QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
 
     //! @note added in 2.6
-    QString ruleKey() const { return mItem.key; }
+    QString ruleKey() const { return mItem.ruleKey(); }
 
     //! @note added in 2.6
     const QgsLegendSymbolItemV2& itemData() const { return mItem; }

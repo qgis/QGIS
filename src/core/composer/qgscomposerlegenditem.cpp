@@ -64,7 +64,7 @@ void QgsComposerLegendItem::writeXMLChildren( QDomElement& elem, QDomDocument& d
 ////////////////QgsComposerBaseSymbolItem
 
 QgsComposerBaseSymbolItem::QgsComposerBaseSymbolItem()
-  : QgsComposerLegendItem( QgsComposerLegendStyle::Symbol )
+    : QgsComposerLegendItem( QgsComposerLegendStyle::Symbol )
 {
 
 }
@@ -162,7 +162,7 @@ QgsComposerSymbolV2Item::QgsComposerSymbolV2Item()
 }
 
 QgsComposerSymbolV2Item::QgsComposerSymbolV2Item( const QgsLegendSymbolItemV2& item )
-  : mItem( item )
+    : mItem( item )
 {
   setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 }
@@ -189,7 +189,7 @@ QVariant QgsComposerSymbolV2Item::data( int role ) const
   if ( role == Qt::DecorationRole )
   {
     if ( mIcon.isNull() )
-      mIcon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mItem.symbol, QSize( 30, 30 ) );
+      mIcon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mItem.symbol(), QSize( 30, 30 ) );
     return mIcon;
   }
   else if ( role == Qt::DisplayRole || role == Qt::EditRole )
@@ -202,7 +202,7 @@ QVariant QgsComposerSymbolV2Item::data( int role ) const
       // so that single symbol layers are still drawn on single line
       if ( parentLayerItem()->rowCount() > 1 || !lbl.isEmpty() )
       {
-        lbl += QString( " [%1]" ).arg( parentVectorLayer()->featureCount( mItem.symbol ) );
+        lbl += QString( " [%1]" ).arg( parentVectorLayer()->featureCount( mItem.legacyRuleKey() ) );
       }
     }
     return lbl;
@@ -219,14 +219,14 @@ QStandardItem* QgsComposerSymbolV2Item::clone() const
 void QgsComposerSymbolV2Item::writeXML( QDomElement& elem, QDomDocument& doc ) const
 {
   QDomElement vectorClassElem = doc.createElement( "VectorClassificationItemNg" );
-  if ( mItem.symbol )
+  if ( mItem.symbol() )
   {
     QgsSymbolV2Map saveSymbolMap;
-    saveSymbolMap.insert( "classificationSymbol", mItem.symbol );
+    saveSymbolMap.insert( "classificationSymbol", mItem.symbol() );
     QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols( saveSymbolMap, "symbols", doc );
     vectorClassElem.appendChild( symbolsElem );
   }
-  vectorClassElem.setAttribute( "text", mItem.label );
+  vectorClassElem.setAttribute( "text", mItem.label() );
   vectorClassElem.setAttribute( "userText", userText() );
   elem.appendChild( vectorClassElem );
 }
@@ -240,7 +240,7 @@ void QgsComposerSymbolV2Item::readXML( const QDomElement& itemElem, bool xServer
     return;
   }
 
-  mItem.label = itemElem.attribute( "text", "" );
+  mItem.setLabel( itemElem.attribute( "text", "" ) );
   setUserText( itemElem.attribute( "userText", "" ) );
   QDomElement symbolsElem = itemElem.firstChildElement( "symbols" );
   if ( !symbolsElem.isNull() )
@@ -253,10 +253,10 @@ void QgsComposerSymbolV2Item::readXML( const QDomElement& itemElem, bool xServer
       QgsSymbolV2* symbolNg = mapIt.value();
       if ( symbolNg )
       {
-        delete mItem.symbol;
-        mItem.symbol = symbolNg;
+        mItem.setSymbol( symbolNg );
       }
     }
+    qDeleteAll( loadSymbolMap );
   }
 }
 
@@ -267,7 +267,7 @@ void QgsComposerSymbolV2Item::setSymbolV2( QgsSymbolV2* s )
 
 QSizeF QgsComposerSymbolV2Item::drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const
 {
-  QgsSymbolV2* s = mItem.symbol;
+  QgsSymbolV2* s = mItem.symbol();
   if ( !s )
   {
     return QSizeF();
@@ -422,7 +422,7 @@ QString QgsComposerSymbolV2Item::label() const
     }
     else
     {
-      return mItem.label;
+      return mItem.label();
     }
   }
 }
@@ -435,8 +435,8 @@ QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem()
 }
 
 QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem( const QColor& color, const QString& label )
-  : mColor( color )
-  , mLabel( label )
+    : mColor( color )
+    , mLabel( label )
 {
 }
 
@@ -519,7 +519,7 @@ QgsComposerRasterImageItem::QgsComposerRasterImageItem()
 }
 
 QgsComposerRasterImageItem::QgsComposerRasterImageItem( const QImage& image )
-  : mImage( image )
+    : mImage( image )
 {
 
 }

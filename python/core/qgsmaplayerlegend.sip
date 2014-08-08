@@ -34,24 +34,26 @@ class QgsLayerTreeModelLegendNode : QObject
 };
 
 
+
 /**
  * Implementation of legend node interface for displaying preview of vector symbols and their labels
  * and allowing interaction with the symbol / renderer.
  *
  * @note added in 2.6
  */
+/*
 class QgsSymbolV2LegendNode : QgsLayerTreeModelLegendNode
 {
 %TypeHeaderCode
 #include <qgsmaplayerlegend.h>
 %End
   public:
-    QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, QgsSymbolV2* symbol, const QString& label, int rendererRef = -1 );
+    QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItemV2& item );
 
     virtual Qt::ItemFlags flags() const;
     virtual QVariant data( int role ) const;
     virtual bool setData( const QVariant& value, int role );
-};
+};*/
 
 
 /**
