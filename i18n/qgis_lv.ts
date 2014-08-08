@@ -14306,6 +14306,14 @@ p, li { white-space: pre-wrap; }
         <source>Invalid field name. This field name is reserved and cannot be used.</source>
         <translation>Nederīgs lauka nosaukums. Šis lauka nosaukums ir rezervēts un nevar tikt izmantots.</translation>
     </message>
+    <message>
+        <source>No name specified. Please specify a name to create a new field.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No expression specified. Please enter an expression that will be used to calculate the field values.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAddAttrDialogBase</name>
@@ -14336,6 +14344,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Add column</source>
         <translation>Pievienot kolonnu</translation>
+    </message>
+    <message>
+        <source>Provider Field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Virtual Field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Define an expression which will be used to calculate this field.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expression</source>
+        <translation type="unfinished">Izteiksme</translation>
     </message>
 </context>
 <context>
@@ -16371,6 +16395,20 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
 </context>
 <context>
+    <name>QgsCodeEditorCSS</name>
+    <message>
+        <source>CSS Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsCodeEditorHTML</name>
+    <message>
+        <source>HTML Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsCodeEditorPython</name>
     <message>
         <source>Python Editor</source>
@@ -16876,6 +16914,10 @@ Please try a lower resolution or a smaller papersize</source>
         <source>SVG export error</source>
         <translation>SVG eksporta kļūda</translation>
     </message>
+    <message>
+        <source>Items</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
@@ -16897,7 +16939,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Arrow outline width</source>
-        <translation>Bultas malas līnijas platums</translation>
+        <translation type="obsolete">Bultas malas līnijas platums</translation>
     </message>
     <message>
         <source>Arrowhead width</source>
@@ -16905,7 +16947,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Arrow color changed</source>
-        <translation>Bultas krāsa ir izmainīta</translation>
+        <translation type="obsolete">Bultas krāsa ir izmainīta</translation>
     </message>
     <message>
         <source>Arrow marker changed</source>
@@ -16921,7 +16963,31 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Select arrow color</source>
-        <translation>Izvēlieties bultas krāsu</translation>
+        <translation type="obsolete">Izvēlieties bultas krāsu</translation>
+    </message>
+    <message>
+        <source>Arrow head outline width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrow head fill color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrow head outline color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select arrow head fill color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select arrow head outlnie color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrow line style changed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16980,7 +17046,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Line width</source>
-        <translation>Līnijas platums</translation>
+        <translation type="obsolete">Līnijas platums</translation>
     </message>
     <message>
         <source> mm</source>
@@ -16992,7 +17058,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Color...</source>
-        <translation>Krāsa...</translation>
+        <translation type="obsolete">Krāsa...</translation>
     </message>
     <message>
         <source>Default</source>
@@ -17005,6 +17071,22 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>SVG</source>
         <translation>SVG</translation>
+    </message>
+    <message>
+        <source>Line style...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrow head fill color...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrow head outline color...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrow head outline width</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17804,9 +17886,20 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
 </context>
 <context>
+    <name>QgsComposerFrame</name>
+    <message>
+        <source>&lt;frame&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsComposerHtml</name>
     <message>
         <source>HTML fetch %1 failed with error %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html frame&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17863,6 +17956,18 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Insert expression</source>
         <translation type="unfinished">Ievietot izteiksmi</translation>
+    </message>
+    <message>
+        <source>User stylesheet changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User stylesheet toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>url string</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17939,12 +18044,72 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Frames</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>User stylesheet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update HTML</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerItem</name>
     <message>
         <source>Change item position</source>
         <translation type="obsolete">Mainīt vienuma novietojumu</translation>
+    </message>
+    <message>
+        <source>&lt;arrow&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;group&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;label&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;legend&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;map&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;picture&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;scale bar&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;shape&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;table&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;attribute table&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;text table&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;frame&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;item&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18130,6 +18295,21 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
 </context>
 <context>
+    <name>QgsComposerLabel</name>
+    <message>
+        <source>&lt;HTML label&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;label&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsComposerLabelWidget</name>
     <message>
         <source>General options</source>
@@ -18280,6 +18460,14 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Legend</source>
         <translation type="obsolete">Leģenda</translation>
+    </message>
+    <message>
+        <source>&lt;legend&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18862,6 +19050,10 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Grid %1</source>
         <translation>Tīkls %1</translation>
     </message>
+    <message>
+        <source>Overview %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerMapWidget</name>
@@ -19030,10 +19222,6 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="obsolete">Birkas fonts ir izmainīts</translation>
     </message>
     <message>
-        <source>Overview centering mode changed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Select grid frame color</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19123,6 +19311,38 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Annotation color changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overview %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add map overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw &quot;%1&quot; overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overview checkbox toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overview map changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overview blend mode changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overview inverted toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overview centered toggled</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19265,14 +19485,6 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="obsolete"> grādi</translation>
     </message>
     <message>
-        <source>Overview frame</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Overview style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Change...</source>
         <translation type="unfinished">Mainīt...</translation>
     </message>
@@ -19346,7 +19558,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Overview</source>
-        <translation type="unfinished">Pārskats</translation>
+        <translation type="obsolete">Pārskats</translation>
     </message>
     <message>
         <source>Offset</source>
@@ -19359,10 +19571,6 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Font color...</source>
         <translation type="unfinished">Fonta krasa...</translation>
-    </message>
-    <message>
-        <source>Overview blending mode</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Invert overview</source>
@@ -19500,6 +19708,29 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Marker style</source>
         <translation type="unfinished">Marķiera stils</translation>
     </message>
+    <message>
+        <source>Overviews</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blending mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerModel</name>
+    <message>
+        <source>Item</source>
+        <translation type="unfinished">Vienums</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerMouseHandles</name>
@@ -19529,17 +19760,20 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
 </context>
 <context>
-    <name>QgsComposerPicture</name>
+    <name>QgsComposerMultiFrame</name>
     <message>
-        <source>Picture expression parsing error: %1</source>
+        <source>&lt;frame&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>QgsComposerPicture</name>
     <message>
         <source>Composer</source>
-        <translation type="unfinished">Veidotājs</translation>
+        <translation type="obsolete">Veidotājs</translation>
     </message>
     <message>
-        <source>Picture expression eval error: %1</source>
+        <source>Picture expression eval error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19590,23 +19824,11 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>Rotācijas karte ir izmainīta</translation>
     </message>
     <message>
-        <source>Expression based image path</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Picture resize mode changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Picture placement changed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Picture source changed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Picture source expression</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19686,7 +19908,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Path</source>
-        <translation type="unfinished">Ceļš</translation>
+        <translation type="obsolete">Ceļš</translation>
     </message>
     <message utf8="true">
         <source> °</source>
@@ -19738,7 +19960,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Expression</source>
-        <translation type="unfinished">Izteiksme</translation>
+        <translation type="obsolete">Izteiksme</translation>
     </message>
     <message>
         <source>Top left</source>
@@ -20131,6 +20353,25 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Secondary fill color...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerShape</name>
+    <message>
+        <source>&lt;ellipse&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;rectangle&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;triangle&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;shape&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -36564,7 +36805,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>All</source>
-        <translation type="obsolete">Viss</translation>
+        <translation type="unfinished">Viss</translation>
     </message>
     <message>
         <source>QGIS files</source>
@@ -44260,6 +44501,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>image/jpg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data Url</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

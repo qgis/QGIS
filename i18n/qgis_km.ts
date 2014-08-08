@@ -14094,6 +14094,14 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">
             </translation>
     </message>
+    <message>
+        <source>No name specified. Please specify a name to create a new field.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No expression specified. Please enter an expression that will be used to calculate the field values.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAddAttrDialogBase</name>
@@ -14122,6 +14130,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Precision</source>
         <translation>ចំនួន​ខ្ទង់</translation>
+    </message>
+    <message>
+        <source>Provider Field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Virtual Field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Define an expression which will be used to calculate this field.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expression</source>
+        <translation type="unfinished">កន្សោម</translation>
     </message>
 </context>
 <context>
@@ -16449,6 +16473,34 @@ Should the existing classes be deleted before classification?</source>
     </message>
 </context>
 <context>
+    <name>QgsCodeEditorCSS</name>
+    <message>
+        <source>CSS Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsCodeEditorHTML</name>
+    <message>
+        <source>HTML Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsCodeEditorPython</name>
+    <message>
+        <source>Python Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsCodeEditorSQL</name>
+    <message>
+        <source>SQL Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsCollapsibleGroupBoxBasic</name>
     <message>
         <source>Shift-click to expand, then collapse others</source>
@@ -16947,6 +16999,10 @@ Please try a lower resolution or a smaller papersize</source>
         <source>SVG export error</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Items</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
@@ -16956,7 +17012,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Arrow outline width</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             </translation>
     </message>
     <message>
@@ -16971,7 +17027,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Arrow color changed</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             </translation>
     </message>
     <message>
@@ -17000,7 +17056,27 @@ Please try a lower resolution or a smaller papersize</source>
             </translation>
     </message>
     <message>
-        <source>Select arrow color</source>
+        <source>Arrow head outline width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrow head fill color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrow head outline color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select arrow head fill color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select arrow head outlnie color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrow line style changed</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17069,7 +17145,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Line width</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             </translation>
     </message>
     <message>
@@ -17094,7 +17170,19 @@ Please try a lower resolution or a smaller papersize</source>
             </translation>
     </message>
     <message>
-        <source>Color...</source>
+        <source>Line style...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrow head fill color...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrow head outline color...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrow head outline width</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17940,6 +18028,24 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
 </context>
 <context>
+    <name>QgsComposerFrame</name>
+    <message>
+        <source>&lt;frame&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerHtml</name>
+    <message>
+        <source>HTML fetch %1 failed with error %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html frame&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsComposerHtmlWidget</name>
     <message>
         <source>Use existing frames</source>
@@ -17984,6 +18090,39 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Use smart breaks changed</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Evaluate expressions changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Page break distance changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HTML changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User stylesheet changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User stylesheet toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HTML source changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert expression</source>
+        <translation type="unfinished">
+            </translation>
+    </message>
+    <message>
+        <source>url string</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerHtmlWidgetBase</name>
@@ -18017,10 +18156,6 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Main properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Refresh HTML</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18040,6 +18175,39 @@ Please try a lower resolution or a smaller papersize</source>
         <source> mm</source>
         <translation type="unfinished"> ម.ម​.</translation>
     </message>
+    <message>
+        <source>HTML Source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If checked, expressions inside [% %] tags will be evaluated prior to rendering the HTML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Evaluate QGIS expressions in HTML source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Source:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert an expression</source>
+        <translation type="unfinished">
+            </translation>
+    </message>
+    <message>
+        <source>Frames</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User stylesheet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update HTML</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerItem</name>
@@ -18047,6 +18215,58 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Change item position</source>
         <translation type="obsolete">
             </translation>
+    </message>
+    <message>
+        <source>&lt;arrow&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;group&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;label&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;legend&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;map&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;picture&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;scale bar&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;shape&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;table&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;attribute table&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;text table&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;frame&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;item&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18251,6 +18471,21 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
 </context>
 <context>
+    <name>QgsComposerLabel</name>
+    <message>
+        <source>&lt;HTML label&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;label&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsComposerLabelWidget</name>
     <message>
         <source>General options</source>
@@ -18407,6 +18642,14 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Legend</source>
         <translation type="obsolete">កំណត់​សម្គាល់</translation>
+    </message>
+    <message>
+        <source>&lt;legend&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19039,6 +19282,10 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Grid %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Overview %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerMapWidget</name>
@@ -19239,10 +19486,6 @@ Please try a lower resolution or a smaller papersize</source>
             </translation>
     </message>
     <message>
-        <source>Overview centering mode changed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Select grid frame color</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19337,6 +19580,38 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Annotation color changed</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Overview %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add map overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw &quot;%1&quot; overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overview checkbox toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overview map changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overview blend mode changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overview inverted toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overview centered toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerMapWidgetBase</name>
@@ -19356,7 +19631,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Overview style</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             </translation>
     </message>
     <message>
@@ -19365,7 +19640,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Overview frame</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             </translation>
     </message>
     <message>
@@ -19610,7 +19885,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Overview</source>
-        <translation type="unfinished">ទិដ្ឋភាព​ទូទៅ</translation>
+        <translation type="obsolete">ទិដ្ឋភាព​ទូទៅ</translation>
     </message>
     <message>
         <source>Offset</source>
@@ -19624,10 +19899,6 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Font color...</source>
         <translation type="unfinished">
             </translation>
-    </message>
-    <message>
-        <source>Overview blending mode</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Invert overview</source>
@@ -19774,6 +20045,29 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished">
             </translation>
     </message>
+    <message>
+        <source>Overviews</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blending mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerModel</name>
+    <message>
+        <source>Item</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerMouseHandles</name>
@@ -19804,17 +20098,20 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
 </context>
 <context>
-    <name>QgsComposerPicture</name>
+    <name>QgsComposerMultiFrame</name>
     <message>
-        <source>Picture expression parsing error: %1</source>
+        <source>&lt;frame&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>QgsComposerPicture</name>
     <message>
         <source>Composer</source>
-        <translation type="unfinished">កម្មវិធី​តែង</translation>
+        <translation type="obsolete">កម្មវិធី​តែង</translation>
     </message>
     <message>
-        <source>Picture expression eval error: %1</source>
+        <source>Picture expression eval error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19875,23 +20172,11 @@ Please try a lower resolution or a smaller papersize</source>
             </translation>
     </message>
     <message>
-        <source>Expression based image path</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Picture resize mode changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Picture placement changed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Picture source changed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Picture source expression</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19965,7 +20250,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Path</source>
-        <translation type="unfinished">ផ្លូវ</translation>
+        <translation type="obsolete">ផ្លូវ</translation>
     </message>
     <message utf8="true">
         <source> °</source>
@@ -20020,7 +20305,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Expression</source>
-        <translation type="unfinished">កន្សោម</translation>
+        <translation type="obsolete">កន្សោម</translation>
     </message>
     <message>
         <source>Top left</source>
@@ -20466,6 +20751,25 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
 </context>
 <context>
+    <name>QgsComposerShape</name>
+    <message>
+        <source>&lt;ellipse&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;rectangle&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;triangle&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;shape&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsComposerShapeWidget</name>
     <message>
         <source>General options</source>
@@ -20707,6 +21011,22 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Table header alignment changed</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Select header font color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select content font color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table header font color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table content font color</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerTableWidgetBase</name>
@@ -20792,23 +21112,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Color</source>
-        <translation type="obsolete">ពណ៌</translation>
-    </message>
-    <message>
-        <source>Fonts</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Color...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Header font...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Content font...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ពណ៌</translation>
     </message>
     <message>
         <source>Filter with</source>
@@ -20820,10 +21124,6 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Refresh table data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Header alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -20845,6 +21145,34 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source> mm</source>
         <translation type="unfinished"> ម.ម​.</translation>
+    </message>
+    <message>
+        <source>Feature filtering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fonts and text styling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table heading</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alignment</source>
+        <translation type="unfinished">តម្រឹម​</translation>
+    </message>
+    <message>
+        <source>Font</source>
+        <translation type="unfinished">ពុម្ពអក្សរ</translation>
+    </message>
+    <message>
+        <source>Choose font...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table contents</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23158,6 +23486,18 @@ p, li { white-space: pre-wrap; }
         <source> degrees</source>
         <translation type="unfinished">
             </translation>
+    </message>
+</context>
+<context>
+    <name>QgsDefaultRasterLayerLegend</name>
+    <message>
+        <source>Double-click to view legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>following %1 items
+not displayed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32964,18 +33304,6 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
 </context>
 <context>
-    <name>QgsLayerTreeModel</name>
-    <message>
-        <source>Double-click to view legend</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>following %1 items
-not displayed</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsLayerTreeViewDefaultActions</name>
     <message>
         <source>&amp;Add Group</source>
@@ -37636,7 +37964,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>All</source>
-        <translation type="obsolete">ទាំង​អស់</translation>
+        <translation type="unfinished">ទាំង​អស់</translation>
     </message>
     <message>
         <source>QGIS files</source>
@@ -45663,6 +45991,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>image/jpg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data Url</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
