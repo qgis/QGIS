@@ -103,14 +103,14 @@ QString QgsServerProjectParser::convertToAbsolutePath( const QString& file ) con
   bool uncPath = projPath.startsWith( "//" );
 #endif
 
-  QStringList srcElems = file.split( "/", QString::SkipEmptyParts );
-  QStringList projElems = mProjectPath.split( "/", QString::SkipEmptyParts );
+  QStringList srcElems = srcPath.split( "/", QString::SkipEmptyParts );
+  QStringList projElems = projPath.split( "/", QString::SkipEmptyParts );
 
 #if defined(Q_OS_WIN)
   if ( uncPath )
   {
-    projElems.insert( 0, "" );
-    projElems.insert( 0, "" );
+    projElems.prepend( "" );
+    projElems.prepend( "" );
   }
 #endif
 
