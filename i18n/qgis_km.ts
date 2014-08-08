@@ -17072,11 +17072,11 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select arrow head outlnie color</source>
+        <source>Arrow line style changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Arrow line style changed</source>
+        <source>Select arrow head outline color</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

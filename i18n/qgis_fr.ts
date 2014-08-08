@@ -16022,7 +16022,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="137"/>
-        <source>Select arrow head outlnie color</source>
+        <source>Select arrow head outline color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

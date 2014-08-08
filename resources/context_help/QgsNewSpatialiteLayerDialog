@@ -19,4 +19,5 @@ Width and precision are irrelevant in a SpatiaLite database so you do not have t
 In this section you can see the list of attributes. To delete one of them, click on it and choose <label>Remove selected attribute</label> button.
 
 <p>
-Click on <label>OK</label> to create the layer and close the dialog.  Clicking <label>Apply</label> also creates the layer, but keeps the dialog open, thereby allowing you to create more similar layers. <label>Cancel</label> will close the layer without further changes.
+Click on <label>OK</label> to create the layer and close the dialog.
+<label>Cancel</label> will close the layer without further changes.
