@@ -134,7 +134,7 @@ void QgsComposerArrowWidget::setGuiElementValues()
   mArrowHeadFillColorButton->setColorDialogTitle( tr( "Select arrow head fill color" ) );
   mArrowHeadFillColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   mArrowHeadOutlineColorButton->setColor( mArrow->arrowHeadOutlineColor() );
-  mArrowHeadOutlineColorButton->setColorDialogTitle( tr( "Select arrow head outlnie color" ) );
+  mArrowHeadOutlineColorButton->setColorDialogTitle( tr( "Select arrow head outline color" ) );
   mArrowHeadOutlineColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   mOutlineWidthSpinBox->setValue( mArrow->arrowHeadOutlineWidth() );
   mArrowHeadWidthSpinBox->setValue( mArrow->arrowHeadWidth() );
