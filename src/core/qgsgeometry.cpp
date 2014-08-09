@@ -3536,7 +3536,7 @@ bool QgsGeometry::crosses( const QgsGeometry* geometry ) const
   return geosRelOp( GEOSCrosses, this, geometry );
 }
 
-QString QgsGeometry::exportToWkt() const
+QString QgsGeometry::exportToWkt( const int &precision ) const
 {
   QgsDebugMsg( "entered." );
 
@@ -3566,7 +3566,7 @@ QString QgsGeometry::exportToWkt() const
     {
       double x, y;
       wkbPtr >> x >> y;
-      wkt += "POINT(" + qgsDoubleToString( x ) + " " + qgsDoubleToString( y ) + ")";
+      wkt += "POINT(" + qgsDoubleToString( x, precision ) + " " + qgsDoubleToString( y, precision ) + ")";
       return wkt;
     }
 
@@ -3589,7 +3589,7 @@ QString QgsGeometry::exportToWkt() const
         if ( idx != 0 )
           wkt += ", ";
 
-        wkt += qgsDoubleToString( x ) + " " + qgsDoubleToString( y );
+        wkt += qgsDoubleToString( x, precision ) + " " + qgsDoubleToString( y, precision );
       }
       wkt += ")";
       return wkt;
@@ -3626,7 +3626,7 @@ QString QgsGeometry::exportToWkt() const
           if ( hasZValue )
             wkbPtr += sizeof( double );
 
-          wkt += qgsDoubleToString( x ) + " " + qgsDoubleToString( y );
+          wkt += qgsDoubleToString( x, precision ) + " " + qgsDoubleToString( y, precision );
         }
         wkt += ")";
       }
@@ -3653,7 +3653,7 @@ QString QgsGeometry::exportToWkt() const
         if ( hasZValue )
           wkbPtr += sizeof( double );
 
-        wkt += qgsDoubleToString( x ) + " " + qgsDoubleToString( y );
+        wkt += qgsDoubleToString( x, precision ) + " " + qgsDoubleToString( y, precision );
       }
       wkt += ")";
       return wkt;
@@ -3686,7 +3686,7 @@ QString QgsGeometry::exportToWkt() const
           if ( hasZValue )
             wkbPtr += sizeof( double );
 
-          wkt += qgsDoubleToString( x ) + " " + qgsDoubleToString( y );
+          wkt += qgsDoubleToString( x, precision ) + " " + qgsDoubleToString( y, precision );
         }
         wkt += ")";
       }
@@ -3729,7 +3729,7 @@ QString QgsGeometry::exportToWkt() const
             if ( hasZValue )
               wkbPtr += sizeof( double );
 
-            wkt += qgsDoubleToString( x ) + " " + qgsDoubleToString( y );
+            wkt += qgsDoubleToString( x, precision ) + " " + qgsDoubleToString( y, precision );
           }
           wkt += ")";
         }
