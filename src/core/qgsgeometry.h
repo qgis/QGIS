@@ -406,10 +406,11 @@ class CORE_EXPORT QgsGeometry
     /** Returns a Geometry representing the points making up this Geometry that do not make up other. */
     QgsGeometry* symDifference( QgsGeometry* geometry );
 
-    /** Exports the geometry to mWkt
+    /** Exports the geometry to WKT
+     *  @note precision parameter added in 2.4
      *  @return true in case of success and false else
      */
-    QString exportToWkt() const;
+    QString exportToWkt( const int &precision = 17 ) const;
 
     /** Exports the geometry to GeoJSON
      *  @return a QString representing the geometry as GeoJSON
