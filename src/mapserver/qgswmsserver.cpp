@@ -1282,11 +1282,11 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
       int gmlVersion = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;
       if ( gmlVersion < 3 )
       {
-        boxElem = QgsOgcUtils::rectangleToGMLBox( featuresRect, result );
+        boxElem = QgsOgcUtils::rectangleToGMLBox( featuresRect, result, 8 );
       }
       else
       {
-        boxElem = QgsOgcUtils::rectangleToGMLEnvelope( featuresRect, result );
+        boxElem = QgsOgcUtils::rectangleToGMLEnvelope( featuresRect, result, 8 );
       }
 
       QgsCoordinateReferenceSystem crs = mMapRenderer->destinationCrs();
@@ -1301,10 +1301,10 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
     {
       QDomElement bBoxElem = result.createElement( "BoundingBox" );
       bBoxElem.setAttribute( "CRS", mMapRenderer->destinationCrs().authid() );
-      bBoxElem.setAttribute( "minx", QString::number( featuresRect->xMinimum() ) );
-      bBoxElem.setAttribute( "maxx", QString::number( featuresRect->xMaximum() ) );
-      bBoxElem.setAttribute( "miny", QString::number( featuresRect->yMinimum() ) );
-      bBoxElem.setAttribute( "maxy", QString::number( featuresRect->yMaximum() ) );
+      bBoxElem.setAttribute( "minx", qgsDoubleToString( featuresRect->xMinimum(), 8 ) );
+      bBoxElem.setAttribute( "maxx", qgsDoubleToString( featuresRect->xMaximum(), 8 ) );
+      bBoxElem.setAttribute( "miny", qgsDoubleToString( featuresRect->yMinimum(), 8 ) );
+      bBoxElem.setAttribute( "maxy", qgsDoubleToString( featuresRect->yMaximum(), 8 ) );
       getFeatureInfoElement.insertBefore( bBoxElem, QDomNode() ); //insert as first child
     }
   }
@@ -1823,10 +1823,10 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       {
         QDomElement bBoxElem = infoDocument.createElement( "BoundingBox" );
         bBoxElem.setAttribute( version == "1.1.1" ? "SRS" : "CRS", outputCrs.authid() );
-        bBoxElem.setAttribute( "minx", QString::number( box.xMinimum() ) );
-        bBoxElem.setAttribute( "maxx", QString::number( box.xMaximum() ) );
-        bBoxElem.setAttribute( "miny", QString::number( box.yMinimum() ) );
-        bBoxElem.setAttribute( "maxy", QString::number( box.yMaximum() ) );
+        bBoxElem.setAttribute( "minx", qgsDoubleToString( box.xMinimum(), 8 ) );
+        bBoxElem.setAttribute( "maxx", qgsDoubleToString( box.xMaximum(), 8 ) );
+        bBoxElem.setAttribute( "miny", qgsDoubleToString( box.yMinimum(), 8 ) );
+        bBoxElem.setAttribute( "maxy", qgsDoubleToString( box.yMaximum(), 8 ) );
         featureElement.appendChild( bBoxElem );
       }
 
@@ -1844,7 +1844,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
         }
         QDomElement geometryElement = infoDocument.createElement( "Attribute" );
         geometryElement.setAttribute( "name", "geometry" );
-        geometryElement.setAttribute( "value", geom->exportToWkt() );
+        geometryElement.setAttribute( "value", geom->exportToWkt( 8 ) );
         geometryElement.setAttribute( "type", "derived" );
         featureElement.appendChild( geometryElement );
       }
@@ -2830,11 +2830,11 @@ QDomElement QgsWMSServer::createFeatureGML(
     QDomElement boxElem;
     if ( version < 3 )
     {
-      boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc );
+      boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc, 8 );
     }
     else
     {
-      boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc );
+      boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc, 8 );
     }
 
     if ( crs.isValid() )
@@ -2858,11 +2858,11 @@ QDomElement QgsWMSServer::createFeatureGML(
     QDomElement gmlElem;
     if ( version < 3 )
     {
-      gmlElem = QgsOgcUtils::geometryToGML( geom, doc );
+      gmlElem = QgsOgcUtils::geometryToGML( geom, doc, 8 );
     }
     else
     {
-      gmlElem = QgsOgcUtils::geometryToGML( geom, doc, "GML3" );
+      gmlElem = QgsOgcUtils::geometryToGML( geom, doc, "GML3", 8 );
     }
 
     if ( !gmlElem.isNull() )
