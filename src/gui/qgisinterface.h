@@ -533,7 +533,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /** @note added in 1.9 */
     virtual QAction *actionCancelAllEdits() = 0;
     virtual QAction *actionLayerSaveAs() = 0;
-    /** @note deprecated in 2.4 - returns null pointer */
+    /** @deprecated in 2.4 - returns null pointer */
 #ifndef Q_MOC_RUN
     Q_DECL_DEPRECATED
 #endif

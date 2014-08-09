@@ -153,7 +153,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void setStatusMessage( const QString & message );
 
     /**Refreshes the composition when composer related options change
-     *Note: added in version 2.1*/
+     @note added in version 2.1
+    */
     void updateSettings();
 
     void setSnapToGridEnabled( const bool b );
@@ -362,7 +363,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
       @param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
       @param pos item position. Optional, take position from xml if 0
       @param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
-      @note not available in python bindings
+      @note parameters mapsToResotre, addUndoCommands pos and pasteInPlace not available in python bindings
      */
     void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore = 0,
                           bool addUndoCommands = false, QPointF* pos = 0, bool pasteInPlace = false );
@@ -408,7 +409,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Sorts the zList. The only time where this function needs to be called is from QgsComposer
      * after reading all the items from xml file
-     * @note deprecated, see @refreshZList instead
+     * @deprecated use refreshZList instead
     */
     Q_DECL_DEPRECATED void sortZList() {};
 

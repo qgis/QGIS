@@ -123,7 +123,6 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     Q_DECL_DEPRECATED void setArrowColor( const QColor& c );
 
     /**Sets the color used to draw the outline around the arrow head.
-     * @param color arrow head outline color
      * @see setArrowHeadFillColor
      * @see arrowHeadFillColor
      * @note added in 2.5
@@ -139,7 +138,6 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     void setArrowHeadOutlineColor( const QColor& color );
 
     /**Sets the color used to draw the arrow head.
-     * @param color arrow head color
      * @see setArrowHeadFillColor
      * @see arrowHeadOutlineColor
      * @note added in 2.5

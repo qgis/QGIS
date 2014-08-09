@@ -191,7 +191,7 @@ namespace pal
        * @param lambda_max xMax bounding-box
        * @param phi_max yMax bounding-box
        * @param scale the scale (1:scale)
-       * @param svgmap stream to wrtie the svg map (need _EXPORT_MAP_ #defined to work)
+       * @param svgmap stream to wrtie the svg map (need _EXPORT_MAP_ defined to work)
        */
       Problem* extract( int nbLayers, char **layersName, double *layersFactor,
                         double lambda_min, double phi_min,

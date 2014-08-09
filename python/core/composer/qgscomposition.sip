@@ -93,7 +93,8 @@ class QgsComposition : QGraphicsScene
     void setStatusMessage( const QString & message );
 
     /**Refreshes the composition when composer related options change
-     *Note: added in version 2.1*/
+     @note added in version 2.1
+    */
     void updateSettings();
 
     void setSnapToGridEnabled( const bool b );
@@ -109,7 +110,7 @@ class QgsComposition : QGraphicsScene
     void setAlignmentSnap( const bool s );
     bool alignmentSnap() const;
 
-    void setSmartGuidesEnabled( bool b );
+    void setSmartGuidesEnabled( const bool b );
     bool smartGuidesEnabled() const;
 
     /**Removes all snap lines*/
@@ -164,11 +165,11 @@ class QgsComposition : QGraphicsScene
 
     /**Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
      * and the edges and centers of other items.
-     * @param t snap tolerance in pixels
+     * @param snapTolerance snap tolerance in pixels
      * @see alignmentSnapTolerance
      * @note Added in QGIS 2.5
     */
-    void setSnapTolerance( int snapTolerance );
+    void setSnapTolerance( const int snapTolerance );
 
     /**Returns the snap tolerance to use when automatically snapping items during movement and resizing to guides
      * and the edges and centers of other items.
@@ -300,6 +301,11 @@ class QgsComposition : QGraphicsScene
     /**Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
       @param elem items parent element, e.g. \verbatim <Composer> \endverbatim or \verbatim <ComposerItemClipboard> \endverbatim
       @param doc xml document
+      @param mapsToRestore for reading from project file: set preview move 'rectangle' to all maps and save the preview states to show composer maps on demand
+      @param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
+      @param pos item position. Optional, take position from xml if 0
+      @param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
+      @note parameters mapsToResotre, addUndoCommands pos and pasteInPlace not available in python bindings
      */
     void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc );
 
@@ -307,6 +313,9 @@ class QgsComposition : QGraphicsScene
     void addItemToZList( QgsComposerItem* item );
     /**Removes item from z list. Usually called from destructor of QgsComposerItem*/
     void removeItemFromZList( QgsComposerItem* item );
+
+    //functions to move selected items in hierarchy
+    void raiseSelectedItems();
 
     //returns true if successful
     bool raiseItem( QgsComposerItem* item );
@@ -321,7 +330,7 @@ class QgsComposition : QGraphicsScene
     bool moveItemToBottom( QgsComposerItem* item );
 
     //functions to find items by their position in the z list
-    void selectNextByZOrder( ZValueDirection direction );
+    void selectNextByZOrder( const ZValueDirection direction );
     QgsComposerItem* getComposerItemBelow( QgsComposerItem* item ) const;
     QgsComposerItem* getComposerItemAbove( QgsComposerItem* item ) const;
 
@@ -341,7 +350,7 @@ class QgsComposition : QGraphicsScene
 
     /**Sorts the zList. The only time where this function needs to be called is from QgsComposer
      * after reading all the items from xml file
-     * @note deprecated, see @refreshZList instead
+     * @deprecated use refreshZList instead
     */
     void sortZList() /Deprecated/;
 
@@ -428,8 +437,8 @@ class QgsComposition : QGraphicsScene
 
     /**Print on a preconfigured printer
      * @param printer QPrinter destination
-     * @painter QPainter source
-     * @startNewPage set to true to begin the print on a new page
+     * @param painter QPainter source
+     * @param startNewPage set to true to begin the print on a new page
      */
     void doPrint( QPrinter& printer, QPainter& painter, bool startNewPage = false );
 
@@ -460,7 +469,7 @@ class QgsComposition : QGraphicsScene
      * @deprecated use QgsComposerUtils::relativeResizeRect instead
      */
     static void relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter ) /Deprecated/;
-    
+
     /**Returns a scaled position given a before and after range
      * @deprecated use QgsComposerUtils::relativePosition instead
      */
@@ -495,17 +504,17 @@ class QgsComposition : QGraphicsScene
      * @param active true if data defined property is active, false if it is disabled
      * @param useExpression true if the expression should be used
      * @param expression expression for data defined property
-     * @field field name if the data defined property should take its value from a field
+     * @param field name if the data defined property should take its value from a field
      * @note this method was added in version 2.5
     */
     void setDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
 
-	/**Returns the items model attached to the composition
+    /**Returns the items model attached to the composition
      * @returns QgsComposerModel for composition
      * @note this method was added in version 2.5
     */
     QgsComposerModel * itemsModel();
-	
+
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
