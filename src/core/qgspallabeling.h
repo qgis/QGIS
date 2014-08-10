@@ -791,11 +791,34 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     //! called when passing engine among map renderers
     virtual QgsLabelingEngineInterface* clone();
 
+    /**Draws text using the specified settings
+     * @param rect destination rectangle for text
+     * @param rotation text rotation
+     * @param textLines list of lines of text to draw
+     * @param context render context
+     * @param layerSettings pal layer settings
+     * @param dpiRatio scaling for dpi
+     * @note added in QGIS 2.5
+     */
+    void drawText( QRectF rect, double rotation, QStringList textLines, QgsRenderContext &context, QgsPalLayerSettings &layerSettings, double dpiRatio = 1.0 );
+
     //! @note not available in python bindings
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
     //!drawLabel
     //! @note not available in python bindings
     virtual void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType, double dpiRatio = 1.0 );
+
+    /**Draws a part of a label using the specified settings
+     * @param rect destination rectangle for text
+     * @param rotation text rotation
+     * @param textLines list of lines of text to draw
+     * @param context render context
+     * @param layerSettings Pal layer settings
+     * @param drawType part of label to draw
+     * @param dpiRatio scaling for dpi
+     * @note added in QGIS 2.5
+     */
+    void drawLabel( QRectF rect, double rotation, QStringList textLines, QgsRenderContext& context, QgsPalLayerSettings& layerSettings, DrawLabelType drawType, double dpiRatio );
 
     static void drawLabelBuffer( QgsRenderContext& context,
                                  QgsLabelComponent component,
@@ -808,6 +831,8 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     static void drawLabelShadow( QgsRenderContext& context,
                                  QgsLabelComponent component,
                                  const QgsPalLayerSettings& tmpLyr );
+
+    void drawLabelText( QgsPoint point, QSizeF size, bool drawFromTop, QStringList textLines, DrawLabelType drawType, QgsLabelComponent component, const QgsPalLayerSettings& settings, QFontMetricsF* fontMetrics, QgsRenderContext& context );
 
     //! load/save engine settings to project file
     //! @note added in QGIS 1.9
@@ -863,6 +888,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     bool mDrawOutlineLabels; // whether to draw labels as text or outlines
 
     QgsLabelingResults* mResults;
+
 };
 Q_NOWARN_DEPRECATED_POP
 

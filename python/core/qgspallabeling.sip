@@ -717,11 +717,34 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     //! called when passing engine among map renderers
     virtual QgsLabelingEngineInterface* clone() /Factory/;
 
+    /**Draws text using the specified settings
+     * @param rect destination rectangle for text
+     * @param rotation text rotation
+     * @param textLines list of lines of text to draw
+     * @param context render context
+     * @param layerSettings pal layer settings
+     * @param dpiRatio scaling for dpi
+     * @note added in QGIS 2.5
+     */
+    void drawText( QRectF rect, double rotation, QStringList textLines, QgsRenderContext &context, QgsPalLayerSettings &layerSettings, double dpiRatio = 1.0 );
+
     //! @note not available in python bindings
     // void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
     //!drawLabel
     //! @note not available in python bindings
     // void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType );
+
+    /**Draws a part of a label using the specified settings
+     * @param rect destination rectangle for text
+     * @param rotation text rotation
+     * @param textLines list of lines of text to draw
+     * @param context render context
+     * @param layerSettings Pal layer settings
+     * @param drawType part of label to draw
+     * @param dpiRatio scaling for dpi
+     * @note added in QGIS 2.5
+     */
+    void drawLabel( QRectF rect, double rotation, QStringList textLines, QgsRenderContext& context, QgsPalLayerSettings& layerSettings, DrawLabelType drawType, double dpiRatio );
 
     static void drawLabelBuffer( QgsRenderContext& context,
                                  QgsLabelComponent component,
