@@ -38,8 +38,9 @@
 #include <QFileInfo>
 #include <QTextDocument>
 
-QgsWMSProjectParser::QgsWMSProjectParser( QDomDocument* xmlDoc, const QString& filePath ): QgsWMSConfigParser(),
-    mProjectParser( xmlDoc, filePath )
+QgsWMSProjectParser::QgsWMSProjectParser( QDomDocument* xmlDoc, const QString& filePath )
+    : QgsWMSConfigParser()
+    , mProjectParser( xmlDoc, filePath )
 {
   mLegendLayerFont.fromString( mProjectParser.firstComposerLegendElement().attribute( "layerFont" ) );
   mLegendItemFont.fromString( mProjectParser.firstComposerLegendElement().attribute( "itemFont" ) );
@@ -104,11 +105,11 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
   }
 
   //does lName refer to a leaf layer
-  const QHash< QString, QDomElement >& projectLayerElementsByName = mProjectParser.projectLayerElementsByName();
-  QHash< QString, QDomElement >::const_iterator layerElemIt = projectLayerElementsByName.find( lName );
-  if ( layerElemIt != projectLayerElementsByName.constEnd() )
+  const QHash< QString, QDomElement > &projectLayerElements = mProjectParser.useLayerIDs() ? mProjectParser.projectLayerElementsById() : mProjectParser.projectLayerElementsByName();
+  QHash< QString, QDomElement >::const_iterator layerElemIt = projectLayerElements.find( lName );
+  if ( layerElemIt != projectLayerElements.constEnd() )
   {
-    return ( QList<QgsMapLayer*>() << mProjectParser.createLayerFromElement( layerElemIt.value(), useCache ) );
+    return QList<QgsMapLayer*>() << mProjectParser.createLayerFromElement( layerElemIt.value(), useCache );
   }
 
   //group or project name
@@ -685,7 +686,7 @@ void QgsWMSProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument
     return;
   }
 
-  bool useDrawingOrder = ( legendElement.attribute( "updateDrawingOrder" ) == "false" );
+  bool useDrawingOrder = legendElement.attribute( "updateDrawingOrder" ) == "false";
   QMap<int, QString> orderedLayerNames;
 
   QDomNodeList legendChildren = legendElement.childNodes();
@@ -767,7 +768,7 @@ void QgsWMSProjectParser::addDrawingOrderEmbeddedGroup( QDomElement groupElem, b
   for ( int i = 0; i < layerNodeList.size(); ++i )
   {
     layerElem = layerNodeList.at( i ).toElement();
-    layerName = layerElem.attribute( "name" );
+    layerName = mProjectParser.useLayerIDs() ? layerElem.attribute( "id" ) : layerElem.attribute( "name" );
 
     int layerDrawingOrder = updateDrawingOrder ? -1 : layerElem.attribute( "drawingOrder", "-1" ).toInt();
     if ( layerDrawingOrder == -1 )
@@ -824,7 +825,10 @@ void QgsWMSProjectParser::addDrawingOrder( QDomElement elem, bool useDrawingOrde
   }
   else if ( elem.tagName() == "legendlayer" )
   {
-    QString layerName = elem.attribute( "name" );
+    QString layerName = mProjectParser.useLayerIDs()
+                        ? mProjectParser.layerIdFromLegendLayer( elem )
+                        : elem.attribute( "name" );
+
     if ( useDrawingOrder )
     {
       int drawingOrder = elem.attribute( "drawingOrder", "-1" ).toInt();
@@ -860,10 +864,11 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
     {
       layerElem.setAttribute( "queryable", "1" );
       QString name = currentChildElem.attribute( "name" );
-      if ( mRestrictedLayers.contains( name ) ) //unpublished group
+      if ( mProjectParser.restrictedLayers().contains( name ) ) //unpublished group
       {
         continue;
       }
+
       QDomElement nameElem = doc.createElement( "Name" );
       QDomText nameText = doc.createTextNode( name );
       nameElem.appendChild( nameText );
@@ -932,7 +937,7 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
         continue;
       }
 
-      if ( mRestrictedLayers.contains( currentLayer->name() ) ) //unpublished layer
+      if ( mProjectParser.restrictedLayers().contains( mProjectParser.useLayerIDs() ? currentLayer->id() : currentLayer->name() ) ) //unpublished layer
       {
         continue;
       }
@@ -949,7 +954,7 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
       QDomElement nameElem = doc.createElement( "Name" );
       //We use the layer name even though it might not be unique.
       //Because the id sometimes contains user/pw information and the name is more descriptive
-      QDomText nameText = doc.createTextNode( currentLayer->name() );
+      QDomText nameText = doc.createTextNode( mProjectParser.useLayerIDs() ? currentLayer->id() : currentLayer->name() );
       nameElem.appendChild( nameText );
       layerElem.appendChild( nameElem );
 
@@ -1074,7 +1079,7 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
           mapUrl.addQueryItem( "SERVICE", "WMS" );
           mapUrl.addQueryItem( "VERSION", version );
           mapUrl.addQueryItem( "REQUEST", "GetLegendGraphic" );
-          mapUrl.addQueryItem( "LAYER", currentLayer->name() );
+          mapUrl.addQueryItem( "LAYER", mProjectParser.useLayerIDs() ? currentLayer->id() : currentLayer->name() );
           mapUrl.addQueryItem( "FORMAT", "image/png" );
           mapUrl.addQueryItem( "STYLE", styleNameText.data() );
           if ( version == "1.3.0" )
@@ -1305,7 +1310,7 @@ void QgsWMSProjectParser::addOWSLayers( QDomDocument &doc,
         continue;
       }
 
-      if ( mRestrictedLayers.contains( currentLayer->name() ) ) //unpublished layer
+      if ( mProjectParser.restrictedLayers().contains( mProjectParser.useLayerIDs() ? currentLayer->id() : currentLayer->name() ) ) //unpublished layer
       {
         continue;
       }
@@ -1336,7 +1341,7 @@ void QgsWMSProjectParser::addOWSLayers( QDomDocument &doc,
       // OWSContext Layer opacity is set to 1
       layerElem.setAttribute( "opacity", 1 );
 
-      QString lyrname = currentLayer->name();
+      QString lyrname = mProjectParser.useLayerIDs() ? currentLayer->id() : currentLayer->name();
       layerElem.setAttribute( "name", lyrname );
 
       // define an id based on layer name
@@ -1593,7 +1598,6 @@ bool QgsWMSProjectParser::featureInfoWithWktGeometry() const
 
   return ( wktElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
 }
-
 
 QHash<QString, QString> QgsWMSProjectParser::featureInfoLayerAliasMap() const
 {

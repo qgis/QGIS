@@ -1553,13 +1553,6 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="2" column="0" colspan="3">
-                   <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
-                    <property name="text">
-                     <string>Add geometry to feature response</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="1" column="1" colspan="2">
                    <widget class="QgsCollapsibleGroupBox" name="mLayerRestrictionsGroupBox">
                     <property name="title">
@@ -1815,6 +1808,20 @@
                      </widget>
                     </item>
                    </layout>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
+                    <property name="text">
+                     <string>Add geometry to feature response</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1" colspan="2">
+                   <widget class="QCheckBox" name="mWmsUseLayerIDs">
+                    <property name="text">
+                     <string>Use layer ids as names</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>

@@ -24,7 +24,7 @@
 class QTextDocument;
 class QSvgRenderer;
 
-class QgsWMSProjectParser: public QgsWMSConfigParser
+class QgsWMSProjectParser : public QgsWMSConfigParser
 {
   public:
     QgsWMSProjectParser( QDomDocument* xmlDoc, const QString& filePath );
@@ -105,14 +105,12 @@ class QgsWMSProjectParser: public QgsWMSConfigParser
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
+    bool useLayerIDs() const { return mProjectParser.useLayerIDs(); }
+
   private:
     QgsServerProjectParser mProjectParser;
 
-    /**Names of layers and groups which should not be published*/
-    QSet<QString> mRestrictedLayers;
-
     mutable QFont mLegendLayerFont;
-
     mutable QFont mLegendItemFont;
 
     /**Watermark text items*/

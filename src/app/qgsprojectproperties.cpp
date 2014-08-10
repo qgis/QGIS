@@ -332,6 +332,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   bool addWktGeometry = QgsProject::instance()->readBoolEntry( "WMSAddWktGeometry", "/" );
   mAddWktGeometryCheckBox->setChecked( addWktGeometry );
 
+  bool useLayerIDs = QgsProject::instance()->readBoolEntry( "WMSUseLayerIDs", "/" );
+  mWmsUseLayerIDs->setChecked( useLayerIDs );
+
   //WMS maxWidth / maxHeight
   mMaxWidthLineEdit->setValidator( new QIntValidator( mMaxWidthLineEdit ) );
   int maxWidth = QgsProject::instance()->readNumEntry( "WMSMaxWidth", "/", -1 );
@@ -794,6 +797,7 @@ void QgsProjectProperties::apply()
   }
 
   QgsProject::instance()->writeEntry( "WMSAddWktGeometry", "/", mAddWktGeometryCheckBox->isChecked() );
+  QgsProject::instance()->writeEntry( "WMSUseLayerIDs", "/", mWmsUseLayerIDs->isChecked() );
 
   QString maxWidthText = mMaxWidthLineEdit->text();
   if ( maxWidthText.isEmpty() )

@@ -83,8 +83,10 @@ class QgsServerProjectParser
     QDomElement propertiesElem() const;
 
     const QSet<QString>& restrictedLayers() const { return mRestrictedLayers; }
+    bool useLayerIDs() const { return mUseLayerIDs; }
 
     const QHash< QString, QDomElement >& projectLayerElementsByName() const { return mProjectLayerElementsByName; }
+    const QHash< QString, QDomElement >& projectLayerElementsById() const { return mProjectLayerElementsById; }
 
     void layerFromLegendLayer( const QDomElement& legendLayerElem, QMap< int, QgsMapLayer*>& layers, bool useCache = true ) const;
 
@@ -143,10 +145,14 @@ class QgsServerProjectParser
     /**Names of layers and groups which should not be published*/
     QSet<QString> mRestrictedLayers;
 
+    bool mUseLayerIDs;
+
     QgsServerProjectParser(); //forbidden
 
     /**Returns a complete string set with all the restricted layer names (layers/groups that are not to be published)*/
     QSet<QString> findRestrictedLayers() const;
+
+    bool findUseLayerIDs() const;
 
     /**Adds sublayers of an embedded group to layer set*/
     static void sublayersOfEmbeddedGroup( const QString& projectFilePath, const QString& groupName, QSet<QString>& layerSet );

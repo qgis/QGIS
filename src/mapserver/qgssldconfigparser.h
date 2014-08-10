@@ -25,7 +25,7 @@ class QgsVectorLayer;
 class QgsRasterLayer;
 class QTemporaryFile;
 
-class QgsSLDConfigParser: public QgsWMSConfigParser
+class QgsSLDConfigParser : public QgsWMSConfigParser
 {
   public:
     /**Constructor takes a dom document as argument. The class takes ownership of the document and deletes it in the destructor
@@ -184,6 +184,8 @@ class QgsSLDConfigParser: public QgsWMSConfigParser
 
     /**Reads attributes "epsg" or "proj" from layer element and sets specified CRS if present*/
     void setCrsForLayer( const QDomElement& layerElem, QgsMapLayer* ml ) const;
+
+    bool useLayerIDs() const { return false; }
 };
 
 #endif // QGSSLDCONFIGPARSER_H
