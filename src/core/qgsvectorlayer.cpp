@@ -2046,6 +2046,19 @@ bool QgsVectorLayer::addAttribute( const QgsField &field )
   return mEditBuffer->addAttribute( field );
 }
 
+void QgsVectorLayer::remAttributeAlias( int attIndex)
+{
+  if ( attIndex < 0 || attIndex >= pendingFields().count() )
+    return;
+
+  QString name = pendingFields()[ attIndex ].name();
+  if ( mAttributeAliasMap.contains(name) )
+  {
+    mAttributeAliasMap.remove( name );
+    emit layerModified();
+  }
+}
+
 void QgsVectorLayer::addAttributeAlias( int attIndex, QString aliasString )
 {
   if ( attIndex < 0 || attIndex >= pendingFields().count() )
