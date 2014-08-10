@@ -9,7 +9,7 @@ VA numeric field.
 p4
 sS'ALG_DESC'
 p5
-VThis tool creates a dotplot of the input numeric field using the function dotchart().\u000a
+VThis tool uses dotchart() to create a dotplot using the values from a numeric field.\u000a
 p6
 sS'Layer'
 p7

@@ -36,20 +36,8 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterFixedTable import ParameterFixedTable
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterFactory import ParameterFactory
-from processing.outputs.OutputFactory import OutputFactory
-from processing.outputs.OutputTable import OutputTable
-from processing.outputs.OutputVector import OutputVector
-from processing.outputs.OutputRaster import OutputRaster
+from processing.core.parameters import *
+from processing.core.outputs import *
 from SagaUtils import SagaUtils
 from SagaGroupNameDecorator import SagaGroupNameDecorator
 from processing.tools import dataobjects
@@ -92,12 +80,12 @@ class SagaAlgorithm(GeoAlgorithm):
         self.undecoratedGroup = line
         self.group = SagaGroupNameDecorator.getDecoratedName(
                 self.undecoratedGroup)
+        line = lines.readline().strip('\n').strip()
         while line != '':
-            line = line.strip('\n').strip()
             if line.startswith('Hardcoded'):
                 self.hardcodedStrings.append(line[len('Harcoded|') + 1:])
             elif line.startswith('Parameter'):
-                self.addParameter(ParameterFactory.getFromString(line))
+                self.addParameter(getParameterFromString(line))
             elif line.startswith('AllowUnmatching'):
                 self.allowUnmatchingGridExtents = True
             elif line.startswith('Extent'):
@@ -106,7 +94,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 self.addParameter(ParameterExtent(self.OUTPUT_EXTENT,
                                   'Output extent', '0,1,0,1'))
             else:
-                self.addOutput(OutputFactory.getFromString(line))
+                self.addOutput(getOutputFromString(line))
             line = lines.readline().strip('\n').strip()
         lines.close()
 
@@ -177,7 +165,7 @@ class SagaAlgorithm(GeoAlgorithm):
                                     'Unsupported file format')
 
         # 2: Set parameters and outputs
-        saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
+        saga208 = SagaUtils.isSaga208()
         if isWindows() or isMac() or not saga208:
             command = self.undecoratedGroup + ' "' + self.cmdname + '"'
         else:
@@ -351,7 +339,7 @@ class SagaAlgorithm(GeoAlgorithm):
         destFilename = getTempFilenameInTempFolder(filename + '.sgrd')
         self.exportedLayers[source] = destFilename
         sessionExportedLayers[source] = destFilename
-        saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
+        saga208 = SagaUtils.isSaga208()
         if saga208:
             if isWindows() or isMac():
                 return 'io_gdal 0 -GRIDS "' + destFilename + '" -FILES "' + source \
@@ -366,6 +354,7 @@ class SagaAlgorithm(GeoAlgorithm):
     def checkBeforeOpeningParametersDialog(self):
         msg = SagaUtils.checkSagaIsInstalled()
         if msg is not None:
+            print msg
             html = '<p>This algorithm requires SAGA to be run.Unfortunately, \
                    it seems that SAGA is not installed in your system, or it \
                    is not correctly configured to be used from QGIS</p>'
@@ -380,20 +369,27 @@ class SagaAlgorithm(GeoAlgorithm):
         """
         extent = None
         for param in self.parameters:
+            files = []
             if isinstance(param, ParameterRaster):
-                layer = dataobjects.getObjectFromUri(param.value)
+                files = [param.value]
+            elif isinstance(param, ParameterMultipleInput) and param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                if param.value is not None:
+                    files = param.value.split(";")
+            for f in files:
+                layer = dataobjects.getObjectFromUri(f)
                 if layer is None:
                     continue
                 if layer.bandCount() > 1:
                     return 'Input layer ' + str(layer.name()) \
                         + ' has more than one band.\n' \
                         + 'Multiband layers are not supported by SAGA'
-                if extent is None:
-                    extent = (layer.extent(), layer.height(), layer.width())
-                else:
-                    extent2 = (layer.extent(), layer.height(), layer.width())
-                    if extent != extent2:
-                        return "Input layers do not have the same grid extent."
+                if not self.allowUnmatchingGridExtents:
+                    if extent is None:
+                        extent = (layer.extent(), layer.height(), layer.width())
+                    else:
+                        extent2 = (layer.extent(), layer.height(), layer.width())
+                        if extent != extent2:
+                            return "Input layers do not have the same grid extent."
 
 
 
@@ -403,6 +399,8 @@ class SagaAlgorithm(GeoAlgorithm):
         name = ''.join(c for c in name if c in validChars)
         html = getHtmlFromRstFile(os.path.join(os.path.dirname(__file__), 'help',
                             name + '.rst'))
+        if html is None:
+            return True, None
         imgpath = os.path.join(os.path.dirname(__file__),os.pardir, os.pardir, 'images', 'saga100x100.jpg')
         html = ('<img src="%s"/>' % imgpath) + html
         return True, html

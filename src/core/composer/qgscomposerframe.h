@@ -43,6 +43,9 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
 
     QgsComposerMultiFrame* multiFrame() const { return mMultiFrame; }
 
+    //Overriden to allow multiframe to set display name
+    virtual QString displayName() const;
+
   private:
     QgsComposerFrame(); //forbidden
     QgsComposerMultiFrame* mMultiFrame;

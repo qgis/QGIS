@@ -88,8 +88,7 @@ void QgsHighlight::init()
 {
   if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
   {
-    // TODO[MD]: after merge - should not use mapRenderer()
-    const QgsCoordinateTransform* ct = mMapCanvas->mapRenderer()->transformation( mLayer );
+    const QgsCoordinateTransform* ct = mMapCanvas->mapSettings().layerTransfrom( mLayer );
     if ( ct )
     {
       if ( mGeometry )

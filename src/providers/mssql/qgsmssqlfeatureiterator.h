@@ -55,7 +55,6 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
 
     // server access
     QString mService;
-    QString mDriver;
     QString mDatabaseName;
     QString mHost;
 
@@ -82,10 +81,7 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     virtual bool close();
 
   protected:
-
     void BuildStatement( const QgsFeatureRequest& request );
-
-    QSqlDatabase GetDatabase( QString driver, QString host, QString database, QString username, QString password );
 
   private:
     //! fetch next feature, return true on success
@@ -106,17 +102,11 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     // Field index of FID column
     long mFidCol;
 
-    // Field index of geometry column
-    long mGeometryCol;
-
     // List of attribute indices to fetch with nextFeature calls
     QgsAttributeList mAttributesToFetch;
 
     // for parsing sql geometries
     QgsMssqlGeometryParser mParser;
-
-    // Return True of the geometry column was found when parsing the columns.
-    bool isSpatial() { return mGeometryCol > -1; }
 };
 
 #endif // QGSMSSQLFEATUREITERATOR_H

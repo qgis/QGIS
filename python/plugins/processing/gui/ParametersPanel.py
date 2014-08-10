@@ -47,23 +47,23 @@ from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.MultipleFileInputPanel import MultipleFileInputPanel
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterFixedTable import ParameterFixedTable
-from processing.parameters.ParameterRange import ParameterRange
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterCrs import ParameterCrs
-from processing.parameters.ParameterString import ParameterString
-from processing.outputs.OutputRaster import OutputRaster
-from processing.outputs.OutputTable import OutputTable
-from processing.outputs.OutputVector import OutputVector
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTable
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterFixedTable
+from processing.core.parameters import ParameterRange
+from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterCrs
+from processing.core.parameters import ParameterString
+from processing.core.outputs import OutputRaster
+from processing.core.outputs import OutputTable
+from processing.core.outputs import OutputVector
 
 
 class ParametersPanel(QtGui.QWidget):
@@ -105,7 +105,12 @@ class ParametersPanel(QtGui.QWidget):
                 continue
             desc = param.description
             if isinstance(param, ParameterExtent):
-                desc += '(xmin, xmax, ymin, ymax)'
+                desc += ' (xmin, xmax, ymin, ymax)'
+            try:
+                if param.optional:
+                    desc += ' [optional]'
+            except:
+                pass
             label = QtGui.QLabel(desc)
             self.labels[param.name] = label
             widget = self.getWidgetFromParameter(param)
@@ -197,10 +202,9 @@ class ParametersPanel(QtGui.QWidget):
                 items.append((self.NOT_SELECTED, None))
             for layer in layers:
                 items.append((self.getExtendedLayerName(layer), layer))
-            item = InputLayerSelectorPanel(items)
+            item = InputLayerSelectorPanel(items, param)
         elif isinstance(param, ParameterVector):
-            if self.somethingDependsOnThisParameter(param) \
-                or self.alg.allowOnlyOpenedLayers:
+            if self.somethingDependsOnThisParameter(param) or self.alg.allowOnlyOpenedLayers:
                 item = QtGui.QComboBox()
                 layers = dataobjects.getVectorLayers(param.shapetype)
                 if param.optional:
@@ -220,7 +224,7 @@ class ParametersPanel(QtGui.QWidget):
                 for i,(name,layer) in enumerate(items):
                     if layer and layer.source() == param.value:
                         items.insert(0, items.pop(i))
-                item = InputLayerSelectorPanel(items)
+                item = InputLayerSelectorPanel(items, param)
         elif isinstance(param, ParameterTable):
             if self.somethingDependsOnThisParameter(param):
                 item = QtGui.QComboBox()
@@ -242,7 +246,7 @@ class ParametersPanel(QtGui.QWidget):
                 for i,(name,layer) in enumerate(items):
                     if layer and layer.source() == param.value:
                         items.insert(0, items.pop(i))
-                item = InputLayerSelectorPanel(items)
+                item = InputLayerSelectorPanel(items, param)
         elif isinstance(param, ParameterBoolean):
             item = QtGui.QComboBox()
             item.addItem('Yes')
@@ -277,7 +281,7 @@ class ParametersPanel(QtGui.QWidget):
         elif isinstance(param, ParameterRange):
             item = RangePanel(param)
         elif isinstance(param, ParameterFile):
-            item = FileSelectionPanel(param.isFolder)
+            item = FileSelectionPanel(param.isFolder, param.ext)
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_FILE:
                 item = MultipleFileInputPanel()
@@ -328,6 +332,8 @@ class ParametersPanel(QtGui.QWidget):
         for child in children:
             widget = self.valueItems[child]
             widget.clear()
+            if self.alg.getParameterFromName(child).optional:
+                widget.addItem("[not set]")
             widget.addItems(self.getFields(layer,
                             self.alg.getParameterFromName(child).datatype))
 

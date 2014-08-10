@@ -28,17 +28,17 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtGui import *
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.outputs.OutputRaster import OutputRaster
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterNumber
+from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.system import *
 
 
-class GridDataMetrics(GeoAlgorithm):
+class GridDataMetrics(GdalAlgorithm):
 
     INPUT = 'INPUT'
     Z_FIELD = 'Z_FIELD'
@@ -53,9 +53,8 @@ class GridDataMetrics(GeoAlgorithm):
     DATA_METRICS = ['Minimum', 'Maximum', 'Range', 'Count', 'Average distance',
                     'Average distance between points']
 
-    #def getIcon(self):
-    #    filepath = os.path.dirname(__file__) + '/icons/dem.png'
-    #    return QIcon(filepath)
+    def commandLineName(self):
+        return "gdalogr:griddatametrics"
 
     def defineCharacteristics(self):
         self.name = 'Grid (Data metrics)'

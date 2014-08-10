@@ -191,6 +191,8 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     static QString penJoinStyleDesc();
     static QString blendModesDesc();
     static QString svgPathDesc();
+    static QString paperSizeDesc();
+    static QString paperOrientationDesc();
 
   public slots:
     /**

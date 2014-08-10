@@ -27,6 +27,9 @@ class GUI_EXPORT QgsValueRelationConfigDlg : public QgsEditorConfigWidget, priva
   public:
     explicit QgsValueRelationConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = 0 );
 
+  public slots:
+    void editExpression();
+
     // QgsEditorConfigWidget interface
   public:
     QgsEditorWidgetConfig config();

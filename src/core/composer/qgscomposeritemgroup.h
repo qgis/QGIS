@@ -42,6 +42,9 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
        corresponds to 1 scene size unit*/
     void setSceneRect( const QRectF& rectangle );
 
+    //overridden to also hide grouped items
+    virtual void setVisibility( const bool visible );
+
     /** stores state in Dom node
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc is the Dom document

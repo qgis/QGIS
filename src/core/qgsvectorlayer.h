@@ -37,28 +37,29 @@
 class QPainter;
 class QImage;
 
+class QgsAbstractGeometrySimplifier;
 class QgsAttributeAction;
 class QgsCoordinateTransform;
+class QgsDiagramLayerSettings;
+class QgsDiagramRendererV2;
 class QgsEditorWidgetWrapper;
+class QgsExpressionFieldBuffer;
+class QgsFeatureRendererV2;
 class QgsFeatureRequest;
 class QgsGeometry;
+class QgsGeometryCache;
 class QgsGeometryVertexIndex;
 class QgsLabel;
 class QgsMapToPixel;
 class QgsRectangle;
+class QgsRectangle;
 class QgsRelation;
 class QgsRelationManager;
-class QgsVectorDataProvider;
 class QgsSingleSymbolRendererV2;
-class QgsRectangle;
-class QgsVectorLayerJoinBuffer;
-class QgsFeatureRendererV2;
-class QgsDiagramRendererV2;
-class QgsDiagramLayerSettings;
-class QgsGeometryCache;
-class QgsVectorLayerEditBuffer;
 class QgsSymbolV2;
-class QgsAbstractGeometrySimplifier;
+class QgsVectorDataProvider;
+class QgsVectorLayerEditBuffer;
+class QgsVectorLayerJoinBuffer;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -97,17 +98,21 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 {
   public:
     QgsAttributeEditorContainer( QString name, QObject *parent )
-        : QgsAttributeEditorElement( AeTypeContainer, name, parent ) {}
+        : QgsAttributeEditorElement( AeTypeContainer, name, parent )
+        , mIsGroupBox( true )
+    {}
 
     ~QgsAttributeEditorContainer() {}
 
     virtual QDomElement toDomElement( QDomDocument& doc ) const;
     virtual void addChildElement( QgsAttributeEditorElement *widget );
-    virtual bool isGroupBox() const { return true; }
+    virtual void setIsGroupBox( bool isGroupBox ) { mIsGroupBox = isGroupBox; }
+    virtual bool isGroupBox() const { return mIsGroupBox; }
     QList<QgsAttributeEditorElement*> children() const { return mChildren; }
     virtual QList<QgsAttributeEditorElement*> findElements( AttributeEditorType type ) const;
 
   private:
+    bool mIsGroupBox;
     QList<QgsAttributeEditorElement*> mChildren;
 };
 
@@ -248,12 +253,6 @@ struct CORE_EXPORT QgsVectorJoinInfo
  * \subsection mssql Microsoft SQL server data provider (mssql)
  *
  * Connects to a Microsoft SQL server database.  The url defines the connection parameters, table,
- * geometry column, and other attributes.  The url can be constructed using the
- * QgsDataSourceURI class.
- *
- * \subsection sqlanywhere SQL Anywhere data provider (sqlanywhere)
- *
- * Connects to an SQLanywhere database.  The url defines the connection parameters, table,
  * geometry column, and other attributes.  The url can be constructed using the
  * QgsDataSourceURI class.
  *
@@ -630,6 +629,24 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** @note added in 1.7 */
     const QList< QgsVectorJoinInfo >& vectorJoins() const;
+
+    /**
+     * Add a new field which is calculated by the expression specified
+     *
+     * @param exp The expression which calculates the field
+     *
+     * @note added in 2.6
+     */
+    void addExpressionField( const QString& exp, const QgsField& fld );
+
+    /**
+     * Remove an expression field
+     *
+     * @param index The index of the field
+     *
+     * @note added in 2.6
+     */
+    void removeExpressionField( int index );
 
     /** Get the label object associated with this layer */
     QgsLabel *label();
@@ -1761,6 +1778,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     //stores information about joined layers
     QgsVectorLayerJoinBuffer* mJoinBuffer;
+
+    //! stores information about expression fields on this layer
+    QgsExpressionFieldBuffer* mExpressionFieldBuffer;
 
     //diagram rendering object. 0 if diagram drawing is disabled
     QgsDiagramRendererV2* mDiagramRenderer;

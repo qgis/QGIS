@@ -145,13 +145,13 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * Is called, when the value of the widget needs to be changed. Update the widget representation
      * to reflect the new value.
      *
-     * @param value The new value of the attribute
+     * @param feature The new feature
      */
     virtual void setFeature( const QgsFeature& feature ) = 0;
 
     /**
      * Is used to enable or disable the edit functionality of the managed widget.
-     * By default this will enable or disable the whole widget
+     * By default this will not change the enabled state of the widget
      *
      * @param enabled  Enable or Disable?
      */
@@ -163,6 +163,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     QWidget* mWidget;
     QWidget* mParent;
     QgsVectorLayer* mLayer;
+    bool mInitialized;
 };
 
 // We'll use this class inside a QVariant in the widgets properties

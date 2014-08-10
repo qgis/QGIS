@@ -45,6 +45,9 @@ class APP_EXPORT QgsMapToolSelectFreehand : public QgsMapTool
     QgsRubberBand* mRubberBand;
 
     bool mDragging;
+
+    QColor mFillColor;
+    QColor mBorderColour;
 };
 
 #endif

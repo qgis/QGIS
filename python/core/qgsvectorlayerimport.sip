@@ -19,7 +19,7 @@ class QProgressDialog;
 
     enum ImportError
     {
-      NoError = 0,
+      NoError,
       ErrDriverNotFound,
       ErrCreateDataSource,
       ErrCreateLayer,

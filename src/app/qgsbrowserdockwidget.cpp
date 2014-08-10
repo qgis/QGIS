@@ -551,8 +551,11 @@ void QgsBrowserDockWidget::showProperties( )
         QgsRasterLayer* layer = new QgsRasterLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() );
         if ( layer != NULL )
         {
-          layerCrs = layer->crs();
-          layerMetadata = layer->metadata();
+          if ( layer->isValid() )
+          {
+            layerCrs = layer->crs();
+            layerMetadata = layer->metadata();
+          }
           delete layer;
         }
       }
@@ -562,8 +565,11 @@ void QgsBrowserDockWidget::showProperties( )
         QgsVectorLayer* layer = new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
         if ( layer != NULL )
         {
-          layerCrs = layer->crs();
-          layerMetadata = layer->metadata();
+          if ( layer->isValid() )
+          {
+            layerCrs = layer->crs();
+            layerMetadata = layer->metadata();
+          }
           delete layer;
         }
       }

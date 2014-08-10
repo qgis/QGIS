@@ -117,7 +117,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param memoryProvider memory provider to write output to (can be 0 if output is written to a file)
       @param p progress dialog or 0 if no progress dialog should be shown
     */
-    bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QList<int>& unlocatedFeatureIds, const QString& outputLayer,
+    bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QgsFeatureIds &unlocatedFeatureIds, const QString& outputLayer,
                      const QString& outputFormat, int locationField1, int locationField2 = -1, int offsetField = -1, double offsetScale = 1.0,
                      bool forceSingleGeometry = false, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
 
@@ -150,7 +150,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
         @param geom the geometry to modify
         @param lineGeom the line geometry to which the feature is referenced
         @param offset the offset value in layer unit. Negative values mean offset towards left, positive values offset to the right side*/
-    void createOffsetGeometry( QgsGeometry* geom, QgsGeometry* lineGeom, double offset );
+    bool createOffsetGeometry( QgsGeometry* geom, QgsGeometry* lineGeom, double offset );
     QgsPoint createPointOffset( double x, double y, double dist, QgsGeometry* lineGeom ) const;
     const unsigned char* locateBetweenWkbString( const unsigned char* ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure );
     const unsigned char* locateAlongWkbString( const unsigned char* ptr, QgsMultiPoint& result, double measure );

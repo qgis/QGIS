@@ -513,6 +513,23 @@ QgsLegendSymbologyList QgsFeatureRendererV2::legendSymbologyItems( QSize iconSiz
   return QgsLegendSymbologyList();
 }
 
+bool QgsFeatureRendererV2::legendSymbolItemsCheckable() const
+{
+  return false;
+}
+
+bool QgsFeatureRendererV2::legendSymbolItemChecked( int index )
+{
+  Q_UNUSED( index );
+  return false;
+}
+
+void QgsFeatureRendererV2::checkLegendSymbolItem( int index, bool state )
+{
+  Q_UNUSED( index );
+  Q_UNUSED( state );
+}
+
 QgsLegendSymbolList QgsFeatureRendererV2::legendSymbolItems( double scaleDenominator, QString rule )
 {
   Q_UNUSED( scaleDenominator );

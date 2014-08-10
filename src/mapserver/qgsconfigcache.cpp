@@ -17,6 +17,7 @@
 
 #include "qgsconfigcache.h"
 #include "qgsmessagelog.h"
+#include "qgsmslayercache.h"
 #include "qgswcsprojectparser.h"
 #include "qgswfsprojectparser.h"
 #include "qgswmsprojectparser.h"
@@ -42,76 +43,69 @@ QgsConfigCache::~QgsConfigCache()
 QgsWCSProjectParser* QgsConfigCache::wcsConfiguration( const QString& filePath )
 {
   QgsWCSProjectParser* p = mWCSConfigCache.object( filePath );
-  if ( p )
+  if ( !p )
   {
-    return p;
+    QDomDocument* doc = xmlDocument( filePath );
+    if ( !doc )
+    {
+      return 0;
+    }
+    p = new QgsWCSProjectParser( doc, filePath );
+    mWCSConfigCache.insert( filePath, p );
+    mFileSystemWatcher.addPath( filePath );
   }
 
-  QDomDocument* doc = xmlDocument( filePath );
-  if ( !doc )
-  {
-    return 0;
-  }
-  p = new QgsWCSProjectParser( doc, filePath );
-  mWCSConfigCache.insert( filePath, p );
-  mFileSystemWatcher.addPath( filePath );
+  QgsMSLayerCache::instance()->setProjectMaxLayers( p->wcsLayers().size() );
   return p;
 }
 
 QgsWFSProjectParser* QgsConfigCache::wfsConfiguration( const QString& filePath )
 {
   QgsWFSProjectParser* p = mWFSConfigCache.object( filePath );
-  if ( p )
+  if ( !p )
   {
-    return p;
+    QDomDocument* doc = xmlDocument( filePath );
+    if ( !doc )
+    {
+      return 0;
+    }
+
+    p = new QgsWFSProjectParser( doc, filePath );
+    mWFSConfigCache.insert( filePath, p );
+    mFileSystemWatcher.addPath( filePath );
   }
 
-  QDomDocument* doc = xmlDocument( filePath );
-  if ( !doc )
-  {
-    return 0;
-  }
-
-  p = new QgsWFSProjectParser( doc, filePath );
-  mWFSConfigCache.insert( filePath, p );
-  mFileSystemWatcher.addPath( filePath );
+  QgsMSLayerCache::instance()->setProjectMaxLayers( p->wfsLayers().size() );
   return p;
 }
 
 QgsWMSConfigParser* QgsConfigCache::wmsConfiguration( const QString& filePath, const QMap<QString, QString>& parameterMap )
 {
   QgsWMSConfigParser* p = mWMSConfigCache.object( filePath );
-  if ( p )
+  if ( !p )
   {
-    return p;
+    QDomDocument* doc = xmlDocument( filePath );
+    if ( !doc )
+    {
+      return 0;
+    }
+
+    //sld or QGIS project file?
+    //is it an sld document or a qgis project file?
+    QDomElement documentElem = doc->documentElement();
+    if ( documentElem.tagName() == "StyledLayerDescriptor" )
+    {
+      p = new QgsSLDConfigParser( doc, parameterMap );
+    }
+    else
+    {
+      p = new QgsWMSProjectParser( doc, filePath );
+    }
+    mWMSConfigCache.insert( filePath, p );
+    mFileSystemWatcher.addPath( filePath );
   }
 
-  QDomDocument* doc = xmlDocument( filePath );
-  if ( !doc )
-  {
-    return 0;
-  }
-
-  //sld or QGIS project file?
-  //is it an sld document or a qgis project file?
-  QDomElement documentElem = doc->documentElement();
-  if ( documentElem.tagName() == "StyledLayerDescriptor" )
-  {
-    p = new QgsSLDConfigParser( doc, parameterMap );
-  }
-  else
-  {
-    p = new QgsWMSProjectParser( doc, filePath );
-  }
-
-  int numberOfLayers = p->nLayers();
-  if ( numberOfLayers > 100 )
-  {
-    mWMSConfigCache.setMaxCost( numberOfLayers );
-  }
-
-  mWMSConfigCache.insert( filePath, p );
-  mFileSystemWatcher.addPath( filePath );
+  QgsMSLayerCache::instance()->setProjectMaxLayers( p->nLayers() );
   return p;
 }
 

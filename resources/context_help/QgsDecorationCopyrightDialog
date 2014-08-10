@@ -1,4 +1,4 @@
-<h3>Copyright Label Plugin</h3>
+<h3>Copyright Label</h3>
 Draws a copyright label with information.<br/>
 You can add any random text to the map not only a copyright label.
 <p>
@@ -10,7 +10,7 @@ You can add any random text to the map not only a copyright label.
 </a>
 <ol>
 <li>Make sure the plugin is loaded.
-<li>Click on <label>Plugins > Decorations > Copyright Label</label> or use the <label>Copyright Label</label> button from the Toolbar.
+<li>Click on <label>View > Decorations > Copyright Label</label>.
 <li>Enter the text you want to place on the map. You can use HTML.
 <li>Choose the placement of the label from the <label>Placement Bottom Right</label> drop-down box.
 <li>Make sure the <label>Enable Copyright Label check box</label> is checked.

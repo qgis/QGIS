@@ -389,7 +389,6 @@ int main( int argc, char * argv[] )
         theRequestHandler->sendServiceException( QgsMapServiceException( "WMS configuration error", "There was an error reading the project file or the SLD configuration" ) );
         continue;
       }
-      //adminConfigParser->loadLabelSettings( theMapRenderer->labelingEngine() );
       QgsWMSServer wmsServer( configFilePath, parameterMap, p, theRequestHandler.take(), theMapRenderer.data(), &capabilitiesCache );
       wmsServer.executeRequest();
     }

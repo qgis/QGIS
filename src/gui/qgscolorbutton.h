@@ -113,14 +113,14 @@ class GUI_EXPORT QgsColorButton: public QPushButton
 
   public slots:
     /**
-     * Sets the background pixmap for the button based upon set color and transparency.
+     * Sets the background pixmap for the button based upon color and transparency.
      * Call directly to update background after adding/removing QColorDialog::ShowAlphaChannel option
      * but the color has not changed, i.e. setColor() wouldn't update button and
      * you want the button to retain the set color's alpha component regardless
-     *
+     * @param color Color for button background
      * @note added in 1.9
      */
-    void setButtonBackground();
+    void setButtonBackground( QColor color = QColor() );
 
   signals:
     /**
@@ -148,6 +148,16 @@ class GUI_EXPORT QgsColorButton: public QPushButton
     void mouseMoveEvent( QMouseEvent *e );
 
     /**
+     * Reimplemented to allow color picking
+     */
+    void mouseReleaseEvent( QMouseEvent *e );
+
+    /**
+     * Reimplemented to allow cancelling color pick via keypress, and sample via space bar press
+     */
+    void keyPressEvent( QKeyEvent *e );
+
+    /**
      * Reimplemented to accept dragged colors
      */
     void dragEnterEvent( QDragEnterEvent * e ) ;
@@ -166,6 +176,7 @@ class GUI_EXPORT QgsColorButton: public QPushButton
     bool mColorSet; // added in QGIS 2.1
 
     QPoint mDragStartPosition;
+    bool mPickingColor;
 
     /**
      * Shows the color button context menu and handles copying and pasting color values.
@@ -190,6 +201,25 @@ class GUI_EXPORT QgsColorButton: public QPushButton
      * @see createColorMimeData
      */
     bool colorFromMimeData( const QMimeData *mimeData, QColor &resultColor );
+
+#ifdef Q_OS_WIN
+    /**
+     * Expands a shortened Windows path to its full path name.
+     * @returns full path name.
+     * @param path a (possibly) shortened Windows path
+     * @note added in 2.3
+     */
+    QString fullPath( const QString &path );
+#endif
+
+    /**
+     * Ends a color picking operation
+     * @param eventPos global position of pixel to sample color from
+     * @param sampleColor set to true to actually sample the color, false to just cancel
+     * the color picking operation
+     * @note added in 2.5
+     */
+    void stopPicking( QPointF eventPos, bool sampleColor = true );
 
   private slots:
     void onButtonClicked();

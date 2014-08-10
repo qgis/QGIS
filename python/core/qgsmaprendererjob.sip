@@ -11,7 +11,30 @@ struct LayerRenderJob
 
 typedef QList<LayerRenderJob> LayerRenderJobs;
 
-/** abstract base class renderer jobs that asynchronously start map rendering */
+/**
+ * Abstract base class for map rendering implementations.
+ *
+ * The API is designed in a way that rendering is done asynchronously, therefore
+ * the caller is not blocked while the rendering is in progress. Non-blocking
+ * operation is quite important because the rendering can take considerable
+ * amount of time.
+ *
+ * Common use case:
+ * 0. prepare QgsMapSettings with rendering configuration (extent, layer, map size, ...)
+ * 1. create QgsMapRendererJob subclass with QgsMapSettings instance
+ * 2. connect to job's finished() signal
+ * 3. call start(). Map rendering will start in background, the function immediately returns
+ * 4. at some point, slot connected to finished() signal is called, map rendering is done
+ *
+ * It is possible to cancel the rendering job while it is active by calling cancel() function.
+ *
+ * The following subclasses are available:
+ * - QgsMapRendererSequentialJob - renders map in one background thread to an image
+ * - QgsMapRendererParallelJob - renders map in multiple background threads to an image
+ * - QgsMapRendererCustomPainterJob - renders map with given QPainter in one background thread
+ *
+ * @note added in 2.4
+ */
 class QgsMapRendererJob : QObject
 {
 %TypeHeaderCode
@@ -102,6 +125,8 @@ class QgsMapRendererJob : QObject
 
 /** Intermediate base class adding functionality that allows client to query the rendered image.
  *  The image can be queried even while the rendering is still in progress to get intermediate result
+ *
+ * @note added in 2.4
  */
 class QgsMapRendererQImageJob : QgsMapRendererJob
 {
@@ -114,102 +139,4 @@ class QgsMapRendererQImageJob : QgsMapRendererJob
 
     //! Get a preview/resulting image
     virtual QImage renderedImage() = 0;
-};
-
-
-
-/** job implementation that renders everything sequentially in one thread */
-class QgsMapRendererSequentialJob : QgsMapRendererQImageJob
-{
-%TypeHeaderCode
-#include <qgsmaprendererjob.h>
-%End
-
-  public:
-    QgsMapRendererSequentialJob( const QgsMapSettings& settings );
-    ~QgsMapRendererSequentialJob();
-
-    virtual void start();
-    virtual void cancel();
-    virtual void waitForFinished();
-    virtual bool isActive() const;
-
-    virtual QgsLabelingResults* takeLabelingResults() /Transfer/;
-
-    // from QgsMapRendererJobWithPreview
-    virtual QImage renderedImage();
-
-  public slots:
-
-    void internalFinished();
-};
-
-
-
-
-/** job implementation that renders all layers in parallel */
-class QgsMapRendererParallelJob : QgsMapRendererQImageJob
-{
-%TypeHeaderCode
-#include <qgsmaprendererjob.h>
-%End
-
-  public:
-    QgsMapRendererParallelJob( const QgsMapSettings& settings );
-    ~QgsMapRendererParallelJob();
-
-    virtual void start();
-    virtual void cancel();
-    virtual void waitForFinished();
-    virtual bool isActive() const;
-
-    virtual QgsLabelingResults* takeLabelingResults() /Transfer/;
-
-    // from QgsMapRendererJobWithPreview
-    virtual QImage renderedImage();
-
-  protected slots:
-    //! layers are rendered, labeling is still pending
-    void renderLayersFinished();
-    //! all rendering is finished, including labeling
-    void renderingFinished();
-
-  protected:
-
-    static void renderLayerStatic( LayerRenderJob& job );
-    static void renderLabelsStatic( QgsMapRendererParallelJob* self );
-};
-
-
-
-/** job implementation that renders everything sequentially using a custom painter.
- *  The returned image is always invalid (because there is none available).
- */
-class QgsMapRendererCustomPainterJob : QgsMapRendererJob
-{
-%TypeHeaderCode
-#include <qgsmaprendererjob.h>
-%End
-
-  public:
-    QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter );
-    ~QgsMapRendererCustomPainterJob();
-
-    virtual void start();
-    virtual void cancel();
-    virtual void waitForFinished();
-    virtual bool isActive() const;
-    virtual QgsLabelingResults* takeLabelingResults() /Transfer/;
-
-    //! @note not available in python bindings
-    // const LayerRenderJobs& jobs() const { return mLayerJobs; }
-
-  protected slots:
-    void futureFinished();
-
-  protected:
-    static void staticRender( QgsMapRendererCustomPainterJob* self ); // function to be used within the thread
-
-    // these methods are called within worker thread
-    void doRender();
 };

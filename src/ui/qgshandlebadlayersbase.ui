@@ -16,41 +16,9 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTableWidget" name="mLayerList">
-     <column>
-      <property name="text">
-       <string>Layer name</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Type</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Provider</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Original filename</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>New filename</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Original datasource</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>New datasource</string>
-      </property>
-     </column>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
     </widget>
    </item>
    <item>

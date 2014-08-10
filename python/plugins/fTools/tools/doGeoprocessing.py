@@ -1329,7 +1329,7 @@ class geoprocessingThread( QThread ):
       geom = QgsGeometry( inFeatA.geometry() )
       diff_geom = QgsGeometry( geom )
       atMap = inFeatA.attributes()
-      atMap = dict( zip( range( length, length + len( atMap ) ), atMap ) )
+      atMap = [ NULL ] * length + atMap
       intersects = indexB.intersects( geom.boundingBox() )
       for id in intersects:
         vproviderA.getFeatures( QgsFeatureRequest().setFilterFid( int( id ) ) ).nextFeature( inFeatB )

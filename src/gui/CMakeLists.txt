@@ -126,6 +126,11 @@ qgscharacterselectdialog.cpp
 qgscollapsiblegroupbox.cpp
 qgscolorbutton.cpp
 qgscolordialog.cpp
+qgscodeeditor.cpp
+qgscodeeditorpython.cpp
+qgscodeeditorsql.cpp
+qgscodeeditorhtml.cpp
+qgscodeeditorcss.cpp
 qgscomposerruler.cpp
 qgscomposerview.cpp
 qgsprevieweffect.cpp
@@ -316,6 +321,11 @@ qgsblendmodecombobox.h
 qgsbusyindicatordialog.h
 qgscharacterselectdialog.h
 qgscollapsiblegroupbox.h
+qgscodeeditor.h
+qgscodeeditorpython.h
+qgscodeeditorsql.h
+qgscodeeditorhtml.h
+qgscodeeditorcss.h
 qgscolordialog.h
 qgsprevieweffect.h
 qgscomposerruler.h
@@ -596,6 +606,7 @@ ELSE (WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
+INCLUDE_DIRECTORIES(${QSCINTILLA_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${GEOS_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${GDAL_INCLUDE_DIR})
 
@@ -661,11 +672,13 @@ TARGET_LINK_LIBRARIES(qgis_gui
   qgis_core
   ${QT_QTUITOOLS_LIBRARY}
   ${QWT_LIBRARY}
+  ${QSCINTILLA_LIBRARY}
   #${QT_QTTEST_LIBRARY}  # for ModelTest
 )
 
 IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)
+  ADD_DEFINITIONS(-DQSCINTILLA_DLL)
 ENDIF(WIN32)
 
 # install

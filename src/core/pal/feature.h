@@ -157,6 +157,7 @@ namespace pal
         * \brief create a new generic feature
         *
         * \param feat a pointer for a Feat which contains the spatial entites
+        * \param geom a pointer to a GEOS geometry
         */
       FeaturePart( Feature *feat, const GEOSGeometry* geom );
 
@@ -210,7 +211,7 @@ namespace pal
        */
       int setPositionForPolygon( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width );
 
-
+#if 0
       /**
        * \brief Feature against problem bbox
        * \param bbox[0] problem x min
@@ -219,14 +220,27 @@ namespace pal
        * \param bbox[3] problem y max
        * return A set of feature which are in the bbox or null if the feature is in the bbox
        */
-      //LinkedList<Feature*> *splitFeature( double bbox[4]);
+      LinkedList<Feature*> *splitFeature( double bbox[4] );
 
 
       /**
        * \brief return the feature id
        * \return the feature id
        */
-      //int getId();
+      int getId();
+#endif
+
+      /**
+       * \brief return the feature
+       * \return the feature
+       */
+      Feature* getFeature() { return f; }
+
+      /**
+       * \brief return the geometry
+       * \return the geometry
+       */
+      const GEOSGeometry* getGeometry() const { return the_geom; }
 
       /**
        * \brief return the layer that feature belongs to
@@ -234,12 +248,14 @@ namespace pal
        */
       Layer * getLayer();
 
+#if 0
       /**
        * \brief save the feature into file
        * Called by Pal::save()
        * \param file the file to write
        */
-      //void save(std::ofstream *file);
+      void save( std::ofstream *file );
+#endif
 
       /**
        * \brief generic method to generate candidates
@@ -250,7 +266,6 @@ namespace pal
        * \param bbox_max max values of the map extent
        * \param mapShape generate candidates for this spatial entites
        * \param candidates index for candidates
-       * \param svgmap svg map file
        * \return the number of candidates in *lPos
        */
       int setPosition( double scale, LabelPosition ***lPos, double bbox_min[2], double bbox_max[2], PointSet *mapShape, RTree<LabelPosition*, double, 2, double>*candidates

@@ -15,6 +15,7 @@
 
 #include <QIcon>
 
+#include "qgsdataitem.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsapplication.h"
@@ -105,11 +106,13 @@ void QgsMapLayerModel::addLayers( QList<QgsMapLayer *> layers )
 
 QModelIndex QgsMapLayerModel::index( int row, int column, const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
-  if ( row < 0 || row >= mLayers.length() )
-    return QModelIndex();
+  if ( hasIndex( row, column, parent ) )
+  {
+    return createIndex( row, column, mLayers[row] );
+  }
 
-  return createIndex( row, column, mLayers[row] );
+  return QModelIndex();
+
 }
 
 QModelIndex QgsMapLayerModel::parent( const QModelIndex &child ) const
@@ -118,11 +121,10 @@ QModelIndex QgsMapLayerModel::parent( const QModelIndex &child ) const
   return QModelIndex();
 }
 
+
 int QgsMapLayerModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
-
-  return mLayers.length();
+  return parent.isValid() ? 0 : mLayers.length();
 }
 
 int QgsMapLayerModel::columnCount( const QModelIndex &parent ) const
@@ -130,6 +132,7 @@ int QgsMapLayerModel::columnCount( const QModelIndex &parent ) const
   Q_UNUSED( parent );
   return 1;
 }
+
 
 QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
 {
@@ -164,7 +167,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       {
         case QgsMapLayer::RasterLayer:
         {
-          return QgsApplication::getThemeIcon( "/mIconRasterLayer.svg" );
+          return QgsLayerItem::iconRaster();
         }
 
         case QgsMapLayer::VectorLayer:
@@ -179,19 +182,19 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
           {
             case QGis::Point:
             {
-              return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
+              return QgsLayerItem::iconPoint();
             }
             case QGis::Polygon :
             {
-              return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
+              return QgsLayerItem::iconPolygon();
             }
             case QGis::Line :
             {
-              return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
+              return QgsLayerItem::iconLine();
             }
             case QGis::NoGeometry :
             {
-              return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
+              return QgsLayerItem::iconTable();
             }
             default:
             {
@@ -213,7 +216,10 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
 
 Qt::ItemFlags QgsMapLayerModel::flags( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  if ( !index.isValid() )
+  {
+    return 0;
+  }
 
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
   if ( mItemCheckable )

@@ -96,6 +96,7 @@ namespace pal
        * \param alpha rotation in rad
        * \param cost geographic cost
        * \param feature labelpos owners
+       * \param isReversed label is reversed
        */
       LabelPosition( int id, double x1, double y1,
                      double w, double h,

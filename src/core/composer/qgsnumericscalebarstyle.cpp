@@ -17,6 +17,7 @@
 #include "qgsnumericscalebarstyle.h"
 #include "qgscomposermap.h"
 #include "qgscomposerscalebar.h"
+#include "qgscomposerutils.h"
 #include <QList>
 #include <QPainter>
 
@@ -49,8 +50,9 @@ void QgsNumericScaleBarStyle::draw( QPainter* p, double xOffset ) const
   }
 
   p->save();
+  //antialiasing on
+  p->setRenderHint( QPainter::Antialiasing, true );
   p->setFont( mScaleBar->font() );
-  p->setPen( mScaleBar->fontColor() );
 
   //call QgsComposerItem's pen() function, since that refers to the frame pen
   //and QgsComposerScalebar's pen() function refers to the scale bar line width,
@@ -78,7 +80,7 @@ void QgsNumericScaleBarStyle::draw( QPainter* p, double xOffset ) const
 
   //text destination is item's rect, excluding the margin and frame
   QRectF painterRect( penWidth + margin, penWidth + margin, mScaleBar->rect().width() - 2 * penWidth - 2 * margin, mScaleBar->rect().height() - 2 * penWidth - 2 * margin );
-  mScaleBar->drawText( p, painterRect, scaleText(), mScaleBar->font(), hAlign, Qt::AlignTop );
+  QgsComposerUtils::drawText( p, painterRect, scaleText(), mScaleBar->font(),  mScaleBar->fontColor(), hAlign, Qt::AlignTop );
 
   p->restore();
 }
@@ -91,8 +93,8 @@ QRectF QgsNumericScaleBarStyle::calculateBoxSize() const
     return rect;
   }
 
-  double textWidth = mScaleBar->textWidthMillimeters( mScaleBar->font(), scaleText() );
-  double textHeight = mScaleBar->fontAscentMillimeters( mScaleBar->font() );
+  double textWidth = QgsComposerUtils::textWidthMM( mScaleBar->font(), scaleText() );
+  double textHeight = QgsComposerUtils::fontAscentMM( mScaleBar->font() );
 
   rect = QRectF( mScaleBar->pos().x(), mScaleBar->pos().y(), 2 * mScaleBar->boxContentSpace()
                  + 2 * mScaleBar->pen().width() + textWidth,

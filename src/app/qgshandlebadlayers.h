@@ -54,8 +54,6 @@ class APP_EXPORT QgsHandleBadLayers
     void apply();
     void accept();
     void rejected();
-    void itemChanged( QTableWidgetItem * );
-    void cellDoubleClicked( int row, int column );
 
   private:
     QPushButton *mBrowseButton;
@@ -63,6 +61,9 @@ class APP_EXPORT QgsHandleBadLayers
     QList<int> mRows;
     QString mVectorFileFilter;
     QString mRasterFileFilter;
+
+    QString filename( int row );
+    void setFilename( int row, QString filename );
 };
 
 #endif

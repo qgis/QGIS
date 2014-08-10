@@ -25,6 +25,7 @@
 %Include qgsdataitem.sip
 %Include qgsdataprovider.sip
 %Include qgsdatasourceuri.sip
+%Include qgsdatumtransformstore.sip
 %Include qgsdbfilterproxymodel.sip
 %Include qgsdistancearea.sip
 %Include qgseditorwidgetconfig.sip
@@ -46,11 +47,15 @@
 %Include qgslabelsearchtree.sip
 %Include qgslogger.sip
 %Include qgsmaplayer.sip
+%Include qgsmaplayerlegend.sip
 %Include qgsmaplayerregistry.sip
 %Include qgsmaplayerrenderer.sip
 %Include qgsmaprenderer.sip
 %Include qgsmaprenderercache.sip
+%Include qgsmaprenderercustompainterjob.sip
 %Include qgsmaprendererjob.sip
+%Include qgsmaprendererparalleljob.sip
+%Include qgsmaprenderersequentialjob.sip
 %Include qgsmapsettings.sip
 %Include qgsmaptopixel.sip
 %Include qgsmapunitscale.sip
@@ -113,6 +118,7 @@
 %Include composer/qgscomposerattributetablemodel.sip
 %Include composer/qgscomposerframe.sip
 %Include composer/qgscomposerhtml.sip
+%Include composer/qgscomposerobject.sip
 %Include composer/qgscomposeritem.sip
 %Include composer/qgscomposeritemcommand.sip
 %Include composer/qgscomposeritemgroup.sip
@@ -127,7 +133,9 @@
 %Include composer/qgscomposershape.sip
 %Include composer/qgscomposertable.sip
 %Include composer/qgscomposertablecolumn.sip
+%Include composer/qgscomposerutils.sip
 %Include composer/qgscomposition.sip
+%Include composer/qgscomposermodel.sip
 %Include composer/qgsatlascomposition.sip
 %Include composer/qgsdoubleboxscalebarstyle.sip
 %Include composer/qgslegendmodel.sip
@@ -152,6 +160,13 @@
 %Include gps/qgsgpsdetector.sip
 %Include gps/qgsnmeaconnection.sip
 %Include gps/qgsqtlocationconnection.sip
+
+%Include layertree/qgslayertree.sip
+%Include layertree/qgslayertreegroup.sip
+%Include layertree/qgslayertreelayer.sip
+%Include layertree/qgslayertreenode.sip
+%Include layertree/qgslayertreeregistrybridge.sip
+%Include layertree/qgslayertreeutils.sip
 
 %Include raster/qgsraster.sip
 %Include raster/qgscliptominmaxenhancement.sip

@@ -51,6 +51,7 @@
 
 static const QString TEXT_PROVIDER_KEY = "mssql";
 static const QString TEXT_PROVIDER_DESCRIPTION = "MSSQL spatial data provider";
+int QgsMssqlProvider::sConnectionId = 0;
 
 QgsMssqlProvider::QgsMssqlProvider( QString uri )
     : QgsVectorDataProvider( uri )
@@ -81,11 +82,12 @@ QgsMssqlProvider::QgsMssqlProvider( QString uri )
 
   mSqlWhereClause = anUri.sql();
 
-  mDatabase = QgsMssqlProvider::GetDatabase( mDriver, mHost, mDatabaseName, mUserName, mPassword );
+  mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
 
   if ( !OpenDatabase( mDatabase ) )
   {
     setLastError( mDatabase.lastError( ).text( ) );
+    QgsDebugMsg( mLastError );
     mValid = false;
     return;
   }
@@ -199,7 +201,7 @@ bool QgsMssqlProvider::OpenDatabase( QSqlDatabase db )
   return true;
 }
 
-QSqlDatabase QgsMssqlProvider::GetDatabase( QString driver, QString host, QString database, QString username, QString password )
+QSqlDatabase QgsMssqlProvider::GetDatabase( QString service, QString host, QString database, QString username, QString password )
 {
   QSqlDatabase db;
   QString connectionName;
@@ -207,35 +209,36 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( QString driver, QString host, QStrin
   // create a separate database connection for each feature source
   QgsDebugMsg( "Creating a separate database connection" );
 
-  if ( driver.isEmpty() )
+  if ( service.isEmpty() )
   {
-    if ( host.isEmpty() )
-    {
-      QgsDebugMsg( "QgsMssqlProvider host name not specified" );
-      return db;
-    }
+    if ( !host.isEmpty() )
+      connectionName = host + ".";
 
     if ( database.isEmpty() )
     {
       QgsDebugMsg( "QgsMssqlProvider database name not specified" );
       return db;
     }
-    connectionName = host + "." + database;
+
+    connectionName += QString( "%1.%2" ).arg( database ).arg( sConnectionId++ );
   }
   else
-    connectionName = driver;
+    connectionName = service;
 
   if ( !QSqlDatabase::contains( connectionName ) )
+  {
     db = QSqlDatabase::addDatabase( "QODBC", connectionName );
+    db.setConnectOptions( "SQL_ATTR_CONNECTION_POOLING=SQL_CP_ONE_PER_HENV" );
+  }
   else
     db = QSqlDatabase::database( connectionName );
 
   db.setHostName( host );
   QString connectionString = "";
-  if ( !driver.isEmpty() )
+  if ( !service.isEmpty() )
   {
     // driver was specified explicitly
-    connectionString = driver;
+    connectionString = service;
   }
   else
   {
@@ -264,6 +267,7 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( QString driver, QString host, QStrin
     db.setPassword( password );
 
   db.setDatabaseName( connectionString );
+  QgsDebugMsg( connectionString );
   return db;
 }
 
@@ -282,7 +286,8 @@ QVariant::Type QgsMssqlProvider::DecodeSqlType( QString sqlTypeName )
             sqlTypeName.startsWith( "varchar", Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( "nvarchar", Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( "text", Qt::CaseInsensitive ) ||
-            sqlTypeName.startsWith( "ntext", Qt::CaseInsensitive ) )
+            sqlTypeName.startsWith( "ntext", Qt::CaseInsensitive ) ||
+            sqlTypeName.startsWith( "uniqueidentifier", Qt::CaseInsensitive ) )
   {
     type = QVariant::String;
   }
@@ -321,6 +326,8 @@ QVariant::Type QgsMssqlProvider::DecodeSqlType( QString sqlTypeName )
   else
   {
     QgsDebugMsg( QString( "Unknown field type: %1" ).arg( sqlTypeName ) );
+    // Everything else just dumped as a string.
+    type = QVariant::String;
   }
 
   return type;
@@ -446,6 +453,10 @@ void QgsMssqlProvider::loadFields()
           return;
         }
       }
+      QString error = QString( "No primary key could be found on table %1" ).arg( mTableName );
+      QgsDebugMsg( error );
+      mValid = false;
+      setLastError( error );
     }
   }
 }
@@ -1484,7 +1495,7 @@ QGis::WkbType QgsMssqlProvider::getWkbType( QString geometryType, int dim )
 
 QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
   const QString& uri,
-  const QgsFieldMap &fields,
+  const QgsFields &fields,
   QGis::WkbType wkbType,
   const QgsCoordinateReferenceSystem *srs,
   bool overwrite,
@@ -1498,8 +1509,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
   QgsDataSourceURI dsUri( uri );
 
   // connect to database
-  QSqlDatabase db = QgsMssqlProvider::GetDatabase( dsUri.service(),
-                    dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  QSqlDatabase db = QgsMssqlProvider::GetDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
 
   if ( !QgsMssqlProvider::OpenDatabase( db ) )
   {
@@ -1534,25 +1544,25 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
   {
     int index = 0;
     QString pk = primaryKey = "qgs_fid";
-    for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    for ( int i = 0, n = fields.size(); i < n; ++i )
     {
-      if ( fldIt.value().name() == primaryKey )
+      if ( fields[i].name() == primaryKey )
       {
         // it already exists, try again with a new name
         primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
-        fldIt = fields.begin();
+        i = 0;
       }
     }
   }
   else
   {
     // search for the passed field
-    for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    for ( int i = 0, n = fields.size(); i < n; ++i )
     {
-      if ( fldIt.value().name() == primaryKey )
+      if ( fields[i].name() == primaryKey )
       {
         // found, get the field type
-        QgsField fld = fldIt.value();
+        QgsField fld = fields[i];
         if ( convertField( fld ) )
         {
           primaryKeyType = fld.typeName();
@@ -1681,12 +1691,12 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
 
     // get the list of fields
     QList<QgsField> flist;
-    for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    for ( int i = 0, n = fields.size(); i < n; ++i )
     {
-      QgsField fld = fldIt.value();
+      QgsField fld = fields[i];
       if ( fld.name() == primaryKey )
       {
-        oldToNewAttrIdxMap->insert( fldIt.key(), 0 );
+        oldToNewAttrIdxMap->insert( fields.indexFromName( fld.name() ), 0 );
         continue;
       }
 
@@ -1707,7 +1717,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
 
       flist.append( fld );
       if ( oldToNewAttrIdxMap )
-        oldToNewAttrIdxMap->insert( fldIt.key(), offset++ );
+        oldToNewAttrIdxMap->insert( fields.indexFromName( fld.name() ), offset++ );
     }
 
     if ( !provider->addAttributes( flist ) )
@@ -1775,7 +1785,7 @@ QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
-  const QgsFieldMap &fields,
+  const QgsFields &fields,
   QGis::WkbType wkbType,
   const QgsCoordinateReferenceSystem *srs,
   bool overwrite,

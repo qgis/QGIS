@@ -23,7 +23,7 @@
 #include <QFontDialog>
 #include <QWidget>
 
-QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar ): QWidget(), mComposerScaleBar( scaleBar )
+QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar ): QgsComposerItemBaseWidget( 0, scaleBar ), mComposerScaleBar( scaleBar )
 {
   setupUi( this );
   connectUpdateSignal();
@@ -52,6 +52,16 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
   mUnitsComboBox->insertItem( 1, tr( "Meters" ), 1 );
   mUnitsComboBox->insertItem( 2, tr( "Feet" ), 2 );
   mUnitsComboBox->insertItem( 3, tr( "Nautical Miles" ), 3 );
+
+  mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );
+  mFillColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mFillColor2Button->setColorDialogTitle( tr( "Select alternate fill color" ) );
+  mFillColor2Button->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
+  mFontColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
+  mStrokeColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+
   blockMemberSignals( false );
   setGuiElements(); //set the GUI elements to the state of scaleBar
 }
@@ -171,6 +181,10 @@ void QgsComposerScaleBarWidget::setGuiElements()
   mUnitLabelLineEdit->setText( mComposerScaleBar->unitLabeling() );
   mLineJoinStyleCombo->setPenJoinStyle( mComposerScaleBar->lineJoinStyle() );
   mLineCapStyleCombo->setPenCapStyle( mComposerScaleBar->lineCapStyle() );
+  mFontColorButton->setColor( mComposerScaleBar->fontColor() );
+  mFillColorButton->setColor( mComposerScaleBar->brush().color() );
+  mFillColor2Button->setColor( mComposerScaleBar->brush2().color() );
+  mStrokeColorButton->setColor( mComposerScaleBar->pen().color() );
 
   //map combo box
   if ( mComposerScaleBar->composerMap() )
@@ -301,17 +315,9 @@ void QgsComposerScaleBarWidget::on_mFontButton_clicked()
   mComposerScaleBar->update();
 }
 
-void QgsComposerScaleBarWidget::on_mFontColorPushButton_clicked()
+void QgsComposerScaleBarWidget::on_mFontColorButton_colorChanged( const QColor& newColor )
 {
   if ( !mComposerScaleBar )
-  {
-    return;
-  }
-
-  QColor oldColor = mComposerScaleBar->fontColor();
-  QColor newColor = QColorDialog::getColor( oldColor, 0 );
-
-  if ( !newColor.isValid() ) //user canceled the dialog
   {
     return;
   }
@@ -324,41 +330,43 @@ void QgsComposerScaleBarWidget::on_mFontColorPushButton_clicked()
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mColorPushButton_clicked()
+void QgsComposerScaleBarWidget::on_mFillColorButton_colorChanged( const QColor& newColor )
 {
   if ( !mComposerScaleBar )
-  {
-    return;
-  }
-
-  QColor oldColor = mComposerScaleBar->brush().color();
-  QColor newColor = QColorDialog::getColor( oldColor, 0 );
-
-  if ( !newColor.isValid() ) //user canceled the dialog
   {
     return;
   }
 
   mComposerScaleBar->beginCommand( tr( "Scalebar color changed" ) );
   disconnectUpdateSignal();
-  QBrush newBrush( newColor );
+  QBrush newBrush = mComposerScaleBar->brush();
+  newBrush.setColor( newColor );
   mComposerScaleBar->setBrush( newBrush );
   mComposerScaleBar->update();
   connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mStrokeColorPushButton_clicked()
+void QgsComposerScaleBarWidget::on_mFillColor2Button_colorChanged( const QColor &newColor )
 {
   if ( !mComposerScaleBar )
   {
     return;
   }
 
-  QColor oldColor = mComposerScaleBar->pen().color();
-  QColor newColor = QColorDialog::getColor( oldColor, 0 );
+  mComposerScaleBar->beginCommand( tr( "Scalebar secondary color changed" ) );
+  disconnectUpdateSignal();
+  QBrush newBrush = mComposerScaleBar->brush2();
+  newBrush.setColor( newColor );
+  mComposerScaleBar->setBrush2( newBrush );
+  mComposerScaleBar->update();
+  connectUpdateSignal();
+  mComposerScaleBar->endCommand();
+}
 
-  if ( !newColor.isValid() ) //user canceled the dialog
+void QgsComposerScaleBarWidget::on_mStrokeColorButton_colorChanged( const QColor& newColor )
+{
+  if ( !mComposerScaleBar )
   {
     return;
   }
@@ -462,8 +470,9 @@ void QgsComposerScaleBarWidget::toggleStyleSpecificControls( const QString& styl
     mGroupBoxSegments->setCollapsed( true );
     mLabelBarSpaceSpinBox->setEnabled( false );
     mLineWidthSpinBox->setEnabled( false );
-    mColorPushButton->setEnabled( false );
-    mStrokeColorPushButton->setEnabled( false );
+    mFillColorButton->setEnabled( false );
+    mFillColor2Button->setEnabled( false );
+    mStrokeColorButton->setEnabled( false );
     mLineJoinStyleCombo->setEnabled( false );
     mLineCapStyleCombo->setEnabled( false );
   }
@@ -474,8 +483,9 @@ void QgsComposerScaleBarWidget::toggleStyleSpecificControls( const QString& styl
     mGroupBoxSegments->setEnabled( true );
     mLabelBarSpaceSpinBox->setEnabled( true );
     mLineWidthSpinBox->setEnabled( true );
-    mColorPushButton->setEnabled( true );
-    mStrokeColorPushButton->setEnabled( true );
+    mFillColorButton->setEnabled( true );
+    mFillColor2Button->setEnabled( true );
+    mStrokeColorButton->setEnabled( true );
     if ( style == "Single Box" || style == "Double Box" )
     {
       mLineJoinStyleCombo->setEnabled( true );
@@ -600,6 +610,10 @@ void QgsComposerScaleBarWidget::blockMemberSignals( bool block )
   mUnitsComboBox->blockSignals( block );
   mLineJoinStyleCombo->blockSignals( block );
   mLineCapStyleCombo->blockSignals( block );
+  mFontColorButton->blockSignals( block );
+  mFillColorButton->blockSignals( block );
+  mFillColor2Button->blockSignals( block );
+  mStrokeColorButton->blockSignals( block );
 }
 
 void QgsComposerScaleBarWidget::connectUpdateSignal()

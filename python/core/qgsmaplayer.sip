@@ -366,6 +366,17 @@ class QgsMapLayer : QObject
     /** @deprecated since 2.4 - does nothing */
     virtual void onCacheImageDelete() /Deprecated/;
 
+    /**
+     * Assign a legend controller to the map layer. The object will be responsible for providing legend items.
+     * @param legend Takes ownership of the object. Can be null pointer
+     * @note added in 2.6
+     */
+    void setLegend( QgsMapLayerLegend* legend /Transfer/ );
+    /**
+     * @note added in 2.6
+     */
+    QgsMapLayerLegend* legend() const;
+
   public slots:
 
     /** Event handler for when a coordinate transform fails due to bad vertex error */
@@ -429,6 +440,12 @@ class QgsMapLayer : QObject
 
     /** Signal emitted when renderer is changed */
     void rendererChanged();
+
+    /**
+     * Signal emitted when legend of the layer has changed
+     * @note added in 2.6
+     */
+    void legendChanged();
 
   protected:
     /** Set the extent */

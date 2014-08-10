@@ -69,6 +69,9 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
     else
       joinFieldIndex = cacheLayer->pendingFields().indexFromName( joinInfo.joinFieldName );
 
+    if ( joinFieldIndex < 0 || joinFieldIndex >= cacheLayer->pendingFields().count() )
+      return;
+
     joinInfo.cachedAttributes.clear();
 
     QgsFeatureIterator fit = cacheLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );

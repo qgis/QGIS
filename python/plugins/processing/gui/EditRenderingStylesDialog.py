@@ -30,8 +30,8 @@ from PyQt4.QtGui import *
 
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.RenderingStyleFilePanel import RenderingStyleFilePanel
-from processing.outputs.OutputRaster import OutputRaster
-from processing.outputs.OutputVector import OutputVector
+from processing.core.outputs import OutputRaster
+from processing.core.outputs import OutputVector
 
 from processing.ui.ui_DlgRenderingStyles import Ui_DlgRenderingStyles
 

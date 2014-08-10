@@ -212,6 +212,20 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
   dataItem->setData( Qt::DisplayRole, idx );
   DesignerTreeItemData itemData( DesignerTreeItemData::Field, field.name() );
   dataItem->setData( DesignerTreeRole, itemData.asQVariant() );
+  switch ( mLayer->pendingFields().fieldOrigin( idx ) )
+  {
+    case QgsFields::OriginExpression:
+      dataItem->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
+      break;
+
+    case QgsFields::OriginJoin:
+      dataItem->setIcon( QgsApplication::getThemeIcon( "/propertyicons/join.png" ) );
+      break;
+
+    default:
+      dataItem->setIcon( QgsApplication::getThemeIcon( "/propertyicons/attributes.png" ) );
+      break;
+  }
   mFieldsList->setItem( row, attrIdCol, dataItem );
   mIndexedWidgets.insert( idx, mFieldsList->item( row, 0 ) );
   mFieldsList->setItem( row, attrNameCol, new QTableWidgetItem( field.name() ) );
@@ -407,8 +421,10 @@ void QgsFieldsProperties::attributeTypeDialog()
   if ( index == -1 )
     return;
 
-
   QgsAttributeTypeDialog attributeTypeDialog( mLayer, index );
+
+  attributeTypeDialog.setFieldEditable( cfg.mEditable );
+  attributeTypeDialog.setLabelOnTop( cfg.mLabelOnTop );
 
   attributeTypeDialog.setWidgetV2Config( cfg.mEditorWidgetV2Config );
   attributeTypeDialog.setWidgetV2Type( cfg.mEditorWidgetV2Type );
@@ -455,24 +471,6 @@ void QgsFieldsProperties::attributeDeleted( int idx )
   for ( int i = idx; i < mIndexedWidgets.count(); i++ )
   {
     mIndexedWidgets[i]->setData( Qt::DisplayRole, i );
-  }
-}
-
-void QgsFieldsProperties::addAttribute()
-{
-  QgsAddAttrDialog dialog( mLayer, this );
-  if ( dialog.exec() == QDialog::Accepted )
-  {
-    mLayer->beginEditCommand( "Attribute added" );
-    if ( !addAttribute( dialog.field() ) )
-    {
-      mLayer->destroyEditCommand();
-      QMessageBox::information( this, tr( "Name conflict" ), tr( "The attribute could not be inserted. The name already exists in the table." ) );
-    }
-    else
-    {
-      mLayer->endEditCommand();
-    }
   }
 }
 
@@ -532,15 +530,22 @@ void QgsFieldsProperties::on_mAddAttributeButton_clicked()
   QgsAddAttrDialog dialog( mLayer, this );
   if ( dialog.exec() == QDialog::Accepted )
   {
-    mLayer->beginEditCommand( "Attribute added" );
-    if ( !addAttribute( dialog.field() ) )
+    if ( dialog.mode() == QgsAddAttrDialog::VirtualField )
     {
-      mLayer->destroyEditCommand();
-      QMessageBox::information( this, tr( "Name conflict" ), tr( "The attribute could not be inserted. The name already exists in the table." ) );
+      mLayer->addExpressionField( dialog.expression(), dialog.field() );
     }
     else
     {
-      mLayer->endEditCommand();
+      mLayer->beginEditCommand( "Attribute added" );
+      if ( !addAttribute( dialog.field() ) )
+      {
+        mLayer->destroyEditCommand();
+        QMessageBox::information( this, tr( "Name conflict" ), tr( "The attribute could not be inserted. The name already exists in the table." ) );
+      }
+      else
+      {
+        mLayer->endEditCommand();
+      }
     }
   }
 }
@@ -737,6 +742,9 @@ void QgsFieldsProperties::apply()
     int idx = mFieldsList->item( i, attrIdCol )->text().toInt();
     FieldConfig cfg = configForRow( i );
 
+    mLayer->setFieldEditable( i, cfg.mEditable );
+    mLayer->setLabelOnTop( i, cfg.mLabelOnTop );
+
     mLayer->setEditorWidgetV2( idx, cfg.mEditorWidgetV2Type );
     mLayer->setEditorWidgetV2Config( idx, cfg.mEditorWidgetV2Config );
 
@@ -760,7 +768,8 @@ void QgsFieldsProperties::apply()
   }
 
   mLayer->setEditorLayout(( QgsVectorLayer::EditorLayout ) mEditorLayoutComboBox->currentIndex() );
-  mLayer->setEditForm( leEditForm->text() );
+  if ( mEditorLayoutComboBox->currentIndex() == QgsVectorLayer::UiFileLayout )
+    mLayer->setEditForm( leEditForm->text() );
   mLayer->setEditFormInit( leEditFormInit->text() );
   mLayer->setFeatureFormSuppress(( QgsVectorLayer::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
 
@@ -779,7 +788,8 @@ QgsFieldsProperties::FieldConfig::FieldConfig()
 QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
 {
   mEditable = layer->fieldEditable( idx );
-  mEditableEnabled = layer->pendingFields().fieldOrigin( idx ) != QgsFields::OriginJoin;
+  mEditableEnabled = layer->pendingFields().fieldOrigin( idx ) != QgsFields::OriginJoin
+                     && layer->pendingFields().fieldOrigin( idx ) != QgsFields::OriginExpression;
   mLabelOnTop = layer->labelOnTop( idx );
   mEditorWidgetV2Type = layer->editorWidgetV2( idx );
   mEditorWidgetV2Config = layer->editorWidgetV2Config( idx );

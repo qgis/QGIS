@@ -25,6 +25,14 @@ class QgsLayerTreeView;
 class QgsMapCanvas;
 class QgsMapLayer;
 
+
+/**
+ * The QgsLayerTreeViewDefaultActions class serves as a factory of actions
+ * that can be used together with a layer tree view.
+ *
+ * @see QgsLayerTreeView
+ * @note added in 2.4
+ */
 class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 {
     Q_OBJECT

@@ -26,12 +26,12 @@
 #include <QFontDialog>
 #include <QColorDialog>
 
-#include "qgsapplegendinterface.h"
 #include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
-#include "qgsapplication.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
@@ -105,7 +105,7 @@ void QgsComposerLegendWidgetStyleDelegate::updateEditorGeometry( QWidget *editor
 }
 
 
-QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): mLegend( legend )
+QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): QgsComposerItemBaseWidget( 0, legend ), mLegend( legend )
 {
   setupUi( this );
 
@@ -145,7 +145,7 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): m
            this, SLOT( selectedChanged( const QModelIndex &, const QModelIndex & ) ) );
 }
 
-QgsComposerLegendWidget::QgsComposerLegendWidget(): mLegend( 0 )
+QgsComposerLegendWidget::QgsComposerLegendWidget(): QgsComposerItemBaseWidget( 0, 0 ), mLegend( 0 )
 {
   setupUi( this );
 }
@@ -197,6 +197,7 @@ void QgsComposerLegendWidget::setGuiElements()
   {
     mMapComboBox->setCurrentIndex( mMapComboBox->findData( -1 ) );
   }
+  mFontColorButton->setColor( mLegend->fontColor() );
   blockAllSignals( false );
 }
 
@@ -204,7 +205,7 @@ void QgsComposerLegendWidget::on_mWrapCharLineEdit_textChanged( const QString &t
 {
   if ( mLegend )
   {
-    mLegend->beginCommand( tr( "Item wrapping changed" ), QgsComposerMergeCommand::ComposerLegendText );
+    mLegend->beginCommand( tr( "Item wrapping changed" ) );
     mLegend->setWrapChar( text );
     mLegend->adjustBoxSize();
     mLegend->update();
@@ -472,23 +473,15 @@ void QgsComposerLegendWidget::on_mItemFontButton_clicked()
   }
 }
 
-void QgsComposerLegendWidget::on_mFontColorPushButton_clicked()
+void QgsComposerLegendWidget::on_mFontColorButton_colorChanged( const QColor& newFontColor )
 {
   if ( !mLegend )
   {
     return;
   }
 
-  QColor oldColor = mLegend->fontColor();
-  QColor newColor = QColorDialog::getColor( oldColor, 0 );
-
-  if ( !newColor.isValid() ) //user canceled the dialog
-  {
-    return;
-  }
-
   mLegend->beginCommand( tr( "Legend font color changed" ) );
-  mLegend->setFontColor( newColor );
+  mLegend->setFontColor( newFontColor );
   mLegend->update();
   mLegend->endCommand();
 }
@@ -731,13 +724,13 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
     return;
   }
 
-  mLegend->beginCommand( "Legend item removed" );
-
   QItemSelectionModel* selectionModel = mItemTreeView->selectionModel();
   if ( !selectionModel )
   {
     return;
   }
+
+  mLegend->beginCommand( "Legend item removed" );
 
   QList<QPersistentModelIndex> indexes;
   foreach ( const QModelIndex &index, selectionModel->selectedIndexes() )
@@ -780,13 +773,14 @@ void QgsComposerLegendWidget::on_mEditPushButton_clicked()
   }
 
   QgsComposerLegendItemDialog itemDialog( currentItem );
-  if ( itemDialog.exec() == QDialog::Accepted )
+  if ( itemDialog.exec() != QDialog::Accepted )
   {
-    currentItem->setUserText( itemDialog.itemText() );
-    mLegend->model()->updateItemText( currentItem );
+    return;
   }
 
   mLegend->beginCommand( tr( "Legend item edited" ) );
+  currentItem->setUserText( itemDialog.itemText() );
+  mLegend->model()->updateItemText( currentItem );
   mLegend->adjustBoxSize();
   mLegend->update();
   mLegend->endCommand();
@@ -922,9 +916,7 @@ void QgsComposerLegendWidget::updateLegend()
 
 
     //and also group info
-    QgsAppLegendInterface legendIface( app->layerTreeView() );
-    QList< GroupLayerInfo > groupInfo = legendIface.groupLayerRelationship();
-    mLegend->model()->setLayerSetAndGroups( layerIdList, groupInfo );
+    mLegend->model()->setLayerSetAndGroups( QgsProject::instance()->layerTreeRoot() );
     mLegend->endCommand();
   }
 }
@@ -947,6 +939,7 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mIconLabelSpaceSpinBox->blockSignals( b );
   mBoxSpaceSpinBox->blockSignals( b );
   mColumnSpaceSpinBox->blockSignals( b );
+  mFontColorButton->blockSignals( b );
 }
 
 void QgsComposerLegendWidget::refreshMapComboBox()

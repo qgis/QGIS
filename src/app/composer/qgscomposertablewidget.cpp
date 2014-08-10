@@ -27,7 +27,7 @@
 #include <QColorDialog>
 #include <QFontDialog>
 
-QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table ): QWidget( 0 ), mComposerTable( table )
+QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table ): QgsComposerItemBaseWidget( 0, table ), mComposerTable( table )
 {
   setupUi( this );
   //add widget for general composer item properties
@@ -39,6 +39,13 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table
   connect( mLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( changeLayer( QgsMapLayer* ) ) );
 
   refreshMapComboBox();
+
+  mHeaderFontColorButton->setColorDialogTitle( tr( "Select header font color" ) );
+  mHeaderFontColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mContentFontColorButton->setColorDialogTitle( tr( "Select content font color" ) );
+  mContentFontColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
+  mGridColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
   updateGuiElements();
   on_mComposerMapComboBox_activated( mComposerMapComboBox->currentIndex() );
@@ -220,6 +227,19 @@ void QgsComposerTableWidget::on_mHeaderFontPushButton_clicked()
   }
 }
 
+void QgsComposerTableWidget::on_mHeaderFontColorButton_colorChanged( const QColor &newColor )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  mComposerTable->beginCommand( tr( "Table header font color" ) );
+  mComposerTable->setHeaderFontColor( newColor );
+  mComposerTable->update();
+  mComposerTable->endCommand();
+}
+
 void QgsComposerTableWidget::on_mContentFontPushButton_clicked()
 {
   if ( !mComposerTable )
@@ -240,6 +260,19 @@ void QgsComposerTableWidget::on_mContentFontPushButton_clicked()
     mComposerTable->setContentFont( newFont );
     mComposerTable->endCommand();
   }
+}
+
+void QgsComposerTableWidget::on_mContentFontColorButton_colorChanged( const QColor &newColor )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  mComposerTable->beginCommand( tr( "Table content font color" ) );
+  mComposerTable->setContentFontColor( newColor );
+  mComposerTable->update();
+  mComposerTable->endCommand();
 }
 
 void QgsComposerTableWidget::on_mGridStrokeWidthSpinBox_valueChanged( double d )
@@ -320,8 +353,6 @@ void QgsComposerTableWidget::updateGuiElements()
   mMarginSpinBox->setValue( mComposerTable->lineTextDistance() );
   mGridStrokeWidthSpinBox->setValue( mComposerTable->gridStrokeWidth() );
   mGridColorButton->setColor( mComposerTable->gridColor() );
-  mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
-  mGridColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   if ( mComposerTable->showGrid() )
   {
     mShowGridGroupCheckBox->setChecked( true );
@@ -330,6 +361,9 @@ void QgsComposerTableWidget::updateGuiElements()
   {
     mShowGridGroupCheckBox->setChecked( false );
   }
+
+  mHeaderFontColorButton->setColor( mComposerTable->headerFontColor() );
+  mContentFontColorButton->setColor( mComposerTable->contentFontColor() );
 
   if ( mComposerTable->displayOnlyVisibleFeatures() && mShowOnlyVisibleFeaturesCheckBox->isEnabled() )
   {
@@ -367,6 +401,8 @@ void QgsComposerTableWidget::blockAllSignals( bool b )
   mFeatureFilterEdit->blockSignals( b );
   mFeatureFilterCheckBox->blockSignals( b );
   mHeaderHAlignmentComboBox->blockSignals( b );
+  mHeaderFontColorButton->blockSignals( b );
+  mContentFontColorButton->blockSignals( b );
 }
 
 void QgsComposerTableWidget::setMaximumNumberOfFeatures( int n )

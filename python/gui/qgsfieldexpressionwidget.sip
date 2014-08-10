@@ -20,6 +20,8 @@ class QgsFieldExpressionWidget : QWidget
     //! setFilters allows fitering according to the type of field
     void setFilters( QgsFieldProxyModel::Filters filters );
 
+    void setLeftHandButtonStyle( bool isLeft );
+
     //! currently used filter on list of fields
     QgsFieldProxyModel::Filters filters();
 
@@ -33,6 +35,17 @@ class QgsFieldExpressionWidget : QWidget
      */
     QString currentField( bool *isExpression = 0, bool *isValid = 0 );
 
+    /**
+      * Return true if the current expression is valid
+      */
+    bool isValidExpression( QString *expressionError = 0 );
+
+    bool isExpression();
+    /**
+      * Return the current text that is set in the expression area
+      */
+    QString currentText();
+
     //! Returns the currently used layer
     QgsVectorLayer* layer();
 
@@ -42,6 +55,8 @@ class QgsFieldExpressionWidget : QWidget
 
     //! fieldChanged signal with indication of the validity of the expression
     void fieldChanged( QString fieldName, bool isValid );
+
+//    void returnPressed();
 
   public slots:
     //! set the layer used to display the fields and expression
@@ -63,7 +78,7 @@ class QgsFieldExpressionWidget : QWidget
     //! when expression has been edited (finished) it will be added to the model
     void expressionEditingFinished();
 
-    void currentFieldChanged( int i = 0 );
+    void currentFieldChanged();
 
     /**
      * @brief updateLineEditStyle will re-style (color/font) the line edit depending on content and status

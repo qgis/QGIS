@@ -51,7 +51,7 @@ QgsExpression::Interval QgsExpression::Interval::invalidInterVal()
 QgsExpression::Interval QgsExpression::Interval::fromString( QString string )
 {
   int seconds = 0;
-  QRegExp rx( "(\\d?\\.?\\d+\\s+[a-z]+)", Qt::CaseInsensitive );
+  QRegExp rx( "([-+]?\\d?\\.?\\d+\\s+\\S+)", Qt::CaseInsensitive );
   QStringList list;
   int pos = 0;
 
@@ -61,44 +61,43 @@ QgsExpression::Interval QgsExpression::Interval::fromString( QString string )
     pos += rx.matchedLength();
   }
 
+  QMap<int, QStringList> map;
+  map.insert( 1, QStringList() << "second" << "seconds" << QObject::tr( "second|seconds", "list of words separated by | which reference years" ).split( "|" ) );
+  map.insert( 0 + MINUTE, QStringList() << "minute" << "minutes" << QObject::tr( "minute|minutes", "list of words separated by | which reference minutes" ).split( "|" ) );
+  map.insert( 0 + HOUR, QStringList() << "hour" << "hours" << QObject::tr( "hour|hours", "list of words separated by | which reference minutes hours" ).split( "|" ) );
+  map.insert( 0 + DAY, QStringList() << "day" << "days" << QObject::tr( "day|days", "list of words separated by | which reference days" ).split( "|" ) );
+  map.insert( 0 + WEEKS, QStringList() << "week" << "weeks" << QObject::tr( "week|weeks", "wordlist separated by | which reference weeks" ).split( "|" ) );
+  map.insert( 0 + MONTHS, QStringList() << "month" << "months" << QObject::tr( "month|months", "list of words separated by | which reference months" ).split( "|" ) );
+  map.insert( 0 + YEARS, QStringList() << "year" << "years" << QObject::tr( "year|years", "list of words separated by | which reference years" ).split( "|" ) );
+
   foreach ( QString match, list )
   {
     QStringList split = match.split( QRegExp( "\\s+" ) );
     bool ok;
-    int value = split.at( 0 ).toInt( &ok );
+    double value = split.at( 0 ).toDouble( &ok );
     if ( !ok )
     {
       continue;
     }
 
-    if ( match.contains( "day", Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "day", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "days", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
-      seconds += value * QgsExpression::Interval::DAY;
-    if ( match.contains( "week", Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "week", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "weeks", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
-      seconds += value * QgsExpression::Interval::WEEKS;
-    if ( match.contains( "month", Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "month", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "months", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
-      seconds += value * QgsExpression::Interval::MONTHS;
-    if ( match.contains( "year", Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "year", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "years", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
-      seconds += value * QgsExpression::Interval::YEARS;
-    if ( match.contains( "second", Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "second", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "seconds", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
-      seconds += value;
-    if ( match.contains( "minute", Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "minute", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "minutes", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
-      seconds += value * QgsExpression::Interval::MINUTE;
-    if ( match.contains( "hour", Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "hour", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "hours", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
-      seconds += value * QgsExpression::Interval::HOUR;
+    bool matched = false;
+    foreach ( int duration, map.keys() )
+    {
+      foreach ( QString name, map[duration] )
+      {
+        if ( match.contains( name, Qt::CaseInsensitive ) )
+        {
+          matched = true;
+          break;
+        }
+      }
+
+      if ( matched )
+      {
+        seconds += value * duration;
+        break;
+      }
+    }
   }
 
   // If we can't parse the string at all then we just return invalid
@@ -311,6 +310,7 @@ static QgsExpression::Interval getInterval( const QVariant& value, QgsExpression
 
   return QgsExpression::Interval::invalidInterVal();
 }
+
 static QgsGeometry getGeometry( const QVariant& value, QgsExpression* parent )
 {
   if ( value.canConvert<QgsGeometry>() )
@@ -320,6 +320,14 @@ static QgsGeometry getGeometry( const QVariant& value, QgsExpression* parent )
   return QgsGeometry();
 }
 
+static QgsFeature getFeature( const QVariant& value, QgsExpression* parent )
+{
+  if ( value.canConvert<QgsFeature>() )
+    return value.value<QgsFeature>();
+
+  parent->setEvalErrorString( "Cannot convert to QgsFeature" );
+  return 0;
+}
 
 // this handles also NULL values
 static TVL getTVLValue( const QVariant& value, QgsExpression* parent )
@@ -787,6 +795,17 @@ static QVariant fcnFeatureId( const QVariantList& , const QgsFeature* f, QgsExpr
   return f ? QVariant(( int )f->id() ) : QVariant();
 }
 
+static QVariant fcnFeature( const QVariantList& , const QgsFeature* f, QgsExpression* )
+{
+  return f ? QVariant::fromValue( *f ) : QVariant();
+}
+static QVariant fcnAttribute( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
+{
+  QgsFeature feat = getFeature( values.at( 0 ), parent );
+  QString attr = getStringValue( values.at( 1 ), parent );
+
+  return feat.attribute( attr );
+}
 static QVariant fcnConcat( const QVariantList& values, const QgsFeature* , QgsExpression *parent )
 {
   QString concat;
@@ -1661,8 +1680,15 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "geomToWKT", 1, fcnGeomToWKT, "Geometry" )
     << new StaticFunction( "$rownum", 0, fcnRowNumber, "Record" )
     << new StaticFunction( "$id", 0, fcnFeatureId, "Record" )
+    << new StaticFunction( "$currentfeature", 0, fcnFeature, "Record" )
     << new StaticFunction( "$scale", 0, fcnScale, "Record" )
     << new StaticFunction( "$uuid", 0, fcnUuid, "Record" )
+
+    //return all attributes string for referencedColumns - this is caught by
+    // QgsFeatureRequest::setSubsetOfAttributes and causes all attributes to be fetched by the
+    // feature request
+    << new StaticFunction( "attribute", 2, fcnAttribute, "Record", QString(), false, QStringList( QgsFeatureRequest::AllAttributes ) )
+
     << new StaticFunction( "_specialcol_", 1, fcnSpecialColumn, "Special" )
     ;
   }
@@ -1670,6 +1696,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
 }
 
 QMap<QString, QVariant> QgsExpression::gmSpecialColumns;
+QMap<QString, QString> QgsExpression::gmSpecialColumnGroups;
 
 void QgsExpression::setSpecialColumn( const QString& name, QVariant variant )
 {
@@ -1716,10 +1743,23 @@ bool QgsExpression::hasSpecialColumn( const QString& name )
     // This is really sub-optimal, we should get rid of the special columns and instead have contexts in which some values
     // are defined and some are not ($rownum makes sense only in field calculator, $scale only when rendering, $page only for composer etc.)
 
-    QStringList lst;
-    lst << "$page" << "$feature" << "$numpages" << "$numfeatures" << "$atlasfeatureid" << "$atlasgeometry" << "$map";
-    foreach ( QString c, lst )
-      setSpecialColumn( c, QVariant() );
+    //pairs of column name to group name
+    QList< QPair<QString, QString> > lst;
+    lst << qMakePair( QString( "$page" ), QString( "Composer" ) );
+    lst << qMakePair( QString( "$feature" ), QString( "Atlas" ) );
+    lst << qMakePair( QString( "$numpages" ), QString( "Composer" ) );
+    lst << qMakePair( QString( "$numfeatures" ), QString( "Atlas" ) );
+    lst << qMakePair( QString( "$atlasfeatureid" ), QString( "Atlas" ) );
+    lst << qMakePair( QString( "$atlasgeometry" ), QString( "Atlas" ) );
+    lst << qMakePair( QString( "$atlasfeature" ), QString( "Atlas" ) );
+    lst << qMakePair( QString( "$map" ), QString( "Composer" ) );
+
+    QList< QPair<QString, QString> >::const_iterator it = lst.constBegin();
+    for ( ; it != lst.constEnd(); ++it )
+    {
+      setSpecialColumn(( *it ).first, QVariant() );
+      gmSpecialColumnGroups[( *it ).first ] = ( *it ).second;
+    }
 
     initialized = true;
   }
@@ -1729,14 +1769,38 @@ bool QgsExpression::hasSpecialColumn( const QString& name )
   return gmSpecialColumns.contains( name );
 }
 
+bool QgsExpression::isValid( const QString &text, const QgsFields &fields, QString &errorMessage )
+{
+  QgsExpression exp( text );
+  exp.prepare( fields );
+  errorMessage = exp.parserErrorString();
+  return !exp.hasParserError();
+}
+
 QList<QgsExpression::Function*> QgsExpression::specialColumns()
 {
   QList<Function*> defs;
   for ( QMap<QString, QVariant>::const_iterator it = gmSpecialColumns.begin(); it != gmSpecialColumns.end(); ++it )
   {
-    defs << new StaticFunction( it.key(), 0, 0, "Record" );
+    //check for special column group name
+    QString group = gmSpecialColumnGroups.value( it.key(), "Record" );
+    defs << new StaticFunction( it.key(), 0, 0, group );
   }
   return defs;
+}
+
+QString QgsExpression::quotedColumnRef( QString name )
+{
+  return QString( "\"%1\"" ).arg( name.replace( "\"", "\"\"" ) );
+}
+
+QString QgsExpression::quotedString( QString text )
+{
+  text.replace( "'", "''" );
+  text.replace( '\\', "\\\\" );
+  text.replace( '\n', "\\n" );
+  text.replace( '\t', "\\t" );
+  return QString( "'%1'" ).arg( text );
 }
 
 bool QgsExpression::isFunctionName( QString name )
@@ -1783,6 +1847,7 @@ QStringList QgsExpression::referencedColumns()
 {
   if ( !mRootNode )
     return QStringList();
+
   QStringList columns = mRootNode->referencedColumns();
 
   // filter out duplicates
@@ -2407,6 +2472,26 @@ QString QgsExpression::NodeFunction::dump() const
     return QString( "%1(%2)" ).arg( fd->name() ).arg( mArgs ? mArgs->dump() : QString() ); // function
 }
 
+QStringList QgsExpression::NodeFunction::referencedColumns() const
+{
+  Function* fd = Functions()[mFnIndex];
+  QStringList functionColumns = fd->referencedColumns();
+
+  if ( !mArgs )
+  {
+    //no referenced columns in arguments, just return function's referenced columns
+    return functionColumns;
+  }
+
+  foreach ( Node* n, mArgs->list() )
+  {
+    functionColumns.append( n->referencedColumns() );
+  }
+
+  //remove duplicates and return
+  return functionColumns.toSet().toList();
+}
+
 //
 
 QVariant QgsExpression::NodeLiteral::eval( QgsExpression* , const QgsFeature* )
@@ -2429,7 +2514,7 @@ QString QgsExpression::NodeLiteral::dump() const
   {
     case QVariant::Int: return QString::number( mValue.toInt() );
     case QVariant::Double: return QString::number( mValue.toDouble() );
-    case QVariant::String: return QString( "'%1'" ).arg( mValue.toString() );
+    case QVariant::String: return quotedString( mValue.toString() );
     default: return QObject::tr( "[unsupported type;%1; value:%2]" ).arg( mValue.typeName() ).arg( mValue.toString() );
   }
 }

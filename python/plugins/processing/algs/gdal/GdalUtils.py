@@ -27,7 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 import subprocess
+import platform
 from PyQt4.QtCore import *
+from qgis.core import QgsApplication
 from processing.core.ProcessingLog import ProcessingLog
 
 try:
@@ -43,12 +45,27 @@ class GdalUtils:
 
     @staticmethod
     def runGdal(commands, progress):
-        settings = QSettings()
-        path = unicode(settings.value('/GdalTools/gdalPath', ''))
         envval = unicode(os.getenv('PATH'))
-        if not path.lower() in envval.lower().split(os.pathsep):
-            envval += '%s%s' % (os.pathsep, path)
-            os.putenv('PATH', envval)
+        # We need to give some extra hints to get things picked up on OS X
+        if platform.system() == 'Darwin':
+            if os.path.isfile(os.path.join(QgsApplication.prefixPath(), "bin", "gdalinfo")):
+                # Looks like there's a bundled gdal. Let's use it.
+                os.environ['PATH'] = "%s%s%s" % (os.path.join(QgsApplication.prefixPath(), "bin"), os.pathsep, envval)
+                os.environ['DYLD_LIBRARY_PATH'] = os.path.join(QgsApplication.prefixPath(), "lib")
+            else:
+                # Nothing internal. Let's see if we can find it elsewhere.
+                settings = QSettings()
+                path = unicode(settings.value('/GdalTools/gdalPath', ''))
+                envval += '%s%s' % (os.pathsep, path)
+                os.putenv('PATH', envval)
+        else:
+            # Other platforms should use default gdal finder codepath
+            settings = QSettings()
+            path = unicode(settings.value('/GdalTools/gdalPath', ''))
+            if not path.lower() in envval.lower().split(os.pathsep):
+                envval += '%s%s' % (os.pathsep, path)
+                os.putenv('PATH', envval)
+
         loglines = []
         loglines.append('GDAL execution console output')
         fused_command = ''.join(['%s ' % c for c in commands])
@@ -121,7 +138,7 @@ class GdalUtils:
     def escapeAndJoin(strList):
         joined = ''
         for s in strList:
-            if ' ' in s:
+            if s[0] != '-' and ' ' in s:
                 escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') \
                     + '"'
             else:

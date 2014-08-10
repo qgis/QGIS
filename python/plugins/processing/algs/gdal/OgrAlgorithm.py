@@ -38,13 +38,11 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.tools import dataobjects
 
 
-class OgrAlgorithm(GeoAlgorithm):
-
-    DB = 'DB'
+class OgrAlgorithm(GdalAlgorithm):
 
     def ogrConnectionString(self, uri):
         ogrstr = None
@@ -56,28 +54,15 @@ class OgrAlgorithm(GeoAlgorithm):
         if provider == 'spatialite':
             # dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
             regex = re.compile("dbname='(.+)'")
-            r = regex.search(str(layer.source()))
+            r = regex.search(unicode(layer.source()))
             ogrstr = r.groups()[0]
         elif provider == 'postgres':
             # dbname='ktryjh_iuuqef' host=spacialdb.com port=9999
             # user='ktryjh_iuuqef' password='xyqwer' sslmode=disable
             # key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON
             # table="t4" (geom) sql=
-            s = re.sub(''' sslmode=.+''', '', str(layer.source()))
+            s = re.sub(''' sslmode=.+''', '', unicode(layer.source()))
             ogrstr = 'PG:%s' % s
         else:
-            ogrstr = str(layer.source())
+            ogrstr = unicode(layer.source())
         return ogrstr
-
-    def drivers(self):
-        list = []
-        if ogrAvailable:
-            for iDriver in range(ogr.GetDriverCount()):
-                list.append('%s' % ogr.GetDriver(iDriver).GetName())
-        return list
-
-    def failure(self, pszDataSource):
-        out = 'FAILURE: Unable to open datasource %s with the following \
-              drivers.' % pszDataSource
-        out = out + string.join(map(lambda d: '->' + d, self.drivers()), '\n')
-        return out

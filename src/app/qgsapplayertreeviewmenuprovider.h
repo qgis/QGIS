@@ -23,6 +23,7 @@ class QgsMapCanvas;
 
 class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewMenuProvider
 {
+    Q_OBJECT
   public:
     QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view, QgsMapCanvas* canvas );
 
@@ -45,6 +46,5 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
 
     QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > > mLegendLayerActionMap;
 };
-
 
 #endif // QGSAPPLAYERTREEVIEWMENUPROVIDER_H

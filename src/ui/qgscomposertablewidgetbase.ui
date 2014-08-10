@@ -45,9 +45,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-34</y>
+        <y>0</y>
         <width>392</width>
-        <height>606</height>
+        <height>720</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -66,7 +66,10 @@
           <property name="fieldGrowthPolicy">
            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
           </property>
-          <item row="1" column="0">
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+          <item row="0" column="0">
            <widget class="QLabel" name="mLayerLabel">
             <property name="text">
              <string>Layer</string>
@@ -76,7 +79,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="0" column="1">
            <widget class="QgsMapLayerComboBox" name="mLayerComboBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -86,28 +89,83 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2">
+          <item row="1" column="0" colspan="2">
            <widget class="QPushButton" name="mRefreshPushButton">
             <property name="text">
              <string>Refresh table data</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="0" colspan="2">
+          <item row="2" column="0" colspan="2">
            <widget class="QPushButton" name="mAttributesPushButton">
             <property name="text">
              <string>Attributes...</string>
             </property>
            </widget>
           </item>
-          <item row="9" column="0" colspan="2">
+          <item row="3" column="0">
+           <widget class="QLabel" name="mMarginLabel">
+            <property name="text">
+             <string>Margin</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mMarginSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QDoubleSpinBox" name="mMarginSpinBox">
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_5">
+         <property name="title">
+          <string>Feature filtering</string>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <layout class="QFormLayout" name="formLayout_3">
+          <item row="0" column="0">
+           <widget class="QLabel" name="mMaxNumFeaturesLabel">
+            <property name="text">
+             <string>Maximum rows</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mMaximumColumnsSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="mMaximumColumnsSpinBox">
+            <property name="maximum">
+             <number>999</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
            <widget class="QCheckBox" name="mShowOnlyVisibleFeaturesCheckBox">
             <property name="text">
              <string>Show only visible features</string>
             </property>
            </widget>
           </item>
-          <item row="11" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="mComposerMapLabel">
             <property name="text">
              <string>Composer map</string>
@@ -120,17 +178,17 @@
             </property>
            </widget>
           </item>
-          <item row="11" column="1">
+          <item row="2" column="1">
            <widget class="QComboBox" name="mComposerMapComboBox"/>
           </item>
-          <item row="13" column="0">
+          <item row="3" column="0">
            <widget class="QCheckBox" name="mFeatureFilterCheckBox">
             <property name="text">
              <string>Filter with</string>
             </property>
            </widget>
           </item>
-          <item row="13" column="1">
+          <item row="3" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QLineEdit" name="mFeatureFilterEdit"/>
@@ -148,39 +206,15 @@
             </item>
            </layout>
           </item>
-          <item row="15" column="0">
-           <widget class="QLabel" name="mMaxNumFeaturesLabel">
-            <property name="text">
-             <string>Maximum rows</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mMaximumColumnsSpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="15" column="1">
-           <widget class="QSpinBox" name="mMaximumColumnsSpinBox"/>
-          </item>
-          <item row="17" column="0">
-           <widget class="QLabel" name="mMarginLabel">
-            <property name="text">
-             <string>Margin</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mMarginSpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="17" column="1">
-           <widget class="QDoubleSpinBox" name="mMarginSpinBox"/>
-          </item>
          </layout>
+         <zorder>groupBox</zorder>
+         <zorder>mShowOnlyVisibleFeaturesCheckBox</zorder>
+         <zorder>mComposerMapLabel</zorder>
+         <zorder>mComposerMapComboBox</zorder>
+         <zorder></zorder>
+         <zorder>mFeatureFilterCheckBox</zorder>
+         <zorder>mMaximumColumnsSpinBox</zorder>
+         <zorder>mMaxNumFeaturesLabel</zorder>
         </widget>
        </item>
        <item>
@@ -197,13 +231,7 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout_3">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-          </property>
-          <property name="labelAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
+         <layout class="QFormLayout" name="formLayout_2">
           <item row="0" column="0">
            <widget class="QLabel" name="mGridStrokeWidthLabel">
             <property name="text">
@@ -218,12 +246,23 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="mGridStrokeWidthSpinBox"/>
+           <widget class="QDoubleSpinBox" name="mGridStrokeWidthSpinBox">
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+           </widget>
           </item>
-          <item row="1" column="0" colspan="2">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
            <widget class="QgsColorButton" name="mGridColorButton">
             <property name="text">
-             <string>Color...</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -233,7 +272,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_3">
          <property name="title">
-          <string>Fonts</string>
+          <string>Fonts and text styling</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>
@@ -241,50 +280,116 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout_2">
-          <item row="0" column="0" colspan="2">
-           <widget class="QPushButton" name="mHeaderFontPushButton">
-            <property name="text">
-             <string>Header font...</string>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QGroupBox" name="groupBox_2">
+            <property name="title">
+             <string>Table heading</string>
             </property>
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="3" column="1" colspan="2">
+              <widget class="QComboBox" name="mHeaderHAlignmentComboBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Follow column alignment</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Left</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Center</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Right</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Alignment</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Color</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_5">
+               <property name="text">
+                <string>Font</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1" colspan="2">
+              <widget class="QPushButton" name="mHeaderFontPushButton">
+               <property name="text">
+                <string>Choose font...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1" colspan="2">
+              <widget class="QgsColorButton" name="mHeaderFontColorButton">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QPushButton" name="mContentFontPushButton">
-            <property name="text">
-             <string>Content font...</string>
+          <item>
+           <widget class="QGroupBox" name="groupBox_4">
+            <property name="title">
+             <string>Table contents</string>
             </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Header alignment</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QComboBox" name="mHeaderHAlignmentComboBox">
-            <item>
-             <property name="text">
-              <string>Follow column alignment</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Left</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Center</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Right</string>
-             </property>
-            </item>
+            <layout class="QGridLayout" name="gridLayout_2">
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>Color</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1" colspan="2">
+              <widget class="QgsColorButton" name="mContentFontColorButton">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1" colspan="2">
+              <widget class="QPushButton" name="mContentFontPushButton">
+               <property name="text">
+                <string>Choose font...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="lblContentsFont">
+               <property name="text">
+                <string>Font</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
@@ -298,15 +403,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>

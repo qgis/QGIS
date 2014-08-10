@@ -25,28 +25,22 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import tempfile
-
-try:
-    from osgeo import gdal, ogr, osr
-    gdalAvailable = True
-except:
-    gdalAvailable = False
+import os
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
 from qgis.core import *
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.outputs.OutputVector import OutputVector
 
-from OgrAlgorithm import OgrAlgorithm
-from pyogr.ogr2ogr import *
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterSelection
+from processing.core.outputs import OutputVector
 
-GeomOperation = Enum(['NONE', 'SEGMENTIZE', 'SIMPLIFY_PRESERVE_TOPOLOGY'])
+from processing.tools.system import *
+
+from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
+from processing.algs.gdal.GdalUtils import GdalUtils
 
 FORMATS = [
     'ESRI Shapefile',
@@ -102,9 +96,8 @@ class Ogr2Ogr(OgrAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
-    DEST_DS = 'DEST_DS'
-    DEST_FORMAT = 'DEST_FORMAT'
-    DEST_DSCO = 'DEST_DSCO'
+    FORMAT = 'FORMAT'
+    OPTIONS = 'OPTIONS'
 
     def defineCharacteristics(self):
         self.name = 'Convert format'
@@ -112,137 +105,48 @@ class Ogr2Ogr(OgrAlgorithm):
 
         self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
                           [ParameterVector.VECTOR_TYPE_ANY], False))
-        self.addParameter(ParameterSelection(self.DEST_FORMAT,
+        self.addParameter(ParameterSelection(self.FORMAT,
                           'Destination Format', FORMATS))
-        self.addParameter(ParameterString(self.DEST_DSCO, 'Creation Options',
-                          ''))
+        self.addParameter(ParameterString(self.OPTIONS, 'Creation Options',
+                          '', optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
 
-    def commandLineName(self):
-        return "gdalogr:ogr2ogr"
-
-
     def processAlgorithm(self, progress):
-        if not gdalAvailable:
-            raise GeoAlgorithmExecutionException(
-                    'GDAL bindings not installed.')
-
-        input = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(input)
+        inLayer = self.getParameterValue(self.INPUT_LAYER)
+        ogrLayer = self.ogrConnectionString(inLayer)
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
-        outfile = output.value
+        outFile = output.value
 
-        formatIdx = self.getParameterValue(self.DEST_FORMAT)
-
+        formatIdx = self.getParameterValue(self.FORMAT)
+        outFormat = FORMATS[formatIdx]
         ext = EXTS[formatIdx]
-        if not outfile.endswith(ext):
-            outfile = outfile + ext
-            output.value = outfile
+        if not outFile.endswith(ext):
+            outFile += ext
+            output.value = outFile
 
-        dst_ds = self.ogrConnectionString(outfile)
-        dst_format = FORMATS[formatIdx]
-        ogr_dsco = [self.getParameterValue(self.DEST_DSCO)]
+        output = self.ogrConnectionString(outFile)
+        options = unicode(self.getParameterValue(self.OPTIONS))
 
-        poDS = ogr.Open(ogrLayer, False)
-        if poDS is None:
-            raise GeoAlgorithmExecutionException(self.failure(ogrLayer))
+        if outFormat == 'SQLite' and os.path.isfile(output):
+            os.remove(output)
 
-        if dst_format == 'SQLite' and os.path.isfile(dst_ds):
-            os.remove(dst_ds)
-        driver = ogr.GetDriverByName(str(dst_format))
-        poDstDS = driver.CreateDataSource(dst_ds, options=ogr_dsco)
-        if poDstDS is None:
-            raise GeoAlgorithmExecutionException('Error creating %s' % dst_ds)
-            return
-        self.ogrtransform(poDS, poDstDS, bOverwrite=True)
+        arguments = []
+        arguments.append('-f')
+        arguments.append(outFormat)
+        if len(options) > 0:
+            arguments.append(options)
 
-    def ogrtransform(
-        self,
-        poSrcDS,
-        poDstDS,
-        papszLayers=[],
-        papszLCO=[],
-        bTransform=False,
-        bAppend=False,
-        bUpdate=False,
-        bOverwrite=False,
-        poOutputSRS=None,
-        poSourceSRS=None,
-        pszNewLayerName=None,
-        pszWHERE=None,
-        papszSelFields=None,
-        eGType=-2,
-        eGeomOp=GeomOperation.NONE,
-        dfGeomOpParam=0,
-        papszFieldTypesToString=[],
-        pfnProgress=None,
-        pProgressData=None,
-        nCountLayerFeatures=0,
-        poClipSrc=None,
-        poClipDst=None,
-        bExplodeCollections=False,
-        pszZField=None,
-        ):
+        arguments.append(output)
+        arguments.append(ogrLayer)
 
-        # Process each data source layer
-        if len(papszLayers) == 0:
-            nLayerCount = poSrcDS.GetLayerCount()
-            papoLayers = [None for i in range(nLayerCount)]
-            iLayer = 0
-
-            for iLayer in range(nLayerCount):
-                poLayer = poSrcDS.GetLayer(iLayer)
-
-                if poLayer is None:
-                    raise GeoAlgorithmExecutionException(
-                            "FAILURE: Couldn't fetch advertised layer %d!"
-                            % iLayer)
-
-                papoLayers[iLayer] = poLayer
-                iLayer = iLayer + 1
+        commands = []
+        if isWindows():
+            commands = ['cmd.exe', '/C ', 'ogr2ogr.exe',
+                        GdalUtils.escapeAndJoin(arguments)]
         else:
-            # Process specified data source layers
-            nLayerCount = len(papszLayers)
-            papoLayers = [None for i in range(nLayerCount)]
-            iLayer = 0
+            commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
-            for layername in papszLayers:
-                poLayer = poSrcDS.GetLayerByName(layername)
+        GdalUtils.runGdal(commands, progress)
 
-                if poLayer is None:
-                    raise GeoAlgorithmExecutionException(
-                            "FAILURE: Couldn't fetch advertised layer %s!"
-                            % layername)
-
-                papoLayers[iLayer] = poLayer
-                iLayer = iLayer + 1
-
-        for poSrcLayer in papoLayers:
-            ok = TranslateLayer(
-                poSrcDS,
-                poSrcLayer,
-                poDstDS,
-                papszLCO,
-                pszNewLayerName,
-                bTransform,
-                poOutputSRS,
-                poSourceSRS,
-                papszSelFields,
-                bAppend,
-                eGType,
-                bOverwrite,
-                eGeomOp,
-                dfGeomOpParam,
-                papszFieldTypesToString,
-                nCountLayerFeatures,
-                poClipSrc,
-                poClipDst,
-                bExplodeCollections,
-                pszZField,
-                pszWHERE,
-                pfnProgress,
-                pProgressData,
-                )
-        return True

@@ -17,6 +17,8 @@
 
 #include "qgscomposertable.h"
 #include "qgscomposertablecolumn.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgscomposerutils.h"
 #include <QPainter>
 #include <QSettings>
 
@@ -24,6 +26,8 @@
 QgsComposerTable::QgsComposerTable( QgsComposition* composition )
     : QgsComposerItem( composition )
     , mLineTextDistance( 1.0 )
+    , mHeaderFontColor( Qt::black )
+    , mContentFontColor( Qt::black )
     , mHeaderHAlignment( FollowColumn )
     , mShowGrid( true )
     , mGridStrokeWidth( 0.5 )
@@ -79,6 +83,10 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
 
   drawBackground( painter );
+  painter->save();
+  //antialiasing on
+  painter->setRenderHint( QPainter::Antialiasing, true );
+
   painter->setPen( Qt::SolidLine );
 
   //now draw the text
@@ -88,8 +96,8 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();
 
   int col = 0;
-  double cellHeaderHeight = fontAscentMillimeters( mHeaderFont ) + 2 * mLineTextDistance;
-  double cellBodyHeight = fontAscentMillimeters( mContentFont ) + 2 * mLineTextDistance;
+  double cellHeaderHeight = QgsComposerUtils::fontAscentMM( mHeaderFont ) + 2 * mLineTextDistance;
+  double cellBodyHeight = QgsComposerUtils::fontAscentMM( mContentFont ) + 2 * mLineTextDistance;
   QRectF cell;
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
@@ -116,7 +124,7 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
         break;
     }
 
-    drawText( painter, cell, ( *columnIt )->heading(), mHeaderFont, headerAlign, Qt::AlignVCenter, Qt::TextDontClip );
+    QgsComposerUtils::drawText( painter, cell, ( *columnIt )->heading(), mHeaderFont, mHeaderFontColor, headerAlign, Qt::AlignVCenter, Qt::TextDontClip );
 
     currentY += cellHeaderHeight;
     currentY += mGridStrokeWidth;
@@ -129,7 +137,7 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
       const QgsAttributeMap &currentAttributeMap = *attIt;
       QString str = currentAttributeMap[ col ].toString();
-      drawText( painter, cell, str, mContentFont, ( *columnIt )->hAlignment(), Qt::AlignVCenter, Qt::TextDontClip );
+      QgsComposerUtils::drawText( painter, cell, str, mContentFont, mContentFontColor, ( *columnIt )->hAlignment(), Qt::AlignVCenter, Qt::TextDontClip );
 
       currentY += cellBodyHeight;
       currentY += mGridStrokeWidth;
@@ -153,6 +161,8 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     drawVerticalGridLines( painter, mMaxColumnWidthMap );
   }
 
+  painter->restore();
+
   //draw frame and selection boxes if necessary
   drawFrame( painter );
   if ( isSelected() )
@@ -175,6 +185,12 @@ void QgsComposerTable::setHeaderFont( const QFont& f )
   adjustFrameToSize();
 }
 
+void QgsComposerTable::setHeaderFontColor( const QColor &color )
+{
+  mHeaderFontColor = color;
+  repaint();
+}
+
 void QgsComposerTable::setHeaderHAlignment( const QgsComposerTable::HeaderHAlignment alignment )
 {
   mHeaderHAlignment = alignment;
@@ -186,6 +202,12 @@ void QgsComposerTable::setContentFont( const QFont& f )
   mContentFont = f;
   //since font attributes have changed, we need to recalculate the table size
   adjustFrameToSize();
+}
+
+void QgsComposerTable::setContentFontColor( const QColor &color )
+{
+  mContentFontColor = color;
+  repaint();
 }
 
 void QgsComposerTable::setShowGrid( bool show )
@@ -242,12 +264,12 @@ bool QgsComposerTable::tableWriteXML( QDomElement& elem, QDomDocument & doc ) co
 {
   elem.setAttribute( "lineTextDist", QString::number( mLineTextDistance ) );
   elem.setAttribute( "headerFont", mHeaderFont.toString() );
+  elem.setAttribute( "headerFontColor", QgsSymbolLayerV2Utils::encodeColor( mHeaderFontColor ) );
   elem.setAttribute( "headerHAlignment", QString::number(( int )mHeaderHAlignment ) );
   elem.setAttribute( "contentFont", mContentFont.toString() );
+  elem.setAttribute( "contentFontColor", QgsSymbolLayerV2Utils::encodeColor( mContentFontColor ) );
   elem.setAttribute( "gridStrokeWidth", QString::number( mGridStrokeWidth ) );
-  elem.setAttribute( "gridColorRed", mGridColor.red() );
-  elem.setAttribute( "gridColorGreen", mGridColor.green() );
-  elem.setAttribute( "gridColorBlue", mGridColor.blue() );
+  elem.setAttribute( "gridColor", QgsSymbolLayerV2Utils::encodeColor( mGridColor ) );
   elem.setAttribute( "showGrid", mShowGrid );
 
   //columns
@@ -272,17 +294,28 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
   }
 
   mHeaderFont.fromString( itemElem.attribute( "headerFont", "" ) );
+  mHeaderFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "headerFontColor", "0,0,0,255" ) );
   mHeaderHAlignment = QgsComposerTable::HeaderHAlignment( itemElem.attribute( "headerHAlignment", "0" ).toInt() );
   mContentFont.fromString( itemElem.attribute( "contentFont", "" ) );
+  mContentFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "contentFontColor", "0,0,0,255" ) );
   mLineTextDistance = itemElem.attribute( "lineTextDist", "1.0" ).toDouble();
   mGridStrokeWidth = itemElem.attribute( "gridStrokeWidth", "0.5" ).toDouble();
   mShowGrid = itemElem.attribute( "showGrid", "1" ).toInt();
 
   //grid color
-  int gridRed = itemElem.attribute( "gridColorRed", "0" ).toInt();
-  int gridGreen = itemElem.attribute( "gridColorGreen", "0" ).toInt();
-  int gridBlue = itemElem.attribute( "gridColorBlue", "0" ).toInt();
-  mGridColor = QColor( gridRed, gridGreen, gridBlue );
+  if ( itemElem.hasAttribute( "gridColor" ) )
+  {
+    mGridColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "gridColor", "0,0,0,255" ) );
+  }
+  else
+  {
+    //old style grid color
+    int gridRed = itemElem.attribute( "gridColorRed", "0" ).toInt();
+    int gridGreen = itemElem.attribute( "gridColorGreen", "0" ).toInt();
+    int gridBlue = itemElem.attribute( "gridColorBlue", "0" ).toInt();
+    int gridAlpha = itemElem.attribute( "gridColorAlpha", "255" ).toInt();
+    mGridColor = QColor( gridRed, gridGreen, gridBlue, gridAlpha );
+  }
 
   //restore column specifications
   qDeleteAll( mColumns );
@@ -319,7 +352,7 @@ bool QgsComposerTable::calculateMaxColumnWidths( QMap<int, double>& maxWidthMap,
   int col = 0;
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
-    maxWidthMap.insert( col, textWidthMillimeters( mHeaderFont, ( *columnIt )->heading() ) );
+    maxWidthMap.insert( col, QgsComposerUtils::textWidthMM( mHeaderFont, ( *columnIt )->heading() ) );
     col++;
   }
 
@@ -333,7 +366,7 @@ bool QgsComposerTable::calculateMaxColumnWidths( QMap<int, double>& maxWidthMap,
     QgsAttributeMap::const_iterator attIt2 = attIt->constBegin();
     for ( ; attIt2 != attIt->constEnd(); ++attIt2 )
     {
-      currentAttributeTextWidth = textWidthMillimeters( mContentFont, attIt2.value().toString() );
+      currentAttributeTextWidth = QgsComposerUtils::textWidthMM( mContentFont, attIt2.value().toString() );
       if ( currentAttributeTextWidth > maxWidthMap[ attIt2.key()] )
       {
         maxWidthMap[ attIt2.key()] = currentAttributeTextWidth;
@@ -347,8 +380,8 @@ void QgsComposerTable::adaptItemFrame( const QMap<int, double>& maxWidthMap, con
 {
   //calculate height
   int n = attributeMaps.size();
-  double totalHeight = fontAscentMillimeters( mHeaderFont )
-                       + n * fontAscentMillimeters( mContentFont )
+  double totalHeight = QgsComposerUtils::fontAscentMM( mHeaderFont )
+                       + n * QgsComposerUtils::fontAscentMM( mContentFont )
                        + ( n + 1 ) * mLineTextDistance * 2
                        + ( n + 2 ) * mGridStrokeWidth;
 
@@ -362,7 +395,10 @@ void QgsComposerTable::adaptItemFrame( const QMap<int, double>& maxWidthMap, con
   totalWidth += ( 2 * maxWidthMap.size() * mLineTextDistance );
   totalWidth += ( maxWidthMap.size() + 1 ) * mGridStrokeWidth;
 
-  QgsComposerItem::setSceneRect( QRectF( pos().x(), pos().y(), totalWidth, totalHeight ) );
+  QRectF evaluatedRect = evalItemRect( QRectF( pos().x(), pos().y(), totalWidth, totalHeight ) );
+
+  //update rect for data defined size and position
+  QgsComposerItem::setSceneRect( evaluatedRect );
 }
 
 void QgsComposerTable::drawHorizontalGridLines( QPainter* p, int nAttributes )
@@ -372,12 +408,12 @@ void QgsComposerTable::drawHorizontalGridLines( QPainter* p, int nAttributes )
   double currentY = halfGridStrokeWidth;
   p->drawLine( QPointF( halfGridStrokeWidth, currentY ), QPointF( rect().width() - halfGridStrokeWidth, currentY ) );
   currentY += mGridStrokeWidth;
-  currentY += ( fontAscentMillimeters( mHeaderFont ) + 2 * mLineTextDistance );
+  currentY += ( QgsComposerUtils::fontAscentMM( mHeaderFont ) + 2 * mLineTextDistance );
   for ( int i = 0; i < nAttributes; ++i )
   {
     p->drawLine( QPointF( halfGridStrokeWidth, currentY ), QPointF( rect().width() - halfGridStrokeWidth, currentY ) );
     currentY += mGridStrokeWidth;
-    currentY += ( fontAscentMillimeters( mContentFont ) + 2 * mLineTextDistance );
+    currentY += ( QgsComposerUtils::fontAscentMM( mContentFont ) + 2 * mLineTextDistance );
   }
   p->drawLine( QPointF( halfGridStrokeWidth, currentY ), QPointF( rect().width() - halfGridStrokeWidth, currentY ) );
 }

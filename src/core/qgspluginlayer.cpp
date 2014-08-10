@@ -14,11 +14,13 @@
  ***************************************************************************/
 #include "qgspluginlayer.h"
 
+#include "qgsmaplayerlegend.h"
 #include "qgsmaplayerrenderer.h"
 
 QgsPluginLayer::QgsPluginLayer( QString layerType, QString layerName )
     : QgsMapLayer( PluginLayer, layerName ), mPluginLayerType( layerType )
 {
+  setLegend( QgsMapLayerLegend::defaultPluginLegend( this ) );
 }
 
 QString QgsPluginLayer::pluginLayerType()
@@ -37,7 +39,10 @@ QgsLegendSymbologyList QgsPluginLayer::legendSymbologyItems( const QSize& iconSi
   return QgsLegendSymbologyList();
 }
 
-/** Fallback layer renderer implementation for layer that do not support map renderer yet. */
+/** Fallback layer renderer implementation for layer that do not support map renderer yet.
+ *
+ * @note added in 2.4
+ */
 class QgsPluginLayerRenderer : public QgsMapLayerRenderer
 {
   public:

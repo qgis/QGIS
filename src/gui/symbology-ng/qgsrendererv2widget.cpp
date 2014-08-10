@@ -243,7 +243,6 @@ void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, QString fieldName
 
   bool hasField = false;
   const QgsFields & flds = mLayer->pendingFields();
-  //const QgsFieldMap& flds = mLayer->pendingFields();
   for ( int idx = 0; idx < flds.count(); ++idx )
   {
     const QgsField& fld = flds[idx];

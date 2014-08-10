@@ -26,10 +26,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.outputs.OutputNumber import OutputNumber
+from processing.core.parameters import ParameterRaster
+from processing.core.outputs import OutputNumber
 from processing.tools import dataobjects
-
+from processing.core.outputs import OutputExtent
 
 class RasterLayerBoundsAlgorithm(GeoAlgorithm):
 
@@ -38,6 +38,7 @@ class RasterLayerBoundsAlgorithm(GeoAlgorithm):
     XMAX = 'XMAX'
     YMIN = 'YMIN'
     YMAX = 'YMAX'
+    EXTENT = 'EXTENT'
 
     def defineCharacteristics(self):
         self.showInModeler = True
@@ -49,6 +50,7 @@ class RasterLayerBoundsAlgorithm(GeoAlgorithm):
         self.addOutput(OutputNumber(self.XMAX, 'max X'))
         self.addOutput(OutputNumber(self.YMIN, 'min Y'))
         self.addOutput(OutputNumber(self.YMAX, 'max Y'))
+        self.addOutput(OutputExtent(self.EXTENT, 'Extent'))
 
     def processAlgorithm(self, progress):
         uri = self.getParameterValue(self.LAYER)
@@ -57,3 +59,8 @@ class RasterLayerBoundsAlgorithm(GeoAlgorithm):
         self.setOutputValue(self.XMAX, layer.extent().xMaximum())
         self.setOutputValue(self.YMIN, layer.extent().yMinimum())
         self.setOutputValue(self.YMAX, layer.extent().yMaximum())
+        self.setOutputValue(self.EXTENT, (layer.extent().xMinimum(),
+                            layer.extent().xMaximum(),
+                            layer.extent().yMinimum(),
+                            layer.extent().yMaximum()))
+

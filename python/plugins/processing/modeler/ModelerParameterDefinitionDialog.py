@@ -26,19 +26,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from processing.parameters.Parameter import Parameter
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterFile import ParameterFile
+from processing.core.parameters import Parameter
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterTable
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterFile
 
 
 class ModelerParameterDefinitionDialog(QtGui.QDialog):
@@ -120,11 +118,11 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.horizontalLayout2.addWidget(QtGui.QLabel('Parent layer'))
             self.parentCombo = QtGui.QComboBox()
             idx = 0
-            for param in self.alg.parameters:
-                if isinstance(param, (ParameterVector, ParameterTable)):
-                    self.parentCombo.addItem(param.description, param.name)
+            for param in self.alg.inputs.values():
+                if isinstance(param.param, (ParameterVector, ParameterTable)):
+                    self.parentCombo.addItem(param.param.description, param.param.name)
                     if self.param is not None:
-                        if self.param.parent == param.name:
+                        if self.param.parent == param.param.name:
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.horizontalLayout2.addWidget(self.parentCombo)
@@ -241,9 +239,9 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel
                 | QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName('buttonBox')
-        QObject.connect(self.buttonBox, QtCore.SIGNAL('accepted()'),
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL('accepted()'),
                         self.okPressed)
-        QObject.connect(self.buttonBox, QtCore.SIGNAL('rejected()'),
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL('rejected()'),
                         self.cancelPressed)
 
         self.verticalLayout.addWidget(self.buttonBox)
@@ -253,7 +251,7 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
     def okPressed(self):
         description = unicode(self.nameTextBox.text())
         if description.strip() == '':
-            QMessageBox.critical(self, 'Unable to define parameter',
+            QtGui.QMessageBox.warning(self, 'Unable to define parameter',
                                  'Invalid parameter name')
             return
         if self.param is None:
@@ -273,7 +271,7 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
                 == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD \
                 or isinstance(self.param, ParameterTableField):
             if self.parentCombo.currentIndex() < 0:
-                QMessageBox.critical(self, 'Unable to define parameter',
+                QtGui.QMessageBox.warning(self, 'Unable to define parameter',
                                      'Wrong or missing parameter values')
                 return
             parent = self.parentCombo.itemData(self.parentCombo.currentIndex())
@@ -317,14 +315,14 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
                 self.param = ParameterNumber(name, description, vmin, vmax,
                         float(str(self.defaultTextBox.text())))
             except:
-                QMessageBox.critical(self, 'Unable to define parameter',
+                QtGui.QMessageBox.warning(self, 'Unable to define parameter',
                                      'Wrong or missing parameter values')
                 return
         elif self.paramType \
                 == ModelerParameterDefinitionDialog.PARAMETER_STRING \
                 or isinstance(self.param, ParameterString):
             self.param = ParameterString(name, description,
-                    str(self.defaultTextBox.text()))
+                    unicode(self.defaultTextBox.text()))
         elif self.paramType \
                 == ModelerParameterDefinitionDialog.PARAMETER_EXTENT \
                 or isinstance(self.param, ParameterExtent):

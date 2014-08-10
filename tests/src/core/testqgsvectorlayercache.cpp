@@ -100,7 +100,6 @@ void TestVectorLayerCache::init()
 void TestVectorLayerCache::cleanup()
 {
   delete mVectorLayerCache;
-  delete mFeatureIdIndex;
 }
 
 //runs after all tests

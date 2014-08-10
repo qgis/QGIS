@@ -46,7 +46,7 @@ class DeleteScriptAction(ContextAction):
 
     def isEnabled(self):
         if self.scriptType == self.SCRIPT_PYTHON:
-            return isinstance(self.alg, ScriptAlgorithm)
+            return isinstance(self.alg, ScriptAlgorithm) and self.alg.allowEdit
         elif self.scriptType == self.SCRIPT_R:
             return isinstance(self.alg, RAlgorithm)
 

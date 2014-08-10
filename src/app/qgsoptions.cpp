@@ -308,6 +308,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
 
 
   spinBoxAttrTableRowCache->setValue( settings.value( "/qgis/attributeTableRowCache", 10000 ).toInt() );
+  spinBoxAttrTableRowCache->setSpecialValueText( tr( "All" ) );
 
   // set the prompt for raster sublayers
   // 0 = Always -> always ask (if there are existing sublayers)
@@ -544,7 +545,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   //set the state of the checkboxes
   //Changed to default to true as of QGIS 1.7
   chkAntiAliasing->setChecked( settings.value( "/qgis/enable_anti_aliasing", true ).toBool() );
-  chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
+  chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", true ).toBool() );
   chkParallelRendering->setChecked( settings.value( "/qgis/parallel_rendering", false ).toBool() );
   spinMapUpdateInterval->setValue( settings.value( "/qgis/map_update_interval", 250 ).toInt() );
   chkMaxThreads->setChecked( QgsApplication::maxThreads() != -1 );
@@ -574,7 +575,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   cbxSnappingOptionsDocked->setChecked( settings.value( "/qgis/dockSnapping", false ).toBool() );
   cbxAddPostgisDC->setChecked( settings.value( "/qgis/addPostgisDC", false ).toBool() );
   cbxAddOracleDC->setChecked( settings.value( "/qgis/addOracleDC", false ).toBool() );
-  cbxAddNewLayersToCurrentGroup->setChecked( settings.value( "/qgis/addNewLayersToCurrentGroup", false ).toBool() );
   cbxCreateRasterLegendIcons->setChecked( settings.value( "/qgis/createRasterLegendIcons", false ).toBool() );
   cbxCopyWKTGeomFromTable->setChecked( settings.value( "/qgis/copyGeometryAsWKT", true ).toBool() );
   leNullValue->setText( settings.value( "qgis/nullValue", "NULL" ).toString() );
@@ -724,14 +724,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     mGridStyleComboBox->setCurrentIndex( 1 );
   }
 
-  //grid defaults
+  //grid and guide defaults
   mGridResolutionSpinBox->setValue( settings.value( "/Composer/defaultSnapGridResolution", 10.0 ).toDouble() );
-  mGridToleranceSpinBox->setValue( settings.value( "/Composer/defaultSnapGridTolerance", 2 ).toDouble() );
+  mSnapToleranceSpinBox->setValue( settings.value( "/Composer/defaultSnapTolerancePixels", 5 ).toInt() );
   mOffsetXSpinBox->setValue( settings.value( "/Composer/defaultSnapGridOffsetX", 0 ).toDouble() );
   mOffsetYSpinBox->setValue( settings.value( "/Composer/defaultSnapGridOffsetY", 0 ).toDouble() );
-
-  //guide defaults
-  mGuideToleranceSpinBox->setValue( settings.value( "/Composer/defaultSnapGuideTolerance", 2 ).toDouble() );
 
   //
   // Locale settings
@@ -1066,7 +1063,6 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/dockSnapping", cbxSnappingOptionsDocked->isChecked() );
   settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
   settings.setValue( "/qgis/addOracleDC", cbxAddOracleDC->isChecked() );
-  settings.setValue( "/qgis/addNewLayersToCurrentGroup", cbxAddNewLayersToCurrentGroup->isChecked() );
   settings.setValue( "/qgis/defaultLegendGraphicResolution", mLegendGraphicResolutionSpinBox->value() );
   bool createRasterLegendIcons = settings.value( "/qgis/createRasterLegendIcons", false ).toBool();
   settings.setValue( "/qgis/createRasterLegendIcons", cbxCreateRasterLegendIcons->isChecked() );
@@ -1313,14 +1309,11 @@ void QgsOptions::saveOptions()
     settings.setValue( "/Composer/gridStyle", "Crosses" );
   }
 
-  //grid defaults
+  //grid and guide defaults
   settings.setValue( "/Composer/defaultSnapGridResolution", mGridResolutionSpinBox->value() );
-  settings.setValue( "/Composer/defaultSnapGridTolerance", mGridToleranceSpinBox->value() );
+  settings.setValue( "/Composer/defaultSnapTolerancePixels", mSnapToleranceSpinBox->value() );
   settings.setValue( "/Composer/defaultSnapGridOffsetX", mOffsetXSpinBox->value() );
   settings.setValue( "/Composer/defaultSnapGridOffsetY", mOffsetYSpinBox->value() );
-
-  //guide defaults
-  settings.setValue( "/Composer/defaultSnapGuideTolerance", mGuideToleranceSpinBox->value() );
 
   //
   // Locale settings

@@ -17,7 +17,9 @@
 
 #include "qgscomposeritemgroup.h"
 #include "qgscomposition.h"
+#include "qgscomposerutils.h"
 #include "qgslogger.h"
+#include "qgscomposermodel.h"
 
 #include <QPen>
 #include <QPainter>
@@ -31,13 +33,16 @@ QgsComposerItemGroup::QgsComposerItemGroup( QgsComposition* c )
 
 QgsComposerItemGroup::~QgsComposerItemGroup()
 {
+  //loop through group members and remove them from the scene
   QSet<QgsComposerItem*>::iterator itemIt = mItems.begin();
   for ( ; itemIt != mItems.end(); ++itemIt )
   {
     if ( *itemIt )
     {
+      //inform model that we are about to remove an item from the scene
+      mComposition->itemsModel()->setItemRemoved( *itemIt );
       mComposition->removeItem( *itemIt );
-      ( *itemIt )->setFlag( QGraphicsItem::ItemIsSelectable, true );
+      ( *itemIt )->setIsGroupMember( false );
     }
   }
 }
@@ -58,7 +63,7 @@ void QgsComposerItemGroup::addItem( QgsComposerItem* item )
 
   mItems.insert( item );
   item->setSelected( false );
-  item->setFlag( QGraphicsItem::ItemIsSelectable, false ); //item in groups cannot be selected
+  item->setIsGroupMember( true );
 
   //update extent
   if ( mBoundingRectangle.isEmpty() ) //we add the first item
@@ -100,7 +105,7 @@ void QgsComposerItemGroup::removeItems()
   QSet<QgsComposerItem*>::iterator item_it = mItems.begin();
   for ( ; item_it != mItems.end(); ++item_it )
   {
-    ( *item_it )->setFlag( QGraphicsItem::ItemIsSelectable, true ); //enable item selection again
+    ( *item_it )->setIsGroupMember( false );
     ( *item_it )->setSelected( true );
   }
   mItems.clear();
@@ -134,13 +139,25 @@ void QgsComposerItemGroup::setSceneRect( const QRectF& rectangle )
   {
     //each item needs to be scaled relatively to the final size of the group
     QRectF itemRect = mapRectFromItem(( *item_it ), ( *item_it )->rect() );
-    QgsComposition::relativeResizeRect( itemRect, rect(), newRect );
+    QgsComposerUtils::relativeResizeRect( itemRect, rect(), newRect );
 
     QPointF newPos = mapToScene( itemRect.topLeft() );
     ( *item_it )->setSceneRect( QRectF( newPos.x(), newPos.y(), itemRect.width(), itemRect.height() ) );
   }
   //lastly, set new rect for group
   QgsComposerItem::setSceneRect( rectangle );
+}
+
+void QgsComposerItemGroup::setVisibility( const bool visible )
+{
+  //also set visibility for all items within the group
+  QSet<QgsComposerItem*>::iterator item_it = mItems.begin();
+  for ( ; item_it != mItems.end(); ++item_it )
+  {
+    ( *item_it )->setVisibility( visible );
+  }
+  //lastly set visibility for group item itself
+  QgsComposerItem::setVisibility( visible );
 }
 
 void QgsComposerItemGroup::drawFrame( QPainter* p )

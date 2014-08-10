@@ -44,7 +44,7 @@ class QgsEditorWidgetFactory
      *
      * @return         A new widget wrapper
      */
-    virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const = 0;
+    virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const = 0 /Factory/;
 
     /**
      * Return The human readable identifier name of this widget type
@@ -63,7 +63,7 @@ class QgsEditorWidgetFactory
      *
      * @return         A configuration widget
      */
-    virtual QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const = 0;
+    virtual QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const = 0 /Factory/;
 
     /**
      * Read the config from an XML file and map it to a proper {@link QgsEditorWidgetConfig}.

@@ -29,9 +29,10 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.outputs.OutputVector import OutputVector
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTable
+from processing.core.parameters import ParameterTableField
+from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 
@@ -48,8 +49,8 @@ class JoinAttributes(GeoAlgorithm):
         self.group = 'Vector general tools'
         self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
                           [ParameterVector.VECTOR_TYPE_ANY], False))
-        self.addParameter(ParameterVector(self.INPUT_LAYER_2, 'Input layer 2',
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterTable(self.INPUT_LAYER_2, 'Input layer 2',
+                          False))
         self.addParameter(ParameterTableField(self.TABLE_FIELD, 'Table field',
                           self.INPUT_LAYER))
         self.addParameter(ParameterTableField(self.TABLE_FIELD_2,
@@ -84,22 +85,25 @@ class JoinAttributes(GeoAlgorithm):
         inFeat2 = QgsFeature()
         outFeat = QgsFeature()
 
+        # Cache attributes of Layer 2
+        cache = {}
+        features2 = vector.features(layer2)
+        for inFeat2 in features2:
+            attrs2 = inFeat2.attributes()
+            joinValue2 = unicode(attrs2[joinField2Index])
+            # Put the attributes into the dict if the join key is not contained in the keys of the dict.
+            # Note: This behavior is same as previous behavior of this function,
+            # but different from the attribute cache function of QGIS core.
+            if not joinValue2 in cache:
+                cache[joinValue2] = attrs2
+
         # Create output vector layer with additional attribute
         features = vector.features(layer)
         for inFeat in features:
-            inGeom = inFeat.geometry()
+            outFeat.setGeometry(inFeat.geometry())
             attrs = inFeat.attributes()
-            joinValue1 = attrs[joinField1Index]
-            features2 = vector.features(layer2)
-            for inFeat2 in features2:
-                # Maybe it should cache this entries...
-                attrs2 = inFeat2.attributes()
-                joinValue2 = attrs2[joinField2Index]
-                if joinValue1 == joinValue2:
-                    # Create the new feature
-                    outFeat.setGeometry(inGeom)
-                    attrs.extend(attrs2)
-                    break
+            joinValue1 = unicode(attrs[joinField1Index])
+            attrs.extend(cache.get(joinValue1, []))
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
         del writer

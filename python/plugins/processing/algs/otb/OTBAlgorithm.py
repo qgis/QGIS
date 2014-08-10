@@ -33,18 +33,17 @@ import os
 import re
 import PyQt4.QtGui
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterSelection import ParameterSelection
+from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterSelection
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.WrongHelpFileException import WrongHelpFileException
-from processing.parameters.ParameterFactory import ParameterFactory
-from processing.outputs.OutputFactory import OutputFactory
+from processing.core.parameters import getParameterFromString
+from processing.core.outputs import getOutputFromString
 from OTBUtils import OTBUtils
-from processing.parameters.ParameterExtent import ParameterExtent
+from processing.core.parameters import ParameterExtent
 from processing.tools.system import *
 import xml.etree.ElementTree as ET
 import traceback
@@ -80,7 +79,7 @@ class OTBAlgorithm(GeoAlgorithm):
         if os.path.exists(helpfile):
             return False, helpfile
         else:
-            raise WrongHelpFileException("Could not find help file for this algorithm. \nIf you have it put it in: \n"+str(folder))
+            raise False, None
 
 
     def adapt_list_to_string(self, c_list):
@@ -147,23 +146,23 @@ class OTBAlgorithm(GeoAlgorithm):
 
         for line in the_result:
             try:
-                if line.startswith("Parameter"):
-                    param = ParameterFactory.getFromString(line)
+                if line.startswith("Parameter") or line.startswith("*Parameter"):
+                    if line.startswith("*Parameter"):
+                        param = ParameterFactory.getFromString(line[1:])
+                        param.isAdvanced = True
+                    else:    
+                        param = getParameterFromString(line)
                     # Hack for initializing the elevation parameters from Processing configuration
                     if param.name == "-elev.dem.path" or param.name == "-elev.dem" or "elev.dem" in param.name:
                         param.default = OTBUtils.otbSRTMPath()
                     elif param.name == "-elev.dem.geoid" or param.name == "-elev.geoid" or "elev.geoid" in param.name:
                         param.default = OTBUtils.otbGeoidPath()
                     self.addParameter(param)
-                elif line.startswith("*Parameter"):
-                    param = ParameterFactory.getFromString(line[1:])
-                    param.isAdvanced = True
-                    self.addParameter(param)
                 elif line.startswith("Extent"):
                     self.addParameter(ParameterExtent(self.REGION_OF_INTEREST, "Region of interest", "0,1,0,1"))
                     self.hasROI = True
                 else:
-                    self.addOutput(OutputFactory.getFromString(line))
+                    self.addOutput(getOutputFromString(line))
             except Exception,e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Could not open OTB algorithm: " + self.descriptionFile + "\n" + line)
                 raise e
@@ -341,9 +340,9 @@ class OTBAlgorithm(GeoAlgorithm):
         if not found:
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, "Adapter for %s not found" % the_key)
 
-        frames = inspect.getouterframes(inspect.currentframe())[1:]
-        for a_frame in frames:
-            frame,filename,line_number,function_name,lines,index = a_frame
-            ProcessingLog.addToLog(ProcessingLog.LOG_INFO, "%s %s %s %s %s %s" % (frame,filename,line_number,function_name,lines,index))
+        #frames = inspect.getouterframes(inspect.currentframe())[1:]
+        #for a_frame in frames:
+        #    frame,filename,line_number,function_name,lines,index = a_frame
+        #    ProcessingLog.addToLog(ProcessingLog.LOG_INFO, "%s %s %s %s %s %s" % (frame,filename,line_number,function_name,lines,index))
 
         OTBUtils.executeOtb(commands, progress)

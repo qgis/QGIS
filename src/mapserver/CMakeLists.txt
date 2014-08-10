@@ -26,11 +26,6 @@ SET ( qgis_mapserv_SRCS
   qgswcsserver.cpp
   qgsmapserviceexception.cpp
   qgsmslayercache.cpp
-  qgsfilter.cpp
-  qgsbetweenfilter.cpp
-  qgscomparisonfilter.cpp
-  qgslogicalfilter.cpp
-  qgsspatialfilter.cpp
   qgsftptransaction.cpp
   qgsmslayerbuilder.cpp
   qgshostedvdsbuilder.cpp

@@ -103,14 +103,14 @@ QString QgsServerProjectParser::convertToAbsolutePath( const QString& file ) con
   bool uncPath = projPath.startsWith( "//" );
 #endif
 
-  QStringList srcElems = file.split( "/", QString::SkipEmptyParts );
-  QStringList projElems = mProjectPath.split( "/", QString::SkipEmptyParts );
+  QStringList srcElems = srcPath.split( "/", QString::SkipEmptyParts );
+  QStringList projElems = projPath.split( "/", QString::SkipEmptyParts );
 
 #if defined(Q_OS_WIN)
   if ( uncPath )
   {
-    projElems.insert( 0, "" );
-    projElems.insert( 0, "" );
+    projElems.prepend( "" );
+    projElems.prepend( "" );
   }
 #endif
 
@@ -419,59 +419,62 @@ void QgsServerProjectParser::serviceCapabilities( QDomElement& parentElement, QD
 
   serviceElem.appendChild( onlineResourceElem );
 
-  //Contact information
-  QDomElement contactInfoElem = doc.createElement( "ContactInformation" );
-
-  //Contact person primary
-  QDomElement contactPersonPrimaryElem = doc.createElement( "ContactPersonPrimary" );
-
-  //Contact person
-  QDomElement contactPersonElem = propertiesElement.firstChildElement( "WMSContactPerson" );
-  QString contactPersonString;
-  if ( !contactPersonElem.isNull() )
+  if ( service.compare( "WMS", Qt::CaseInsensitive ) == 0 ) //no contact information in WFS 1.0 and WCS 1.0
   {
-    contactPersonString = contactPersonElem.text();
+    //Contact information
+    QDomElement contactInfoElem = doc.createElement( "ContactInformation" );
+
+    //Contact person primary
+    QDomElement contactPersonPrimaryElem = doc.createElement( "ContactPersonPrimary" );
+
+    //Contact person
+    QDomElement contactPersonElem = propertiesElement.firstChildElement( "WMSContactPerson" );
+    QString contactPersonString;
+    if ( !contactPersonElem.isNull() )
+    {
+      contactPersonString = contactPersonElem.text();
+    }
+    QDomElement wmsContactPersonElem = doc.createElement( "ContactPerson" );
+    QDomText contactPersonText = doc.createTextNode( contactPersonString );
+    wmsContactPersonElem.appendChild( contactPersonText );
+    contactPersonPrimaryElem.appendChild( wmsContactPersonElem );
+
+
+    //Contact organisation
+    QDomElement contactOrganizationElem = propertiesElement.firstChildElement( "WMSContactOrganization" );
+    QString contactOrganizationString;
+    if ( !contactOrganizationElem.isNull() )
+    {
+      contactOrganizationString = contactOrganizationElem.text();
+    }
+    QDomElement wmsContactOrganizationElem = doc.createElement( "ContactOrganization" );
+    QDomText contactOrganizationText = doc.createTextNode( contactOrganizationString );
+    wmsContactOrganizationElem.appendChild( contactOrganizationText );
+    contactPersonPrimaryElem.appendChild( wmsContactOrganizationElem );
+    contactInfoElem.appendChild( contactPersonPrimaryElem );
+
+    //phone
+    QDomElement phoneElem = propertiesElement.firstChildElement( "WMSContactPhone" );
+    if ( !phoneElem.isNull() )
+    {
+      QDomElement wmsPhoneElem = doc.createElement( "ContactVoiceTelephone" );
+      QDomText wmsPhoneText = doc.createTextNode( phoneElem.text() );
+      wmsPhoneElem.appendChild( wmsPhoneText );
+      contactInfoElem.appendChild( wmsPhoneElem );
+    }
+
+    //mail
+    QDomElement mailElem = propertiesElement.firstChildElement( "WMSContactMail" );
+    if ( !mailElem.isNull() )
+    {
+      QDomElement wmsMailElem = doc.createElement( "ContactElectronicMailAddress" );
+      QDomText wmsMailText = doc.createTextNode( mailElem.text() );
+      wmsMailElem.appendChild( wmsMailText );
+      contactInfoElem.appendChild( wmsMailElem );
+    }
+
+    serviceElem.appendChild( contactInfoElem );
   }
-  QDomElement wmsContactPersonElem = doc.createElement( "ContactPerson" );
-  QDomText contactPersonText = doc.createTextNode( contactPersonString );
-  wmsContactPersonElem.appendChild( contactPersonText );
-  contactPersonPrimaryElem.appendChild( wmsContactPersonElem );
-
-
-  //Contact organisation
-  QDomElement contactOrganizationElem = propertiesElement.firstChildElement( "WMSContactOrganization" );
-  QString contactOrganizationString;
-  if ( !contactOrganizationElem.isNull() )
-  {
-    contactOrganizationString = contactOrganizationElem.text();
-  }
-  QDomElement wmsContactOrganizationElem = doc.createElement( "ContactOrganization" );
-  QDomText contactOrganizationText = doc.createTextNode( contactOrganizationString );
-  wmsContactOrganizationElem.appendChild( contactOrganizationText );
-  contactPersonPrimaryElem.appendChild( wmsContactOrganizationElem );
-  contactInfoElem.appendChild( contactPersonPrimaryElem );
-
-  //phone
-  QDomElement phoneElem = propertiesElement.firstChildElement( "WMSContactPhone" );
-  if ( !phoneElem.isNull() )
-  {
-    QDomElement wmsPhoneElem = doc.createElement( "ContactVoiceTelephone" );
-    QDomText wmsPhoneText = doc.createTextNode( phoneElem.text() );
-    wmsPhoneElem.appendChild( wmsPhoneText );
-    contactInfoElem.appendChild( wmsPhoneElem );
-  }
-
-  //mail
-  QDomElement mailElem = propertiesElement.firstChildElement( "WMSContactMail" );
-  if ( !mailElem.isNull() )
-  {
-    QDomElement wmsMailElem = doc.createElement( "ContactElectronicMailAddress" );
-    QDomText wmsMailText = doc.createTextNode( mailElem.text() );
-    wmsMailElem.appendChild( wmsMailText );
-    contactInfoElem.appendChild( wmsMailElem );
-  }
-
-  serviceElem.appendChild( contactInfoElem );
 
   //Fees
   QDomElement feesElem = propertiesElement.firstChildElement( "WMSFees" );
@@ -646,9 +649,14 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
         displayField = vLayer->attributeDisplayName( idx );
       }
       QDomElement attributeElem = doc.createElement( "Attribute" );
-      attributeElem.setAttribute( "name", vLayer->attributeDisplayName( idx ) );
+      attributeElem.setAttribute( "name", field.name() );
       attributeElem.setAttribute( "type", QVariant::typeToName( field.type() ) );
       attributeElem.setAttribute( "typeName", field.typeName() );
+      QString alias = vLayer->attributeAlias( idx );
+      if ( !alias.isEmpty() )
+      {
+        attributeElem.setAttribute( "alias", alias );
+      }
 
       //edit type to text
       attributeElem.setAttribute( "editType", vLayer->editorWidgetV2( idx ) );

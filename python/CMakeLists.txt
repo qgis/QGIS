@@ -79,6 +79,7 @@ INCLUDE_DIRECTORIES(
   ../src/core/diagram
   ../src/core/dxf
   ../src/core/gps
+  ../src/core/layertree
   ../src/core/raster
   ../src/core/symbology-ng
 
@@ -143,6 +144,12 @@ INCLUDE_DIRECTORIES(
 FILE(GLOB_RECURSE sip_files_gui gui/*.sip)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_gui})
 SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.gui.api)
+IF(QSCI_SIP_DIR)
+  SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -I ${QSCI_SIP_DIR})
+ELSE(QSCI_SIP_DIR)
+  MESSAGE(STATUS "Qsci sip file not found - disabling bindings for derived classes")
+  SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_QSCI_SIP)
+ENDIF(QSCI_SIP_DIR)
 
 IF(UNIX AND NOT SIP_VERSION_NUM LESS 265984)
   SET(SIP_EXTRA_OPTIONS -P ${SIP_EXTRA_OPTIONS})

@@ -1,3 +1,18 @@
+/***************************************************************************
+  qgsmaplayerrenderer.h
+  --------------------------------------
+  Date                 : December 2013
+  Copyright            : (C) 2013 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef QGSMAPLAYERRENDERER_H
 #define QGSMAPLAYERRENDERER_H
 
@@ -22,6 +37,8 @@
  * 2. renderer job (still in GUI thread) stores the renderer for later use.
  * 3. renderer job (in worker thread) calls QgsMapLayerRenderer::render()
  * 4. renderer job (again in GUI thread) will check errors() and report them
+ *
+ * @note added in 2.4
  */
 class CORE_EXPORT QgsMapLayerRenderer
 {

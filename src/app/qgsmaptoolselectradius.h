@@ -54,6 +54,10 @@ class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
     QgsPoint mRadiusCenter;
 
     bool mDragging;
+
+    QColor mFillColor;
+
+    QColor mBorderColour;
 };
 
 #endif

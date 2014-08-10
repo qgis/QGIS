@@ -528,14 +528,20 @@ bool QgsSLDConfigParser::featureInfoFormatSIA2045() const
   return false;
 }
 
-void QgsSLDConfigParser::drawOverlays( QPainter *, int , int, int ) const
+void QgsSLDConfigParser::drawOverlays( QPainter* p, int dpi, int width, int height ) const
 {
-  //todo: fixme
+  if ( mFallbackParser )
+  {
+    mFallbackParser->drawOverlays( p, dpi, width, height );
+  }
 }
 
-void QgsSLDConfigParser::loadLabelSettings( QgsLabelingEngineInterface * )
+void QgsSLDConfigParser::loadLabelSettings( QgsLabelingEngineInterface * lbl ) const
 {
-  //needs to be here?
+  if ( mFallbackParser )
+  {
+    mFallbackParser->loadLabelSettings( lbl );
+  }
 }
 
 QString QgsSLDConfigParser::serviceUrl() const
@@ -659,6 +665,15 @@ double QgsSLDConfigParser::maxHeight() const
   if ( mFallbackParser )
   {
     return mFallbackParser->maxHeight();
+  }
+  return -1;
+}
+
+double QgsSLDConfigParser::imageQuality() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->imageQuality();
   }
   return -1;
 }

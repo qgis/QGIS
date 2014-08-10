@@ -155,7 +155,7 @@ void QgsWMSServer::executeRequest()
     if ( result )
     {
       QgsDebugMsg( "Sending GetMap response" );
-      mRequestHandler->sendGetMapResponse( "WMS", result );
+      mRequestHandler->sendGetMapResponse( "WMS", result, getImageQuality() );
       QgsDebugMsg( "Response sent" );
     }
     else
@@ -254,7 +254,7 @@ void QgsWMSServer::executeRequest()
     {
       QgsDebugMsg( "Sending GetLegendGraphic response" );
       //sending is the same for GetMap and GetLegendGraphic
-      mRequestHandler->sendGetMapResponse( "WMS", result );
+      mRequestHandler->sendGetMapResponse( "WMS", result, getImageQuality() );
       QgsDebugMsg( "Response sent" );
     }
     else
@@ -262,6 +262,7 @@ void QgsWMSServer::executeRequest()
       //do some error handling
       QgsDebugMsg( "result image is 0" );
     }
+    delete result;
   }
   //GetPrint
   else if ( request.compare( "GetPrint", Qt::CaseInsensitive ) == 0 )
@@ -318,7 +319,7 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
     wmsCapabilitiesElement = doc.createElement( "WMS_Capabilities"/*wms:WMS_Capabilities*/ );
     wmsCapabilitiesElement.setAttribute( "xmlns", "http://www.opengis.net/wms" );
     wmsCapabilitiesElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-    wmsCapabilitiesElement.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd" );
+    wmsCapabilitiesElement.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/wms http://qgis.org/wms_1_3_0.xsd" );
   }
   wmsCapabilitiesElement.setAttribute( "version", version );
   doc.appendChild( wmsCapabilitiesElement );
@@ -767,7 +768,7 @@ void QgsWMSServer::legendParameters( double mmToPixelFactor, double fontOversamp
   QMap<QString, QString>::const_iterator layerTitleIt = mParameters.find( "LAYERTITLE" );
   if ( layerTitleIt != mParameters.constEnd() )
   {
-    mDrawLegendLayerLabel = layerTitleIt.value().compare( "TRUE", Qt::CaseInsensitive );
+    mDrawLegendLayerLabel = ( layerTitleIt.value().compare( "TRUE", Qt::CaseInsensitive ) == 0 );
   }
   else
   {
@@ -812,7 +813,7 @@ void QgsWMSServer::legendParameters( double mmToPixelFactor, double fontOversamp
   QMap<QString, QString>::const_iterator itemLabelIt = mParameters.find( "RULELABEL" );
   if ( itemLabelIt != mParameters.constEnd() )
   {
-    mDrawLegendItemLabel = itemLabelIt.value().compare( "TRUE", Qt::CaseInsensitive );
+    mDrawLegendItemLabel = ( itemLabelIt.value().compare( "TRUE", Qt::CaseInsensitive ) == 0 );
   }
   else
   {
@@ -1010,12 +1011,13 @@ QImage* QgsWMSServer::getMap()
   restoreLayerFilters( originalLayerFilters );
   clearFeatureSelections( selectedLayerIdList );
 
-  QgsDebugMsg( "clearing filters" );
+  // QgsDebugMsg( "clearing filters" );
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
 
-#ifdef QGISDEBUG
-  theImage->save( QDir::tempPath() + QDir::separator() + "lastrender.png" );
-#endif
+  //#ifdef QGISDEBUG
+  //  theImage->save( QDir::tempPath() + QDir::separator() + "lastrender.png" );
+  //#endif
+
   return theImage;
 }
 
@@ -1060,7 +1062,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   QgsDebugMsg( QString( "mMapRenderer width = %1 height = %2" ).arg( mMapRenderer->outputSize().width() ).arg( mMapRenderer->outputSize().height() ) );
   QgsDebugMsg( QString( "mMapRenderer->mapUnitsPerPixel() = %1" ).arg( mMapRenderer->mapUnitsPerPixel() ) );
 
-  //find out the current scale denominater and set it to the SLD parser
+  //find out the current scale denominator and set it to the SLD parser
   QgsScaleCalculator scaleCalc(( outputImage->logicalDpiX() + outputImage->logicalDpiY() ) / 2 , mMapRenderer->destinationCrs().mapUnits() );
   QgsRectangle mapExtent = mMapRenderer->extent();
   double scaleDenominator = scaleCalc.calculate( mapExtent, outputImage->width() );
@@ -1384,6 +1386,12 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
 #endif
   mMapRenderer->setLayerSet( layerIdList );
 
+  //load label settings
+  if ( mConfigParser )
+  {
+    mConfigParser->loadLabelSettings( mMapRenderer->labelingEngine() );
+  }
+
   return theImage;
 }
 
@@ -1499,7 +1507,7 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
   QgsCoordinateReferenceSystem outputCRS;
 
   //wms spec says that CRS parameter is mandatory.
-  //we don't rejeict the request if it is not there but disable reprojection on the fly
+  //we don't reject the request if it is not there but disable reprojection on the fly
   if ( crs.isEmpty() )
   {
     //disable on the fly projection
@@ -1641,7 +1649,7 @@ int QgsWMSServer::infoPointToLayerCoordinates( int i, int j, QgsPoint* layerCoor
   // use pixel center instead of corner
   // Unfortunately going through pixel (integer) we cannot reconstruct precisely
   // the coordinate clicked on client and thus result may differ from
-  // the same raster loaded and queried localy on client
+  // the same raster loaded and queried locally on client
   mapPoint.setX( mapPoint.x() + xRes / 2 );
   mapPoint.setY( mapPoint.y() - yRes / 2 );
 
@@ -2868,12 +2876,18 @@ QDomElement QgsWMSServer::createFeatureGML(
     }
   }
 
-  //read all attribute values from the feature
+  //read all allowed attribute values from the feature
+  const QSet<QString>& excludedAttributes = layer->excludeAttributesWMS();
   QgsAttributes featureAttributes = feat->attributes();
   const QgsFields* fields = feat->fields();
   for ( int i = 0; i < fields->count(); ++i )
   {
     QString attributeName = fields->at( i ).name();
+    //skip attribute if it is explicitly excluded from WMS publication
+    if ( excludedAttributes.contains( attributeName ) )
+    {
+      continue;
+    }
     QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QString( " " ), QString( "_" ) ) );
     QString fieldTextString = featureAttributes[i].toString();
     if ( layer )
@@ -2979,4 +2993,24 @@ QString QgsWMSServer::relationValue( const QString& attributeVal, QgsVectorLayer
     }
   }
   return attributeVal;
+}
+
+int QgsWMSServer::getImageQuality( ) const
+{
+
+  // First taken from QGIS project
+  int imageQuality = mConfigParser->imageQuality();
+
+  // Then checks if a parameter is given, if so use it instead
+  if ( mParameters.contains( "IMAGE_QUALITY" ) )
+  {
+    bool conversionSuccess;
+    int imageQualityParameter;
+    imageQualityParameter = mParameters[ "IMAGE_QUALITY" ].toInt( &conversionSuccess );
+    if ( conversionSuccess )
+    {
+      imageQuality = imageQualityParameter;
+    }
+  }
+  return imageQuality;
 }

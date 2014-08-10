@@ -21,13 +21,13 @@ from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterCrs import ParameterCrs
-from processing.outputs.OutputVector import OutputVector
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterCrs
+from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 
@@ -1059,7 +1059,6 @@ class mmqgisx_select_algorithm(GeoAlgorithm):
     RESULT = 'RESULT'
 
     def defineCharacteristics(self):
-        self.allowOnlyOpenedLayers = True
         self.name = 'Select by attribute'
         self.group = 'Vector selection tools'
 
@@ -1088,7 +1087,6 @@ class mmqgisx_select_algorithm(GeoAlgorithm):
 
         filename = self.getParameterValue(self.LAYERNAME)
         layer = dataobjects.getObjectFromUri(filename)
-
         attribute = self.getParameterValue(self.ATTRIBUTE)
         comparison = self.comparisons[self.getParameterValue(self.COMPARISON)]
         comparisonvalue = self.getParameterValue(self.COMPARISONVALUE)

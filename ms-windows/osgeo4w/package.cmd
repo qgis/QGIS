@@ -13,8 +13,6 @@ REM *   the Free Software Foundation; either version 2 of the License, or     *
 REM *   (at your option) any later version.                                   *
 REM *                                                                         *
 REM ***************************************************************************
-set GRASS_VERSION=6.4.3
-
 set VERSION=%1
 set PACKAGE=%2
 set PACKAGENAME=%3
@@ -51,6 +49,7 @@ if "%ARCH%"=="x86" goto devenv_x86
 goto devenv_x86_64
 
 :devenv_x86
+set GRASS_VERSION=6.4.4
 set VS90COMNTOOLS=%PF86%\Microsoft Visual Studio 9.0\Common7\Tools\
 call "%PF86%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
 
@@ -60,6 +59,7 @@ set CMAKE_OPT=^
 goto devenv
 
 :devenv_x86_64
+set GRASS_VERSION=6.4.3
 call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" amd64
 if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x64 /Release
 path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
@@ -158,6 +158,12 @@ cmake %CMAKE_OPT% ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
 	-D FCGI_LIBRARY=%O4W_ROOT%/lib/libfcgi.lib ^
+	-D WITH_INTERNAL_JINJA2=FALSE ^
+	-D WITH_INTERNAL_MARKUPSAFE=FALSE ^
+	-D WITH_INTERNAL_PYGMENTS=FALSE ^
+	-D WITH_INTERNAL_DATEUTIL=FALSE ^
+	-D WITH_INTERNAL_PYTZ=FALSE ^
+	-D WITH_INTERNAL_SIX=FALSE ^
 	%SRCDIR%
 if errorlevel 1 (echo cmake failed & goto error)
 
@@ -235,9 +241,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-common/%PACKAGENAME
 	"apps/%PACKAGENAME%/plugins/ogrprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/owsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/postgresprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/qgissqlanyconnection.dll" ^
 	"apps/%PACKAGENAME%/plugins/spatialiteprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/sqlanywhereprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wcsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wfsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wmsprovider.dll" ^
@@ -288,7 +292,6 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"apps/%PACKAGENAME%/plugins/roadgraphplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/spatialqueryplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/spitplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/sqlanywhereplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/topolplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/zonalstatisticsplugin.dll" ^
 	"apps/%PACKAGENAME%/qgis_help.exe" ^
@@ -308,9 +311,12 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin/%PACKA
 	"apps/%PACKAGENAME%/bin/qgisgrass.dll" ^
 	"apps/%PACKAGENAME%/plugins/grassrasterprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/grassplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/grassprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/libgrass_gis.%GRASS_VERSION%.dll"
+	"apps/%PACKAGENAME%/plugins/grassprovider.dll"
 if errorlevel 1 (echo tar grass-plugin failed & goto error)
+
+REM grass direct library disabled
+REM     "apps/%PACKAGENAME%/plugins/libgrass_gis.%GRASS_VERSION%.dll"
+
 
 tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-globe-plugin/%PACKAGENAME%-globe-plugin-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^

@@ -21,10 +21,9 @@
 # FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
 # details.
 #
-# A copy of the GNU General Public License is available on the World Wide Web
-# at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
-# to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-# MA 02111-1307, USA.
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 ###############################################################################
 
@@ -132,7 +131,7 @@ class ManageConnectionsDialog(QDialog, Ui_ManageConnectionsDialog):
         with open(self.filename, 'w') as fileobj:
             fileobj.write(prettify_xml(etree.tostring(doc)))
         QMessageBox.information(self, self.tr('Save Connections'),
-                                self.tr('Saved to %s' % self.filename))
+                                self.tr('Saved to %s') % self.filename)
         self.reject()
 
     def load(self, items):
@@ -153,7 +152,7 @@ class ManageConnectionsDialog(QDialog, Ui_ManageConnectionsDialog):
 
             # check for duplicates
             if conn_name in keys:
-                label = self.tr('File %s exists. Overwrite?' % conn_name)
+                label = self.tr('File %s exists. Overwrite?') % conn_name
                 res = QMessageBox.warning(self, self.tr('Loading Connections'),
                                           label,
                                           QMessageBox.Yes | QMessageBox.No)

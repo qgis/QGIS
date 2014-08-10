@@ -51,6 +51,6 @@ class AddScriptFromFileAction(ToolboxAction):
                 QtGui.QMessageBox.warning(self.toolbox, "Error reading script", "The selected file does not contain a valid script")
                 return
             destFilename = os.path.join(ScriptUtils.scriptsFolder(), os.path.basename(filename))
-            with open(destFilename) as f:
+            with open(destFilename, "w") as f:
                 f.write(script.script)
             self.toolbox.updateProvider('script')

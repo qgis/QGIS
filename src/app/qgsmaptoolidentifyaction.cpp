@@ -116,6 +116,9 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
     resultsDialog()->clear();
     QgisApp::instance()->statusBar()->showMessage( tr( "No features at this position found." ) );
   }
+
+  // update possible view modes
+  resultsDialog()->updateViewModes();
 }
 
 void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<IdentifyResult> &results )

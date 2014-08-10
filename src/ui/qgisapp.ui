@@ -63,8 +63,7 @@
      <property name="title">
       <string>Select</string>
      </property>
-     <addaction name="mActionSelect"/>
-     <addaction name="mActionSelectRectangle"/>
+     <addaction name="mActionSelectFeatures"/>
      <addaction name="mActionSelectPolygon"/>
      <addaction name="mActionSelectFreehand"/>
      <addaction name="mActionSelectRadius"/>
@@ -88,7 +87,7 @@
      <addaction name="mActionDecorationNorthArrow"/>
      <addaction name="mActionDecorationCopyright"/>
     </widget>
-    <widget class="QMenu" name="menuPreview_Mode">
+    <widget class="QMenu" name="mMenuPreviewMode">
      <property name="title">
       <string>Preview Mode</string>
      </property>
@@ -115,7 +114,7 @@
     <addaction name="mActionZoomActualSize"/>
     <addaction name="separator"/>
     <addaction name="menuDecorations"/>
-    <addaction name="menuPreview_Mode"/>
+    <addaction name="mMenuPreviewMode"/>
     <addaction name="mActionMapTips"/>
     <addaction name="mActionNewBookmark"/>
     <addaction name="mActionShowBookmarks"/>
@@ -874,19 +873,7 @@
     <string>Ctrl+-</string>
    </property>
   </action>
-  <action name="mActionSelect">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelect.svg</normaloff>:/images/themes/default/mActionSelect.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Select Single Feature</string>
-   </property>
-  </action>
-  <action name="mActionSelectRectangle">
+  <action name="mActionSelectFeatures">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -895,7 +882,10 @@
      <normaloff>:/images/themes/default/mActionSelectRectangle.svg</normaloff>:/images/themes/default/mActionSelectRectangle.svg</iconset>
    </property>
    <property name="text">
-    <string>Select Features by Rectangle</string>
+    <string>Select Feature(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Select Features by area or single click</string>
    </property>
   </action>
   <action name="mActionSelectPolygon">

@@ -19,13 +19,14 @@
 #define QGSCOMPOSERPICTUREWIDGET_H
 
 #include "ui_qgscomposerpicturewidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerPicture;
 
 /** \ingroup MapComposer
  * A widget for adding an image to a map composition.
  */
-class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWidgetBase
+class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerPictureWidgetBase
 {
     Q_OBJECT
 
@@ -40,7 +41,6 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
   public slots:
     void on_mPictureBrowseButton_clicked();
     void on_mPictureLineEdit_editingFinished();
-    void on_mPictureExpressionButton_clicked();
     void on_mPictureRotationSpinBox_valueChanged( double d );
     void on_mPreviewListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous );
     void on_mAddDirectoryButton_clicked();
@@ -49,13 +49,16 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
     void on_mComposerMapComboBox_activated( const QString & text );
     void on_mResizeModeComboBox_currentIndexChanged( int index );
     void on_mAnchorPointComboBox_currentIndexChanged( int index );
-    void on_mRadioPath_clicked();
-    void on_mRadioExpression_clicked();
-    void setPictureExpression();
 
   protected:
     void showEvent( QShowEvent * event );
     void resizeEvent( QResizeEvent * event );
+
+    QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget );
+
+  protected slots:
+    /**Initializes data defined buttons to current atlas coverage layer*/
+    void populateDataDefinedButtons();
 
   private slots:
     /**Sets the GUI elements to the values of mPicture*/

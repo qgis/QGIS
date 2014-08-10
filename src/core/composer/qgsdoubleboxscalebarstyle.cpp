@@ -16,6 +16,7 @@
 
 #include "qgsdoubleboxscalebarstyle.h"
 #include "qgscomposerscalebar.h"
+#include "qgscomposerutils.h"
 #include <QList>
 #include <QPainter>
 
@@ -45,10 +46,12 @@ void QgsDoubleBoxScaleBarStyle::draw( QPainter* p, double xOffset ) const
   {
     return;
   }
-  double barTopPosition = mScaleBar->fontAscentMillimeters( mScaleBar->font() ) + mScaleBar->labelBarSpace() + mScaleBar->boxContentSpace();
+  double barTopPosition = QgsComposerUtils::fontAscentMM( mScaleBar->font() ) + mScaleBar->labelBarSpace() + mScaleBar->boxContentSpace();
   double segmentHeight = mScaleBar->height() / 2;
 
   p->save();
+  //antialiasing on
+  p->setRenderHint( QPainter::Antialiasing, true );
   p->setPen( mScaleBar->pen() );
 
   QList<QPair<double, double> > segmentInfo;
@@ -66,9 +69,9 @@ void QgsDoubleBoxScaleBarStyle::draw( QPainter* p, double xOffset ) const
     {
       p->setBrush( mScaleBar->brush() );
     }
-    else //white
+    else //secondary color
     {
-      p->setBrush( QColor( 255, 255, 255 ) );
+      p->setBrush( mScaleBar->brush2() );
     }
 
     QRectF segmentRectTop( segmentIt->first + xOffset, barTopPosition, segmentIt->second, segmentHeight );
@@ -77,9 +80,10 @@ void QgsDoubleBoxScaleBarStyle::draw( QPainter* p, double xOffset ) const
     //draw bottom half
     if ( useColor )
     {
-      p->setBrush( QColor( 255, 255, 255 ) );
+      //secondary color
+      p->setBrush( mScaleBar->brush2() );
     }
-    else //white
+    else //primary color
     {
       p->setBrush( mScaleBar->brush() );
     }

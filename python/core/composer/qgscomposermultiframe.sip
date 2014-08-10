@@ -1,6 +1,6 @@
 
 /**Abstract base class for composer entries with the ability to distribute the content to several frames (items)*/
-class QgsComposerMultiFrame: QObject
+class QgsComposerMultiFrame: QgsComposerObject
 {
 %TypeHeaderCode
 #include "qgscomposermultiframe.h"
@@ -10,7 +10,7 @@ class QgsComposerMultiFrame: QObject
 
     enum ResizeMode
     {
-      UseExistingFrames = 0,
+      UseExistingFrames,
       ExtendToNextPage, //uses the next page(s) until the content has been printed
       RepeatOnEveryPage, //repeats the same frame on every page
       RepeatUntilFinished //duplicates last frame to next page to fit the total size
@@ -67,6 +67,12 @@ class QgsComposerMultiFrame: QObject
      */
     QgsComposerFrame* createNewFrame( QgsComposerFrame* currentFrame, QPointF pos, QSizeF size );
 
+    /**Get multiframe display name.
+     * @returns display name for item
+     * @note added in version 2.5
+    */
+    virtual QString displayName() const;
+    
   public slots:
 
     /**Recalculates the portion of the multiframe item which is shown in each of it's
@@ -84,4 +90,9 @@ class QgsComposerMultiFrame: QObject
 
   signals:
     void changed();
+    
+    /**Emitted when the contents of the multi frame have changed and the frames
+     * must be redrawn.
+    */
+    void contentsChanged();
 };

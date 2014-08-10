@@ -25,20 +25,18 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-from PyQt4 import QtGui
 from qgis.core import *
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterCrs import ParameterCrs
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterString import ParameterString
-from processing.outputs.OutputRaster import OutputRaster
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterCrs
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterString
+from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class warp(GeoAlgorithm):
+class warp(GdalAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -49,10 +47,6 @@ class warp(GeoAlgorithm):
     TR = 'TR'
     EXTRA = 'EXTRA'
 
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + '/icons/self.png'
-        return QtGui.QIcon(filepath)
-
     def defineCharacteristics(self):
         self.name = 'Warp (reproject)'
         self.group = '[GDAL] Projections'
@@ -62,8 +56,8 @@ class warp(GeoAlgorithm):
         self.addParameter(ParameterCrs(self.DEST_SRS,
                           'Destination SRS (EPSG Code)', 'EPSG:4326'))
         self.addParameter(ParameterNumber(self.TR,
-            'Output file resolution in target georeferenced units \
-            (leave 0 for no change)', 0.0, None, 0.0))
+            'Output file resolution in target georeferenced units (leave 0 for no change)',
+            0.0, None, 0.0))
         self.addParameter(ParameterSelection(self.METHOD, 'Resampling method',
                           self.METHOD_OPTIONS))
         self.addParameter(ParameterString(self.EXTRA,

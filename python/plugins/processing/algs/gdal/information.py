@@ -25,25 +25,19 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-from PyQt4 import QtGui
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.outputs.OutputHTML import OutputHTML
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterBoolean
+from processing.core.outputs import OutputHTML
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class information(GeoAlgorithm):
+class information(GdalAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NOGCP = 'NOGCP'
     NOMETADATA = 'NOMETADATA'
-
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + '/icons/raster-info.png'
-        return QtGui.QIcon(filepath)
 
     def commandLineName(self):
         return "gdalorg:rasterinfo"
@@ -70,6 +64,8 @@ class information(GeoAlgorithm):
                           progress)
         output = self.getOutputValue(information.OUTPUT)
         f = open(output, 'w')
+        f.write('<pre>')
         for s in GdalUtils.getConsoleOutput()[1:]:
-            f.write('<p>' + str(s) + '</p>')
+            f.write(unicode(s))
+        f.write('</pre>')
         f.close()

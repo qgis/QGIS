@@ -80,6 +80,8 @@ QgsSingleSymbolRendererV2Widget::~QgsSingleSymbolRendererV2Widget()
   delete mRenderer;
 
   delete mSelector;
+
+  delete mDataDefinedMenus;
 }
 
 

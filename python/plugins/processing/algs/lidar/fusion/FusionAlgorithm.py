@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from PyQt4 import QtGui
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterString import ParameterString
+from processing.core.parameters import ParameterString
 from FusionUtils import FusionUtils
 
 

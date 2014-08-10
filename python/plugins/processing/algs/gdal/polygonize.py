@@ -25,25 +25,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtGui, QtCore
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterString import ParameterString
-from processing.outputs.OutputVector import OutputVector
+from PyQt4 import QtCore
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterString
+from processing.core.outputs import OutputVector
 from processing.tools.system import *
-
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class polygonize(GeoAlgorithm):
+class polygonize(GdalAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
-
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + '/icons/polygonize.png'
-        return QtGui.QIcon(filepath)
 
     def commandLineName(self):
         return "gdalogr:polygonize"

@@ -64,11 +64,11 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 
   if ( mLayer->actions()->size() > 0 )
   {
-    dialog->dialog()->setContextMenuPolicy( Qt::ActionsContextMenu );
+    dialog->setContextMenuPolicy( Qt::ActionsContextMenu );
 
-    QAction *a = new QAction( tr( "Run actions" ), dialog->dialog() );
+    QAction *a = new QAction( tr( "Run actions" ), dialog );
     a->setEnabled( false );
-    dialog->dialog()->addAction( a );
+    dialog->addAction( a );
 
     for ( int i = 0; i < mLayer->actions()->size(); i++ )
     {
@@ -77,11 +77,11 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
       if ( !action.runable() )
         continue;
 
-      QgsFeatureAction *a = new QgsFeatureAction( action.name(), *f, mLayer, i, -1, dialog->dialog() );
-      dialog->dialog()->addAction( a );
+      QgsFeatureAction *a = new QgsFeatureAction( action.name(), *f, mLayer, i, -1, dialog );
+      dialog->addAction( a );
       connect( a, SIGNAL( triggered() ), a, SLOT( execute() ) );
 
-      QAbstractButton *pb = dialog->dialog()->findChild<QAbstractButton *>( action.name() );
+      QAbstractButton *pb = dialog->findChild<QAbstractButton *>( action.name() );
       if ( pb )
         connect( pb, SIGNAL( clicked() ), a, SLOT( execute() ) );
     }
@@ -118,6 +118,8 @@ bool QgsFeatureAction::editFeature()
   else
   {
     QgsAttributes src = mFeature.attributes();
+    if ( !mFeature.isValid() )
+      dialog->setIsAddDialog( true );
 
     if ( dialog->exec() )
     {
@@ -161,20 +163,22 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes )
   mFeature.initAttributes( fields.count() );
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
+    QVariant v;
+
     if ( defaultAttributes.contains( idx ) )
     {
-      QgsDebugMsg( QString( "Using specified default %1 for %2" ).arg( defaultAttributes.value( idx ).toString() ).arg( idx ) );
-      mFeature.setAttribute( idx, defaultAttributes.value( idx ) );
+      v = defaultAttributes.value( idx );
     }
     else if ( reuseLastValues && sLastUsedValues.contains( mLayer ) && sLastUsedValues[ mLayer ].contains( idx ) )
     {
-      QgsDebugMsg( QString( "reusing %1 for %2" ).arg( sLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
-      mFeature.setAttribute( idx, sLastUsedValues[ mLayer ][idx] );
+      v = sLastUsedValues[ mLayer ][idx];
     }
     else
     {
-      mFeature.setAttribute( idx, provider->defaultValue( idx ) );
+      v = provider->defaultValue( idx );
     }
+
+    mFeature.setAttribute( idx, v );
   }
 
   // show the dialog to enter attribute values
@@ -219,6 +223,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes )
 void QgsFeatureAction::onFeatureSaved( const QgsFeature& feature )
 {
   QgsAttributeForm* form = qobject_cast<QgsAttributeForm*>( sender() );
+  Q_UNUSED( form ) // only used for Q_ASSERT
   Q_ASSERT( form );
 
   mFeatureSaved = true;

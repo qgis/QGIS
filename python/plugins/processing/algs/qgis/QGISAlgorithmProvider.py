@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.script.ScriptUtils import ScriptUtils
+import os
+
 
 __author__ = 'Victor Olaya'
 __date__ = 'December 2012'
@@ -96,7 +99,11 @@ from RandomPointsPolygonsFixed import RandomPointsPolygonsFixed
 from RandomPointsPolygonsVariable import RandomPointsPolygonsVariable
 from RandomPointsAlongLines import RandomPointsAlongLines
 from PointsToPaths import PointsToPaths
-
+from PostGISExecuteSQL import PostGISExecuteSQL
+from ImportIntoPostGIS import ImportIntoPostGIS
+from SetVectorStyle import SetVectorStyle
+from SetRasterStyle import SetRasterStyle
+from SelectByExpression import SelectByExpression
 # from VectorLayerHistogram import VectorLayerHistogram
 # from VectorLayerScatterplot import VectorLayerScatterplot
 # from MeanAndStdDevPlot import MeanAndStdDevPlot
@@ -108,6 +115,8 @@ import processing.resources_rc
 
 
 class QGISAlgorithmProvider(AlgorithmProvider):
+
+    _icon = QIcon(':/processing/images/qgis.png')
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
@@ -152,6 +161,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RandomPointsLayer(), RandomPointsPolygonsFixed(),
                         RandomPointsPolygonsVariable(),
                         RandomPointsAlongLines(), PointsToPaths(),
+                        PostGISExecuteSQL(), ImportIntoPostGIS(),
+                        SetVectorStyle(), SetRasterStyle(), SelectByExpression()
                         # ------ raster ------
                         # CreateConstantRaster(),
                         # ------ graphics ------
@@ -159,6 +170,14 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         # RasterLayerHistogram(), MeanAndStdDevPlot(),
                         # BarPlot(), PolarPlot()
                        ]
+
+        folder = os.path.join(os.path.dirname(__file__), 'scripts')
+        scripts = ScriptUtils.loadFromFolder(folder)
+        for script in scripts:
+            script.allowEdit = False
+        self.alglist.extend(scripts)
+        for alg in self.alglist:
+            alg._icon = self._icon
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
@@ -173,7 +192,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
         return 'QGIS geoalgorithms'
 
     def getIcon(self):
-        return QIcon(':/processing/images/qgis.png')
+        return self._icon
 
     def _loadAlgorithms(self):
         self.algs = self.alglist

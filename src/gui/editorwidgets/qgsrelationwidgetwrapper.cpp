@@ -26,7 +26,6 @@ QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer* vl, const Qg
 {
 }
 
-
 QWidget* QgsRelationWidgetWrapper::createWidget( QWidget* parent )
 {
   return new QWidget( parent );

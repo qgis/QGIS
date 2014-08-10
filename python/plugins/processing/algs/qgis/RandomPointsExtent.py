@@ -35,9 +35,9 @@ from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.outputs.OutputVector import OutputVector
+from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterNumber
+from processing.core.outputs import OutputVector
 from processing.tools import vector
 
 class RandomPointsExtent(GeoAlgorithm):

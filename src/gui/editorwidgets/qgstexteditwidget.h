@@ -38,6 +38,7 @@ class GUI_EXPORT QgsTextEditWidget : public QgsEditorWidgetWrapper
 
   public slots:
     void setValue( const QVariant& value );
+    void setEnabled( bool enabled );
 
   private:
     QTextEdit* mTextEdit;

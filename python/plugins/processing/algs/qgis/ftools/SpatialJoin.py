@@ -27,11 +27,11 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterString import ParameterString
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterString
 from processing.tools import dataobjects
-from processing.outputs.OutputVector import OutputVector
+from processing.core.outputs import OutputVector
 from processing.tools import vector
 from processing.core.ProcessingLog import ProcessingLog
 import os

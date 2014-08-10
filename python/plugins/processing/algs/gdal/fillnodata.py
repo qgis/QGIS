@@ -25,22 +25,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-from PyQt4 import QtGui, QtCore
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.outputs.OutputRaster import OutputRaster
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterBoolean
+from processing.core.outputs import OutputRaster
 
 from processing.tools.system import *
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class fillnodata(GeoAlgorithm):
+class fillnodata(GdalAlgorithm):
 
     INPUT = 'INPUT'
     DISTANCE = 'DISTANCE'
@@ -49,10 +47,6 @@ class fillnodata(GeoAlgorithm):
     MASK = 'MASK'
     NO_DEFAULT_MASK = 'NO_DEFAULT_MASK'
     OUTPUT = 'OUTPUT'
-
-    #def getIcon(self):
-    #    filepath = os.path.dirname(__file__) + '/icons/fillnodata.png'
-    #    return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
         self.name = 'Fill nodata'

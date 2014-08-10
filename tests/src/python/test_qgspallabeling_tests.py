@@ -36,7 +36,6 @@ class TestPointBase(object):
         """:type: QgsPalLayerSettings"""
         # noinspection PyArgumentList
         self._TestFont = QFont()  # will become a standard test font
-        self.params = dict()
         self._Pal = None
         """:type: QgsPalLabeling"""
         self._Canvas = None

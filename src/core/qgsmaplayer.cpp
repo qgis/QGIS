@@ -35,6 +35,7 @@
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsapplication.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsproject.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsprojectfiletransform.h"
@@ -53,6 +54,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
     mID( "" ),
     mLayerType( type ),
     mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
+    , mLegend( 0 )
 {
   mCRS = new QgsCoordinateReferenceSystem();
 
@@ -81,6 +83,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
 QgsMapLayer::~QgsMapLayer()
 {
   delete mCRS;
+  delete mLegend;
 }
 
 QgsMapLayer::LayerType QgsMapLayer::type() const
@@ -109,7 +112,7 @@ void QgsMapLayer::setLayerName( const QString & name )
 /** Read property of QString layerName. */
 QString const & QgsMapLayer::name() const
 {
-  QgsDebugMsgLevel( "returning name '" + mLayerName + "'", 3 );
+  QgsDebugMsgLevel( "returning name '" + mLayerName + "'", 4 );
   return mLayerName;
 }
 
@@ -945,7 +948,7 @@ QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag 
     }
     else
     {
-      myErrorMessage = tr( "style not found in database" );
+      myErrorMessage = tr( "Style not found in database" );
     }
   }
 
@@ -1374,6 +1377,25 @@ void QgsMapLayer::setValid( bool valid )
 void QgsMapLayer::setCacheImage( QImage * )
 {
   emit repaintRequested();
+}
+
+void QgsMapLayer::setLegend( QgsMapLayerLegend* legend )
+{
+  if ( legend == mLegend )
+    return;
+
+  delete mLegend;
+  mLegend = legend;
+
+  if ( mLegend )
+    connect( mLegend, SIGNAL( itemsChanged() ), this, SIGNAL( legendChanged() ) );
+
+  emit legendChanged();
+}
+
+QgsMapLayerLegend*QgsMapLayer::legend() const
+{
+  return mLegend;
 }
 
 void QgsMapLayer::clearCacheImage()

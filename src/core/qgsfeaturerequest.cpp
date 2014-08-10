@@ -19,6 +19,9 @@
 
 #include <QStringList>
 
+//constants
+const QString QgsFeatureRequest::AllAttributes = QString( "#!allattributes!#" );
+
 QgsFeatureRequest::QgsFeatureRequest()
     : mFilter( FilterNone )
     , mFilterExpression( 0 )
@@ -123,6 +126,12 @@ QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QgsAttributeL
 
 QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields )
 {
+  if ( attrNames.contains( QgsFeatureRequest::AllAttributes ) )
+  {
+    //attribute string list contains the all attributes flag, so we must fetch all attributes
+    return *this;
+  }
+
   mFlags |= SubsetOfAttributes;
   mAttrs.clear();
 

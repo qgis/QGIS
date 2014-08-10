@@ -29,7 +29,7 @@ from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from processing.core.ProcessingResults import ProcessingResults
-from processing.gui.Postprocessing import Postprocessing
+from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.AlgorithmExecutionDialog import AlgorithmExecutionDialog
@@ -37,21 +37,20 @@ from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
-from processing.gui.UnthreadedAlgorithmExecutor import \
-        UnthreadedAlgorithmExecutor
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterCrs import ParameterCrs
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterFixedTable import ParameterFixedTable
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.outputs.OutputNumber import OutputNumber
-from processing.outputs.OutputString import OutputString
-from processing.outputs.OutputHTML import OutputHTML
+from processing.gui.AlgorithmExecutor import runalg
+from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterTable
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterCrs
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterFixedTable
+from processing.core.parameters import ParameterMultipleInput
+from processing.core.outputs import OutputNumber
+from processing.core.outputs import OutputString
+from processing.core.outputs import OutputHTML
 from processing.tools.system import *
 
 
@@ -91,6 +90,10 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.table.setColumnCount(self.alg.getVisibleParametersCount()
                                   + nOutputs)
         self.setTableContent()
+        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Interactive)
+        self.table.horizontalHeader().setDefaultSectionSize(250)
+        self.table.horizontalHeader().setMinimumSectionSize(150)
+        self.table.verticalHeader().setResizeMode(QtGui.QHeaderView.ResizeToContents)
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.verticalHeader().setVisible(False)
         self.table.setSizePolicy(QtGui.QSizePolicy.Expanding,
@@ -135,7 +138,6 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
     def setTableContent(self):
         i = 0
         for param in self.alg.parameters:
-            self.table.setColumnWidth(i, 250)
             self.table.setHorizontalHeaderItem(i,
                     QtGui.QTableWidgetItem(param.description))
             if param.isAdvanced:
@@ -143,13 +145,11 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             i += 1
         for out in self.alg.outputs:
             if not out.hidden:
-                self.table.setColumnWidth(i, 250)
                 self.table.setHorizontalHeaderItem(i,
-                        QtGui.QTableWidgetItem(out.description))
+                         QtGui.QTableWidgetItem(out.description))
                 i += 1
 
         if self.alg.getVisibleOutputsCount():
-            self.table.setColumnWidth(i, 200)
             self.table.setHorizontalHeaderItem(i,
                 QtGui.QTableWidgetItem('Load in QGIS'))
 
@@ -190,20 +190,29 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     self.algs = None
                     return
             self.algs.append(alg)
-            widget = self.table.cellWidget(row, col)
-            self.load.append(widget.currentIndex() == 0)
+            if self.alg.getVisibleOutputsCount():
+                widget = self.table.cellWidget(row, col)
+                self.load.append(widget.currentIndex() == 0)
+            else:
+                self.load.append(False)
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.table.setEnabled(False)
         self.tabWidget.setCurrentIndex(1)
         self.progress.setMaximum(len(self.algs))
+        # make sure the log tab is visible before executing the algorithm
+        try:
+            self.repaint()
+        except:
+            pass
         for (i, alg) in enumerate(self.algs):
             self.setBaseText('Processing algorithm ' + str(i + 1) + '/'
                              + str(len(self.algs)) + '...')
-            if UnthreadedAlgorithmExecutor.runalg(alg, self) \
-                and not self.canceled:
+            self.setInfo('<b>Algorithm %s starting...</b>' % alg.name)
+            if runalg(alg, self) and not self.canceled:
                 if self.load[i]:
-                    Postprocessing.handleAlgorithmResults(alg, self, False)
+                    handleAlgorithmResults(alg, self, False)
+                self.setInfo('Algorithm %s correctly executed...' % alg.name)
             else:
                 QApplication.restoreOverrideCursor()
                 return
@@ -314,7 +323,6 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
 
     def addRow(self):
         self.table.setRowCount(self.table.rowCount() + 1)
-        self.table.setRowHeight(self.table.rowCount() - 1, 22)
         i = 0
         for param in self.alg.parameters:
             if param.hidden:

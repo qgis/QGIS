@@ -157,7 +157,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mAttributeViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ) );
   mExpressionSelectButton->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionSelect.svg" ) );
   mAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionNewTableRow.png" ) );
-  mOpenExpressionWidget->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
 
   // toggle editing
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
@@ -169,10 +168,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mToggleEditingButton->blockSignals( true );
   mToggleEditingButton->setCheckable( true );
   mToggleEditingButton->setChecked( mLayer->isEditable() );
-  mToggleEditingButton->setEnabled( canChangeAttributes && !mLayer->isReadOnly() );
+  mToggleEditingButton->setEnabled(( canChangeAttributes || canDeleteFeatures || canAddAttributes || canDeleteAttributes || canAddFeatures ) && !mLayer->isReadOnly() );
   mToggleEditingButton->blockSignals( false );
 
-  mSaveEditsButton->setEnabled( canChangeAttributes && mLayer->isEditable() );
+  mSaveEditsButton->setEnabled( mToggleEditingButton->isEnabled() && mLayer->isEditable() );
   mOpenFieldCalculator->setEnabled(( canChangeAttributes || canAddAttributes ) && mLayer->isEditable() );
   mDeleteSelectedButton->setEnabled( canDeleteFeatures && mLayer->isEditable() );
   mAddAttribute->setEnabled( canAddAttributes && mLayer->isEditable() );
@@ -205,14 +204,18 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mFieldModel = new QgsFieldModel();
   mFieldModel->setLayer( mLayer );
   mFieldCombo->setModel( mFieldModel );
-  connect( mOpenExpressionWidget, SIGNAL( clicked() ), this, SLOT( openExpressionBuilder() ) );
   connect( mRunFieldCalc, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpression() ) );
-  connect( mUpdateExpressionText, SIGNAL( returnPressed() ), this, SLOT( updateFieldFromExpression() ) );
+  // NW TODO Fix in 2.6 - Doesn't work with field model for some reason.
+//  connect( mUpdateExpressionText, SIGNAL( returnPressed() ), this, SLOT( updateFieldFromExpression() ) );
+  connect( mUpdateExpressionText, SIGNAL( fieldChanged( QString , bool ) ), this, SLOT( updateButtonStatus( QString, bool ) ) );
+  mUpdateExpressionText->setLayer( mLayer );
+  mUpdateExpressionText->setLeftHandButtonStyle( true );
   editingToggled();
 }
 
 QgsAttributeTableDialog::~QgsAttributeTableDialog()
 {
+  delete myDa;
 }
 
 void QgsAttributeTableDialog::updateTitle()
@@ -229,6 +232,12 @@ void QgsAttributeTableDialog::updateTitle()
     mRunFieldCalc->setText( tr( "Update All" ) );
   else
     mRunFieldCalc->setText( tr( "Update Filtered" ) );
+}
+
+void QgsAttributeTableDialog::updateButtonStatus( QString fieldName, bool isValid )
+{
+  Q_UNUSED( fieldName );
+  mRunFieldCalc->setEnabled( isValid );
 }
 
 void QgsAttributeTableDialog::closeEvent( QCloseEvent* event )
@@ -302,7 +311,8 @@ void QgsAttributeTableDialog::updateFieldFromExpression()
   bool calculationSuccess = true;
   QString error;
 
-  QgsExpression exp( mUpdateExpressionText->text() );
+
+  QgsExpression exp( mUpdateExpressionText->currentField() );
   exp.setGeomCalculator( *myDa );
   bool useGeometry = exp.needsGeometry();
 
@@ -362,15 +372,6 @@ void QgsAttributeTableDialog::updateFieldFromExpression()
   }
 
   mLayer->endEditCommand();
-}
-
-void QgsAttributeTableDialog::openExpressionBuilder()
-{
-  QgsExpressionBuilderDialog dlg( mLayer, mUpdateExpressionText->text(), this );
-  if ( dlg.exec() )
-  {
-    mUpdateExpressionText->setText( dlg.expressionText() );
-  }
 }
 
 void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
@@ -590,16 +591,24 @@ void QgsAttributeTableDialog::on_mAddAttribute_clicked()
   QgsAddAttrDialog dialog( mLayer, this );
   if ( dialog.exec() == QDialog::Accepted )
   {
-    mLayer->beginEditCommand( tr( "Attribute added" ) );
-    if ( mLayer->addAttribute( dialog.field() ) )
+    if ( dialog.mode() == QgsAddAttrDialog::VirtualField )
     {
-      mLayer->endEditCommand();
+      mLayer->addExpressionField( dialog.expression(), dialog.field() );
     }
     else
     {
-      QMessageBox::critical( 0, tr( "Attribute Error" ), tr( "The attribute could not be added to the layer" ) );
-      mLayer->destroyEditCommand();
+      mLayer->beginEditCommand( tr( "Attribute added" ) );
+      if ( mLayer->addAttribute( dialog.field() ) )
+      {
+        mLayer->endEditCommand();
+      }
+      else
+      {
+        QMessageBox::critical( 0, tr( "Attribute Error" ), tr( "The attribute could not be added to the layer" ) );
+        mLayer->destroyEditCommand();
+      }
     }
+
     // update model - a field has been added or updated
     masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
     columnBoxInit();

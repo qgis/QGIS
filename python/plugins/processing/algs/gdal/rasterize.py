@@ -25,20 +25,17 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-
-from PyQt4 import QtGui
-
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.tools.system import *
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.outputs.OutputRaster import OutputRaster
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterNumber
+from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class rasterize(GeoAlgorithm):
+class rasterize(GdalAlgorithm):
 
     INPUT = 'INPUT'
     FIELD = 'FIELD'
@@ -46,10 +43,6 @@ class rasterize(GeoAlgorithm):
     WIDTH = 'WIDTH'
     HEIGHT = 'HEIGHT'
     OUTPUT = 'OUTPUT'
-
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + '/icons/rasterize.png'
-        return QtGui.QIcon(filepath)
 
     def commandLineName(self):
         return "gdalogr:rasterize"

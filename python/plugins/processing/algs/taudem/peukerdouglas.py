@@ -32,9 +32,9 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
     GeoAlgorithmExecutionException
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.outputs.OutputRaster import OutputRaster
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterNumber
+from processing.core.outputs import OutputRaster
 from processing.tools.system import *
 from TauDEMUtils import TauDEMUtils
 
@@ -49,7 +49,7 @@ class PeukerDouglas(GeoAlgorithm):
     STREAM_SOURCE_GRID = 'STREAM_SOURCE_GRID'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
         self.name = 'Peuker Douglas'

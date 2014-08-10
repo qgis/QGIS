@@ -1,5 +1,5 @@
 SET(CPACK_PACKAGE_VERSION_MAJOR "2")
-SET(CPACK_PACKAGE_VERSION_MINOR "3")
+SET(CPACK_PACKAGE_VERSION_MINOR "5")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
@@ -66,7 +66,6 @@ SET (WITH_INTERNAL_SPATIALITE FALSE CACHE BOOL "Determines whether SPATIALITE su
 SET (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
 IF(WITH_INTERNAL_SPATIALITE)
   SET(SPATIALITE_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/core/spatialite/headers)
-  SET(HAVE_SPATIALITE TRUE)
   IF(WIN32 OR APPLE OR CYGWIN)
     FIND_PACKAGE(Iconv REQUIRED)
   ENDIF(WIN32 OR APPLE OR CYGWIN)
@@ -199,7 +198,7 @@ IF (WITH_POSTGRESQL)
 ENDIF (WITH_POSTGRESQL)
 
 IF (NOT WITH_INTERNAL_SPATIALITE)
-  FIND_PACKAGE(SPATIALITE)
+  FIND_PACKAGE(SPATIALITE REQUIRED)
 ENDIF (NOT WITH_INTERNAL_SPATIALITE)
 
 IF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
@@ -211,10 +210,8 @@ IF (POSTGRES_FOUND)
   SET (HAVE_POSTGRESQL TRUE)
 ENDIF (POSTGRES_FOUND)
 
-IF (SPATIALITE_FOUND)
-  # following variable is used in qgsconfig.h
-  SET (HAVE_SPATIALITE TRUE)
-ENDIF (SPATIALITE_FOUND)
+# following variable is used in qgsconfig.h
+SET (HAVE_SPATIALITE TRUE)
 
 # following variable is used in qgsconfig.h
 SET (HAVE_MSSQL TRUE)
@@ -259,14 +256,7 @@ ELSE (WITH_TOUCH)
 ENDIF (WITH_TOUCH)
 
 # search for QScintilla2 (C++ lib)
-IF (WITH_BINDINGS)
-  # TODO: make required after testing find paths on Windows platforms
-  #FIND_PACKAGE(QScintilla REQUIRED)
-  FIND_PACKAGE(QScintilla)
-ELSE (WITH_BINDINGS)
-  # for when library is used in .h/cpp
-  FIND_PACKAGE(QScintilla)
-ENDIF (WITH_BINDINGS)
+FIND_PACKAGE(QScintilla REQUIRED)
 
 IF (ENABLE_TESTS)
   SET( QT_USE_QTTEST  TRUE )
@@ -311,6 +301,7 @@ IF (PEDANTIC)
     ADD_DEFINITIONS( /wd4100 )  # unused formal parameters
     ADD_DEFINITIONS( /wd4127 )  # constant conditional expressions (used in Qt template classes)
     ADD_DEFINITIONS( /wd4231 )  # nonstandard extension used : 'identifier' before template explicit instantiation (used in Qt template classes)
+    ADD_DEFINITIONS( /wd4244 )  # conversion from '...' to '...' possible loss of data
     ADD_DEFINITIONS( /wd4251 )  # needs to have dll-interface to be used by clients of class (occurs in Qt template classes)
     ADD_DEFINITIONS( /wd4275 )  # non dll-interface class '...' used as base for dll-interface class '...'
     ADD_DEFINITIONS( /wd4505 )  # unreferenced local function has been removed (QgsRasterDataProvider::extent)
@@ -591,11 +582,6 @@ IF (WITH_BINDINGS)
 
 ENDIF (WITH_BINDINGS)
 
-# Set QSCINTILLA_VERSION_STR to that of module, if no headers found
-IF (NOT EXISTS QSCINTILLA_VERSION_STR AND EXISTS QSCI_MOD_VERSION_STR)
-  SET(QSCINTILLA_VERSION_STR ${QSCI_MOD_VERSION_STR})
-ENDIF (NOT EXISTS QSCINTILLA_VERSION_STR AND EXISTS QSCI_MOD_VERSION_STR)
-
 #############################################################
 # create qgsconfig.h
 # installed with app target
@@ -695,10 +681,6 @@ IF (APPLE)
   EXECUTE_PROCESS(COMMAND /bin/mkdir -p "${QGIS_OUTPUT_DIRECTORY}/lib")
   EXECUTE_PROCESS(
     COMMAND /bin/ln -fs ../../Plugins/qgis/qgisgrass.framework lib/
-    WORKING_DIRECTORY "${QGIS_OUTPUT_DIRECTORY}"
-  )
-  EXECUTE_PROCESS(
-    COMMAND /bin/ln -fs ../../Plugins/qgis/qgissqlanyconnection.framework lib/
     WORKING_DIRECTORY "${QGIS_OUTPUT_DIRECTORY}"
   )
 ENDIF (APPLE)

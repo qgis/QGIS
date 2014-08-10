@@ -29,6 +29,7 @@ QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
 QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Filters filters )
 {
   mFilters = filters;
+  invalidateFilter();
   return this;
 }
 

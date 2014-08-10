@@ -37,7 +37,7 @@ QgsServerLogger* QgsServerLogger::instance()
 QgsServerLogger::QgsServerLogger(): mLogFile( 0 )
 {
   //logfile
-  QString filePath = getenv( "QGIS_LOG_FILE" );
+  QString filePath = getenv( "QGIS_SERVER_LOG_FILE" );
   mLogFile.setFileName( filePath );
   if ( mLogFile.open( QIODevice::Append ) )
   {
@@ -45,7 +45,7 @@ QgsServerLogger::QgsServerLogger(): mLogFile( 0 )
   }
 
   //log level
-  char* logLevelChar = getenv( "QGIS_LOG_LEVEL" );
+  char* logLevelChar = getenv( "QGIS_SERVER_LOG_LEVEL" );
   if ( logLevelChar )
   {
     mLogLevel = atoi( logLevelChar );

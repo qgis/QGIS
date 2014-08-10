@@ -21,7 +21,7 @@ use Locale::Country;
 
 my @lang;
 
-# script to generate a html list of the qgis application translatons
+# script to generate a html list of the qgis application translations
 # showing the percentage finished and the names of the translators
 
 # without argument it generates html which is used in the about-dialog of the application
@@ -36,15 +36,15 @@ my @lang;
 # translator names here as a hash where the key is the lang_country code used for the ts file name
 my $translators= {
 	af => '',
-	ar => '',
+	ar => 'Ichaouia Amine, Hosham Munier',
 	bg => 'Захари Савов, Jordan Tzvetkov',
 	bs => 'Almir Karabegovic',
-	ca => 'Xavier Roijals',
-	cs => 'Martin Landa, Peter Antolik, Martin Dzurov, Jan Helebrant',
+	ca => 'Albert F, Pau Reguant Ridó, Xavier Roijals',
+	cs => 'Jan Helebrant, Martin Landa, Peter Antolik, Martin Dzurov, Stanislav Horáček',
 	da => 'Jacob Overgaard Madsen, Bo Victor Thomsen',
 	de => 'Jürgen E. Fischer, Stephan Holl, Otto Dassau, Werner Macho',
 	es => 'Carlos Dávila, Javier César Aldariz, Gabriela Awad, Edwin Amado, Mayeul Kauffmann, Diana Galindo',
-	el => 'Evripidis Argyropoulos, Mike Pegnigiannis, Nikos Ves',
+	el => 'Theodoros Vakkas, Ioannis Tsimpiris, Evripidis Argyropoulos, Mike Pegnigiannis, Nikos Ves',
 	et => 'Veiko Viil',
 	eu => 'Asier Sarasua Garmendia, Irantzu Alvarez',
 	fa => 'Mola Pahnadayan, Masoud Pashotan , Masoud Erfanyan',
@@ -54,8 +54,8 @@ my $translators= {
 	hi => 'Harish Kumar Solanki',
 	hu => 'Zoltan Siki',
 	hr => 'Zoran Jankovic',
-	is => 'Thordur Ivarsson',
-	id => 'Trias Aditya, Januar V. Simarmata, I Made Anombawa',
+	is => 'Ásta Kristín Óladóttir, Thordur Ivarsson',
+	id => 'Emir Hartato, Muhammad Iqnaul Haq Siregar, Trias Aditya, Januar V. Simarmata, I Made Anombawa',
 	it => 'Roberto Angeletti, Michele Beneventi, Marco Braida, Stefano Campus, Luca Casagrande, Paolo Cavallini, Giuliano Curti, Luca Delucchi, Alessandro Fanna, Michele Ferretti, Matteo Ghetta, Anne Gishla, Maurizio Napolitano, Flavio Rigolon',
 	ja => 'BABA Yoshihiko, Yoichi Kayama, Minoru Akagi, Takayuki Nuimura, Takayuki Mizutani, Norihiro Yamate',
 	ka => 'Shota Murtskhvaladze, George Machitidze',
@@ -68,11 +68,11 @@ my $translators= {
 	mn => 'Bayarmaa Enkhtur',
 	mr => '',
 	nb => 'James Stott, Maléne Peterson',
-	nl => 'Richard Duivenvoorde, Raymond Nijssen, Carlo van Rijswijk, Diethard Jansen, Willem Hoffmans',
+	nl => 'Richard Duivenvoorde, Raymond Nijssen, Carlo van Rijswijk, Diethard Jansen, Willem Hoffmans, Dick Groskamp',
 	pl => 'Robert Szczepanek, Milena Nowotarska, Borys Jurgiel, Mateusz Łoskot, Tomasz Paul, Andrzej Świąder ',
-	pt_BR => 'Sidney Schaberle Goveia, Arthur Nanni, Marcelo Soares Souza',
+	pt_BR => 'Sidney Schaberle Goveia, Arthur Nanni, Marcelo Soares Souza, Narcélio de Sá Pereira Filho, Leônidas Descovi Filho, Felipe Sodré Barros ',
 	pt_PT => 'Giovanni Manghi, Joana Simões, Duarte Carreira, Alexandre Neto, Pedro Pereira, Pedro Palheiro, Nelson Silva, Ricardo Sena, Leandro Infantini, João Gaspar',
-	ro => 'Lonut Losifescu-Enescu, Bogdan Pacurar',
+	ro => 'Sorin Călinică, Lonut Losifescu-Enescu, Bogdan Pacurar',
 	ru => 'Alexander Bruy, Artem Popov',
 	sk => 'Lubos Balazovic, Jana Kormanikova, Ivan Mincik',
 	sl => 'Jože Detečnik, Dejan Gregor, Jaka Kranjc',
@@ -142,7 +142,7 @@ for my $i (<i18n/qgis_*.ts>) {
 	$maxn = $n unless defined $maxn;
 
 	if( $n>$maxn ) {
-		print STDERR "$i: more translation than others. ($n>$maxn)\n";
+		print STDERR "$i: more translations than others. ($n>$maxn)\n";
 		$maxn = $n;
 	}
 

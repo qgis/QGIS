@@ -36,27 +36,12 @@ from PyQt4 import QtCore, QtGui, QtWebKit
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.WrongHelpFileException import WrongHelpFileException
-from processing.gui.Postprocessing import Postprocessing
-from processing.gui.UnthreadedAlgorithmExecutor import \
-        UnthreadedAlgorithmExecutor
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.parameters.ParameterFixedTable import ParameterFixedTable
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterRange import ParameterRange
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterCrs import ParameterCrs
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterString import ParameterString
-from processing.outputs.OutputRaster import OutputRaster
-from processing.outputs.OutputVector import OutputVector
-from processing.outputs.OutputTable import OutputTable
+from processing.gui.Postprocessing import handleAlgorithmResults
+from processing.gui.AlgorithmExecutor import runalg, runalgIterating
+from processing.core.parameters import *
+from processing.core.outputs import OutputRaster
+from processing.core.outputs import OutputVector
+from processing.core.outputs import OutputTable
 from processing.tools import dataobjects
 from qgis.utils import iface
 
@@ -76,9 +61,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.resize(650, 450)
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel
-                | QtGui.QDialogButtonBox.Close)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
         self.runButton = QtGui.QPushButton()
         self.runButton.setText('Run')
         self.buttonBox.addButton(self.runButton,
@@ -101,23 +84,17 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.logText.readOnly = True
         self.tabWidget.addTab(self.logText, 'Log')
         self.webView = QtWebKit.QWebView()
-        cssUrl = QtCore.QUrl(os.path.join(os.path.dirname(__file__), 'help',
-                             'help.css'))
-        self.webView.settings().setUserStyleSheetUrl(cssUrl)
         html = None
         url = None
-        try:
-            isText, help = self.alg.help()
-            if help is not None:
-                if isText:
-                    html = help;
-                else:
-                    url = QtCore.QUrl(help)
+        isText, help = self.alg.help()
+        if help is not None:
+            if isText:
+                html = help;
             else:
-                html = '<h2>Sorry, no help is available for this \
-                        algorithm.</h2>'
-        except WrongHelpFileException, e:
-            html = e.args[0]
+                url = QtCore.QUrl(help)
+        else:
+            html = '<h2>Sorry, no help is available for this \
+                    algorithm.</h2>'
         try:
             if html:
                 self.webView.setHtml(html)
@@ -131,8 +108,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.verticalLayout.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout)
         self.buttonBox.rejected.connect(self.close)
-        self.buttonBox.button(
-                QtGui.QDialogButtonBox.Cancel).clicked.connect(self.cancel)
 
         self.showDebug = ProcessingConfig.getSetting(
                 ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
@@ -163,8 +138,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 continue
             output.value = self.paramTable.valueItems[output.name].getValue()
             if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
-                output.open = \
-                    self.paramTable.checkBoxes[output.name].isChecked()
+                output.open = self.paramTable.checkBoxes[output.name].isChecked()
 
         return True
 
@@ -251,8 +225,13 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
             self.setInfo('<b>Algorithm %s starting...</b>' % self.alg.name)
+            # make sure the log tab is visible before executing the algorithm
+            try:
+                self.repaint()
+            except:
+                pass
             if self.iterateParam:
-                if UnthreadedAlgorithmExecutor.runalgIterating(self.alg,
+                if runalgIterating(self.alg,
                         self.iterateParam, self):
                     self.finish()
                 else:
@@ -263,7 +242,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 if command:
                     ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM,
                             command)
-                if UnthreadedAlgorithmExecutor.runalg(self.alg, self):
+                if runalg(self.alg, self):
                     self.finish()
                 else:
                     QApplication.restoreOverrideCursor()
@@ -286,7 +265,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         keepOpen = ProcessingConfig.getSetting(
                 ProcessingConfig.KEEP_DIALOG_OPEN)
         if self.iterateParam is None:
-            Postprocessing.handleAlgorithmResults(self.alg, self, not keepOpen)
+            handleAlgorithmResults(self.alg, self, not keepOpen)
         self.executed = True
         self.setInfo('Algorithm %s finished' % self.alg.name)
         QApplication.restoreOverrideCursor()
@@ -304,19 +283,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.resetGUI()
         self.tabWidget.setCurrentIndex(1)  # log tab
 
-    def iterate(self, i):
-        self.setInfo('<b>Algorithm %s iteration #%i completed</b>'
-                     % (self.alg.name, i))
-
-    def cancel(self):
-        self.setInfo('<b>Algorithm %s canceled</b>' % self.alg.name)
-        try:
-            self.algEx.algExecuted.disconnect()
-            self.algEx.terminate()
-        except:
-            pass
-        self.resetGUI()
-
     def resetGUI(self):
         QApplication.restoreOverrideCursor()
         self.progressLabel.setText('')
@@ -324,31 +290,36 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.progress.setValue(0)
         self.runButton.setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
 
     def setInfo(self, msg, error=False):
         if error:
             self.logText.append('<span style="color:red">' + msg + '</span>')
         else:
             self.logText.append(msg)
+        QCoreApplication.processEvents()
 
     def setCommand(self, cmd):
         if self.showDebug:
             self.setInfo('<tt>' + cmd + '<tt>')
+        QCoreApplication.processEvents()
 
     def setDebugInfo(self, msg):
         if self.showDebug:
             self.setInfo('<span style="color:blue">' + msg + '</span>')
+        QCoreApplication.processEvents()
 
     def setConsoleInfo(self, msg):
         if self.showDebug:
             self.setCommand('<span style="color:darkgray">' + msg + '</span>')
+        QCoreApplication.processEvents()
 
     def setPercentage(self, i):
         if self.progress.maximum() == 0:
             self.progress.setMaximum(100)
         self.progress.setValue(i)
+        QCoreApplication.processEvents()
 
     def setText(self, text):
         self.progressLabel.setText(text)
         self.setInfo(text, False)
+        QCoreApplication.processEvents()

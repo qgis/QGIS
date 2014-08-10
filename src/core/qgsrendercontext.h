@@ -23,6 +23,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
+#include "qgsvectorsimplifymethod.h"
 
 class QPainter;
 
@@ -81,6 +82,14 @@ class CORE_EXPORT QgsRenderContext
     //! Added in QGIS v2.0
     QColor selectionColor() const { return mSelectionColor; }
 
+    /**Returns true if vector selections should be shown in the rendered map
+     * @returns true if selections should be shown
+     * @see setShowSelection
+     * @see selectionColor
+     * @note Added in QGIS v2.4
+    */
+    bool showSelection() const { return mShowSelection; }
+
     //setters
 
     /**Sets coordinate transformation. QgsRenderContext does not take ownership*/
@@ -100,9 +109,21 @@ class CORE_EXPORT QgsRenderContext
     //! Added in QGIS v2.0
     void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
 
+    /**Sets whether vector selections should be shown in the rendered map
+     * @param showSelection set to true if selections should be shown
+     * @see showSelection
+     * @see setSelectionColor
+     * @note Added in QGIS v2.4
+    */
+    void setShowSelection( const bool showSelection ) { mShowSelection = showSelection; }
+
     /**Returns true if the rendering optimization (geometry simplification) can be executed*/
     bool useRenderingOptimization() const { return mUseRenderingOptimization; }
     void setUseRenderingOptimization( bool enabled ) { mUseRenderingOptimization = enabled; }
+
+    //! Added in QGIS v2.4
+    const QgsVectorSimplifyMethod& vectorSimplifyMethod() const { return mVectorSimplifyMethod; }
+    void setVectorSimplifyMethod( const QgsVectorSimplifyMethod& simplifyMethod ) { mVectorSimplifyMethod = simplifyMethod; }
 
   private:
 
@@ -140,11 +161,17 @@ class CORE_EXPORT QgsRenderContext
     /**Labeling engine (can be NULL)*/
     QgsLabelingEngineInterface* mLabelingEngine;
 
-    /** Color used for features that are marked as selected */
+    /**Whether selection should be shown*/
+    bool mShowSelection;
+
+    /**Color used for features that are marked as selected */
     QColor mSelectionColor;
 
     /**True if the rendering optimization (geometry simplification) can be executed*/
     bool mUseRenderingOptimization;
+
+    /**Simplification object which holds the information about how to simplify the features for fast rendering */
+    QgsVectorSimplifyMethod mVectorSimplifyMethod;
 };
 
 #endif

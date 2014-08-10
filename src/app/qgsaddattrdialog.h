@@ -28,20 +28,30 @@ class APP_EXPORT QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogB
 {
     Q_OBJECT
   public:
+    enum AttributeMode
+    {
+      ProviderField,
+      VirtualField
+    };
+
     QgsAddAttrDialog( QgsVectorLayer *vlayer,
                       QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     QgsAddAttrDialog( const std::list<QString>& typelist,
                       QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     QgsField field() const;
+    const QString expression() const;
+    AttributeMode mode() const;
 
-  public slots:
+  private slots:
     void on_mTypeBox_currentIndexChanged( int idx );
+    void on_mFieldModeButtonGroup_buttonClicked( QAbstractButton* button );
     void on_mLength_editingFinished();
     void accept();
 
   private:
     bool mIsShapeFile;
+    QgsVectorLayer* mLayer;
 
     void setPrecisionMinMax();
 };

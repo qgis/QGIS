@@ -236,7 +236,7 @@ bool TestQgsShapeburst::imageCheck( QString theTestType )
   QgsRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType );
+  bool myResultFlag = myChecker.runTest( theTestType, 200 );
   mReport += myChecker.report();
   return myResultFlag;
 }

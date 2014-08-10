@@ -29,28 +29,24 @@ import os
 from PyQt4 import QtGui
 from qgis.core import *
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterString import ParameterString
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterString
 
-from processing.outputs.OutputVector import OutputVector
+from processing.core.outputs import OutputVector
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class contour(GeoAlgorithm):
+class contour(GdalAlgorithm):
 
     INPUT_RASTER = 'INPUT_RASTER'
     OUTPUT_VECTOR = 'OUTPUT_VECTOR'
     INTERVAL = 'INTERVAL'
     FIELD_NAME = 'FIELD_NAME'
     EXTRA = 'EXTRA'
-
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + '/icons/contour.png'
-        return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
         self.name = 'Contour'

@@ -31,10 +31,10 @@ from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.outputs.OutputVector import OutputVector
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterSelection
+from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 
@@ -53,8 +53,8 @@ class ConvexHull(GeoAlgorithm):
         self.addParameter(ParameterVector(ConvexHull.INPUT, 'Input layer',
                           [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(ConvexHull.FIELD,
-                          'Field (optional, only used if creating convex \
-                          hulls by classes)', ConvexHull.INPUT, optional=True))
+                          'Field (optional, only used if creating convex hulls by classes)',
+                          ConvexHull.INPUT, optional=True))
         self.addParameter(ParameterSelection(ConvexHull.METHOD, 'Method',
                           ConvexHull.METHODS))
         self.addOutput(OutputVector(ConvexHull.OUTPUT, 'Convex hull'))

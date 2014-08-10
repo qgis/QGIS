@@ -59,6 +59,8 @@ class QgsSymbolLayerV2Utils
 
     static QString encodeScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
     static QgsSymbolV2::ScaleMethod decodeScaleMethod( QString str );
+    
+    static QPainter::CompositionMode decodeBlendMode( const QString& s );
 
     static QIcon symbolPreviewIcon( QgsSymbolV2* symbol, QSize size );
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );

@@ -31,7 +31,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from processing.core.ProcessingConfig import ProcessingConfig
-
+from processing.core.Processing import Processing
 from processing.ui.ui_DlgConfig import Ui_DlgConfig
 
 import processing.resources_rc
@@ -146,9 +146,7 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
             else:
                 setting.value = unicode(self.items[setting].text())
             setting.save()
-            #ProcessingConfig.addSetting(setting)
-        #ProcessingConfig.saveSettings()
-        self.toolbox.updateTree()
+        Processing.updateAlgsList()
 
         QDialog.accept(self)
 

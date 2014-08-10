@@ -46,7 +46,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     void setText( const QString& text );
 
     int htmlState() { return mHtmlState; }
-    void setHtmlState( int state ) {mHtmlState = state;}
+    void setHtmlState( int state );
 
     /**Returns the text as it appears on screen (with replaced data field)
       @note this function was added in version 1.2*/
@@ -98,6 +98,9 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
        * @param doc document
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+
+    //Overriden to contain part of label's text
+    virtual QString displayName() const;
 
   public slots:
     void refreshExpressionContext();

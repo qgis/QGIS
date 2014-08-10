@@ -28,8 +28,8 @@ __revision__ = '$Format:%H$'
 import os
 from PyQt4 import QtGui
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.outputs.OutputRaster import OutputRaster
+from processing.core.parameters import ParameterRaster
+from processing.core.outputs import OutputRaster
 from processing.tools.system import *
 from SagaUtils import SagaUtils
 

@@ -46,13 +46,13 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        if isWindows():
+        if SagaUtils.findSagaFolder() is None:
             ProcessingConfig.addSetting(Setting(self.getDescription(),
-                    SagaUtils.SAGA_FOLDER, 'SAGA folder',
-                    SagaUtils.sagaPath()))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    SagaUtils.SAGA_208,
-                                    'Use SAGA 2.0.8 syntax', True))
+                                        SagaUtils.SAGA_208,
+                                        'Use SAGA 2.0.8 syntax', not isMac()))
+            if isWindows() or isMac():
+                ProcessingConfig.addSetting(Setting(self.getDescription(),
+                                            SagaUtils.SAGA_FOLDER, 'SAGA folder', ''))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
                                     SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION,
                                     'Enable SAGA Import/Export optimizations',
@@ -72,13 +72,13 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_COMMANDS)
 
+
     def _loadAlgorithms(self):
         self.algs = []
-        saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
         folder = SagaUtils.sagaDescriptionPath()
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith('txt'):
-                if not saga208:
+                if not SagaUtils.isSaga208():
                     if descriptionFile.startswith('2.0.8'):
                         continue
                 else:

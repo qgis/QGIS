@@ -429,6 +429,7 @@ void QgsMssqlSourceSelect::populateConnectionList()
 // Slot for performing action when the Add button is clicked
 void QgsMssqlSourceSelect::addTables()
 {
+  QgsDebugMsg( QString( "mConnInfo:%1" ).arg( mConnInfo ) );
   mSelectedTables.clear();
 
   foreach ( QModelIndex idx, mTablesTreeView->selectionModel()->selection().indexes() )
@@ -494,12 +495,18 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
 
   bool estimateMetadata = settings.value( key + "/estimatedMetadata", true ).toBool();
 
-  mConnInfo =  "dbname='" + database + "' host=" + host + " user='" + username + "' password='" + password + "'";
+  mConnInfo =  "dbname='" + database + "'";
+  if ( !host.isEmpty() )
+    mConnInfo += " host='" + host + "'";
+  if ( !username.isEmpty() )
+    mConnInfo += " user='" + username + "'";
+  if ( !password.isEmpty() )
+    mConnInfo += " password='" + password + "'";
   if ( !service.isEmpty() )
     mConnInfo += " service='" + service + "'";
 
-  QSqlDatabase db = QgsMssqlProvider::GetDatabase( service,
-                    host, database, username, password );
+  QgsDebugMsg( "GetDatabase" );
+  QSqlDatabase db = QgsMssqlProvider::GetDatabase( service, host, database, username, password );
 
   if ( !QgsMssqlProvider::OpenDatabase( db ) )
   {
@@ -509,27 +516,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
     return;
   }
 
-  QString connectionName;
-  if ( service.isEmpty() )
-  {
-    if ( host.isEmpty() )
-    {
-      QMessageBox::warning( this,
-                            tr( "MSSQL Provider" ), "QgsMssqlProvider host name not specified" );
-      return;
-    }
-
-    if ( database.isEmpty() )
-    {
-      QMessageBox::warning( this,
-                            tr( "MSSQL Provider" ), "QgsMssqlProvider database name not specified" );
-      return;
-    }
-    connectionName = host + "." + database;
-  }
-  else
-    connectionName = service;
-
+  QString connectionName = db.connectionName();
 
   // Read supported layers from database
   QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -777,6 +764,13 @@ void QgsMssqlGeomColumnTypeThread::run()
 
       // issue the sql query
       QSqlDatabase db = QSqlDatabase::database( mConnectionName );
+      if ( !QgsMssqlProvider::OpenDatabase( db ) )
+      {
+        QString msg = db.lastError().text();
+        QgsDebugMsg( msg );
+        continue;
+      }
+
       QSqlQuery q = QSqlQuery( db );
       q.setForwardOnly( true );
       if ( !q.exec( query ) )

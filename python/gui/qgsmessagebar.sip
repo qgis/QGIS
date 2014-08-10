@@ -7,9 +7,9 @@ class QgsMessageBar: QFrame
   public:
     enum MessageLevel
     {
-      INFO = 0,
-      WARNING = 1,
-      CRITICAL = 2
+      INFO,
+      WARNING,
+      CRITICAL,
     };
 
     QgsMessageBar( QWidget *parent = 0 );

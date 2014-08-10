@@ -70,7 +70,7 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      * @param layer         The layer for which this configuration applies
      * @param fieldIdx      The field on the layer for which this configuration applies
      */
-    virtual void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, const QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx );
+    virtual void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx );
 
   private:
     QgsAttributeEditorContext mEditorContext;

@@ -50,6 +50,13 @@ class QDomElement;
  * used by third party plugins. Custom properties are stored also in the project
  * file. The storage is not efficient for large amount of data.
  *
+ * Custom properties that have already been used within QGIS:
+ * - "loading" - whether the project is being currently loaded (root node only)
+ * - "overview" - whether to show a layer in overview
+ * - "showFeatureCount" - whether to show feature counts in layer tree (vector only)
+ * - "embedded" - whether the node comes from an external project
+ * - "embedded_project" - path to the external project (embedded root node only)
+ *
  * @see also QgsLayerTree, QgsLayerTreeLayer, QgsLayerTreeGroup
  * @note added in 2.4
  */
@@ -86,9 +93,9 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     virtual QgsLayerTreeNode* clone() const = 0;
 
     //! Return whether the node should be shown as expanded or collapsed in GUI
-    bool isExpanded() const { return mExpanded; }
+    bool isExpanded() const;
     //! Set whether the node should be shown as expanded or collapsed in GUI
-    void setExpanded( bool expanded ) { mExpanded = expanded; }
+    void setExpanded( bool expanded );
 
     /** Set a custom property for the node. Properties are stored in a map and saved in project file. */
     void setCustomProperty( const QString& key, const QVariant& value );
@@ -113,6 +120,8 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     void visibilityChanged( QgsLayerTreeNode* node, Qt::CheckState state );
     //! Emitted when a custom property of a node within the tree has been changed or removed
     void customPropertyChanged( QgsLayerTreeNode* node, QString key );
+    //! Emitted when the collapsed/expanded state of a node within the tree has been changed
+    void expandedChanged( QgsLayerTreeNode* node, bool expanded );
 
   protected:
 
@@ -124,11 +133,10 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     void readCommonXML( QDomElement& element );
     void writeCommonXML( QDomElement& element );
 
-    // the child must not be in any tree yet!
-    void insertChildren( int index, QList<QgsLayerTreeNode*> nodes );
-    void insertChild( int index, QgsLayerTreeNode* node );
-    void removeChildAt( int i );
-    void removeChildrenRange( int from, int count );
+    //! Low-level insertion of children to the node. The children must not have any parent yet!
+    void insertChildrenPrivate( int index, QList<QgsLayerTreeNode*> nodes );
+    //! Low-level removal of children from the node.
+    void removeChildrenPrivate( int from, int count );
 
 
   protected:

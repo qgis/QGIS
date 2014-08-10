@@ -32,7 +32,9 @@ QgsDateTimeEditWrapper::QgsDateTimeEditWrapper( QgsVectorLayer* vl, int fieldIdx
 
 QWidget *QgsDateTimeEditWrapper::createWidget( QWidget *parent )
 {
-  return new QDateTimeEdit( parent );
+  QDateTimeEdit* widget = new QDateTimeEdit( parent );
+  widget->setDateTime( QDateTime::currentDateTime() );
+  return widget;
 }
 
 void QgsDateTimeEditWrapper::initWidget( QWidget *editor )

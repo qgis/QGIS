@@ -300,6 +300,11 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
   cbxAutoFeatureForm->setChecked( mySettings.value( "/Map/identifyAutoFeatureForm", false ).toBool() );
 
+  // view modes
+  cmbViewMode->addItem( tr( "Tree" ), 0 );
+  cmbViewMode->addItem( tr( "Table" ), 0 );
+  cmbViewMode->addItem( tr( "Graph" ), 0 );
+
   // graph
   mPlot->setVisible( false );
   mPlot->setAutoFillBackground( false );
@@ -385,7 +390,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   }
 
-  //QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( fields, f, crs );
   QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( vlayer->pendingFields(), f, vlayer->crs() );
   featItem->setData( 0, Qt::UserRole, FID_TO_STRING( f.id() ) );
   featItem->setData( 0, Qt::UserRole + 1, mFeatures.size() );
@@ -394,6 +398,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
   const QgsFields &fields = vlayer->pendingFields();
   const QgsAttributes& attrs = f.attributes();
+  bool featureLabeled = false;
   for ( int i = 0; i < attrs.count(); ++i )
   {
     if ( i >= fields.count() )
@@ -422,9 +427,16 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     {
       featItem->setText( 0, attrItem->text( 0 ) );
       featItem->setText( 1, attrItem->text( 1 ) );
+      featureLabeled = true;
     }
 
     featItem->addChild( attrItem );
+  }
+
+  if ( !featureLabeled )
+  {
+    featItem->setText( 0, tr( "feature id" ) );
+    featItem->setText( 1, QString::number( f.id() ) );
   }
 
   if ( derivedAttributes.size() >= 0 )
@@ -486,15 +498,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
   // table
   int j = tblResults->rowCount();
-  // insert empty row to separate layers
-  if ( j > 0 && tblResults->item( j - 1, 0 ) &&
-       tblResults->item( j - 1, 0 )->data( Qt::UserRole + 1 ).toString() != vlayer->id() )
-  {
-    tblResults->setRowCount( j + 1 );
-    tblResults->setRowHeight( j, 2 );
-    j++;
-  }
-
   for ( int i = 0; i < attrs.count(); ++i )
   {
     if ( i >= fields.count() )
@@ -542,7 +545,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     tblResults->resizeRowToContents( j );
     j++;
   }
-  tblResults->resizeColumnToContents( 1 );
+  //tblResults->resizeColumnToContents( 1 );
 
   highlightFeature( featItem );
 }
@@ -735,7 +738,14 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   {
     QgsIdentifyResultsWebViewItem *attrItem = new QgsIdentifyResultsWebViewItem( lstResults );
     featItem->addChild( attrItem ); // before setHtml()!
-    attrItem->setContent( attributes.begin().value().toUtf8(), currentFormat == QgsRaster::IdentifyFormatHtml ? "text/html" : "text/plain" );
+    if ( !attributes.isEmpty() )
+    {
+      attrItem->setContent( attributes.begin().value().toUtf8(), currentFormat == QgsRaster::IdentifyFormatHtml ? "text/html" : "text/plain" );
+    }
+    else
+    {
+      attrItem->setContent( tr( "No attributes." ).toUtf8(), "text/plain" );
+    }
   }
   else
   {
@@ -760,14 +770,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   // table
   int i = 0;
   int j = tblResults->rowCount();
-  // insert empty row to separate layers
-  if ( j > 0 && tblResults->item( j - 1, 0 ) &&
-       tblResults->item( j - 1, 0 )->data( Qt::UserRole + 1 ).toString() != layer->id() )
-  {
-    j++;
-    tblResults->setRowCount( j + 1 );
-    tblResults->setRowHeight( j - 1, 2 );
-  }
   tblResults->setRowCount( j + attributes.count() );
 
   for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
@@ -785,7 +787,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 
     j++; i++;
   }
-  tblResults->resizeColumnToContents( 1 );
+  //tblResults->resizeColumnToContents( 1 );
 
   // graph
   if ( attributes.count() > 0 )
@@ -836,6 +838,8 @@ void QgsIdentifyResultsDialog::show()
   // column width is now stored in settings
   //expandColumnsToFit();
 
+  bool showFeatureForm = false;
+
   if ( lstResults->topLevelItemCount() > 0 )
   {
     QTreeWidgetItem *layItem = lstResults->topLevelItem( 0 );
@@ -851,8 +855,8 @@ void QgsIdentifyResultsDialog::show()
         if ( layer )
         {
           // if this is the only feature and it's on a vector layer
-          // don't show the form dialog instead of the results window
-          featureForm();
+          // show the form dialog instead of the results window
+          showFeatureForm = true;
         }
       }
     }
@@ -870,8 +874,19 @@ void QgsIdentifyResultsDialog::show()
 
   QDialog::show();
 
-  mDock->show();
-  mDock->raise();
+  // when the feature form is opened don't show and raise the identify result.
+  // If it's not docked, the results would open after or possibly on top of the
+  // feature form and stay open (on top the canvas) after the feature form is
+  // closed.
+  if ( showFeatureForm )
+  {
+    featureForm();
+  }
+  else
+  {
+    mDock->show();
+    mDock->raise();
+  }
 }
 
 void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
@@ -902,7 +917,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
   QgsDebugMsg( "Entered" );
 
   // only handle context menu event if showing tree widget
-  if ( tabWidget->currentIndex() != 0 )
+  if ( stackedWidget->currentIndex() != 0 )
     return;
 
   QTreeWidgetItem *item = lstResults->itemAt( lstResults->viewport()->mapFrom( this, event->pos() ) );
@@ -1047,18 +1062,9 @@ void QgsIdentifyResultsDialog::expandColumnsToFit()
   lstResults->resizeColumnToContents( 1 );
 }
 
-void QgsIdentifyResultsDialog::clearHighlights()
-{
-  foreach ( QgsHighlight *h, mHighlights )
-  {
-    delete h;
-  }
-
-  mHighlights.clear();
-}
-
 void QgsIdentifyResultsDialog::clear()
 {
+  QgsDebugMsg( "Entered" );
   for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
   {
     disconnectLayer( lstResults->topLevelItem( i )->data( 0, Qt::UserRole ).value<QObject *>() );
@@ -1080,30 +1086,53 @@ void QgsIdentifyResultsDialog::clear()
   mPrintToolButton->setDisabled( true );
 }
 
+void QgsIdentifyResultsDialog::updateViewModes()
+{
+  // get # of identified vector and raster layers - there must be a better way involving caching
+  int vectorCount = 0, rasterCount = 0;
+  for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
+  {
+    QTreeWidgetItem *item = lstResults->topLevelItem( i );
+    if ( vectorLayer( item ) ) vectorCount++;
+    else if ( rasterLayer( item ) ) rasterCount++;
+  }
+
+  lblViewMode->setEnabled( rasterCount > 0 );
+  cmbViewMode->setEnabled( rasterCount > 0 );
+  if ( rasterCount == 0 )
+    cmbViewMode->setCurrentIndex( 0 );
+
+}
+
+void QgsIdentifyResultsDialog::clearHighlights()
+{
+  foreach ( QgsHighlight *h, mHighlights )
+  {
+    delete h;
+  }
+
+  mHighlights.clear();
+}
+
 void QgsIdentifyResultsDialog::activate()
 {
-#if 0
-  foreach ( QgsRubberBand *rb, mRubberBands )
+  foreach ( QgsHighlight *h, mHighlights )
   {
-    rb->show();
+    h->show();
   }
-#endif
 
   if ( lstResults->topLevelItemCount() > 0 )
   {
-    show();
     raise();
   }
 }
 
 void QgsIdentifyResultsDialog::deactivate()
 {
-#if 0
-  foreach ( QgsRubberBand *rb, mRubberBands )
+  foreach ( QgsHighlight *h, mHighlights )
   {
-    rb->hide();
+    h->hide();
   }
-#endif
 }
 
 void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, int action )
@@ -1329,7 +1358,7 @@ void QgsIdentifyResultsDialog::layerDestroyed()
     {
       for ( int j = 0; j < layItem->childCount(); j++ )
       {
-        delete mHighlights.take( layItem->child( i ) );
+        delete mHighlights.take( layItem->child( j ) );
       }
     }
   }
@@ -1347,11 +1376,6 @@ void QgsIdentifyResultsDialog::layerDestroyed()
       QgsDebugMsg( QString( "removing row %1" ).arg( i ) );
       tblResults->removeRow( i );
     }
-  }
-
-  if ( lstResults->topLevelItemCount() == 0 )
-  {
-    close();
   }
 }
 
@@ -1411,11 +1435,6 @@ void QgsIdentifyResultsDialog::featureDeleted( QgsFeatureId fid )
       QgsDebugMsg( QString( "removing row %1" ).arg( i ) );
       tblResults->removeRow( i );
     }
-  }
-
-  if ( lstResults->topLevelItemCount() == 0 )
-  {
-    close();
   }
 }
 
@@ -1733,6 +1752,11 @@ void QgsIdentifyResultsDialog::on_cmbIdentifyMode_currentIndexChanged( int index
 {
   QSettings settings;
   settings.setValue( "/Map/identifyMode", cmbIdentifyMode->itemData( index ).toInt() );
+}
+
+void QgsIdentifyResultsDialog::on_cmbViewMode_currentIndexChanged( int index )
+{
+  stackedWidget->setCurrentIndex( index );
 }
 
 void QgsIdentifyResultsDialog::on_cbxAutoFeatureForm_toggled( bool checked )

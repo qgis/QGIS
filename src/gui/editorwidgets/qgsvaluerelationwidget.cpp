@@ -179,13 +179,19 @@ QgsValueRelationWidget::ValueRelationCache QgsValueRelationWidget::createCache( 
 
       QgsFeatureRequest::Flags flags = QgsFeatureRequest::NoGeometry;
 
+      bool requiresAllAttributes = false;
       if ( e )
       {
         if ( e->needsGeometry() )
-          flags |= QgsFeatureRequest::NoGeometry;
+          flags = QgsFeatureRequest::NoFlags;
 
         Q_FOREACH( const QString& field, e->referencedColumns() )
         {
+          if ( field == QgsFeatureRequest::AllAttributes )
+          {
+            requiresAllAttributes = true;
+            break;
+          }
           int idx = layer->fieldNameIndex( field );
           if ( idx < 0 )
             continue;
@@ -193,11 +199,14 @@ QgsValueRelationWidget::ValueRelationCache QgsValueRelationWidget::createCache( 
         }
       }
 
-      QgsFeatureIterator fit = layer->getFeatures(
-                                 QgsFeatureRequest()
-                                 .setFlags( flags )
-                                 .setSubsetOfAttributes( attributes.toList() )
-                               );
+      QgsFeatureRequest fr = QgsFeatureRequest().setFlags( flags );
+      if ( !requiresAllAttributes )
+      {
+        fr.setSubsetOfAttributes( attributes.toList() );
+      }
+
+      QgsFeatureIterator fit = layer->getFeatures( fr );
+
       QgsFeature f;
       while ( fit.nextFeature( f ) )
       {

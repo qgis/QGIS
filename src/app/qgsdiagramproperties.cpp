@@ -334,6 +334,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
     mLabelPlacementLabel->show();
     mBackgroundColorLabel->show();
     mBackgroundColorButton->show();
+    mDiagramFontButton->show();
   }
   else
   {
@@ -341,6 +342,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
     mLabelPlacementLabel->hide();
     mBackgroundColorLabel->hide();
     mBackgroundColorButton->hide();
+    mDiagramFontButton->hide();
   }
 
   if ( DIAGRAM_NAME_HISTOGRAM == diagramType )

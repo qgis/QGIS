@@ -17,8 +17,10 @@
 
 #include "qgscomposerlabel.h"
 #include "qgscomposition.h"
+#include "qgscomposerutils.h"
 #include "qgsexpression.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgscomposermodel.h"
 
 #include <QCoreApplication>
 #include <QDate>
@@ -49,6 +51,9 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
   //default to a 10 point font size
   mFont.setPointSizeF( 10 );
 
+  //default to no background
+  setBackgroundEnabled( false );
+
   if ( mComposition && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
     //a label added while atlas preview is enabled needs to have the expression context set,
@@ -78,7 +83,10 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   drawBackground( painter );
   painter->save();
 
-  double penWidth = pen().widthF();
+  //antialiasing on
+  painter->setRenderHint( QPainter::Antialiasing, true );
+
+  double penWidth = hasFrame() ? pen().widthF() : 0;
   QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin, rect().height() - 2 * penWidth - 2 * mMargin );
 
   QString textToDraw = displayText();
@@ -142,15 +150,11 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
   else
   {
-    painter->setPen( QPen( QColor( mFontColor ) ) );
     painter->setFont( mFont );
-
-    QFontMetricsF fontSize( mFont );
-
     //debug
     //painter->setPen( QColor( Qt::red ) );
     //painter->drawRect( painterRect );
-    drawText( painter, painterRect, textToDraw, mFont, mHAlignment, mVAlignment, Qt::TextWordWrap );
+    QgsComposerUtils::drawText( painter, painterRect, textToDraw, mFont, mFontColor, mHAlignment, mVAlignment, Qt::TextWordWrap );
   }
 
   painter->restore();
@@ -184,6 +188,28 @@ void QgsComposerLabel::setText( const QString& text )
 {
   mText = text;
   emit itemChanged();
+
+  if ( mComposition && id().isEmpty() && !mHtmlState )
+  {
+    //notify the model that the display name has changed
+    mComposition->itemsModel()->updateItemDisplayName( this );
+  }
+}
+
+void QgsComposerLabel::setHtmlState( int state )
+{
+  if ( state == mHtmlState )
+  {
+    return;
+  }
+
+  mHtmlState = state;
+
+  if ( mComposition && id().isEmpty() )
+  {
+    //notify the model that the display name has changed
+    mComposition->itemsModel()->updateItemDisplayName( this );
+  }
 }
 
 void QgsComposerLabel::setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions )
@@ -253,18 +279,22 @@ void QgsComposerLabel::setFont( const QFont& f )
 
 void QgsComposerLabel::adjustSizeToText()
 {
-  double textWidth = textWidthMillimeters( mFont, displayText() );
-  double fontAscent = fontAscentMillimeters( mFont );
+  double textWidth = QgsComposerUtils::textWidthMM( mFont, displayText() );
+  double fontHeight = QgsComposerUtils::fontHeightMM( mFont );
 
-  double width = textWidth + 2 * mMargin + 2 * pen().widthF() + 1;
-  double height = fontAscent + 2 * mMargin + 2 * pen().widthF() + 1;
+  double penWidth = hasFrame() ? pen().widthF() : 0;
+
+  double width = textWidth + 2 * mMargin + 2 * penWidth + 1;
+  double height = fontHeight + 2 * mMargin + 2 * penWidth;
 
   //keep alignment point constant
   double xShift = 0;
   double yShift = 0;
   itemShiftAdjustSize( width, height, xShift, yShift );
 
-  setSceneRect( QRectF( pos().x() + xShift, pos().y() + yShift, width, height ) );
+  //update rect for data defined size and position
+  QRectF evaluatedRect = evalItemRect( QRectF( pos().x() + xShift, pos().y() + yShift, width, height ) );
+  setSceneRect( evaluatedRect );
 }
 
 QFont QgsComposerLabel::font() const
@@ -373,6 +403,34 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
   }
   emit itemChanged();
   return true;
+}
+
+QString QgsComposerLabel::displayName() const
+{
+  if ( !id().isEmpty() )
+  {
+    return id();
+  }
+
+  if ( mHtmlState )
+  {
+    return tr( "<HTML label>" );
+  }
+
+  //if no id, default to portion of label text
+  QString text = displayText();
+  if ( text.isEmpty() )
+  {
+    return tr( "<label>" );
+  }
+  if ( text.length() > 25 )
+  {
+    return QString( tr( "%1..." ) ).arg( text.left( 25 ) );
+  }
+  else
+  {
+    return text;
+  }
 }
 
 void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, double& xShift, double& yShift ) const

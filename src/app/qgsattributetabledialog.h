@@ -153,6 +153,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      */
     void updateTitle();
 
+    void updateButtonStatus( QString fieldName, bool isValid );
   signals:
     /**
      * Informs that editing mode has been toggled
@@ -184,8 +185,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * Initialize column box
      */
     void columnBoxInit();
-
-    void openExpressionBuilder();
 
     void updateFieldFromExpression();
 

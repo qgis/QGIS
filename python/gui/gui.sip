@@ -2,9 +2,15 @@
         version=0,
         keyword_arguments="Optional")
 
+%Feature HAVE_QSCI_SIP
+
 %Import QtCore/QtCoremod.sip
 %Import QtGui/QtGuimod.sip
 %Import QtXml/QtXmlmod.sip
+
+%If (HAVE_QSCI_SIP)
+%Import Qsci/qscimod4.sip
+%End
 
 %Import core/core.sip
 
@@ -19,6 +25,13 @@
 %Include qgsattributeforminterface.sip
 %Include qgsbusyindicatordialog.sip
 %Include qgscollapsiblegroupbox.sip
+%If (HAVE_QSCI_SIP)
+%Include qgscodeeditor.sip
+%Include qgscodeeditorpython.sip
+%Include qgscodeeditorsql.sip
+%Include qgscodeeditorhtml.sip
+%Include qgscodeeditorcss.sip
+%End
 %Include qgscolorbutton.sip
 %Include qgscolordialog.sip
 %Include qgscomposerview.sip
@@ -107,6 +120,12 @@
 %Include attributetable/qgsfeaturemodel.sip
 %Include attributetable/qgsfeatureselectionmodel.sip
 %Include attributetable/qgsifeatureselectionmanager.sip
+
+%Include layertree/qgscustomlayerorderwidget.sip
+%Include layertree/qgslayertreemapcanvasbridge.sip
+%Include layertree/qgslayertreemodel.sip
+%Include layertree/qgslayertreeview.sip
+%Include layertree/qgslayertreeviewdefaultactions.sip
 
 %Include raster/qgsmultibandcolorrendererwidget.sip
 %Include raster/qgspalettedrendererwidget.sip

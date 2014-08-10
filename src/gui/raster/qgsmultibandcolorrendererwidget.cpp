@@ -130,7 +130,7 @@ void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRe
   bool redMinOk, redMaxOk;
   double redMin = mRedMinLineEdit->text().toDouble( &redMinOk );
   double redMax = mRedMaxLineEdit->text().toDouble( &redMaxOk );
-  if ( redMinOk && redMaxOk )
+  if ( redMinOk && redMaxOk && redBand != -1 )
   {
     redEnhancement = new QgsContrastEnhancement(( QGis::DataType )(
           provider->dataType( redBand ) ) );
@@ -141,7 +141,7 @@ void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRe
   bool greenMinOk, greenMaxOk;
   double greenMin = mGreenMinLineEdit->text().toDouble( &greenMinOk );
   double greenMax = mGreenMaxLineEdit->text().toDouble( &greenMaxOk );
-  if ( greenMinOk && greenMaxOk )
+  if ( greenMinOk && greenMaxOk && greenBand != -1 )
   {
     greenEnhancement = new QgsContrastEnhancement(( QGis::DataType )(
           provider->dataType( greenBand ) ) );
@@ -152,7 +152,7 @@ void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRe
   bool blueMinOk, blueMaxOk;
   double blueMin = mBlueMinLineEdit->text().toDouble( &blueMinOk );
   double blueMax = mBlueMaxLineEdit->text().toDouble( &blueMaxOk );
-  if ( blueMinOk && blueMaxOk )
+  if ( blueMinOk && blueMaxOk && blueBand != -1 )
   {
     blueEnhancement = new QgsContrastEnhancement(( QGis::DataType )(
           provider->dataType( blueBand ) ) );

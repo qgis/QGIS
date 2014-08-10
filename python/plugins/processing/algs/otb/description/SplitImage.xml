@@ -1,0 +1,29 @@
+<root>
+  <key>SplitImage</key>
+  <exec>otbcli_SplitImage</exec>
+  <longname>Split Image</longname>
+  <group>Image Manipulation</group>
+  <description>Rescale the image between two given values.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input Image</name>
+    <description>Input image to be split into individual images.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputFile</parameter_type>
+    <key>out</key>
+    <name>Output Image</name>
+    <description>The base filename of the split images.</description>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+</root>

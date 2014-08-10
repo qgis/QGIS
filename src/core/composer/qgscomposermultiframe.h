@@ -16,6 +16,7 @@
 #ifndef QGSCOMPOSERMULTIFRAME_H
 #define QGSCOMPOSERMULTIFRAME_H
 
+#include "qgscomposerobject.h"
 #include <QObject>
 #include <QSizeF>
 #include <QPointF>
@@ -29,7 +30,7 @@ class QRectF;
 class QPainter;
 
 /**Abstract base class for composer entries with the ability to distribute the content to several frames (items)*/
-class CORE_EXPORT QgsComposerMultiFrame: public QObject
+class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
 {
     Q_OBJECT
   public:
@@ -93,6 +94,12 @@ class CORE_EXPORT QgsComposerMultiFrame: public QObject
      */
     QgsComposerFrame* createNewFrame( QgsComposerFrame* currentFrame, QPointF pos, QSizeF size );
 
+    /**Get multiframe display name.
+     * @returns display name for item
+     * @note added in version 2.5
+    */
+    virtual QString displayName() const;
+
   public slots:
 
     /**Recalculates the portion of the multiframe item which is shown in each of it's
@@ -103,7 +110,6 @@ class CORE_EXPORT QgsComposerMultiFrame: public QObject
     void recalculateFrameSizes();
 
   protected:
-    QgsComposition* mComposition;
     QList<QgsComposerFrame*> mFrameItems;
     ResizeMode mResizeMode;
     /**True: creates QgsMultiFrameCommands on internal changes (e.g. changing frames )*/
@@ -122,6 +128,11 @@ class CORE_EXPORT QgsComposerMultiFrame: public QObject
 
   signals:
     void changed();
+
+    /**Emitted when the contents of the multi frame have changed and the frames
+     * must be redrawn.
+    */
+    void contentsChanged();
 };
 
 #endif // QGSCOMPOSERMULTIFRAME_H

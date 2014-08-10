@@ -22,10 +22,42 @@
 #include "qgscomposeritem.h"
 
 class QgsComposerItem;
+class QgsAtlasComposition;
+class QgsDataDefinedButton;
+
+/**A base class for property widgets for composer items. All composer item widgets should inherit from
+ * this base class.
+*/
+class QgsComposerItemBaseWidget: public QWidget
+{
+    Q_OBJECT
+  public:
+    QgsComposerItemBaseWidget( QWidget* parent, QgsComposerObject* composerObject );
+    ~QgsComposerItemBaseWidget();
+
+  protected slots:
+    /**Must be called when a data defined button changes*/
+    void updateDataDefinedProperty();
+
+  protected:
+    /**Sets a data defined property for the item from its current data defined button settings*/
+    void setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty p );
+
+    /**Returns the data defined property corresponding to a data defined button widget*/
+    virtual QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton* widget );
+
+    /**Returns the current atlas coverage layer (if set)*/
+    QgsVectorLayer* atlasCoverageLayer() const;
+
+    /**Returns the atlas for the composition*/
+    QgsAtlasComposition *atlasComposition() const;
+
+    QgsComposerObject* mComposerObject;
+};
 
 /**A class to enter generic properties for composer items (e.g. background, outline, frame).
  This widget can be embedded into other item widgets*/
-class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBase
+class QgsComposerItemWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerItemWidgetBase
 {
     Q_OBJECT
   public:
@@ -60,6 +92,7 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void on_mItemIdLineEdit_editingFinished();
 
     //adjust coordinates in line edits
+    void on_mPageSpinBox_valueChanged( int ) { changeItemPosition(); }
     void on_mXLineEdit_editingFinished() { changeItemPosition(); }
     void on_mYLineEdit_editingFinished() { changeItemPosition(); }
     void on_mWidthLineEdit_editingFinished() { changeItemPosition(); }
@@ -86,12 +119,21 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     //sets the values for all non-position related elements
     void setValuesForGuiNonPositionElements();
 
+  protected:
+    QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget );
+
+  protected slots:
+    /**Initializes data defined buttons to current atlas coverage layer*/
+    void populateDataDefinedButtons();
+
   private:
     QgsComposerItemWidget();
+
+    QgsComposerItem* mItem;
+
 //    void changeItemTransparency( int value );
     void changeItemPosition();
 
-    QgsComposerItem* mItem;
 };
 
 #endif //QGSCOMPOSERITEMWIDGET_H

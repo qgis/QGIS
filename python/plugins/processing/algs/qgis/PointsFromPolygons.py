@@ -29,9 +29,9 @@ from osgeo import gdal
 from qgis.core import *
 from PyQt4.QtCore import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterVector import ParameterVector
-from processing.outputs.OutputVector import OutputVector
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterVector
+from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector, raster
 from processing.tools.general import *
 

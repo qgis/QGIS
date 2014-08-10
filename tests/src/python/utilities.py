@@ -17,10 +17,16 @@ import platform
 import tempfile
 import qgis
 from PyQt4 import QtGui, QtCore
-from qgis.core import (QgsApplication,
-                       QgsCoordinateReferenceSystem,
-                       QgsVectorFileWriter,
-                       QgsFontUtils)
+from qgis.core import (
+    QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsVectorFileWriter,
+    QgsMapLayerRegistry,
+    QgsMapSettings,
+    QgsMapRendererParallelJob,
+    QgsMapRendererSequentialJob,
+    QgsFontUtils
+)
 from qgis.gui import QgsMapCanvas
 from qgis_interface import QgisInterface
 import hashlib
@@ -234,6 +240,70 @@ def getTempfilePath(sufx='png'):
     filepath = tmp.name
     tmp.close()
     return filepath
+
+
+def renderMapToImage(mapsettings, parallel=False):
+    """
+    Render current map to an image, via multi-threaded renderer
+    :param QgsMapSettings mapsettings:
+    :param bool parallel: Do parallel or sequential render job
+    :rtype: QImage
+    """
+    if parallel:
+        job = QgsMapRendererParallelJob(mapsettings)
+    else:
+        job = QgsMapRendererSequentialJob(mapsettings)
+    job.start()
+    job.waitForFinished()
+
+    return job.renderedImage()
+
+
+def mapSettingsString(ms):
+    """
+    :param QgsMapSettings mapsettings:
+    :rtype: str
+    """
+    # fullExtent() causes extra call in middle of output flow; get first
+    full_ext = ms.visibleExtent().toString()
+
+    s = 'MapSettings...\n'
+    s += '  layers(): {0}\n'.format(
+        [unicode(QgsMapLayerRegistry.instance().mapLayer(i).name())
+         for i in ms.layers()])
+    s += '  backgroundColor(): rgba {0},{1},{2},{3}\n'.format(
+        ms.backgroundColor().red(), ms.backgroundColor().green(),
+        ms.backgroundColor().blue(), ms.backgroundColor().alpha())
+    s += '  selectionColor(): rgba {0},{1},{2},{3}\n'.format(
+        ms.selectionColor().red(), ms.selectionColor().green(),
+        ms.selectionColor().blue(), ms.selectionColor().alpha())
+    s += '  outputSize(): {0} x {1}\n'.format(
+        ms.outputSize().width(), ms.outputSize().height())
+    s += '  outputDpi(): {0}\n'.format(ms.outputDpi())
+    s += '  mapUnits(): {0}\n'.format(ms.mapUnits())
+    s += '  scale(): {0}\n'.format(ms.scale())
+    s += '  mapUnitsPerPixel(): {0}\n'.format(ms.mapUnitsPerPixel())
+    s += '  extent():\n    {0}\n'.format(
+        ms.extent().toString().replace(' : ', '\n    '))
+    s += '  visibleExtent():\n    {0}\n'.format(
+        ms.visibleExtent().toString().replace(' : ', '\n    '))
+    s += '  fullExtent():\n    {0}\n'.format(full_ext.replace(' : ', '\n    '))
+    s += '  hasCrsTransformEnabled(): {0}\n'.format(
+        ms.hasCrsTransformEnabled())
+    s += '  destinationCrs(): {0}\n'.format(
+        ms.destinationCrs().authid())
+    s += '  flag.Antialiasing: {0}\n'.format(
+        ms.testFlag(QgsMapSettings.Antialiasing))
+    s += '  flag.UseAdvancedEffects: {0}\n'.format(
+        ms.testFlag(QgsMapSettings.UseAdvancedEffects))
+    s += '  flag.ForceVectorOutput: {0}\n'.format(
+        ms.testFlag(QgsMapSettings.ForceVectorOutput))
+    s += '  flag.DrawLabeling: {0}\n'.format(
+        ms.testFlag(QgsMapSettings.DrawLabeling))
+    s += '  flag.DrawEditingInfo: {0}\n'.format(
+        ms.testFlag(QgsMapSettings.DrawEditingInfo))
+    s += '  outputImageFormat(): {0}\n'.format(ms.outputImageFormat())
+    return s
 
 
 def getExecutablePath(exe):

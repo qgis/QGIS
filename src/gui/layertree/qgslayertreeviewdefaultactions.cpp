@@ -168,7 +168,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer( QgsMapCanvas* canvas )
 void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas* canvas )
 {
   QList<QgsMapLayer*> layers;
-  foreach ( QString layerId, mView->currentGroupNode()->childLayerIds() )
+  foreach ( QString layerId, mView->currentGroupNode()->findLayerIds() )
     layers << QgsMapLayerRegistry::instance()->mapLayer( layerId );
 
   zoomToLayers( canvas, layers );
@@ -192,13 +192,16 @@ void QgsLayerTreeViewDefaultActions::zoomToGroup()
 void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const QList<QgsMapLayer*>& layers )
 {
   QgsRectangle extent;
+  extent.setMinimal();
 
   for ( int i = 0; i < layers.size(); ++i )
   {
     QgsMapLayer* layer = layers.at( i );
     QgsRectangle layerExtent = layer->extent();
 
-    QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( layer );
+    QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer*>( layer );
+    if ( vLayer && vLayer->geometryType() == QGis::NoGeometry )
+      continue;
 
     if ( layerExtent.isEmpty() && layer->type() == QgsMapLayer::VectorLayer )
     {
@@ -206,17 +209,17 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
       layerExtent = vLayer->extent();
     }
 
+    if ( layerExtent.isNull() )
+      continue;
+
     //transform extent if otf-projection is on
     if ( canvas->hasCrsTransformEnabled() )
       layerExtent = canvas->mapSettings().layerExtentToOutputExtent( layer, layerExtent );
 
-    if ( i == 0 )
-      extent = layerExtent;
-    else
-      extent.combineExtentWith( &layerExtent );
+    extent.combineExtentWith( &layerExtent );
   }
 
-  if ( extent.isEmpty() )
+  if ( extent.isNull() )
     return;
 
   // Increase bounding box with 5%, so that layer is a bit inside the borders
@@ -258,16 +261,17 @@ void QgsLayerTreeViewDefaultActions::makeTopLevel()
 void QgsLayerTreeViewDefaultActions::groupSelected()
 {
   QList<QgsLayerTreeNode*> nodes = mView->selectedNodes( true );
-  if ( nodes.count() < 2 )
+  if ( nodes.count() < 2 || ! QgsLayerTree::isGroup( nodes[0]->parent() ) )
     return;
 
-  QgsLayerTreeGroup* parentGroup = mView->layerTreeModel()->rootGroup();
+  QgsLayerTreeGroup* parentGroup = QgsLayerTree::toGroup( nodes[0]->parent() );
+  int insertIdx = parentGroup->children().indexOf( nodes[0] );
 
   QgsLayerTreeGroup* newGroup = new QgsLayerTreeGroup( uniqueGroupName( parentGroup ) );
   foreach ( QgsLayerTreeNode* node, nodes )
     newGroup->addChildNode( node->clone() );
 
-  parentGroup->addChildNode( newGroup );
+  parentGroup->insertChildNode( insertIdx, newGroup );
 
   foreach ( QgsLayerTreeNode* node, nodes )
   {
@@ -275,4 +279,6 @@ void QgsLayerTreeViewDefaultActions::groupSelected()
     if ( group )
       group->removeChildNode( node );
   }
+
+  mView->setCurrentIndex( mView->layerTreeModel()->node2index( newGroup ) );
 }

@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -28,6 +29,7 @@ __revision__ = '$Format:%H$'
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.utils import iface
+from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.Processing import Processing
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -37,7 +39,6 @@ from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.BatchProcessingDialog import BatchProcessingDialog
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
-from processing.modeler.Providers import Providers
 
 from processing.ui.ui_ProcessingToolbox import Ui_ProcessingToolbox
 
@@ -56,7 +57,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
                                    'Advanced interface'])
         settings = QSettings()
         if not settings.contains(self.USE_CATEGORIES):
-            settings.setValue(self.USE_CATEGORIES, False)
+            settings.setValue(self.USE_CATEGORIES, True)
         useCategories = settings.value(self.USE_CATEGORIES, type=bool)
         if useCategories:
             self.modeComboBox.setCurrentIndex(0)
@@ -112,9 +113,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
 
         self.fillTree()
 
-
-    def updateTree(self):
-        Processing.updateAlgsList()
+    def algsListHasChanged(self):
         self.fillTree()
 
     def updateProvider(self, providerName, updateAlgsList = True):
@@ -125,6 +124,10 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             if isinstance(child, TreeProviderItem):
                 if child.providerName == providerName:
                     child.refresh()
+                    # sort categories and items in categories
+                    child.sortChildren(0, Qt.AscendingOrder)
+                    for i in xrange(child.childCount()):
+                        child.child(i).sortChildren(0, Qt.AscendingOrder)
                     break
 
     def showPopupMenu(self, point):
@@ -257,7 +260,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             if not ProcessingConfig.getSetting(name):
                 continue
             if providerName in providersToExclude \
-                        or len(Providers.providers[providerName].actions) != 0:
+                        or len(ModelerUtils.providers[providerName].actions) != 0:
                 continue
             algs = provider.values()
 

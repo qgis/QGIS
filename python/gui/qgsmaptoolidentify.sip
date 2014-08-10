@@ -8,7 +8,7 @@ class QgsMapToolIdentify : QgsMapTool
 
     enum IdentifyMode
     {
-      DefaultQgsSetting = -1,
+      DefaultQgsSetting,
       ActiveLayer,
       TopDownStopAtFirst,
       TopDownAll,
@@ -17,7 +17,7 @@ class QgsMapToolIdentify : QgsMapTool
 
     enum LayerType
     {
-      AllLayers = -1,
+      AllLayers,
       VectorLayer,
       RasterLayer
     };

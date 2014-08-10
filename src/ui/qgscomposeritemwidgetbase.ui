@@ -7,23 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>376</width>
-    <height>689</height>
+    <height>697</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Global Options</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -179,45 +170,87 @@
         </item>
         <item row="0" column="0" rowspan="2">
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="0">
-           <widget class="QLabel" name="mXLabel">
-            <property name="text">
-             <string>X</string>
-            </property>
-           </widget>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="mWidthLineEdit"/>
           </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="mXLineEdit"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="mYLabel">
-            <property name="text">
-             <string>Y</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="mYLineEdit"/>
-          </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="mWidthLabel">
             <property name="text">
              <string>Width</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="mWidthLineEdit"/>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mXLabel">
+            <property name="text">
+             <string>X</string>
+            </property>
+           </widget>
           </item>
-          <item row="3" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="mHeightLabel">
             <property name="text">
              <string>Height</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="mXLineEdit"/>
+          </item>
+          <item row="4" column="1">
            <widget class="QLineEdit" name="mHeightLineEdit"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mYLabel">
+            <property name="text">
+             <string>Y</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mPageLabel">
+            <property name="text">
+             <string>Page</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="mYLineEdit"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QgsDataDefinedButton" name="mXPositionDDBtn">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QgsDataDefinedButton" name="mYPositionDDBtn">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QgsDataDefinedButton" name="mWidthDDBtn">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2">
+           <widget class="QgsDataDefinedButton" name="mHeightDDBtn">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <widget class="QSpinBox" name="mPageSpinBox">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -246,14 +279,31 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QDoubleSpinBox" name="mItemRotationSpinBox">
-        <property name="suffix">
-         <string> °</string>
-        </property>
-        <property name="maximum">
-         <double>360.000000000000000</double>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QDoubleSpinBox" name="mItemRotationSpinBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="suffix">
+           <string> °</string>
+          </property>
+          <property name="maximum">
+           <double>360.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsDataDefinedButton" name="mItemRotationDDBtn">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -275,6 +325,12 @@
      <layout class="QFormLayout" name="formLayout_4">
       <item row="0" column="0" colspan="2">
        <widget class="QgsColorButton" name="mFrameColorButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Color...</string>
         </property>
@@ -294,7 +350,17 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox"/>
+       <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="suffix">
+         <string> mm</string>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_8">
@@ -304,7 +370,14 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QgsPenJoinStyleComboBox" name="mFrameJoinStyleCombo"/>
+       <widget class="QgsPenJoinStyleComboBox" name="mFrameJoinStyleCombo">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -329,6 +402,12 @@
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QgsColorButton" name="mBackgroundColorButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Color...</string>
         </property>
@@ -379,13 +458,7 @@
      <property name="syncGroup" stdset="0">
       <string notr="true">composeritem</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_3">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-      </property>
-      <property name="labelAlignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
+     <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="0">
        <widget class="QLabel" name="labelBlendMode">
         <property name="text">
@@ -394,7 +467,18 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QgsBlendModeComboBox" name="mBlendModeCombo"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QgsBlendModeComboBox" name="mBlendModeCombo"/>
+        </item>
+        <item>
+         <widget class="QgsDataDefinedButton" name="mBlendModeDDBtn">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="labelTransparency">
@@ -419,6 +503,13 @@
          <widget class="QSpinBox" name="mTransparencySpnBx">
           <property name="maximum">
            <number>100</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsDataDefinedButton" name="mTransparencyDDBtn">
+          <property name="text">
+           <string>...</string>
           </property>
          </widget>
         </item>
@@ -447,20 +538,25 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsPenJoinStyleComboBox</class>

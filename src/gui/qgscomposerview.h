@@ -120,8 +120,11 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QgsComposerView::Tool currentTool() const {return mCurrentTool;}
     void setCurrentTool( QgsComposerView::Tool t );
 
-    /**Sets composition (derived from QGraphicsScene)*/
+    /**Sets the composition for the view. If the composition is being set manually and not by a QgsComposer, then this must
+     * be set BEFORE adding any items to the composition.
+    */
     void setComposition( QgsComposition* c );
+
     /**Returns the composition or 0 in case of error*/
     QgsComposition* composition();
 
@@ -226,8 +229,10 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     /**Zoom composition from a mouse wheel event*/
     void wheelZoom( QWheelEvent * event );
-    /**Redraws the rubber band*/
-    void updateRubberBand( QPointF & pos );
+    /**Redraws the rectangular rubber band*/
+    void updateRubberBandRect( QPointF & pos, const bool constrainSquare = false, const bool fromCenter = false );
+    /**Redraws the linear rubber band*/
+    void updateRubberBandLine( const QPointF & pos, const bool constrainAngles = false );
     /**Removes the rubber band and cleans up*/
     void removeRubberBand();
 
@@ -259,6 +264,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void composerViewShow( QgsComposerView* );
     /**Emitted before composerview is hidden*/
     void composerViewHide( QgsComposerView* );
+
+    /**Emitted when the composition is set for the view*/
+    void compositionSet( QgsComposition* );
 };
 
 #endif

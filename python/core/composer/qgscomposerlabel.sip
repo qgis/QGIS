@@ -75,6 +75,9 @@ class QgsComposerLabel : QgsComposerItem
        * @param doc document
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    
+    //Overriden to contain part of label's text
+    virtual QString displayName() const;
 
   public slots:
     /* Sets rotation for the label

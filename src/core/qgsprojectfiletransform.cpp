@@ -52,7 +52,11 @@ QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] =
   {PFV( 1, 5, 0 ), PFV( 1, 6, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 1, 6, 0 ), PFV( 1, 7, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 1, 7, 0 ), PFV( 1, 8, 0 ), &QgsProjectFileTransform::transformNull},
-  {PFV( 1, 8, 0 ), PFV( 1, 9, 0 ), &QgsProjectFileTransform::transform1800to1900}
+  {PFV( 1, 8, 0 ), PFV( 1, 9, 0 ), &QgsProjectFileTransform::transform1800to1900},
+  {PFV( 1, 9, 0 ), PFV( 2, 0, 0 ), &QgsProjectFileTransform::transformNull},
+  {PFV( 2, 0, 0 ), PFV( 2, 1, 0 ), &QgsProjectFileTransform::transformNull},
+  {PFV( 2, 1, 0 ), PFV( 2, 2, 0 ), &QgsProjectFileTransform::transformNull},
+  {PFV( 2, 2, 0 ), PFV( 2, 3, 0 ), &QgsProjectFileTransform::transform2200to2300},
 };
 
 bool QgsProjectFileTransform::updateRevision( QgsProjectVersion newVersion )
@@ -592,6 +596,17 @@ void QgsProjectFileTransform::transform1800to1900()
   }
 
   QgsDebugMsg( mDom.toString() );
+}
+
+void QgsProjectFileTransform::transform2200to2300()
+{
+  //composer: set placement for all picture items to middle, to mimic <=2.2 behaviour
+  QDomNodeList composerPictureList = mDom.elementsByTagName( "ComposerPicture" );
+  for ( int i = 0; i < composerPictureList.size(); ++i )
+  {
+    QDomElement picture = composerPictureList.at( i ).toElement();
+    picture.setAttribute( "anchorPoint", QString::number( 4 ) );
+  }
 }
 
 void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNode& parentNode,

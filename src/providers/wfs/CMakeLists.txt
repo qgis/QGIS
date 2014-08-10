@@ -14,6 +14,7 @@ SET (WFS_MOC_HDRS
   qgswfscapabilities.h
   qgswfsdataitems.h
   qgswfsprovider.h
+  qgswfsfeatureiterator.h
   qgswfssourceselect.h
 )
 
@@ -29,6 +30,7 @@ INCLUDE_DIRECTORIES (
   ${GEOS_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}/geos
   ${EXPAT_INCLUDE_DIR}
+  ${QSCINTILLA_INCLUDE_DIR}
 )
 
 ADD_LIBRARY (wfsprovider MODULE ${WFS_SRCS} ${WFS_MOC_SRCS})

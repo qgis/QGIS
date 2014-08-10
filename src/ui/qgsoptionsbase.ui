@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>820</width>
-    <height>636</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -25,6 +25,9 @@
   <layout class="QVBoxLayout" name="verticalLayout_5">
    <item>
     <widget class="QSplitter" name="mOptionsSplitter">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -248,7 +251,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -268,8 +271,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>647</width>
-                <height>589</height>
+                <width>613</width>
+                <height>606</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -931,8 +934,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>515</width>
-                <height>820</height>
+                <width>644</width>
+                <height>860</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1090,58 +1093,6 @@
                   <string>Environment</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_32">
-                  <item row="3" column="0" colspan="4">
-                   <widget class="QTableWidget" name="mCustomVariablesTable">
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>120</height>
-                     </size>
-                    </property>
-                    <property name="editTriggers">
-                     <set>QAbstractItemView::AllEditTriggers</set>
-                    </property>
-                    <property name="selectionMode">
-                     <enum>QAbstractItemView::SingleSelection</enum>
-                    </property>
-                    <property name="sortingEnabled">
-                     <bool>true</bool>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>false</bool>
-                    </property>
-                    <property name="cornerButtonEnabled">
-                     <bool>false</bool>
-                    </property>
-                    <attribute name="horizontalHeaderMinimumSectionSize">
-                     <number>4</number>
-                    </attribute>
-                    <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-                     <bool>true</bool>
-                    </attribute>
-                    <attribute name="horizontalHeaderStretchLastSection">
-                     <bool>true</bool>
-                    </attribute>
-                    <attribute name="verticalHeaderVisible">
-                     <bool>false</bool>
-                    </attribute>
-                    <column>
-                     <property name="text">
-                      <string>Apply</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Variable</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Value</string>
-                     </property>
-                    </column>
-                   </widget>
-                  </item>
                   <item row="1" column="3">
                    <widget class="QPushButton" name="mRemoveCustomVarBtn">
                     <property name="sizePolicy">
@@ -1266,8 +1217,73 @@
                     </property>
                    </spacer>
                   </item>
+                  <item row="3" column="0" colspan="4">
+                   <widget class="QTableWidget" name="mCustomVariablesTable">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>120</height>
+                     </size>
+                    </property>
+                    <property name="editTriggers">
+                     <set>QAbstractItemView::AllEditTriggers</set>
+                    </property>
+                    <property name="selectionMode">
+                     <enum>QAbstractItemView::SingleSelection</enum>
+                    </property>
+                    <property name="sortingEnabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>false</bool>
+                    </property>
+                    <property name="cornerButtonEnabled">
+                     <bool>false</bool>
+                    </property>
+                    <attribute name="horizontalHeaderMinimumSectionSize">
+                     <number>4</number>
+                    </attribute>
+                    <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                     <bool>true</bool>
+                    </attribute>
+                    <attribute name="horizontalHeaderStretchLastSection">
+                     <bool>true</bool>
+                    </attribute>
+                    <attribute name="verticalHeaderVisible">
+                     <bool>false</bool>
+                    </attribute>
+                    <column>
+                     <property name="text">
+                      <string>Apply</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Variable</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Value</string>
+                     </property>
+                    </column>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_11">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
               </layout>
              </widget>
@@ -1293,8 +1309,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>647</width>
-                <height>589</height>
+                <width>626</width>
+                <height>549</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1388,7 +1404,7 @@
                     <item>
                      <widget class="QSpinBox" name="spinBoxAttrTableRowCache">
                       <property name="minimum">
-                       <number>1</number>
+                       <number>0</number>
                       </property>
                       <property name="maximum">
                        <number>100000</number>
@@ -1603,8 +1619,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>630</width>
-                <height>674</height>
+                <width>686</width>
+                <height>764</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -2242,8 +2258,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>413</width>
-                <height>305</height>
+                <width>475</width>
+                <height>316</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2489,13 +2505,6 @@
                    </layout>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="cbxAddNewLayersToCurrentGroup">
-                    <property name="text">
-                     <string>Add new layers to selected or current group</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_34">
                     <item>
                      <widget class="QLabel" name="label_58">
@@ -2579,7 +2588,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>647</width>
-                <height>589</height>
+                <height>657</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -2882,7 +2891,7 @@
                  </property>
                  <layout class="QGridLayout" name="_8">
                   <property name="margin">
-                   <number>11</number>
+                   <number>9</number>
                   </property>
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_3">
@@ -3074,16 +3083,19 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>381</width>
-                <height>326</height>
+                <width>486</width>
+                <height>301</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
                <property name="topMargin">
-                <number>0</number>
+                <number>9</number>
                </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_3">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="title">
                   <string>Composition defaults</string>
                  </property>
@@ -3138,13 +3150,13 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_24">
                  <property name="title">
-                  <string>Grid defaults</string>
+                  <string>Grid and guide defaults</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_61">
                     <property name="text">
-                     <string>Spacing</string>
+                     <string>Grid spacing</string>
                     </property>
                    </widget>
                   </item>
@@ -3203,47 +3215,14 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QDoubleSpinBox" name="mGridToleranceSpinBox">
-                    <property name="prefix">
-                     <string/>
-                    </property>
+                   <widget class="QSpinBox" name="mSnapToleranceSpinBox">
                     <property name="suffix">
-                     <string> mm</string>
+                     <string> px</string>
                     </property>
-                    <property name="value">
-                     <double>2.000000000000000</double>
+                    <property name="maximum">
+                     <number>200</number>
                     </property>
                    </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="groupBox_25">
-                 <property name="title">
-                  <string>Guide defaults</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_12">
-                  <item row="0" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_37">
-                    <item>
-                     <widget class="QLabel" name="label_64">
-                      <property name="text">
-                       <string>Snap tolerance</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QDoubleSpinBox" name="mGuideToleranceSpinBox">
-                      <property name="prefix">
-                       <string/>
-                      </property>
-                      <property name="suffix">
-                       <string> mm</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
                   </item>
                  </layout>
                 </widget>
@@ -3285,13 +3264,13 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>374</width>
-                <height>529</height>
+                <width>480</width>
+                <height>616</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
                <property name="topMargin">
-                <number>0</number>
+                <number>9</number>
                </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="mEnterAttributeValuesGroupBox">
@@ -3776,8 +3755,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>345</width>
-                <height>350</height>
+                <width>450</width>
+                <height>366</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3906,8 +3885,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>491</width>
-                <height>647</height>
+                <width>622</width>
+                <height>696</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4160,8 +4139,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>225</width>
-                <height>201</height>
+                <width>293</width>
+                <height>216</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4250,8 +4229,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>389</width>
-                <height>586</height>
+                <width>501</width>
+                <height>678</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -4651,6 +4630,102 @@
     <hint type="destinationlabel">
      <x>689</x>
      <y>110</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radUseGlobalProjection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>leLayerGlobalCrs</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>310</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>644</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radUseGlobalProjection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pbnSelectProjection</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>345</x>
+     <y>287</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>717</x>
+     <y>303</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radUseProjectProjection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>leLayerGlobalCrs</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>310</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>644</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radUseProjectProjection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pbnSelectProjection</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>345</x>
+     <y>287</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>717</x>
+     <y>303</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radPromptForProjection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>leLayerGlobalCrs</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>310</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>644</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radPromptForProjection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pbnSelectProjection</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>345</x>
+     <y>287</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>717</x>
+     <y>303</y>
     </hint>
    </hints>
   </connection>

@@ -18,7 +18,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
-
+#include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
 
 QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup *root, QgsMapCanvas *canvas, QObject* parent )
@@ -112,28 +112,38 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
   else
     setCanvasLayers( mRoot, layers );
 
-  mCanvas->setLayerSet( layers );
-
   QList<QgsLayerTreeLayer*> layerNodes = mRoot->findLayers();
-
   int currentLayerCount = layerNodes.count();
-  if ( mAutoSetupOnFirstLayer && mLastLayerCount == 0 && currentLayerCount != 0 )
-  {
-    // if we are moving from zero to non-zero layers, let's zoom to those data
-    mCanvas->zoomToFullExtent();
+  bool firstLayers = mAutoSetupOnFirstLayer && mLastLayerCount == 0 && currentLayerCount != 0;
 
+  if ( firstLayers )
+  {
     // also setup destination CRS and map units if the OTF projections are not yet enabled
     if ( !mCanvas->mapSettings().hasCrsTransformEnabled() )
     {
       foreach ( QgsLayerTreeLayer* layerNode, layerNodes )
       {
-        if ( layerNode->layer() )
+        if ( layerNode->layer() &&
+             (
+               qobject_cast<QgsVectorLayer *>( layerNode->layer() ) == 0 ||
+               qobject_cast<QgsVectorLayer *>( layerNode->layer() )->geometryType() != QGis::NoGeometry
+             )
+           )
         {
           mCanvas->setDestinationCrs( layerNode->layer()->crs() );
           mCanvas->setMapUnits( layerNode->layer()->crs().mapUnits() );
+          break;
         }
       }
     }
+  }
+
+  mCanvas->setLayerSet( layers );
+
+  if ( firstLayers )
+  {
+    // if we are moving from zero to non-zero layers, let's zoom to those data
+    mCanvas->zoomToFullExtent();
   }
 
   if ( !mFirstCRS.isValid() )

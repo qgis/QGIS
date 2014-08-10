@@ -903,6 +903,8 @@ bool QgsProject::read()
 
   // read the layer tree from project file
 
+  mRootGroup->setCustomProperty( "loading", 1 );
+
   QDomElement layerTreeElem = doc->documentElement().firstChildElement( "layer-tree-group" );
   if ( !layerTreeElem.isNull() )
   {
@@ -944,6 +946,8 @@ bool QgsProject::read()
 
   // make sure the are just valid layers
   QgsLayerTreeUtils::removeInvalidLayers( mRootGroup );
+
+  mRootGroup->removeCustomProperty( "loading" );
 
   // read the project: used by map canvas and legend
   emit readProject( *doc );
@@ -1051,7 +1055,7 @@ bool QgsProject::write()
   // if we have problems creating or otherwise writing to the project file,
   // let's find out up front before we go through all the hand-waving
   // necessary to create all the Dom objects
-  if ( !imp_->file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+  if ( !imp_->file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     imp_->file.close();         // even though we got an error, let's make
     // sure it's closed anyway
@@ -1477,7 +1481,12 @@ QString QgsProject::readPath( QString src ) const
   QString vsiPrefix = qgsVsiPrefix( src );
   if ( ! vsiPrefix.isEmpty() )
   {
-    src.remove( 0, vsiPrefix.size() );
+    // unfortunately qgsVsiPrefix returns prefix also for files like "/x/y/z.gz"
+    // so we need to check if we really have the prefix
+    if ( src.startsWith( "/vsi", Qt::CaseInsensitive ) )
+      src.remove( 0, vsiPrefix.size() );
+    else
+      vsiPrefix.clear();
   }
 
   // relative path should always start with ./ or ../
@@ -1847,7 +1856,7 @@ QgsLayerTreeGroup* QgsProject::createEmbeddedGroup( const QString& groupName, co
   mLayerTreeRegistryBridge->setEnabled( true );
 
   // consider the layers might be identify disabled in its project
-  foreach ( QString layerId, newGroup->childLayerIds() )
+  foreach ( QString layerId, newGroup->findLayerIds() )
   {
     if ( embeddedIdentifyDisabledLayers.contains( layerId ) )
     {

@@ -9,7 +9,7 @@ class QgsAddRemoveItemCommand: QObject, QUndoCommand
 
     enum State
     {
-      Added = 0,
+      Added,
       Removed
     };
 

@@ -16,6 +16,7 @@
 
 #include "qgsscalebarstyle.h"
 #include "qgscomposerscalebar.h"
+#include "qgscomposerutils.h"
 #include <QFontMetricsF>
 #include <QPainter>
 
@@ -47,7 +48,7 @@ void QgsScaleBarStyle::drawLabels( QPainter* p ) const
   p->setPen( QPen( mScaleBar->fontColor() ) );
 
   QString firstLabel = mScaleBar->firstLabelString();
-  double xOffset =  mScaleBar->textWidthMillimeters( mScaleBar->font(), firstLabel ) / 2;
+  double xOffset = QgsComposerUtils::textWidthMM( mScaleBar->font(), firstLabel ) / 2;
 
   //double mCurrentXCoord = mScaleBar->pen().widthF() + mScaleBar->boxContentSpace();
   QList<QPair<double, double> > segmentInfo;
@@ -79,7 +80,8 @@ void QgsScaleBarStyle::drawLabels( QPainter* p ) const
 
     if ( segmentCounter == 0 || segmentCounter >= nSegmentsLeft ) //don't draw label for intermediate left segments
     {
-      mScaleBar->drawText( p, segmentIt->first - mScaleBar->textWidthMillimeters( mScaleBar->font(), currentNumericLabel ) / 2 + xOffset, mScaleBar->fontAscentMillimeters( mScaleBar->font() ) + mScaleBar->boxContentSpace(), currentNumericLabel, mScaleBar->font() );
+      QgsComposerUtils::drawText( p, QPointF( segmentIt->first - QgsComposerUtils::textWidthMM( mScaleBar->font(), currentNumericLabel ) / 2 + xOffset, QgsComposerUtils::fontAscentMM( mScaleBar->font() ) + mScaleBar->boxContentSpace() ),
+                                  currentNumericLabel, mScaleBar->font(), mScaleBar->fontColor() );
     }
 
     if ( segmentCounter >= nSegmentsLeft )
@@ -93,7 +95,8 @@ void QgsScaleBarStyle::drawLabels( QPainter* p ) const
   if ( !segmentInfo.isEmpty() )
   {
     currentNumericLabel = QString::number( currentLabelNumber / mScaleBar->numMapUnitsPerScaleBarUnit() );
-    mScaleBar->drawText( p, segmentInfo.last().first + mScaleBar->segmentMillimeters() - mScaleBar->textWidthMillimeters( mScaleBar->font(), currentNumericLabel ) / 2 + xOffset, mScaleBar->fontAscentMillimeters( mScaleBar->font() ) + mScaleBar->boxContentSpace(), currentNumericLabel + " " + mScaleBar->unitLabeling(), mScaleBar->font() );
+    QgsComposerUtils::drawText( p, QPointF( segmentInfo.last().first + mScaleBar->segmentMillimeters() - QgsComposerUtils::textWidthMM( mScaleBar->font(), currentNumericLabel ) / 2 + xOffset, QgsComposerUtils::fontAscentMM( mScaleBar->font() ) + mScaleBar->boxContentSpace() ),
+                                currentNumericLabel + " " + mScaleBar->unitLabeling(), mScaleBar->font(), mScaleBar->fontColor() );
   }
 
   p->restore();
@@ -107,14 +110,14 @@ QRectF QgsScaleBarStyle::calculateBoxSize() const
   }
 
   //consider centered first label
-  double firstLabelLeft = mScaleBar->textWidthMillimeters( mScaleBar->font(), mScaleBar->firstLabelString() ) / 2;
+  double firstLabelLeft = QgsComposerUtils::textWidthMM( mScaleBar->font(), mScaleBar->firstLabelString() ) / 2;
 
   //consider last number and label
 
   double largestLabelNumber = mScaleBar->numSegments() * mScaleBar->numUnitsPerSegment() / mScaleBar->numMapUnitsPerScaleBarUnit();
   QString largestNumberLabel = QString::number( largestLabelNumber );
   QString largestLabel = QString::number( largestLabelNumber ) + " " + mScaleBar->unitLabeling();
-  double largestLabelWidth = mScaleBar->textWidthMillimeters( mScaleBar->font(), largestLabel ) - mScaleBar->textWidthMillimeters( mScaleBar->font(), largestNumberLabel ) / 2;
+  double largestLabelWidth = QgsComposerUtils::textWidthMM( mScaleBar->font(), largestLabel ) - QgsComposerUtils::textWidthMM( mScaleBar->font(), largestNumberLabel ) / 2;
 
   double totalBarLength = 0.0;
 
@@ -128,7 +131,7 @@ QRectF QgsScaleBarStyle::calculateBoxSize() const
   }
 
   double width =  firstLabelLeft + totalBarLength + 2 * mScaleBar->pen().widthF() + largestLabelWidth + 2 * mScaleBar->boxContentSpace();
-  double height = mScaleBar->height() + mScaleBar->labelBarSpace() + 2 * mScaleBar->boxContentSpace() + mScaleBar->fontAscentMillimeters( mScaleBar->font() );
+  double height = mScaleBar->height() + mScaleBar->labelBarSpace() + 2 * mScaleBar->boxContentSpace() + QgsComposerUtils::fontAscentMM( mScaleBar->font() );
 
   return QRectF( mScaleBar->pos().x(), mScaleBar->pos().y(), width, height );
 }

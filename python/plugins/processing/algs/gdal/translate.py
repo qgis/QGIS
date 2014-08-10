@@ -25,23 +25,21 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-from PyQt4 import QtGui
 from qgis.core import *
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterCrs import ParameterCrs
-from processing.outputs.OutputRaster import OutputRaster
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
+from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterCrs
+from processing.core.outputs import OutputRaster
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class translate(GeoAlgorithm):
+class translate(GdalAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -53,10 +51,6 @@ class translate(GeoAlgorithm):
     SRS = 'SRS'
     SDS = 'SDS'
     EXTRA = 'EXTRA'
-
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + '/icons/translate.png'
-        return QtGui.QIcon(filepath)
 
     def commandLineName(self):
         return "gdalogr:translate"
@@ -77,7 +71,7 @@ class translate(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.EXPAND, 'Expand',
                           ['none', 'gray', 'rgb', 'rgba']))
         self.addParameter(ParameterCrs(self.SRS,
-                          'Override the projection for the output file', None))
+                          'Output projection for output file [leave blank to use input projection]', None))
         self.addParameter(ParameterExtent(self.PROJWIN,
                           'Subset based on georeferenced coordinates'))
         self.addParameter(ParameterBoolean(self.SDS,
@@ -121,7 +115,7 @@ class translate(GeoAlgorithm):
         arguments.append(regionCoords[3])
         arguments.append(regionCoords[1])
         arguments.append(regionCoords[2])
-        if crsId is not None:
+        if crsId:
             arguments.append('-a_srs')
             arguments.append(str(crsId))
         if sds:

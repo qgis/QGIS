@@ -27,12 +27,12 @@ __revision__ = '$Format:%H$'
 
 import os
 from PyQt4 import QtGui, QtCore
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
+from processing.core.parameters import ParameterMultipleInput
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 from processing.tools import dataobjects
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterTable import ParameterTable
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTable
 
 
 class BatchInputSelectionPanel(QtGui.QWidget):
@@ -45,7 +45,7 @@ class BatchInputSelectionPanel(QtGui.QWidget):
         self.row = row
         self.col = col
         self.horizontalLayout = QtGui.QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(2)
+        self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setMargin(0)
         self.text = QtGui.QLineEdit()
         self.text.setText('')
@@ -95,7 +95,7 @@ class BatchInputSelectionPanel(QtGui.QWidget):
                 if isinstance(self.param, ParameterMultipleInput):
                     self.text.setText(';'.join(layers[idx].name() for idx in selected))
                 else:
-                    rowdif = len(layers) - (self.table.rowCount() - self.row)
+                    rowdif = len(selected) - (self.table.rowCount() - self.row)
                     for i in range(rowdif):
                         self.batchDialog.addRow()
                     for i, layeridx in enumerate(selected):
@@ -115,7 +115,7 @@ class BatchInputSelectionPanel(QtGui.QWidget):
             path = ''
 
         ret = QtGui.QFileDialog.getOpenFileNames(self, 'Open file', path,
-                self.param.getFileFilter())
+                'All files(*.*);;' + self.param.getFileFilter())
         if ret:
             files = list(ret)
             if len(files) == 1:

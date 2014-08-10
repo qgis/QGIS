@@ -74,6 +74,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
   connect( projectionSelector, SIGNAL( sridSelected( QString ) ), this, SLOT( setMapUnitsToCurrentProjection() ) );
+  connect( projectionSelector, SIGNAL( initialized() ), this, SLOT( projectionSelectorInitialized() ) );
 
   connect( cmbEllipsoid, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateEllipsoidUI( int ) ) );
 
@@ -105,6 +106,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   // Properties stored in QgsProject
 
   title( QgsProject::instance()->title() );
+  projectFileName->setText( QgsProject::instance()->fileName() );
 
   // get the manner in which the number of decimal places in the mouse
   // position display is set (manual or automatic)
@@ -123,32 +125,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   cbxAbsolutePath->setCurrentIndex( QgsProject::instance()->readBoolEntry( "Paths", "/Absolute", true ) ? 0 : 1 );
 
   // populate combo box with ellipsoids
-
-  QgsDebugMsg( "Setting upp ellipsoid" );
-
+  // selection of the ellipsoid from settings is defferred to a later point, because it would
+  // be overridden in the meanwhile by the projection selector
   populateEllipsoidList();
-
-  // Reading ellipsoid from setttings
-  QStringList mySplitEllipsoid = QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ).split( ':' );
-
-  int myIndex = 0;
-  for ( int i = 0; i < mEllipsoidList.length(); i++ )
-  {
-    if ( mEllipsoidList[ i ].acronym.startsWith( mySplitEllipsoid[ 0 ] ) )
-    {
-      myIndex = i;
-      break;
-    }
-  }
-
-  // Update paramaters if present.
-  if ( mySplitEllipsoid.length() >= 3 )
-  {
-    mEllipsoidList[ myIndex ].semiMajor =  mySplitEllipsoid[ 1 ].toDouble();
-    mEllipsoidList[ myIndex ].semiMinor =  mySplitEllipsoid[ 2 ].toDouble();
-  }
-
-  updateEllipsoidUI( myIndex );
 
 
   int dp = QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" );
@@ -351,6 +330,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     mMaxHeightLineEdit->setText( QString::number( maxHeight ) );
   }
 
+  // WMS imageQuality
+  int imageQuality = QgsProject::instance()->readNumEntry( "WMSImageQuality", "/", -1 );
+  if ( imageQuality != -1 )
+  {
+    mWMSImageQualitySpinBox->setValue( imageQuality );
+  }
+
   mWFSUrlLineEdit->setText( QgsProject::instance()->readEntry( "WFSUrl", "/", "" ) );
   QStringList wfsLayerIdList = QgsProject::instance()->readListEntry( "WFSLayers", "/" );
   QStringList wfstUpdateLayerIdList = QgsProject::instance()->readListEntry( "WFSTLayers", "Update" );
@@ -477,7 +463,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   grpPythonMacros->setChecked( !pythonMacros.isEmpty() );
   if ( !pythonMacros.isEmpty() )
   {
-    ptePythonMacros->setPlainText( pythonMacros );
+    ptePythonMacros->setText( pythonMacros );
   }
   else
   {
@@ -812,6 +798,17 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->writeEntry( "WMSMaxHeight", "/", maxHeightText.toInt() );
   }
 
+  // WMS Image quality
+  int imageQualityValue = mWMSImageQualitySpinBox->value();
+  if ( imageQualityValue == 0 )
+  {
+    QgsProject::instance()->removeEntry( "WMSImageQuality", "/" );
+  }
+  else
+  {
+    QgsProject::instance()->writeEntry( "WMSImageQuality", "/", imageQualityValue );
+  }
+
   QgsProject::instance()->writeEntry( "WFSUrl", "/", mWFSUrlLineEdit->text() );
   QStringList wfsLayerList;
   QStringList wfstUpdateLayerList;
@@ -870,7 +867,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "DefaultStyles", "/RandomColors", cbxStyleRandomColors->isChecked() );
 
   // store project macros
-  QString pythonMacros = ptePythonMacros->toPlainText();
+  QString pythonMacros = ptePythonMacros->text();
   if ( !grpPythonMacros->isChecked() || pythonMacros.isEmpty() )
   {
     pythonMacros = QString::null;
@@ -1470,9 +1467,9 @@ void QgsProjectProperties::editSymbol( QComboBox* cbo )
 void QgsProjectProperties::resetPythonMacros()
 {
   grpPythonMacros->setChecked( false );
-  ptePythonMacros->setPlainText( "def openProject():\n    pass\n\n" \
-                                 "def saveProject():\n    pass\n\n" \
-                                 "def closeProject():\n    pass\n" );
+  ptePythonMacros->setText( "def openProject():\n    pass\n\n" \
+                            "def saveProject():\n    pass\n\n" \
+                            "def closeProject():\n    pass\n" );
 }
 
 void QgsProjectProperties::populateEllipsoidList()
@@ -1612,4 +1609,31 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
     cmbEllipsoid->setToolTip( tr( "Can only use ellipsoidal calculations when CRS transformation is enabled" ) );
   }
   cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
+}
+
+void QgsProjectProperties::projectionSelectorInitialized()
+{
+  QgsDebugMsg( "Setting up ellipsoid" );
+
+  // Reading ellipsoid from setttings
+  QStringList mySplitEllipsoid = QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ).split( ':' );
+
+  int myIndex = 0;
+  for ( int i = 0; i < mEllipsoidList.length(); i++ )
+  {
+    if ( mEllipsoidList[ i ].acronym.startsWith( mySplitEllipsoid[ 0 ] ) )
+    {
+      myIndex = i;
+      break;
+    }
+  }
+
+  // Update paramaters if present.
+  if ( mySplitEllipsoid.length() >= 3 )
+  {
+    mEllipsoidList[ myIndex ].semiMajor =  mySplitEllipsoid[ 1 ].toDouble();
+    mEllipsoidList[ myIndex ].semiMinor =  mySplitEllipsoid[ 2 ].toDouble();
+  }
+
+  updateEllipsoidUI( myIndex );
 }

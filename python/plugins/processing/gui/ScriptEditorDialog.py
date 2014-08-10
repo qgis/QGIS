@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.modeler.ModelerUtils import ModelerUtils
 
 __author__ = 'Alexander Bruy'
 __date__ = 'December 2012'
@@ -25,9 +26,9 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-import pickle
 import codecs
 import sys
+import json
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -38,7 +39,6 @@ from qgis.utils import iface
 
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
-from processing.modeler.Providers import Providers
 from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.algs.r.RUtils import RUtils
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
@@ -166,9 +166,8 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
             # If help strings were defined before saving the script for
             # the first time, we do it here
             if self.help:
-                f = open(self.filename + '.help', 'wb')
-                pickle.dump(self.help, f)
-                f.close()
+                with open(self.filename + '.help', 'w') as f:
+                    json.dump(self.help, f)
                 self.help = None
             self.setHasChanged(False)
         else:
@@ -181,10 +180,10 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
     def runAlgorithm(self):
         if self.algType == self.SCRIPT_PYTHON:
             alg = ScriptAlgorithm(None, unicode(self.editor.text()))
-            alg.provider = Providers.providers['script']
+            alg.provider = ModelerUtils.providers['script']
         if self.algType == self.SCRIPT_R:
             alg = RAlgorithm(None, unicode(self.editor.text()))
-            alg.provider = Providers.providers['r']
+            alg.provider = ModelerUtils.providers['r']
 
         dlg = alg.getCustomParametersDialog()
         if not dlg:

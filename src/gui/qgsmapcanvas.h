@@ -307,7 +307,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void zoomScale( double scale );
 
     //! Zoom with the factor supplied. Factor > 1 zooms out, interval (0,1) zooms in
-    void zoomByFactor( double scaleFactor );
+    //! If point is given, re-center on it
+    void zoomByFactor( double scaleFactor, const QgsPoint *center = 0 );
 
     //! Zooms in/out with a given center
     void zoomWithCenter( int x, int y, bool zoomIn );
@@ -443,15 +444,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! - additional drawing shall be done directly within the renderer job or independently as a map canvas item
     void renderComplete( QPainter * );
 
+    // ### QGIS 3: renamte to mapRefreshFinished()
     /** Emitted when canvas finished a refresh request.
     \note Added in 2.0 */
-    //! @deprecated since 2.4 - anything related to rendering progress is not visible outside of map canvas
-    Q_DECL_DEPRECATED void mapCanvasRefreshed();
+    void mapCanvasRefreshed();
 
+    // ### QGIS 3: rename to mapRefreshStarted()
     /** Emitted when the canvas is about to be rendered.
       \note Added in 1.5 */
-    //! @deprecated since 2.4 - anything related to rendering progress is not visible outside of map canvas
-    Q_DECL_DEPRECATED void renderStarting();
+    void renderStarting();
 
     //! Emitted when a new set of layers has been received
     void layersChanged();
@@ -547,6 +548,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     */
     void connectNotify( const char * signal );
 
+    //! Make sure the datum transform store is properly populated
+    void updateDatumTransformEntries();
+
   private:
     /// this class is non-copyable
     /**
@@ -621,7 +625,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Optionally use cache with rendered map layers for the current map settings
     QgsMapRendererCache* mCache;
 
-
     QTimer *mResizeTimer;
 
     QgsPreviewEffect* mPreviewEffect;
@@ -662,6 +665,8 @@ class QgsMapCanvasRendererSync : public QObject
   protected:
     QgsMapCanvas* mCanvas;
     QgsMapRenderer* mRenderer;
+
+    bool mSyncingExtent;
 };
 
 

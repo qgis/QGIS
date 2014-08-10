@@ -27,9 +27,9 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterString import ParameterString
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterString
 
 class lastilePro(LAStoolsAlgorithm):
 

@@ -16,6 +16,7 @@
 
 #include "qgsticksscalebarstyle.h"
 #include "qgscomposerscalebar.h"
+#include "qgscomposerutils.h"
 #include <QPainter>
 
 QgsTicksScaleBarStyle::QgsTicksScaleBarStyle( const QgsComposerScaleBar* bar ): QgsScaleBarStyle( bar )
@@ -53,11 +54,13 @@ void QgsTicksScaleBarStyle::draw( QPainter* p, double xOffset ) const
   {
     return;
   }
-  double barTopPosition = mScaleBar->fontAscentMillimeters( mScaleBar->font() ) + mScaleBar->labelBarSpace() + mScaleBar->boxContentSpace();
+  double barTopPosition = QgsComposerUtils::fontAscentMM( mScaleBar->font() ) + mScaleBar->labelBarSpace() + mScaleBar->boxContentSpace();
   double middlePosition = barTopPosition + mScaleBar->height() / 2.0;
   double bottomPosition = barTopPosition + mScaleBar->height();
 
   p->save();
+  //antialiasing on
+  p->setRenderHint( QPainter::Antialiasing, true );
   p->setPen( mScaleBar->pen() );
 
   QList<QPair<double, double> > segmentInfo;

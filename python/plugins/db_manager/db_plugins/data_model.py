@@ -266,8 +266,9 @@ class TableConstraintsModel(SimpleTableModel):
 		return TableConstraint(None)
 
 	def getObject(self, row):
-		val = self.data(self.index(row, 0), Qt.UserRole)
-		constr = val.toPyObject() if val.isValid() else self._getNewObject()
+		constr = self.data(self.index(row, 0), Qt.UserRole)
+		if not constr:
+			constr = self._getNewObject()
 		constr.name = self.data(self.index(row, 0)) or ""
 		constr.type = self.data(self.index(row, 1), Qt.UserRole)
 		constr.columns = self.data(self.index(row, 2), Qt.UserRole)
@@ -297,8 +298,9 @@ class TableIndexesModel(SimpleTableModel):
 		return TableIndex(None)
 
 	def getObject(self, row):
-		val = self.data(self.index(row, 0), Qt.UserRole)
-		idx = val.toPyObject() if val.isValid() else self._getNewObject()
+		idx = self.data(self.index(row, 0), Qt.UserRole)
+		if not idx:
+			idx = self._getNewObject()
 		idx.name = self.data(self.index(row, 0))
 		idx.columns = self.data(self.index(row, 1), Qt.UserRole)
 		return idx
@@ -308,4 +310,3 @@ class TableIndexesModel(SimpleTableModel):
 		for idx in self.getObjectIter():
 			idxs.append( idx )
 		return idxs
-

@@ -177,8 +177,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     QgsMessageBar * messageBar();
 
+    // ### QGIS 3: return QgsComposer*, not QgsComposerView*
     QList<QgsComposerView*> activeComposers();
 
+    // ### QGIS 3: return QgsComposer*, not QgsComposerView*
     /** Create a new composer
      * @param title window title for new composer (one will be generated if empty)
      * @return pointer to composer's view
@@ -186,6 +188,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      */
     QgsComposerView* createNewComposer( QString title = QString( "" ) );
 
+    // ### QGIS 3: return QgsComposer*, not QgsComposerView*
     /** Duplicate an existing parent composer from composer view
      * @param composerView pointer to existing composer view
      * @param title window title for duplicated composer (one will be generated if empty)

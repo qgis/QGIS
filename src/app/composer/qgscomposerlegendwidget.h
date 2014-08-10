@@ -19,6 +19,7 @@
 #define QGSCOMPOSERLEGENDWIDGET_H
 
 #include "ui_qgscomposerlegendwidgetbase.h"
+#include "qgscomposeritemwidget.h"
 #include <QWidget>
 #include <QItemDelegate>
 
@@ -39,7 +40,7 @@ class QgsComposerLegendWidgetStyleDelegate : public QItemDelegate
 /** \ingroup MapComposer
  * A widget for setting properties relating to a composer legend.
  */
-class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidgetBase
+class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerLegendWidgetBase
 {
     Q_OBJECT
 
@@ -71,7 +72,7 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mGroupFontButton_clicked();
     void on_mLayerFontButton_clicked();
     void on_mItemFontButton_clicked();
-    void on_mFontColorPushButton_clicked();
+    void on_mFontColorButton_colorChanged( const QColor& newFontColor );
     void on_mBoxSpaceSpinBox_valueChanged( double d );
     void on_mColumnSpaceSpinBox_valueChanged( double d );
     void on_mCheckBoxAutoUpdate_stateChanged( int state );

@@ -38,7 +38,8 @@ class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
     const QgsVectorLayer* mVectorLayer;
     /** Get label for data defined entry.
      * Implemented only for 'size' of marker symbols
-     * @added in 2.1 */
+     * @note added in 2.1
+     */
     virtual QString dataDefinedPropertyLabel( const QString &entryName );
 
   signals:
@@ -481,6 +482,9 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
     virtual QgsSymbolLayerV2* symbolLayer();
+
+  public slots:
+    void on_mDrawInsideCheckBox_stateChanged( int state );
 
   protected:
     QgsCentroidFillSymbolLayerV2* mLayer;

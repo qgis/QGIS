@@ -25,22 +25,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-from PyQt4 import QtGui, QtCore
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.outputs.OutputRaster import OutputRaster
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterNumber
+from processing.core.outputs import OutputRaster
 
 from processing.tools.system import *
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class sieve(GeoAlgorithm):
+class sieve(GdalAlgorithm):
 
     INPUT = 'INPUT'
     THRESHOLD = 'THRESHOLD'
@@ -48,10 +46,6 @@ class sieve(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     PIXEL_CONNECTIONS = ['4', '8']
-
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + '/icons/sieve.png'
-        return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
         self.name = 'Sieve'

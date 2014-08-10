@@ -42,8 +42,8 @@ from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.outputs.OutputRaster import OutputRaster
-from processing.outputs.OutputVector import OutputVector
+from processing.core.outputs import OutputRaster
+from processing.core.outputs import OutputVector
 
 from qgis_interface import QgisInterface
 from utilities_test import getQgisTestApp

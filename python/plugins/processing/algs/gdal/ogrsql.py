@@ -25,106 +25,53 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import string
-import re
-
-try:
-    from osgeo import ogr
-    ogrAvailable = True
-except:
-    ogrAvailable = False
-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 
-from processing.core.ProcessingLog import ProcessingLog
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterString import ParameterString
-from processing.outputs.OutputHTML import OutputHTML
+from processing.core.GeoAlgorithmExecutionException import \
+        GeoAlgorithmExecutionException
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterString
+from processing.core.outputs import OutputVector
 
-from OgrAlgorithm import OgrAlgorithm
+from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 
 
 class OgrSql(OgrAlgorithm):
 
+    INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
-    INPUT_LAYER = 'INPUT_LAYER'
     SQL = 'SQL'
 
     def defineCharacteristics(self):
         self.name = 'Execute SQL'
         self.group = '[OGR] Miscellaneous'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
+        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
                           [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterString(self.SQL, 'SQL', ''))
 
-        self.addOutput(OutputHTML(self.OUTPUT, 'SQL result'))
+        self.addOutput(OutputVector(self.OUTPUT, 'SQL result'))
 
     def processAlgorithm(self, progress):
-        if not ogrAvailable:
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                   'OGR bindings not installed')
-            return
-
-        input = self.getParameterValue(self.INPUT_LAYER)
         sql = self.getParameterValue(self.SQL)
-        ogrLayer = self.ogrConnectionString(input)
+        if sql == '':
+            raise GeoAlgorithmExecutionException(
+                'Empty SQL. Please enter valid SQL expression and try again.')
 
-        output = self.getOutputValue(self.OUTPUT)
+        arguments = []
+        arguments.append('-sql')
+        arguments.append(sql)
 
-        qDebug("Opening data source '%s'" % ogrLayer)
-        poDS = ogr.Open(ogrLayer, False)
-        if poDS is None:
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                   self.failure(ogrLayer))
-            return
+        output = self.getOutputFromName(self.OUTPUT)
+        outFile = output.value
+        arguments.append(outFile)
 
-        result = self.select_values(poDS, sql)
+        layer = self.getParameterValue(self.INPUT)
+        conn = self.ogrConnectionString(layer)
+        arguments.append(conn)
 
-        f = open(output, 'w')
-        f.write('<table>')
-        for row in result:
-            f.write('<tr>')
-            for col in row:
-                f.write('<td>' + col + '</td>')
-            f.write('</tr>')
-        f.write('</table>')
-        f.close()
-
-    def execute_sql(self, ds, sql_statement):
-        poResultSet = ds.ExecuteSQL(sql_statement, None, None)
-        if poResultSet is not None:
-            ds.ReleaseResultSet(poResultSet)
-
-    def select_values(self, ds, sql_statement):
-        """Returns an array of the columns and values of SELECT
-        statement:
-
-        select_values(ds, "SELECT id FROM companies") => [['id'],[1],[2],[3]]
-        """
-
-        poResultSet = ds.ExecuteSQL(sql_statement, None, None)
-
-        # TODO: Redirect error messages
-        fields = []
-        rows = []
-        if poResultSet is not None:
-            poDefn = poResultSet.GetLayerDefn()
-            for iField in range(poDefn.GetFieldCount()):
-                poFDefn = poDefn.GetFieldDefn(iField)
-                fields.append(poFDefn.GetNameRef())
-
-            poFeature = poResultSet.GetNextFeature()
-            while poFeature is not None:
-                values = []
-                for iField in range(poDefn.GetFieldCount()):
-                    if poFeature.IsFieldSet(iField):
-                        values.append(poFeature.GetFieldAsString(iField))
-                    else:
-                        values.append('(null)')
-                rows.append(values)
-                poFeature = poResultSet.GetNextFeature()
-            ds.ReleaseResultSet(poResultSet)
-        return [fields] + rows
+        GdalUtils.runGdal(['ogr2ogr', GdalUtils.escapeAndJoin(arguments)],
+                          progress)

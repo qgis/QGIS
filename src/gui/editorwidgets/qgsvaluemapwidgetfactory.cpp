@@ -71,3 +71,12 @@ void QgsValueMapWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config,
     ++it;
   }
 }
+
+QString QgsValueMapWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
+{
+  Q_UNUSED( vl )
+  Q_UNUSED( fieldIdx )
+  Q_UNUSED( cache )
+
+  return config.key( value, QVariant( QString( "(%1)" ).arg( value.toString() ) ).toString() );
+}

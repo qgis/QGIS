@@ -51,9 +51,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-406</y>
+        <y>-440</y>
         <width>340</width>
-        <height>888</height>
+        <height>879</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -175,6 +175,9 @@
           </item>
           <item row="2" column="1">
            <widget class="QDoubleSpinBox" name="mMapUnitsPerBarUnitSpinBox">
+            <property name="decimals">
+             <number>6</number>
+            </property>
             <property name="maximum">
              <double>9999999999999.000000000000000</double>
             </property>
@@ -251,7 +254,7 @@
              <string> units</string>
             </property>
             <property name="decimals">
-             <number>2</number>
+             <number>6</number>
             </property>
             <property name="maximum">
              <double>9999999999999.000000000000000</double>
@@ -290,6 +293,12 @@
           <bool>true</bool>
          </property>
          <layout class="QFormLayout" name="formLayout_4">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
@@ -307,14 +316,14 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="1" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>Labels margin</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="1" column="1">
            <widget class="QDoubleSpinBox" name="mLabelBarSpaceSpinBox">
             <property name="prefix">
              <string/>
@@ -324,14 +333,14 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
              <string>Line width</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
+          <item row="2" column="1">
            <widget class="QDoubleSpinBox" name="mLineWidthSpinBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -356,34 +365,34 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="label_8">
             <property name="text">
              <string>Join style</string>
             </property>
            </widget>
           </item>
-          <item row="8" column="1">
+          <item row="3" column="1">
            <widget class="QgsPenJoinStyleComboBox" name="mLineJoinStyleCombo"/>
           </item>
-          <item row="10" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="label_6">
             <property name="text">
              <string>Cap style</string>
             </property>
            </widget>
           </item>
-          <item row="10" column="1">
+          <item row="4" column="1">
            <widget class="QgsPenCapStyleComboBox" name="mLineCapStyleCombo"/>
           </item>
-          <item row="11" column="0">
+          <item row="5" column="0">
            <widget class="QLabel" name="mAlignmentLabel">
             <property name="text">
              <string>Alignment</string>
             </property>
            </widget>
           </item>
-          <item row="11" column="1">
+          <item row="5" column="1">
            <widget class="QComboBox" name="mAlignmentComboBox"/>
           </item>
          </layout>
@@ -415,21 +424,28 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="mFontColorPushButton">
+           <widget class="QgsColorButton" name="mFontColorButton">
             <property name="text">
              <string>Font color...</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="mColorPushButton">
+           <widget class="QgsColorButton" name="mFillColorButton">
             <property name="text">
              <string>Fill color...</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="mStrokeColorPushButton">
+           <widget class="QgsColorButton" name="mFillColor2Button">
+            <property name="text">
+             <string>Secondary fill color...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QgsColorButton" name="mStrokeColorButton">
             <property name="text">
              <string>Stroke color...</string>
             </property>
@@ -447,15 +463,20 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsPenJoinStyleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgspenstylecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsPenCapStyleComboBox</class>

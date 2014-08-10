@@ -1,5 +1,5 @@
-<h3>Create a New PostgreSQL Connection</h3>
-This dialog allows you to define the settings for a connection to a PostgreSQL database.
+<h3>Create a New PostGIS Connection</h3>
+This dialog allows you to define the settings for a connection to a PostgreSQL/PostGIS database.
 <p>
 <ul>
 <li> <label>Name</label> A name to identify the connection settings.

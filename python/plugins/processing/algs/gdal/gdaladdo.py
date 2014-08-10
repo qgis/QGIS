@@ -25,21 +25,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-
-from PyQt4 import QtGui
-
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterString import ParameterString
-from processing.outputs.OutputRaster import OutputRaster
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterString
+from processing.core.outputs import OutputRaster
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class gdaladdo(GeoAlgorithm):
+class gdaladdo(GdalAlgorithm):
 
     INPUT = 'INPUT'
     LEVELS = 'LEVELS'
@@ -60,10 +56,6 @@ class gdaladdo(GeoAlgorithm):
 
     FORMATS = ['Internal (if possible)', 'External (GTiff .ovr)',
                'External (ERDAS Imagine .aux)']
-
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + '/icons/raster-overview.png'
-        return QtGui.QIcon(filepath)
 
     def commandLineName(self):
         return "gdalogr:overviews"

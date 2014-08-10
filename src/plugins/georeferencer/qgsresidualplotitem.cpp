@@ -15,6 +15,7 @@
 
 #include "qgsresidualplotitem.h"
 #include "qgsgeorefdatapoint.h"
+#include "qgscomposerutils.h"
 #include <QPainter>
 #include <cfloat>
 #include <cmath>
@@ -70,7 +71,7 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
       painter->setBrush( disabledBrush );
     }
     painter->drawRect( QRectF( gcpItemMMX - 0.5, gcpItemMMY - 0.5, 1, 1 ) );
-    drawText( painter, gcpItemMMX + 2, gcpItemMMY + 2, QString::number(( *gcpIt )->id() ), QFont() );
+    QgsComposerUtils::drawText( painter, QPointF( gcpItemMMX + 2, gcpItemMMY + 2 ), QString::number(( *gcpIt )->id() ), QFont() );
 
     mmPixelRatio = maxMMToPixelRatioForGCP( *gcpIt, gcpItemMMX, gcpItemMMY );
     if ( mmPixelRatio < minMMPixelRatio )
@@ -99,7 +100,7 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
     QPointF p2( gcpItemMMX + ( *gcpIt )->residual().x() * minMMPixelRatio, gcpItemMMY + ( *gcpIt )->residual().y() * minMMPixelRatio );
     painter->drawLine( p1, p2 );
     painter->setBrush( QBrush( painter->pen().color() ) );
-    drawArrowHead( painter, p2.x(), p2.y(), angle( p1, p2 ), 1 );
+    QgsComposerUtils::drawArrowHead( painter, p2.x(), p2.y(), QgsComposerUtils::angle( p1, p2 ), 1 );
   }
 
   //draw scale bar
@@ -134,11 +135,11 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
   scaleBarFont.setPointSize( 9 );
   if ( mConvertScaleToMapUnits )
   {
-    drawText( painter, 5, rect().height() - 4 + fontAscentMillimeters( scaleBarFont ), QString( "%1 map units" ).arg( scaleBarWidthUnits ), QFont() );
+    QgsComposerUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsComposerUtils::fontAscentMM( scaleBarFont ) ), QString( "%1 map units" ).arg( scaleBarWidthUnits ), QFont() );
   }
   else
   {
-    drawText( painter, 5, rect().height() - 4 + fontAscentMillimeters( scaleBarFont ), QString( "%1 pixels" ).arg( scaleBarWidthUnits ), QFont() );
+    QgsComposerUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsComposerUtils::fontAscentMM( scaleBarFont ) ), QString( "%1 pixels" ).arg( scaleBarWidthUnits ), QFont() );
   }
 
   drawFrame( painter );

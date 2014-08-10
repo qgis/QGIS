@@ -29,31 +29,33 @@ import os
 from PyQt4 import QtGui
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import getHtmlFromHelpFile
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterCrs import ParameterCrs
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterFactory import ParameterFactory
-from processing.outputs.OutputTable import OutputTable
-from processing.outputs.OutputVector import OutputVector
-from processing.outputs.OutputRaster import OutputRaster
-from processing.outputs.OutputNumber import OutputNumber
-from processing.outputs.OutputString import OutputString
-from processing.outputs.OutputHTML import OutputHTML
-from processing.outputs.OutputFile import OutputFile
-from processing.outputs.OutputDirectory import OutputDirectory
-from processing.outputs.OutputFactory import OutputFactory
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterTable
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterCrs
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterFile
+from processing.core.parameters import getParameterFromString
+from processing.core.outputs import OutputTable
+from processing.core.outputs import OutputVector
+from processing.core.outputs import OutputRaster
+from processing.core.outputs import OutputNumber
+from processing.core.outputs import OutputString
+from processing.core.outputs import OutputHTML
+from processing.core.outputs import OutputFile
+from processing.core.outputs import OutputDirectory
+from processing.core.outputs import getOutputFromString
 from processing.script.WrongScriptException import WrongScriptException
 
 class ScriptAlgorithm(GeoAlgorithm):
+
+    _icon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/script.png')
 
     def __init__(self, descriptionFile, script=None):
         """The script parameter can be used to directly pass the code
@@ -65,6 +67,7 @@ class ScriptAlgorithm(GeoAlgorithm):
 
         GeoAlgorithm.__init__(self)
         self.script = script
+        self.allowEdit = True
         self.descriptionFile = descriptionFile
         if script is not None:
             self.defineCharacteristicsFromScript()
@@ -77,7 +80,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/script.png')
+        return self._icon
 
     def defineCharacteristicsFromFile(self):
         self.script = ''
@@ -127,6 +130,9 @@ class ScriptAlgorithm(GeoAlgorithm):
         # factories
         if '|' in line:
             self.processDescriptionParameterLine(line)
+            return
+        if line == "nomodeler":
+            self.showInModeler = False
             return
         tokens = line.split('=', 1)
         desc = self.createDescriptiveName(tokens[0])
@@ -183,7 +189,7 @@ class ScriptAlgorithm(GeoAlgorithm):
                     found = True
                     break
             if found:
-                param = ParameterTableField(tokens[0], tokens[0], field)
+                param = ParameterTableField(tokens[0], desc, field)
         elif tokens[1].lower().strip().startswith('string'):
             default = tokens[1].strip()[len('string') + 1:]
             param = ParameterString(tokens[0], desc, default)
@@ -205,6 +211,9 @@ class ScriptAlgorithm(GeoAlgorithm):
             out = OutputHTML()
         elif tokens[1].lower().strip().startswith('output file'):
             out = OutputFile()
+            subtokens = tokens[1].split(' ')
+            if len(subtokens > 2):
+                out.ext = subtokens[2]
         elif tokens[1].lower().strip().startswith('output directory'):
             out = OutputDirectory()
         elif tokens[1].lower().strip().startswith('output number'):
@@ -216,7 +225,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             self.addParameter(param)
         elif out is not None:
             out.name = tokens[0]
-            out.description = tokens[0]
+            out.description = desc
             self.addOutput(out)
         else:
             raise WrongScriptException('Could not load script:'
@@ -227,13 +236,13 @@ class ScriptAlgorithm(GeoAlgorithm):
     def processDescriptionParameterLine(self, line):
         try:
             if line.startswith('Parameter'):
-                self.addParameter(ParameterFactory.getFromString(line))
+                self.addParameter(getParameterFromString(line))
             elif line.startswith('*Parameter'):
-                param = ParameterFactory.getFromString(line[1:])
+                param = getParameterFromString(line[1:])
                 param.isAdvanced = True
                 self.addParameter(param)
             else:
-                self.addOutput(OutputFactory.getFromString(line))
+                self.addOutput(getOutputFromString(line))
         except Exception:
             raise WrongScriptException('Could not load script:'
                                        + self.descriptionFile or ''

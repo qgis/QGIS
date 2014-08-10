@@ -20,6 +20,7 @@
 //header for class being tested
 #include <qgsexpression.h>
 #include <qgsfeature.h>
+#include <qgsfeaturerequest.h>
 #include <qgsgeometry.h>
 #include <qgsrenderchecker.h>
 
@@ -503,6 +504,32 @@ class TestQgsExpression: public QObject
       QCOMPARE( v.toInt(), 200 );
     }
 
+    void eval_current_feature()
+    {
+      QgsFeature f( 100 );
+      QgsExpression exp( "$currentfeature" );
+      QVariant v = exp.evaluate( &f );
+      QgsFeature evalFeature = v.value<QgsFeature>();
+      QCOMPARE( evalFeature.id(), f.id() );
+    }
+
+    void eval_feature_attribute()
+    {
+      QgsFeature f( 100 );
+      QgsFields fields;
+      fields.append( QgsField( "col1" ) );
+      fields.append( QgsField( "second_column", QVariant::Int ) );
+      f.setFields( &fields, true );
+      f.setAttribute( QString( "col1" ), QString( "test value" ) );
+      f.setAttribute( QString( "second_column" ), 5 );
+      QgsExpression exp( "attribute($currentfeature,'col1')" );
+      QVariant v = exp.evaluate( &f );
+      QCOMPARE( v.toString(), QString( "test value" ) );
+      QgsExpression exp2( "attribute($currentfeature,'second'||'_column')" );
+      v = exp2.evaluate( &f );
+      QCOMPARE( v.toInt(), 5 );
+    }
+
     void eval_rand()
     {
       QgsExpression exp1( "rand(1,10)" );
@@ -550,6 +577,16 @@ class TestQgsExpression: public QObject
         refColsSet.insert( col.toLower() );
 
       QCOMPARE( refColsSet, expectedCols );
+    }
+
+    void referenced_columns_all_attributes()
+    {
+      QgsExpression exp( "attribute($currentfeature,'test')" );
+      QCOMPARE( exp.hasParserError(), false );
+      QStringList refCols = exp.referencedColumns();
+      // make sure we get the all attributes flag
+      bool allAttributesFlag = refCols.contains( QgsFeatureRequest::AllAttributes );
+      QCOMPARE( allAttributesFlag, true );
     }
 
     void needs_geometry_data()
@@ -882,18 +919,31 @@ class TestQgsExpression: public QObject
       QgsExpression::unsetSpecialColumn( "$var1" );
     }
 
-    void expression_from_expression()
+    void expression_from_expression_data()
     {
-      {
-        QgsExpression e( "my_column" );
-        QCOMPARE( e.expression() , QgsExpression( e.expression() ).expression() );
-      }
-      {
-        QgsExpression e( "\"my column\"" );
-        QCOMPARE( e.expression() , QgsExpression( e.expression() ).expression() );
-      }
+      QTest::addColumn<QString>( "string" );
+      QTest::newRow( "column ref" ) << "my_column";
+      QTest::newRow( "column ref with space" ) << "\"my column\"";
+      QTest::newRow( "string literal" ) << "'hello'";
+      QTest::newRow( "string with quote" ) << "'hel''lo'";
     }
 
+    void expression_from_expression()
+    {
+      QFETCH( QString, string );
+
+      QgsExpression e( string );
+      QVERIFY( !e.hasParserError() );
+      qDebug() << e.expression();
+      QCOMPARE( e.expression() , QgsExpression( e.expression() ).expression() );
+    }
+
+    void quote_string()
+    {
+      QCOMPARE( QgsExpression::quotedString( "hello\nworld" ), QString( "'hello\\nworld'" ) );
+      QCOMPARE( QgsExpression::quotedString( "hello\tworld" ), QString( "'hello\\tworld'" ) );
+      QCOMPARE( QgsExpression::quotedString( "hello\\world" ), QString( "'hello\\\\world'" ) );
+    }
 
 };
 

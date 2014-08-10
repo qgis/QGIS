@@ -32,8 +32,9 @@ from processing.tools.system import *
 
 class FileSelectionPanel(QtGui.QWidget):
 
-    def __init__(self, isFolder):
+    def __init__(self, isFolder, ext = None):
         super(FileSelectionPanel, self).__init__(None)
+        self.ext = ext or '*'
         self.isFolder = isFolder
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
@@ -70,7 +71,7 @@ class FileSelectionPanel(QtGui.QWidget):
                                   os.path.dirname(unicode(folder)))
         else:
             filenames = QtGui.QFileDialog.getOpenFileNames(self, 'Open file',
-                    path, '*.*')
+                    path, '*.' + self.ext)
             if filenames:
                 self.text.setText(u';'.join(filenames))
                 settings.setValue('/Processing/LastInputPath',

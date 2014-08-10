@@ -155,6 +155,8 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
         cfg = mWidgetFactories[ewv2Type]->readEditorConfig( ewv2CfgElem, vectorLayer, idx );
       }
 
+      vectorLayer->setFieldEditable( idx, ewv2CfgElem.attribute( "fieldEditable", "1" ) == "1" );
+      vectorLayer->setLabelOnTop( idx, ewv2CfgElem.attribute( "labelOnTop", "0" ) == "1" );
       vectorLayer->setEditorWidgetV2Config( idx, cfg );
     }
     else
@@ -188,8 +190,11 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
     return;
   }
 
+  QDomNode editTypesNode = doc.createElement( "edittypes" );
+
   for ( int idx = 0; idx < vectorLayer->pendingFields().count(); ++idx )
   {
+    const QgsField &field = vectorLayer->pendingFields()[ idx ];
     const QString& widgetType = vectorLayer->editorWidgetV2( idx );
     if ( !mWidgetFactories.contains( widgetType ) )
     {
@@ -197,31 +202,24 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
       continue;
     }
 
-    QDomNodeList editTypeNodes = layerElem.namedItem( "edittypes" ).childNodes();
 
-    for ( int i = 0; i < editTypeNodes.size(); i++ )
+    QDomElement editTypeElement = doc.createElement( "edittype" );
+    editTypeElement.setAttribute( "name", field.name() );
+    editTypeElement.setAttribute( "widgetv2type", widgetType );
+
+    if ( mWidgetFactories.contains( widgetType ) )
     {
-      QDomElement editTypeElement = editTypeNodes.at( i ).toElement();
+      QDomElement ewv2CfgElem = doc.createElement( "widgetv2config" );
+      ewv2CfgElem.setAttribute( "fieldEditable", vectorLayer->fieldEditable( idx ) );
+      ewv2CfgElem.setAttribute( "labelOnTop", vectorLayer->labelOnTop( idx ) );
 
-      QString name = editTypeElement.attribute( "name" );
+      mWidgetFactories[widgetType]->writeConfig( vectorLayer->editorWidgetV2Config( idx ), ewv2CfgElem, doc, vectorLayer, idx );
 
-      if ( vectorLayer->fieldNameIndex( name ) != idx )
-        continue;
-
-      editTypeElement.setAttribute( "widgetv2type", widgetType );
-
-      if ( mWidgetFactories.contains( widgetType ) )
-      {
-        QDomElement ewv2CfgElem = doc.createElement( "widgetv2config" );
-
-        mWidgetFactories[widgetType]->writeConfig( vectorLayer->editorWidgetV2Config( idx ), ewv2CfgElem, doc, vectorLayer, idx );
-
-        editTypeElement.appendChild( ewv2CfgElem );
-      }
-      else
-      {
-        QgsMessageLog::logMessage( tr( "Unknown attribute editor widget '%1'" ).arg( widgetType ) );
-      }
+      editTypeElement.appendChild( ewv2CfgElem );
     }
+
+    editTypesNode.appendChild( editTypeElement );
   }
+
+  layerElem.appendChild( editTypesNode );
 }

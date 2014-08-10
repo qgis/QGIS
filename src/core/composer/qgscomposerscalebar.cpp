@@ -17,6 +17,7 @@
 #include "qgscomposerscalebar.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
+#include "qgscomposerutils.h"
 #include "qgsdistancearea.h"
 #include "qgsscalebarstyle.h"
 #include "qgsdoubleboxscalebarstyle.h"
@@ -68,7 +69,7 @@ void QgsComposerScaleBar::paint( QPainter* painter, const QStyleOptionGraphicsIt
 
   //x-offset is half of first label width because labels are drawn centered
   QString firstLabel = firstLabelString();
-  double firstLabelWidth = textWidthMillimeters( mFont, firstLabel );
+  double firstLabelWidth = QgsComposerUtils::textWidthMM( mFont, firstLabel );
 
   mStyle->draw( painter, firstLabelWidth / 2 );
 
@@ -270,13 +271,19 @@ void QgsComposerScaleBar::applyDefaultSettings()
 
   mHeight = 3;
 
-  mPen = QPen( QColor( 0, 0, 0 ) );
+  //default to no background
+  setBackgroundEnabled( false );
+
+  mPen = QPen( Qt::black );
   mPen.setJoinStyle( mLineJoinStyle );
   mPen.setCapStyle( mLineCapStyle );
   mPen.setWidthF( 1.0 );
 
-  mBrush.setColor( QColor( 0, 0, 0 ) );
+  mBrush.setColor( Qt::black );
   mBrush.setStyle( Qt::SolidPattern );
+
+  mBrush2.setColor( Qt::white );
+  mBrush2.setStyle( Qt::SolidPattern );
 
   //get default composer font from settings
   QSettings settings;
@@ -376,7 +383,9 @@ void QgsComposerScaleBar::adjustBoxSize()
   }
 
   QRectF box = mStyle->calculateBoxSize();
-  setSceneRect( box );
+
+  //update rect for data defined size and position
+  setSceneRect( evalItemRect( box ) );
 }
 
 void QgsComposerScaleBar::update()
@@ -533,9 +542,41 @@ bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) cons
   }
 
   //colors
-  composerScaleBarElem.setAttribute( "brushColor", mBrush.color().name() );
-  composerScaleBarElem.setAttribute( "penColor", mPen.color().name() );
-  composerScaleBarElem.setAttribute( "fontColor", mFontColor.name() );
+
+  //fill color
+  QDomElement fillColorElem = doc.createElement( "fillColor" );
+  QColor fillColor = mBrush.color();
+  fillColorElem.setAttribute( "red", QString::number( fillColor.red() ) );
+  fillColorElem.setAttribute( "green", QString::number( fillColor.green() ) );
+  fillColorElem.setAttribute( "blue", QString::number( fillColor.blue() ) );
+  fillColorElem.setAttribute( "alpha", QString::number( fillColor.alpha() ) );
+  composerScaleBarElem.appendChild( fillColorElem );
+
+  //fill color 2
+  QDomElement fillColor2Elem = doc.createElement( "fillColor2" );
+  QColor fillColor2 = mBrush2.color();
+  fillColor2Elem.setAttribute( "red", QString::number( fillColor2.red() ) );
+  fillColor2Elem.setAttribute( "green", QString::number( fillColor2.green() ) );
+  fillColor2Elem.setAttribute( "blue", QString::number( fillColor2.blue() ) );
+  fillColor2Elem.setAttribute( "alpha", QString::number( fillColor2.alpha() ) );
+  composerScaleBarElem.appendChild( fillColor2Elem );
+
+  //pen color
+  QDomElement strokeColorElem = doc.createElement( "strokeColor" );
+  QColor strokeColor = mPen.color();
+  strokeColorElem.setAttribute( "red", QString::number( strokeColor.red() ) );
+  strokeColorElem.setAttribute( "green", QString::number( strokeColor.green() ) );
+  strokeColorElem.setAttribute( "blue", QString::number( strokeColor.blue() ) );
+  strokeColorElem.setAttribute( "alpha", QString::number( strokeColor.alpha() ) );
+  composerScaleBarElem.appendChild( strokeColorElem );
+
+  //font color
+  QDomElement fontColorElem = doc.createElement( "textColor" );
+  fontColorElem.setAttribute( "red", QString::number( mFontColor.red() ) );
+  fontColorElem.setAttribute( "green", QString::number( mFontColor.green() ) );
+  fontColorElem.setAttribute( "blue", QString::number( mFontColor.blue() ) );
+  fontColorElem.setAttribute( "alpha", QString::number( mFontColor.alpha() ) );
+  composerScaleBarElem.appendChild( fontColorElem );
 
   //alignment
   composerScaleBarElem.setAttribute( "alignment", QString::number(( int ) mAlignment ) );
@@ -573,9 +614,96 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
 
   //colors
   //fill color
-  mBrush.setColor( QColor( itemElem.attribute( "brushColor", "#000000" ) ) );
-  mPen.setColor( QColor( itemElem.attribute( "penColor", "#000000" ) ) );
-  mFontColor.setNamedColor( itemElem.attribute( "fontColor", "#000000" ) );
+  QDomNodeList fillColorList = itemElem.elementsByTagName( "fillColor" );
+  if ( fillColorList.size() > 0 )
+  {
+    QDomElement fillColorElem = fillColorList.at( 0 ).toElement();
+    bool redOk, greenOk, blueOk, alphaOk;
+    int fillRed, fillGreen, fillBlue, fillAlpha;
+
+    fillRed = fillColorElem.attribute( "red" ).toDouble( &redOk );
+    fillGreen = fillColorElem.attribute( "green" ).toDouble( &greenOk );
+    fillBlue = fillColorElem.attribute( "blue" ).toDouble( &blueOk );
+    fillAlpha = fillColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+
+    if ( redOk && greenOk && blueOk && alphaOk )
+    {
+      mBrush.setColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
+    }
+  }
+  else
+  {
+    mBrush.setColor( QColor( itemElem.attribute( "brushColor", "#000000" ) ) );
+  }
+
+  //fill color 2
+  QDomNodeList fillColor2List = itemElem.elementsByTagName( "fillColor2" );
+  if ( fillColor2List.size() > 0 )
+  {
+    QDomElement fillColor2Elem = fillColor2List.at( 0 ).toElement();
+    bool redOk, greenOk, blueOk, alphaOk;
+    int fillRed, fillGreen, fillBlue, fillAlpha;
+
+    fillRed = fillColor2Elem.attribute( "red" ).toDouble( &redOk );
+    fillGreen = fillColor2Elem.attribute( "green" ).toDouble( &greenOk );
+    fillBlue = fillColor2Elem.attribute( "blue" ).toDouble( &blueOk );
+    fillAlpha = fillColor2Elem.attribute( "alpha" ).toDouble( &alphaOk );
+
+    if ( redOk && greenOk && blueOk && alphaOk )
+    {
+      mBrush2.setColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
+    }
+  }
+  else
+  {
+    mBrush2.setColor( QColor( itemElem.attribute( "brush2Color", "#ffffff" ) ) );
+  }
+
+  //stroke color
+  QDomNodeList strokeColorList = itemElem.elementsByTagName( "strokeColor" );
+  if ( strokeColorList.size() > 0 )
+  {
+    QDomElement strokeColorElem = strokeColorList.at( 0 ).toElement();
+    bool redOk, greenOk, blueOk, alphaOk;
+    int strokeRed, strokeGreen, strokeBlue, strokeAlpha;
+
+    strokeRed = strokeColorElem.attribute( "red" ).toDouble( &redOk );
+    strokeGreen = strokeColorElem.attribute( "green" ).toDouble( &greenOk );
+    strokeBlue = strokeColorElem.attribute( "blue" ).toDouble( &blueOk );
+    strokeAlpha = strokeColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+
+    if ( redOk && greenOk && blueOk && alphaOk )
+    {
+      mPen.setColor( QColor( strokeRed, strokeGreen, strokeBlue, strokeAlpha ) );
+    }
+  }
+  else
+  {
+    mPen.setColor( QColor( itemElem.attribute( "penColor", "#000000" ) ) );
+  }
+
+  //font color
+  QDomNodeList textColorList = itemElem.elementsByTagName( "textColor" );
+  if ( textColorList.size() > 0 )
+  {
+    QDomElement textColorElem = textColorList.at( 0 ).toElement();
+    bool redOk, greenOk, blueOk, alphaOk;
+    int textRed, textGreen, textBlue, textAlpha;
+
+    textRed = textColorElem.attribute( "red" ).toDouble( &redOk );
+    textGreen = textColorElem.attribute( "green" ).toDouble( &greenOk );
+    textBlue = textColorElem.attribute( "blue" ).toDouble( &blueOk );
+    textAlpha = textColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+
+    if ( redOk && greenOk && blueOk && alphaOk )
+    {
+      mFontColor = QColor( textRed, textGreen, textBlue, textAlpha );
+    }
+  }
+  else
+  {
+    mFontColor.setNamedColor( itemElem.attribute( "fontColor", "#000000" ) );
+  }
 
   //style
   delete mStyle;

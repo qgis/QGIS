@@ -75,6 +75,7 @@ QgsUnitSelectionWidget::QgsUnitSelectionWidget( QWidget *parent )
 
   setupUi( this );
   mMapScaleButton->setVisible( false );
+  mMapScaleButton->setToolTip( tr( "Adjust scaling range" ) );
 
   connect( mUnitCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( toggleUnitRangeButton() ) );
   connect( mMapScaleButton, SIGNAL( clicked() ), this, SLOT( showDialog() ) );

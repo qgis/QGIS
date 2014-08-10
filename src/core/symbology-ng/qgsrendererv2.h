@@ -150,6 +150,18 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! return a list of symbology items for the legend
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
+    //! items of symbology items in legend should be checkable
+    //! @note added in 2.5
+    virtual bool legendSymbolItemsCheckable() const;
+
+    //! items of symbology items in legend is checked
+    //! @note added in 2.5
+    virtual bool legendSymbolItemChecked( int index );
+
+    //! item in symbology was checked
+    //! @note added in 2.5
+    virtual void checkLegendSymbolItem( int index, bool state = true );
+
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
     //! @note not available in python bindings

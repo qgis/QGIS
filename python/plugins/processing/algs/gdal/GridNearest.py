@@ -28,16 +28,16 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtGui import *
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.outputs.OutputRaster import OutputRaster
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterNumber
+from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.system import *
 
 
-class GridNearest(GeoAlgorithm):
+class GridNearest(GdalAlgorithm):
 
     INPUT = 'INPUT'
     Z_FIELD = 'Z_FIELD'
@@ -47,9 +47,8 @@ class GridNearest(GeoAlgorithm):
     NODATA = 'NODATA'
     OUTPUT = 'OUTPUT'
 
-    #def getIcon(self):
-    #    filepath = os.path.dirname(__file__) + '/icons/dem.png'
-    #    return QIcon(filepath)
+    def commandLineName(self):
+        return "gdalogr:gridnearestneighbor"
 
     def defineCharacteristics(self):
         self.name = 'Grid (Nearest neighbor)'

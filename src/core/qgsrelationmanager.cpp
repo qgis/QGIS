@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
@@ -26,6 +27,7 @@ QgsRelationManager::QgsRelationManager( QgsProject* project )
 {
   connect( project, SIGNAL( readProject( const QDomDocument& ) ), SLOT( readProject( const QDomDocument& ) ) );
   connect( project, SIGNAL( writeProject( QDomDocument& ) ), SLOT( writeProject( QDomDocument& ) ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ), this, SLOT( layersRemoved( QStringList ) ) );
 }
 
 void QgsRelationManager::setRelations( const QList<QgsRelation>& relations )
@@ -168,5 +170,24 @@ void QgsRelationManager::writeProject( QDomDocument & doc )
   foreach ( const QgsRelation& relation, mRelations )
   {
     relation.writeXML( relationsNode, doc );
+  }
+}
+
+void QgsRelationManager::layersRemoved( const QStringList& layers )
+{
+  Q_FOREACH( const QString& layer, layers )
+  {
+    QMapIterator<QString, QgsRelation> it( mRelations );
+
+    while ( it.hasNext() )
+    {
+      it.next();
+
+      if ( it.value().referencedLayerId() == layer
+           || it.value().referencingLayerId() == layer )
+      {
+        mRelations.remove( it.key() );
+      }
+    }
   }
 }

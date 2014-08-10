@@ -904,8 +904,12 @@ class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     virtual QSet<QString> usedAttributes() const;
 
+    void setPointOnSurface( bool pointOnSurface ) { mPointOnSurface = pointOnSurface; }
+    bool pointOnSurface() const { return mPointOnSurface; }
+
   protected:
     QgsMarkerSymbolV2* mMarker;
+    bool mPointOnSurface;
 };
 
 #endif
