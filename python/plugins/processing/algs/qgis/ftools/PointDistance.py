@@ -113,7 +113,7 @@ class PointDistance(GeoAlgorithm):
         index = vector.spatialindex(targetLayer)
 
         inIdx = inLayer.fieldNameIndex(inField)
-        outIdx = targetLayer.fieldNameIndex(inField)
+        outIdx = targetLayer.fieldNameIndex(targetField)
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
