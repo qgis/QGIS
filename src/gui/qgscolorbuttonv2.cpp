@@ -528,29 +528,25 @@ void QgsColorButtonV2::setButtonBackground( const QColor color )
   }
   //create an icon pixmap
   QPixmap pixmap( mIconSize );
+  pixmap.fill( Qt::transparent );
+
+  QRect rect( 0, 0, mIconSize.width(), mIconSize.height() );
+  QPainter p;
+  p.begin( &pixmap );
+  p.setRenderHint( QPainter::Antialiasing );
+  p.setPen( Qt::NoPen );
   if ( useAlpha && backgroundColor.alpha() < 255 )
   {
-    QRect rect( 0, 0, mIconSize.width(), mIconSize.height() );
-    QPainter p;
-    p.begin( &pixmap );
-
     //start with checkboard pattern
     QBrush checkBrush = QBrush( transparentBackground() );
-    p.setPen( Qt::NoPen );
     p.setBrush( checkBrush );
-    p.drawRect( rect );
+    p.drawRoundedRect( rect, 3, 3 );
+  }
 
-    //draw semi-transparent color on top
-    p.setRenderHint( QPainter::Antialiasing );
-    p.setBrush( backgroundColor );
-    p.drawRect( rect );
-    p.end();
-  }
-  else
-  {
-    //no transparency, nice and easy
-    pixmap.fill( backgroundColor );
-  }
+  //draw semi-transparent color on top
+  p.setBrush( backgroundColor );
+  p.drawRoundedRect( rect, 3, 3 );
+  p.end();
 
   setIconSize( mIconSize );
   setIcon( pixmap );
