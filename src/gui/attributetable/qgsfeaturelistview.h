@@ -119,6 +119,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     virtual void mousePressEvent( QMouseEvent *event );
     virtual void mouseReleaseEvent( QMouseEvent *event );
     virtual void keyPressEvent( QKeyEvent *event );
+    virtual void contextMenuEvent( QContextMenuEvent *event );
 
   signals:
     /**

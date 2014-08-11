@@ -31,6 +31,12 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
       bool isEdited;
     };
 
+    enum Role
+    {
+      FeatureInfoRole = Qt::UserRole,
+      FeatureRole
+    };
+
   public:
     explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject* parent = NULL );
     virtual ~QgsFeatureListModel();
