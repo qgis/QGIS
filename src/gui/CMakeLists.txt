@@ -114,6 +114,7 @@ layertree/qgslayertreeviewdefaultactions.cpp
 qgisgui.cpp
 qgisinterface.cpp
 qgsannotationitem.cpp
+qgsactionmenu.cpp
 qgsattributedialog.cpp
 qgsattributeeditor.cpp
 qgsattributeeditorcontext.cpp
@@ -323,6 +324,7 @@ layertree/qgslayertreeview.h
 layertree/qgslayertreeviewdefaultactions.h
 
 qgisinterface.h
+qgsactionmenu.h
 qgsattributedialog.h
 qgsattributeeditor.h
 qgsattributeform.h
@@ -418,6 +420,7 @@ ENDIF(MSVC)
 SET(QGIS_GUI_HDRS
 qgisgui.h
 qgisinterface.h
+qgsactionmenu.h
 qgsattributeeditor.h
 qgsattributedialog.h
 qgsattributeeditorcontext.h
