@@ -272,6 +272,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mWMSAccessConstraints->setText( QgsProject::instance()->readEntry( "WMSAccessConstraints", "/", "" ) );
   mWMSKeywordList->setText( QgsProject::instance()->readListEntry( "WMSKeywordList", "/" ).join( "," ) );
 
+  // WMS GetFeatureInfo precision
+  int WMSprecision = QgsProject::instance()->readNumEntry( "WMSPrecision", "/", -1 );
+  if ( WMSprecision != -1 )
+  {
+    mWMSPrecisionSpinBox->setValue( WMSprecision );
+  }
+
   bool ok;
   QStringList values;
 
@@ -742,6 +749,9 @@ void QgsProjectProperties::apply()
   {
     QgsProject::instance()->removeEntry( "WMSKeywordList", "/" );
   }
+
+  // WMS GetFeatureInfo geometry precision (decimal places)
+  QgsProject::instance()->writeEntry( "WMSPrecision", "/", mWMSPrecisionSpinBox->text());
 
   if ( grpWMSExt->isChecked() )
   {
