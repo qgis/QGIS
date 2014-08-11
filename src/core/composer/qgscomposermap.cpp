@@ -864,44 +864,56 @@ void QgsComposerMap::refreshMapExtents()
   QVariant exprVal;
 
   QgsRectangle newExtent = *currentMapExtent();
+  bool useDdXMin = false;
+  bool useDdXMax = false;
+  bool useDdYMin = false;
+  bool useDdYMax = false;
+  double minXD = 0;
+  double minYD = 0;
+  double maxXD = 0;
+  double maxYD = 0;
 
   if ( dataDefinedEvaluate( QgsComposerObject::MapXMin, exprVal ) )
   {
     bool ok;
-    double minXD = exprVal.toDouble( &ok );
+    minXD = exprVal.toDouble( &ok );
     QgsDebugMsg( QString( "exprVal Map XMin:%1" ).arg( minXD ) );
     if ( ok )
     {
+      useDdXMin = true;
       newExtent.setXMinimum( minXD );
     }
   }
   if ( dataDefinedEvaluate( QgsComposerObject::MapYMin, exprVal ) )
   {
     bool ok;
-    double minYD = exprVal.toDouble( &ok );
+    minYD = exprVal.toDouble( &ok );
     QgsDebugMsg( QString( "exprVal Map YMin:%1" ).arg( minYD ) );
     if ( ok )
     {
+      useDdYMin = true;
       newExtent.setYMinimum( minYD );
     }
   }
   if ( dataDefinedEvaluate( QgsComposerObject::MapXMax, exprVal ) )
   {
     bool ok;
-    double maxXD = exprVal.toDouble( &ok );
+    maxXD = exprVal.toDouble( &ok );
     QgsDebugMsg( QString( "exprVal Map XMax:%1" ).arg( maxXD ) );
     if ( ok )
     {
+      useDdXMax = true;
       newExtent.setXMaximum( maxXD );
     }
   }
   if ( dataDefinedEvaluate( QgsComposerObject::MapYMax, exprVal ) )
   {
     bool ok;
-    double maxYD = exprVal.toDouble( &ok );
+    maxYD = exprVal.toDouble( &ok );
     QgsDebugMsg( QString( "exprVal Map YMax:%1" ).arg( maxYD ) );
     if ( ok )
     {
+      useDdYMax = true;
       newExtent.setYMaximum( maxYD );
     }
   }
@@ -946,6 +958,42 @@ void QgsComposerMap::refreshMapExtents()
     if ( ok )
     {
       setNewScale( scaleD, false );
+      newExtent = *currentMapExtent();
+    }
+  }
+
+  if ( useDdXMax || useDdXMin || useDdYMax || useDdYMin )
+  {
+    //if only one of min/max was set for either x or y, then make sure our extent is locked on that value
+    //as we can do this without altering the scale
+    if ( useDdXMin && !useDdXMax )
+    {
+      double xMax = currentMapExtent()->xMaximum() - ( currentMapExtent()->xMinimum() - minXD );
+      newExtent.setXMinimum( minXD );
+      newExtent.setXMaximum( xMax );
+    }
+    else if ( !useDdXMin && useDdXMax )
+    {
+      double xMin = currentMapExtent()->xMinimum() - ( currentMapExtent()->xMaximum() - maxXD );
+      newExtent.setXMinimum( xMin );
+      newExtent.setXMaximum( maxXD );
+    }
+    if ( useDdYMin && !useDdYMax )
+    {
+      double yMax = currentMapExtent()->yMaximum() - ( currentMapExtent()->yMinimum() - minYD );
+      newExtent.setYMinimum( minYD );
+      newExtent.setYMaximum( yMax );
+    }
+    else if ( !useDdYMin && useDdYMax )
+    {
+      double yMin = currentMapExtent()->yMinimum() - ( currentMapExtent()->yMaximum() - maxYD );
+      newExtent.setYMinimum( yMin );
+      newExtent.setYMaximum( maxYD );
+    }
+
+    if ( newExtent != *currentMapExtent() )
+    {
+      *currentMapExtent() = newExtent;
     }
   }
 
