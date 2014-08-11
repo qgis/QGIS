@@ -45,9 +45,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-133</y>
         <width>392</width>
-        <height>720</height>
+        <height>711</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -207,11 +207,9 @@
            </layout>
           </item>
          </layout>
-         <zorder>groupBox</zorder>
          <zorder>mShowOnlyVisibleFeaturesCheckBox</zorder>
          <zorder>mComposerMapLabel</zorder>
          <zorder>mComposerMapComboBox</zorder>
-         <zorder></zorder>
          <zorder>mFeatureFilterCheckBox</zorder>
          <zorder>mMaximumColumnsSpinBox</zorder>
          <zorder>mMaxNumFeaturesLabel</zorder>
@@ -260,7 +258,19 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QgsColorButton" name="mGridColorButton">
+           <widget class="QgsColorButtonV2" name="mGridColorButton">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>120</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -346,7 +356,19 @@
               </widget>
              </item>
              <item row="2" column="1" colspan="2">
-              <widget class="QgsColorButton" name="mHeaderFontColorButton">
+              <widget class="QgsColorButtonV2" name="mHeaderFontColorButton">
+               <property name="minimumSize">
+                <size>
+                 <width>120</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>120</width>
+                 <height>16777215</height>
+                </size>
+               </property>
                <property name="text">
                 <string/>
                </property>
@@ -369,7 +391,19 @@
               </widget>
              </item>
              <item row="1" column="1" colspan="2">
-              <widget class="QgsColorButton" name="mContentFontColorButton">
+              <widget class="QgsColorButtonV2" name="mContentFontColorButton">
+               <property name="minimumSize">
+                <size>
+                 <width>120</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>120</width>
+                 <height>16777215</height>
+                </size>
+               </property>
                <property name="text">
                 <string/>
                </property>
@@ -405,13 +439,13 @@
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>

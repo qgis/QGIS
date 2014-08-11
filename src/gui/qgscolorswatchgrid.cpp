@@ -38,6 +38,7 @@ QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme* scheme, QString context,
     , mCurrentHoverBox( -1 )
     , mFocused( false )
     , mCurrentFocusBox( 0 )
+    , mPressedOnWidget( false )
 {
   //need to receive all mouse over events
   setMouseTracking( true );
@@ -143,10 +144,16 @@ void QgsColorSwatchGrid::mousePressEvent( QMouseEvent *event )
     mDrawBoxDepressed = true;
     repaint();
   }
+  mPressedOnWidget = true;
 }
 
 void QgsColorSwatchGrid::mouseReleaseEvent( QMouseEvent *event )
 {
+  if ( ! mPressedOnWidget )
+  {
+    return;
+  }
+
   int box = swatchForPosition( event->pos() );
   if ( mDrawBoxDepressed && event->button() == Qt::LeftButton )
   {
@@ -158,7 +165,7 @@ void QgsColorSwatchGrid::mouseReleaseEvent( QMouseEvent *event )
   if ( box >= 0 && box < mColors.length() && event->button() == Qt::LeftButton )
   {
     //color clicked
-    emit colorChanged( mColors.at( mCurrentHoverBox ).first );
+    emit colorChanged( mColors.at( box ).first );
   }
 }
 

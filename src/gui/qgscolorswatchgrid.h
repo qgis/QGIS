@@ -113,6 +113,8 @@ class GUI_EXPORT QgsColorSwatchGrid: public QWidget
 
     int mWidth;
 
+    bool mPressedOnWidget;
+
     /**Calculate height of widget based on number of colors
      * @returns required height of widget in pixels
      */

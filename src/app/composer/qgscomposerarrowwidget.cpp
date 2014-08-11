@@ -41,6 +41,17 @@ QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QgsCo
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, mArrow );
   mainLayout->addWidget( itemPropertiesWidget );
 
+  mArrowHeadOutlineColorButton->setColorDialogTitle( tr( "Select arrow head outline color" ) );
+  mArrowHeadOutlineColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mArrowHeadOutlineColorButton->setContext( "composer" );
+  mArrowHeadOutlineColorButton->setNoColorString( tr( "Transparent outline" ) );
+  mArrowHeadOutlineColorButton->setShowNoColor( true );
+  mArrowHeadFillColorButton->setColorDialogTitle( tr( "Select arrow head fill color" ) );
+  mArrowHeadFillColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mArrowHeadFillColorButton->setContext( "composer" );
+  mArrowHeadFillColorButton->setNoColorString( tr( "Transparent fill" ) );
+  mArrowHeadFillColorButton->setShowNoColor( true );
+
   setGuiElementValues();
 
   if ( arrow )
@@ -131,11 +142,7 @@ void QgsComposerArrowWidget::setGuiElementValues()
 
   blockAllSignals( true );
   mArrowHeadFillColorButton->setColor( mArrow->arrowHeadFillColor() );
-  mArrowHeadFillColorButton->setColorDialogTitle( tr( "Select arrow head fill color" ) );
-  mArrowHeadFillColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   mArrowHeadOutlineColorButton->setColor( mArrow->arrowHeadOutlineColor() );
-  mArrowHeadOutlineColorButton->setColorDialogTitle( tr( "Select arrow head outline color" ) );
-  mArrowHeadOutlineColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   mOutlineWidthSpinBox->setValue( mArrow->arrowHeadOutlineWidth() );
   mArrowHeadWidthSpinBox->setValue( mArrow->arrowHeadWidth() );
 

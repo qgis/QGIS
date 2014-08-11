@@ -23,16 +23,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -63,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-169</y>
-        <width>374</width>
-        <height>1145</height>
+        <y>0</y>
+        <width>375</width>
+        <height>1319</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -444,11 +435,47 @@
            </widget>
           </item>
           <item>
-           <widget class="QgsColorButton" name="mFontColorButton">
-            <property name="text">
-             <string>Font color...</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QLabel" name="label_16">
+              <property name="text">
+               <string>Font color</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsColorButtonV2" name="mFontColorButton">
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>120</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -820,13 +847,13 @@
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
   </customwidget>
  </customwidgets>
  <resources>

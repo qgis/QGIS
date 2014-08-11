@@ -70,6 +70,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
 
   mAnnotationFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
   mAnnotationFontColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mAnnotationFontColorButton->setContext( "composer" );
 
   insertAnnotationPositionEntries( mAnnotationPositionLeftComboBox );
   insertAnnotationPositionEntries( mAnnotationPositionRightComboBox );
@@ -83,10 +84,21 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
 
   mGridFramePenColorButton->setColorDialogTitle( tr( "Select grid frame color" ) );
   mGridFramePenColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mGridFramePenColorButton->setContext( "composer" );
+  mGridFramePenColorButton->setNoColorString( tr( "Transparent frame" ) );
+  mGridFramePenColorButton->setShowNoColor( true );
+
   mGridFrameFill1ColorButton->setColorDialogTitle( tr( "Select grid frame fill color" ) );
   mGridFrameFill1ColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mGridFrameFill1ColorButton->setContext( "composer" );
+  mGridFrameFill1ColorButton->setNoColorString( tr( "Transparent fill" ) );
+  mGridFrameFill1ColorButton->setShowNoColor( true );
+
   mGridFrameFill2ColorButton->setColorDialogTitle( tr( "Select grid frame fill color" ) );
   mGridFrameFill2ColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mGridFrameFill2ColorButton->setContext( "composer" );
+  mGridFrameFill2ColorButton->setNoColorString( tr( "Transparent fill" ) );
+  mGridFrameFill2ColorButton->setShowNoColor( true );
 
   //set initial state of frame style controls
   toggleFrameControls( false );
