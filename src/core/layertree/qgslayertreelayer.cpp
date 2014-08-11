@@ -25,7 +25,6 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
     , mLayerId( layer->id() )
     , mLayer( layer )
     , mVisible( Qt::Checked )
-    , mChildrenCheckable( false )
 {
   Q_ASSERT( QgsMapLayerRegistry::instance()->mapLayer( mLayerId ) == layer );
 }
@@ -36,7 +35,6 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( QString layerId, QString name )
     , mLayerName( name )
     , mLayer( 0 )
     , mVisible( Qt::Checked )
-    , mChildrenCheckable( false )
 {
   attachToLayer();
 }
@@ -47,7 +45,6 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer& other )
     , mLayerName( other.mLayerName )
     , mLayer( 0 )
     , mVisible( other.mVisible )
-    , mChildrenCheckable( other.mChildrenCheckable )
 {
   attachToLayer();
 }

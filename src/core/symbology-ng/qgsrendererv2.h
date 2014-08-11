@@ -175,6 +175,10 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! @node added in 2.6
     virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
 
+    //! If supported by the renderer, return classification attribute for the use in legend
+    //! @note added in 2.6
+    virtual QString legendClassificationAttribute() const { return QString(); }
+
     //! set type and size of editing vertex markers for subsequent rendering
     void setVertexMarkerAppearance( int type, int size );
 

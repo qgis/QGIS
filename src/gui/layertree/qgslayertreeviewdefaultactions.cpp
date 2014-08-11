@@ -149,8 +149,6 @@ void QgsLayerTreeViewDefaultActions::showFeatureCount()
 
 
   node->setCustomProperty( "showFeatureCount", node->customProperty( "showFeatureCount", 0 ).toInt() ? 0 : 1 );
-
-  mView->layerTreeModel()->refreshLayerSymbology( QgsLayerTree::toLayer( node ) );
 }
 
 

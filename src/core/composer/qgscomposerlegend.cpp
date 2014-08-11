@@ -24,12 +24,14 @@
 #include "qgscomposermodel.h"
 #include "qgslegendrenderer.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
 
 QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     : QgsComposerItem( composition )
+    , mLegendModel2( QgsProject::instance()->layerTreeRoot() )
     , mComposerMap( 0 )
 {
 
@@ -38,7 +40,10 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
   connect( &mLegendModel, SIGNAL( layersChanged() ), this, SLOT( synchronizeWithModel() ) );
 }
 
-QgsComposerLegend::QgsComposerLegend(): QgsComposerItem( 0 ), mComposerMap( 0 )
+QgsComposerLegend::QgsComposerLegend()
+  : QgsComposerItem( 0 )
+  , mLegendModel2( QgsProject::instance()->layerTreeRoot() )
+  , mComposerMap( 0 )
 {
 
 }
@@ -67,7 +72,7 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
   painter->setRenderHint( QPainter::Antialiasing, true );
   painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
 
-  QgsLegendRenderer legendRenderer( &mLegendModel, mSettings );
+  QgsLegendRenderer legendRenderer( &mLegendModel2, mSettings );
   legendRenderer.setLegendSize( rect().size() );
   legendRenderer.drawLegend( painter );
 
@@ -83,7 +88,7 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
 QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 {
-  QgsLegendRenderer legendRenderer( &mLegendModel, mSettings );
+  QgsLegendRenderer legendRenderer( &mLegendModel2, mSettings );
   QSizeF size = legendRenderer.minimumSize();
   if ( !painter )
     legendRenderer.drawLegend( painter );
@@ -93,7 +98,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 
 void QgsComposerLegend::adjustBoxSize()
 {
-  QgsLegendRenderer legendRenderer( &mLegendModel, mSettings );
+  QgsLegendRenderer legendRenderer( &mLegendModel2, mSettings );
   QSizeF size = legendRenderer.minimumSize();
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )

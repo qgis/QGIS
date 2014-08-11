@@ -1109,15 +1109,7 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
 
 QgsLegendSymbologyList QgsGraduatedSymbolRendererV2::legendSymbologyItems( QSize iconSize )
 {
-  QSettings settings;
-  bool showClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
-
   QgsLegendSymbologyList lst;
-  if ( showClassifiers )
-  {
-    lst << qMakePair( classAttribute(), QPixmap() );
-  }
-
   int count = ranges().count();
   for ( int i = 0; i < count; i++ )
   {
@@ -1131,14 +1123,7 @@ QgsLegendSymbologyList QgsGraduatedSymbolRendererV2::legendSymbologyItems( QSize
 QgsLegendSymbolList QgsGraduatedSymbolRendererV2::legendSymbolItems( double scaleDenominator, QString rule )
 {
   Q_UNUSED( scaleDenominator );
-  QSettings settings;
-  bool showClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
-
   QgsLegendSymbolList lst;
-  if ( showClassifiers )
-  {
-    lst << qMakePair( classAttribute(), ( QgsSymbolV2* )0 );
-  }
 
   foreach ( const QgsRendererRangeV2& range, mRanges )
   {

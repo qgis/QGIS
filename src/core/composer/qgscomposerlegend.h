@@ -21,6 +21,7 @@
 #include "qgscomposerlegendstyle.h"
 #include "qgscomposeritem.h"
 #include "qgscomposerlegenditem.h"
+#include "qgslayertreemodel.h"
 #include "qgslegendmodel.h"
 #include "qgslegendsettings.h"
 
@@ -152,6 +153,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     QgsComposerLegend(); //forbidden
 
     QgsLegendModel mLegendModel;
+
+    QgsLayerTreeModel mLegendModel2;
 
     QgsLegendSettings mSettings;
 

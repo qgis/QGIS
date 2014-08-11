@@ -4,16 +4,18 @@
 
 QgsLegendSymbolItemV2::QgsLegendSymbolItemV2()
     : mSymbol( 0 )
+    , mCheckable( false )
     , mOriginalSymbolPointer( 0 )
     , mScaleMinDenom( -1 )
     , mScaleMaxDenom( -1 )
 {
 }
 
-QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( QgsSymbolV2* symbol, const QString& label, const QString& ruleKey, int scaleMinDenom, int scaleMaxDenom )
+QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( QgsSymbolV2* symbol, const QString& label, const QString& ruleKey, bool checkable, int scaleMinDenom, int scaleMaxDenom )
     : mSymbol( symbol ? symbol->clone() : 0 )
     , mLabel( label )
     , mKey( ruleKey )
+    , mCheckable( checkable )
     , mOriginalSymbolPointer( symbol )
     , mScaleMinDenom( scaleMinDenom )
     , mScaleMaxDenom( scaleMaxDenom )
@@ -40,6 +42,7 @@ QgsLegendSymbolItemV2& QgsLegendSymbolItemV2::operator=( const QgsLegendSymbolIt
   setSymbol( other.mSymbol ? other.mSymbol->clone() : 0 );
   mLabel = other.mLabel;
   mKey = other.mKey;
+  mCheckable = other.mCheckable;
   mOriginalSymbolPointer = other.mOriginalSymbolPointer;
   mScaleMinDenom = other.mScaleMinDenom;
   mScaleMaxDenom = other.mScaleMaxDenom;

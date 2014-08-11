@@ -7,7 +7,9 @@
 #include "qgscomposerlegenditem.h"
 #include "qgsfontutils.h"
 #include "qgslayertree.h"
+#include "qgslayertreemodel.h"
 #include "qgslegendmodel.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsmaplayerregistry.h"
 #include "qgslegendrenderer.h"
 #include "qgsrasterlayer.h"
@@ -37,7 +39,7 @@ static void _setStandardTestFont( QgsLegendSettings& settings )
   }
 }
 
-static void _renderLegend( const QString& testName, QgsLegendModel* legendModel, const QgsLegendSettings& settings )
+static void _renderLegend( const QString& testName, QgsLayerTreeModel* legendModel, const QgsLegendSettings& settings )
 {
   QgsLegendRenderer legendRenderer( legendModel, settings );
   QSizeF size = legendRenderer.minimumSize();
@@ -61,7 +63,7 @@ static void _verifyImage( const QString& testName )
   QgsRenderChecker checker;
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( _fileNameForTest( testName ) );
-  bool equal = checker.compareImages( testName, 0 );
+  bool equal = checker.compareImages( testName, 500 );
   QVERIFY( equal );
 }
 
@@ -159,21 +161,31 @@ void TestQgsLegendRenderer::cleanup()
 
 void TestQgsLegendRenderer::testModel()
 {
-  QgsLegendModel legendModel;
-  legendModel.setLayerSetAndGroups( mRoot );
+  QgsLayerTreeModel legendModel( mRoot );
 
-  QStandardItem* iVL1 = legendModel.invisibleRootItem()->child( 0 )->child( 0 );
-  QVERIFY( iVL1 );
-  QgsComposerLayerItem* itemVL1 = dynamic_cast<QgsComposerLayerItem*>( iVL1 );
-  QVERIFY( itemVL1 );
+  QgsLayerTreeNode* nodeGroup0 = mRoot->children()[0];
+  QVERIFY( nodeGroup0 );
+  QgsLayerTreeNode* nodeLayer0 = nodeGroup0->children()[0];
+  QVERIFY( QgsLayerTree::isLayer( nodeLayer0 ) );
+  QModelIndex idx = legendModel.node2index( nodeLayer0 );
+  QVERIFY( idx.isValid() );
+  QgsLayerTreeLayer* nodeVL1 = QgsLayerTree::toLayer( nodeLayer0 );
+  QVERIFY( nodeVL1 );
 
-  QgsComposerSymbolV2Item* itemS1 = dynamic_cast<QgsComposerSymbolV2Item*>( iVL1->child( 0 ) );
-  QVERIFY( itemS1 );
-  QCOMPARE( legendModel.data( itemS1->index(), Qt::DisplayRole ).toString(), QString( "Line Layer" ) );
+  QList<QgsLayerTreeModelLegendNode*> lstNodes = legendModel.layerLegendNodes( nodeVL1 );
+  QVERIFY( lstNodes.count() == 1 );
+  QCOMPARE( lstNodes[0]->data( Qt::DisplayRole ).toString(), QString( "Line Layer" ) );
 
+#if 0 // TODO: implement custom legend entry labels
   // set user text
-  itemS1->setUserText( "Hurray" );
-  QCOMPARE( legendModel.data( itemS1->index(), Qt::DisplayRole ).toString(), QString( "Hurray" ) );
+  mVL1->legend()->setNodeUserText( lstNodes[0].id(), "Hurray" );
+
+  QList<QgsLayerTreeModelLegendNode*> lstNodes2 = legendModel.layerLegendNodes( nodeVL1 );
+  QCOMPARE( lstNodes2[0]->data( Qt::DisplayRole ).toString(), QString( "Hurray" ) );
+
+  // reset user text
+  mVL1->legend()->setNodeUserText( lstNodes2[0].id(), QString() );
+#endif
 }
 
 
@@ -181,8 +193,7 @@ void TestQgsLegendRenderer::testBasic()
 {
   QString testName = "legend_basic";
 
-  QgsLegendModel legendModel;
-  legendModel.setLayerSetAndGroups( mRoot );
+  QgsLayerTreeModel legendModel( mRoot );
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings );
@@ -201,8 +212,7 @@ void TestQgsLegendRenderer::testBigMarker()
 
   //dynamic_cast<QgsCategorizedSymbolRendererV2*>( mVL3->rendererV2() )->updateCategoryLabel( 2, "This is a long symbol label" );
 
-  QgsLegendModel legendModel;
-  legendModel.setLayerSetAndGroups( mRoot );
+  QgsLayerTreeModel legendModel( mRoot );
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings );
@@ -216,8 +226,7 @@ void TestQgsLegendRenderer::testLongSymbolText()
 
   dynamic_cast<QgsCategorizedSymbolRendererV2*>( mVL3->rendererV2() )->updateCategoryLabel( 1, "This is\nthree lines\nlong label" );
 
-  QgsLegendModel legendModel;
-  legendModel.setLayerSetAndGroups( mRoot );
+  QgsLayerTreeModel legendModel( mRoot );
 
   QgsLegendSettings settings;
   settings.setWrapChar( "\n" );
@@ -230,8 +239,7 @@ void TestQgsLegendRenderer::testThreeColumns()
 {
   QString testName = "legend_three_columns";
 
-  QgsLegendModel legendModel;
-  legendModel.setLayerSetAndGroups( mRoot );
+  QgsLayerTreeModel legendModel( mRoot );
 
   QgsLegendSettings settings;
   settings.setColumnCount( 3 );

@@ -198,6 +198,10 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     // @note added in 2.5
     virtual void checkLegendSymbolItem( QString key, bool state = true );
 
+    //! If supported by the renderer, return classification attribute for the use in legend
+    //! @note added in 2.6
+    virtual QString legendClassificationAttribute() const { return classAttribute(); }
+
   protected:
     QString mAttrName;
     QgsRangeList mRanges;

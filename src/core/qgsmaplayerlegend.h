@@ -53,12 +53,53 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     /** Set some data associated with the item. Default implementation does nothing and returns false. */
     virtual bool setData( const QVariant& value, int role );
 
+    virtual bool isEmbeddedInParent() const { return mEmbeddedInParent; }
+    virtual void setEmbeddedInParent( bool embedded ) { mEmbeddedInParent = embedded; }
+
+    struct ItemContext
+    {
+      //! Painter
+      QPainter* painter;
+      //! Top-left corner of the legend item
+      QPointF point;
+      //! offset from the left side where label should start
+      double labelXOffset;
+    };
+
+    struct ItemMetrics
+    {
+      QSizeF symbolSize;
+      QSizeF labelSize;
+    };
+
+    /** Entry point called from QgsLegendRenderer to do the rendering.
+     *  Default implementation calls drawSymbol() and drawSymbolText() methods.
+     *
+     *  If ctx is null, this is just first stage when preparing layout - without actual rendering.
+     */
+    virtual ItemMetrics draw( const QgsLegendSettings& settings, ItemContext* ctx );
+
+    /**
+     * Draws symbol on the left side of the item
+     * @param itemHeight Minimal height of the legend item - used for correct positioning when rendering
+     * @return Real size of the symbol (may be bigger than "normal" symbol size from settings)
+     */
+    virtual QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+
+    /**
+     * Draws label on the right side of the item
+     * @param symbolSize  Real size of the associated symbol - used for correct positioning when rendering
+     * @return Size of the label (may span multiple lines)
+     */
+    virtual QSizeF drawSymbolText( const QgsLegendSettings& settings, ItemContext* ctx, const QSizeF& symbolSize ) const;
+
   protected:
     /** Construct the node with pointer to its parent layer node */
     explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL );
 
   protected:
     QgsLayerTreeLayer* mParent;
+    bool mEmbeddedInParent;
 };
 
 #include "qgslegendsymbolitemv2.h"
@@ -78,6 +119,15 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
     virtual Qt::ItemFlags flags() const;
     virtual QVariant data( int role ) const;
     virtual bool setData( const QVariant& value, int role );
+
+    /** Draws a symbol at the current y position and returns the new x position. Returns real symbol height, because for points,
+     it is possible that it differs from mSymbolHeight */
+    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+
+    virtual void setEmbeddedInParent( bool embedded );
+
+  private:
+    void updateLabel();
 
   private:
     QgsLegendSymbolItemV2 mItem;
@@ -103,8 +153,43 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
     QIcon mIcon;
 };
 
-class QgsComposerLayerItem;
-class QgsComposerBaseSymbolItem;
+
+/**
+ * Implementation of legend node interface for displaying arbitrary raster image
+ *
+ * @note added in 2.6
+ */
+class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
+{
+  public:
+    QgsImageLegendNode( QgsLayerTreeLayer* nodeLayer, const QImage& img );
+
+    virtual QVariant data( int role ) const;
+
+    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+
+  private:
+    QImage mImage;
+};
+
+/**
+ * Implementation of legend node interface for displaying raster legend entries
+ *
+ * @note added in 2.6
+ */
+class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
+{
+  public:
+    QgsRasterSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QColor& color, const QString& label );
+
+    virtual QVariant data( int role ) const;
+
+    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+
+  private:
+    QColor mColor;
+    QString mLabel;
+};
 
 /**
  * The QgsMapLayerLegend class is abstract interface for implementations
@@ -127,12 +212,6 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
     virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer ) = 0;
 
     // TODO: support for layer tree view delegates
-
-    /**
-     * Return list of legend model items to be used in QgsLegendRenderer.
-     * Ownership is transferred to the caller.
-     */
-    virtual void createLegendModelItems( QgsComposerLayerItem* layerItem ) { Q_UNUSED( layerItem ); }
 
     //! Create new legend implementation for vector layer
     static QgsMapLayerLegend* defaultVectorLegend( QgsVectorLayer* vl );
@@ -159,8 +238,6 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 
     virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer );
 
-    virtual void createLegendModelItems( QgsComposerLayerItem* layerItem );
-
   private:
     QgsVectorLayer* mLayer;
 };
@@ -175,8 +252,6 @@ class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
     explicit QgsDefaultRasterLayerLegend( QgsRasterLayer* rl );
 
     virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer );
-
-    virtual void createLegendModelItems( QgsComposerLayerItem* layerItem );
 
   private:
     QgsRasterLayer* mLayer;

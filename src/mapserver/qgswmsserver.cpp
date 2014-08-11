@@ -20,8 +20,11 @@
 #include "qgscrscache.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
+#include "qgslayertree.h"
+#include "qgslayertreemodel.h"
 #include "qgslegendrenderer.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
@@ -37,8 +40,6 @@
 #include "qgssldconfigparser.h"
 #include "qgssymbolv2.h"
 #include "qgsrendererv2.h"
-#include "qgslegendmodel.h"
-#include "qgscomposerlegenditem.h"
 #include "qgspaintenginehack.h"
 #include "qgsogcutils.h"
 #include "qgsfeature.h"
@@ -595,15 +596,15 @@ QImage* QgsWMSServer::getLegendGraphics()
     }
   }
 
-  QgsLegendModel legendModel;
-  legendModel.setLayerSet( layerIds, scaleDenominator, rule );
+  QgsLayerTreeGroup rootGroup;
+  foreach ( QString layerId, layerIds )
+    rootGroup.addLayer( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+  QgsLayerTreeModel legendModel( &rootGroup );
 
-  //first find out image dimensions without painting
-  QStandardItem* rootItem = legendModel.invisibleRootItem();
-  if ( !rootItem )
-  {
-    return 0;
-  }
+  QList<QgsLayerTreeNode*> rootChildren = rootGroup.children();
+
+  // TODO: handle scale, rule
+  //legendModel.setLayerSet( layerIds, scaleDenominator, rule );
 
   // find out DPI
   QImage* tmpImage = createImage( 1, 1 );
@@ -636,35 +637,38 @@ QImage* QgsWMSServer::getLegendGraphics()
     p.setRenderHint( QPainter::Antialiasing, true );
     p.scale( dpmm, dpmm );
 
-    QgsComposerBaseSymbolItem* currentComposerItem = dynamic_cast<QgsComposerBaseSymbolItem*>( rootItem->child( 0 )->child( 0 ) );
-    if ( currentComposerItem != NULL )
+    if ( rootChildren.count() != 0 && QgsLayerTree::isLayer( rootChildren[0] ) )
     {
-      QgsComposerBaseSymbolItem::ItemContext ctx;
-      ctx.painter = &p;
-      ctx.labelXOffset = 0;
-      ctx.point = QPointF();
-      double itemHeight = ruleSymbolHeight / dpmm;
-      currentComposerItem->drawSymbol( legendSettings, &ctx, itemHeight );
+      QList<QgsLayerTreeModelLegendNode*> legendNodes = legendModel.layerLegendNodes( QgsLayerTree::toLayer( rootChildren[0] ) );
+      if ( legendNodes.count() != 0 )
+      {
+        QgsLayerTreeModelLegendNode::ItemContext ctx;
+        ctx.painter = &p;
+        ctx.labelXOffset = 0;
+        ctx.point = QPointF();
+        double itemHeight = ruleSymbolHeight / dpmm;
+        legendNodes[0]->drawSymbol( legendSettings, &ctx, itemHeight );
+      }
     }
 
     QgsMapLayerRegistry::instance()->removeAllMapLayers();
     return paintImage;
   }
 
-  for ( int i = 0; i < rootItem->rowCount(); ++i )
+  foreach ( QgsLayerTreeNode* node, rootChildren )
   {
-    if ( QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( rootItem->child( i ) ) )
+    if ( QgsLayerTree::isLayer( node ) )
     {
+      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
       // layer titles - hidden or not
-      lItem->setStyle( mDrawLegendLayerLabel ? QgsComposerLegendStyle::Subgroup : QgsComposerLegendStyle::Hidden );
+      QgsLegendRenderer::setNodeLegendStyle( nodeLayer, mDrawLegendLayerLabel ? QgsComposerLegendStyle::Subgroup : QgsComposerLegendStyle::Hidden );
 
       // rule item titles
       if ( !mDrawLegendItemLabel )
       {
-        for ( int j = 0; j < lItem->rowCount(); ++j )
+        foreach ( QgsLayerTreeModelLegendNode* legendNode, legendModel.layerLegendNodes( nodeLayer ) )
         {
-          if ( QgsComposerBaseSymbolItem* sItem = dynamic_cast<QgsComposerBaseSymbolItem*>( lItem->child( j ) ) )
-            sItem->setUserText( " " ); // empty string = no override, so let's use one space
+          // TODO legendNode->setUserText( " " ); // empty string = no override, so let's use one space
         }
       }
     }

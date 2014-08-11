@@ -107,7 +107,6 @@ editorwidgets/qgswebviewwidgetfactory.cpp
 
 layertree/qgscustomlayerorderwidget.cpp
 layertree/qgslayertreemapcanvasbridge.cpp
-layertree/qgslayertreemodel.cpp
 layertree/qgslayertreeview.cpp
 layertree/qgslayertreeviewdefaultactions.cpp
 
@@ -317,7 +316,6 @@ editorwidgets/qgswebviewwidgetwrapper.h
 
 layertree/qgscustomlayerorderwidget.h
 layertree/qgslayertreemapcanvasbridge.h
-layertree/qgslayertreemodel.h
 layertree/qgslayertreeview.h
 layertree/qgslayertreeviewdefaultactions.h
 
@@ -553,7 +551,6 @@ editorwidgets/qgswebviewwidgetfactory.h
 
 layertree/qgscustomlayerorderwidget.h
 layertree/qgslayertreemapcanvasbridge.h
-layertree/qgslayertreemodel.h
 layertree/qgslayertreeview.h
 
 raster/qgsrasterrendererwidget.h

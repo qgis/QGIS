@@ -41,7 +41,7 @@ class QgsMapLayer;
  * @see QgsLayerTreeView
  * @note added in 2.4
  */
-class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
+class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
   public:
@@ -103,6 +103,10 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Return layer node to which a symbology node belongs to. Returns null pointer if index is not a symbology node.
     QgsLayerTreeLayer* layerNodeForSymbologyNode( const QModelIndex& index ) const;
 
+    //! Return list of legend nodes attached to a particular layer node
+    //! @note added in 2.6
+    QList<QgsLayerTreeModelLegendNode*> layerLegendNodes( QgsLayerTreeLayer* nodeLayer );
+
     //! Return pointer to the root node of the layer tree. Always a non-null pointer.
     QgsLayerTreeGroup* rootGroup();
 
@@ -135,6 +139,8 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     void nodeVisibilityChanged( QgsLayerTreeNode* node );
 
+    void nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key );
+
     void nodeLayerLoaded();
     void layerLegendChanged();
 
@@ -146,6 +152,8 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     void connectToLayer( QgsLayerTreeLayer* nodeLayer );
     void disconnectFromLayer( QgsLayerTreeLayer* nodeLayer );
+
+    void connectToLayers(QgsLayerTreeGroup* parentGroup );
 
     //! emit dataChanged() for layer tree node items
     void recursivelyEmitDataChanged( const QModelIndex& index = QModelIndex() );

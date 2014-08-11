@@ -43,7 +43,11 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *pare
   connect( mRootNode, SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeRemovedChildren() ) );
   connect( mRootNode, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SLOT( nodeVisibilityChanged( QgsLayerTreeNode* ) ) );
 
+  connect( mRootNode, SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode*, QString ) ) );
+
   mFontLayer.setBold( true );
+
+  connectToLayers( mRootNode );
 }
 
 QgsLayerTreeModel::~QgsLayerTreeModel()
@@ -83,6 +87,9 @@ int QgsLayerTreeModel::rowCount( const QModelIndex &parent ) const
   if ( QgsLayerTree::isLayer( n ) )
   {
     QgsLayerTreeLayer* nL = QgsLayerTree::toLayer( n );
+
+    if ( mSymbologyNodes[nL].count() == 1 && mSymbologyNodes[nL][0]->isEmbeddedInParent() )
+      return 0;
 
     return mSymbologyNodes[nL].count();
   }
@@ -185,6 +192,12 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       return iconGroup();
     else if ( QgsLayerTree::isLayer( node ) )
     {
+      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
+
+      // if there's just on legend entry that should be embedded in layer - do that!
+      if ( testFlag( ShowSymbology ) && mSymbologyNodes[nodeLayer].count() == 1 && mSymbologyNodes[nodeLayer][0]->isEmbeddedInParent() )
+        return mSymbologyNodes[nodeLayer][0]->data( Qt::DecorationRole );
+
       QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
       if ( !layer )
         return QVariant();
@@ -430,6 +443,11 @@ QgsLayerTreeLayer* QgsLayerTreeModel::layerNodeForSymbologyNode( const QModelInd
   return symNode ? symNode->parent() : 0;
 }
 
+QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::layerLegendNodes( QgsLayerTreeLayer* nodeLayer )
+{
+  return mSymbologyNodes.value( nodeLayer );
+}
+
 QgsLayerTreeGroup*QgsLayerTreeModel::rootGroup()
 {
   return mRootNode;
@@ -564,6 +582,14 @@ void QgsLayerTreeModel::nodeVisibilityChanged( QgsLayerTreeNode* node )
   QModelIndex index = node2index( node );
   emit dataChanged( index, index );
 }
+
+
+void QgsLayerTreeModel::nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key )
+{
+  if ( QgsLayerTree::isLayer( node ) && key == "showFeatureCount" )
+    refreshLayerSymbology( QgsLayerTree::toLayer( node ) );
+}
+
 
 void QgsLayerTreeModel::nodeLayerLoaded()
 {
@@ -711,6 +737,17 @@ void QgsLayerTreeModel::disconnectFromLayer( QgsLayerTreeLayer* nodeLayer )
   {
     // last instance of the layer in the tree: disconnect from all signals from layer!
     disconnect( nodeLayer->layer(), 0, this, 0 );
+  }
+}
+
+void QgsLayerTreeModel::connectToLayers( QgsLayerTreeGroup* parentGroup )
+{
+  foreach ( QgsLayerTreeNode* node, parentGroup->children() )
+  {
+    if ( QgsLayerTree::isGroup( node ) )
+      connectToLayers( QgsLayerTree::toGroup( node ) );
+    else if ( QgsLayerTree::isLayer( node ) )
+      connectToLayer( QgsLayerTree::toLayer( node ) );
   }
 }
 

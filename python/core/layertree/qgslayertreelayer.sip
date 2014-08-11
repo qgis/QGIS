@@ -37,11 +37,6 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
     Qt::CheckState isVisible() const;
     void setVisible( Qt::CheckState visible );
 
-    //! @note added in 2.5
-    bool childrenCheckable() const;
-    //! @note added in 2.5
-    void setChildrenCheckable( bool checkable );
-
     static QgsLayerTreeLayer* readXML( QDomElement& element ) /Factory/;
     virtual void writeXML( QDomElement& parentElement );
 

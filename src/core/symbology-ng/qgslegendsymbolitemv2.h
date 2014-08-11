@@ -16,7 +16,7 @@ class CORE_EXPORT QgsLegendSymbolItemV2
   public:
     QgsLegendSymbolItemV2();
     //! construct item, does not take ownership of symbol (makes internal clone)
-    QgsLegendSymbolItemV2( QgsSymbolV2* symbol, const QString& label, const QString& ruleKey, int scaleMinDenom = -1, int scaleMaxDenom = -1 );
+    QgsLegendSymbolItemV2( QgsSymbolV2* symbol, const QString& label, const QString& ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1 );
     ~QgsLegendSymbolItemV2();
     QgsLegendSymbolItemV2( const QgsLegendSymbolItemV2& other );
     QgsLegendSymbolItemV2& operator=( const QgsLegendSymbolItemV2& other );
@@ -24,6 +24,7 @@ class CORE_EXPORT QgsLegendSymbolItemV2
     QgsSymbolV2* symbol() const { return mSymbol; }
     QString label() const { return mLabel; }
     QString ruleKey() const { return mKey; }
+    bool isCheckable() const { return mCheckable; }
 
     //! used for older code that identifies legend entries from symbol pointer within renderer
     QgsSymbolV2* legacyRuleKey() const { return mOriginalSymbolPointer; }
@@ -43,6 +44,8 @@ class CORE_EXPORT QgsLegendSymbolItemV2
     QString mLabel;
     //! unique identifier of the symbol item (within renderer)
     QString mKey;
+    //! whether it can be enabled/disabled
+    bool mCheckable;
 
     QgsSymbolV2* mOriginalSymbolPointer;
 

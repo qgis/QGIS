@@ -86,44 +86,6 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
 class CORE_EXPORT QgsComposerBaseSymbolItem : public QgsComposerLegendItem
 {
   public:
-
-    struct ItemContext
-    {
-      //! Painter
-      QPainter* painter;
-      //! Top-left corner of the legend item
-      QPointF point;
-      //! offset from the left side where label should start
-      double labelXOffset;
-    };
-
-    struct ItemMetrics
-    {
-      QSizeF symbolSize;
-      QSizeF labelSize;
-    };
-
-    /** Entry point called from QgsLegendRenderer to do the rendering.
-     *  Default implementation calls drawSymbol() and drawSymbolText() methods.
-     *
-     *  If ctx is null, this is just first stage when preparing layout - without actual rendering.
-     */
-    virtual ItemMetrics draw( const QgsLegendSettings& settings, ItemContext* ctx );
-
-    /**
-     * Draws symbol on the left side of the item
-     * @param itemHeight Minimal height of the legend item - used for correct positioning when rendering
-     * @return Real size of the symbol (may be bigger than "normal" symbol size from settings)
-     */
-    virtual QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
-
-    /**
-     * Draws label on the right side of the item
-     * @param symbolSize  Real size of the associated symbol - used for correct positioning when rendering
-     * @return Size of the label (may span multiple lines)
-     */
-    virtual QSizeF drawSymbolText( const QgsLegendSettings& settings, ItemContext* ctx, const QSizeF& symbolSize ) const;
-
     QgsComposerLayerItem* parentLayerItem() const;
     QgsMapLayer* parentMapLayer() const;
 
@@ -159,10 +121,6 @@ class CORE_EXPORT QgsComposerSymbolV2Item : public QgsComposerBaseSymbolItem
     Q_DECL_DEPRECATED QgsSymbolV2* symbolV2() const { return mItem.symbol(); }
 
     ItemType itemType() const { return SymbologyV2Item; }
-
-    /** Draws a symbol at the current y position and returns the new x position. Returns real symbol height, because for points,
-     it is possible that it differs from mSymbolHeight */
-    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
 
     //! @note added in 2.6
     QString ruleKey() const { return mItem.ruleKey(); }
@@ -209,8 +167,6 @@ class CORE_EXPORT QgsComposerRasterSymbolItem : public QgsComposerBaseSymbolItem
     void setColor( const QColor& c ) { mColor = c; }
     QColor color() const { return mColor; }
 
-    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
-
   private:
     QString mLayerID;
 
@@ -235,8 +191,6 @@ class CORE_EXPORT QgsComposerRasterImageItem : public QgsComposerBaseSymbolItem
     virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
 
     ItemType itemType() const { return RasterImageItem; }
-
-    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
 
   private:
     QImage mImage;
@@ -268,9 +222,6 @@ class CORE_EXPORT QgsComposerLayerItem : public QgsComposerLegendItem
     //! @deprecated does nothing
     Q_DECL_DEPRECATED void setDefaultStyle( double scaleDenominator = -1, QString rule = "" );
 
-    /** Draws a layer item */
-    QSizeF draw( const QgsLegendSettings& settings, QPainter* painter = 0, QPointF point = QPointF() );
-
     //! convenience method to obtain layer pointed at
     //! @note added in 2.6
     QgsMapLayer* mapLayer() const;
@@ -294,11 +245,6 @@ class CORE_EXPORT QgsComposerGroupItem: public QgsComposerLegendItem
     virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
 
     ItemType itemType() const { return GroupItem; }
-
-    /** Draws a group item.
-     * Returns list of sizes of layers and groups including this group.
-     */
-    QSizeF draw( const QgsLegendSettings& settings, QPainter* painter = 0, QPointF point = QPointF() );
 
 };
 

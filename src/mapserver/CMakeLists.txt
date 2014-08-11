@@ -93,6 +93,7 @@ INCLUDE_DIRECTORIES(
   ../core/raster
   ../core/symbology-ng
   ../core/composer
+  ../core/layertree
   ../analysis/interpolation
   ../plugins/diagram_overlay
   .

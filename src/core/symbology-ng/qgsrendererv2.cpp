@@ -539,7 +539,7 @@ QgsLegendSymbolListV2 QgsFeatureRendererV2::legendSymbolItemsV2() const
   int i = 0;
   for ( QgsLegendSymbolList::const_iterator it = lst.begin(); it != lst.end(); ++it, ++i )
   {
-    lst2 << QgsLegendSymbolItemV2( it->second, it->first, QString::number( i ) );
+    lst2 << QgsLegendSymbolItemV2( it->second, it->first, QString::number( i ), legendSymbolItemsCheckable() );
   }
   return lst2;
 }

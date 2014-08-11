@@ -269,7 +269,7 @@ void QgsLegendModel::updateLayer( QStandardItem* layerItem )
     QgsMapLayer* mapLayer = lItem->mapLayer();
     if ( mapLayer && mapLayer->legend() )
     {
-      mapLayer->legend()->createLegendModelItems( lItem );
+      // mapLayer->legend()->createLegendModelItems( lItem );
     }
   }
 }
@@ -332,7 +332,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator
   itemsList << layerItem << new QgsComposerStyleItem( layerItem );
   parentItem->appendRow( itemsList );
 
-  theMapLayer->legend()->createLegendModelItems( layerItem );
+  // theMapLayer->legend()->createLegendModelItems( layerItem );
 
   if ( theMapLayer->type() == QgsMapLayer::VectorLayer )
   {
