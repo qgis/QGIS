@@ -258,6 +258,9 @@ class QgsWMSServer: public QgsOWSServer
 
     /** Return the image quality to use for getMap request */
     int getImageQuality() const;
+
+    /** Return precision to use for GetFeatureInfo request */
+    int getWMSPrecision(int defaultValue ) const;
 };
 
 #endif

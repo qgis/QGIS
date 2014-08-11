@@ -1823,10 +1823,10 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       {
         QDomElement bBoxElem = infoDocument.createElement( "BoundingBox" );
         bBoxElem.setAttribute( version == "1.1.1" ? "SRS" : "CRS", outputCrs.authid() );
-        bBoxElem.setAttribute( "minx", qgsDoubleToString( box.xMinimum(), 8 ) );
-        bBoxElem.setAttribute( "maxx", qgsDoubleToString( box.xMaximum(), 8 ) );
-        bBoxElem.setAttribute( "miny", qgsDoubleToString( box.yMinimum(), 8 ) );
-        bBoxElem.setAttribute( "maxy", qgsDoubleToString( box.yMaximum(), 8 ) );
+        bBoxElem.setAttribute( "minx", qgsDoubleToString( box.xMinimum(), getWMSPrecision( 8 ) ) );
+        bBoxElem.setAttribute( "maxx", qgsDoubleToString( box.xMaximum(), getWMSPrecision( 8 ) ) );
+        bBoxElem.setAttribute( "miny", qgsDoubleToString( box.yMinimum(), getWMSPrecision( 8 ) ) );
+        bBoxElem.setAttribute( "maxy", qgsDoubleToString( box.yMaximum(), getWMSPrecision( 8 ) ) );
         featureElement.appendChild( bBoxElem );
       }
 
@@ -1844,7 +1844,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
         }
         QDomElement geometryElement = infoDocument.createElement( "Attribute" );
         geometryElement.setAttribute( "name", "geometry" );
-        geometryElement.setAttribute( "value", geom->exportToWkt( 8 ) );
+        geometryElement.setAttribute( "value", geom->exportToWkt( getWMSPrecision( 8 ) ) );
         geometryElement.setAttribute( "type", "derived" );
         featureElement.appendChild( geometryElement );
       }
@@ -3013,4 +3013,26 @@ int QgsWMSServer::getImageQuality( ) const
     }
   }
   return imageQuality;
+}
+
+int QgsWMSServer::getWMSPrecision( int defaultValue = 8) const
+{
+  // First taken from QGIS project
+  int WMSPrecision = mConfigParser->WMSPrecision();
+
+  // Then checks if a parameter is given, if so use it instead
+  if ( mParameters.contains( "WMS_PRECISION" ) )
+  {
+    bool conversionSuccess;
+    int WMSPrecisionParameter;
+    WMSPrecisionParameter = mParameters[ "WMS_PRECISION" ].toInt( &conversionSuccess );
+    if ( conversionSuccess )
+    {
+      WMSPrecision = WMSPrecisionParameter;
+    }
+  }
+  if ( WMSPrecision == -1 ){
+    WMSPrecision = defaultValue;
+  }
+  return WMSPrecision;
 }
