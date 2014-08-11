@@ -678,6 +678,15 @@ double QgsSLDConfigParser::imageQuality() const
   return -1;
 }
 
+int QgsSLDConfigParser::WMSPrecision() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->WMSPrecision();
+  }
+  return -1;
+}
+
 QgsComposition* QgsSLDConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
 {
   if ( mFallbackParser )

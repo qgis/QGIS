@@ -352,6 +352,21 @@ double QgsWMSProjectParser::imageQuality() const
   return imageQuality;
 }
 
+int QgsWMSProjectParser::WMSPrecision() const
+{
+  int WMSPrecision = -1;
+  QDomElement propertiesElem = mProjectParser.propertiesElem();
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement WMSPrecisionElem = propertiesElem.firstChildElement( "WMSPrecision" );
+    if ( !WMSPrecisionElem.isNull() )
+    {
+      WMSPrecision = WMSPrecisionElem.text().toInt();
+    }
+  }
+  return WMSPrecision;
+}
+
 QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlList ) const
 {
   //Create composition from xml

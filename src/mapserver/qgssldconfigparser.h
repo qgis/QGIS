@@ -99,6 +99,7 @@ class QgsSLDConfigParser: public QgsWMSConfigParser
     double maxWidth() const;
     double maxHeight() const;
     double imageQuality() const;
+    int WMSPrecision() const;
 
     //printing
 
