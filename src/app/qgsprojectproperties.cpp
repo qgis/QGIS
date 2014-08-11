@@ -86,6 +86,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   connect( radAutomatic, SIGNAL( toggled( bool ) ), mPrecisionFrame, SLOT( setDisabled( bool ) ) );
   connect( radManual, SIGNAL( toggled( bool ) ), mPrecisionFrame, SLOT( setEnabled( bool ) ) );
 
+  QSettings settings;
+
   ///////////////////////////////////////////////////////////
   // Properties stored in map canvas's QgsMapRenderer
   // these ones are propagated to QgsProject by a signal
@@ -147,7 +149,14 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   int myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorBluePart", 0 );
   int myAlphaInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorAlphaPart", 255 );
   QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt, myAlphaInt );
+  myRedInt = settings.value( "/qgis/default_selection_color_red", 255 ).toInt();
+  myGreenInt = settings.value( "/qgis/default_selection_color_green", 255 ).toInt();
+  myBlueInt = settings.value( "/qgis/default_selection_color_blue", 0 ).toInt();
+  myAlphaInt = settings.value( "/qgis/default_selection_color_alpha", 255 ).toInt();
+  QColor defaultSelectionColor = QColor( myRedInt, myGreenInt, myBlueInt, myAlphaInt );
+  pbnSelectionColor->setContext( "gui" );
   pbnSelectionColor->setColor( myColor );
+  pbnSelectionColor->setDefaultColor( defaultSelectionColor );
   pbnSelectionColor->setColorDialogTitle( tr( "Selection color" ) );
   pbnSelectionColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
@@ -156,7 +165,14 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
   myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
   myColor = QColor( myRedInt, myGreenInt, myBlueInt );
+  myRedInt = settings.value( "/qgis/default_canvas_color_red", 255 ).toInt();
+  myGreenInt = settings.value( "/qgis/default_canvas_color_green", 255 ).toInt();
+  myBlueInt = settings.value( "/qgis/default_canvas_color_blue", 255 ).toInt();
+  QColor defaultCanvasColor = QColor( myRedInt, myGreenInt, myBlueInt );
+
+  pbnCanvasColor->setContext( "gui" );
   pbnCanvasColor->setColor( myColor );
+  pbnCanvasColor->setDefaultColor( defaultCanvasColor );
 
   //get project scales
   QStringList myScales = QgsProject::instance()->readListEntry( "Scales", "/ScalesList" );

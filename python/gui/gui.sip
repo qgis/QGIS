@@ -33,7 +33,9 @@
 %Include qgscodeeditorcss.sip
 %End
 %Include qgscolorbutton.sip
+%Include qgscolorbuttonv2.sip
 %Include qgscolordialog.sip
+%Include qgscolorswatchgrid.sip
 %Include qgscomposerview.sip
 %Include qgscredentialdialog.sip
 %Include qgsdetaileditemdata.sip
