@@ -42,7 +42,16 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -179,7 +188,16 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -195,7 +213,16 @@
          </property>
          <widget class="QWidget" name="mProjOpts_01">
           <layout class="QVBoxLayout" name="verticalLayout_6">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -609,7 +636,16 @@
                      <enum>QFrame::Raised</enum>
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_4">
-                     <property name="margin">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
                       <number>0</number>
                      </property>
                      <item>
@@ -782,7 +818,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_02">
           <layout class="QVBoxLayout" name="verticalLayout_5">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -832,7 +877,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_03">
           <layout class="QVBoxLayout" name="verticalLayout_9">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -904,7 +958,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_04">
           <layout class="QVBoxLayout" name="verticalLayout_11">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -1320,7 +1383,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_05">
           <layout class="QVBoxLayout" name="verticalLayout_14">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -1368,15 +1440,11 @@
                   <string notr="true">projowsserver</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_6">
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="label_9">
-                    <property name="text">
-                     <string>Person</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>mWMSContactPerson</cstring>
-                    </property>
-                   </widget>
+                  <item row="7" column="1">
+                   <widget class="QLineEdit" name="mWMSFees"/>
+                  </item>
+                  <item row="8" column="1">
+                   <widget class="QLineEdit" name="mWMSAccessConstraints"/>
                   </item>
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_10">
@@ -1388,21 +1456,8 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="1">
-                   <widget class="QLineEdit" name="mWMSTitle"/>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_11">
-                    <property name="text">
-                     <string>Organization</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>mWMSContactOrganization</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QLineEdit" name="mWMSContactOrganization"/>
+                  <item row="2" column="1">
+                   <widget class="QLineEdit" name="mWMSOnlineResourceLineEdit"/>
                   </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="mWMSOnlineResourceLabel">
@@ -1411,8 +1466,18 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="1">
-                   <widget class="QLineEdit" name="mWMSOnlineResourceLineEdit"/>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="label_9">
+                    <property name="text">
+                     <string>Person</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>mWMSContactPerson</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1">
+                   <widget class="QLineEdit" name="mWMSContactMail"/>
                   </item>
                   <item row="3" column="1">
                    <widget class="QLineEdit" name="mWMSContactPerson"/>
@@ -1424,8 +1489,8 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="1">
-                   <widget class="QLineEdit" name="mWMSContactMail"/>
+                  <item row="1" column="1">
+                   <widget class="QLineEdit" name="mWMSContactOrganization"/>
                   </item>
                   <item row="5" column="0">
                    <widget class="QLabel" name="label_12">
@@ -1437,8 +1502,8 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="1">
-                   <widget class="QLineEdit" name="mWMSContactPhone"/>
+                  <item row="0" column="1">
+                   <widget class="QLineEdit" name="mWMSTitle"/>
                   </item>
                   <item row="6" column="0">
                    <widget class="QLabel" name="label_15">
@@ -1450,21 +1515,31 @@
                     </property>
                    </widget>
                   </item>
+                  <item row="5" column="1">
+                   <widget class="QLineEdit" name="mWMSContactPhone"/>
+                  </item>
                   <item row="6" column="1">
                    <widget class="QTextEdit" name="mWMSAbstract"/>
                   </item>
-                  <item row="7" column="1">
-                   <widget class="QLineEdit" name="mWMSFees"/>
-                  </item>
-                  <item row="7" column="0">
-                   <widget class="QLabel" name="mWMSFeesLabel">
+                  <item row="9" column="0">
+                   <widget class="QLabel" name="mWMSKeywordListLabel">
                     <property name="text">
-                     <string>Fees</string>
+                     <string>Keyword list</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="8" column="1">
-                   <widget class="QLineEdit" name="mWMSAccessConstraints"/>
+                  <item row="9" column="1">
+                   <widget class="QLineEdit" name="mWMSKeywordList"/>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_11">
+                    <property name="text">
+                     <string>Organization</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>mWMSContactOrganization</cstring>
+                    </property>
+                   </widget>
                   </item>
                   <item row="8" column="0">
                    <widget class="QLabel" name="mWMSAccessConstraintsLabel">
@@ -1473,13 +1548,10 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="9" column="1">
-                   <widget class="QLineEdit" name="mWMSKeywordList"/>
-                  </item>
-                  <item row="9" column="0">
-                   <widget class="QLabel" name="mWMSKeywordListLabel">
+                  <item row="7" column="0">
+                   <widget class="QLabel" name="mWMSFeesLabel">
                     <property name="text">
-                     <string>Keyword list</string>
+                     <string>Fees</string>
                     </property>
                    </widget>
                   </item>
@@ -1494,8 +1566,141 @@
                  <property name="syncGroup" stdset="0">
                   <string notr="true">projowsserver</string>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_14">
-                  <item row="0" column="1" colspan="2">
+                 <layout class="QGridLayout" name="gridLayout_12">
+                  <item row="0" column="0" colspan="2">
+                   <layout class="QHBoxLayout" name="grpWMSPrecision">
+                    <item>
+                     <widget class="QLabel" name="label_5">
+                      <property name="text">
+                       <string>GetFeatureInfo geometry precision (decimal places)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QSpinBox" name="mWMSPrecisionSpinBox">
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>17</number>
+                      </property>
+                      <property name="value">
+                       <number>8</number>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QgsCollapsibleGroupBox" name="grpWMSExt">
+                    <property name="title">
+                     <string>Advertised extent</string>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                    <property name="checked">
+                     <bool>false</bool>
+                    </property>
+                    <property name="collapsed" stdset="0">
+                     <bool>false</bool>
+                    </property>
+                    <property name="saveCollapsedState" stdset="0">
+                     <bool>true</bool>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_4">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_16">
+                       <property name="text">
+                        <string>Min. X</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>mWMSExtMinX</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLineEdit" name="mWMSExtMinX">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_17">
+                       <property name="text">
+                        <string>Min. Y</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>mWMSExtMinY</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="mWMSExtMinY">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_18">
+                       <property name="text">
+                        <string>Max. X</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>mWMSExtMaxX</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLineEdit" name="mWMSExtMaxX">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="label_19">
+                       <property name="text">
+                        <string>Max. Y</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>mWMSExtMaxY</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QLineEdit" name="mWMSExtMaxY">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0" colspan="2">
+                      <widget class="QPushButton" name="pbnWMSExtCanvas">
+                       <property name="text">
+                        <string>Use Current Canvas Extent</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0" colspan="2">
+                      <spacer name="verticalSpacer_3">
+                       <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>20</width>
+                         <height>40</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
                    <widget class="QgsCollapsibleGroupBox" name="grpWMSList">
                     <property name="title">
                      <string>CRS restrictions</string>
@@ -1542,7 +1747,7 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="1" column="0">
+                  <item row="2" column="0">
                    <widget class="QgsCollapsibleGroupBox" name="mWMSComposerGroupBox">
                     <property name="title">
                      <string>Exclude composers</string>
@@ -1660,7 +1865,14 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="4" column="0" colspan="3">
+                  <item row="3" column="0">
+                   <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
+                    <property name="text">
+                     <string>Add geometry to feature response</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_2">
                     <item>
                      <widget class="QLabel" name="mWMSUrlLabel">
@@ -1674,7 +1886,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="5" column="0" colspan="3">
+                  <item row="5" column="0" colspan="2">
                    <layout class="QGridLayout" name="gridLayout_3">
                     <item row="1" column="1">
                      <widget class="QLabel" name="mMaxWidthLabel">
@@ -1721,116 +1933,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QgsCollapsibleGroupBox" name="grpWMSExt">
-                    <property name="title">
-                     <string>Advertised extent</string>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
-                    <property name="collapsed" stdset="0">
-                     <bool>false</bool>
-                    </property>
-                    <property name="saveCollapsedState" stdset="0">
-                     <bool>true</bool>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_4">
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_16">
-                       <property name="text">
-                        <string>Min. X</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>mWMSExtMinX</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QLineEdit" name="mWMSExtMinX">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_17">
-                       <property name="text">
-                        <string>Min. Y</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>mWMSExtMinY</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QLineEdit" name="mWMSExtMinY">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="label_18">
-                       <property name="text">
-                        <string>Max. X</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>mWMSExtMaxX</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <widget class="QLineEdit" name="mWMSExtMaxX">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="0">
-                      <widget class="QLabel" name="label_19">
-                       <property name="text">
-                        <string>Max. Y</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>mWMSExtMaxY</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="1">
-                      <widget class="QLineEdit" name="mWMSExtMaxY">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="0" colspan="2">
-                      <widget class="QPushButton" name="pbnWMSExtCanvas">
-                       <property name="text">
-                        <string>Use Current Canvas Extent</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="0" colspan="2">
-                      <spacer name="verticalSpacer_3">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="6" column="0" colspan="3">
+                  <item row="6" column="0" colspan="2">
                    <layout class="QHBoxLayout" name="horizontalLayout_10">
                     <item>
                      <widget class="QLabel" name="mWMSImageQualityLabel">
@@ -2042,7 +2145,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_06">
           <layout class="QVBoxLayout" name="verticalLayout_15">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -2095,7 +2207,16 @@
          </widget>
          <widget class="QWidget" name="mTabRelations">
           <layout class="QGridLayout" name="gridLayout_16">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
           </layout>
@@ -2121,7 +2242,16 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item>

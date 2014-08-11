@@ -98,6 +98,9 @@ class QgsWMSConfigParser
     virtual double maxHeight() const = 0;
     virtual double imageQuality() const = 0;
 
+    // WMS GetFeatureInfo precision (decimal places)
+    virtual int WMSPrecision() const = 0;
+
     //printing
 
     /**Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
