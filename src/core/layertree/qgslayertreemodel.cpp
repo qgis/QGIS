@@ -16,6 +16,7 @@
 #include "qgslayertreemodel.h"
 
 #include "qgslayertree.h"
+#include "qgslayertreemodellegendnode.h"
 
 #include <QMimeData>
 #include <QTextStream>

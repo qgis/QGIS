@@ -22,6 +22,7 @@
 #include "qgsgeometry.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreemodellegendnode.h"
 #include "qgslegendrenderer.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlegend.h"

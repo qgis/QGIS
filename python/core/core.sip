@@ -168,6 +168,7 @@
 %Include layertree/qgslayertreegroup.sip
 %Include layertree/qgslayertreelayer.sip
 %Include layertree/qgslayertreemodel.sip
+%Include layertree/qgslayertreemodellegendnode.sip
 %Include layertree/qgslayertreenode.sip
 %Include layertree/qgslayertreeregistrybridge.sip
 %Include layertree/qgslayertreeutils.sip
