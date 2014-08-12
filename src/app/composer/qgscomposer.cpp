@@ -1590,12 +1590,12 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   if ( mode == QgsComposer::Single )
   {
-    mComposition->print( mPrinter );
+    mComposition->print( mPrinter, true );
   }
   else
   {
 
-    mComposition->beginPrint( mPrinter );
+    mComposition->beginPrint( mPrinter, true );
     QPainter painter( &mPrinter );
 
     loadAtlasPredefinedScalesFromProject();

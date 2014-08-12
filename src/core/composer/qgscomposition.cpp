@@ -2507,7 +2507,7 @@ void QgsComposition::doPrint( QPrinter& printer, QPainter& p, bool startNewPage 
   }
 }
 
-void QgsComposition::beginPrint( QPrinter &printer )
+void QgsComposition::beginPrint( QPrinter &printer, const bool evaluateDDPageSize )
 {
   //set resolution based on composer setting
   printer.setFullPage( true );
@@ -2515,11 +2515,19 @@ void QgsComposition::beginPrint( QPrinter &printer )
 
   //set user-defined resolution
   printer.setResolution( printResolution() );
+
+  if ( evaluateDDPageSize )
+  {
+    //set data defined page size
+    refreshPageSize();
+    printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
+    printer.setOrientation( paperWidth() > paperHeight() ? QPrinter::Landscape : QPrinter::Portrait );
+  }
 }
 
-bool QgsComposition::print( QPrinter &printer )
+bool QgsComposition::print( QPrinter &printer, const bool evaluateDDPageSize )
 {
-  beginPrint( printer );
+  beginPrint( printer, evaluateDDPageSize );
   QPainter p;
   bool ready = p.begin( &printer );
   if ( !ready )

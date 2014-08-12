@@ -489,7 +489,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     //printing
 
     /** Prepare the printer for printing */
-    void beginPrint( QPrinter& printer );
+    void beginPrint( QPrinter& printer, const bool evaluateDDPageSize = false );
     /** Prepare the printer for printing in a PDF */
     void beginPrintAsPDF( QPrinter& printer, const QString& file );
 
@@ -503,7 +503,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Convenience function that prepares the printer and prints
      * @returns true if print was successful
     */
-    bool print( QPrinter &printer );
+    bool print( QPrinter &printer, const bool evaluateDDPageSize = false );
 
     /**Convenience function that prepares the printer for printing in PDF and prints
      * @returns true if export was successful
