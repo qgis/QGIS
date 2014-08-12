@@ -177,16 +177,17 @@ void TestQgsLegendRenderer::testModel()
   QVERIFY( lstNodes.count() == 1 );
   QCOMPARE( lstNodes[0]->data( Qt::DisplayRole ).toString(), QString( "Line Layer" ) );
 
-#if 0 // TODO: implement custom legend entry labels
+  QgsDefaultVectorLayerLegend* legendVL1 = dynamic_cast<QgsDefaultVectorLayerLegend*>( mVL1->legend() );
+  QVERIFY( legendVL1 );
+
   // set user text
-  mVL1->legend()->setNodeUserText( lstNodes[0].id(), "Hurray" );
+  legendVL1->setRuleUserLabel( lstNodes[0]->id(), "Hurray" );
 
   QList<QgsLayerTreeModelLegendNode*> lstNodes2 = legendModel.layerLegendNodes( nodeVL1 );
   QCOMPARE( lstNodes2[0]->data( Qt::DisplayRole ).toString(), QString( "Hurray" ) );
 
   // reset user text
-  mVL1->legend()->setNodeUserText( lstNodes2[0].id(), QString() );
-#endif
+  legendVL1->setRuleUserLabel( lstNodes2[0]->id(), QString() );
 }
 
 

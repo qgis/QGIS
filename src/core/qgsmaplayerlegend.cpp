@@ -69,18 +69,40 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
   QSettings settings;
   if ( settings.value( "/qgis/showLegendClassifiers", false ).toBool() && !r->legendClassificationAttribute().isEmpty() )
   {
-    nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute() ) );
+    nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute(), "_class_attribute_" ) );
   }
 
   foreach ( const QgsLegendSymbolItemV2& i, r->legendSymbolItemsV2() )
   {
-    nodes.append( new QgsSymbolV2LegendNode( nodeLayer, i ) );
+    QgsSymbolV2LegendNode* legendNode = new QgsSymbolV2LegendNode( nodeLayer, i );
+    if ( mUserLabels.contains( i.ruleKey() ) )
+      legendNode->setUserLabel( mUserLabels[i.ruleKey()] );
+    nodes.append( legendNode );
   }
 
   if ( nodes.count() == 1 && nodes[0]->data( Qt::EditRole ).toString().isEmpty() )
     nodes[0]->setEmbeddedInParent( true );
 
   return nodes;
+}
+
+void QgsDefaultVectorLayerLegend::setRuleUserLabel( const QString& ruleKey, const QString& label )
+{
+  if ( label.isEmpty() )
+    mUserLabels.remove( ruleKey );
+  else
+    mUserLabels[ruleKey] = label;
+  emit itemsChanged();
+}
+
+QString QgsDefaultVectorLayerLegend::ruleUserLabel( const QString& ruleKey ) const
+{
+  return mUserLabels.value( ruleKey );
+}
+
+QStringList QgsDefaultVectorLayerLegend::rulesWithUserLabel() const
+{
+  return mUserLabels.keys();
 }
 
 
@@ -125,7 +147,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultRasterLayerLegend::createLayerTree
     if ( count == max_count )
     {
       QString label = tr( "following %1 items\nnot displayed" ).arg( rasterItemList.size() - max_count );
-      nodes << new QgsSimpleLegendNode( nodeLayer, label );
+      nodes << new QgsSimpleLegendNode( nodeLayer, label, "_more_items_" );
       break;
     }
   }
@@ -152,10 +174,11 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultPluginLayerLegend::createLayerTree
   if ( symbologyList.count() == 0 )
     return nodes;
 
+  int i = 0;
   typedef QPair<QString, QPixmap> XY;
   foreach ( XY item, symbologyList )
   {
-    nodes << new QgsSimpleLegendNode( nodeLayer, item.first, QIcon( item.second ) );
+    nodes << new QgsSimpleLegendNode( nodeLayer, item.first, QString::number( i++ ), QIcon( item.second ) );
   }
 
   return nodes;

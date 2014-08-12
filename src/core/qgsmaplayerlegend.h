@@ -61,6 +61,7 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
     void itemsChanged();
 };
 
+#include <QHash>
 
 /** Default legend implementation for vector layers
  * @note added in 2.6
@@ -72,8 +73,15 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 
     virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer );
 
+    void setRuleUserLabel( const QString& ruleKey, const QString& label );
+
+    QString ruleUserLabel( const QString& ruleKey ) const;
+
+    QStringList rulesWithUserLabel() const;
+
   private:
     QgsVectorLayer* mLayer;
+    QHash<QString, QString> mUserLabels;
 };
 
 

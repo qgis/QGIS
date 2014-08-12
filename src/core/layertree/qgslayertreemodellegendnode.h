@@ -41,6 +41,8 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     /** Return pointer to the parent layer node */
     QgsLayerTreeLayer* parent() const { return mParent; }
 
+    virtual QString id() const { return QString(); }
+
     /** Return item flags associated with the item. Default implementation returns Qt::ItemIsEnabled. */
     virtual Qt::ItemFlags flags() const;
 
@@ -113,6 +115,8 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
     QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItemV2& item );
     ~QgsSymbolV2LegendNode();
 
+    virtual QString id() const { return mItem.ruleKey(); }
+
     virtual Qt::ItemFlags flags() const;
     virtual QVariant data( int role ) const;
     virtual bool setData( const QVariant& value, int role );
@@ -123,12 +127,16 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
 
     virtual void setEmbeddedInParent( bool embedded );
 
+    void setUserLabel( const QString& userLabel ) { mUserLabel = userLabel; }
+    QString userLabel() const { return mUserLabel; }
+
   private:
     void updateLabel();
 
   private:
     QgsLegendSymbolItemV2 mItem;
     mutable QIcon mIcon; // cached symbol preview
+    QString mUserLabel;
     QString mLabel;
 };
 
@@ -141,12 +149,13 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
 class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
 {
   public:
-    QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon = QIcon() );
+    QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QString& id, const QIcon& icon = QIcon() );
 
     virtual QVariant data( int role ) const;
 
   private:
     QString mLabel;
+    QString mId;
     QIcon mIcon;
 };
 

@@ -312,13 +312,13 @@ void QgsSymbolV2LegendNode::updateLabel()
 
   if ( mEmbeddedInParent )
   {
-    mLabel = mParent->layerName();
+    mLabel = mUserLabel.isEmpty() ? mParent->layerName() : mUserLabel;
     if ( showFeatureCount && vl && vl->pendingFeatureCount() >= 0 )
         mLabel += QString( " [%1]" ).arg( vl->pendingFeatureCount() );
   }
   else
   {
-    mLabel = mItem.label();
+    mLabel = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
     if ( showFeatureCount && vl && mItem.legacyRuleKey() )
         mLabel += QString( " [%1]" ).arg( vl->featureCount( mItem.legacyRuleKey() ) );
   }
@@ -329,9 +329,10 @@ void QgsSymbolV2LegendNode::updateLabel()
 // -------------------------------------------------------------------------
 
 
-QgsSimpleLegendNode::QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon )
+QgsSimpleLegendNode::QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QString& id, const QIcon& icon )
     : QgsLayerTreeModelLegendNode( nodeLayer )
     , mLabel( label )
+    , mId( id )
     , mIcon( icon )
 {
 }
