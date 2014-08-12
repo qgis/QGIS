@@ -262,6 +262,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     mMaximumOversamplingSpinBox->setValue( resampleFilter->maxOversampling() );
   }
 
+  btnColorizeColor->setColorDialogTitle( tr( "Select color" ) );
+  btnColorizeColor->setContext( "symbology" );
+
   // Hue and saturation color control
   const QgsHueSaturationFilter* hueSaturationFilter = mRasterLayer->hueSaturationFilter();
   //set hue and saturation controls to current values

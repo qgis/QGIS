@@ -35,6 +35,8 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, Q
   }
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
   mFontColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mFontColorButton->setContext( "symbology" );
+
   setCurrentFontPropertiesToGui();
 
   QObject::connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( applyTextToItem() ) );

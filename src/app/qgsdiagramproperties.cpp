@@ -52,10 +52,16 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
   mDiagramPropertiesTabWidget->setCurrentIndex( tabIdx );
 
-  mBackgroundColorButton->setColorDialogTitle( tr( "Background color" ) );
+  mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
   mBackgroundColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
-  mDiagramPenColorButton->setColorDialogTitle( tr( "Pen color" ) );
+  mBackgroundColorButton->setContext( "symbology" );
+  mBackgroundColorButton->setShowNoColor( true );
+  mBackgroundColorButton->setNoColorString( tr( "Transparent background" ) );
+  mDiagramPenColorButton->setColorDialogTitle( tr( "Select pen color" ) );
   mDiagramPenColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mDiagramPenColorButton->setContext( "symbology" );
+  mDiagramPenColorButton->setShowNoColor( true );
+  mDiagramPenColorButton->setNoColorString( tr( "Transparent outline" ) );
 
   mValueLineEdit->setValidator( new QDoubleValidator( mValueLineEdit ) );
   mMinimumDiagramScaleLineEdit->setValidator( new QDoubleValidator( mMinimumDiagramScaleLineEdit ) );

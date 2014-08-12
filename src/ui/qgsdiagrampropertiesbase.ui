@@ -39,8 +39,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>743</width>
-           <height>761</height>
+           <width>756</width>
+           <height>627</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="scrollAreaLayout">
@@ -120,7 +120,7 @@
           <item>
            <widget class="QTabWidget" name="mDiagramPropertiesTabWidget">
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="mDiagramPropertiesTabWidgetPage1">
              <attribute name="title">
@@ -130,7 +130,19 @@
               <item row="0" column="0" rowspan="2">
                <layout class="QGridLayout" name="gridLayout">
                 <item row="4" column="2">
-                 <widget class="QgsColorButton" name="mDiagramPenColorButton">
+                 <widget class="QgsColorButtonV2" name="mDiagramPenColorButton">
+                  <property name="minimumSize">
+                   <size>
+                    <width>120</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>120</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
@@ -227,7 +239,19 @@
                  </widget>
                 </item>
                 <item row="3" column="2">
-                 <widget class="QgsColorButton" name="mBackgroundColorButton">
+                 <widget class="QgsColorButtonV2" name="mBackgroundColorButton">
+                  <property name="minimumSize">
+                   <size>
+                    <width>120</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>120</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
@@ -992,9 +1016,9 @@ Leave empty to automatically apply the maximum value.</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
   </customwidget>
  </customwidgets>
  <resources>

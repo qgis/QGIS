@@ -199,16 +199,16 @@ or change the following values</string>
        </spacer>
       </item>
       <item row="0" column="1">
-       <widget class="QgsColorButton" name="mColorButton">
+       <widget class="QgsColorButtonV2" name="mColorButton">
         <property name="minimumSize">
          <size>
-          <width>64</width>
+          <width>120</width>
           <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>100</width>
+          <width>120</width>
           <height>16777215</height>
          </size>
         </property>
@@ -234,9 +234,9 @@ or change the following values</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

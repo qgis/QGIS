@@ -258,11 +258,11 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
   //draw header background
   painter.setBrush( headerBgColor ) ;
   painter.setPen( Qt::NoPen );
-  painter.drawRect( QRect( 0, 0, mWidth, LABEL_SIZE ) );
+  painter.drawRect( QRect( 0, 0, width(), LABEL_SIZE ) );
 
   //draw header text
   painter.setPen( headerTextColor );
-  painter.drawText( QRect( LABEL_MARGIN, 0, mWidth - 2 * LABEL_MARGIN, LABEL_SIZE ),
+  painter.drawText( QRect( LABEL_MARGIN, 0, width() - 2 * LABEL_MARGIN, LABEL_SIZE ),
                     Qt::AlignLeft | Qt::AlignVCenter, mScheme->schemeName() );
 
   //draw color swatches
