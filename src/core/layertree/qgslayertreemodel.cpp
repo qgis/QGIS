@@ -33,7 +33,7 @@
 QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent )
     : QAbstractItemModel( parent )
     , mRootNode( rootNode )
-    , mFlags( ShowSymbology )
+    , mFlags( ShowSymbology | AllowSymbologyChangeState )
     , mAutoCollapseSymNodesCount( -1 )
 {
   Q_ASSERT( mRootNode );
@@ -166,6 +166,8 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 
   if ( QgsLayerTreeModelLegendNode* sym = index2symnode( index ) )
   {
+    if ( role == Qt::CheckStateRole && !testFlag( AllowSymbologyChangeState ) )
+      return QVariant();
     return sym->data( role );
   }
 
@@ -289,7 +291,10 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
 
   if ( QgsLayerTreeModelLegendNode* symn = index2symnode( index ) )
   {
-    return symn->flags();
+    Qt::ItemFlags f = symn->flags();
+    if ( !testFlag( AllowSymbologyChangeState ) )
+      f &= ~Qt::ItemIsUserCheckable;
+    return f;
   }
 
   Qt::ItemFlags f = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -321,6 +326,8 @@ bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value
   QgsLayerTreeModelLegendNode *sym = index2symnode( index );
   if ( sym )
   {
+    if ( role == Qt::CheckStateRole && !testFlag( AllowSymbologyChangeState ) )
+      return false;
     bool res = sym->setData( value, role );
     if ( res )
       emit dataChanged( index, index );

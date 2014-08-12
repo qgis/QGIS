@@ -57,6 +57,7 @@ class QgsLayerTreeModel : QAbstractItemModel
       AllowNodeReorder,           //!< Allow reordering with drag'n'drop
       AllowNodeRename,            //!< Allow renaming of groups and layers
       AllowNodeChangeVisibility,  //!< Allow user to set node visibility with a check box
+      AllowSymbologyChangeState,  //!< Allow check boxes for symbology items (if supported by layer's legend)
     };
     typedef QFlags<QgsLayerTreeModel::Flag> Flags;
 
