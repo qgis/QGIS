@@ -22,6 +22,8 @@
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
 #include "qgscomposermodel.h"
+#include "qgslayertree.h"
+#include "qgslayertreemodel.h"
 #include "qgslegendrenderer.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
@@ -31,9 +33,12 @@
 
 QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     : QgsComposerItem( composition )
-    , mLegendModel2( QgsProject::instance()->layerTreeRoot() )
+    , mCustomLayerTree( 0 )
     , mComposerMap( 0 )
 {
+  mLegendModel2 = new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot() );
+  mLegendModel2->setFlag( QgsLayerTreeModel::AllowSymbologyChangeState, false );
+  mLegendModel2->setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
 
   adjustBoxSize();
 
@@ -42,7 +47,8 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
 
 QgsComposerLegend::QgsComposerLegend()
   : QgsComposerItem( 0 )
-  , mLegendModel2( QgsProject::instance()->layerTreeRoot() )
+  , mLegendModel2( 0 )
+  , mCustomLayerTree( 0 )
   , mComposerMap( 0 )
 {
 
@@ -50,6 +56,8 @@ QgsComposerLegend::QgsComposerLegend()
 
 QgsComposerLegend::~QgsComposerLegend()
 {
+  delete mLegendModel2;
+  delete mCustomLayerTree;
 }
 
 void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
@@ -72,7 +80,7 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
   painter->setRenderHint( QPainter::Antialiasing, true );
   painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
 
-  QgsLegendRenderer legendRenderer( &mLegendModel2, mSettings );
+  QgsLegendRenderer legendRenderer( mLegendModel2, mSettings );
   legendRenderer.setLegendSize( rect().size() );
   legendRenderer.drawLegend( painter );
 
@@ -88,7 +96,7 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
 QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 {
-  QgsLegendRenderer legendRenderer( &mLegendModel2, mSettings );
+  QgsLegendRenderer legendRenderer( mLegendModel2, mSettings );
   QSizeF size = legendRenderer.minimumSize();
   if ( !painter )
     legendRenderer.drawLegend( painter );
@@ -98,13 +106,36 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 
 void QgsComposerLegend::adjustBoxSize()
 {
-  QgsLegendRenderer legendRenderer( &mLegendModel2, mSettings );
+  QgsLegendRenderer legendRenderer( mLegendModel2, mSettings );
   QSizeF size = legendRenderer.minimumSize();
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
   {
     setSceneRect( QRectF( pos().x(), pos().y(), size.width(), size.height() ) );
   }
+}
+
+
+void QgsComposerLegend::setCustomLayerTree( QgsLayerTreeGroup* rootGroup )
+{
+  mLegendModel2->setRootGroup( rootGroup ? rootGroup : QgsProject::instance()->layerTreeRoot() );
+
+  delete mCustomLayerTree;
+  mCustomLayerTree = rootGroup;
+}
+
+
+void QgsComposerLegend::setAutoUpdateModel( bool autoUpdate )
+{
+  if ( autoUpdate == autoUpdateModel() )
+    return;
+
+  setCustomLayerTree( autoUpdate ? 0 : QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() )  );
+}
+
+bool QgsComposerLegend::autoUpdateModel() const
+{
+  return !mCustomLayerTree;
 }
 
 void QgsComposerLegend::setTitle( const QString& t )
@@ -222,8 +253,16 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   style( QgsComposerLegendStyle::Symbol ).writeXML( "symbol", composerLegendStyles, doc );
   style( QgsComposerLegendStyle::SymbolLabel ).writeXML( "symbolLabel", composerLegendStyles, doc );
 
+#if 0
   //write model properties
   mLegendModel.writeXML( composerLegendElem, doc );
+#endif
+
+  if ( mCustomLayerTree )
+  {
+    // if not using auto-update - store the custom layer tree
+    mCustomLayerTree->writeXML( composerLegendElem );
+  }
 
   return _writeXML( composerLegendElem, doc );
 }
@@ -288,12 +327,20 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
     mComposerMap = mComposition->getComposerMapById( itemElem.attribute( "map" ).toInt() );
   }
 
+#if 0
   //read model properties
   QDomNodeList modelNodeList = itemElem.elementsByTagName( "Model" );
   if ( modelNodeList.size() > 0 )
   {
     QDomElement modelElem = modelNodeList.at( 0 ).toElement();
     mLegendModel.readXML( modelElem, doc );
+  }
+#endif
+
+  QDomElement layerTreeElem = itemElem.firstChildElement( "layer-tree-group" );
+  if ( layerTreeElem.isNull() )
+  {
+    setCustomLayerTree( QgsLayerTreeGroup::readXML( layerTreeElem ) );
   }
 
   //restore general composer item properties

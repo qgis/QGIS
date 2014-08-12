@@ -25,9 +25,13 @@
 #include "qgscomposition.h"
 #include <QFontDialog>
 #include <QColorDialog>
+#include <QInputDialog>
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgslayertree.h"
+#include "qgslayertreemodel.h"
+#include "qgslegendrenderer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
@@ -36,73 +40,40 @@
 
 #include <QMessageBox>
 
-QgsComposerLegendWidgetStyleDelegate::QgsComposerLegendWidgetStyleDelegate( QObject *parent ): QItemDelegate( parent )
+
+
+class QgsComposerLegendMenuProvider : public QObject, public QgsLayerTreeViewMenuProvider
 {
-}
+  public:
+    QgsComposerLegendMenuProvider( QgsLayerTreeView* view, QgsComposerLegendWidget* w ) : mView( view ), mWidget( w ) {}
 
-QWidget *QgsComposerLegendWidgetStyleDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem & item, const QModelIndex & index ) const
-{
-  Q_UNUSED( item );
-  Q_UNUSED( index );
-  QgsDebugMsg( "Entered" );
-
-  QComboBox *editor = new QComboBox( parent );
-  QList<QgsComposerLegendStyle::Style> list;
-  list << QgsComposerLegendStyle::Group << QgsComposerLegendStyle::Subgroup << QgsComposerLegendStyle::Hidden;
-  foreach ( QgsComposerLegendStyle::Style s, list )
-  {
-    editor->addItem( QgsComposerLegendStyle::styleLabel( s ), s );
-  }
-
-  return editor;
-}
-
-void QgsComposerLegendWidgetStyleDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
-{
-  QgsDebugMsg( "Entered" );
-  //int s = index.model()->data(index, Qt::UserRole).toInt();
-  QComboBox *comboBox = static_cast<QComboBox*>( editor );
-
-  const QStandardItemModel * standardModel = dynamic_cast<const QStandardItemModel*>( index.model() );
-  if ( standardModel )
-  {
-    QModelIndex firstColumnIndex = standardModel->index( index.row(), 0, index.parent() );
-    QStandardItem* firstColumnItem = standardModel->itemFromIndex( firstColumnIndex );
-
-    QgsComposerLegendItem* cItem = dynamic_cast<QgsComposerLegendItem*>( firstColumnItem );
-    if ( cItem )
+    virtual QMenu* createContextMenu()
     {
-      comboBox->setCurrentIndex( comboBox->findData( cItem->style() ) );
+      if ( !mView->currentNode() )
+        return 0;
+
+      QMenu* menu = new QMenu();
+
+      QgsComposerLegendStyle::Style currentStyle = QgsLegendRenderer::nodeLegendStyle( mView->currentNode(), mView->layerTreeModel() );
+
+      QList<QgsComposerLegendStyle::Style> lst;
+      lst << QgsComposerLegendStyle::Hidden << QgsComposerLegendStyle::Group << QgsComposerLegendStyle::Subgroup;
+      foreach ( QgsComposerLegendStyle::Style style, lst )
+      {
+        QAction* action = menu->addAction( QgsComposerLegendStyle::styleLabel( style ), mWidget, SLOT( setCurrentNodeStyleFromAction() ) );
+        action->setCheckable( true );
+        action->setChecked( currentStyle == style );
+        action->setData( ( int ) style );
+      }
+
+      return menu;
     }
-  }
-}
 
-void QgsComposerLegendWidgetStyleDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
-{
-  QgsDebugMsg( "Entered" );
-  QComboBox *comboBox = static_cast<QComboBox*>( editor );
-  QgsComposerLegendStyle::Style s = ( QgsComposerLegendStyle::Style ) comboBox->itemData( comboBox->currentIndex() ).toInt();
-  model->setData( index, s, Qt::UserRole );
-  model->setData( index, QgsComposerLegendStyle::styleLabel( s ), Qt::DisplayRole );
-  QStandardItemModel * standardModel = dynamic_cast<QStandardItemModel*>( model );
-  if ( standardModel )
-  {
-    QModelIndex firstColumnIndex = standardModel->index( index.row(), 0, index.parent() );
-    QStandardItem* firstColumnItem = standardModel->itemFromIndex( firstColumnIndex );
+  protected:
+    QgsLayerTreeView* mView;
+    QgsComposerLegendWidget* mWidget;
+};
 
-    QgsComposerLegendItem* cItem = dynamic_cast<QgsComposerLegendItem*>( firstColumnItem );
-    if ( cItem )
-    {
-      cItem->setStyle( s );
-    }
-  }
-}
-
-void QgsComposerLegendWidgetStyleDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & index ) const
-{
-  Q_UNUSED( index );
-  editor->setGeometry( option.rect );
-}
 
 
 QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): QgsComposerItemBaseWidget( 0, legend ), mLegend( legend )
@@ -124,22 +95,15 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): Q
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, legend );
   mainLayout->addWidget( itemPropertiesWidget );
 
+  mItemTreeView->setHeaderHidden( true );
+  mItemTreeView->setModel( legend->modelV2() );
+  mItemTreeView->setMenuProvider( new QgsComposerLegendMenuProvider( mItemTreeView, this ) );
+
   if ( legend )
   {
-    legend->model()->setHorizontalHeaderLabels( QStringList() << tr( "Item" ) << tr( "Title style" ) );
-    mItemTreeView->setModel( legend->model() );
     connect( legend, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
   }
 
-  QgsComposerLegendWidgetStyleDelegate* styleDelegate = new QgsComposerLegendWidgetStyleDelegate();
-  mItemTreeView->setItemDelegateForColumn( 0, styleDelegate );
-  mItemTreeView->setItemDelegateForColumn( 1, styleDelegate );
-  mItemTreeView->setEditTriggers( QAbstractItemView::AllEditTriggers );
-
-  mItemTreeView->setDragEnabled( true );
-  mItemTreeView->setAcceptDrops( true );
-  mItemTreeView->setDropIndicatorShown( true );
-  mItemTreeView->setDragDropMode( QAbstractItemView::InternalMove );
   mWrapCharLineEdit->setText( legend->wrapChar() );
 
   setGuiElements();
@@ -185,10 +149,7 @@ void QgsComposerLegendWidget::setGuiElements()
   mIconLabelSpaceSpinBox->setValue( mLegend->style( QgsComposerLegendStyle::SymbolLabel ).margin( QgsComposerLegendStyle::Left ) );
   mBoxSpaceSpinBox->setValue( mLegend->boxSpace() );
   mColumnSpaceSpinBox->setValue( mLegend->columnSpace() );
-  if ( mLegend->model() )
-  {
-    mCheckBoxAutoUpdate->setChecked( mLegend->model()->autoUpdate() );
-  }
+  mCheckBoxAutoUpdate->setChecked( mLegend->autoUpdateModel() );
   refreshMapComboBox();
 
   const QgsComposerMap* map = mLegend->composerMap();
@@ -624,19 +585,7 @@ void QgsComposerLegendWidget::on_mMoveUpToolButton_clicked()
 
 void QgsComposerLegendWidget::on_mCheckBoxAutoUpdate_stateChanged( int state )
 {
-  if ( !mLegend->model() )
-  {
-    return;
-  }
-
-  if ( state == Qt::Checked )
-  {
-    mLegend->model()->setAutoUpdate( true );
-  }
-  else
-  {
-    mLegend->model()->setAutoUpdate( false );
-  }
+  mLegend->setAutoUpdateModel( state == Qt::Checked );
 }
 
 void QgsComposerLegendWidget::on_mMapComboBox_currentIndexChanged( int index )
@@ -683,12 +632,6 @@ void QgsComposerLegendWidget::on_mAddToolButton_clicked()
     return;
   }
 
-  QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
-  if ( !itemModel )
-  {
-    return;
-  }
-
   QgisApp* app = QgisApp::instance();
   if ( !app )
   {
@@ -707,7 +650,7 @@ void QgsComposerLegendWidget::on_mAddToolButton_clicked()
       if ( layer )
       {
         mLegend->beginCommand( "Legend item added" );
-        mLegend->model()->addLayer( layer );
+        mLegend->modelV2()->rootGroup()->addLayer( layer );
         mLegend->endCommand();
       }
     }
@@ -717,12 +660,6 @@ void QgsComposerLegendWidget::on_mAddToolButton_clicked()
 void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
 {
   if ( !mLegend )
-  {
-    return;
-  }
-
-  QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
-  if ( !itemModel )
   {
     return;
   }
@@ -741,7 +678,7 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
 
   foreach ( const QPersistentModelIndex index, indexes )
   {
-    itemModel->removeRow( index.row(), index.parent() );
+    mLegend->modelV2()->removeRow( index.row(), index.parent() );
   }
 
   mLegend->adjustBoxSize();
@@ -756,34 +693,23 @@ void QgsComposerLegendWidget::on_mEditPushButton_clicked()
     return;
   }
 
-  QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
-  if ( !itemModel )
-  {
-    return;
-  }
+  QgsLayerTreeNode* currentNode = mItemTreeView->currentNode();
 
-  //get current item
-  QModelIndex currentIndex = mItemTreeView->currentIndex();
-  if ( !currentIndex.isValid() )
-  {
-    return;
-  }
+  // TODO: support layer node, legend node
 
-  QgsComposerLegendItem* currentItem = dynamic_cast<QgsComposerLegendItem *>( itemModel->itemFromIndex( currentIndex ) );
-  if ( !currentItem )
-  {
+  if ( !QgsLayerTree::isGroup( currentNode ) )
     return;
-  }
 
-  QgsComposerLegendItemDialog itemDialog( currentItem );
-  if ( itemDialog.exec() != QDialog::Accepted )
-  {
+  QString currentText = QgsLayerTree::toGroup( currentNode )->name();
+
+  bool ok;
+  QString newText = QInputDialog::getText( this, tr( "Legend item properties" ), tr( "Item text" ),
+                                           QLineEdit::Normal, currentText, &ok );
+  if ( !ok )
     return;
-  }
 
   mLegend->beginCommand( tr( "Legend item edited" ) );
-  currentItem->setUserText( itemDialog.itemText() );
-  mLegend->model()->updateItemText( currentItem );
+  QgsLayerTree::toGroup( currentNode )->setName( newText );
   mLegend->adjustBoxSize();
   mLegend->update();
   mLegend->endCommand();
@@ -835,38 +761,18 @@ void QgsComposerLegendWidget::on_mCountToolButton_clicked( bool checked )
   }
 
   //get current item
-  QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
-  if ( !itemModel )
-  {
-    return;
-  }
-
-  //get current item
   QModelIndex currentIndex = mItemTreeView->currentIndex();
   if ( !currentIndex.isValid() )
   {
     return;
   }
 
-  QStandardItem* currentItem = itemModel->itemFromIndex( currentIndex );
-  if ( !currentItem )
-  {
+  QgsLayerTreeNode* currentNode = mItemTreeView->currentNode();
+  if ( !QgsLayerTree::isLayer( currentNode ) )
     return;
-  }
-
-  QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem *>( currentItem );
-
-  if ( !layerItem )
-  {
-    return;
-  }
 
   mLegend->beginCommand( tr( "Legend updated" ) );
-  layerItem->setShowFeatureCount( checked );
-  if ( mLegend->model() )
-  {
-    mLegend->model()->updateItem( currentItem );
-  }
+  currentNode->setCustomProperty( "showFeatureCount", checked ? 1 : 0 );
   mLegend->update();
   mLegend->adjustBoxSize();
   mLegend->endCommand();
@@ -879,10 +785,10 @@ void QgsComposerLegendWidget::on_mUpdateAllPushButton_clicked()
 
 void QgsComposerLegendWidget::on_mAddGroupToolButton_clicked()
 {
-  if ( mLegend && mLegend->model() )
+  if ( mLegend )
   {
     mLegend->beginCommand( tr( "Legend group added" ) );
-    mLegend->model()->addGroup();
+    mLegend->modelV2()->rootGroup()->addGroup( tr( "Group" ) );
     mLegend->update();
     mLegend->endCommand();
   }
@@ -989,25 +895,32 @@ void QgsComposerLegendWidget::showEvent( QShowEvent * event )
 
 void QgsComposerLegendWidget::selectedChanged( const QModelIndex & current, const QModelIndex & previous )
 {
+  Q_UNUSED( current );
   Q_UNUSED( previous );
   QgsDebugMsg( "Entered" );
 
   mCountToolButton->setChecked( false );
   mCountToolButton->setEnabled( false );
 
-  QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
-  if ( !itemModel ) return;
+  QgsLayerTreeNode* currentNode = mItemTreeView->currentNode();
+  if ( !QgsLayerTree::isLayer( currentNode ) )
+    return;
 
-  QStandardItem* currentItem = itemModel->itemFromIndex( current );
-  if ( !currentItem ) return;
+  QgsLayerTreeLayer* currentLayerNode = QgsLayerTree::toLayer( currentNode );
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( currentLayerNode->layer() );
+  if ( !vl )
+    return;
 
-  QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem *>( currentItem );
-  if ( !layerItem ) return;
-
-  QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerItem->layerID() ) );
-  if ( !vectorLayer ) return;
-
-  mCountToolButton->setChecked( layerItem->showFeatureCount() );
+  mCountToolButton->setChecked( currentNode->customProperty( "showFeatureCount", 0 ).toInt() );
   mCountToolButton->setEnabled( true );
 }
 
+void QgsComposerLegendWidget::setCurrentNodeStyleFromAction()
+{
+  QAction* a = qobject_cast<QAction*>( sender() );
+  if ( !a || !mItemTreeView->currentNode() )
+    return;
+
+  QgsLegendRenderer::setNodeLegendStyle( mItemTreeView->currentNode(), ( QgsComposerLegendStyle::Style ) a->data().toInt() );
+  mLegend->update();
+}

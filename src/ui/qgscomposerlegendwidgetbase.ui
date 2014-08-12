@@ -209,7 +209,7 @@
            </layout>
           </item>
           <item>
-           <widget class="QTreeView" name="mItemTreeView">
+           <widget class="QgsLayerTreeView" name="mItemTreeView">
             <property name="selectionMode">
              <enum>QAbstractItemView::ContiguousSelection</enum>
             </property>
@@ -854,6 +854,11 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsLayerTreeView</class>
+   <extends>QTreeView</extends>
+   <header>qgslayertreeview.h</header>
   </customwidget>
  </customwidgets>
  <resources>

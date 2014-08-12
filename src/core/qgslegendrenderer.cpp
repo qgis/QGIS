@@ -555,7 +555,8 @@ QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup* nodeGroup, QPainter
 }
 
 
-QgsComposerLegendStyle::Style QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNode* node )
+
+QgsComposerLegendStyle::Style QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNode* node, QgsLayerTreeModel* model )
 {
   QString style = node->customProperty( "legendStyle" ).toString();
   if ( style == "hidden" )
@@ -570,13 +571,18 @@ QgsComposerLegendStyle::Style QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNo
     return QgsComposerLegendStyle::Group;
   else if ( QgsLayerTree::isLayer( node ) )
   {
-    QList<QgsLayerTreeModelLegendNode*> legendNodes = mLegendModel->layerLegendNodes( QgsLayerTree::toLayer( node ) );
+    QList<QgsLayerTreeModelLegendNode*> legendNodes = model->layerLegendNodes( QgsLayerTree::toLayer( node ) );
     if ( legendNodes.count() == 1 && legendNodes[0]->isEmbeddedInParent() )
       return QgsComposerLegendStyle::Hidden;
     return QgsComposerLegendStyle::Subgroup;
   }
 
   return QgsComposerLegendStyle::Undefined; // should not happen, only if corrupted project file
+}
+
+QgsComposerLegendStyle::Style QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNode* node )
+{
+  return nodeLegendStyle( node, mLegendModel );
 }
 
 void QgsLegendRenderer::setNodeLegendStyle( QgsLayerTreeNode* node, QgsComposerLegendStyle::Style style )

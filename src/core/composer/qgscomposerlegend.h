@@ -21,10 +21,10 @@
 #include "qgscomposerlegendstyle.h"
 #include "qgscomposeritem.h"
 #include "qgscomposerlegenditem.h"
-#include "qgslayertreemodel.h"
 #include "qgslegendmodel.h"
 #include "qgslegendsettings.h"
 
+class QgsLayerTreeModel;
 class QgsSymbolV2;
 class QgsComposerGroupItem;
 class QgsComposerLayerItem;
@@ -57,6 +57,14 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     /**Returns pointer to the legend model*/
     QgsLegendModel* model() {return &mLegendModel;}
+
+    //! @note added in 2.6
+    QgsLayerTreeModel* modelV2() { return mLegendModel2; }
+
+    //! @note added in 2.6
+    void setAutoUpdateModel( bool autoUpdate );
+    //! @note added in 2.6
+    bool autoUpdateModel() const;
 
     //setters and getters
     void setTitle( const QString& t );
@@ -152,9 +160,13 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
   private:
     QgsComposerLegend(); //forbidden
 
+    //! use new custom layer tree and update model. if new root is null pointer, will use project's tree
+    void setCustomLayerTree( QgsLayerTreeGroup* rootGroup );
+
     QgsLegendModel mLegendModel;
 
-    QgsLayerTreeModel mLegendModel2;
+    QgsLayerTreeModel* mLegendModel2;
+    QgsLayerTreeGroup* mCustomLayerTree;
 
     QgsLegendSettings mSettings;
 

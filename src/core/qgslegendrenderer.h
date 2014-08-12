@@ -46,6 +46,7 @@ class CORE_EXPORT QgsLegendRenderer
 
 
     static void setNodeLegendStyle( QgsLayerTreeNode* node, QgsComposerLegendStyle::Style style );
+    static QgsComposerLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode* node, QgsLayerTreeModel* model );
 
   private:
 
