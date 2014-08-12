@@ -110,6 +110,9 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     //! Return pointer to the root node of the layer tree. Always a non-null pointer.
     QgsLayerTreeGroup* rootGroup();
+    //! Reset the model and use a new root group node
+    //! @note added in 2.6
+    void setRootGroup( QgsLayerTreeGroup* newRootGroup );
 
     //! Force a refresh of symbology of layer node.
     //! Not necessary to call when layer's renderer is changed as the model listens to these events.
@@ -143,6 +146,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key );
 
     void nodeLayerLoaded();
+    void nodeLayerWillBeUnloaded();
     void layerLegendChanged();
 
     void layerNeedsUpdate();
@@ -154,7 +158,10 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void connectToLayer( QgsLayerTreeLayer* nodeLayer );
     void disconnectFromLayer( QgsLayerTreeLayer* nodeLayer );
 
-    void connectToLayers(QgsLayerTreeGroup* parentGroup );
+    void connectToLayers( QgsLayerTreeGroup* parentGroup );
+    void disconnectFromLayers( QgsLayerTreeGroup* parentGroup );
+    void connectToRootNode();
+    void disconnectFromRootNode();
 
     //! emit dataChanged() for layer tree node items
     void recursivelyEmitDataChanged( const QModelIndex& index = QModelIndex() );

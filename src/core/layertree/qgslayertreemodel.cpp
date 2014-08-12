@@ -36,19 +36,9 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *pare
     , mFlags( ShowSymbology | AllowSymbologyChangeState )
     , mAutoCollapseSymNodesCount( -1 )
 {
-  Q_ASSERT( mRootNode );
-
-  connect( mRootNode, SIGNAL( willAddChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeWillAddChildren( QgsLayerTreeNode*, int, int ) ) );
-  connect( mRootNode, SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeAddedChildren( QgsLayerTreeNode*, int, int ) ) );
-  connect( mRootNode, SIGNAL( willRemoveChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeWillRemoveChildren( QgsLayerTreeNode*, int, int ) ) );
-  connect( mRootNode, SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeRemovedChildren() ) );
-  connect( mRootNode, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SLOT( nodeVisibilityChanged( QgsLayerTreeNode* ) ) );
-
-  connect( mRootNode, SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode*, QString ) ) );
+  connectToRootNode();
 
   mFontLayer.setBold( true );
-
-  connectToLayers( mRootNode );
 }
 
 QgsLayerTreeModel::~QgsLayerTreeModel()
@@ -461,6 +451,21 @@ QgsLayerTreeGroup*QgsLayerTreeModel::rootGroup()
   return mRootNode;
 }
 
+void QgsLayerTreeModel::setRootGroup( QgsLayerTreeGroup* newRootGroup )
+{
+  beginResetModel();
+
+  disconnectFromRootNode();
+
+  Q_ASSERT( mSymbologyNodes.isEmpty() );
+
+  mRootNode = newRootGroup;
+
+  connectToRootNode();
+
+  endResetModel();
+}
+
 void QgsLayerTreeModel::refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer )
 {
   // update title
@@ -609,6 +614,18 @@ void QgsLayerTreeModel::nodeLayerLoaded()
   connectToLayer( nodeLayer );
 }
 
+void QgsLayerTreeModel::nodeLayerWillBeUnloaded()
+{
+  QgsLayerTreeLayer* nodeLayer = qobject_cast<QgsLayerTreeLayer*>( sender() );
+  if ( !nodeLayer )
+    return;
+
+  disconnectFromLayer( nodeLayer );
+
+  // wait for the layer to appear again
+  connect( nodeLayer, SIGNAL( layerLoaded() ), this, SLOT( nodeLayerLoaded() ) );
+}
+
 void QgsLayerTreeModel::layerLegendChanged()
 {
   if ( !testFlag( ShowSymbology ) )
@@ -685,6 +702,9 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer* nodeLayer )
     return;
   }
 
+  // watch if the layer is getting removed
+  connect( nodeLayer, SIGNAL( layerWillBeUnloaded() ), this, SLOT( nodeLayerWillBeUnloaded() ) );
+
   if ( testFlag( ShowSymbology ) )
   {
     addSymbologyToLayer( nodeLayer );
@@ -733,6 +753,8 @@ static int _numLayerCount( QgsLayerTreeGroup* group, const QString& layerId )
 
 void QgsLayerTreeModel::disconnectFromLayer( QgsLayerTreeLayer* nodeLayer )
 {
+  disconnect( nodeLayer, 0, this, 0 ); // disconnect from delayed load of layer
+
   if ( !nodeLayer->layer() )
     return; // we were never connected
 
@@ -757,6 +779,39 @@ void QgsLayerTreeModel::connectToLayers( QgsLayerTreeGroup* parentGroup )
     else if ( QgsLayerTree::isLayer( node ) )
       connectToLayer( QgsLayerTree::toLayer( node ) );
   }
+}
+
+void QgsLayerTreeModel::disconnectFromLayers( QgsLayerTreeGroup* parentGroup )
+{
+  foreach ( QgsLayerTreeNode* node, parentGroup->children() )
+  {
+    if ( QgsLayerTree::isGroup( node ) )
+      disconnectFromLayers( QgsLayerTree::toGroup( node ) );
+    else if ( QgsLayerTree::isLayer( node ) )
+      disconnectFromLayer( QgsLayerTree::toLayer( node ) );
+  }
+}
+
+void QgsLayerTreeModel::connectToRootNode()
+{
+  Q_ASSERT( mRootNode );
+
+  connect( mRootNode, SIGNAL( willAddChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeWillAddChildren( QgsLayerTreeNode*, int, int ) ) );
+  connect( mRootNode, SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeAddedChildren( QgsLayerTreeNode*, int, int ) ) );
+  connect( mRootNode, SIGNAL( willRemoveChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeWillRemoveChildren( QgsLayerTreeNode*, int, int ) ) );
+  connect( mRootNode, SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeRemovedChildren() ) );
+  connect( mRootNode, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SLOT( nodeVisibilityChanged( QgsLayerTreeNode* ) ) );
+
+  connect( mRootNode, SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode*, QString ) ) );
+
+  connectToLayers( mRootNode );
+}
+
+void QgsLayerTreeModel::disconnectFromRootNode()
+{
+  disconnect( mRootNode, 0, this, 0 );
+
+  disconnectFromLayers( mRootNode );
 }
 
 void QgsLayerTreeModel::recursivelyEmitDataChanged( const QModelIndex& idx )

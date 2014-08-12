@@ -61,6 +61,8 @@ void QgsLayerTreeView::setModel( QAbstractItemModel* model )
 
   connect( selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( onCurrentChanged() ) );
 
+  connect( layerTreeModel(), SIGNAL( modelReset() ), this, SLOT( onModelReset() ) );
+
   updateExpandedStateFromNode( layerTreeModel()->rootGroup() );
 }
 
@@ -170,6 +172,11 @@ void QgsLayerTreeView::onExpandedChanged( QgsLayerTreeNode* node, bool expanded 
   QModelIndex idx = layerTreeModel()->node2index( node );
   if ( isExpanded( idx ) != expanded )
     setExpanded( idx, expanded );
+}
+
+void QgsLayerTreeView::onModelReset()
+{
+  updateExpandedStateFromNode( layerTreeModel()->rootGroup() );
 }
 
 void QgsLayerTreeView::updateExpandedStateFromNode( QgsLayerTreeNode* node )

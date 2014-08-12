@@ -66,10 +66,14 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 
   protected slots:
     void registryLayersAdded( QList<QgsMapLayer*> layers );
+    void registryLayersWillBeRemoved( const QStringList& layerIds );
 
   signals:
     //! emitted when a previously unavailable layer got loaded
     void layerLoaded();
+    //! emitted when a previously available layer got unloaded (from layer registry)
+    //! @note added in 2.6
+    void layerWillBeUnloaded();
 
   protected:
     void attachToLayer();

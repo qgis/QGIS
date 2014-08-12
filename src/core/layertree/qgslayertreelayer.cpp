@@ -57,6 +57,8 @@ void QgsLayerTreeLayer::attachToLayer()
   {
     mLayer = l;
     mLayerName = l->name();
+    // make sure we are notified if the layer is removed
+    connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( registryLayersWillBeRemoved( QStringList ) ) );
   }
   else
   {
@@ -151,5 +153,19 @@ void QgsLayerTreeLayer::registryLayersAdded( QList<QgsMapLayer*> layers )
       emit layerLoaded();
       break;
     }
+  }
+}
+
+void QgsLayerTreeLayer::registryLayersWillBeRemoved( const QStringList& layerIds )
+{
+  if ( layerIds.contains( mLayerId ) )
+  {
+    emit layerWillBeUnloaded();
+
+    // stop listening to removal signals and start hoping that the layer may be added again
+    disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( registryLayersWillBeRemoved( QStringList ) ) );
+    connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( registryLayersAdded( QList<QgsMapLayer*> ) ) );
+
+    mLayer = 0;
   }
 }

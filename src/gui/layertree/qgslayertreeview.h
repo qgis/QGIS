@@ -105,6 +105,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     void onCurrentChanged();
     void onExpandedChanged( QgsLayerTreeNode* node, bool expanded );
+    void onModelReset();
 
   protected:
     //! helper class with default actions. Lazily initialized.
