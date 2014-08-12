@@ -59,6 +59,8 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
   cboStyle->setCurrentIndex( mDeco.mStyleIndex );
 
   pbnChangeColor->setColor( mDeco.mColor );
+  pbnChangeColor->setContext( "gui" );
+  pbnChangeColor->setColorDialogTitle( tr( "Select scalebar color" ) );
 }
 
 QgsDecorationScaleBarDialog::~QgsDecorationScaleBarDialog()

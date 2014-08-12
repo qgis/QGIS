@@ -141,6 +141,23 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
 
   populateFontCapitalsComboBox();
 
+  // color buttons
+  mPreviewBackgroundBtn->setColorDialogTitle( tr( "Select fill color" ) );
+  mPreviewBackgroundBtn->setContext( "labelling" );
+  btnTextColor->setColorDialogTitle( tr( "Select text color" ) );
+  btnTextColor->setContext( "labelling" );
+  btnTextColor->setDefaultColor( Qt::black );
+  btnBufferColor->setColorDialogTitle( tr( "Select buffer color" ) );
+  btnBufferColor->setContext( "labelling" );
+  btnBufferColor->setDefaultColor( Qt::white );
+  mShapeBorderColorBtn->setColorDialogTitle( tr( "Select border color" ) );
+  mShapeBorderColorBtn->setContext( "labelling" );
+  mShapeFillColorBtn->setColorDialogTitle( tr( "Select fill color" ) );
+  mShapeFillColorBtn->setContext( "labelling" );
+  mShadowColorBtn->setColorDialogTitle( tr( "Select shadow color" ) );
+  mShadowColorBtn->setContext( "labelling" );
+  mShadowColorBtn->setDefaultColor( Qt::black );
+
   // set up quadrant offset button group
   mQuadrantBtnGrp = new QButtonGroup( this );
   mQuadrantBtnGrp->addButton( mPointOffsetAboveLeft, ( int )QgsPalLayerSettings::QuadrantAboveLeft );
@@ -344,6 +361,7 @@ void QgsLabelingGui::init()
   chkPreserveRotation->setChecked( lyr.preserveRotation );
 
   mPreviewBackgroundBtn->setColor( lyr.previewBkgrdColor );
+  mPreviewBackgroundBtn->setDefaultColor( lyr.previewBkgrdColor );
   setPreviewBackground( lyr.previewBkgrdColor );
 
   mScaleBasedVisibilityChkBx->setChecked( lyr.scaleVisibility );
