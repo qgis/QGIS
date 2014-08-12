@@ -22,6 +22,18 @@
 QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent ): QgsSymbolLayerV2Widget( parent, vl )
 {
   setupUi( this );
+
+  btnChangeColorFill->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColorFill->setColorDialogTitle( tr( "Select fill color" ) );
+  btnChangeColorFill->setContext( "symbology" );
+  btnChangeColorFill->setShowNoColor( true );
+  btnChangeColorFill->setNoColorString( tr( "Transparent fill" ) );
+  btnChangeColorBorder->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColorBorder->setColorDialogTitle( tr( "Select border color" ) );
+  btnChangeColorBorder->setContext( "symbology" );
+  btnChangeColorBorder->setShowNoColor( true );
+  btnChangeColorBorder->setNoColorString( tr( "Transparent border" ) );
+
   QStringList names;
   names << "circle" << "rectangle" << "cross" << "triangle";
   QSize iconSize = mShapeListWidget->iconSize();
@@ -59,11 +71,8 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mRotationSpinBox->setValue( mLayer->angle() );
   mOutlineStyleComboBox->setPenStyle( mLayer->outlineStyle() );
   mOutlineWidthSpinBox->setValue( mLayer->outlineWidth() );
-
   btnChangeColorBorder->setColor( mLayer->outlineColor() );
-  btnChangeColorBorder->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   btnChangeColorFill->setColor( mLayer->fillColor() );
-  btnChangeColorFill->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
   QList<QListWidgetItem *> symbolItemList = mShapeListWidget->findItems( mLayer->symbolName(), Qt::MatchExactly );
   if ( symbolItemList.size() > 0 )

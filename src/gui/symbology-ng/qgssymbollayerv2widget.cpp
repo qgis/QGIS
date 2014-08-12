@@ -76,6 +76,10 @@ QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVec
   mOffsetUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
   mDashPatternUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
 
+  btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColor->setColorDialogTitle( tr( "Select line color" ) );
+  btnChangeColor->setContext( "symbology" );
+
   if ( vl && vl->geometryType() != QGis::Polygon )
   {
     //draw inside polygon checkbox only makes sense for polygon layers
@@ -121,7 +125,6 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinWidth->blockSignals( false );
   btnChangeColor->blockSignals( true );
   btnChangeColor->setColor( mLayer->color() );
-  btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   btnChangeColor->blockSignals( false );
   spinOffset->blockSignals( true );
   spinOffset->setValue( mLayer->offset() );
@@ -318,6 +321,17 @@ QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget( const Qg
   mOffsetUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
   mOutlineWidthUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
 
+  btnChangeColorFill->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColorFill->setColorDialogTitle( tr( "Select fill color" ) );
+  btnChangeColorFill->setContext( "symbology" );
+  btnChangeColorFill->setShowNoColor( true );
+  btnChangeColorFill->setNoColorString( tr( "Transparent fill" ) );
+  btnChangeColorBorder->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColorBorder->setColorDialogTitle( tr( "Select border color" ) );
+  btnChangeColorBorder->setContext( "symbology" );
+  btnChangeColorBorder->setShowNoColor( true );
+  btnChangeColorBorder->setNoColorString( tr( "Transparent border" ) );
+
   QSize size = lstNames->iconSize();
   QStringList names;
   names << "circle" << "rectangle" << "diamond" << "pentagon" << "cross" << "cross2" << "triangle"
@@ -361,11 +375,9 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   }
   btnChangeColorBorder->blockSignals( true );
   btnChangeColorBorder->setColor( mLayer->borderColor() );
-  btnChangeColorBorder->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   btnChangeColorBorder->blockSignals( false );
   btnChangeColorFill->blockSignals( true );
   btnChangeColorFill->setColor( mLayer->color() );
-  btnChangeColorFill->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   btnChangeColorFill->blockSignals( false );
   spinSize->blockSignals( true );
   spinSize->setValue( mLayer->size() );
@@ -579,9 +591,13 @@ QgsSimpleFillSymbolLayerV2Widget::QgsSimpleFillSymbolLayerV2Widget( const QgsVec
   mBorderWidthUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
   mOffsetUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
 
+  btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColor->setColorDialogTitle( tr( "Select fill color" ) );
   btnChangeColor->setContext( "symbology" );
   btnChangeColor->setShowNoColor( true );
   btnChangeColor->setNoColorString( tr( "Transparent fill" ) );
+  btnChangeBorderColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeBorderColor->setColorDialogTitle( tr( "Select border color" ) );
   btnChangeBorderColor->setContext( "symbology" );
   btnChangeBorderColor->setShowNoColor( true );
   btnChangeBorderColor->setNoColorString( tr( "Transparent border" ) );
@@ -607,14 +623,12 @@ void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   // set values
   btnChangeColor->blockSignals( true );
   btnChangeColor->setColor( mLayer->color() );
-  btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   btnChangeColor->blockSignals( false );
   cboFillStyle->blockSignals( true );
   cboFillStyle->setBrushStyle( mLayer->brushStyle() );
   cboFillStyle->blockSignals( false );
   btnChangeBorderColor->blockSignals( true );
   btnChangeBorderColor->setColor( mLayer->borderColor() );
-  btnChangeBorderColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   btnChangeBorderColor->blockSignals( false );
   cboBorderStyle->blockSignals( true );
   cboBorderStyle->setPenStyle( mLayer->borderStyle() );
@@ -751,6 +765,17 @@ QgsGradientFillSymbolLayerV2Widget::QgsGradientFillSymbolLayerV2Widget( const Qg
   cboGradientColorRamp->setShowGradientOnly( true );
   cboGradientColorRamp->populate( QgsStyleV2::defaultStyle() );
 
+  btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColor->setColorDialogTitle( tr( "Select gradient color" ) );
+  btnChangeColor->setContext( "symbology" );
+  btnChangeColor->setShowNoColor( true );
+  btnChangeColor->setNoColorString( tr( "Transparent" ) );
+  btnChangeColor2->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColor2->setColorDialogTitle( tr( "Select gradient color" ) );
+  btnChangeColor2->setContext( "symbology" );
+  btnChangeColor2->setShowNoColor( true );
+  btnChangeColor2->setNoColorString( tr( "Transparent" ) );
+
   connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
   connect( btnChangeColor2, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor2( const QColor& ) ) );
   connect( cboGradientColorRamp, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( applyColorRamp() ) );
@@ -779,11 +804,9 @@ void QgsGradientFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   // set values
   btnChangeColor->blockSignals( true );
   btnChangeColor->setColor( mLayer->color() );
-  btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   btnChangeColor->blockSignals( false );
   btnChangeColor2->blockSignals( true );
   btnChangeColor2->setColor( mLayer->color2() );
-  btnChangeColor2->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   btnChangeColor2->blockSignals( false );
 
   if ( mLayer->gradientColorType() == QgsGradientFillSymbolLayerV2::SimpleTwoColor )
@@ -1102,6 +1125,17 @@ QgsShapeburstFillSymbolLayerV2Widget::QgsShapeburstFillSymbolLayerV2Widget( cons
   mDistanceUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
   mOffsetUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
 
+  btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColor->setColorDialogTitle( tr( "Select gradient color" ) );
+  btnChangeColor->setContext( "symbology" );
+  btnChangeColor->setShowNoColor( true );
+  btnChangeColor->setNoColorString( tr( "Transparent" ) );
+  btnChangeColor2->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColor2->setColorDialogTitle( tr( "Select gradient color" ) );
+  btnChangeColor2->setContext( "symbology" );
+  btnChangeColor2->setShowNoColor( true );
+  btnChangeColor2->setNoColorString( tr( "Transparent" ) );
+
   cboGradientColorRamp->setShowGradientOnly( true );
   cboGradientColorRamp->populate( QgsStyleV2::defaultStyle() );
 
@@ -1127,11 +1161,9 @@ void QgsShapeburstFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* lay
   // set values
   btnChangeColor->blockSignals( true );
   btnChangeColor->setColor( mLayer->color() );
-  btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   btnChangeColor->blockSignals( false );
   btnChangeColor2->blockSignals( true );
   btnChangeColor2->setColor( mLayer->color2() );
-  btnChangeColor2->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   btnChangeColor2->blockSignals( false );
 
   if ( mLayer->colorType() == QgsShapeburstFillSymbolLayerV2::SimpleTwoColor )
@@ -1556,6 +1588,11 @@ QgsSvgMarkerSymbolLayerV2Widget::QgsSvgMarkerSymbolLayerV2Widget( const QgsVecto
   mBorderWidthUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
   mOffsetUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
   viewGroups->setHeaderHidden( true );
+
+  mChangeColorButton->setColorDialogTitle( tr( "Select fill color" ) );
+  mChangeColorButton->setContext( "symbology" );
+  mChangeBorderColorButton->setColorDialogTitle( tr( "Select border color" ) );
+  mChangeColorButton->setContext( "symbology" );
 
   populateList();
 
@@ -2044,6 +2081,11 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* 
   mSvgOutlineWidthUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
   mSvgTreeView->setHeaderHidden( true );
   insertIcons();
+
+  mChangeColorButton->setColorDialogTitle( tr( "Select fill color" ) );
+  mChangeColorButton->setContext( "symbology" );
+  mChangeBorderColorButton->setColorDialogTitle( tr( "Select border color" ) );
+  mChangeBorderColorButton->setContext( "symbology" );
 
   connect( mSvgListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setFile( const QModelIndex& ) ) );
   connect( mSvgTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( populateIcons( const QModelIndex& ) ) );
@@ -2639,6 +2681,10 @@ QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( const QgsVec
   widgetChar = new CharacterWidget;
   scrollArea->setWidget( widgetChar );
 
+  btnColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnColor->setColorDialogTitle( tr( "Select symbol color" ) );
+  btnColor->setContext( "symbology" );
+
   connect( cboFont, SIGNAL( currentFontChanged( const QFont & ) ), this, SLOT( setFontFamily( const QFont& ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize( double ) ) );
   connect( btnColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
@@ -2666,7 +2712,6 @@ void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinSize->blockSignals( false );
   btnColor->blockSignals( true );
   btnColor->setColor( mLayer->color() );
-  btnColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   btnColor->blockSignals( false );
   spinAngle->blockSignals( true );
   spinAngle->setValue( mLayer->angle() );

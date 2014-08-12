@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>474</width>
+    <width>494</width>
     <height>358</height>
    </rect>
   </property>
@@ -23,16 +23,7 @@
    <property name="horizontalSpacing">
     <number>28</number>
    </property>
-   <property name="leftMargin">
-    <number>1</number>
-   </property>
-   <property name="topMargin">
-    <number>1</number>
-   </property>
-   <property name="rightMargin">
-    <number>1</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>1</number>
    </property>
    <item row="0" column="0">
@@ -48,16 +39,16 @@
       <number>12</number>
      </property>
      <item>
-      <widget class="QgsColorButton" name="btnChangeColor">
+      <widget class="QgsColorButtonV2" name="btnChangeColor">
        <property name="minimumSize">
         <size>
-         <width>100</width>
+         <width>120</width>
          <height>0</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>100</width>
+         <width>120</width>
          <height>16777215</height>
         </size>
        </property>
@@ -67,11 +58,17 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsColorButton" name="btnChangeColor2">
+      <widget class="QgsColorButtonV2" name="btnChangeColor2">
        <property name="minimumSize">
         <size>
-         <width>100</width>
+         <width>120</width>
          <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>120</width>
+         <height>16777215</height>
         </size>
        </property>
        <property name="text">
@@ -429,9 +426,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
