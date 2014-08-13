@@ -25,7 +25,7 @@
 #define QGSATTRIBUTEACTION_H
 
 #include <QString>
-#include <QObject>
+#include <QIcon>
 
 #include <qgsfeature.h>
 
@@ -53,8 +53,17 @@ class CORE_EXPORT QgsAction
     QgsAction( ActionType type, QString name, QString action, bool capture ) :
         mType( type ), mName( name ), mAction( action ), mCaptureOutput( capture ) {}
 
+    QgsAction( ActionType type, QString name, QString action, const QString& icon, bool capture ) :
+        mType( type ), mName( name ), mIcon( icon ), mAction( action ), mCaptureOutput( capture ) {}
+
     //! The name of the action
     QString name() const { return mName; }
+
+    //! The path to the icon
+    const QString iconPath() const { return mIcon; }
+
+    //! The icon
+    const QIcon icon() const { return QIcon( mIcon ); }
 
     //! The action
     QString action() const { return mAction; }
@@ -84,6 +93,7 @@ class CORE_EXPORT QgsAction
   private:
     ActionType mType;
     QString mName;
+    QString mIcon;
     QString mAction;
     bool mCaptureOutput;
 };
@@ -102,12 +112,21 @@ class  CORE_EXPORT QgsAttributeAction
     //! Destructor
     virtual ~QgsAttributeAction() {}
 
-    //! Add an action with the given name and action details.
-    // Will happily have duplicate names and actions. If
-    // capture is true, when running the action using doAction(),
-    // any stdout from the process will be captured and displayed in a
-    // dialog box.
+    /** Add an action with the given name and action details.
+     * Will happily have duplicate names and actions. If
+     * capture is true, when running the action using doAction(),
+     * any stdout from the process will be captured and displayed in a
+     * dialog box.
+     */
     void addAction( QgsAction::ActionType type, QString name, QString action, bool capture = false );
+
+    /** Add an action with the given name and action details.
+     * Will happily have duplicate names and actions. If
+     * capture is true, when running the action using doAction(),
+     * any stdout from the process will be captured and displayed in a
+     * dialog box.
+     */
+    void addAction(QgsAction::ActionType type, QString name, QString action, const QString& icon, bool capture = false );
 
     //! Remove an action at given index
     void removeAction( int index );
