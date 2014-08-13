@@ -372,6 +372,12 @@ bool QgsAtlasComposition::prepareForFeature( int featureI )
   emit featureChanged( &mCurrentFeature );
   emit statusMsgChanged( QString( tr( "Atlas feature %1 of %2" ) ).arg( featureI + 1 ).arg( mFeatureIds.size() ) );
 
+  if ( !mCurrentFeature.isValid() )
+  {
+    //bad feature
+    return true;
+  }
+
   //update composer maps
 
   //build a list of atlas-enabled composer maps
