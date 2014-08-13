@@ -191,7 +191,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>5</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="mProjOpts_01">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -211,8 +211,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>684</width>
-                <height>783</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -280,13 +280,13 @@
                      <widget class="QgsColorButtonV2" name="pbnSelectionColor">
                       <property name="minimumSize">
                        <size>
-                        <width>100</width>
+                        <width>120</width>
                         <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>100</width>
+                        <width>120</width>
                         <height>16777215</height>
                        </size>
                       </property>
@@ -315,13 +315,13 @@
                      <widget class="QgsColorButtonV2" name="pbnCanvasColor">
                       <property name="minimumSize">
                        <size>
-                        <width>100</width>
+                        <width>120</width>
                         <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>100</width>
+                        <width>120</width>
                         <height>16777215</height>
                        </size>
                       </property>
@@ -798,8 +798,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>238</width>
-                <height>43</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -848,8 +848,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>684</width>
-                <height>783</height>
+                <width>132</width>
+                <height>100</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -920,8 +920,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>684</width>
-                <height>783</height>
+                <width>376</width>
+                <height>324</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1288,8 +1288,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>667</width>
-                <height>1391</height>
+                <width>536</width>
+                <height>1570</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2003,8 +2003,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>684</width>
-                <height>783</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2086,15 +2086,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButtonV2</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelector</class>
@@ -2201,7 +2201,6 @@
   <tabstop>grpPythonMacros</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

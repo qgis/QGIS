@@ -241,6 +241,10 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_mRemoveDefaultTransformButton_clicked();
     void on_mAddDefaultTransformButton_clicked();
 
+    void on_mButtonAddColor_clicked();
+    void on_mButtonRemoveColor_clicked();
+    void on_mTreeCustomColors_itemDoubleClicked( QTreeWidgetItem* item, int column );
+
   private:
     QStringList i18nList();
     void initContrastEnhancement( QComboBox *cbox, QString name, QString defaultVal );
@@ -256,10 +260,16 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void saveDefaultDatumTransformations();
 
+    void setPaletteColor( QTreeWidgetItem *item, QColor color );
+
   protected:
     QgisAppStyleSheet* mStyleSheetBuilder;
     QMap<QString, QVariant> mStyleSheetNewOpts;
     QMap<QString, QVariant> mStyleSheetOldOpts;
+
+    static const int PaletteColorRole = Qt::UserRole + 1;
+    static const int PaletteLabelRole = Qt::UserRole + 2;
+
 };
 
 #endif // #ifndef QGSOPTIONS_H

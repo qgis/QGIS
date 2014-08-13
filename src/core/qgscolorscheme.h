@@ -90,4 +90,25 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
     QgsColorScheme* clone() const;
 };
 
+/** \ingroup core
+ * \class QgsCustomColorScheme
+ * \brief A color scheme which contains custom colors set through QGIS app options dialog.
+ * \note Added in version 2.5
+ */
+class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
+{
+  public:
+
+    QgsCustomColorScheme();
+
+    virtual ~QgsCustomColorScheme();
+
+    virtual QString schemeName() const { return QT_TR_NOOP( "Custom color palette" ); }
+
+    virtual QgsNamedColorList fetchColors( const QString context = QString(),
+                                           const QColor baseColor = QColor() );
+
+    QgsColorScheme* clone() const;
+};
+
 #endif

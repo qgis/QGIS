@@ -68,3 +68,28 @@ class QgsRecentColorScheme : QgsColorScheme
 
     QgsColorScheme* clone() const /Factory/;
 }; // class QgsRecentColorScheme
+
+/** \ingroup core
+ * \class QgsCustomColorScheme
+ * \brief A color scheme which contains custom colors set through QGIS app options dialog.
+ * \note Added in version 2.5
+ */
+class QgsCustomColorScheme : QgsColorScheme
+{
+%TypeHeaderCode
+#include <qgscolorscheme.h>
+%End
+
+  public:
+
+    QgsCustomColorScheme();
+
+    virtual ~QgsCustomColorScheme();
+
+    virtual QString schemeName() const;
+
+    virtual QgsNamedColorList fetchColors( const QString context = QString(),
+                                           const QColor baseColor = QColor() );
+
+    QgsColorScheme* clone() const /Factory/;
+}; // class QgsCustomColorScheme

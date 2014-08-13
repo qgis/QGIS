@@ -68,3 +68,50 @@ QgsColorScheme *QgsRecentColorScheme::clone() const
 {
   return new QgsRecentColorScheme();
 }
+
+
+QgsCustomColorScheme::QgsCustomColorScheme() : QgsColorScheme()
+{
+
+}
+
+QgsCustomColorScheme::~QgsCustomColorScheme()
+{
+
+}
+
+QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString context, const QColor baseColor )
+{
+  Q_UNUSED( context );
+  Q_UNUSED( baseColor );
+
+  //fetch predefined custom colors
+  QSettings settings;
+
+  QList< QVariant > customColorVariants = settings.value( QString( "/colors/palettecolors" ) ).toList();
+  QList< QVariant > customColorLabels = settings.value( QString( "/colors/palettelabels" ) ).toList();
+
+  //generate list from custom colors
+  QgsNamedColorList colorList;
+  int colorIndex = 0;
+  for ( QList< QVariant >::iterator it = customColorVariants.begin();
+        it != customColorVariants.end(); ++it )
+  {
+    QColor color = ( *it ).value<QColor>();
+    QString label;
+    if ( customColorLabels.length() > colorIndex )
+    {
+      label = customColorLabels.at( colorIndex ).toString();
+    }
+
+    colorList.append( qMakePair( color, label ) );
+    colorIndex++;
+  }
+
+  return colorList;
+}
+
+QgsColorScheme *QgsCustomColorScheme::clone() const
+{
+  return new QgsCustomColorScheme();
+}

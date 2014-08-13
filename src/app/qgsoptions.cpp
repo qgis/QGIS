@@ -685,6 +685,37 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   }
 
   //
+  // Color palette
+  //
+  QList< QVariant > customColorVariants = settings.value( QString( "/colors/palettecolors" ) ).toList();
+  QList< QVariant > customColorLabels = settings.value( QString( "/colors/palettelabels" ) ).toList();
+
+  QList<QTreeWidgetItem *> customColors;
+  int colorIndex = 0;
+  for ( QList< QVariant >::iterator it = customColorVariants.begin();
+        it != customColorVariants.end(); ++it )
+  {
+    QColor color = ( *it ).value<QColor>();
+    QString label;
+    if ( customColorLabels.length() > colorIndex )
+    {
+      label = customColorLabels.at( colorIndex ).toString();
+    }
+
+    QTreeWidgetItem* item = new QTreeWidgetItem();
+    item->setData( 0, PaletteLabelRole, label );
+    item->setText( 1, label );
+    setPaletteColor( item, color );
+    customColors.append( item );
+
+    colorIndex++;
+  }
+  mTreeCustomColors->clear();
+  mTreeCustomColors->insertTopLevelItems( 0, customColors );
+  mTreeCustomColors->resizeColumnToContents( 0 );
+  mTreeCustomColors->setColumnWidth( 0, mTreeCustomColors->columnWidth( 0 ) + 20 );
+
+  //
   // Composer settings
   //
 
@@ -1294,6 +1325,23 @@ void QgsOptions::saveOptions()
     myPaths += mListGlobalScales->item( i )->text();
   }
   settings.setValue( "Map/scales", myPaths );
+
+  //
+  // Color palette
+  //
+  QList< QVariant > customColors;
+  QList< QVariant > customColorLabels;
+  int colorCount = mTreeCustomColors->topLevelItemCount();
+  for ( int i = 0; i < colorCount; i++ )
+  {
+    QTreeWidgetItem* item = mTreeCustomColors->topLevelItem( i );
+    QVariant label = item->data( 0, PaletteLabelRole );
+    QVariant color = item->data( 0, PaletteColorRole );
+    customColors.append( color );
+    customColorLabels.append( label );
+  }
+  settings.setValue( QString( "/colors/palettecolors" ), customColors );
+  settings.setValue( QString( "/colors/palettelabels" ), customColorLabels );
 
   //
   // Composer settings
@@ -2054,4 +2102,85 @@ void QgsOptions::saveDefaultDatumTransformations()
   }
 
   s.endGroup();
+}
+
+
+void QgsOptions::on_mButtonAddColor_clicked()
+{
+  QColor newColor = QColorDialog::getColor( QColor(), this->parentWidget(), tr( "Select color" ) );
+  if ( !newColor.isValid() )
+  {
+    return;
+  }
+  activateWindow();
+
+  QString newLabel = QInputDialog::getText( this, tr( "Color label" ),
+                     tr( "Please enter a label for the color" ) );
+  activateWindow();
+
+  QTreeWidgetItem* item = new QTreeWidgetItem();
+  item->setData( 0, PaletteLabelRole, newLabel );
+  item->setText( 1, newLabel );
+  setPaletteColor( item, newColor );
+  mTreeCustomColors->addTopLevelItem( item );
+  mTreeCustomColors->resizeColumnToContents( 0 );
+  mTreeCustomColors->setColumnWidth( 0, mTreeCustomColors->columnWidth( 0 ) + 20 );
+}
+
+void QgsOptions::on_mButtonRemoveColor_clicked()
+{
+  QTreeWidgetItem* item = mTreeCustomColors->currentItem();
+  if ( !item )
+    return;
+  int index = mTreeCustomColors->indexOfTopLevelItem( item );
+  mTreeCustomColors->takeTopLevelItem( index );
+}
+
+void QgsOptions::on_mTreeCustomColors_itemDoubleClicked( QTreeWidgetItem* item, int column )
+{
+  if ( column == 0 )
+  {
+    QColor newColor = QColorDialog::getColor( item->data( 0, PaletteColorRole ).value<QColor>(), this->parentWidget(), tr( "Select color" ) );
+    if ( !newColor.isValid() )
+    {
+      return;
+    }
+    setPaletteColor( item, newColor );
+  }
+  else
+  {
+    bool ok;
+    QString label = item->data( 0, PaletteLabelRole ).toString();
+    QString newLabel = QInputDialog::getText( this, tr( "Color label" ),
+                       tr( "Please enter a label for the color" ),
+                       QLineEdit::Normal, label, &ok );
+    if ( !ok )
+    {
+      return;
+    }
+
+    item->setText( 1, newLabel );
+    item->setData( 0, PaletteLabelRole, newLabel );
+  }
+}
+
+void QgsOptions::setPaletteColor( QTreeWidgetItem* item, QColor color )
+{
+  QSize iconSize( 16, 16 );
+  QPixmap pixmap( iconSize );
+  pixmap.fill( QColor( 0, 0, 0, 0 ) );
+  QRect rect( 1, 1, iconSize.width() - 2, iconSize.height() - 2 );
+
+  // draw a slightly rounded rectangle
+  QPainter p;
+  p.begin( &pixmap );
+  p.setPen( Qt::NoPen );
+  p.setRenderHint( QPainter::Antialiasing );
+  p.setBrush( color );
+  p.drawRoundedRect( rect, 2, 2 );
+  p.end();
+
+  item->setIcon( 0, QIcon( pixmap ) );
+  item->setData( 0, PaletteColorRole, color );
+  item->setText( 0, color.name() );
 }
