@@ -25,6 +25,7 @@ QgsActionMenu::QgsActionMenu( QgsVectorLayer* layer, const QgsFeature* feature, 
     , mMapLayerActionSignalMapper( 0 )
     , mActions( 0 )
     , mFeature( feature )
+    , mFeatureId( feature->id() )
     , mOwnsFeature( false )
 {
   init();
@@ -127,6 +128,7 @@ void QgsActionMenu::reloadActions()
     const QgsAction& qaction( mActions->at( idx ) );
 
     QAction* action = new QAction( qaction.icon(), qaction.name(), this );
+    action->setData( QVariant::fromValue<ActionData>( ActionData( idx, mFeatureId, mLayer ) ) );
 
     // Only enable items on supported platforms
     if ( !qaction.runable() )
@@ -157,6 +159,7 @@ void QgsActionMenu::reloadActions()
     {
       QgsMapLayerAction* qaction = mapLayerActions.at( i );
       QAction* action = new QAction( qaction->text(), this );
+      action->setData( QVariant::fromValue<ActionData>( ActionData( MapLayerAction, mFeatureId, mLayer ) ) );
       mMapLayerActionSignalMapper->setMapping( action, i );
       addAction( action );
       connect( action, SIGNAL(triggered()), mMapLayerActionSignalMapper, SLOT(map()) );
