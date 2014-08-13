@@ -539,6 +539,8 @@ class PythonConsoleWidget(QWidget):
         self.findPrevButton.clicked.connect(self._findPrev)
         self.lineEditFind.textChanged.connect(self._textFindChanged)
 
+        self.tabEditorWidget.restoreTabsOrAddNew()
+
     def _findText(self):
         self.tabEditorWidget.currentWidget().newEditor.findText(True)
 
