@@ -16,31 +16,31 @@
 #include "qgsmaplayeractionregistry.h"
 
 
-QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent ) : QAction( name, parent ),
+QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, Availability availability ) : QAction( name, parent ),
     mSingleLayer( false ),
     mActionLayer( 0 ),
-    mSpecificLayerType( false )
+    mSpecificLayerType( false ),
+    mAvailability( availability )
 {
-
 }
 
 /**Creates a map layer action which can run only on a specific layer*/
-QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer* layer ) : QAction( name, parent ),
+QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer* layer , Availability availability ) : QAction( name, parent ),
     mSingleLayer( true ),
     mActionLayer( layer ),
-    mSpecificLayerType( false )
+    mSpecificLayerType( false ),
+    mAvailability( availability )
 {
-
 }
 
 /**Creates a map layer action which can run on a specific type of layer*/
-QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer::LayerType layerType ) : QAction( name, parent ),
+QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer::LayerType layerType, Availability availability ) : QAction( name, parent ),
     mSingleLayer( false ),
     mActionLayer( 0 ),
     mSpecificLayerType( true ),
-    mLayerType( layerType )
+    mLayerType( layerType ),
+    mAvailability( availability )
 {
-
 }
 
 QgsMapLayerAction::~QgsMapLayerAction()

@@ -31,14 +31,23 @@ class QgsFeature;
 class GUI_EXPORT QgsMapLayerAction : public QAction
 {
     Q_OBJECT
+    Q_FLAGS( Availability )
 
   public:
+    enum AvailabityFlag
+    {
+      Layer = 1,
+      Feature = 2,
+      LayerAndFeature = Layer | Feature
+    };
+    Q_DECLARE_FLAGS( Availability, AvailabityFlag )
+
     /**Creates a map layer action which can run on any layer*/
-    QgsMapLayerAction( QString name, QObject *parent );
+    QgsMapLayerAction( QString name, QObject *parent, Availability availability = LayerAndFeature );
     /**Creates a map layer action which can run only on a specific layer*/
-    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer* layer );
+    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer* layer, Availability availability = LayerAndFeature );
     /**Creates a map layer action which can run on a specific type of layer*/
-    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer::LayerType layerType );
+    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer::LayerType layerType, Availability availability = LayerAndFeature );
 
     ~QgsMapLayerAction();
 
@@ -51,6 +60,11 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
     /** Triggers the action with the specified layer. This also emits the triggered() slot. */
     void triggerForLayer( QgsMapLayer* layer );
+
+    /** Define the availibility of the action */
+    void setAvailability( Availability availabitly ) {mAvailability = availabitly;}
+    /** Return availibity of action */
+    Availability availability() const {return mAvailability;}
 
   signals:
     /** Triggered when action has been run for a specific feature */
@@ -71,7 +85,8 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     //layer type if action is only valid for a specific layer type
     QgsMapLayer::LayerType mLayerType;
 
-
+    // determine if the action can be run on feature and/or layer
+    Availability mAvailability;
 };
 
 /**
