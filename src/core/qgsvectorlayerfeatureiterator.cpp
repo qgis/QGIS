@@ -495,7 +495,7 @@ void QgsVectorLayerFeatureIterator::prepareExpressions()
            || mRequest.subsetOfAttributes().contains( i ) )
       {
         int oi = mSource->mFields.fieldOriginIndex( i );
-        QgsExpression* exp = new QgsExpression( exps[oi].expression, mSource->mFields.at( i ) );
+        QgsExpression* exp = new QgsExpression( exps[oi].expression );
         exp->prepare( mSource->mFields );
         mExpressionFieldInfo.insert( i, exp );
 
@@ -554,7 +554,7 @@ void QgsVectorLayerFeatureIterator::addVirtualAttributes( QgsFeature& f )
     for( ; it != mExpressionFieldInfo.constEnd(); ++it )
     {
       QgsExpression* exp = it.value();
-      QVariant val = exp->evaluate( f );
+      QVariant val = exp->evaluate( mSource->mFields.at( it.key() ), f );
       f.setAttribute( it.key(), val );
     }
   }

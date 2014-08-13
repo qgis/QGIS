@@ -6,7 +6,6 @@ class QgsExpression
 
   public:
     QgsExpression( const QString& expr );
-    QgsExpression( const QString& expr, const QgsField& targetField );
     ~QgsExpression();
 
     //! Returns true if an error occurred when parsing the input expression
@@ -48,7 +47,25 @@ class QgsExpression
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
     //! @note not available in python bindings
-    // inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields ) { return evaluate( &f, fields ); }
+    // inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields )
+
+    //! Evaluate the feature and return the result
+    //! @note prepare() should be called before calling this method
+    QVariant evaluate( const QgsField& field, const QgsFeature* f = NULL );
+
+    //! Evaluate the feature and return the result
+    //! @note prepare() should be called before calling this method
+    //! @note available in python bindings as evaluatePrepared
+    QVariant evaluate( const QgsField& field, const QgsFeature& f ) /PyName=evaluatePrepared/;
+
+    //! Evaluate the feature and return the result
+    //! @note this method does not expect that prepare() has been called on this instance
+    QVariant evaluate( const QgsField& field, const QgsFeature* f, const QgsFields& fields );
+
+    //! Evaluate the feature and return the result
+    //! @note this method does not expect that prepare() has been called on this instance
+    //! @note not available in python bindings
+    // QVariant evaluate( const QgsField& field, const QgsFeature& f, const QgsFields& fields ) { return evaluate( field, &f, fields ); }
 
     //! Returns true if an error occurred when evaluating last input
     bool hasEvalError() const;
@@ -87,9 +104,6 @@ class QgsExpression
     //! Return calculator used for distance and area calculations
     //! (used by internal functions)
     QgsDistanceArea *geomCalculator();
-
-    //! Set the target field. The calculated values will then be cast to this field's type.
-    void setTargetField( const QgsField& targetField );
 
     //! Sets the geometry calculator used in evaluation of expressions,
     // instead of the default.

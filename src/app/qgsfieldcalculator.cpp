@@ -177,8 +177,6 @@ void QgsFieldCalculator::accept()
     }
   }
 
-  exp.setTargetField( mVectorLayer->pendingFields()[mAttributeId] );
-
   if ( mAttributeId == -1 )
   {
     mVectorLayer->destroyEditCommand();
@@ -214,7 +212,7 @@ void QgsFieldCalculator::accept()
     }
 
     exp.setCurrentRowNumber( rownum );
-    QVariant value = exp.evaluate( &feature );
+    QVariant value = exp.evaluate( mVectorLayer->pendingFields()[mAttributeId], &feature );
     if ( exp.hasEvalError() )
     {
       calculationSuccess = false;

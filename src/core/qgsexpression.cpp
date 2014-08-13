@@ -1824,25 +1824,11 @@ int QgsExpression::functionCount()
   return Functions().size();
 }
 
-
 QgsExpression::QgsExpression( const QString& expr )
-    : mRowNumber( 0 )
-    , mScale( 0 )
-    , mExp( expr )
-    , mCalc( 0 )
-{
-  mRootNode = ::parseExpression( expr, mParserErrorString );
-
-  if ( mParserErrorString.isNull() )
-    Q_ASSERT( mRootNode );
-}
-
-QgsExpression::QgsExpression( const QString& expr, const QgsField& targetField )
   : mRowNumber( 0 )
   , mScale( 0 )
   , mExp( expr )
   , mCalc( 0 )
-  , mTargetField( targetField )
 {
   mRootNode = ::parseExpression( expr, mParserErrorString );
 
@@ -1924,16 +1910,7 @@ QVariant QgsExpression::evaluate( const QgsFeature* f )
     return QVariant();
   }
 
-  QVariant result = mRootNode->eval( this, f );
-
-  // If the target field is not set or we can convert the result
-  // return the result
-  // If it's not possible, return an invalid QVariant (error)
-  if ( mTargetField.type() == QVariant::Invalid ||
-       mTargetField.convertCompatible( result ) )
-    return result;
-  else
-    return QVariant();
+  return mRootNode->eval( this, f );
 }
 
 QVariant QgsExpression::evaluate( const QgsFeature* f, const QgsFields& fields )
@@ -1945,6 +1922,34 @@ QVariant QgsExpression::evaluate( const QgsFeature* f, const QgsFields& fields )
 
   // then evaluate
   return evaluate( f );
+}
+
+QVariant QgsExpression::evaluate( const QgsField& field, const QgsFeature* f )
+{
+  QVariant result = evaluate( f );
+
+  // If the target field is not set or we can convert the result
+  // return the result
+  // If it's not possible, return an invalid QVariant (error)
+  if ( field.type() == QVariant::Invalid ||
+       field.convertCompatible( result ) )
+    return result;
+  else
+    return QVariant();
+}
+
+QVariant QgsExpression::evaluate( const QgsField& field, const QgsFeature* f, const QgsFields& fields )
+{
+  QVariant result = evaluate( f, fields );
+
+  // If the target field is not set or we can convert the result
+  // return the result
+  // If it's not possible, return an invalid QVariant (error)
+  if ( field.type() == QVariant::Invalid ||
+       field.convertCompatible( result ) )
+    return result;
+  else
+    return QVariant();
 }
 
 QString QgsExpression::dump() const
