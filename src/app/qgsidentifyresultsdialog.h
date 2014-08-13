@@ -51,7 +51,7 @@ class QwtPlotCurve;
 
 class APP_EXPORT QgsIdentifyResultsWebView : public QWebView
 {
-    Q_OBJECT;
+    Q_OBJECT
   public:
     QgsIdentifyResultsWebView( QWidget *parent = 0 );
     QSize sizeHint() const;
