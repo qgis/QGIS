@@ -5,13 +5,20 @@ class QgsMapLayerAction : QAction
 %End
 
   public:
-    /**Creates a map layer action which can run on any layer*/
-    QgsMapLayerAction( QString name, QObject *parent );
-    /**Creates a map layer action which can run only on a specific layer*/
-    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer* layer );
-    /**Creates a map layer action which can run on a specific type of layer*/
-    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer::LayerType layerType );
+    enum AvailabityFlag
+    {
+        AvailableForLayer,
+        AvailableForFeature,
+        AvailableForLayerAndFeature
+    };
+    typedef QFlags<QgsMapLayerProxyModel::AvailabityFlag> Availabity;
 
+    /**Creates a map layer action which can run on any layer*/
+    QgsMapLayerAction( QString name, QObject *parent, Availability availability = AvailableForLayerAndFeature );
+    /**Creates a map layer action which can run only on a specific layer*/
+    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer* layer, Availability availability = AvailableForLayerAndFeature );
+    /**Creates a map layer action which can run on a specific type of layer*/
+    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer::LayerType layerType, Availability availability = AvailableForLayerAndFeature );
     ~QgsMapLayerAction();
 
     /** True if action can run using the specified layer */
@@ -24,6 +31,10 @@ class QgsMapLayerAction : QAction
     /** Triggers the action with the specified layer. This also emits the triggered() slot. */
     void triggerForLayer( QgsMapLayer* layer );
 
+    /** Define the availibility of the action */
+    void setAvailability( Availability availibitly );
+    Availability availability();
+    
   signals:
     /** Triggered when action has been run for a specific feature */
     void triggeredForFeature( QgsMapLayer* layer, QgsFeature* feature );
