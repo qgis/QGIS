@@ -29,6 +29,51 @@
 class QgsActionMenu : public QMenu
 {
     Q_OBJECT
+
+  public:
+    enum ActionType
+    {
+      Invalid,        //!< Invalid
+      MapLayerAction, //!< Standard actions (defined by core or plugins)
+      AttributeAction //!< Custom actions (manually defined in layer properties)
+    };
+
+    struct ActionData
+    {
+        ActionData()
+          : actionType( Invalid )
+          , actionId( 0 )
+        {}
+
+        ActionData( int actionId, QgsFeatureId featureId, QgsMapLayer* mapLayer )
+          : actionType( AttributeAction )
+          , actionId( actionId )
+          , featureId( featureId )
+          , mapLayer( mapLayer )
+        {}
+
+        ActionData( QgsMapLayerAction* action, QgsFeatureId featureId, QgsMapLayer* mapLayer )
+          : actionType( AttributeAction )
+          , actionId( action )
+          , featureId( featureId )
+          , mapLayer( mapLayer )
+        {}
+
+        ActionType actionType;
+
+        union aid
+        {
+          aid( int i ) : id( i ) {}
+          aid( QgsMapLayerAction* a ) : action( a ) {}
+          int id;
+          QgsMapLayerAction* action;
+        } actionId;
+
+        QgsFeatureId featureId;
+        QgsMapLayer* mapLayer;
+    };
+
+
   public:
     /**
      * Constructs a new QgsActionMenu
@@ -89,5 +134,6 @@ class QgsActionMenu : public QMenu
     bool mOwnsFeature;
 };
 
+Q_DECLARE_METATYPE( QgsActionMenu::ActionData )
 
 #endif // QGSACTIONMENU_H
