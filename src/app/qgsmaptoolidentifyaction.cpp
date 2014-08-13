@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgsattributetabledialog.h"
 #include "qgscursors.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
@@ -21,6 +22,7 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsidentifyresultsdialog.h"
+#include "qgsidentifymenu.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessageviewer.h"
@@ -50,6 +52,12 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas * canvas )
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
 
   connect( this, SIGNAL( changedRasterResults( QList<IdentifyResult>& ) ), this, SLOT( handleChangedRasterResults( QList<IdentifyResult>& ) ) );
+
+  mIdentifyMenu->setAllowMultipleReturn( true );
+
+  QgsMapLayerAction* attrTableAction = new QgsMapLayerAction( tr( "Show attribute table" ), this, QgsMapLayer::VectorLayer, QgsMapLayerAction::MultipleFeatures );
+  connect( attrTableAction, SIGNAL( triggeredForFeatures( QgsMapLayer*, QList<const QgsFeature*> ) ), this, SLOT( showAttributeTable( QgsMapLayer*, QList<const QgsFeature*> ) ) );
+  identifyMenu()->addCustomAction( attrTableAction );
 }
 
 QgsMapToolIdentifyAction::~QgsMapToolIdentifyAction()
@@ -58,7 +66,6 @@ QgsMapToolIdentifyAction::~QgsMapToolIdentifyAction()
   {
     mResultsDialog->done( 0 );
   }
-  deleteRubberBands();
 }
 
 QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
@@ -72,6 +79,26 @@ QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
   }
 
   return mResultsDialog;
+}
+
+void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, QList<const QgsFeature*> featureList )
+{
+  resultsDialog()->clear();
+
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
+  if ( !vl )
+    return;
+
+  QString filter = "$id IN (";
+  Q_FOREACH ( const QgsFeature* feature, featureList )
+  {
+    filter.append( QString( "%1," ).arg( feature->id() ) );
+  }
+  filter = filter.replace( QRegExp( ",$" ), ")" );
+
+  QgsAttributeTableDialog* tableDialog = new QgsAttributeTableDialog( vl );
+  tableDialog->setFilterExpression( filter );
+  tableDialog->show();
 }
 
 void QgsMapToolIdentifyAction::canvasMoveEvent( QMouseEvent *e )
@@ -90,12 +117,24 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
   connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
   connect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
 
-  QList<IdentifyResult> results = QgsMapToolIdentify::identify( e->x(), e->y() );
+  identifyMenu()->setResultsIfExternalAction( false );
+
+  bool extendedMenu = e->modifiers() == Qt::ShiftModifier;
+  identifyMenu()->setExecWithSingleResult( extendedMenu );
+  identifyMenu()->setShowFeatureActions( extendedMenu );
+  IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
+
+  QList<IdentifyResult> results = QgsMapToolIdentify::identify( e->x(), e->y(), mode );
 
   disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
   disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
 
-  if ( !results.isEmpty() )
+  if ( results.isEmpty() )
+  {
+    resultsDialog()->clear();
+    QgisApp::instance()->statusBar()->showMessage( tr( "No features at this position found." ) );
+  }
+  else
   {
     // Show the dialog before items are inserted so that items can resize themselves
     // according to dialog size also the first time, see also #9377
@@ -110,11 +149,6 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
 
     // Call QgsIdentifyResultsDialog::show() to adjust with items
     resultsDialog()->show();
-  }
-  else
-  {
-    resultsDialog()->clear();
-    QgisApp::instance()->statusBar()->showMessage( tr( "No features at this position found." ) );
   }
 
   // update possible view modes
@@ -145,7 +179,6 @@ void QgsMapToolIdentifyAction::deactivate()
 {
   resultsDialog()->deactivate();
   QgsMapTool::deactivate();
-  deleteRubberBands();
 }
 
 QGis::UnitType QgsMapToolIdentifyAction::displayUnits()

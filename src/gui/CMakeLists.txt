@@ -167,6 +167,7 @@ qgsfilterlineedit.cpp
 qgsformannotationitem.cpp
 qgsgenericprojectionselector.cpp
 qgshighlight.cpp
+qgsidentifymenu.cpp
 qgshtmlannotationitem.cpp
 qgslegendinterface.cpp
 qgsludialog.cpp
@@ -366,6 +367,7 @@ qgsfilterlineedit.h
 qgsformannotationitem.h
 qgsgenericprojectionselector.h
 qgshtmlannotationitem.h
+qgsidentifymenu.h
 qgslegendinterface.h
 qgslonglongvalidator.h
 qgsludialog.h
@@ -452,6 +454,7 @@ qgsfiledropedit.h
 qgsfilterlineedit.h
 qgsgenericprojectionselector.h
 qgshighlight.h
+qgsidentifymenu.h
 qgsmapcanvas.h
 qgsmapcanvasitem.h
 qgsmapcanvasmap.h

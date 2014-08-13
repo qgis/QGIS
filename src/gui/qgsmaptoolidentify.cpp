@@ -20,7 +20,7 @@
 #include "qgsfeaturestore.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
-#include "qgshighlight.h"
+#include "qgsidentifymenu.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolidentify.h"
@@ -47,6 +47,7 @@
 
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
+    , mIdentifyMenu( new QgsIdentifyMenu( mCanvas ) )
 {
   // set cursor
   QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
@@ -98,89 +99,9 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
 
   if ( mode == LayerSelection )
   {
-    // fill map of layer / identify results
-    mLayerIdResults.clear();
-    QList<IdentifyResult> idResult = identify( x, y, TopDownAll, layerList, layerType );
-    QList<IdentifyResult>::const_iterator it = idResult.constBegin();
-    for ( ; it != idResult.constEnd(); ++it )
-    {
-      QgsMapLayer *layer = it->mLayer;
-      if ( mLayerIdResults.contains( layer ) )
-      {
-        mLayerIdResults[layer].append( *it );
-      }
-      else
-      {
-        mLayerIdResults.insert( layer, QList<IdentifyResult>() << *it );
-      }
-    }
-
-    if ( mLayerIdResults.size() > 1 )
-    {
-      //fill selection menu with entries from mmLayerIdResults
-      QMenu layerSelectionMenu;
-      QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator resultIt = mLayerIdResults.constBegin();
-      for ( ; resultIt != mLayerIdResults.constEnd(); ++resultIt )
-      {
-        QAction* action = new QAction( QString( "%1 (%2)" ).arg( resultIt.key()->name() ).arg( resultIt.value().size() ), 0 );
-        action->setData( resultIt.key()->id() );
-        //add point/line/polygon icon
-        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( resultIt.key() );
-        if ( vl )
-        {
-          switch ( vl->geometryType() )
-          {
-            case QGis::Point:
-              action->setIcon( QgsApplication::getThemeIcon( "/mIconPointLayer.png" ) );
-              break;
-            case QGis::Line:
-              action->setIcon( QgsApplication::getThemeIcon( "/mIconLineLayer.png" ) );
-              break;
-            case QGis::Polygon:
-              action->setIcon( QgsApplication::getThemeIcon( "/mIconPolygonLayer.png" ) );
-              break;
-            default:
-              break;
-          }
-        }
-        else if ( resultIt.key()->type() == QgsMapLayer::RasterLayer )
-        {
-          action->setIcon( QgsApplication::getThemeIcon( "/mIconRaster.png" ) );
-        }
-        connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
-        layerSelectionMenu.addAction( action );
-      }
-
-      QAction *action = new QAction( tr( "All (%1)" ).arg( idResult.size() ), 0 );
-      connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
-      layerSelectionMenu.addAction( action );
-
-      // exec layer selection menu
-      QPoint globalPos = mCanvas->mapToGlobal( QPoint( x + 5, y + 5 ) );
-      QAction* selectedAction = layerSelectionMenu.exec( globalPos );
-      if ( selectedAction )
-      {
-        if ( selectedAction->data().toString().isEmpty() )
-        {
-          results = idResult;
-        }
-        else
-        {
-          QgsMapLayer* selectedLayer = QgsMapLayerRegistry::instance()->mapLayer( selectedAction->data().toString() );
-          QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator sIt = mLayerIdResults.find( selectedLayer );
-          if ( sIt != mLayerIdResults.constEnd() )
-          {
-            results = sIt.value();
-          }
-        }
-      }
-    }
-    else if ( mLayerIdResults.size() == 1 )
-    {
-      results = idResult;
-    }
-
-    deleteRubberBands();
+    QList<IdentifyResult> results = identify( x, y, TopDownAll, layerList, layerType );
+    QPoint globalPos = mCanvas->mapToGlobal( QPoint( x + 5, y + 5 ) );
+    return mIdentifyMenu->exec( results, globalPos );
   }
   else if ( mode == ActiveLayer && layerList.isEmpty() )
   {
@@ -650,75 +571,3 @@ void QgsMapToolIdentify::formatChanged( QgsRasterLayer *layer )
   }
 }
 
-void QgsMapToolIdentify::handleMenuHover()
-{
-  if ( !mCanvas )
-  {
-    return;
-  }
-
-  deleteRubberBands();
-  QAction* senderAction = qobject_cast<QAction*>( sender() );
-  if ( senderAction )
-  {
-    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( senderAction->data().toString() ) );
-    if ( vl )
-    {
-      QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator lIt = mLayerIdResults.find( vl );
-      if ( lIt != mLayerIdResults.constEnd() )
-      {
-        const QList<IdentifyResult>& idList = lIt.value();
-        QList<IdentifyResult>::const_iterator idListIt = idList.constBegin();
-        for ( ; idListIt != idList.constEnd(); ++idListIt )
-        {
-          QgsHighlight *hl = new QgsHighlight( mCanvas, idListIt->mFeature.geometry(), vl );
-          hl->setColor( QColor( 255, 0, 0 ) );
-          hl->setWidth( 2 );
-          mRubberBands.append( hl );
-          connect( vl, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
-        }
-      }
-    }
-    else
-    {
-      for ( QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator lIt = mLayerIdResults.constBegin(); lIt != mLayerIdResults.constEnd(); ++lIt )
-      {
-        const QList<IdentifyResult>& idList = lIt.value();
-        QList<IdentifyResult>::const_iterator idListIt = idList.constBegin();
-        for ( ; idListIt != idList.constEnd(); ++idListIt )
-        {
-          QgsHighlight *hl = new QgsHighlight( mCanvas, idListIt->mFeature.geometry(), lIt.key() );
-          hl->setColor( QColor( 255, 0, 0 ) );
-          hl->setWidth( 2 );
-          mRubberBands.append( hl );
-          connect( lIt.key(), SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
-        }
-      }
-    }
-  }
-}
-
-void QgsMapToolIdentify::deleteRubberBands()
-{
-  QList<QgsHighlight*>::const_iterator it = mRubberBands.constBegin();
-  for ( ; it != mRubberBands.constEnd(); ++it )
-    delete *it;
-  mRubberBands.clear();
-}
-
-void QgsMapToolIdentify::layerDestroyed()
-{
-  QList<QgsHighlight*>::iterator it = mRubberBands.begin();
-  while ( it != mRubberBands.end() )
-  {
-    if (( *it )->layer() == sender() )
-    {
-      delete *it;
-      it = mRubberBands.erase( it );
-    }
-    else
-    {
-      ++it;
-    }
-  }
-}
