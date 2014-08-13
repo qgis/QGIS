@@ -31,6 +31,7 @@ back to QgsVectorLayer.
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QSettings>
+#include <QImageWriter>
 
 QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
     const QgsFields& fields,
@@ -61,6 +62,8 @@ QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
   connect( insertFieldButton, SIGNAL( clicked() ), this, SLOT( insertField() ) );
   connect( insertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertExpression() ) );
 
+  connect( chooseIconButton, SIGNAL(clicked()), this, SLOT( chooseIcon() ) );
+
   init();
   // Populate the combo box with the field names. Will the field names
   // change? If so, they need to be passed into the init() call, or
@@ -78,13 +81,13 @@ void QgsAttributeActionDialog::init()
   for ( int i = 0; i < mActions->size(); i++ )
   {
     const QgsAction action = ( *mActions )[i];
-    insertRow( i, action.type(), action.name(), action.action(), action.capture() );
+    insertRow( i, action.type(), action.name(), action.action(), action.iconPath(), action.capture() );
   }
 
   updateButtons();
 }
 
-void QgsAttributeActionDialog::insertRow( int row, QgsAction::ActionType type, const QString &name, const QString &action, bool capture )
+void QgsAttributeActionDialog::insertRow( int row, QgsAction::ActionType type, const QString &name, const QString &action, const QString& iconPath, bool capture )
 {
   QTableWidgetItem* item;
   attributeActionTable->insertRow( row );
@@ -97,6 +100,10 @@ void QgsAttributeActionDialog::insertRow( int row, QgsAction::ActionType type, c
   item->setFlags( item->flags() & ~( Qt::ItemIsEditable | Qt::ItemIsUserCheckable ) );
   item->setCheckState( capture ? Qt::Checked : Qt::Unchecked );
   attributeActionTable->setItem( row, 3, item );
+  QIcon icon = QIcon( iconPath );
+  QTableWidgetItem* headerItem = new QTableWidgetItem( icon, "" );
+  headerItem->setData( Qt::UserRole, iconPath );
+  attributeActionTable->setVerticalHeaderItem( row, headerItem );
 
   updateButtons();
 }
@@ -250,7 +257,7 @@ void QgsAttributeActionDialog::insert( int pos )
     if ( pos >= numRows )
     {
       // Expand the table to have a row with index pos
-      insertRow( pos, ( QgsAction::ActionType ) actionType->currentIndex(), name, actionAction->toPlainText(), captureCB->isChecked() );
+      insertRow( pos, ( QgsAction::ActionType ) actionType->currentIndex(), name, actionAction->toPlainText(), actionIcon->text(), captureCB->isChecked() );
     }
     else
     {
@@ -259,6 +266,8 @@ void QgsAttributeActionDialog::insert( int pos )
       attributeActionTable->item( pos, 1 )->setText( name );
       attributeActionTable->item( pos, 2 )->setText( actionAction->toPlainText() );
       attributeActionTable->item( pos, 3 )->setCheckState( captureCB->isChecked() ? Qt::Checked : Qt::Unchecked );
+      attributeActionTable->verticalHeaderItem( pos )->setIcon( QIcon( actionIcon->text() ) );
+      attributeActionTable->verticalHeaderItem( pos )->setData( Qt::UserRole, actionIcon->text() );
     }
   }
 }
@@ -299,6 +308,23 @@ void QgsAttributeActionDialog::updateButtons()
   updateButton->setEnabled( hasSelection && validNewAction );
 }
 
+void QgsAttributeActionDialog::chooseIcon()
+{
+  QList<QByteArray> list = QImageWriter::supportedImageFormats();
+  QStringList formatList;
+  Q_FOREACH( const QByteArray& format, list )
+    formatList << QString( "*.%1" ).arg( QString( format ) );
+
+  QString filter = QString( "Images( %1 ); All( *.* )" ).arg( formatList.join( " " ) );
+  QString icon = QFileDialog::getOpenFileName( this, tr( "Choose Icon..." ), actionIcon->text(), filter );
+
+  if ( !icon.isNull() )
+  {
+    actionIcon->setText( icon );
+    iconPreview->setPixmap( QPixmap( icon ) );
+  }
+}
+
 void QgsAttributeActionDialog::insertField()
 {
   // Convert the selected field to an expression and
@@ -323,10 +349,11 @@ void QgsAttributeActionDialog::apply()
     const QgsAction::ActionType type = ( QgsAction::ActionType ) actionType->findText( attributeActionTable->item( i, 0 )->text() );
     const QString &name = attributeActionTable->item( i, 1 )->text();
     const QString &action = attributeActionTable->item( i, 2 )->text();
+    const QString icon = attributeActionTable->verticalHeaderItem( i )->data( Qt::UserRole ).toString();
     if ( !name.isEmpty() && !action.isEmpty() )
     {
       QTableWidgetItem *item = attributeActionTable->item( i, 3 );
-      mActions->addAction( type, name, action, item->checkState() == Qt::Checked );
+      mActions->addAction( type, name, action, icon, item->checkState() == Qt::Checked );
     }
   }
 }
@@ -334,13 +361,13 @@ void QgsAttributeActionDialog::apply()
 void QgsAttributeActionDialog::addDefaultActions()
 {
   int pos = 0;
-  insertRow( pos++, QgsAction::Generic, tr( "Echo attribute's value" ), "echo \"[% \"MY_FIELD\" %]\"", true );
-  insertRow( pos++, QgsAction::Generic, tr( "Run an application" ), "ogr2ogr -f \"ESRI Shapefile\" \"[% \"OUTPUT_PATH\" %]\" \"[% \"INPUT_FILE\" %]\"", true );
-  insertRow( pos++, QgsAction::GenericPython, tr( "Get feature id" ), "QtGui.QMessageBox.information(None, \"Feature id\", \"feature id is [% $id %]\")", false );
-  insertRow( pos++, QgsAction::GenericPython, tr( "Selected field's value (Identify features tool)" ), "QtGui.QMessageBox.information(None, \"Current field's value\", \"[% $currentfield %]\")", false );
-  insertRow( pos++, QgsAction::GenericPython, tr( "Clicked coordinates (Run feature actions tool)" ), "QtGui.QMessageBox.information(None, \"Clicked coords\", \"layer: [% $layerid %]\\ncoords: ([% $clickx %],[% $clicky %])\")", false );
-  insertRow( pos++, QgsAction::OpenUrl, tr( "Open file" ), "[% \"PATH\" %]", false );
-  insertRow( pos++, QgsAction::OpenUrl, tr( "Search on web based on attribute's value" ), "http://www.google.com/search?q=[% \"ATTRIBUTE\" %]", false );
+  insertRow( pos++, QgsAction::Generic, tr( "Echo attribute's value" ), "echo \"[% \"MY_FIELD\" %]\"", "", true );
+  insertRow( pos++, QgsAction::Generic, tr( "Run an application" ), "ogr2ogr -f \"ESRI Shapefile\" \"[% \"OUTPUT_PATH\" %]\" \"[% \"INPUT_FILE\" %]\"", "", true );
+  insertRow( pos++, QgsAction::GenericPython, tr( "Get feature id" ), "QtGui.QMessageBox.information(None, \"Feature id\", \"feature id is [% $id %]\")", "", false );
+  insertRow( pos++, QgsAction::GenericPython, tr( "Selected field's value (Identify features tool)" ), "QtGui.QMessageBox.information(None, \"Current field's value\", \"[% $currentfield %]\")", "", false );
+  insertRow( pos++, QgsAction::GenericPython, tr( "Clicked coordinates (Run feature actions tool)" ), "QtGui.QMessageBox.information(None, \"Clicked coords\", \"layer: [% $layerid %]\\ncoords: ([% $clickx %],[% $clicky %])\")", "", false );
+  insertRow( pos++, QgsAction::OpenUrl, tr( "Open file" ), "[% \"PATH\" %]", "", false );
+  insertRow( pos++, QgsAction::OpenUrl, tr( "Search on web based on attribute's value" ), "http://www.google.com/search?q=[% \"ATTRIBUTE\" %]", "", false );
 }
 
 void QgsAttributeActionDialog::itemSelectionChanged()

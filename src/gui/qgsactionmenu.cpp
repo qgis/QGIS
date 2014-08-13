@@ -126,7 +126,7 @@ void QgsActionMenu::reloadActions()
   {
     const QgsAction& qaction( mActions->at( idx ) );
 
-    QAction* action = new QAction( qaction.name(), this );
+    QAction* action = new QAction( qaction.icon(), qaction.name(), this );
 
     // Only enable items on supported platforms
     if ( !qaction.runable() )
