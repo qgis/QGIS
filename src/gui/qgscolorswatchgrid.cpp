@@ -279,7 +279,21 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
 
     if ( mCurrentHoverBox == index )
     {
+      //hovered boxes are slightly larger
       swatchRect.adjust( -1, -1, 1, 1 );
+    }
+
+    //start with checkboard pattern for semi-transparent colors
+    if (( *colorIt ).first.alpha() != 255 )
+    {
+      QBrush checkBrush = QBrush( transparentBackground() );
+      painter.setPen( Qt::NoPen );
+      painter.setBrush( checkBrush );
+      painter.drawRect( swatchRect );
+    }
+
+    if ( mCurrentHoverBox == index )
+    {
       if ( mDrawBoxDepressed )
       {
         painter.setPen( QColor( 100, 100, 100 ) );
@@ -304,6 +318,16 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
 
     index++;
   }
+}
+
+const QPixmap& QgsColorSwatchGrid::transparentBackground()
+{
+  static QPixmap transpBkgrd;
+
+  if ( transpBkgrd.isNull() )
+    transpBkgrd = QgsApplication::getThemePixmap( "/transp-background_8x8.png" );
+
+  return transpBkgrd;
 }
 
 int QgsColorSwatchGrid::swatchForPosition( const QPoint &position ) const
