@@ -89,6 +89,8 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     Availability mAvailability;
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerAction::Availability )
+
 /**
 * This class tracks map layer actions
 */
