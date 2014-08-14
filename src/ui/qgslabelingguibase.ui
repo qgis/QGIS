@@ -94,7 +94,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>607</width>
+               <width>602</width>
                <height>300</height>
               </rect>
              </property>
@@ -278,16 +278,16 @@
              </spacer>
             </item>
             <item>
-             <widget class="QgsColorButton" name="mPreviewBackgroundBtn">
+             <widget class="QgsColorButtonV2" name="mPreviewBackgroundBtn">
               <property name="minimumSize">
                <size>
-                <width>64</width>
+                <width>100</width>
                 <height>0</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>64</width>
+                <width>100</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -524,8 +524,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>580</width>
-                       <height>403</height>
+                       <width>566</width>
+                       <height>388</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -861,7 +861,7 @@
                           </widget>
                          </item>
                          <item row="6" column="1">
-                          <widget class="QgsColorButton" name="btnTextColor">
+                          <widget class="QgsColorButtonV2" name="btnTextColor">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                              <horstretch>0</horstretch>
@@ -870,13 +870,13 @@
                            </property>
                            <property name="minimumSize">
                             <size>
-                             <width>100</width>
+                             <width>120</width>
                              <height>0</height>
                             </size>
                            </property>
                            <property name="maximumSize">
                             <size>
-                             <width>100</width>
+                             <width>120</width>
                              <height>16777215</height>
                             </size>
                            </property>
@@ -1229,8 +1229,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>223</width>
-                       <height>315</height>
+                       <width>383</width>
+                       <height>389</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -1669,17 +1669,6 @@ font-style: italic;</string>
                              </widget>
                             </item>
                            </layout>
-                           <zorder>mDirectSymbRightFrame</zorder>
-                           <zorder>mDirectSymbPlacementDDBtn</zorder>
-                           <zorder>mDirectSymbLeftDDBtn</zorder>
-                           <zorder>mDirectSymbLeftLabel</zorder>
-                           <zorder>mDirectSymbRightLabel</zorder>
-                           <zorder>mDirectSymbPlacementLabel</zorder>
-                           <zorder>mDirectSymbRevChkBx</zorder>
-                           <zorder>mDirectSymbRightDDBtn</zorder>
-                           <zorder>mDirectSymbLeftFrame</zorder>
-                           <zorder>mDirectSymbRevDDBtn</zorder>
-                           <zorder>mDirectSymbPlacementFrame</zorder>
                           </widget>
                          </item>
                         </layout>
@@ -1840,8 +1829,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>231</width>
-                       <height>209</height>
+                       <width>298</width>
+                       <height>257</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2076,7 +2065,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="2" column="1">
-                            <widget class="QgsColorButton" name="btnBufferColor">
+                            <widget class="QgsColorButtonV2" name="btnBufferColor">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                                <horstretch>0</horstretch>
@@ -2085,13 +2074,13 @@ font-style: italic;</string>
                              </property>
                              <property name="minimumSize">
                               <size>
-                               <width>100</width>
+                               <width>120</width>
                                <height>0</height>
                               </size>
                              </property>
                              <property name="maximumSize">
                               <size>
-                               <width>100</width>
+                               <width>120</width>
                                <height>16777215</height>
                               </size>
                              </property>
@@ -2198,8 +2187,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>358</width>
-                       <height>570</height>
+                       <width>362</width>
+                       <height>697</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -2326,7 +2315,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="18" column="1">
-                            <widget class="QgsColorButton" name="mShapeBorderColorBtn">
+                            <widget class="QgsColorButtonV2" name="mShapeBorderColorBtn">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                                <horstretch>0</horstretch>
@@ -2335,13 +2324,13 @@ font-style: italic;</string>
                              </property>
                              <property name="minimumSize">
                               <size>
-                               <width>100</width>
+                               <width>120</width>
                                <height>0</height>
                               </size>
                              </property>
                              <property name="maximumSize">
                               <size>
-                               <width>100</width>
+                               <width>120</width>
                                <height>16777215</height>
                               </size>
                              </property>
@@ -2740,7 +2729,7 @@ font-style: italic;</string>
                             <widget class="QgsPenJoinStyleComboBox" name="mShapePenStyleCmbBx"/>
                            </item>
                            <item row="17" column="1">
-                            <widget class="QgsColorButton" name="mShapeFillColorBtn">
+                            <widget class="QgsColorButtonV2" name="mShapeFillColorBtn">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                                <horstretch>0</horstretch>
@@ -2749,13 +2738,13 @@ font-style: italic;</string>
                              </property>
                              <property name="minimumSize">
                               <size>
-                               <width>100</width>
+                               <width>120</width>
                                <height>0</height>
                               </size>
                              </property>
                              <property name="maximumSize">
                               <size>
-                               <width>100</width>
+                               <width>120</width>
                                <height>16777215</height>
                               </size>
                              </property>
@@ -2971,8 +2960,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>280</width>
-                       <height>351</height>
+                       <width>325</width>
+                       <height>424</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3039,7 +3028,7 @@ font-style: italic;</string>
                             <number>0</number>
                            </property>
                            <item row="10" column="1">
-                            <widget class="QgsColorButton" name="mShadowColorBtn">
+                            <widget class="QgsColorButtonV2" name="mShadowColorBtn">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                                <horstretch>0</horstretch>
@@ -3048,13 +3037,13 @@ font-style: italic;</string>
                              </property>
                              <property name="minimumSize">
                               <size>
-                               <width>100</width>
+                               <width>120</width>
                                <height>0</height>
                               </size>
                              </property>
                              <property name="maximumSize">
                               <size>
-                               <width>100</width>
+                               <width>120</width>
                                <height>16777215</height>
                               </size>
                              </property>
@@ -3437,8 +3426,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>290</width>
-                       <height>700</height>
+                       <width>377</width>
+                       <height>831</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -4737,8 +4726,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>302</width>
-                       <height>520</height>
+                       <width>421</width>
+                       <height>622</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -5473,6 +5462,26 @@ font-style: italic;</string>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPenJoinStyleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgspenstylecombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -5482,26 +5491,6 @@ font-style: italic;</string>
    <class>QgsLabelPreview</class>
    <extends>QLabel</extends>
    <header>qgslabelpreview.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsPenJoinStyleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgspenstylecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsBlendModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsblendmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFieldExpressionWidget</class>

@@ -51,9 +51,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-440</y>
+        <y>-461</y>
         <width>340</width>
-        <height>879</height>
+        <height>867</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -409,8 +409,112 @@
          <property name="collapsed" stdset="0">
           <bool>true</bool>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
+         <layout class="QFormLayout" name="formLayout_5">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Font color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QgsColorButtonV2" name="mFontColorButton">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>120</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Fill color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QgsColorButtonV2" name="mFillColorButton">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>120</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>Secondary fill color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QgsColorButtonV2" name="mFillColor2Button">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>120</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>Stroke color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QgsColorButtonV2" name="mStrokeColorButton">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>120</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
            <widget class="QPushButton" name="mFontButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -420,34 +524,6 @@
             </property>
             <property name="text">
              <string>Font...</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QgsColorButton" name="mFontColorButton">
-            <property name="text">
-             <string>Font color...</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QgsColorButton" name="mFillColorButton">
-            <property name="text">
-             <string>Fill color...</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QgsColorButton" name="mFillColor2Button">
-            <property name="text">
-             <string>Secondary fill color...</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QgsColorButton" name="mStrokeColorButton">
-            <property name="text">
-             <string>Stroke color...</string>
             </property>
            </widget>
           </item>
@@ -465,13 +541,13 @@
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPenJoinStyleComboBox</class>

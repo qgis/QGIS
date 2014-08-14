@@ -30,8 +30,9 @@
 #include <QStringList>
 #include <QUrl>
 
-QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QString& filePath ):
-    mXMLDoc( xmlDoc ), mProjectPath( filePath )
+QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QString& filePath )
+    : mXMLDoc( xmlDoc )
+    , mProjectPath( filePath )
 {
   //accelerate the search for layers, groups and the creation of annotation items
   if ( mXMLDoc )
@@ -58,12 +59,14 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QStr
     }
 
     mRestrictedLayers = findRestrictedLayers();
+    mUseLayerIDs = findUseLayerIDs();
   }
 }
 
-QgsServerProjectParser::QgsServerProjectParser(): mXMLDoc( 0 )
+QgsServerProjectParser::QgsServerProjectParser()
+   : mXMLDoc( 0 )
+   , mUseLayerIDs( false )
 {
-
 }
 
 QgsServerProjectParser::~QgsServerProjectParser()
@@ -1026,6 +1029,22 @@ QSet<QString> QgsServerProjectParser::findRestrictedLayers() const
   return restrictedLayerSet;
 }
 
+bool QgsServerProjectParser::findUseLayerIDs() const
+{
+  if ( !mXMLDoc )
+    return false;
+
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+    return false;
+
+  QDomElement wktElem = propertiesElem.firstChildElement( "WMSUseLayerIDs" );
+  if ( wktElem.isNull() )
+    return false;
+
+  return wktElem.text().compare( "true", Qt::CaseInsensitive ) == 0;
+}
+
 void QgsServerProjectParser::layerFromLegendLayer( const QDomElement& legendLayerElem, QMap< int, QgsMapLayer*>& layers, bool useCache ) const
 {
   QString id = legendLayerElem.firstChild().firstChild().toElement().attribute( "layerid" );
@@ -1107,7 +1126,7 @@ QStringList QgsServerProjectParser::wfsLayerNames() const
       currentLayer = layerMapIt.value();
       if ( currentLayer )
       {
-        layerNameList.append( currentLayer->name() );
+        layerNameList.append( mUseLayerIDs ? currentLayer->id() : currentLayer->name() );
       }
     }
   }
@@ -1284,9 +1303,11 @@ void QgsServerProjectParser::addValueRelationLayersForElement( const QDomElement
     if ( type == QgsVectorLayer::ValueRelation )
     {
       QString layerId = editTypeElem.attribute( "layer" );
-      /*QString keyAttribute = editTypeEleml.attribute( "id" ); //relation attribute in other layer
+#if 0
+      QString keyAttribute = editTypeEleml.attribute( "id" ); //relation attribute in other layer
       QString valueAttribute = editTypeElem.attribute( "value" ); //value attribute in other layer
-      QString relationAttribute = editTypeElem.attribute( "name" );*/
+      QString relationAttribute = editTypeElem.attribute( "name" );
+#endif
 
       QgsMapLayer* layer = mapLayerFromLayerId( layerId, useCache );
       if ( layer )

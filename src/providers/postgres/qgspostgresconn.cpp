@@ -628,7 +628,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
   if ( nColumns == 0 )
   {
-    QgsMessageLog::logMessage( tr( "Database connection was successful, but no accessible tables were found.  Please verify that you have SELECT privilege on a table carrying PostGIS geometry." ), tr( "PostGIS" ) );
+    QgsMessageLog::logMessage( tr( "Database connection was successful, but no accessible tables were found. Please verify that you have SELECT privilege on a table carrying PostGIS geometry." ), tr( "PostGIS" ) );
   }
 
   return true;

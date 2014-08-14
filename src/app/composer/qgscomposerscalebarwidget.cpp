@@ -55,12 +55,25 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
 
   mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );
   mFillColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mFillColorButton->setContext( "composer" );
+  mFillColorButton->setNoColorString( tr( "Transparent fill" ) );
+  mFillColorButton->setShowNoColor( true );
+
   mFillColor2Button->setColorDialogTitle( tr( "Select alternate fill color" ) );
   mFillColor2Button->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mFillColor2Button->setContext( "composer" );
+  mFillColor2Button->setNoColorString( tr( "Transparent fill" ) );
+  mFillColor2Button->setShowNoColor( true );
+
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
   mFontColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mFontColorButton->setContext( "composer" );
+
   mStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
   mStrokeColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mStrokeColorButton->setContext( "composer" );
+  mStrokeColorButton->setNoColorString( tr( "Transparent stroke" ) );
+  mStrokeColorButton->setShowNoColor( true );
 
   blockMemberSignals( false );
   setGuiElements(); //set the GUI elements to the state of scaleBar

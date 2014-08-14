@@ -68,11 +68,23 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsColorButton" name="mFontColorButton">
+      <widget class="QgsColorButtonV2" name="mFontColorButton">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
        </property>
-       <property name="autoDefault">
+       <property name="autoDefault" stdset="0">
         <bool>false</bool>
        </property>
       </widget>
@@ -105,9 +117,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

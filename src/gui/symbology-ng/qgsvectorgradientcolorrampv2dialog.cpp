@@ -36,7 +36,15 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
 #endif
 
   btnColor1->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnColor1->setColorDialogTitle( tr( "Select ramp color" ) );
+  btnColor1->setContext( "symbology" );
+  btnColor1->setShowNoColor( true );
+  btnColor1->setNoColorString( tr( "Transparent" ) );
   btnColor2->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnColor2->setColorDialogTitle( tr( "Select ramp color" ) );
+  btnColor2->setContext( "symbology" );
+  btnColor2->setShowNoColor( true );
+  btnColor2->setNoColorString( tr( "Transparent" ) );
   connect( btnColor1, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor1( const QColor& ) ) );
   connect( btnColor2, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor2( const QColor& ) ) );
 

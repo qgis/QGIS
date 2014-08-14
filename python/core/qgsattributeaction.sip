@@ -78,7 +78,7 @@ class QgsAttributeAction
      */
     void doAction( int index,
                    QgsFeature &feat,
-                   const QMap<QString, QVariant> *substitutionMap = 0 ) /PyName=doActionFeatureWithSubstitution/;
+                   const QMap<QString, QVariant> *substitutionMap ) /PyName=doActionFeatureWithSubstitution/;
 
     //! Removes all actions
     void clearActions();

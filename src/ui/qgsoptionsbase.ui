@@ -133,6 +133,18 @@
          </item>
          <item>
           <property name="text">
+           <string>Colors</string>
+          </property>
+          <property name="toolTip">
+           <string>Colors</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/symbology.png</normaloff>:/images/themes/default/propertyicons/symbology.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Canvas &amp; Legend</string>
           </property>
           <property name="toolTip">
@@ -251,7 +263,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -271,8 +283,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>613</width>
-                <height>606</height>
+                <width>610</width>
+                <height>640</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -934,8 +946,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>644</width>
-                <height>860</height>
+                <width>655</width>
+                <height>862</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1309,8 +1321,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>626</width>
-                <height>549</height>
+                <width>531</width>
+                <height>440</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1619,8 +1631,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>686</width>
-                <height>764</height>
+                <width>710</width>
+                <height>796</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -2240,6 +2252,91 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mOptionsPageColors">
+          <layout class="QVBoxLayout" name="verticalLayout_38">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QScrollArea" name="scrollArea">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>626</width>
+                <height>549</height>
+               </rect>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_46">
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_7">
+                 <property name="title">
+                  <string>Standard colors</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_12">
+                  <item row="2" column="1">
+                   <spacer name="verticalSpacer_12">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QPushButton" name="mButtonAddColor">
+                    <property name="text">
+                     <string>Add color</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0" rowspan="4">
+                   <widget class="QTreeWidget" name="mTreeCustomColors">
+                    <property name="rootIsDecorated">
+                     <bool>false</bool>
+                    </property>
+                    <property name="columnCount">
+                     <number>2</number>
+                    </property>
+                    <column>
+                     <property name="text">
+                      <string>Color</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Label</string>
+                     </property>
+                    </column>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QPushButton" name="mButtonRemoveColor">
+                    <property name="text">
+                     <string>Remove color</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="mOptionsPageMapCanvas">
           <layout class="QVBoxLayout" name="verticalLayout_16">
            <property name="margin">
@@ -2258,8 +2355,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>475</width>
-                <height>316</height>
+                <width>526</width>
+                <height>327</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2270,7 +2367,7 @@
                  </property>
                  <layout class="QGridLayout" name="gridLayout_7">
                   <item row="0" column="4">
-                   <widget class="QgsColorButton" name="pbnCanvasColor">
+                   <widget class="QgsColorButtonV2" name="pbnCanvasColor">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2279,13 +2376,13 @@
                     </property>
                     <property name="minimumSize">
                      <size>
-                      <width>100</width>
+                      <width>120</width>
                       <height>0</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>100</width>
+                      <width>120</width>
                       <height>16777215</height>
                      </size>
                     </property>
@@ -2334,7 +2431,7 @@
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QgsColorButton" name="pbnSelectionColor">
+                   <widget class="QgsColorButtonV2" name="pbnSelectionColor">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2343,13 +2440,13 @@
                     </property>
                     <property name="minimumSize">
                      <size>
-                      <width>100</width>
+                      <width>120</width>
                       <height>0</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>100</width>
+                      <width>120</width>
                       <height>16777215</height>
                      </size>
                     </property>
@@ -2587,8 +2684,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>647</width>
-                <height>657</height>
+                <width>684</width>
+                <height>625</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -2658,7 +2755,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QgsColorButton" name="mIdentifyHighlightColorButton">
+                     <widget class="QgsColorButtonV2" name="mIdentifyHighlightColorButton">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -2667,13 +2764,13 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>100</width>
+                        <width>120</width>
                         <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>100</width>
+                        <width>120</width>
                         <height>16777215</height>
                        </size>
                       </property>
@@ -2857,7 +2954,7 @@
                    </spacer>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QgsColorButton" name="pbnMeasureColor">
+                   <widget class="QgsColorButtonV2" name="pbnMeasureColor">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2866,13 +2963,13 @@
                     </property>
                     <property name="minimumSize">
                      <size>
-                      <width>100</width>
+                      <width>120</width>
                       <height>0</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>100</width>
+                      <width>120</width>
                       <height>16777215</height>
                      </size>
                     </property>
@@ -3083,8 +3180,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>486</width>
-                <height>301</height>
+                <width>504</width>
+                <height>307</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3124,25 +3221,40 @@
                  </property>
                  <layout class="QGridLayout" name="gridLayout_9">
                   <item row="0" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_32">
-                    <item>
-                     <widget class="QLabel" name="label_66">
-                      <property name="text">
-                       <string>Grid style</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="mGridStyleComboBox"/>
-                    </item>
-                    <item>
-                     <widget class="QgsColorButton" name="mGridColorButton">
-                      <property name="text">
-                       <string>Color...</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
+                   <widget class="QLabel" name="label_66">
+                    <property name="text">
+                     <string>Grid style</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QComboBox" name="mGridStyleComboBox"/>
+                  </item>
+                  <item row="0" column="3">
+                   <widget class="QLabel" name="label_4">
+                    <property name="text">
+                     <string>Grid color</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="4">
+                   <widget class="QgsColorButtonV2" name="mGridColorButton">
+                    <property name="minimumSize">
+                     <size>
+                      <width>120</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>120</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -3264,8 +3376,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>480</width>
-                <height>616</height>
+                <width>501</width>
+                <height>640</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3387,7 +3499,7 @@
                    </spacer>
                   </item>
                   <item row="0" column="3">
-                   <widget class="QgsColorButton" name="mLineColorToolButton">
+                   <widget class="QgsColorButtonV2" name="mLineColorToolButton">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -3396,13 +3508,13 @@
                     </property>
                     <property name="minimumSize">
                      <size>
-                      <width>100</width>
+                      <width>120</width>
                       <height>0</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>100</width>
+                      <width>120</width>
                       <height>16777215</height>
                      </size>
                     </property>
@@ -3755,8 +3867,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>450</width>
-                <height>366</height>
+                <width>462</width>
+                <height>372</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3885,8 +3997,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>622</width>
-                <height>696</height>
+                <width>650</width>
+                <height>707</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4139,8 +4251,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>293</width>
-                <height>216</height>
+                <width>300</width>
+                <height>226</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4229,8 +4341,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>501</width>
-                <height>678</height>
+                <width>531</width>
+                <height>685</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -4581,15 +4693,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScaleComboBox</class>

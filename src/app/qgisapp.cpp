@@ -5508,7 +5508,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
 
   if ( !vl->isEditable() )
   {
-    QMessageBox::information( 0, tr( "Layer not editable" ), tr( "Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer->Toggle editing" ) );
+    QMessageBox::information( 0, tr( "Layer not editable" ), tr( "Merging features can only be done for layers in editing mode. To use the merge tool, go to Layer->Toggle editing" ) );
     return;
   }
 
@@ -5567,7 +5567,7 @@ void QgisApp::mergeSelectedFeatures()
   }
   if ( !vl->isEditable() )
   {
-    QMessageBox::information( 0, tr( "Layer not editable" ), tr( "Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer->Toggle editing" ) );
+    QMessageBox::information( 0, tr( "Layer not editable" ), tr( "Merging features can only be done for layers in editing mode. To use the merge tool, go to Layer->Toggle editing" ) );
     return;
   }
 

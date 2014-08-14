@@ -252,11 +252,11 @@ void QgsMapToolIdentify::deactivate()
 
 bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel, LayerType layerType )
 {
-  if ( layer->type() == QgsMapLayer::RasterLayer && ( layerType == AllLayers || layerType == RasterLayer ) )
+  if ( layer->type() == QgsMapLayer::RasterLayer && layerType.testFlag( RasterLayer ) )
   {
     return identifyRasterLayer( results, qobject_cast<QgsRasterLayer *>( layer ), point, viewExtent, mapUnitsPerPixel );
   }
-  else if ( layer->type() == QgsMapLayer::VectorLayer && ( layerType == AllLayers || layerType == VectorLayer ) )
+  else if ( layer->type() == QgsMapLayer::VectorLayer && layerType.testFlag( VectorLayer ) )
   {
     return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), point );
   }

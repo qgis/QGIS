@@ -122,33 +122,33 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      */
     Q_DECL_DEPRECATED void setArrowColor( const QColor& c );
 
-    /**Sets the color used to draw the outline around the arrow head.
-     * @param color arrow head outline color
-     * @see setArrowHeadFillColor
+    /**Returns the color used to draw outline around the the arrow head.
+     * @returns arrow head outline color
      * @see arrowHeadFillColor
+     * @see setArrowHeadOutlineColor
      * @note added in 2.5
      */
     QColor arrowHeadOutlineColor() const { return mArrowHeadOutlineColor; }
 
-    /**Returns the color used to draw outline around the the arrow head.
-     * @returns arrow head outline color
-     * @see arrowHeadFillColor
-     * @see setArrowHeadFillColor
-     * @note added in 2.5
-     */
-    void setArrowHeadOutlineColor( const QColor& color );
-
-    /**Sets the color used to draw the arrow head.
-     * @param color arrow head color
+    /**Sets the color used to draw the outline around the arrow head.
+     * @param color arrow head outline color
      * @see setArrowHeadFillColor
      * @see arrowHeadOutlineColor
      * @note added in 2.5
      */
+    void setArrowHeadOutlineColor( const QColor& color );
+
+    /**Returns the color used to fill the arrow head.
+     * @returns arrow head fill color
+     * @see arrowHeadOutlineColor
+     * @see setArrowHeadFillColor
+     * @note added in 2.5
+     */
     QColor arrowHeadFillColor() const { return mArrowHeadFillColor; }
 
-    /**Returns the color used to draw the arrow head.
-     * @returns arrow head color
-     * @see arrowHeadColor
+    /**Sets the color used to fill the arrow head.
+     * @param color arrow head fill color
+     * @see arrowHeadFillColor
      * @see setArrowHeadOutlineColor
      * @note added in 2.5
      */

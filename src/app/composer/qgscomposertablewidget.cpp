@@ -42,10 +42,13 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table
 
   mHeaderFontColorButton->setColorDialogTitle( tr( "Select header font color" ) );
   mHeaderFontColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mHeaderFontColorButton->setContext( "composer" );
   mContentFontColorButton->setColorDialogTitle( tr( "Select content font color" ) );
   mContentFontColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mContentFontColorButton->setContext( "composer" );
   mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
   mGridColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mGridColorButton->setContext( "composer" );
 
   updateGuiElements();
   on_mComposerMapComboBox_activated( mComposerMapComboBox->currentIndex() );

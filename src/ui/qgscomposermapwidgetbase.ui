@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-1116</y>
-        <width>439</width>
-        <height>2179</height>
+        <y>-1023</y>
+        <width>444</width>
+        <height>2173</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -698,7 +698,19 @@
                  </widget>
                 </item>
                 <item row="3" column="1">
-                 <widget class="QgsColorButton" name="mGridFrameFill1ColorButton">
+                 <widget class="QgsColorButtonV2" name="mGridFrameFill1ColorButton">
+                  <property name="minimumSize">
+                   <size>
+                    <width>100</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
@@ -750,14 +762,38 @@
                  </widget>
                 </item>
                 <item row="2" column="2">
-                 <widget class="QgsColorButton" name="mGridFramePenColorButton">
+                 <widget class="QgsColorButtonV2" name="mGridFramePenColorButton">
+                  <property name="minimumSize">
+                   <size>
+                    <width>100</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="text">
-                   <string>Color...</string>
+                   <string/>
                   </property>
                  </widget>
                 </item>
                 <item row="3" column="2">
-                 <widget class="QgsColorButton" name="mGridFrameFill2ColorButton">
+                 <widget class="QgsColorButtonV2" name="mGridFrameFill2ColorButton">
+                  <property name="minimumSize">
+                   <size>
+                    <width>100</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
@@ -901,9 +937,21 @@
                  </widget>
                 </item>
                 <item row="10" column="1">
-                 <widget class="QgsColorButton" name="mAnnotationFontColorButton">
+                 <widget class="QgsColorButtonV2" name="mAnnotationFontColorButton">
+                  <property name="minimumSize">
+                   <size>
+                    <width>120</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>120</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="text">
-                   <string>Font color...</string>
+                   <string/>
                   </property>
                  </widget>
                 </item>
@@ -1138,15 +1186,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDataDefinedButton</class>

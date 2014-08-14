@@ -101,6 +101,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
 
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify highlight color" ) );
   mIdentifyHighlightColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mIdentifyHighlightColorButton->setContext( "gui" );
+  mIdentifyHighlightColorButton->setDefaultColor( QGis::DEFAULT_HIGHLIGHT_COLOR );
 
   QSettings settings;
 
@@ -616,20 +618,28 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   int myBlue = settings.value( "/qgis/default_selection_color_blue", 0 ).toInt();
   int myAlpha = settings.value( "/qgis/default_selection_color_alpha", 255 ).toInt();
   pbnSelectionColor->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
-  pbnSelectionColor->setColorDialogTitle( tr( "Selection color" ) );
+  pbnSelectionColor->setColorDialogTitle( tr( "Set selection color" ) );
   pbnSelectionColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  pbnSelectionColor->setContext( "gui" );
+  pbnSelectionColor->setDefaultColor( QColor( 255, 255, 0, 255 ) );
 
   //set the default color for canvas background
   myRed = settings.value( "/qgis/default_canvas_color_red", 255 ).toInt();
   myGreen = settings.value( "/qgis/default_canvas_color_green", 255 ).toInt();
   myBlue = settings.value( "/qgis/default_canvas_color_blue", 255 ).toInt();
   pbnCanvasColor->setColor( QColor( myRed, myGreen, myBlue ) );
+  pbnCanvasColor->setColorDialogTitle( tr( "Set canvas color" ) );
+  pbnCanvasColor->setContext( "gui" );
+  pbnCanvasColor->setDefaultColor( Qt::white );
 
   // set the default color for the measure tool
   myRed = settings.value( "/qgis/default_measure_color_red", 222 ).toInt();
   myGreen = settings.value( "/qgis/default_measure_color_green", 155 ).toInt();
   myBlue = settings.value( "/qgis/default_measure_color_blue", 67 ).toInt();
   pbnMeasureColor->setColor( QColor( myRed, myGreen, myBlue ) );
+  pbnMeasureColor->setColorDialogTitle( tr( "Set measuring tool color" ) );
+  pbnMeasureColor->setContext( "gui" );
+  pbnMeasureColor->setDefaultColor( QColor( 222, 155, 67 ) );
 
   capitaliseCheckBox->setChecked( settings.value( "/qgis/capitaliseLayerName", QVariant( false ) ).toBool() );
 
@@ -675,6 +685,37 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   }
 
   //
+  // Color palette
+  //
+  QList< QVariant > customColorVariants = settings.value( QString( "/colors/palettecolors" ) ).toList();
+  QList< QVariant > customColorLabels = settings.value( QString( "/colors/palettelabels" ) ).toList();
+
+  QList<QTreeWidgetItem *> customColors;
+  int colorIndex = 0;
+  for ( QList< QVariant >::iterator it = customColorVariants.begin();
+        it != customColorVariants.end(); ++it )
+  {
+    QColor color = ( *it ).value<QColor>();
+    QString label;
+    if ( customColorLabels.length() > colorIndex )
+    {
+      label = customColorLabels.at( colorIndex ).toString();
+    }
+
+    QTreeWidgetItem* item = new QTreeWidgetItem();
+    item->setData( 0, PaletteLabelRole, label );
+    item->setText( 1, label );
+    setPaletteColor( item, color );
+    customColors.append( item );
+
+    colorIndex++;
+  }
+  mTreeCustomColors->clear();
+  mTreeCustomColors->insertTopLevelItems( 0, customColors );
+  mTreeCustomColors->resizeColumnToContents( 0 );
+  mTreeCustomColors->setColumnWidth( 0, mTreeCustomColors->columnWidth( 0 ) + 20 );
+
+  //
   // Composer settings
   //
 
@@ -703,6 +744,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mGridColorButton->setColor( gridColor );
   mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
   mGridColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mGridColorButton->setContext( "gui" );
+  mGridColorButton->setDefaultColor( QColor( 190, 190, 190, 100 ) );
 
   //default composer grid style
   QString gridStyleString;
@@ -758,6 +801,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   myAlpha = settings.value( "/qgis/digitizing/line_color_alpha", 200 ).toInt();
   mLineColorToolButton->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
   mLineColorToolButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mLineColorToolButton->setContext( "gui" );
+  mLineColorToolButton->setDefaultColor( QColor( 255, 0, 0, 200 ) );
 
   //default snap mode
   mDefaultSnapModeComboBox->insertItem( 0, tr( "To vertex" ), "to vertex" );
@@ -1280,6 +1325,23 @@ void QgsOptions::saveOptions()
     myPaths += mListGlobalScales->item( i )->text();
   }
   settings.setValue( "Map/scales", myPaths );
+
+  //
+  // Color palette
+  //
+  QList< QVariant > customColors;
+  QList< QVariant > customColorLabels;
+  int colorCount = mTreeCustomColors->topLevelItemCount();
+  for ( int i = 0; i < colorCount; i++ )
+  {
+    QTreeWidgetItem* item = mTreeCustomColors->topLevelItem( i );
+    QVariant label = item->data( 0, PaletteLabelRole );
+    QVariant color = item->data( 0, PaletteColorRole );
+    customColors.append( color );
+    customColorLabels.append( label );
+  }
+  settings.setValue( QString( "/colors/palettecolors" ), customColors );
+  settings.setValue( QString( "/colors/palettelabels" ), customColorLabels );
 
   //
   // Composer settings
@@ -2040,4 +2102,85 @@ void QgsOptions::saveDefaultDatumTransformations()
   }
 
   s.endGroup();
+}
+
+
+void QgsOptions::on_mButtonAddColor_clicked()
+{
+  QColor newColor = QColorDialog::getColor( QColor(), this->parentWidget(), tr( "Select color" ), QColorDialog::ShowAlphaChannel );
+  if ( !newColor.isValid() )
+  {
+    return;
+  }
+  activateWindow();
+
+  QString newLabel = QInputDialog::getText( this, tr( "Color label" ),
+                     tr( "Please enter a label for the color" ) );
+  activateWindow();
+
+  QTreeWidgetItem* item = new QTreeWidgetItem();
+  item->setData( 0, PaletteLabelRole, newLabel );
+  item->setText( 1, newLabel );
+  setPaletteColor( item, newColor );
+  mTreeCustomColors->addTopLevelItem( item );
+  mTreeCustomColors->resizeColumnToContents( 0 );
+  mTreeCustomColors->setColumnWidth( 0, mTreeCustomColors->columnWidth( 0 ) + 20 );
+}
+
+void QgsOptions::on_mButtonRemoveColor_clicked()
+{
+  QTreeWidgetItem* item = mTreeCustomColors->currentItem();
+  if ( !item )
+    return;
+  int index = mTreeCustomColors->indexOfTopLevelItem( item );
+  mTreeCustomColors->takeTopLevelItem( index );
+}
+
+void QgsOptions::on_mTreeCustomColors_itemDoubleClicked( QTreeWidgetItem* item, int column )
+{
+  if ( column == 0 )
+  {
+    QColor newColor = QColorDialog::getColor( item->data( 0, PaletteColorRole ).value<QColor>(), this->parentWidget(), tr( "Select color" ), QColorDialog::ShowAlphaChannel );
+    if ( !newColor.isValid() )
+    {
+      return;
+    }
+    setPaletteColor( item, newColor );
+  }
+  else
+  {
+    bool ok;
+    QString label = item->data( 0, PaletteLabelRole ).toString();
+    QString newLabel = QInputDialog::getText( this, tr( "Color label" ),
+                       tr( "Please enter a label for the color" ),
+                       QLineEdit::Normal, label, &ok );
+    if ( !ok )
+    {
+      return;
+    }
+
+    item->setText( 1, newLabel );
+    item->setData( 0, PaletteLabelRole, newLabel );
+  }
+}
+
+void QgsOptions::setPaletteColor( QTreeWidgetItem* item, QColor color )
+{
+  QSize iconSize( 16, 16 );
+  QPixmap pixmap( iconSize );
+  pixmap.fill( QColor( 0, 0, 0, 0 ) );
+  QRect rect( 1, 1, iconSize.width() - 2, iconSize.height() - 2 );
+
+  // draw a slightly rounded rectangle
+  QPainter p;
+  p.begin( &pixmap );
+  p.setPen( Qt::NoPen );
+  p.setRenderHint( QPainter::Antialiasing );
+  p.setBrush( color );
+  p.drawRoundedRect( rect, 2, 2 );
+  p.end();
+
+  item->setIcon( 0, QIcon( pixmap ) );
+  item->setData( 0, PaletteColorRole, color );
+  item->setText( 0, color.name() );
 }

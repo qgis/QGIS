@@ -42,6 +42,9 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   cboPlacement->setCurrentIndex( mDeco.mPlacementIndex );
   // color
   pbnColorChooser->setColor( mDeco.mLabelQColor );
+  pbnColorChooser->setContext( "gui" );
+  pbnColorChooser->setColorDialogTitle( tr( "Select text color" ) );
+
   QTextCursor cursor = txtCopyrightText->textCursor();
   txtCopyrightText->selectAll();
   txtCopyrightText->setTextColor( mDeco.mLabelQColor );

@@ -69,9 +69,21 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QgsColorButton" name="btnColor2">
+      <widget class="QgsColorButtonV2" name="btnColor2">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>120</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="text">
-        <string>Change...</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -83,9 +95,21 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QgsColorButton" name="btnColor1">
+      <widget class="QgsColorButtonV2" name="btnColor1">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>120</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="text">
-        <string>Change...</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -193,9 +217,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

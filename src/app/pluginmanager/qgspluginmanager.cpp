@@ -800,7 +800,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
     }
     if ( ! metadata->value( "code_repository" ).isEmpty() )
     {
-      html += QString( "<a href='%1'>%2</a>" ).arg( metadata->value( "code_repository" ) ).arg( tr( "code_ repository" ) );
+      html += QString( "<a href='%1'>%2</a>" ).arg( metadata->value( "code_repository" ) ).arg( tr( "code_repository" ) );
     }
     html += "<br/>";
   }

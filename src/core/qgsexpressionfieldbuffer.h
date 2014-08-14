@@ -46,14 +46,15 @@ class CORE_EXPORT QgsExpressionFieldBuffer
     /**
      * Add an expression to the buffer
      *
-     * @param exp Expression to add
+     * @param exp expression to add
+     * @param fld field to add
      */
     void addExpression( const QString& exp, const QgsField& fld );
 
     /**
      * Remove an expression from the buffer
      *
-     * @param exp Expression to remove
+     * @param index index of expression to remove
      */
     void removeExpression( int index );
 

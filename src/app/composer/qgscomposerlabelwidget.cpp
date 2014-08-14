@@ -33,6 +33,8 @@ QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QgsCo
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, label );
   mainLayout->addWidget( itemPropertiesWidget );
 
+  mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
+  mFontColorButton->setContext( "composer" );
 
   if ( mComposerLabel )
   {

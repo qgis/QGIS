@@ -372,7 +372,7 @@ p, li { white-space: pre-wrap; }
        <item row="1" column="0" >
         <widget class="QPushButton" name="pbtnRunQuery" >
          <property name="whatsThis" >
-          <string>Run the query entered above. The status of the query will be displayed in the Output  Console below.</string>
+          <string>Run the query entered above. The status of the query will be displayed in the Output Console below.</string>
          </property>
          <property name="text" >
           <string>Run Query</string>

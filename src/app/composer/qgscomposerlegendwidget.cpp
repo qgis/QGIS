@@ -117,6 +117,9 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): Q
   mMoveDownToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.png" ) ) );
   mCountToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionSum.png" ) ) );
 
+  mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
+  mFontColorButton->setContext( "composer" );
+
   //add widget for item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, legend );
   mainLayout->addWidget( itemPropertiesWidget );

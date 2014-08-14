@@ -36,7 +36,7 @@ from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm, Input
+from processing.modeler.ModelerAlgorithm import ModelerAlgorithm, ModelerParameter
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
@@ -365,7 +365,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                     pos = self.getPositionForParameterItem()
                 if isinstance(pos, QPoint):
                     pos =  QPointF(pos)
-                self.alg.addParameter(Input(dlg.param, pos))
+                self.alg.addParameter(ModelerParameter(dlg.param, pos))
                 self.repaintModel()
                 #self.view.ensureVisible(self.scene.getLastParameterItem())
                 self.hasChanged = True

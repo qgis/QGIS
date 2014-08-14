@@ -456,7 +456,7 @@
              <string>Output preview is generated &lt;br&gt; using the first feature from the layer.</string>
             </property>
             <property name="text">
-             <string>Output preview:   </string>
+             <string>Output preview: </string>
             </property>
            </widget>
           </item>

@@ -1590,12 +1590,12 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   if ( mode == QgsComposer::Single )
   {
-    mComposition->print( mPrinter );
+    mComposition->print( mPrinter, true );
   }
   else
   {
 
-    mComposition->beginPrint( mPrinter );
+    mComposition->beginPrint( mPrinter, true );
     QPainter painter( &mPrinter );
 
     loadAtlasPredefinedScalesFromProject();
@@ -3573,7 +3573,7 @@ void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer )
 
   if ( coverageLayer )
   {
-    mAtlasFeatureAction = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ), this, coverageLayer );
+    mAtlasFeatureAction = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ), this, coverageLayer, QgsMapLayerAction::Feature );
     QgsMapLayerActionRegistry::instance()->addMapLayerAction( mAtlasFeatureAction );
     connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, QgsFeature* ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, QgsFeature* ) ) );
   }

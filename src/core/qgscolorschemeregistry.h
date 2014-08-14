@@ -1,0 +1,88 @@
+/***************************************************************************
+                             qgscolorschemeregistry.h
+                             ------------------------
+    begin                : July 2014
+    copyright            : (C) 2014 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSCOLORSCHEMEREGISTRY_H
+#define QGSCOLORSCHEMEREGISTRY_H
+
+#include <QList>
+
+class QgsColorScheme;
+
+/** \ingroup core
+ * \class QgsColorSchemeRegistry
+ * \brief Registry of color schemes
+ *
+ * A registry of QgsColorScheme color schemes. This class can be created directly, or
+ * accessed via a global instance.
+ * \note Added in version 2.5
+ */
+class CORE_EXPORT QgsColorSchemeRegistry
+{
+
+  public:
+
+    /**Returns the global instance pointer, creating the object on the first call.
+     */
+    static QgsColorSchemeRegistry * instance();
+
+    /**Constructor for an empty color scheme registry
+     */
+    QgsColorSchemeRegistry();
+
+    virtual ~QgsColorSchemeRegistry();
+
+    /**Adds all color schemes from the global instance to this color scheme.
+     * @see addDefaultSchemes
+     * @see addColorScheme
+     */
+    void populateFromInstance();
+
+    /**Adds all default color schemes to this color scheme.
+     * @see populateFromInstance
+     * @see addColorScheme
+     */
+    void addDefaultSchemes();
+
+    /**Adds a color scheme to the registry. Ownership of the scheme is transferred
+     * to the registry.
+     * @param scheme color scheme to add
+     * @see populateFromInstance
+     * @see removeColorScheme
+    */
+    void addColorScheme( QgsColorScheme* scheme );
+
+    /**Removes all matching color schemes from the registry
+     * @param scheme color scheme to remove
+     * @returns true if scheme was found and removed
+     * @see addColorScheme
+    */
+    bool removeColorScheme( QgsColorScheme* scheme );
+
+    /**Returns all color schemes in the registry
+     * @returns list of color schemes
+    */
+    QList<QgsColorScheme *> schemes() const;
+
+  private:
+
+    static QgsColorSchemeRegistry *mInstance;
+
+    QList< QgsColorScheme* > mColorSchemeList;
+
+};
+
+#endif

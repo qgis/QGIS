@@ -397,13 +397,6 @@ void QgsAttributeTableDialog::filterExpressionBuilder()
 
   if ( dlg.exec() == QDialog::Accepted )
   {
-    mFilterQuery->setText( dlg.expressionText() );
-    mFilterButton->setDefaultAction( mActionAdvancedFilter );
-    mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
-    mCbxCaseSensitive->setVisible( false );
-    mFilterQuery->setVisible( true );
-    mApplyFilterButton->setVisible( true );
-    mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
     setFilterExpression( dlg.expressionText() );
   }
 }
@@ -706,6 +699,14 @@ void QgsAttributeTableDialog::filterQueryAccepted()
 
 void QgsAttributeTableDialog::setFilterExpression( QString filterString )
 {
+  mFilterQuery->setText( filterString );
+  mFilterButton->setDefaultAction( mActionAdvancedFilter );
+  mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
+  mCbxCaseSensitive->setVisible( false );
+  mFilterQuery->setVisible( true );
+  mApplyFilterButton->setVisible( true );
+  mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
+
   QgsFeatureIds filteredFeatures;
   QgsDistanceArea myDa;
 

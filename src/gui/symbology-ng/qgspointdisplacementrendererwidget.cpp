@@ -93,6 +93,11 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
     }
   }
 
+  mCircleColorButton->setColorDialogTitle( tr( "Select color" ) );
+  mCircleColorButton->setContext( "symbology" );
+  mLabelColorButton->setContext( "symbology" );
+  mLabelColorButton->setColorDialogTitle( tr( "Select color" ) );
+
   mCircleWidthSpinBox->setValue( mRenderer->circleWidth() );
   mCircleColorButton->setColor( mRenderer->circleColor() );
   mLabelColorButton->setColor( mRenderer->labelColor() );

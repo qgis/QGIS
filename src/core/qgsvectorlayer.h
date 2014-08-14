@@ -634,6 +634,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * Add a new field which is calculated by the expression specified
      *
      * @param exp The expression which calculates the field
+     * @param fld The field to calculate
      *
      * @note added in 2.6
      */
