@@ -103,7 +103,7 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 
     virtual ~QgsCustomColorScheme();
 
-    virtual QString schemeName() const { return QT_TR_NOOP( "Custom color palette" ); }
+    virtual QString schemeName() const { return QT_TR_NOOP( "Standard colors" ); }
 
     virtual QgsNamedColorList fetchColors( const QString context = QString(),
                                            const QColor baseColor = QColor() );
