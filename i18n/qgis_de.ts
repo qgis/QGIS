@@ -48871,4 +48871,18081 @@ p, li { white-space: pre-wrap; }
         <translation>Kann Gruppe nicht ohne Namen anlegen. Bitte einen angeben.</translation>
     </message>
     <message>
-        <location f
+        <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="277"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="324"/>
+        <source>Duplicate names</source>
+        <translation>Doppelte Namen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="278"/>
+        <source>Symbol with name &apos;%1&apos; already exists.
+Overwrite?</source>
+        <translation>Symbol names &apos;%1&apos; existiert bereits. Ersetzen?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="325"/>
+        <source>Color ramp with name &apos;%1&apos; already exists.
+Overwrite?</source>
+        <translation>Farbverlauf names &apos;%1&apos; existiert bereits.
+Ersetzen?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="414"/>
+        <source>Load styles</source>
+        <translation>Stile laden</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="415"/>
+        <source>XML files (*.xml *XML)</source>
+        <translation>XML-Dateien (*.xml *.XML)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="454"/>
+        <source>Downloading style ... </source>
+        <translation>Lade Stil herunter ... </translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="481"/>
+        <source>HTTP Error!</source>
+        <translation>HTTP-Fehler!</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="482"/>
+        <source>Download failed: %1.</source>
+        <translation>Download gescheitert: %1.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsStyleV2ExportImportDialogBase</name>
+    <message>
+        <location filename="../src/ui/qgsstylev2exportimportdialogbase.ui" line="14"/>
+        <source>Styles import/export</source>
+        <translation>Stilimport-/-export</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsstylev2exportimportdialogbase.ui" line="22"/>
+        <source>Import from</source>
+        <translation>Import aus</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsstylev2exportimportdialogbase.ui" line="32"/>
+        <source>Location</source>
+        <translation>Ort</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsstylev2exportimportdialogbase.ui" line="49"/>
+        <source>Save to group</source>
+        <translation>In Gruppe speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsstylev2exportimportdialogbase.ui" line="65"/>
+        <source>Select symbols to export</source>
+        <translation>Zu exportierende Symbole wählen</translation>
+    </message>
+</context>
+<context>
+    <name>QgsStyleV2ManagerDialog</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="58"/>
+        <source>Type here to filter symbols...</source>
+        <translation>Symbolfilter hier eingeben...</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="74"/>
+        <source>Share Menu</source>
+        <translation>Teilhabemenü</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="75"/>
+        <source>Export</source>
+        <translation>Exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="76"/>
+        <source>Import</source>
+        <translation>Importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="103"/>
+        <source>Group Actions</source>
+        <translation>Aktionen gruppieren</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="104"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1027"/>
+        <source>Group Symbols</source>
+        <translation>Symbole gruppieren</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="105"/>
+        <source>Edit Smart Group</source>
+        <translation>Schlaue Gruppe bearbeiten</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="171"/>
+        <source>Marker symbol (%1)</source>
+        <translation>Markierungssymbol (%1)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="172"/>
+        <source>Line symbol (%1)</source>
+        <translation>Liniensymbol (%1)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="173"/>
+        <source>Fill symbol (%1)</source>
+        <translation>Füllsymbol (%1)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="175"/>
+        <source>Color ramp (%1)</source>
+        <translation>Farbverlauf (%1)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="188"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="414"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="425"/>
+        <source>Gradient</source>
+        <translation>Gradiente</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="188"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="414"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="437"/>
+        <source>Random</source>
+        <translation>Zufällig</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="188"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="414"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="449"/>
+        <source>ColorBrewer</source>
+        <translation>Farbbrauer</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="189"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="415"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="461"/>
+        <source>cpt-city</source>
+        <translation>ctp-city</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="329"/>
+        <source>new symbol</source>
+        <translation>Neues Symbol</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="334"/>
+        <source>new marker</source>
+        <translation>Neue Markierung</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="338"/>
+        <source>new line</source>
+        <translation>Neue Linie</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="342"/>
+        <source>new fill symbol</source>
+        <translation>Neues Füllsymbol</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="367"/>
+        <source>Symbol Name</source>
+        <translation>Symbolname</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="368"/>
+        <source>Please enter a name for new symbol:</source>
+        <translation>Bitte einen Namen für das neue Symbol angeben:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="378"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="383"/>
+        <source>Save symbol</source>
+        <translation>Symbol speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="379"/>
+        <source>Cannot save symbol without name. Enter a name.</source>
+        <translation>Kann Symbol nicht ohne Namen speichern. Bitte einen angeben.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="384"/>
+        <source>Symbol with name &apos;%1&apos; already exists. Overwrite?</source>
+        <translation>Symbol names &apos;%1&apos; existiert bereits. Ersetzen?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="416"/>
+        <source>Color ramp type</source>
+        <translation>Farbverlauftyp</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="417"/>
+        <source>Please select color ramp type:</source>
+        <translation>Bitte einen Farbverlauftyp wählen:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="422"/>
+        <source>new ramp</source>
+        <translation>Neuer Farbverlauf</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="435"/>
+        <source>new gradient ramp</source>
+        <translation>Neue Gradientenverlauf</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="447"/>
+        <source>new random ramp</source>
+        <translation>Neuer zufälliger Farbverlauf</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="496"/>
+        <source>Color Ramp Name</source>
+        <translation>Farbverlaufname</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="497"/>
+        <source>Please enter a name for new color ramp:</source>
+        <translation>Name für neuen Farbverlauf eingeben:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="507"/>
+        <source>Save Color Ramp</source>
+        <translation>Farbverlauf speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="508"/>
+        <source>Cannot save color ramp without name. Enter a name.</source>
+        <translation>Kann namenlose Farbverläufe nicht speichern. Bitte benennen.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="512"/>
+        <source>Save color ramp</source>
+        <translation>Farbverlauf speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="513"/>
+        <source>Color ramp with name &apos;%1&apos; already exists. Overwrite?</source>
+        <translation>Farbverlauf names &apos;%1&apos; existiert bereits. Ersetzen?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="758"/>
+        <source>All Symbols</source>
+        <translation>Alle Symbole</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="768"/>
+        <source>Groups</source>
+        <translation>Gruppen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="769"/>
+        <source>Ungrouped</source>
+        <translation>Nicht gruppiert</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="776"/>
+        <source>Smart Groups</source>
+        <translation>Schlaue Gruppen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="883"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1341"/>
+        <source>Invalid Selection</source>
+        <translation>Ungültige Auswahl</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="884"/>
+        <source>The parent group you have selected is not user editable.
+Kindly select a user defined group.</source>
+        <translation>Die gewählte Eltergruppe ist nicht änderbar.
+Bitte eine benutzerdefinierte Gruppe wählen.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="893"/>
+        <source>Operation Not Allowed</source>
+        <translation>Operation nicht erlaubt</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="894"/>
+        <source>Creation of nested smart groups are not allowed
+Select the &apos;Smart Group&apos; to create a new group.</source>
+        <translation>Die Erzeugung von verschachtelten schlauen Gruppe ist nicht erlaubt.
+Bitte die &apos;Schlaue Gruppe&apos; wählen, um eine neue zu erzeugen.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="919"/>
+        <source>New Group</source>
+        <translation>Neue Gruppe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="945"/>
+        <source>Invalid selection</source>
+        <translation>Ungültige Auswahl</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="946"/>
+        <source>Cannot delete system defined categories.
+Kindly select a group or smart group you might want to delete.</source>
+        <translation>Systemdefinierte Kategorien können nicht gelöscht werden.
+Bitte Gruppe oder schlaue Gruppe zum Löschen wählen.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="991"/>
+        <source>Error!</source>
+        <translation>Fehler!</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="992"/>
+        <source>New group could not be created.
+There was a problem with your symbol database.</source>
+        <translation>Neue Gruppe konnte nicht erzeugt werden.
+Es gab ein Problem mit Ihrer Symboldatenbank.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1064"/>
+        <source>Finish Grouping</source>
+        <translation>Gruppierung beenden</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1103"/>
+        <source>Database Error</source>
+        <translation>Datenbank-Fehler</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1104"/>
+        <source>There was a problem with the Symbols database while regrouping.</source>
+        <translation>Es gab ein Problem mit der Symboldatenbank bei der Neugruppierung.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1264"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1286"/>
+        <source>Edit Group</source>
+        <translation>Gruppe bearbeiten</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1268"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1274"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1282"/>
+        <source>Add Group</source>
+        <translation>Gruppe hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1270"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1284"/>
+        <source>Remove Group</source>
+        <translation>Gruppe entfernen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1297"/>
+        <source>Apply Group</source>
+        <translation>Gruppierung anwenden</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1305"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1318"/>
+        <source>Un-group</source>
+        <translation>Gruppe auflösen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1342"/>
+        <source>You have not selected a Smart Group. Kindly select a Smart Group to edit.</source>
+        <translation>Sie haben keine schlaue Gruppe gewählt. Bitte eine zur Bearbeitung wählen.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1360"/>
+        <source>Database Error!</source>
+        <translation>Datenbank-Fehler!</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1361"/>
+        <source>There was some error while editing the smart group.</source>
+        <translation>Es gabe einen Fehler beim Bearbeiten der schlauen Gruppe.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsStyleV2ManagerDialogBase</name>
+    <message>
+        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="14"/>
+        <source>Style Manager</source>
+        <translation>Stilmanager</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="186"/>
+        <source>Marker</source>
+        <translation>Markierung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="201"/>
+        <source>Line</source>
+        <translation>Linie</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="216"/>
+        <source>Fill</source>
+        <translation>Füllung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="231"/>
+        <source>Color ramp</source>
+        <translation>Farbverlauf</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="287"/>
+        <source>Tags</source>
+        <translation>Elemente</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="328"/>
+        <source>Add item</source>
+        <translation>Element hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="341"/>
+        <source>Edit item</source>
+        <translation>Element bearbeiten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="344"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="354"/>
+        <source>Remove item</source>
+        <translation>Element löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="370"/>
+        <source>Share</source>
+        <translation>Freigeben</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSublayersDialog</name>
+    <message>
+        <location filename="../src/gui/qgssublayersdialog.cpp" line="33"/>
+        <source>Select vector layers to add...</source>
+        <translation>Einzufügende Vektorlayer wählen...</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgssublayersdialog.cpp" line="34"/>
+        <location filename="../src/gui/qgssublayersdialog.cpp" line="40"/>
+        <location filename="../src/gui/qgssublayersdialog.cpp" line="45"/>
+        <source>Layer ID</source>
+        <translation>Layer-ID</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgssublayersdialog.cpp" line="34"/>
+        <location filename="../src/gui/qgssublayersdialog.cpp" line="40"/>
+        <location filename="../src/gui/qgssublayersdialog.cpp" line="45"/>
+        <source>Layer name</source>
+        <translation>Layername</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgssublayersdialog.cpp" line="35"/>
+        <source>Number of features</source>
+        <translation>Objektanzahl</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgssublayersdialog.cpp" line="35"/>
+        <source>Geometry type</source>
+        <translation>Geometrietyp</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgssublayersdialog.cpp" line="39"/>
+        <source>Select raster layers to add...</source>
+        <translation>Einzufügende Rasterlayer wählen...</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgssublayersdialog.cpp" line="44"/>
+        <source>Select layers to add...</source>
+        <translation>Hinzuzufügende Layer wählen...</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgssublayersdialog.cpp" line="46"/>
+        <source>Type</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgssublayersdialog.cpp" line="50"/>
+        <source>Select All</source>
+        <translation>Alle wählen</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSublayersDialogBase</name>
+    <message>
+        <location filename="../src/ui/qgssublayersdialogbase.ui" line="14"/>
+        <source>Select layers to load</source>
+        <translation>Zuladende Layer wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssublayersdialogbase.ui" line="33"/>
+        <source>1</source>
+        <translation>1</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSvgAnnotationDialog</name>
+    <message>
+        <location filename="../src/app/qgssvgannotationdialog.cpp" line="29"/>
+        <source>SVG annotation</source>
+        <translation>SVG-Bemerkung</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssvgannotationdialog.cpp" line="41"/>
+        <source>Delete</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssvgannotationdialog.cpp" line="64"/>
+        <source>Select SVG file</source>
+        <translation>SVG-Datei wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssvgannotationdialog.cpp" line="64"/>
+        <source>SVG files</source>
+        <translation>SVG-Dateien</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSvgCache</name>
+    <message>
+        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="313"/>
+        <source>SVG request failed [error: %1 - url: %2]</source>
+        <translation>SVG-Abfrage gescheitert [Fehler: %1 - URL %2]</translation>
+    </message>
+    <message>
+        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="313"/>
+        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="336"/>
+        <source>SVG</source>
+        <translation>SVG</translation>
+    </message>
+    <message>
+        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="336"/>
+        <source>SVG request error [status: %1 - reason phrase: %2]</source>
+        <translation>SVG-Abfragefehler [Status: %1 - Grund: %2]</translation>
+    </message>
+    <message>
+        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="738"/>
+        <source>%1 of %2 bytes of svg image downloaded.</source>
+        <translation>%1 von %2 Bytes des SVG-Bilds geladen.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSvgExportOptionsDialog</name>
+    <message>
+        <location filename="../src/ui/qgssvgexportoptions.ui" line="14"/>
+        <source>SVG export options</source>
+        <translation>SVG Exportoptionen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssvgexportoptions.ui" line="22"/>
+        <source>Export map layers as svg groups (may affect label placement)</source>
+        <translation>Exportiere Kartenlayer als SVG Gruppen (beeinflusst Beschriftungsplatzierung)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssvgexportoptions.ui" line="35"/>
+        <source>Render text as outline</source>
+        <translation>Stelle Text als Outline dar</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSvgMarkerSymbolLayerV2Widget</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1587"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1588"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1589"/>
+        <source>Millimeter</source>
+        <translation>Millimeter</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1587"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1588"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1589"/>
+        <source>Map unit</source>
+        <translation>Karteneinheiten</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1592"/>
+        <source>Select fill color</source>
+        <translation>Füllfarbe wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1594"/>
+        <source>Select border color</source>
+        <translation>Randfarbe wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1901"/>
+        <source>Select SVG file</source>
+        <translation>SVG-Datei wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1903"/>
+        <source>SVG files</source>
+        <translation>SVG-Dateien</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2019"/>
+        <source>Border width</source>
+        <translation>Randbreite</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2021"/>
+        <source>Angle</source>
+        <translation>Winkel</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2023"/>
+        <source>Offset</source>
+        <translation>Versatz</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2025"/>
+        <source>SVG file</source>
+        <translation>SVG-Datei</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2027"/>
+        <source>Color</source>
+        <translation>Farbe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2029"/>
+        <source>Border color</source>
+        <translation>Randfarbe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2031"/>
+        <source>Horizontal anchor point</source>
+        <translation>Horizontaler Ankerpunkt</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2033"/>
+        <source>Vertical anchor point</source>
+        <translation>Vertikaler Ankerpunkt</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSvgSelectorGroupsModel</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="104"/>
+        <source>App Symbols</source>
+        <translation>Anw.-symbole</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="108"/>
+        <source>User Symbols</source>
+        <translation>Ben.-symbole</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSvgSelectorWidget</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="257"/>
+        <source>Select SVG file</source>
+        <translation>SVG-Datei wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="259"/>
+        <source>SVG files</source>
+        <translation>SVG-Dateien</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="282"/>
+        <source>File not found</source>
+        <translation>Datei nicht gefunden</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSymbolLayerV2Widget</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="51"/>
+        <source>Size</source>
+        <translation>Größe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="58"/>
+        <source>area</source>
+        <translation>Fläche</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="61"/>
+        <source>diameter</source>
+        <translation>Durchmesser</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSymbolLevelsV2Dialog</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollevelsv2dialog.cpp" line="102"/>
+        <source>Layer %1</source>
+        <translation>Layer %1</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSymbolLevelsV2DialogBase</name>
+    <message>
+        <location filename="../src/ui/qgssymbollevelsv2dialogbase.ui" line="14"/>
+        <source>Symbol Levels</source>
+        <translation>Symbolebenen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssymbollevelsv2dialogbase.ui" line="20"/>
+        <source>Enable symbol levels</source>
+        <translation>Symbolebenen aktivieren</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssymbollevelsv2dialogbase.ui" line="27"/>
+        <source>Define the order in which the symbol layers are rendered. The numbers in the cells define in which rendering pass the layer will be drawn.</source>
+        <translation>Darstellungsreihenfolge der Symbollayer festlegen. Die Anzahl der Zellen legt fest in welchem Darstellungsdurchlauf der Layer gezeichnet wird.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSymbolV2SelectorDialog</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="492"/>
+        <source>Symbol name</source>
+        <translation>Symbolname</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="493"/>
+        <source>Please enter name for the symbol:</source>
+        <translation>Bitte einen Symbolnamen eingeben:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="493"/>
+        <source>New symbol</source>
+        <translation>Neues Symbol</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="500"/>
+        <source>Save symbol</source>
+        <translation>Symbol speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="501"/>
+        <source>Symbol with name &apos;%1&apos; already exists. Overwrite?</source>
+        <translation>Symbol namens &apos;%1&apos; existiert bereits. Ersetzen?</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSymbolV2SelectorDialogBase</name>
+    <message>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="14"/>
+        <source>Symbol selector</source>
+        <translation>Symbolauswahl</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="74"/>
+        <source>Add symbol layer</source>
+        <translation>Symbollayer hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="87"/>
+        <source>Remove symbol layer</source>
+        <translation>Symbollayer löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="100"/>
+        <source>Lock layer&apos;s color</source>
+        <translation>Layerfarbe sperren</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="116"/>
+        <source>Move up</source>
+        <translation>Verschiebe aufwärts</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="129"/>
+        <source>Move down</source>
+        <translation>Verschiebe abwärts</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="155"/>
+        <source>Save symbol</source>
+        <translation>Symbol speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="158"/>
+        <source>Save</source>
+        <translation>Speichern</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSymbolsListWidget</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="45"/>
+        <source>Millimeter</source>
+        <translation>Millimeter</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="45"/>
+        <source>Map unit</source>
+        <translation>Karteneinheiten</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="89"/>
+        <source>Select color</source>
+        <translation>Farbe wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="209"/>
+        <source>Symbol name</source>
+        <translation>Symbolname</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="210"/>
+        <source>Please enter name for the symbol:</source>
+        <translation>Bitte einen Symbolnamen eingeben:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="210"/>
+        <source>New symbol</source>
+        <translation>Neues Symbol</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="217"/>
+        <source>Save symbol</source>
+        <translation>Symbol speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="218"/>
+        <source>Symbol with name &apos;%1&apos; already exists. Overwrite?</source>
+        <translation>Symbol namens &apos;%1&apos; existiert bereits. Ersetzen?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="261"/>
+        <source>Transparency %1%</source>
+        <translation>Transparenz %1%</translation>
+    </message>
+</context>
+<context>
+    <name>QgsTINInterpolatorDialog</name>
+    <message>
+        <location filename="../src/plugins/interpolation/qgstininterpolatordialog.cpp" line="33"/>
+        <source>Linear</source>
+        <translation>Linear</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgstininterpolatordialog.cpp" line="34"/>
+        <location filename="../src/plugins/interpolation/qgstininterpolatordialog.cpp" line="46"/>
+        <source>Clough-Toucher (cubic)</source>
+        <translation>Clough-Toucher (kubisch)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgstininterpolatordialog.cpp" line="86"/>
+        <source>Save triangulation to file</source>
+        <translation>Triangulation in Datei speichern</translation>
+    </message>
+</context>
+<context>
+    <name>QgsTINInterpolatorDialogBase</name>
+    <message>
+        <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="14"/>
+        <source>Triangle based interpolation</source>
+        <translation>Dreiecksinterpolation</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="26"/>
+        <source>Interpolation method</source>
+        <translation>Interpolationsmethode</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="46"/>
+        <source>Export triangulation to shapefile after interpolation</source>
+        <translation>Triangulation anschließend in Shapedatei speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="59"/>
+        <source>Output file</source>
+        <translation>Ausgabedatei</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="78"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsTextAnnotationDialog</name>
+    <message>
+        <location filename="../src/app/qgstextannotationdialog.cpp" line="50"/>
+        <source>Delete</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstextannotationdialog.cpp" line="36"/>
+        <source>Select font color</source>
+        <translation>Schriftfarbe wählen</translation>
+    </message>
+</context>
+<context>
+    <name>QgsTextAnnotationDialogBase</name>
+    <message>
+        <location filename="../src/ui/qgstextannotationdialogbase.ui" line="14"/>
+        <source>Annotation text</source>
+        <translation>Anmerkungstext</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgstextannotationdialogbase.ui" line="47"/>
+        <source>B</source>
+        <translation>F</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgstextannotationdialogbase.ui" line="63"/>
+        <source>I</source>
+        <translation>K</translation>
+    </message>
+</context>
+<context>
+    <name>QgsTextEditConfigDlg</name>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgstexteditconfigdlg.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formular</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgstexteditconfigdlg.ui" line="20"/>
+        <source>Multiline</source>
+        <translation>Mehrzeilig</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgstexteditconfigdlg.ui" line="29"/>
+        <source>HTML</source>
+        <translation>HTML</translation>
+    </message>
+</context>
+<context>
+    <name>QgsTileScaleWidget</name>
+    <message>
+        <location filename="../src/ui/qgstilescalewidgetbase.ui" line="20"/>
+        <source>Form</source>
+        <translation>Formular</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgstilescalewidget.cpp" line="142"/>
+        <source>Tile scale</source>
+        <translation>Kachelmaßstab</translation>
+    </message>
+</context>
+<context>
+    <name>QgsTipFactory</name>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="41"/>
+        <source>QGIS Publications</source>
+        <translation>QGIS-Veröffentlichungen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="42"/>
+        <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://qgis.org/en/site/about/case_studies/index.html&quot;&gt;case studies section&lt;/a&gt; of the QGIS home page.</source>
+        <translation>Wenn Sie eine wissenschaftliche Arbeit oder einen anderen Artikel, der sich auf QGIS bezieht, verfassen, würden wir Ihre Arbeit sehr gerne in die Rubrik &lt;a href=&quot;http://qgis.org/de/site/about/case_studies/index.html&quot;&gt;Fallstudien&lt;/a&gt; auf der QGIS-Homepage aufnehmen.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="48"/>
+        <source>Become an QGIS translator</source>
+        <translation>Werden Sie QGIS-Übersetzer</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="57"/>
+        <source>QGIS Mailing lists</source>
+        <translation>QGIS-Mailinglisten</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="66"/>
+        <source>Is it &apos;QGIS&apos; or &apos;Quantum GIS&apos;?</source>
+        <translation>Heißt es &apos;QGIS&apos; oder &apos;Quantum GIS&apos;?</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="29"/>
+        <source>QGIS is open source</source>
+        <translation>QGIS ist quelloffen und frei</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="30"/>
+        <source>QGIS is open source software. This means that the software source code can be freely viewed and modified. The GPL places a restriction that any modifications you make must be made available in source form to whoever you give modified versions to, and that you can not create a new version of QGIS under a &apos;closed source&apos; license. Visit &lt;a href=&quot;http://qgis.org&quot;&gt; the QGIS home page (http://qgis.org)&lt;/a&gt; for more information.</source>
+        <translation>QGIS ist quelloffene, freie Software. Dies bedeutet, dass der Quellcode der Software frei eingesehen und verändert werden kann. Durch die GPL ist dies allerdings in soweit beschränkt, dass Sie Ihre Änderungen jedem dem Sie geänderten Versionen geben in Quelltextform zur Verfügung stellen müssen und Sie keine neue Version von QGIS unter einer &quot;geschlossenen&quot; Lizenz erstellen dürfen. Besuchen Sie die &lt;a href=&quot;http://qgis.org&quot;&gt;QGIS Homepage (http://qgis.org)&lt;/a&gt; für weitere Informationen.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="67"/>
+        <source>Both used to be correct, but we recently decided to just use &apos;QGIS&apos;.  For articles we suggest you write &apos;QGIS is ....&apos;</source>
+        <translation>Beides waren richtig. Wir haben aber kürzlich beschlossen nur noch &apos;QGIS&apos; zu verwenden. In Artikeln sollten Sie &apos;QGIS ist...&apos; schreiben</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="70"/>
+        <source>How do I refer to QGIS?</source>
+        <translation>Wie beziehe ich mich auf QGIS?</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="71"/>
+        <source>QGIS is spelled in all caps. We have various subprojects of the QGIS project and it will help to avoid confusion if you refer to each by its name:&lt;ul&gt;&lt;li&gt;QGIS Library - this is the C++ library that contains the core logic that is used to build the QGIS user interface and other applications.&lt;/li&gt;&lt;li&gt;QGIS Application - this is the desktop application that you know and love so much :-).&lt;/li&gt;&lt;li&gt;QGIS Mapserver - this is a server-side application based on the QGIS Library that will serve up your .qgs projects using the WMS protocol.&lt;/li&gt;&lt;/ul&gt;</source>
+        <translation>QGIS wird komplett groß geschrieben. Wie haben diverse Unterprojekte im QGIS-Projekt und es wird Verwirrung vermeiden, wenn folgende Begriffe benutzt werden:&lt;ul&gt;&lt;li&gt;QGIS-Bibliothek - ist eine C++-Bibliothek, die die Grundlogik enthält, mit der die QGIS-Benutzeroberfläche und andere Anwendungen erstellt sind&lt;/li&gt;&lt;li&gt;QGIS-Applikation - ist die Desktop-Applikation, die Sie kennen und so lieben. :-)&lt;/li&gt;&lt;li&gt;QGIS-Mapserver - dies ist eine serverseitige Anwendung, die auf der QGIS-Bibliothek basiert und Ihre .qgs-Projekte über das WMS-Protokoll verfügbar macht.&lt;/li&gt;&lt;/ul&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="85"/>
+        <source>Add the current date to a map layout</source>
+        <translation>Aktuelles Datum zum Kartenlayout hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="93"/>
+        <source>Moving Elements and Maps in the Print Composer</source>
+        <translation>Elemente und Karten der Druckzusammenstellung verschieben</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="94"/>
+        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; section, which can be found in the tab &lt;strong&gt;Item Properties -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows one to move the map content within a map frame.</source>
+        <translation>In der Druckzusammenstellungswerkzeugleiste sind zwei Knöpfe zum Verschieben von Elementen zu finden.  Der linke (Pfeil nach rechts) wählt und verschiebt ein Element im Layout. Nach der Elementauswahl mit diesem Werkzeug können sie es auch mit den Pfeiltasten verschieben. Für genaue Positionierung steht der Dialog &lt;strong&gt;Position and Größe&lt;/strong&gt; bereit, den Sie im Reiter &lt;strong&gt;Elementeigentschalften / Position und Größe&lt;/strong&gt; finden können. Das andere Werkzeug (Kartensymbol mit Pfeil nach rechts) erlaubt es den Karteninhalt im Ausschnitt zu verschieben.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="105"/>
+        <source>Lock an element in the layout view</source>
+        <translation>Sperren eines Elements in der Layoutansicht</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="106"/>
+        <source>By left clicking an element in the layout view you can select it, by right clicking an element you can lock it. A lock symbol will appear in the upper left corner of the selected element. This prevents the element from accidentally being moved with the mouse. While in a locked state, you cannot move an element with the mouse but you can still move it with the arrow keys or by absolutely positioning it by setting its &lt;strong&gt;Position and Size&lt;/strong&gt;.</source>
+        <translation>Durch einen Linksklick auf ein Element in der Layoutansicht können Sie es wählen, durch Rechtsklick auf ein Element können Sie es sperren. Ein Schloß erscheint in der obenlinks im gewählten Element. Dies verhindert, dass das Element versehentlich mit der Maus bewegt wird. Im gesperrten Zustand, können Sie das Element nicht mit der Maus bewegen, es aber immer noch mit den Pfeiltasten oder durch setzen seiner absolute Position in seinen Eigenschaften in &lt;strong&gt;Position und Größe&lt;/strong&gt; verschieben.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="116"/>
+        <source>Rotating a map and linking a north arrow</source>
+        <translation>Drehen von Karten und Verknüpfung eines Nordpfeils</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="49"/>
+        <source>Would you like to see QGIS in your native language? We are looking for more translators and would appreciate your help! The translation process is fairly straight forward - instructions are available in the QGIS wiki &lt;a href=&quot;http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui&quot;&gt;translator&apos;s page.&lt;/a&gt;</source>
+        <translation>Würden Sie QGIS gerne in Ihrer Muttersprache sehen? Wir sind auf der Suche nach mehr Übersetzern und würden uns über Ihrer Hilfe freuen.  Der Übersetzungsvorgang ist relativ einfach - Beschreibungen finden im QGIS-Wiki auf der &lt;a href=&quot;http://qgis.org/de/site/getinvolved/translate.html#howto-translate-gui&quot;&gt;Übersetzerseite.&lt;/a&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="58"/>
+        <source>If you need help using QGIS we have a &apos;users&apos;  mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
+        <translation>Wenn Sie Hilfe bei der Benutzung von QGIS brauchen, gibt es eine englische Anwender-Mailingliste, wo die Anwender sich gegenseitig helfen können. Wir haben außerdem eine englische Entwickler-Mailingliste, auf der über die Codebasis diskutiert werden kann.  Details zum Abonnement stehen in der Abteilung &lt;a href=&quot;http://qgis.org/de/site/forusers/support.html#mailing-lists&quot;&gt;Gemeinschaft&lt;/a&gt; auf der QGIS-Homepage.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="86"/>
+        <source>You can add a current date variable to your map layout. Create a regular text label and add the string $CURRENT_DATE(yyyy-MM-dd) to the text box. See the &lt;a href=&quot;http://qt-project.org/doc/qt-5.0/qtcore/qdate.html#toString&quot;&gt;QDate::toString format documentation&lt;/a&gt; for the possible date formats.</source>
+        <translation>Sie können das aktuelle Datum Ihrem Kartenlayout hinzufügen.  Legen Sie eine normale Beschriftung an und ergänzen das Wort $CURRENT_DATE(yyyy-MM-dd) zum Textfeld. Mögliche Formate siehe &lt;a href=&quot;http://qt-project.org/doc/qt-5.0/qtcore/qdate.html#toString&quot;&gt;Formatdokumentation QDate::toString&lt;/a&gt;.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="129"/>
+        <source>Numeric scale value in map layout linked to map frame</source>
+        <translation>Numerischer Maßstabswerte im Kartenlayout verbunden mit Kartenrahmen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="130"/>
+        <source>If you want to place a text label as a placeholder for the current scale, linked to a map frame, you need to place a scalebar and set the style to &apos;Numeric&apos;. You also need to select the map frame, if there is more than one.</source>
+        <translation>Wenn Sie eine Beschriftung als eine Platzhalter für den aktuellen Maßstab platzieren wollen, verbunden mit einem Kartenrahmen, müssen Sie eine Maßstabsleiste mit dem Stil &apos;Nummerisch&apos; setzen.  Außerdem müssen Sie einen Kartenrahmen wählen, wenn es mehrere gibt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="137"/>
+        <source>Using the mouse scroll wheel</source>
+        <translation>Benutzung des Mausrads</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="138"/>
+        <source>You can use the scroll wheel on your mouse to zoom in, out and pan the map. Scroll forwards to zoom in, scroll backwards to zoom out and press and hold the scroll wheel down to pan the map. You can configure options for scroll wheel behaviour in the Options panel.</source>
+        <translation>Sie können das Scrollrad Ihrer Maus zum Hinein-, Hinauszoomen und zum Verschieben der Karte benutzen. Vorwärts scrollen zoomt hinein, rückwärts zoomt heraus und das Drücken des Scrollrads verschiebt die Karte. Sie können das Verhalten des Scrollrads in den Optionen einstellen.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="145"/>
+        <source>Stopping rendering</source>
+        <translation>Abbruch des Zeichnens</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="175"/>
+        <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our regular hackfest meetings, and to generally support the goals of our project. Please see the &lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
+        <translation>Wenn QGIS hilft Geld zu sparen oder Sie Ihre Arbeit lieben und die finanziellen Möglichkeiten haben zu helfen denken Sie bitte darüber nach die Entwicklung von QGIS zu unterstützen. Das Geld unserer Sponsoren wird dazu verwendet um Fahrtkosten und Kosten unserer regelmäßigen Entwicklertreffen zu decken und auch um die allgemeinen Kosten des Projekts zu decken. Bitte gehen Sie auf  &lt;a href=&quot;http://qgis.org/de/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; für nähere Einzelheiten.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="186"/>
+        <source>QGIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage and Install Plugins menu. In addition there are a lot of &lt;a href=&quot;http://plugins.qgis.org/&quot;&gt;Python plugins &lt;/a&gt; contributed by the user community that can be installed via this same menu. Don&apos;t miss out on all QGIS has to offer! Check out the plugins and see what they can do for you.</source>
+        <translation>QGIS hat Erweiterungen, die seine Funktionalität verbessern. QGIS wird mit einigen Kernerweiterungen geliefert, die Sie im Menü Erweiterungen/Erweiterungen installieren und verwalten durchsehen können. Zudem gibt es eine Menge von der Benutzergemeinschaft beigetragene &lt;a href=&quot;http://plugins.qgis.org/&quot;&gt;Python-Erweiterungen &lt;/a&gt;, die über Erweiterungen/Python-Erweiterung heruntergeladen werden können. Verpassen Sie nicht was QGIS zu bieten hat - Sehen Sie sich um und prüfen Sie, was Erweiterungen für Sie tun können.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="157"/>
+        <source>Join intersected polylines when rendering</source>
+        <translation>Kreuzenden Polylinen beim Zeichnen verbinden</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="117"/>
+        <source>In the Print Composer you can rotate a map by setting its rotation value in the tab &lt;strong&gt;Item Properties -&gt; Map -&gt; Main properties&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
+        <translation>In der Druckzusammenstellung können Sie die Karte durch Setzen ihres Drehwinkels auf dem Reiter &lt;string&gt;Element-Eigenschaften &amp;rarr; Karte &amp;rarr; Haupteigenschaften &lt;/strong&gt; drehen. Um einen Nordpfeil in Ihrem Layout zu platzieren können Sie &lt;strong&gt;Bild hinzufügen&lt;/strong&gt; verwenden. Nach der Platzierung des Nordpfeils im Layout können Sie ihn mit einem bestimmten Kartenrahmen über das Häkchen &lt;strong&gt;Mit Karte abgleichen&lt;/strong&gt; und der Auswahl des Kartenrahmens wählen. Wann immer Sie den Drehwinkel der verknüpften Karte ändern, wird der Nordpfeil automatisch mitgedreht.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="146"/>
+        <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;Esc&apos; (the escape key), or click the &apos;Stop map rendering&apos; icon in the status bar to the bottom of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
+        <translation>Manchmal haben Sie große Datenbestände bei denen das Zeichnen ewig dauert. Sie können die &apos;Esc&apos;-Taste drücken oder auf das kleine rote &apos;X&apos; Icon in der Statusleiste unten links im Fenster klicken, um das Zeichnen abzubrechen. Wenn Sie mehrere Aktionen durchführen (z.B. um Darstellungsoptionen zu ändern) und wollen das Zeichnen währenddessen ausschalten, können Sie das Häkchen &apos;Zeichnen&apos; unten rechts in der Statuszeile entfernen. Vergessen Sie nicht es wieder zu aktivieren, wenn Sie fertig sind, sonst wird die Karte nicht wieder gezeichnet!</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="158"/>
+        <source>When applying layered styles to a polyline layer, you can join intersecting lines together simply by enabling symbol levels. The image below shows a before (left) and after (right) view of an intersection when symbol levels are enabled.</source>
+        <translation>Wenn ein geschichteter Stil auf einem Polylinienlayer verwendet wird, kann man Kreuzungen einfach durch die Aktivierung von Symbolebenen anzeigen.  Das Bild unten zeigt eine Kreuzung vor (links) und nach (rechts) der Aktivierung von Symbolenebenen.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="166"/>
+        <source>Auto-enable on the fly projection</source>
+        <translation>automatisch KBS-Spontantransformation als Voreinstellung aktivieren</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="167"/>
+        <source>In the options dialog, under the CRS tab, you can set QGIS so that whenever you create a new project, &apos;on the fly projection&apos; is enabled automatically and a pre-selected Coordinate Reference System of your choice is used.</source>
+        <translation>Im Optionen Dialog unter KBS kann QGIS so eingestellt werden das jedes neue Projekt KBS-Spontantransformation verwendet und ein voreingestelltes Koordinatensystem ihrer Wahl verwendet wird.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="174"/>
+        <source>Sponsor QGIS</source>
+        <translation>Unterstütze QGIS</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="185"/>
+        <source>QGIS has Plugins!</source>
+        <translation>QGIS hat Erweiterungen!</translation>
+    </message>
+</context>
+<context>
+    <name>QgsTipGui</name>
+    <message>
+        <location filename="../src/app/qgstipgui.cpp" line="52"/>
+        <source>&amp;Previous</source>
+        <translation>&amp;Vorheriger</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipgui.cpp" line="56"/>
+        <source>&amp;Next</source>
+        <translation>&amp;Nächster</translation>
+    </message>
+</context>
+<context>
+    <name>QgsTipGuiBase</name>
+    <message>
+        <location filename="../src/ui/qgstipguibase.ui" line="14"/>
+        <source>QGIS Tips!</source>
+        <translation>QGIS-Tipps!</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgstipguibase.ui" line="26"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;A nice tip goes here...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;Ein guter Tipp kommt hier hin...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgstipguibase.ui" line="40"/>
+        <source>I&apos;ve had enough tips, don&apos;t show this on start up any more!</source>
+        <translation>Genug Tipps für mich!  Bitte beim Start keine Tipps mehr anzeigen!</translation>
+    </message>
+</context>
+<context>
+    <name>QgsTransformOptionsDialog</name>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="14"/>
+        <source>Dialog</source>
+        <translation>Dialog</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="20"/>
+        <source>Select transformation type:</source>
+        <translation>Transformationstyp wählen:</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="28"/>
+        <source>Linear</source>
+        <translation>Linear</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="33"/>
+        <source>Polynomial 1</source>
+        <translation>Polynomial 1</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="38"/>
+        <source>Polynomial 2</source>
+        <translation>Polynomial 2</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="43"/>
+        <source>Polynomial 3</source>
+        <translation>Polynomial 3</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="48"/>
+        <source>Thin plate spline (TPS)</source>
+        <translation>Thin-Plate-Spline (TPS)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="56"/>
+        <source>Generate ESRI world file (.tfw)</source>
+        <translation>ESRI-World-Datei erzeugen (.tfw)</translation>
+    </message>
+</context>
+<context>
+    <name>QgsTransformSettingsDialog</name>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="14"/>
+        <source>Transformation settings</source>
+        <translation>Transformationseinstellungen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="22"/>
+        <source>Transformation type:</source>
+        <translation>Transformationstyp:</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="39"/>
+        <source>Resampling method:</source>
+        <translation>Abtastmethode:</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="53"/>
+        <source>Nearest neighbour</source>
+        <translation>Nächster Nachbar</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="58"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="36"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="299"/>
+        <source>Linear</source>
+        <translation>Linear</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="63"/>
+        <source>Cubic</source>
+        <translation>Kubisch</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="68"/>
+        <source>Cubic Spline</source>
+        <translation>Kubisches Spline</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="73"/>
+        <source>Lanczos</source>
+        <translation>Lanczos</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="81"/>
+        <source>Compression:</source>
+        <translation>Kompression:</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="101"/>
+        <source>Output raster:</source>
+        <translation>Ausgaberaster:</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="113"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="134"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="155"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="239"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="122"/>
+        <source>Target SRS:</source>
+        <translation>Ziel-KBS:</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="143"/>
+        <source>Generate pdf report:</source>
+        <translation>PDF-Bericht erzeugen:</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="164"/>
+        <source>Set Target Resolution</source>
+        <translation>Zielauflösung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="171"/>
+        <source>Horizontal</source>
+        <translation>Horizontal</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="191"/>
+        <source>Vertical</source>
+        <translation>Vertikal</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="220"/>
+        <source>Create world file</source>
+        <translation>World-Datei erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="227"/>
+        <source>Generate pdf map:</source>
+        <translation>PDF-Karte erzeugen:</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="250"/>
+        <source>Use 0 for transparency when needed</source>
+        <translation>Falls nötig 0 für Transparenz verwenden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="260"/>
+        <source>Load in QGIS when done</source>
+        <translation>Wenn fertig In QGIS laden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="37"/>
+        <source>Helmert</source>
+        <translation>Helmert</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="38"/>
+        <source>Polynomial 1</source>
+        <translation>Polynomial 1</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="39"/>
+        <source>Polynomial 2</source>
+        <translation>Polynomial 2</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="40"/>
+        <source>Polynomial 3</source>
+        <translation>Polynomial 3</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="41"/>
+        <source>Thin Plate Spline</source>
+        <translation>Thin Plate Spline</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="42"/>
+        <source>Projective</source>
+        <translation>Projektiv</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="165"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="171"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="185"/>
+        <source>Info</source>
+        <translation>Information</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="165"/>
+        <source>Please set output name</source>
+        <translation>Bitte Ausgabenamen setzen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="171"/>
+        <source>%1 requires at least %2 GCPs. Please define more</source>
+        <translation>%1 erfordert mindestens %2 Paßpunkte. Bitte mehr definieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="185"/>
+        <source>Invalid output file name</source>
+        <translation>Ungültiger Ausgabedateiname</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="213"/>
+        <source>Save raster</source>
+        <translation>Raster speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="257"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="272"/>
+        <source>Select save PDF file</source>
+        <translation>Ausgabe-PDF-Datei wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="257"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="272"/>
+        <source>PDF Format</source>
+        <translation>PDF-Format</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="339"/>
+        <source>_modified</source>
+        <comment>Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name</comment>
+        <translation>_modifiziert</translation>
+    </message>
+</context>
+<context>
+    <name>QgsUniqueValuesConfigDlgBase</name>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsuniquevaluesconfigdlgbase.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formular</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsuniquevaluesconfigdlgbase.ui" line="23"/>
+        <source>The user can select one of the values already used in the attribute. If editable, a line edit is shown with autocompletion support, otherwise a combo box is used.</source>
+        <translation>Der Benutzer kann einen Wert wählen, der bereits in dem Attribut verwendet wird. Wenn änderbar gewählt ist, wird eine Eingabezeile mit Autovervollständigung angezeigt, anderenfalls findet eine Auswahlliste Verwendung.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsuniquevaluesconfigdlgbase.ui" line="33"/>
+        <source>Editable</source>
+        <translation>Änderbar</translation>
+    </message>
+</context>
+<context>
+    <name>QgsUnitSelectionWidget</name>
+    <message>
+        <location filename="../src/ui/qgsunitselectionwidget.ui" line="20"/>
+        <source>Form</source>
+        <translation>Formular</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsunitselectionwidget.cpp" line="78"/>
+        <source>Adjust scaling range</source>
+        <translation>Maßstabsbereich anpassen</translation>
+    </message>
+</context>
+<context>
+    <name>QgsValueMapConfigDlg</name>
+    <message>
+        <location filename="../src/gui/editorwidgets/qgsvaluemapconfigdlg.cpp" line="164"/>
+        <source>Select a file</source>
+        <translation>Datei wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/editorwidgets/qgsvaluemapconfigdlg.cpp" line="173"/>
+        <source>Error</source>
+        <translation>Fehler</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/editorwidgets/qgsvaluemapconfigdlg.cpp" line="174"/>
+        <source>Could not open file %1
+Error was:%2</source>
+        <translation>Konnte Datei %1 nicht öffnen
+Fehler war:%2</translation>
+    </message>
+</context>
+<context>
+    <name>QgsValueMapWidget</name>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formular</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="20"/>
+        <source>Combo box with predefined items. Value is stored in the attribute, description is shown in the combo box.</source>
+        <translation>Auswahlliste mit vordefinierten Elementen. Wert wird in dem Attribut gespeichert, Beschreibung in der Auswahlliste angezeigt.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="30"/>
+        <source>Load Data from layer</source>
+        <translation>Daten aus Layer laden</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="37"/>
+        <source>Load Data from CSV file</source>
+        <translation>Daten aus CSV-Datei laden</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="58"/>
+        <source>Value</source>
+        <translation>Wert</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="63"/>
+        <source>Description</source>
+        <translation>Beschreibung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="71"/>
+        <source>Remove Selected</source>
+        <translation>Gewähltes löschen</translation>
+    </message>
+</context>
+<context>
+    <name>QgsValueRelationConfigDlg</name>
+    <message>
+        <location filename="../src/gui/editorwidgets/qgsvaluerelationconfigdlg.cpp" line="65"/>
+        <source>Edit filter expression</source>
+        <translation>Filterausdruck bearbeiten</translation>
+    </message>
+</context>
+<context>
+    <name>QgsValueRelationConfigDlgBase</name>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formular</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="23"/>
+        <source>Select layer, key column and value column</source>
+        <translation>Layer, Schlüssel- und Wertspalte wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="30"/>
+        <source>Layer</source>
+        <translation>Layer</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="43"/>
+        <source>Key column</source>
+        <translation>Schlüsselspalte</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="56"/>
+        <source>Value column</source>
+        <translation>Wertspalte</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="72"/>
+        <source>Allow null value</source>
+        <translation>Nullwert erlauben</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="82"/>
+        <source>Order by value</source>
+        <translation>Nach Wert sortieren</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="92"/>
+        <source>Allow multiple selections</source>
+        <translation>Erlaube Mehrfachauswahl</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="99"/>
+        <source>Filter expression</source>
+        <translation>Filterausdruck</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="112"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsValueRelationWidget</name>
+    <message>
+        <location filename="../src/gui/editorwidgets/qgsvaluerelationwidget.cpp" line="106"/>
+        <source>(no selection)</source>
+        <translation>(keine Auswahl)</translation>
+    </message>
+</context>
+<context>
+    <name>QgsVectorColorBrewerColorRampV2DialogBase</name>
+    <message>
+        <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="14"/>
+        <source>ColorBrewer ramp</source>
+        <translation>Farbbrauer-Verlauf</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="22"/>
+        <source>Scheme name</source>
+        <translation>Schemaname</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="48"/>
+        <source>Colors</source>
+        <translation>Farben</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="82"/>
+        <source>Preview</source>
+        <translation>Voransicht</translation>
+    </message>
+</context>
+<context>
+    <name>QgsVectorDataProvider</name>
+    <message>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="122"/>
+        <source>Codec %1 not found. Falling back to system locale</source>
+        <translation>Codec %1 nicht gefunden. Auf System-Codec zurückgegriffen</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="150"/>
+        <source>Add Features</source>
+        <translation>Objekte hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="156"/>
+        <source>Delete Features</source>
+        <translation>Objekte löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="162"/>
+        <source>Change Attribute Values</source>
+        <translation>Attributwerte ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="168"/>
+        <source>Add Attributes</source>
+        <translation>Attribute hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="174"/>
+        <source>Delete Attributes</source>
+        <translation>Attribute löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="181"/>
+        <source>Create Spatial Index</source>
+        <translation>Räumlichen Index erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="187"/>
+        <source>Fast Access to Features at ID</source>
+        <translation>Schneller Objektzugriff nach ID</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="193"/>
+        <source>Change Geometries</source>
+        <translation>Geometrien ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="199"/>
+        <source>Simplify Geometries</source>
+        <translation>Geometrien vereinfachen</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="205"/>
+        <source>Simplify Geometries with topological validation</source>
+        <translation>Geometrie mit topologischer Überprüfung vereinfachen</translation>
+    </message>
+</context>
+<context>
+    <name>QgsVectorFieldSymbolLayerWidget</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorfieldsymbollayerwidget.cpp" line="137"/>
+        <source>X attribute</source>
+        <translation>X-Attribut</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorfieldsymbollayerwidget.cpp" line="138"/>
+        <source>Y attribute</source>
+        <translation>Y-Attribut</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorfieldsymbollayerwidget.cpp" line="150"/>
+        <source>Length attribute</source>
+        <translation>Längenattribut</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorfieldsymbollayerwidget.cpp" line="151"/>
+        <source>Angle attribute</source>
+        <translation>Winkelattribut</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorfieldsymbollayerwidget.cpp" line="163"/>
+        <source>Height attribute</source>
+        <translation>Höhenattribut</translation>
+    </message>
+</context>
+<context>
+    <name>QgsVectorGradientColorRampV2Dialog</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="39"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="44"/>
+        <source>Select ramp color</source>
+        <translation>Farbverlauffarbe wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="42"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="47"/>
+        <source>Transparent</source>
+        <translation>Transparent</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="60"/>
+        <source>Discrete</source>
+        <translation>Diskret</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="61"/>
+        <source>Continuous</source>
+        <translation>Fortlaufend</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="133"/>
+        <source>Gradient file : %1</source>
+        <translation>Gradienten-Datei : %1</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="150"/>
+        <source>License file : %1</source>
+        <translation>Lizenzdatei : %1</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="280"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="285"/>
+        <source>Edit Stop Color</source>
+        <translation>Endfarbe bearbeiten</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="299"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="331"/>
+        <source>Offset of the stop</source>
+        <translation>Versatz des Wechsels</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="300"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="332"/>
+        <source>Please enter offset in percents (%) of the new stop</source>
+        <translation>Bitte geben sie den Versatz in Prozent (%) des neuen Wechsels an</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="322"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="343"/>
+        <source>Add Color Stop</source>
+        <translation>Endfarbe hinzufügen</translation>
+    </message>
+</context>
+<context>
+    <name>QgsVectorGradientColorRampV2DialogBase</name>
+    <message>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="14"/>
+        <source>Gradient color ramp</source>
+        <translation>Abgestufter Farbverlauf</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="22"/>
+        <source>Color 1</source>
+        <translation>Farbe 1</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="32"/>
+        <source>Color 2</source>
+        <translation>Farbe 2</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="93"/>
+        <source>Type</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="127"/>
+        <source>Multiple stops</source>
+        <translation>Mehrere Wechsel</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="159"/>
+        <source>Add stop</source>
+        <translation>Hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="166"/>
+        <source>Remove stop</source>
+        <translation>Entfernen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="146"/>
+        <source>Color</source>
+        <translation>Farbe</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="151"/>
+        <source>Offset (%)</source>
+        <translation>Versatz (%)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="176"/>
+        <source>Preview</source>
+        <translation>Vorschau</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="200"/>
+        <source>Information</source>
+        <translation>Information</translation>
+    </message>
+</context>
+<context>
+    <name>QgsVectorLayer</name>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="763"/>
+        <source>Updating feature count for layer %1</source>
+        <translation>Objektanzahl des Layers %1 wird aktualisiert</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="763"/>
+        <source>Abort</source>
+        <translation>Abbrechen</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2201"/>
+        <source>ERROR: no provider</source>
+        <translation>FEHLER: kein Datenlieferant</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2207"/>
+        <source>ERROR: layer not editable</source>
+        <translation>FEHLER: Layer ist nicht veränderbar</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2224"/>
+        <source>Commit errors:
+  %1</source>
+        <translation>Commit-Fehler:
+  %1</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3272"/>
+        <source>General</source>
+        <translation>Allgemein</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3278"/>
+        <source>Layer comment</source>
+        <translation>Layerkommentar</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3285"/>
+        <source>Storage type of this layer</source>
+        <translation>Speichertyp dieses Layers</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3293"/>
+        <source>Description of this provider</source>
+        <translation>Beschreibung dieses Datenlieferanten</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3300"/>
+        <source>Source for this layer</source>
+        <translation>Quelle dieses Layers</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3317"/>
+        <source>Geometry type of the features in this layer</source>
+        <translation>Geometrietyp der Objekte dieses Layers</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3326"/>
+        <source>Primary key attributes</source>
+        <translation>Primärschlüsselattribute</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3337"/>
+        <source>The number of features in this layer</source>
+        <translation>Anzahl der Objekte dieses Layers</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3342"/>
+        <source>Editing capabilities of this layer</source>
+        <translation>Bearbeitungsmöglichkeiten dieses Layers</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3351"/>
+        <source>Extents</source>
+        <translation>Ausdehnung</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3355"/>
+        <source>In layer spatial reference system units</source>
+        <translation>In Bezugssystemeinheiten des Layers</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3421"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3456"/>
+        <source>In project spatial reference system units</source>
+        <translation>In Bezugssystemeinheiten des Projekts</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3434"/>
+        <source>Layer Spatial Reference System</source>
+        <translation>Räumliches Bezugssystem des Layers</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3445"/>
+        <source>Project (Output) Spatial Reference System</source>
+        <translation>Räumliches Bezugssystem des Projekts (Ausgabe)</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3467"/>
+        <source>Attribute field info</source>
+        <translation>Attributfeldinformationen</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3748"/>
+        <source>Error: qgis element could not be found</source>
+        <translation>Fehler: Element qgis wurde nicht gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3404"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3423"/>
+        <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
+        <translation>xMin,yMin %1;%2 : xMax,yMax %3;%4</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3409"/>
+        <source>unknown extent</source>
+        <translation>Unbekannte Ausmaße</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3458"/>
+        <source>(Invalid transformation of layer extents)</source>
+        <translation>(Transformation der Layerausdehnung ungültig)</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3473"/>
+        <source>Field</source>
+        <translation>Feld</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3476"/>
+        <source>Type</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3479"/>
+        <source>Length</source>
+        <translation>Länge</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3482"/>
+        <source>Precision</source>
+        <translation>Genauigkeit</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3485"/>
+        <source>Comment</source>
+        <translation>Kommentar</translation>
+    </message>
+</context>
+<context>
+    <name>QgsVectorLayerEditBuffer</name>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="257"/>
+        <source>SUCCESS: %n attribute(s) deleted.</source>
+        <comment>deleted attributes count</comment>
+        <translation>
+            <numerusform>ERFOLG: Ein Attribut gelöscht.</numerusform>
+            <numerusform>ERFOLG: %n Attribute gelöscht.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="266"/>
+        <source>ERROR: %n attribute(s) not deleted.</source>
+        <comment>not deleted attributes count</comment>
+        <translation>
+            <numerusform>FEHLER: Ein Attribut nicht gelöscht.</numerusform>
+            <numerusform>FEHLER: %n Attribute nicht gelöscht.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="286"/>
+        <source>SUCCESS: %n attribute(s) added.</source>
+        <comment>added attributes count</comment>
+        <translation>
+            <numerusform>ERFOLG: Ein Attribut hinzugefügt.</numerusform>
+            <numerusform>ERFOLG: %n Attribute hinzugefügt.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="295"/>
+        <source>ERROR: %n new attribute(s) not added</source>
+        <comment>not added attributes count</comment>
+        <translation>
+            <numerusform>FEHLER: Ein Attribut nicht hinzugefügt</numerusform>
+            <numerusform>FEHLER: %n Attribute nicht hinzugefügt</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="319"/>
+        <source>ERROR: the count of fields is incorrect after addition/removal of fields!</source>
+        <translation>FEHLER: Die Feldanzahl stimmt nach dem Hinzufügen/Entfernen von Feldern nicht!</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="330"/>
+        <source>ERROR: field with index %1 is not the same!</source>
+        <translation>FEHLER: Feld mit Index %1 ist nicht das gleiche!</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="331"/>
+        <source>Provider: %1</source>
+        <translation>Datenlieferant: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="332"/>
+        <source>Storage: %1</source>
+        <translation>Speicherart: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="334"/>
+        <source>expected field</source>
+        <translation>Erwartetes Feld</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="341"/>
+        <source>retrieved field</source>
+        <translation>Geladenes Feld</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="361"/>
+        <source>SUCCESS: %n attribute value(s) changed.</source>
+        <comment>changed attribute values count</comment>
+        <translation>
+            <numerusform>ERFOLG: Ein Attributwert geändert.</numerusform>
+            <numerusform>ERFOLG: %n Attributwerte geändert.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="369"/>
+        <source>ERROR: %n attribute value change(s) not applied.</source>
+        <comment>not changed attribute values count</comment>
+        <translation>
+            <numerusform>FEHLER: Eine Attributwertänderung nicht angewendet.</numerusform>
+            <numerusform>FEHLER: %n Attributwertänderungen nicht angewendet.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="394"/>
+        <source>SUCCESS: %n feature(s) deleted.</source>
+        <comment>deleted features count</comment>
+        <translation>
+            <numerusform>ERFOLG: Ein Objekt gelöscht.</numerusform>
+            <numerusform>ERFOLG: %n Objekte gelöscht.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="408"/>
+        <source>ERROR: %n feature(s) not deleted.</source>
+        <comment>not deleted features count</comment>
+        <translation>
+            <numerusform>FEHLER: Ein Objekt nicht gelöscht.</numerusform>
+            <numerusform>FEHLER: %n Objekte nicht gelöscht.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="433"/>
+        <source>SUCCESS: %n feature(s) added.</source>
+        <comment>added features count</comment>
+        <translation>
+            <numerusform>ERFOLG: Ein Objekt hinzugefügt.</numerusform>
+            <numerusform>ERFOLG: %n Objekte hinzugefügt.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="457"/>
+        <source>ERROR: %n feature(s) not added.</source>
+        <comment>not added features count</comment>
+        <translation>
+            <numerusform>FEHLER: Ein Objekt nicht hinzugefügt.</numerusform>
+            <numerusform>FEHLER: %n Objekte nicht hinzugefügt.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="476"/>
+        <source>ERROR: %n feature(s) not added - provider doesn&apos;t support adding features.</source>
+        <comment>not added features count</comment>
+        <translation>
+            <numerusform>FEHLER: Ein Objekt nicht hinzugefügt - Datenlieferant unterstützt das Hinzufügen nicht.</numerusform>
+            <numerusform>FEHLER: %n Objekte nicht hinzugefügt - Datenlieferant unterstützt das Hinzufügen nicht.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="493"/>
+        <source>SUCCESS: %n geometries were changed.</source>
+        <comment>changed geometries count</comment>
+        <translation>
+            <numerusform>ERFOLG: Eine Geometrie geändert.</numerusform>
+            <numerusform>ERFOLG: %n Geometrien geändert.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="501"/>
+        <source>ERROR: %n geometries not changed.</source>
+        <comment>not changed geometries count</comment>
+        <translation>
+            <numerusform>FEHLER: Eine Geometrie nicht geändert.</numerusform>
+            <numerusform>FEHLER: %n Geometrien nicht geändert.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="508"/>
+        <source>
+  Provider errors:</source>
+        <translation>
+  Datenlieferantenfehler:</translation>
+    </message>
+</context>
+<context>
+    <name>QgsVectorLayerProperties</name>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="139"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="758"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="863"/>
+        <source>QGIS Layer Style File</source>
+        <translation>QGIS-Layerstildatei</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="140"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="758"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="858"/>
+        <source>SLD File</source>
+        <translation>SLD-Datei</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="147"/>
+        <source>Load from file</source>
+        <translation>Aus Datei laden</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="148"/>
+        <source>Load from database</source>
+        <translation>Aus Datenbank laden</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="156"/>
+        <source>Save in database (%1)</source>
+        <translation>In Datenbank speichern (%1)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="266"/>
+        <source>Layer Properties - %1</source>
+        <translation>Layereigenschaften - %1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="287"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="373"/>
+        <source>Stop editing mode to enable this.</source>
+        <translation>Bearbeitungsmodus beenden, um dies zu aktivieren.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="320"/>
+        <source>Insert expression</source>
+        <translation>Ausdruck einfügen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="354"/>
+        <source>This button opens the query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
+        <translation>Dieser Knopf öffnet die Abfrageerstellung und ermöglicht, statt aller Objekte, eine Untermenge der Objekte auf dem Kartenfenster darzustellen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="357"/>
+        <source>The query used to limit the features in the layer is shown here. To enter or modify the query, click on the Query Builder button</source>
+        <translation>Die Abfrage zur Begrenzung der Anzahl der Objekte wird hier angezeigt. Klicken Sie auf auf &apos;Abfrageerstellung&apos;, um eine Abfrage einzugeben oder zu ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="400"/>
+        <source>Not supported</source>
+        <translation>Nicht unterstützt</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="615"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="620"/>
+        <source>Spatial Index</source>
+        <translation>Räumlicher Index</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="615"/>
+        <source>Creation of spatial index successful</source>
+        <translation>Räumlichen Indexes erfolgreich erstellt</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="620"/>
+        <source>Creation of spatial index failed</source>
+        <translation>Erstellung des räumlichen Indexes schlug fehl</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="663"/>
+        <source>Load default style from: </source>
+        <translation>Vorgabestil laden aus: </translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="665"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="722"/>
+        <source>Cancel</source>
+        <translation>Abbruch</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="666"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="723"/>
+        <source>Local database</source>
+        <translation>Lokale Datenbank</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="667"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="724"/>
+        <source>Datasource database</source>
+        <translation>Datenquellendatenbank</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="679"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="683"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="709"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="747"/>
+        <source>Default Style</source>
+        <translation>Vorgabestil</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="681"/>
+        <source>Loaded from Provider</source>
+        <translation>Aus Datenlieferanten geladen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="684"/>
+        <source>No default style was found for this layer</source>
+        <translation>Kein Vorgabestil für diesen Layer gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="720"/>
+        <source>Save default style to: </source>
+        <translation>Vorgabestil speichern in: </translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="757"/>
+        <source>Load layer properties from style file</source>
+        <translation>Layereigenschaften aus Stildatei laden</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="784"/>
+        <source>Load Style</source>
+        <translation>Stil laden</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="843"/>
+        <source>Style saved</source>
+        <translation>Stil gespeichert</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="867"/>
+        <source>Save layer properties as style file</source>
+        <translation>Layereigenschaften als Stildatei speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="903"/>
+        <source>Saved Style</source>
+        <translation>Gespeicherter Stil</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="941"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="955"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="964"/>
+        <source>Error occured retrieving styles from database</source>
+        <translation>Fehler beim Laden des Stil aus der Datenbank</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="965"/>
+        <source>The retrieved style is not a valid named style. Error message: %1</source>
+        <translation>Der geladene Stil ist kein gültiger benannter Stil.  Fehlermeldung: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1063"/>
+        <source>Save Style</source>
+        <translation>Stil speichern</translation>
+    </message>
+</context>
+<context>
+    <name>QgsVectorLayerPropertiesBase</name>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="20"/>
+        <source>Layer Properties</source>
+        <translation>Layereigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1591"/>
+        <source>Restore Default Style</source>
+        <translation>Stilvorgaben wiederherstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1584"/>
+        <source>Save As Default</source>
+        <translation>Als Vorgabe speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="470"/>
+        <source>A widget to define the scale visibility</source>
+        <translation>Ein Kontrollelement um den sichtbaren Maßstabsbereich festzulegen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="473"/>
+        <source>A widget to define the scale visibility.</source>
+        <translation>Ein Kontrollelement um den sichtbaren Maßstabsbereich festzulegen.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1132"/>
+        <source>Memory cache</source>
+        <translation>Zwischenspeicher</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1250"/>
+        <source>Description</source>
+        <translation>Beschreibung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1292"/>
+        <source>Keyword list</source>
+        <translation>Schlüsselwortliste</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1302"/>
+        <source>DataUrl</source>
+        <translation>DateURL</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1314"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1424"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1486"/>
+        <source>Format</source>
+        <translation>Format</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1345"/>
+        <source>Attribution</source>
+        <translation>Beschreibung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1364"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1386"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1476"/>
+        <source>Url</source>
+        <translation>URL</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1377"/>
+        <source>MetadataUrl</source>
+        <translation>Metadaten-URL</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1398"/>
+        <source>Type</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1468"/>
+        <source>LegendUrl</source>
+        <translation>LegndUrl</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1503"/>
+        <source>image/png</source>
+        <translation>image/png</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1508"/>
+        <source>image/jpeg</source>
+        <translation>image/jpeg</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1513"/>
+        <source>image/jpg</source>
+        <translation>image/jpg</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1532"/>
+        <source>Properties</source>
+        <translation>Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1577"/>
+        <source>Load Style ...</source>
+        <translation>Stil laden...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1598"/>
+        <source>Save Style ...</source>
+        <translation>Stil speichern...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="101"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="104"/>
+        <source>Style</source>
+        <translation>Stil</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="113"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="116"/>
+        <source>Labels</source>
+        <translation>Beschriftungen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="125"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="128"/>
+        <source>Labels (deprecated)</source>
+        <translation>Beschriftung (alt)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="661"/>
+        <source>Display labels</source>
+        <translation>Beschriftungen anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="137"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="140"/>
+        <source>Fields</source>
+        <translation>Felder</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="89"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="92"/>
+        <source>General</source>
+        <translation>Allgemein</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="405"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="408"/>
+        <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
+        <translation>Koordinatenbezugsssystem der Geometrie des Layers angeben.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="495"/>
+        <source>Query Builder</source>
+        <translation>Abfrageerstellung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="161"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="164"/>
+        <source>Display</source>
+        <translation>Anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="149"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="152"/>
+        <source>Rendering</source>
+        <translation>Darstellung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="280"/>
+        <source>Layer info</source>
+        <translation>Layerinformation</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="322"/>
+        <source>Layer source</source>
+        <translation>Layerquelle</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="347"/>
+        <source>Data source encoding</source>
+        <translation>Datenquellenkodierung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="375"/>
+        <source>Coordinate reference system</source>
+        <translation>Koordinatenbezugssystem</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="411"/>
+        <source>Specify...</source>
+        <translation>Festlegen...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="422"/>
+        <source>Create spatial index</source>
+        <translation>Räumlichen Index erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="429"/>
+        <source>Update extents</source>
+        <translation>Ausmaße aktualisieren</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="461"/>
+        <source>Scale dependent visibility</source>
+        <translation>Maßstabsabhängige Sichtbarkeit</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="489"/>
+        <source>Feature subset</source>
+        <translation>Objektuntermenge</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="758"/>
+        <source>Simplify geometry</source>
+        <translation>Geometrie vereinfachen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="767"/>
+        <source>&lt;b&gt;Note:&lt;/b&gt; Feature simplification may speed up rendering but can result in rendering inconsistencies</source>
+        <translation>&lt;b&gt;Hinweis:&lt;/b&gt; Geometrievereinfachung kann die Darstellung beschleunigen, aber auch zu Darstellungsinkonsistenzen führen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="774"/>
+        <source>Simplification threshold (higher values result in more simplification): </source>
+        <translation>Vereinfachungsschwelle (höhere Werte führen zu stärkerer Vereinfachung): </translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="784"/>
+        <source>Higher values result in more simplification</source>
+        <translation>Höhere Werte führen zu mehr Vereinfachung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="806"/>
+        <source>pixels</source>
+        <translation>Pixel</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="829"/>
+        <source>Simplify on provider side if possible</source>
+        <translation>Auf Datenlieferanten vereinfachen, wenn möglich</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="836"/>
+        <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
+        <translation>Größter Maßstab bis zu dem der Layer vereinfacht werden soll (1:1 vereinfacht immer): </translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="904"/>
+        <source>Map Tip display text</source>
+        <translation>Kartentippanzeigetext</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="924"/>
+        <source>Inserts an expression into the action</source>
+        <translation>Einen Ausdruck in die Aktion einfügen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="927"/>
+        <source>Insert expression...</source>
+        <translation>Ausdruck einfügen...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="953"/>
+        <source>The valid attribute names for this layer</source>
+        <translation>Die gültigen Attributnamen für diesen Layer</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="969"/>
+        <source>Inserts the selected field into the action</source>
+        <translation>Fügt das gewählte Feld in die Aktion ein</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="972"/>
+        <source>Insert field</source>
+        <translation>Attribut einfügen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="990"/>
+        <source>HTML</source>
+        <translation>HTML</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1014"/>
+        <source>Field</source>
+        <translation>Feld</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="289"/>
+        <source>Layer name</source>
+        <translation>Layername</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="315"/>
+        <source>displayed as</source>
+        <translation>angezeigt als</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="209"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="212"/>
+        <source>Metadata</source>
+        <translation>Metadaten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1259"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1354"/>
+        <source>Title</source>
+        <translation>Titel</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1269"/>
+        <source>Abstract</source>
+        <translation>Zusammenfassung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="173"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="176"/>
+        <source>Actions</source>
+        <translation>Aktionen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="185"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="188"/>
+        <source>Joins</source>
+        <translation>Verknüpfungen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1117"/>
+        <source>Join layer</source>
+        <translation>Joinlayer</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1122"/>
+        <source>Join field</source>
+        <translation>Verknüpfungsfeld</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1127"/>
+        <source>Target field</source>
+        <translation>Zielfeld</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="197"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="200"/>
+        <source>Diagrams</source>
+        <translation>Diagramme</translation>
+    </message>
+</context>
+<context>
+    <name>QgsVectorLayerSaveAsDialog</name>
+    <message>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="80"/>
+        <source>Layer CRS</source>
+        <translation>Layer-KBS</translation>
+    </message>
+    <message>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="80"/>
+        <source>Project CRS</source>
+        <translation>Projekt-KBS</translation>
+    </message>
+    <message>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="80"/>
+        <source>Selected CRS</source>
+        <translation>Gewähltes KBS</translation>
+    </message>
+    <message>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="89"/>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="495"/>
+        <source>No symbology</source>
+        <translation>Keine Darstellung</translation>
+    </message>
+    <message>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="90"/>
+        <source>Feature symbology</source>
+        <translation>Objektdarstellung</translation>
+    </message>
+    <message>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="91"/>
+        <source>Symbol layer symbology</source>
+        <translation>Symbolayerdarstellung</translation>
+    </message>
+    <message>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="135"/>
+        <source>&lt;Default&gt;</source>
+        <translation>&lt;Vorgabe&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="292"/>
+        <source>Save layer as...</source>
+        <translation>Layer speichern als...</translation>
+    </message>
+    <message>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="304"/>
+        <source>Select the coordinate reference system for the vector file. The data points will be transformed from the layer coordinate reference system.</source>
+        <translation>Koordinatenbezugssystem für die Vektordatei wählen. Die Datenpunkte werden vom Koordinatenbezugssystem des Layers transformiert.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsVectorLayerSaveAsDialogBase</name>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="20"/>
+        <source>Save vector layer as...</source>
+        <translation>Vektorlayer speichern als...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="39"/>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="82"/>
+        <source>Browse</source>
+        <translation>Durchsuchen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="119"/>
+        <source>Encoding</source>
+        <translation>Kodierung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="56"/>
+        <source>CRS</source>
+        <translation>KBS</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="160"/>
+        <source>Symbology export</source>
+        <translation>Darstellungsexport</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="199"/>
+        <source>Datasource Options</source>
+        <translation>Datenquelleneinstellungen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="223"/>
+        <source>Custom Options</source>
+        <translation>Benutzeroptionen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="211"/>
+        <source>Layer Options</source>
+        <translation>Layeroptionen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="46"/>
+        <source>Save as</source>
+        <translation>Speichern unter</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="72"/>
+        <source>Format</source>
+        <translation>Format</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="134"/>
+        <source>Save only selected features</source>
+        <translation>Nur gewählte Objekt speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="232"/>
+        <source>Data source</source>
+        <translation>Datenquelle</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="273"/>
+        <source>Layer</source>
+        <translation>Layer</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="141"/>
+        <source>This allows one to surpress attribute creation as some OGR drivers (eg. DGN, DXF) don&apos;t support it.</source>
+        <translation>Hiermit kann die Attributerzeugung unterdrückt werden, da einige OGR-Treiber (z.B. DGN, DXF) sie nicht unterstützen.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="144"/>
+        <source>Skip attribute creation</source>
+        <translation>Attributerzeugung unterdrücken</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="151"/>
+        <source>Add saved file to map</source>
+        <translation>Gespeicherte Datei zur Karte hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="181"/>
+        <source>1:</source>
+        <translation>1:</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="174"/>
+        <source>Scale</source>
+        <translation>Maßstab</translation>
+    </message>
+</context>
+<context>
+    <name>QgsVectorRandomColorRampV2DialogBase</name>
+    <message>
+        <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="14"/>
+        <source>Random color ramp</source>
+        <translation>Zufälliger Farbverlauf</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="22"/>
+        <source>Hue</source>
+        <translation>Farbton</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="29"/>
+        <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="67"/>
+        <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="105"/>
+        <source>from</source>
+        <translation>von</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="43"/>
+        <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="81"/>
+        <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="119"/>
+        <source>to</source>
+        <translation>bis</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="60"/>
+        <source>Saturation</source>
+        <translation>Sättigung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="98"/>
+        <source>Value</source>
+        <translation>Wert</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="140"/>
+        <source>Classes</source>
+        <translation>Klassen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="194"/>
+        <source>Preview</source>
+        <translation>Vorschau</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWCSConnectionItem</name>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsdataitems.cpp" line="90"/>
+        <source>Edit...</source>
+        <translation>Bearbeiten...</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsdataitems.cpp" line="94"/>
+        <source>Delete</source>
+        <translation>Löschen</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWCSRootItem</name>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsdataitems.cpp" line="251"/>
+        <source>New Connection...</source>
+        <translation>Neue Verbindung...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWCSSourceSelect</name>
+    <message>
+        <location filename="../src/providers/wcs/qgswcssourceselect.cpp" line="182"/>
+        <source>Select a layer</source>
+        <translation>Einen Layer wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcssourceselect.cpp" line="188"/>
+        <source>No CRS selected</source>
+        <translation>Kein KBS gewählt</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWFSCapabilities</name>
+    <message>
+        <location filename="../src/providers/wfs/qgswfscapabilities.cpp" line="237"/>
+        <source>Either the WFS server does not support WFS version 1.0.0 or the WFS url is wrong</source>
+        <translation>Entweder unterstützt der WFS-Server die Version 1.0.0 nicht oder die URL ist falsch</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWFSConnectionItem</name>
+    <message>
+        <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="102"/>
+        <source>Edit...</source>
+        <translation>Bearbeiten...</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="106"/>
+        <source>Delete</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="116"/>
+        <source>Modify WFS connection</source>
+        <translation>WFS-Verbindung ändern</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWFSProvider</name>
+    <message>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="107"/>
+        <source>DescribeFeatureType failed for url %1</source>
+        <translation>DescribeFeatureType von URL %1 gescheitert</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="107"/>
+        <source>WFS</source>
+        <translation>WFS</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1281"/>
+        <source>unknown</source>
+        <translation>unbekannt</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1287"/>
+        <source>received %1 bytes from %2</source>
+        <translation>%1 von %2 Bytes empfangen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1659"/>
+        <source>empty response</source>
+        <translation>Leere Antwort</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1665"/>
+        <source>WFS service exception:%1</source>
+        <translation>WFS-Dienstausnahme: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1671"/>
+        <source>unsuccessful service response: %1</source>
+        <translation>Nichterfolgreiche Dienstantwort: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1678"/>
+        <source>WFS exception report (code=%1 text=%2)</source>
+        <translation>WFS-Ausnahmenbereicht (Code=%1 Text=%2)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1679"/>
+        <source>missing</source>
+        <translation>fehlt</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1685"/>
+        <source>unhandled response: %1</source>
+        <translation>nicht behandelte Antwort: %1</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWFSRootItem</name>
+    <message>
+        <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="167"/>
+        <source>New Connection...</source>
+        <translation>Neue Verbindung...</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="189"/>
+        <source>Create a new WFS connection</source>
+        <translation>Neue WFS-Verbindung anlegen</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWFSSourceSelect</name>
+    <message>
+        <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="52"/>
+        <source>&amp;Add</source>
+        <translation>&amp;Hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="55"/>
+        <source>&amp;Build query</source>
+        <translation>&amp;Abfrage erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="56"/>
+        <source>Build query</source>
+        <translation>Abfrage erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="204"/>
+        <source>Network Error</source>
+        <translation>Netzwerkfehler</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="205"/>
+        <source>Capabilities document is not valid</source>
+        <translation>Capabilities-Dokument ist ungültig</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="206"/>
+        <source>Server Exception</source>
+        <translation>Server-Ausnahme</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="207"/>
+        <source>Error</source>
+        <translation>Fehler</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="267"/>
+        <source>No Layers</source>
+        <translation>Keine Layer</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="267"/>
+        <source>capabilities document contained no layers.</source>
+        <translation>Capabilities-Dokument enthielt keine Layer.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="276"/>
+        <source>Create a new WFS connection</source>
+        <translation>Neue WFS-Verbindung anlegen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="288"/>
+        <source>Modify WFS connection</source>
+        <translation>WFS-Verbindung ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="299"/>
+        <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
+        <translation>Sind Sie sicher, dass Sie die Verbindung %1 und alle zugehörigen Einstellungen löschen wollen?</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="301"/>
+        <source>Confirm Delete</source>
+        <translation>Löschen bestätigen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="529"/>
+        <source>Load connections</source>
+        <translation>Verbindungen laden</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="530"/>
+        <source>XML files (*.xml *XML)</source>
+        <translation>XML-Dateien (*.xml *.XML)</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWFSSourceSelectBase</name>
+    <message>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="14"/>
+        <source>Add WFS Layer from a Server</source>
+        <translation>WFS-Layer des Servers hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="83"/>
+        <source>Filter:</source>
+        <translation>Filter:</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="96"/>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="99"/>
+        <source>Display WFS FeatureTypes containing this word in the title, name or abstract</source>
+        <translation>WFS-Objekttypen anzeigen, die dieses Wort im Titel, Namen oder Zusammenfassung enthalten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="108"/>
+        <source>Server connections</source>
+        <translation>Serververbindungen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="122"/>
+        <source>C&amp;onnect</source>
+        <translation>&amp;Verbinden</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="129"/>
+        <source>&amp;New</source>
+        <translation>&amp;Neu</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="139"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="149"/>
+        <source>Delete</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="172"/>
+        <source>Load connections from file</source>
+        <translation>Verbindungen aus Datei laden</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="175"/>
+        <source>Load</source>
+        <translation>Laden</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="182"/>
+        <source>Save connections to file</source>
+        <translation>Verbindungen in Datei speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="185"/>
+        <source>Save</source>
+        <translation>Speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="216"/>
+        <source>Use title for layer name</source>
+        <translation>Titel als Layernamen verwenden</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="30"/>
+        <source>Coordinate reference system</source>
+        <translation>Koordinatenbezugssystem</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="68"/>
+        <source>Change ...</source>
+        <translation>Ändern...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWMSConnection</name>
+    <message>
+        <location filename="../src/providers/wms/qgswmsconnection.cpp" line="63"/>
+        <source>WMS Password for %1</source>
+        <translation>WMS-Passwort für %1</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWMSConnectionItem</name>
+    <message>
+        <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="67"/>
+        <source>Failed to parse WMS URI</source>
+        <translation>Unverständliche WMS-URI</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="97"/>
+        <source>Failed to download capabilities</source>
+        <translation>Eigenschaften-Abfrage gescheitert</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="104"/>
+        <source>Failed to parse capabilities</source>
+        <translation>Unverständliche Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="210"/>
+        <source>Edit...</source>
+        <translation>Bearbeiten...</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="214"/>
+        <source>Delete</source>
+        <translation>Löschen</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWMSRootItem</name>
+    <message>
+        <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="395"/>
+        <source>New Connection...</source>
+        <translation>Neue Verbindung...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWMSSourceSelect</name>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="72"/>
+        <source>&amp;Add</source>
+        <translation>&amp;Hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="73"/>
+        <source>Add selected layers to map</source>
+        <translation>Gewählte Layer zur Karte hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="197"/>
+        <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
+        <translation>Sind Sie sicher, dass Sie die Verbindung %1 und alle zugehörigen Einstellungen löschen wollen?</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="199"/>
+        <source>Confirm Delete</source>
+        <translation>Löschen bestätigen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="217"/>
+        <source>Load connections</source>
+        <translation>Verbindungen laden</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="218"/>
+        <source>XML files (*.xml *XML)</source>
+        <translation>XML-Dateien (*.xml *.XML)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="399"/>
+        <source>encoding %1 not supported.</source>
+        <translation>Zeichenkodierung %1 nicht unterstützt.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="445"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="462"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="471"/>
+        <source>WMS Provider</source>
+        <translation>WMS-Provider</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="446"/>
+        <source>Failed to parse WMS URI</source>
+        <translation>Unverständliche WMS-URI</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="463"/>
+        <source>Failed to download capabilities:
+</source>
+        <translation>Eigenschaften-Abfrage gescheitert:</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="472"/>
+        <source>The server you are trying to connect to does not seem to be a WMS server. Please check the URL.</source>
+        <translation>Der verwendete Server scheint kein WMS Server zu sein. Bitte überprüfen sie die URL.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="474"/>
+        <source>Instead of the capabilities string that was expected, the following response has been received:
+
+%1</source>
+        <translation>Die Antwort des Servers entsprach nicht den erwarteten &quot;Capabilities&quot;. Stattdessen wurde die folgende Antwort empfangen:
+
+%1</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="817"/>
+        <source>Options (%n coordinate reference systems available)</source>
+        <comment>crs count</comment>
+        <translation>
+            <numerusform>Optionen (Ein Koordinatenbezugssystem verfügbar)</numerusform>
+            <numerusform>Optionen (%n Koordinatenbezugssysteme verfügbar)</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="907"/>
+        <source>Select layer(s)</source>
+        <translation>Layer wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="909"/>
+        <source>Select layer(s) or a tileset</source>
+        <translation>Layer oder Tileset wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="914"/>
+        <source>Select either layer(s) or a tileset</source>
+        <translation>Bitte Layer oder ein Tileset wählen</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="919"/>
+        <source>Coordinate Reference System (%n available)</source>
+        <comment>crs count</comment>
+        <translation>
+            <numerusform>Koordinatenbezugssystem (eins verfügbar)</numerusform>
+            <numerusform>Koordinatenbezugssystem (%n verfügbar)</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="926"/>
+        <source>No common CRS for selected layers.</source>
+        <translation>Kein gemeinsames KBS für gewählte Layer.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="931"/>
+        <source>No CRS selected</source>
+        <translation>Kein KBS gewählt</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="936"/>
+        <source>No image encoding selected</source>
+        <translation>Keine Bildkodierung gewählt</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="941"/>
+        <source>%n Layer(s) selected</source>
+        <comment>selected layer count</comment>
+        <translation>
+            <numerusform>Ein Layer gewählt</numerusform>
+            <numerusform>%n Layer gewählt</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="947"/>
+        <source>Tileset selected</source>
+        <translation>Tileset gewählt</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1070"/>
+        <source>Could not understand the response.  The %1 provider said:
+%2</source>
+        <translation>Antwort nicht verstanden. Der %1-Provider sagte:
+%2</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1121"/>
+        <source>WMS proxies</source>
+        <translation>WMS-Proxys</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1121"/>
+        <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
+        <translation>Mehrere WMS-Server wurden der Serverliste hinzugefügt. Beachten Sie bitte, dass Sie ggf. noch die Proxyeinstellungen in den QGIS-Optionen einstellen müssen.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1201"/>
+        <source>parse error at row %1, column %2: %3</source>
+        <translation>Fehler in Zeile %1, Spalte %2: %3</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1206"/>
+        <source>network error: %1</source>
+        <translation>Netzwerkfehler: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1229"/>
+        <source>The %1 connection already exists. Do you want to overwrite it?</source>
+        <translation>Soll die bereits existierende Verbindung %1 überschrieben werden?</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1230"/>
+        <source>Confirm Overwrite</source>
+        <translation>Überschreiben bestätigen</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWMSSourceSelectBase</name>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="43"/>
+        <source>Ready</source>
+        <translation>Fertig</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="60"/>
+        <source>Layers</source>
+        <translation>Layer</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="72"/>
+        <source>C&amp;onnect</source>
+        <translation>&amp;Verbinden</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="79"/>
+        <source>&amp;New</source>
+        <translation>&amp;Neu</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="89"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="99"/>
+        <source>Delete</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="119"/>
+        <source>Adds a few example WMS servers</source>
+        <translation>Fügt einige Beispiel-WMS-Server hinzu</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="125"/>
+        <source>Add default servers</source>
+        <translation>Vorgegebene Server ergänzen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="145"/>
+        <source>ID</source>
+        <translation>ID</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="150"/>
+        <source>Name</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="155"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="323"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="364"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="420"/>
+        <source>Title</source>
+        <translation>Titel</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="160"/>
+        <source>Abstract</source>
+        <translation>Zusammenfassung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="180"/>
+        <source>Image encoding</source>
+        <translation>Bildkodierung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="187"/>
+        <source>Save connections to file</source>
+        <translation>Verbindungen in Datei speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="190"/>
+        <source>Save</source>
+        <translation>Speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="197"/>
+        <source>Load connections from file</source>
+        <translation>Verbindungen aus Datei laden</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="200"/>
+        <source>Load</source>
+        <translation>Laden</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="207"/>
+        <source>Options</source>
+        <translation>Optionen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="451"/>
+        <source>Layer name</source>
+        <translation>Layername</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="213"/>
+        <source>Coordinate Reference System</source>
+        <translation>Koordinatenbezugssystem</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="14"/>
+        <source>Add Layer(s) from a WM(T)S Server</source>
+        <translation>Layer eines WM(T)S-Servers hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="226"/>
+        <source>Change ...</source>
+        <translation>Ändern...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="236"/>
+        <source>Tile size</source>
+        <translation>Kachelgröße</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="249"/>
+        <source>Feature limit for GetFeatureInfo</source>
+        <translation>Objektbegrenzung für GetFeatureInfo</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="259"/>
+        <source>10</source>
+        <translation>10</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="270"/>
+        <source>Layer Order</source>
+        <translation>Layerreihenfolge</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="276"/>
+        <source>Move selected layer UP</source>
+        <translation>Gewählten Layer hochschieben</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="279"/>
+        <source>Up</source>
+        <translation>Auf</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="286"/>
+        <source>Move selected layer DOWN</source>
+        <translation>Gewählten Layer herunterschieben</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="289"/>
+        <source>Down</source>
+        <translation>Ab</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="313"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="354"/>
+        <source>Layer</source>
+        <translation>Layer</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="318"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="369"/>
+        <source>Style</source>
+        <translation>Stil</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="332"/>
+        <source>Tilesets</source>
+        <translation>Tilesets</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="359"/>
+        <source>Format</source>
+        <translation>Format</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="374"/>
+        <source>Tileset</source>
+        <translation>Kachelsatz</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="379"/>
+        <source>CRS</source>
+        <translation>KBS</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="388"/>
+        <source>Server Search</source>
+        <translation>Serversuche</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="397"/>
+        <source>Search</source>
+        <translation>Suchen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="425"/>
+        <source>Description</source>
+        <translation>Beschreibung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="430"/>
+        <source>URL</source>
+        <translation>URL</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="438"/>
+        <source>Add selected row to WMS list</source>
+        <translation>Gewählte Zeile der WMS-Liste hinzufügen</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWcsCapabilities</name>
+    <message>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="179"/>
+        <source>empty capabilities document</source>
+        <translation>Leeres Capabilities-Dokument</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="277"/>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="338"/>
+        <source>
+Tried URL: %1</source>
+        <translation>
+Versuchte URL: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="355"/>
+        <source>Capabilities request redirected.</source>
+        <translation>Eigenschaften-Abfrage umgeleitet.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="376"/>
+        <source>empty of capabilities: %1</source>
+        <translation>Eigenschaften leer: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="397"/>
+        <source>Download of capabilities failed: %1</source>
+        <translation>Eigenschaften-Abfrage gescheitert: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="398"/>
+        <source>WCS</source>
+        <translation>WCS</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="408"/>
+        <source>%1 of %2 bytes of capabilities downloaded.</source>
+        <translation>%1 von %2 Bytes der Eigenschaften heruntergeladen.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="446"/>
+        <source>Exception</source>
+        <translation>Ausnahme</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="448"/>
+        <source>Could not get WCS capabilities: %1</source>
+        <translation>Konnte WCS-Fähigkeiten nicht erfragen: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="452"/>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="732"/>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="759"/>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="914"/>
+        <source>Dom Exception</source>
+        <translation>DOM-Ausnahme</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="454"/>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="761"/>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="916"/>
+        <source>Could not get WCS capabilities in the expected format (DTD): no %1 found.
+This might be due to an incorrect WCS Server URL.
+Tag:%3
+Response was:
+%4</source>
+        <translation>Konnte die WCS-Capabilities nicht im erwarteten Format (DTD) laden: keine %1 gefunden.
+Wahrscheinlich wegen einer falschen WCS-Server-URL.
+Tag: %3
+Antwort war:
+%4</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="470"/>
+        <source>Version not supported</source>
+        <translation>Version nicht unterstützt</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="472"/>
+        <source>WCS server version %1 is not supported by QGIS (supported versions: 1.0.0, 1.1.0, 1.1.2)</source>
+        <translation>WCS-Serverversion %1 wird nicht von QGIS unterstützt (unterstützte Versionen: 1.0.0, 1.1.0, 1.1.2)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="734"/>
+        <source>Could not get WCS capabilities: %1 at line %2 column %3
+This is probably due to an incorrect WCS Server URL.
+Response was:
+
+%4</source>
+        <translation>Konnte die WCS-Eigenschaften nicht laden: %1 in Zeile %2, Spalte %3
+Wahrscheinlich wegen einer falschen WCS-Server-URL.
+Antwort war:
+
+%4</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWcsDownloadHandler</name>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1716"/>
+        <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
+        <translation>Kartenabfrage-Fehler (Status: %1; Grund:%2; URL: %3)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1719"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1757"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1775"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1785"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1795"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1812"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1818"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1838"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1877"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1881"/>
+        <source>WCS</source>
+        <translation>WCS</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1748"/>
+        <source>Map request error:&lt;br&gt;Title: %1&lt;br&gt;Error: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</source>
+        <translation>Kartenabfrage-Fehler:&lt;br&gt;Titel: %1&lt;br&gt;Fehler:%2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1754"/>
+        <source>Map request error (Status: %1; Response: %2; URL:%3)</source>
+        <translation>Kartenabfrage-Fehler (Status: %1; Antwort:%2; URL: %3)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1775"/>
+        <source>Cannot parse multipart response: %1</source>
+        <translation>Unverständliche mehrteilige Antwort: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1785"/>
+        <source>Expected 2 parts, %1 received</source>
+        <translation>%1 statt zwei Teile empfangen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1795"/>
+        <source>More than 2 parts (%1) received</source>
+        <translation>Mehr als 2 Teile (%1) empfangen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1810"/>
+        <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
+        <translation>Kartenabfrage-Fehler (Titel: %1; Fehler:%2; URL: %3)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1816"/>
+        <source>Map request error (Response: %1; URL:%2)</source>
+        <translation>Kartenabfrage-Fehler (Antwort:%1; URL: %2)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1838"/>
+        <source>Content-Transfer-Encoding %1 not supported</source>
+        <translation>Content-Transfer-Encoding %1 nicht unterstützt</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1877"/>
+        <source>Map request failed [error:%1 url:%2]</source>
+        <translation>Kartenabfrage-Fehler [Fehler:%1; URL: %2]</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1881"/>
+        <source>Not logging more than 100 request errors.</source>
+        <translation>Nicht mehr als 100 Abfragefehler werden protokolliert.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1893"/>
+        <source>%1 of %2 bytes of map downloaded.</source>
+        <translation>%1 von %2 Bytes der Karte heruntergeladen.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWcsProvider</name>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="127"/>
+        <source>Cannot describe coverage</source>
+        <translation>Konnte Coverage nicht beschreiben</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="135"/>
+        <source>Coverage not found</source>
+        <translation>Coverage nicht gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="192"/>
+        <source>Cannot calculate extent</source>
+        <translation>Konnte Ausdehnung nicht berechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="250"/>
+        <source>Cannot get test dataset.</source>
+        <translation>Konnte Testdatensatz nicht laden.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="563"/>
+        <source>Received coverage has wrong extent %1 (expected %2)</source>
+        <translation>Empfangene Coverage hat falsche Ausdehnung %1 (erwartet %2)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="563"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="613"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="778"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="800"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="810"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1034"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1178"/>
+        <source>WCS</source>
+        <translation>WCS</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="582"/>
+        <source>Rotating raster</source>
+        <translation>Raster wird gedreht</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="607"/>
+        <source>Block read OK</source>
+        <translation>Blocklesung OK</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="613"/>
+        <source>Received coverage has wrong size %1 x %2 (expected %3 x %4)</source>
+        <translation>Empfangene Coverage hat die falsche Größe %1 x %2 (erwartet %3 x %4)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="770"/>
+        <source>Getting map via WCS.</source>
+        <translation>Lade Karte über WCS.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="778"/>
+        <source>No data received</source>
+        <translation>Keine Daten empfangen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="800"/>
+        <source>Cannot create memory file</source>
+        <translation>Konnte Speicherdatei nicht erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="934"/>
+        <source>Dom Exception</source>
+        <translation>DOM-Ausnahme</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="935"/>
+        <source>Could not get WCS Service Exception at %1 at line %2 column %3
+
+Response was:
+
+%4</source>
+        <translation>Konnte WCS-Dienstausnahme nicht laden: %1 auf Zeile %2, Spalte %3
+
+Antwort war:
+
+%4</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="974"/>
+        <source>Service Exception</source>
+        <translation>Dienstausnahme</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="983"/>
+        <source>Request contains a format not offered by the server.</source>
+        <translation>Anfrage enthält ein Format, dass der Server nicht anbietet.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="984"/>
+        <source>Request is for a Coverage not offered by the service instance.</source>
+        <translation>Angefragte Coverage wird von Serverinstanz nicht angeboten.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="985"/>
+        <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
+        <translation>Wert des (optionalen) Aktualisierungssequenenzzählers der GetCapabilities-Anfrage entspricht dem aktuellen Wert des Aktualisierungssequenzzähler in den Dienstmetadaten.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="986"/>
+        <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
+        <translation>Wert des (optionalen) Aktualisierungssequenenzzählers der GetCapabilities-Anfrage ist größer als der aktuelle Wert des Aktualisierungssequenzzähler in den Dienstmetadaten.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="988"/>
+        <source>Request does not include a parameter value, and the server instance did not declare a default value for that dimension.</source>
+        <translation>Anfrage enthält keinen Parameterwert, und die Serverinstanz selbst definiert auch keine Vorgabe dafür.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="989"/>
+        <source>Request contains an invalid parameter value.</source>
+        <translation>Anfrage enthält einen ungültigen Parameterwert.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="991"/>
+        <source>No other exceptionCode specified by this service and server applies to this exception.</source>
+        <translation>Kein anderer Ausnahmecode des Dienstes und Servers trifft auf diese Ausnahme zu.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="992"/>
+        <source>Operation request contains an output CRS that can not be used within the output format.</source>
+        <translation>Operationsanfrage enthält ein Ausgabe-KBS, das nicht mit dem Ausgabeformat verwendet werden kann.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="993"/>
+        <source>Operation request specifies to &quot;store&quot; the result, but not enough storage is available to do this.</source>
+        <translation>Operationsanfrage gibt das &quot;Speichern&quot; des Ergebnisses vor, aber es ist nicht genügend Speicher dafür verfügbar.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1020"/>
+        <source>(No error code was reported)</source>
+        <translation>(Kein Fehlercode zurückgegeben)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1028"/>
+        <source>(Unknown error code)</source>
+        <translation>(Unbekannter Fehlercode)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1031"/>
+        <source>The WCS vendor also reported: </source>
+        <translation>Der WCS-Betreiber meldete folgendes: </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1034"/>
+        <source>composed error message &apos;%1&apos;.</source>
+        <translation>Zusammengestellte Fehlermeldung &apos;%1&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1178"/>
+        <source>Cannot verify coverage full extent: %1</source>
+        <translation>Konnte Grenze der Coverage nicht überprüfen: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1209"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1290"/>
+        <source>Property</source>
+        <translation>Eigenschaft</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1212"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1293"/>
+        <source>Value</source>
+        <translation>Wert</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1215"/>
+        <source>Name (identifier)</source>
+        <translation>Name (Kennung)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1216"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1297"/>
+        <source>Title</source>
+        <translation>Titel</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1217"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1298"/>
+        <source>Abstract</source>
+        <translation>Zusammenfassung</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1220"/>
+        <source>Fixed Width</source>
+        <translation>Feste Breite</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1221"/>
+        <source>Fixed Height</source>
+        <translation>Feste Höhe</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1222"/>
+        <source>Native CRS</source>
+        <translation>Natives KBS</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1223"/>
+        <source>Native Bounding Box</source>
+        <translation>Native Ausdehnung</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1226"/>
+        <source>WGS 84 Bounding Box</source>
+        <translation>WGS84-Ausdehnung</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1234"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1239"/>
+        <source>Available in CRS</source>
+        <translation>Verfügbar in KBS</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1239"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1249"/>
+        <source>(and %n more)</source>
+        <comment>crs</comment>
+        <translation>
+            <numerusform>(und ein weiteres)</numerusform>
+            <numerusform>(und %n weitere)</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1244"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1249"/>
+        <source>Available in format</source>
+        <translation>Verfügbar im Format</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1267"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1320"/>
+        <source>Coverages</source>
+        <translation>Coverages</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1273"/>
+        <source>Cache Stats</source>
+        <translation>Cache-Statistik</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1281"/>
+        <source>Server Properties</source>
+        <translation>Server-Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1301"/>
+        <source>Keywords</source>
+        <translation>Schlüsselworte</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1302"/>
+        <source>Online Resource</source>
+        <translation>Online-Quelle</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1303"/>
+        <source>Contact Person</source>
+        <translation>Kontaktperson</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1307"/>
+        <source>Fees</source>
+        <translation>Gebühren</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1308"/>
+        <source>Access Constraints</source>
+        <translation>Zugriffsbeschränkungen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1309"/>
+        <source>Image Formats</source>
+        <translation>Bildformate</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1310"/>
+        <source>GetCapabilitiesUrl</source>
+        <translation>GetCapabilities-URL</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1312"/>
+        <source>Get Coverage Url</source>
+        <translation>GetCoverage-URL</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1312"/>
+        <source>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(advertised but ignored)&lt;/font&gt;</source>
+        <translation>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(gemeldet, aber ignoriert)&lt;/font&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1334"/>
+        <source>And %1 more coverages</source>
+        <translation>Und %1 weitere Coverages</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1361"/>
+        <source>Format not supported</source>
+        <translation>Format nicht unterstützt</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1482"/>
+        <source>Read data error</source>
+        <translation>Datenlesefehler</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1509"/>
+        <source>RasterIO error: </source>
+        <translation>Raster-E/A-Fehler: </translation>
+    </message>
+</context>
+<context>
+    <name>QgsWebViewWidget</name>
+    <message>
+        <location filename="../src/gui/editorwidgets/qgswebviewwidget.cpp" line="52"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/editorwidgets/qgswebviewwidget.cpp" line="132"/>
+        <source>Select a file</source>
+        <translation>Datei wählen</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWebViewWidgetConfigDlgBase</name>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgswebviewconfigdlgbase.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formular</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgswebviewconfigdlgbase.ui" line="20"/>
+        <source>Field contains a filename or URL for a webpage</source>
+        <translation>Das Feld enthält einen Dateinamen oder eine URL einer Webseite</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgswebviewconfigdlgbase.ui" line="27"/>
+        <source>Width</source>
+        <translation>Breite</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgswebviewconfigdlgbase.ui" line="41"/>
+        <source>Height</source>
+        <translation>Höhe</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWmsCapabilitiesDownload</name>
+    <message>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1884"/>
+        <source>%1 of %2 bytes of capabilities downloaded.</source>
+        <translation>%1 von %2 Bytes der Eigenschaften heruntergeladen.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1898"/>
+        <source>Capabilities request redirected.</source>
+        <translation>Eigenschaften-Abfrage umgeleitet.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1904"/>
+        <source>Redirect loop detected: %1</source>
+        <translation>Umleitungszyklus festgestellt: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1905"/>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1937"/>
+        <source>WMS</source>
+        <translation>WMS</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1930"/>
+        <source>empty of capabilities: %1</source>
+        <translation>Eigenschaften leer: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1936"/>
+        <source>Download of capabilities failed: %1</source>
+        <translation>Eigenschaften-Abfrage gescheitert: %1</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWmsImageDownloadHandler</name>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3208"/>
+        <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
+        <translation>Kartenabfrage-Fehler (Status: %1; Grund:%2; URL: %3)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3211"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3233"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3242"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3250"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3272"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3276"/>
+        <source>WMS</source>
+        <translation>WMS</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3232"/>
+        <source>Returned image is flawed [Content-Type:%1; URL:%2]</source>
+        <translation>Geladenes Bild ist defekt [Content-Type:%1; URL: %2]</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3240"/>
+        <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
+        <translation>Kartenabfrage-Fehler (Titel: %1; Fehler:%2; URL: %3)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3246"/>
+        <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)</source>
+        <translation>Kartenabfrage-Fehler (Status: %1; Antwort:%2; Content-Type: %3; URL: %4)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3272"/>
+        <source>Map request failed [error:%1 url:%2]</source>
+        <translation>Kartenabfrage-Fehler [Fehler:%1; URL: %2]</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3276"/>
+        <source>Not logging more than 100 request errors.</source>
+        <translation>Nicht mehr als 100 Abfragefehler werden protokolliert.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3288"/>
+        <source>%1 of %2 bytes of map downloaded.</source>
+        <translation>%1 von %2 Bytes der Karte heruntergeladen.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWmsProvider</name>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="115"/>
+        <source>Cannot parse URI</source>
+        <translation>Konnte URI nicht parsen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="141"/>
+        <source>Cannot calculate extent</source>
+        <translation>Konnte Ausdehnung nicht berechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="134"/>
+        <source>Cannot set CRS</source>
+        <translation>Konnte KBS nicht setzen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="267"/>
+        <source>Number of layers and styles don&apos;t match</source>
+        <translation>Anzahl von Layern und Stilen stimmt nicht überein</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="267"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="844"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="853"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2410"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2824"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3054"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3087"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3103"/>
+        <source>WMS</source>
+        <translation>WMS</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="355"/>
+        <source>Number of tile layers must be one</source>
+        <translation>Anzahl der Kachellayer muss eins sein</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="362"/>
+        <source>Tile layer not found</source>
+        <translation>Kachellayer nicht gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="418"/>
+        <source>Tile layer or tile matrix set not found</source>
+        <translation>Kachellayer oder Kachelmatrixsatz nicht gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="551"/>
+        <source>Getting map via WMS.</source>
+        <translation>Lade Karte über WMS.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="817"/>
+        <source>Getting tiles.</source>
+        <translation>Lade Kacheln.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="825"/>
+        <source>%n tile requests in background</source>
+        <comment>tile request count</comment>
+        <translation>
+            <numerusform>Eine Tile-Anfrage im Hintergrund</numerusform>
+            <numerusform>%n Tile-Anfragen im Hintergrund</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="826"/>
+        <source>, %n cache hits</source>
+        <comment>tile cache hits</comment>
+        <translation>
+            <numerusform>, ein Cache-Treffer</numerusform>
+            <numerusform>, %n Cache-Treffer</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="827"/>
+        <source>, %n cache misses.</source>
+        <comment>tile cache missed</comment>
+        <translation>
+            <numerusform>, ein Cache-Fehlgriff.</numerusform>
+            <numerusform>, %n Cache-Fehlgriffe.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="828"/>
+        <source>, %n errors.</source>
+        <comment>errors</comment>
+        <translation>
+            <numerusform>, ein Fehler.</numerusform>
+            <numerusform>, %n Fehler.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="844"/>
+        <source>image is NULL</source>
+        <translation>Bild ist NULL</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="853"/>
+        <source>unexpected image size</source>
+        <translation>Unerwartete Bildgröße</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3079"/>
+        <source>Status: %1
+Reason phrase: %2</source>
+        <translation>Status: %1
+Grund: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3053"/>
+        <source>Redirect loop detected: %1</source>
+        <translation>Umleitungszyklus festgestellt: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1018"/>
+        <source>Dom Exception</source>
+        <translation>DOM-Ausnahme</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1073"/>
+        <source>Service Exception</source>
+        <translation>Dienstausnahme</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1078"/>
+        <source>Request contains a format not offered by the server.</source>
+        <translation>Anfrage enthält ein Format, dass der Server nicht anbietet.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1082"/>
+        <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
+        <translation>Anfrage verlangt ein CRS für einen oder mehrere Layer, die der Server nicht anbietet.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1086"/>
+        <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
+        <translation>Anfrage enthält ein SRS für einen oder mehrere Layer, die der Server nicht anbietet.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1090"/>
+        <source>GetMap request is for a Layer not offered by the server, or GetFeatureInfo request is for a Layer not shown on the map.</source>
+        <translation>GetMap-Anfrage für einen Layer, den der Server nicht anbietet oder GetFeature-Anfrage für einen Layer, der nicht auf der Karte angezeigt wird.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1095"/>
+        <source>Request is for a Layer in a Style not offered by the server.</source>
+        <translation>Anfrage für einen Layer in einem Stil, den der Server nicht anbietet.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1099"/>
+        <source>GetFeatureInfo request is applied to a Layer which is not declared queryable.</source>
+        <translation>GetFeatureInfo-Anfrage wird auf einen Layer bezogen, der nicht als abfragbar deklariert ist.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1103"/>
+        <source>GetFeatureInfo request contains invalid X or Y value.</source>
+        <translation>GetFeatureInfo-Anfrage enthält einen ungültigen X- oder Y-Wert.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1107"/>
+        <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
+        <translation>Wert des (optionalen) Aktualisierungssequenenzzählers der GetCapabilities-Anfrage entspricht dem aktuellen Wert des Aktualisierungssequenzzähler in den Dienstmetadaten.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1112"/>
+        <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
+        <translation>Wert des (optionalen) Aktualisierungssequenenzzählers der GetCapabilities-Anfrage ist größer als der aktuelle Wert des Aktualisierungssequenzzähler in den Dienstmetadaten.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1117"/>
+        <source>Request does not include a sample dimension value, and the server did not declare a default value for that dimension.</source>
+        <translation>Anfrage enthält keinen beispielhaften Dimensionswert, und der Server selbst definiert auch keinen.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1122"/>
+        <source>Request contains an invalid sample dimension value.</source>
+        <translation>Anfrage enthält einen ungültigen beispielhaften Dimensionswert.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1126"/>
+        <source>Request is for an optional operation that is not supported by the server.</source>
+        <translation>Anfrage ist für eine optionale Operation, die der Server nicht unterstützt.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1130"/>
+        <source>(No error code was reported)</source>
+        <translation>(Kein Fehlercode zurückgegeben)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1134"/>
+        <source>(Unknown error code)</source>
+        <translation>(Unbekannter Fehlercode)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1137"/>
+        <source>The WMS vendor also reported: </source>
+        <translation>Der WMS-Betreiber meldete folgendes: </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1353"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1563"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1822"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2010"/>
+        <source>Property</source>
+        <translation>Eigenschaft</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1356"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1566"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1825"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2013"/>
+        <source>Value</source>
+        <translation>Wert</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1361"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1475"/>
+        <source>Name</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1369"/>
+        <source>Visibility</source>
+        <translation>Sichtbarkeit</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1372"/>
+        <source>Visible</source>
+        <translation>Sichtbar</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1372"/>
+        <source>Hidden</source>
+        <translation>Versteckt</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1377"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1483"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1579"/>
+        <source>Title</source>
+        <translation>Titel</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1385"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1491"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1587"/>
+        <source>Abstract</source>
+        <translation>Zusammenfassung</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1393"/>
+        <source>Can Identify</source>
+        <translation>Kann abgefragt werden</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1396"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1404"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1412"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1832"/>
+        <source>Yes</source>
+        <translation>Ja</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1396"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1404"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1412"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1832"/>
+        <source>No</source>
+        <translation>Nein</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1401"/>
+        <source>Can be Transparent</source>
+        <translation>Kann transparent sein</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1409"/>
+        <source>Can Zoom In</source>
+        <translation>Kann herangezoomt werden</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1417"/>
+        <source>Cascade Count</source>
+        <translation>Kaskadiere Anzahl</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1425"/>
+        <source>Fixed Width</source>
+        <translation>Feste Breite</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1433"/>
+        <source>Fixed Height</source>
+        <translation>Feste Höhe</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1443"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1453"/>
+        <source>Available in CRS</source>
+        <translation>Verfügbar in KBS</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1456"/>
+        <source>(and %n more)</source>
+        <comment>crs</comment>
+        <translation>
+            <numerusform>(und ein weiteres)</numerusform>
+            <numerusform>(und %n weitere)</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1466"/>
+        <source>Available in style</source>
+        <translation>Verfügbar im Stil</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1501"/>
+        <source>LegendURLs</source>
+        <translation>LegendenURLs</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1554"/>
+        <source>Server Properties</source>
+        <translation>Server-Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1534"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1752"/>
+        <source>Selected Layers</source>
+        <translation>Gewählte Layer</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1536"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1769"/>
+        <source>Other Layers</source>
+        <translation>Andere Layer</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1542"/>
+        <source>Tile Layer Properties</source>
+        <translation>Kachellayer-Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1546"/>
+        <source>Cache Stats</source>
+        <translation>Cache-Statistik</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1571"/>
+        <source>WMS Version</source>
+        <translation>WMS-Version</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1595"/>
+        <source>Keywords</source>
+        <translation>Schlüsselworte</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1603"/>
+        <source>Online Resource</source>
+        <translation>Online-Quelle</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1611"/>
+        <source>Contact Person</source>
+        <translation>Kontaktperson</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1623"/>
+        <source>Fees</source>
+        <translation>Gebühren</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1631"/>
+        <source>Access Constraints</source>
+        <translation>Zugriffsbeschränkungen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1721"/>
+        <source>Image Formats</source>
+        <translation>Bildformate</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1711"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1729"/>
+        <source>Identify Formats</source>
+        <translation>Abfrageformate</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1737"/>
+        <source>Layer Count</source>
+        <translation>Layeranzahl</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1669"/>
+        <source>Tile Layer Count</source>
+        <translation>Kachellayeranzahl</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1019"/>
+        <source>Could not get WMS Service Exception: %1 at line %2 column %3
+
+Response was:
+
+%4</source>
+        <translation>Konnte WMS-Dienstausnahme nicht laden: %1 auf Zeile %2, Spalte %3
+
+Antwort war:
+
+%4</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1639"/>
+        <source>GetCapabilitiesUrl</source>
+        <translation>GetCapabilities-URL</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1646"/>
+        <source>GetMapUrl</source>
+        <translation>GetMap-URL</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1649"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1656"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1663"/>
+        <source>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(advertised but ignored)&lt;/font&gt;</source>
+        <translation>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(gemeldet, aber ignoriert)&lt;/font&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1653"/>
+        <source>GetFeatureInfoUrl</source>
+        <translation>GetFeatureInfoUrl</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1660"/>
+        <source>GetLegendGraphic</source>
+        <translation>GetLegendGraphic</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1676"/>
+        <source>GetTileUrl</source>
+        <translation>GetTileUrl</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1685"/>
+        <source>Tile templates</source>
+        <translation>Kachelvorlagen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1697"/>
+        <source>FeatureInfo templates</source>
+        <translation>FeatureInfo-Vorlagen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1785"/>
+        <source>Tileset Properties</source>
+        <translation>Tileset-Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1796"/>
+        <source>Identifier</source>
+        <translation>Kennung</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1798"/>
+        <source>Tile mode</source>
+        <translation>Kachelmodus</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1807"/>
+        <source>WMTS</source>
+        <translation>WMTS</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1811"/>
+        <source>WMS-C</source>
+        <translation>WMS-C</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1815"/>
+        <source>Invalid tile mode</source>
+        <translation>Ungültiger Kachelmodus</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1829"/>
+        <source>Selected</source>
+        <translation>Ausgewählt</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1838"/>
+        <source>Available Styles</source>
+        <translation>Verfügbare Stile</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1851"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1856"/>
+        <source>CRS</source>
+        <translation>KBS</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1859"/>
+        <source>Bounding Box</source>
+        <translation>Ausdehnung</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1872"/>
+        <source>Available Tilesets</source>
+        <translation>Verfügbare Kachelsätze</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1908"/>
+        <source>Selected tile matrix set </source>
+        <translation>Gewählter Kachelmatrixsatz </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1909"/>
+        <source>Scale</source>
+        <translation>Maßstab</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1910"/>
+        <source>Tile size [px]</source>
+        <translation>Kachengröße [px]</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1911"/>
+        <source>Tile size [mu]</source>
+        <translation>Kachengröße [KE]</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1912"/>
+        <source>Matrix size</source>
+        <translation>Matrixgröße</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1913"/>
+        <source>Matrix extent [mu]</source>
+        <translation>Matrixgrenzen [KE]</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1914"/>
+        <source>Bounds</source>
+        <translation>Grenzen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1915"/>
+        <source>Width</source>
+        <translation>Breite</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1915"/>
+        <source>Height</source>
+        <translation>Höhe</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1916"/>
+        <source>Top</source>
+        <translation>Oben</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1916"/>
+        <source>Left</source>
+        <translation>Links</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1917"/>
+        <source>Bottom</source>
+        <translation>Unten</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1917"/>
+        <source>Right</source>
+        <translation>Rechts</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1947"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1973"/>
+        <source>%n missing row(s)</source>
+        <translation>
+            <numerusform>Eine fehlende Zeile</numerusform>
+            <numerusform>%n fehlende Zeilen</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1948"/>
+        <source>Layer&apos;s upper bound: %1</source>
+        <translation>Obere Begrenzung des Layers: %1</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1960"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1986"/>
+        <source>%n missing column(s)</source>
+        <translation>
+            <numerusform>Eine fehlende Spalte</numerusform>
+            <numerusform>%n fehlende Spalten</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1961"/>
+        <source>Layer&apos;s left bound: %1</source>
+        <translation>Linke Begrenzung des Layers: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1974"/>
+        <source>Layer&apos;s lower bound: %1</source>
+        <translation>Untere Begrenzung des Layers: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1987"/>
+        <source>Layer&apos;s right bound: %1</source>
+        <translation>Rechte Begrenzung des Layers: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2004"/>
+        <source>Cache stats</source>
+        <translation>Cache-Statistik</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2017"/>
+        <source>Hits</source>
+        <translation>Treffer</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2023"/>
+        <source>Misses</source>
+        <translation>Fehlgriffe</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2029"/>
+        <source>Errors</source>
+        <translation>Fehler</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2052"/>
+        <source>Format not supported</source>
+        <translation>Format nicht unterstützt</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2072"/>
+        <source>Context not fully specified (extent was defined but width and/or height was not).</source>
+        <translation>Kontext nicht vollständig angegeben (Ausmaß wurde definiert, aber Breite und Höhe nicht).</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2408"/>
+        <source>Get feature info request error (Title:%1; Error:%2; URL: %3)</source>
+        <translation>Abfrageanfragefehler (Titel:%1; Fehler: %2; URL: %3)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2530"/>
+        <source>GML schema is not valid</source>
+        <translation>GML-Schema ist ungültig</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2536"/>
+        <source>GML is not valid</source>
+        <translation>GML ist ungültig</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2550"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2625"/>
+        <source>Cannot identify</source>
+        <translation>Abfrage gescheitert</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2626"/>
+        <source>Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed.</source>
+        <translation>Ergebnisüberprüfung fehlgeschlagen. %1 Objekttypen wurden aus dem gml (%2) geraten aber keine Objekte wurden analysiert.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2782"/>
+        <source>identify request redirected.</source>
+        <translation>Identify-Anfrage umgeleitet.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2798"/>
+        <source>Map getfeatureinfo error %1: %2</source>
+        <translation>GetFeatureInfo-Fehler %1: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2807"/>
+        <source>Cannot parse getfeatureinfo: %1</source>
+        <translation>Konnte GetFeatureInfo nicht interpretieren: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2822"/>
+        <source>Map getfeatureinfo error: %1 [%2]</source>
+        <translation>GetFeatureInfo-Fehler %1 [%2]</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3046"/>
+        <source>GetLegendGraphic request redirected.</source>
+        <translation>GetLegendGraphic-Abfrage umgeleitet.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3079"/>
+        <source>GetLegendGraphic request error</source>
+        <translation>GetLegendGraphic-Abfragefehler</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3086"/>
+        <source>Returned legend image is flawed [URL: %1]</source>
+        <translation>Geladenes Legendenbild ist defekt [URL: %1]</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3103"/>
+        <source>Download of GetLegendGraphic failed: %1</source>
+        <translation>GetLegendGraphic-Abfrage gescheitert: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3116"/>
+        <source>%1 of %2 bytes of GetLegendGraphic downloaded.</source>
+        <translation>%1 von %2 Bytes der Legendengrafik heruntergeladen.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWmsTiledImageDownloadHandler</name>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3430"/>
+        <source>Tile request error</source>
+        <translation>Tile-Anfragefehler</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3430"/>
+        <source>Status: %1
+Reason phrase: %2</source>
+        <translation>Status: %1
+Grund: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3450"/>
+        <source>Tile request error (Title:%1; Error:%2; URL: %3)</source>
+        <translation>Kachelabfrage-Fehler (Titel: %1; Fehler: %2; URL: %3)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3452"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3460"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3513"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3561"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3579"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3588"/>
+        <source>WMS</source>
+        <translation>WMS</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3456"/>
+        <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
+        <translation>Kachelabfrage-Fehler (Status: %1; Content-Typ: %2; Länge: %3; URL: %4)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3512"/>
+        <source>Returned image is flawed [Content-Type:%1; URL: %2]</source>
+        <translation>Geladenes Bild ist defekt [Content-Type:%1; URL: %2]</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3546"/>
+        <source>%n tile requests in background</source>
+        <comment>tile request count</comment>
+        <translation>
+            <numerusform>Eine Kachelabfrage im Hintergrund</numerusform>
+            <numerusform>%n Kachelabfragen im Hintergrund</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3547"/>
+        <source>, %n cache hits</source>
+        <comment>tile cache hits</comment>
+        <translation>
+            <numerusform>, ein Cache-Treffer</numerusform>
+            <numerusform>, %n Cache-Treffer</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3548"/>
+        <source>, %n cache misses.</source>
+        <comment>tile cache missed</comment>
+        <translation>
+            <numerusform>, ein Cache-Fehlgriff.</numerusform>
+            <numerusform>, %n Cache-Fehlgriffe.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3549"/>
+        <source>, %n errors.</source>
+        <comment>errors</comment>
+        <translation>
+            <numerusform>, ein Fehler.</numerusform>
+            <numerusform>, %n Fehler.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3561"/>
+        <source>Not logging more than 100 request errors.</source>
+        <translation>Nicht mehr als 100 Abfragefehler werden protokolliert.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3578"/>
+        <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
+        <translation>Maximale Wiederholungen erreicht. %1 Abfragen der Kachel %2 der Kachelabfrage %3 (url: %4)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3587"/>
+        <source>repeat tileRequest %1 tile %2(retry %3)</source>
+        <translation>Wiederhole Kachelabfrage %1, Kachel %2 (Wiederholung %3)</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWmtsDimensionsBase</name>
+    <message>
+        <location filename="../src/ui/qgswmtsdimensionsbase.ui" line="14"/>
+        <source>Select dimensions</source>
+        <translation>Dimensionen wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmtsdimensionsbase.ui" line="21"/>
+        <source>Dimension</source>
+        <translation>Dimension</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmtsdimensionsbase.ui" line="26"/>
+        <location filename="../src/ui/qgswmtsdimensionsbase.ui" line="41"/>
+        <source>Value</source>
+        <translation>Wert</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmtsdimensionsbase.ui" line="31"/>
+        <source>Abstract</source>
+        <translation>Zusammenfassung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmtsdimensionsbase.ui" line="36"/>
+        <source>Default</source>
+        <translation>Voreinstellung</translation>
+    </message>
+</context>
+<context>
+    <name>QgsZonalStatisticsDialogBase</name>
+    <message>
+        <location filename="../src/plugins/zonal_statistics/qgszonalstatisticsdialogbase.ui" line="13"/>
+        <source>Dialog</source>
+        <translation>Dialog</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/zonal_statistics/qgszonalstatisticsdialogbase.ui" line="19"/>
+        <source>Raster layer:</source>
+        <translation>Rasterlayer:</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/zonal_statistics/qgszonalstatisticsdialogbase.ui" line="29"/>
+        <source>Polygon layer containing the zones:</source>
+        <translation>Polygonlayer, die die Zonen enthält:</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/zonal_statistics/qgszonalstatisticsdialogbase.ui" line="39"/>
+        <source>Output column prefix:</source>
+        <translation>Ausgabespaltenpräfix:</translation>
+    </message>
+</context>
+<context>
+    <name>QgsZonalStatisticsPlugin</name>
+    <message>
+        <location filename="../src/plugins/zonal_statistics/qgszonalstatisticsplugin.cpp" line="46"/>
+        <location filename="../src/plugins/zonal_statistics/qgszonalstatisticsplugin.cpp" line="50"/>
+        <location filename="../src/plugins/zonal_statistics/qgszonalstatisticsplugin.cpp" line="56"/>
+        <source>&amp;Zonal statistics</source>
+        <translation>&amp;Zonenstatistik</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/zonal_statistics/qgszonalstatisticsplugin.cpp" line="76"/>
+        <source>Calculating zonal statistics...</source>
+        <translation>Zonenstatistik wird berechnet...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/zonal_statistics/qgszonalstatisticsplugin.cpp" line="76"/>
+        <source>Abort...</source>
+        <translation>Abbrechen...</translation>
+    </message>
+</context>
+<context>
+    <name>RecordDialog</name>
+    <message>
+        <location filename="../python/plugins/MetaSearch/ui/recorddialog.ui" line="14"/>
+        <source>Record Metadata</source>
+        <translation>Metadaten aufzeichnen</translation>
+    </message>
+</context>
+<context>
+    <name>RgExportDlg</name>
+    <message>
+        <location filename="../src/plugins/roadgraph/exportdlg.cpp" line="34"/>
+        <source>Export feature</source>
+        <translation>Objekt exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/exportdlg.cpp" line="38"/>
+        <source>Select destination layer</source>
+        <translation>Ziellayer wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/exportdlg.cpp" line="50"/>
+        <source>New temporary layer</source>
+        <translation>Neuen Temporärlayer</translation>
+    </message>
+</context>
+<context>
+    <name>RgLineVectorLayerSettingsWidget</name>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="46"/>
+        <source>Transportation layer</source>
+        <translation>Verkehrslayer</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="48"/>
+        <source>Layer</source>
+        <translation>Layer</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="57"/>
+        <source>Direction field</source>
+        <translation>Richtungsfeld</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="64"/>
+        <source>Value for forward direction</source>
+        <translation>Wert für Vorwärts</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="70"/>
+        <source>Value for reverse direction</source>
+        <translation>Wert für Rückwärts</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="76"/>
+        <source>Value two-way direction</source>
+        <translation>Wert für beide Richtungen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="82"/>
+        <source>Speed field</source>
+        <translation>Geschwindigkeitsfeld</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="89"/>
+        <source>km/h</source>
+        <translation>km/h</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="90"/>
+        <source>m/s</source>
+        <translation>m/s</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="95"/>
+        <source>Default settings</source>
+        <translation>Voreinstellungen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="98"/>
+        <source>Direction</source>
+        <translation>Richtung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="100"/>
+        <source>Two-way direction</source>
+        <translation>Beide Richtungen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="101"/>
+        <source>Forward direction</source>
+        <translation>Vorwärts</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="102"/>
+        <source>Reverse direction</source>
+        <translation>Rückwärts</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="110"/>
+        <source>Cost</source>
+        <translation>Kosten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="112"/>
+        <source>Line lengths</source>
+        <translation>Linienlängen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="117"/>
+        <source>Speed</source>
+        <translation>Geschwindigkeit</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="201"/>
+        <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="202"/>
+        <source>Always use default</source>
+        <translation>Immer Voreinstellung benutzen</translation>
+    </message>
+</context>
+<context>
+    <name>RgSettingsDlg</name>
+    <message>
+        <location filename="../src/plugins/roadgraph/settingsdlg.cpp" line="34"/>
+        <source>Road graph plugin settings</source>
+        <translation>Straßengraphen-Erweiterungseinstellungen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/settingsdlg.cpp" line="38"/>
+        <source>Time unit</source>
+        <translation>Zeiteinheit</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/settingsdlg.cpp" line="45"/>
+        <source>Distance unit</source>
+        <translation>Distanzeinheit</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/settingsdlg.cpp" line="52"/>
+        <source>Topology tolerance</source>
+        <translation>Topologietoleranz</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/settingsdlg.cpp" line="69"/>
+        <source>second</source>
+        <translation>Sekunde</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/settingsdlg.cpp" line="70"/>
+        <source>hour</source>
+        <translation>Stunde</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/settingsdlg.cpp" line="71"/>
+        <source>meter</source>
+        <translation>Meter</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/settingsdlg.cpp" line="72"/>
+        <source>kilometer</source>
+        <translation>Kilometer</translation>
+    </message>
+</context>
+<context>
+    <name>RgShortestPathWidget</name>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="59"/>
+        <source>Shortest path</source>
+        <translation>Kürzester Weg</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="70"/>
+        <source>Start</source>
+        <translation>Start</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="82"/>
+        <source>Stop</source>
+        <translation>Stopp</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="95"/>
+        <source>Criterion</source>
+        <translation>Kriterium</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="97"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="104"/>
+        <source>Length</source>
+        <translation>Länge</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="98"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="112"/>
+        <source>Time</source>
+        <translation>Zeit</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="120"/>
+        <source>Calculate</source>
+        <translation>Berechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="122"/>
+        <source>Export</source>
+        <translation>Exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="127"/>
+        <source>Clear</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="132"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="239"/>
+        <source>Point not selected</source>
+        <translation>Punkt nicht gewählt</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="239"/>
+        <source>First, select start and stop points.</source>
+        <translation>Zuerst Start- und Endpunkte wählen.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="251"/>
+        <source>Plugin isn&apos;t configured</source>
+        <translation>Erweiterung is nicht konfiguriert</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="251"/>
+        <source>Plugin isn&apos;t configured!</source>
+        <translation>Erweiterung is nicht konfiguriert!</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="272"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="277"/>
+        <source>Tie point failed</source>
+        <translation>Punktzuordnung fehlgeschlagen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="272"/>
+        <source>Start point doesn&apos;t tie to the road!</source>
+        <translation>Startpunkt konnte keiner Straße zugeordnet werden!</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="277"/>
+        <source>Stop point doesn&apos;t tie to the road!</source>
+        <translation>Endpunkt konnte keiner Straße zugeordnet werden!</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="292"/>
+        <source>Cannot calculate path</source>
+        <translation>Kann Weg nicht berechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="293"/>
+        <source>The created graph is empty. Please check your input data.</source>
+        <translation>Der erzeugte Graph ist leer. Bitte prüfen die Eingabe prüfen.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="308"/>
+        <source>Path not found</source>
+        <translation>Pfad nicht gefunden</translation>
+    </message>
+</context>
+<context>
+    <name>RoadGraphPlugin</name>
+    <message>
+        <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="105"/>
+        <source>Settings</source>
+        <translation>Einstellungen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="109"/>
+        <source>Road graph plugin settings</source>
+        <translation>Straßengraphen-Erweiterungseinstellungen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="116"/>
+        <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="131"/>
+        <source>Road graph</source>
+        <translation>Straßengraph</translation>
+    </message>
+</context>
+<context>
+    <name>SLDatabase</name>
+    <message>
+        <source>Run &amp;Vacuum</source>
+        <translation>&amp;VACUUM ausführen</translation>
+    </message>
+    <message>
+        <source>&amp;Database</source>
+        <translation>Da&amp;tenbank</translation>
+    </message>
+    <message>
+        <source>Sorry</source>
+        <translation>Schade</translation>
+    </message>
+    <message>
+        <source>No database selected or you are not connected to it.</source>
+        <translation>Keine Datenbank gewählt oder keine Verbindung möglich.</translation>
+    </message>
+</context>
+<context>
+    <name>ScriptEditorDialog</name>
+    <message>
+        <source>Python scripts (*.py)</source>
+        <translation>Python-Skripte (*.py)</translation>
+    </message>
+    <message>
+        <source>Processing R script (*.rsx)</source>
+        <translation>Verarbeitete R-Skript (*.rsx)</translation>
+    </message>
+    <message>
+        <source>Save script</source>
+        <translation>Skript speichern</translation>
+    </message>
+    <message>
+        <source>I/O error</source>
+        <translation>E/A-Fehler</translation>
+    </message>
+    <message>
+        <source>Unable to save edits. Reason:
+ %s</source>
+        <translation>Änderung konnten nicht gespeichert werden. Grund:
+ %s</translation>
+    </message>
+</context>
+<context>
+    <name>SelectGeoRasterBase</name>
+    <message>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="14"/>
+        <source>Select Oracle Spatial GeoRaster</source>
+        <translation>Oracle-Spatial-GeoRaster wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="36"/>
+        <source>Server Connections</source>
+        <translation>Serververbindungen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="54"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="64"/>
+        <source>Delete</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="71"/>
+        <source>&amp;New</source>
+        <translation>&amp;Neu</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="81"/>
+        <source>C&amp;onnect</source>
+        <translation>&amp;Verbinden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="119"/>
+        <source>Subdatasets</source>
+        <translation>Unterdaten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="148"/>
+        <source>Selection</source>
+        <translation>Auswahl</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="160"/>
+        <source>Update</source>
+        <translation>Aktualisieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="183"/>
+        <source>Ready</source>
+        <translation>Fertig</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsDialogPythonConsole</name>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="265"/>
+        <source>Editor</source>
+        <translation>Editor</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="271"/>
+        <source>Auto-save script before running</source>
+        <translation>Skript vor Ausführung automatisch speichern</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="288"/>
+        <location filename="../python/console/console_settings.ui" line="820"/>
+        <source>Font and Colors</source>
+        <translation>Schriftart und Farben</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="358"/>
+        <location filename="../python/console/console_settings.ui" line="890"/>
+        <source>Default:</source>
+        <translation>Vorgabe:</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="372"/>
+        <location filename="../python/console/console_settings.ui" line="904"/>
+        <source>Keyword:</source>
+        <translation>Schlüsselwort:</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="386"/>
+        <location filename="../python/console/console_settings.ui" line="918"/>
+        <source>Class name:</source>
+        <translation>Klassenname:</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="400"/>
+        <location filename="../python/console/console_settings.ui" line="932"/>
+        <source>Function:</source>
+        <translation>Funktion:</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="414"/>
+        <location filename="../python/console/console_settings.ui" line="946"/>
+        <source>Decorator:</source>
+        <translation>Decorator:</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="428"/>
+        <location filename="../python/console/console_settings.ui" line="960"/>
+        <source>Comment:</source>
+        <translation>Kommentar:</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="442"/>
+        <location filename="../python/console/console_settings.ui" line="974"/>
+        <source>Comment block:</source>
+        <translation>Kommentarblock:</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="456"/>
+        <location filename="../python/console/console_settings.ui" line="988"/>
+        <source>Cursor:</source>
+        <translation>Cursor:</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="470"/>
+        <location filename="../python/console/console_settings.ui" line="1002"/>
+        <source>Caretline:</source>
+        <translation>Cursorzeile:</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="484"/>
+        <location filename="../python/console/console_settings.ui" line="1016"/>
+        <source>Single quote:</source>
+        <translation>Hochkomma:</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="498"/>
+        <location filename="../python/console/console_settings.ui" line="1030"/>
+        <source>Double quote:</source>
+        <translation>Anführungszeichen:</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="512"/>
+        <location filename="../python/console/console_settings.ui" line="1044"/>
+        <source>Triple single quote:</source>
+        <translation>Dreifachhochkomma:</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="526"/>
+        <location filename="../python/console/console_settings.ui" line="1058"/>
+        <source>Triple double quote:</source>
+        <translation>Dreifach-Anführungszeichen:</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="540"/>
+        <location filename="../python/console/console_settings.ui" line="1072"/>
+        <source>Background:</source>
+        <translation>Hintergrund:</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="558"/>
+        <location filename="../python/console/console_settings.ui" line="1104"/>
+        <source>Reset to default colors</source>
+        <translation>Auf Vorgabefarbe zurücksetzen</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="589"/>
+        <location filename="../python/console/console_settings.ui" line="709"/>
+        <source>Typing</source>
+        <translation>Tippen</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="610"/>
+        <location filename="../python/console/console_settings.ui" line="730"/>
+        <source>Automatic insertion of the &apos;import&apos; string on &apos;from xxx&apos;</source>
+        <translation>Automatisches Einfügen der Zeichenkette &apos;import&apos; bei &apos;from xxx&apos;</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="622"/>
+        <location filename="../python/console/console_settings.ui" line="742"/>
+        <source>Autocompletion</source>
+        <translation>Autovervollständigung</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="645"/>
+        <location filename="../python/console/console_settings.ui" line="805"/>
+        <source>Get autocompletion from current document</source>
+        <translation>Autovervollständigung aus aktuellem Dokument holen</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="648"/>
+        <location filename="../python/console/console_settings.ui" line="808"/>
+        <source>from Document</source>
+        <translation>aus Dokument</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="655"/>
+        <location filename="../python/console/console_settings.ui" line="782"/>
+        <source>Get autocompletion from current document and installed APIs</source>
+        <translation>Autovervollständigung aus aktuellem Dokument und installierten APIs holen</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="658"/>
+        <location filename="../python/console/console_settings.ui" line="785"/>
+        <source>from Doc and APIs</source>
+        <translation>aus Doku und API</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="665"/>
+        <location filename="../python/console/console_settings.ui" line="792"/>
+        <source>Get autocompletion from installed APIs</source>
+        <translation>Autovervollständigung aus installierten APIs</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="668"/>
+        <location filename="../python/console/console_settings.ui" line="795"/>
+        <source>from APIs files</source>
+        <translation>aus API-Dateien</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="680"/>
+        <location filename="../python/console/console_settings.ui" line="763"/>
+        <source>Autocompletion threshold</source>
+        <translation>Autokompletierungsschwellenwert</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="1086"/>
+        <source>Error:</source>
+        <translation>Fehler:</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="603"/>
+        <location filename="../python/console/console_settings.ui" line="723"/>
+        <source>Automatic parentheses insertion</source>
+        <translation>Automatisch Klammern einfügen</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="302"/>
+        <location filename="../python/console/console_settings.ui" line="834"/>
+        <source>Font</source>
+        <translation>Schriftart</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="322"/>
+        <location filename="../python/console/console_settings.ui" line="854"/>
+        <source>Size</source>
+        <translation>Größe</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="278"/>
+        <source>Enable Object Inspector (switching between tabs may be slow)</source>
+        <translation>Objektinspektor einschalten (Umschaltung zwischen Reitern kann langsam sein)</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="703"/>
+        <source>Console</source>
+        <translation>Konsole</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="69"/>
+        <location filename="../python/console/console_settings.ui" line="206"/>
+        <source>APIs</source>
+        <translation>APIs</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="75"/>
+        <source>Using preloaded APIs file</source>
+        <translation>API-Dateien vorladen</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="211"/>
+        <source>Path</source>
+        <translation>Pfad</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="221"/>
+        <source>Using prepared APIs file</source>
+        <translation>Vorbereitete API-Dateien benutzen</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="242"/>
+        <source>Compile APIs...</source>
+        <translation>APIs werden erstellt...</translation>
+    </message>
+    <message>
+        <source>Settings Python Console</source>
+        <translation>Python-Konsoleneinstellungen</translation>
+    </message>
+</context>
+<context>
+    <name>SimplifyLineDialog</name>
+    <message>
+        <location filename="../src/ui/qgssimplifytolerancedialog.ui" line="14"/>
+        <source>Simplify line tolerance</source>
+        <translation>Linienvereinfachungstoleranz</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssimplifytolerancedialog.ui" line="20"/>
+        <source>Set tolerance</source>
+        <translation>Toleranz setzen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssimplifytolerancedialog.ui" line="40"/>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+</context>
+<context>
+    <name>SymbolsListWidget</name>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formular</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="39"/>
+        <source>Unit</source>
+        <translation>Einheit</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="46"/>
+        <source>Opacity</source>
+        <translation>Deckkraft</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="72"/>
+        <source>Color</source>
+        <translation>Farbe</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="245"/>
+        <source>Open Library</source>
+        <translation>Bibliothek öffnen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="119"/>
+        <source>Size</source>
+        <translation>Größe</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="142"/>
+        <source>Rotation</source>
+        <translation>Drehung</translation>
+    </message>
+    <message utf8="true">
+        <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="149"/>
+        <source>°</source>
+        <translation>°</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="169"/>
+        <source>Width</source>
+        <translation>Breite</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="219"/>
+        <source>Symbols in group</source>
+        <translation>Symbole in Gruppe</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="296"/>
+        <source>Symbol Name</source>
+        <translation>Symbolname</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="316"/>
+        <source>Advanced</source>
+        <translation>Erweitert</translation>
+    </message>
+</context>
+<context>
+    <name>Topol</name>
+    <message>
+        <location filename="../src/plugins/topology/topol.cpp" line="72"/>
+        <source>TopologyChecker</source>
+        <translation>Topologie-Prüfung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topol.cpp" line="81"/>
+        <source>Topology Checker for vector layer</source>
+        <translation>Topologie-Prüfung für Vektorlayer</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topol.cpp" line="86"/>
+        <location filename="../src/plugins/topology/topol.cpp" line="122"/>
+        <source>&amp;Topology Checker</source>
+        <translation>&amp;Topologie-Prüfung</translation>
+    </message>
+</context>
+<context>
+    <name>UndoWidget</name>
+    <message>
+        <location filename="../src/app/qgsundowidget.cpp" line="212"/>
+        <source>Undo/Redo</source>
+        <translation>Rücknahme/Wiederholung</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsundowidget.cpp" line="213"/>
+        <source>Undo</source>
+        <translation>Zurücknehmen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsundowidget.cpp" line="214"/>
+        <source>Redo</source>
+        <translation>Wiederholen</translation>
+    </message>
+</context>
+<context>
+    <name>ValidateDialog</name>
+    <message>
+        <source>Check geometry validity</source>
+        <translation>Geometriegültigkeit prüfen</translation>
+    </message>
+    <message>
+        <source>Geometry errors</source>
+        <translation>Geometriefehler</translation>
+    </message>
+    <message>
+        <source>Total encountered errors</source>
+        <translation>Gesamtzahl aufgetretener Fehler</translation>
+    </message>
+    <message>
+        <source>Error!</source>
+        <translation>Fehler!</translation>
+    </message>
+    <message>
+        <source>Please specify input vector layer</source>
+        <translation>Bitte Eingabevektorlayer angeben</translation>
+    </message>
+    <message>
+        <source>Please specify input field</source>
+        <translation>Bitte Eingabefeld angeben</translation>
+    </message>
+    <message>
+        <source>Please specify output shapefile</source>
+        <translation>Bitte eine Shapeausgabedatei angeben</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Abbruch</translation>
+    </message>
+    <message>
+        <source>Geometry</source>
+        <translation>Geometrie</translation>
+    </message>
+    <message>
+        <source>Error loading output shapefile:
+%s</source>
+        <translation>Fehler beim Laden der Ausgabeshapedatei:
+%s</translation>
+    </message>
+    <message>
+        <source>Created output shapefile:
+%s
+%s</source>
+        <translation>Ausgabeshapedatei erzeugt:
+%s
+%s</translation>
+    </message>
+    <message>
+        <source>Feature</source>
+        <translation>Objekt</translation>
+    </message>
+    <message>
+        <source>Error(s)</source>
+        <translation>Fehler</translation>
+    </message>
+</context>
+<context>
+    <name>VisualDialog</name>
+    <message>
+        <source>Error!</source>
+        <translation>Fehler!</translation>
+    </message>
+    <message>
+        <source>Please specify input vector layer</source>
+        <translation>Bitte Eingabevektorlayer angeben</translation>
+    </message>
+    <message>
+        <source>Please specify input field</source>
+        <translation>Bitte Eingabefeld angeben</translation>
+    </message>
+    <message>
+        <source>List unique values</source>
+        <translation>Liste eindeutiger Werte</translation>
+    </message>
+    <message>
+        <source>Unique values</source>
+        <translation>Eindeutige Werte</translation>
+    </message>
+    <message>
+        <source>Total unique values</source>
+        <translation>Gesamtzahl eindeutiger Werte</translation>
+    </message>
+    <message>
+        <source>Basics statistics</source>
+        <translation>Grundstatistik</translation>
+    </message>
+    <message>
+        <source>Statistics output</source>
+        <translation>Statistische Ausgabe</translation>
+    </message>
+    <message>
+        <source>Nearest neighbour analysis</source>
+        <translation>Nächster Nachbaranalyse</translation>
+    </message>
+    <message>
+        <source>Nearest neighbour statistics</source>
+        <translation>Nächster Nachbarstatistik</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Abbruch</translation>
+    </message>
+    <message>
+        <source>Parameter</source>
+        <translation>Parameter</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Wert</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetCentroidFill</name>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_centroidfill.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_centroidfill.ui" line="22"/>
+        <source>Force point inside polygon</source>
+        <translation>Punkt innerhalb des Polygons erzwingen</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetEllipseBase</name>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formular</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="22"/>
+        <source>Colors</source>
+        <translation>Farben</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="64"/>
+        <source>Fill</source>
+        <translation>Füllung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="96"/>
+        <source>Border</source>
+        <translation>Rahmen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="199"/>
+        <source>Left</source>
+        <translation>Links</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="204"/>
+        <source>HCenter</source>
+        <translation>HZentriert</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="209"/>
+        <source>Right</source>
+        <translation>Rechts</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="218"/>
+        <source>Top</source>
+        <translation>Oben</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="223"/>
+        <source>VCenter</source>
+        <translation>VMitte</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="228"/>
+        <source>Bottom</source>
+        <translation>Unten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="238"/>
+        <source>Outline style</source>
+        <translation>Umrandungsstil</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="274"/>
+        <source>Outline width</source>
+        <translation>Umrandungsstärke</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="49"/>
+        <source>Rotation</source>
+        <translation>Drehung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="281"/>
+        <source>Anchor point</source>
+        <translation>Ankerpunkt</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="346"/>
+        <source>Data defined properties...</source>
+        <translation>Datendefinierte Eigenschaften...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="288"/>
+        <source>Offset X,Y</source>
+        <translation>X-,Y-Versatz</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="189"/>
+        <source>Symbol width</source>
+        <translation>Symbolbreite</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="42"/>
+        <source>Symbol height</source>
+        <translation>Symbolhöhe</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetFontMarker</name>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="117"/>
+        <source>Offset X,Y</source>
+        <translation>X-,Y-Versatz</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="94"/>
+        <source>Rotation</source>
+        <translation>Drehung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="175"/>
+        <source>Anchor point</source>
+        <translation>Ankerpunkt</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="185"/>
+        <source>Left</source>
+        <translation>Links</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="190"/>
+        <source>HCenter</source>
+        <translation>HZentriert</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="195"/>
+        <source>Right</source>
+        <translation>Rechts</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="204"/>
+        <source>Top</source>
+        <translation>Oben</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="209"/>
+        <source>VCenter</source>
+        <translation>VMitte</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="214"/>
+        <source>Bottom</source>
+        <translation>Unten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="58"/>
+        <source>Size</source>
+        <translation>Größe</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="32"/>
+        <source>Color</source>
+        <translation>Farbe</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="22"/>
+        <source>Font family</source>
+        <translation>Schriftfamilie</translation>
+    </message>
+    <message utf8="true">
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="101"/>
+        <source>°</source>
+        <translation>°</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetGradientFill</name>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="32"/>
+        <source>Two color</source>
+        <translation>Zweifarbig</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="97"/>
+        <source>Color ramp</source>
+        <translation>Farbverlauf</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="107"/>
+        <source>Gradient type</source>
+        <translation>Gradiententyp</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="117"/>
+        <source>Linear</source>
+        <translation>Linear</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="122"/>
+        <source>Radial</source>
+        <translation>Radial</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="127"/>
+        <source>Conical</source>
+        <translation>Konisch</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="137"/>
+        <source>Coord mode</source>
+        <translation>Koordinatenmodus</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="147"/>
+        <source>Object</source>
+        <translation>Objekt</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="152"/>
+        <source>Viewport</source>
+        <translation>Ansichtsfenster</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="162"/>
+        <source>Spread</source>
+        <translation>Spreizen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="172"/>
+        <source>Pad</source>
+        <translation>Auffüllen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="177"/>
+        <source>Repeat</source>
+        <translation>Wiederholen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="182"/>
+        <source>Reflect</source>
+        <translation>Reflektieren</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="192"/>
+        <source>Reference Point 1</source>
+        <translation>Referenzpunkt 1</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="204"/>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="275"/>
+        <source>x</source>
+        <translation>x</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="224"/>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="295"/>
+        <source>y</source>
+        <translation>y</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="241"/>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="315"/>
+        <source>Feature centroid</source>
+        <translation>Objektzentroid</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="263"/>
+        <source>Reference Point 2</source>
+        <translation>Referenzpunkt 2</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="337"/>
+        <source>Angle</source>
+        <translation>Winkel</translation>
+    </message>
+    <message utf8="true">
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="344"/>
+        <source> °</source>
+        <translation> °</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="363"/>
+        <source>Data defined properties...</source>
+        <translation>Datendefinierte Eigenschaften...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="421"/>
+        <source>Offset X,Y</source>
+        <translation>X-,Y-Versatz</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetLinePatternFill</name>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="41"/>
+        <source>Angle</source>
+        <translation>Winkel</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="130"/>
+        <source>Data defined properties...</source>
+        <translation>Datendefinierte Eigenschaften...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="58"/>
+        <source>Distance</source>
+        <translation>Entfernung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="88"/>
+        <source>Offset</source>
+        <translation>Versatz</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetMarkerLine</name>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="35"/>
+        <source>Marker placement</source>
+        <translation>Markierungsplatzierung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="43"/>
+        <source>with interval</source>
+        <translation>mit Intervall</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="80"/>
+        <source>on every vertex</source>
+        <translation>auf jedem Stützpunkt</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="87"/>
+        <source>on last vertex only</source>
+        <translation>nur auf letztem Stützpunkt</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="94"/>
+        <source>on first vertex only</source>
+        <translation>nur auf erstem Stützpunkt</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="110"/>
+        <source>Offset along line</source>
+        <translation>Entlang der Linie versetzen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="147"/>
+        <source>Rotate marker</source>
+        <translation>Markierung rotieren</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="154"/>
+        <source>Line offset</source>
+        <translation>Linienversatz</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="169"/>
+        <source>Data defined properties</source>
+        <translation>Datendefinierte Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="101"/>
+        <source>on central point</source>
+        <translation>auf Mittelpunkt</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetPointPatternFill</name>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="74"/>
+        <source>Vertical distance</source>
+        <translation>Vertikaler Abstand</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="140"/>
+        <source>Vertical displacement</source>
+        <translation>Vertikalverschiebung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="179"/>
+        <source>Data defined properties...</source>
+        <translation>Datendefinierte Eigenschaften...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="107"/>
+        <source>Horizontal displacement</source>
+        <translation>Horizontalverschiebung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="41"/>
+        <source>Horizontal distance</source>
+        <translation>Horizontaler Abstand</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetSVGFill</name>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="245"/>
+        <source>Border width</source>
+        <translation>Randbreite</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="140"/>
+        <source>Rotation</source>
+        <translation>Drehung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="107"/>
+        <source>Texture width</source>
+        <translation>Texturbreite</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="157"/>
+        <source>Colors</source>
+        <translation>Farben</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="172"/>
+        <source>Fill</source>
+        <translation>Füllung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="204"/>
+        <source>Border</source>
+        <translation>Rahmen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="281"/>
+        <source>Data defined properties...</source>
+        <translation>Datendefinierte Eigenschaften...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="34"/>
+        <source>SVG Groups</source>
+        <translation>SVG-Gruppen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="41"/>
+        <source>SVG Symbols</source>
+        <translation>SVG-Symbole</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="87"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetShapeburstFill</name>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="20"/>
+        <source>Gradient colors</source>
+        <translation>Gradientenfarbe</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="29"/>
+        <source>Two color</source>
+        <translation>Zweifarbig</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="91"/>
+        <source>Color ramp</source>
+        <translation>Farbverlauf</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="104"/>
+        <source>Shading style</source>
+        <translation>Schattenstil</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="110"/>
+        <source>Shade whole shape</source>
+        <translation>Ganze Form schattieren</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="117"/>
+        <source>Ignore rings in polygons while shading</source>
+        <translation>Ringe in Polygonen beim Schattieren ignorieren</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="129"/>
+        <source>Shade to a set distance:</source>
+        <translation>In einem Abstande schattieren:</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="160"/>
+        <source>Blur strength</source>
+        <translation>Verwischstärke</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="203"/>
+        <source>Offset X,Y</source>
+        <translation>X-,Y-Versatz</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="267"/>
+        <source>Data defined properties...</source>
+        <translation>Datendefinierte Eigenschaften...</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetSimpleFill</name>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="171"/>
+        <source>Offset X,Y</source>
+        <translation>X-,Y-Versatz</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="138"/>
+        <source>Border width</source>
+        <translation>Randbreite</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="108"/>
+        <source>Fill style</source>
+        <translation>Füllstil</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="20"/>
+        <source>Colors</source>
+        <translation>Farben</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="118"/>
+        <source>Border style</source>
+        <translation>Randstil</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="128"/>
+        <source>Join style</source>
+        <translation>Verbindungsstil</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="235"/>
+        <source>Data defined properties...</source>
+        <translation>Datendefinierte Eigenschaften...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="35"/>
+        <source>Fill</source>
+        <translation>Füllung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="67"/>
+        <source>Border</source>
+        <translation>Rahmen</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetSimpleLine</name>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="32"/>
+        <source>Color</source>
+        <translation>Farbe</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="184"/>
+        <source>Change</source>
+        <translation>Ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="64"/>
+        <source>Pen width</source>
+        <translation>Stiftbreite</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="103"/>
+        <source>Offset</source>
+        <translation>Versatz</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="142"/>
+        <source>Pen style</source>
+        <translation>Stiftstil</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="152"/>
+        <source>Join style</source>
+        <translation>Verbindungsstil</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="162"/>
+        <source>Cap style</source>
+        <translation>Endstil</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="177"/>
+        <source>Use custom dash pattern</source>
+        <translation>Benutzerdefinierte Strichlierung verwenden</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="193"/>
+        <source>Dash pattern unit</source>
+        <translation>Strichlierungsmustereinheit</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="206"/>
+        <source>Data defined properties...</source>
+        <translation>Datendefinierte Eigenschaften...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="215"/>
+        <source>Draw line only inside polygon</source>
+        <translation>Linie nur im Polygon zeichnen</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetSimpleMarker</name>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="102"/>
+        <source>Size</source>
+        <translation>Größe</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="29"/>
+        <source>Fill</source>
+        <translation>Füllung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="61"/>
+        <source>Border</source>
+        <translation>Rahmen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="138"/>
+        <source>Outline style</source>
+        <translation>Umrandungsstil</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="148"/>
+        <source>Outline width</source>
+        <translation>Umrandungsstärke</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="250"/>
+        <source>Anchor point</source>
+        <translation>Ankerpunkt</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="260"/>
+        <source>Left</source>
+        <translation>Links</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="265"/>
+        <source>HCenter</source>
+        <translation>HZentriert</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="270"/>
+        <source>Right</source>
+        <translation>Rechts</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="279"/>
+        <source>Top</source>
+        <translation>Oben</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="284"/>
+        <source>VCenter</source>
+        <translation>VMitte</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="289"/>
+        <source>Bottom</source>
+        <translation>Unten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="305"/>
+        <source>Data defined properties...</source>
+        <translation>Datendefinierte Eigenschaften...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="20"/>
+        <source>Colors</source>
+        <translation>Farben</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="175"/>
+        <source>Angle</source>
+        <translation>Winkel</translation>
+    </message>
+    <message utf8="true">
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="182"/>
+        <source> °</source>
+        <translation> °</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="198"/>
+        <source>Offset X,Y</source>
+        <translation>X-,Y-Versatz</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetSvgMarker</name>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="84"/>
+        <source>Colors</source>
+        <translation>Farben</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="99"/>
+        <source>Fill</source>
+        <translation>Füllung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="131"/>
+        <source>Border</source>
+        <translation>Rahmen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="202"/>
+        <source>Offset X,Y</source>
+        <translation>X-,Y-Versatz</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="260"/>
+        <source>Anchor point</source>
+        <translation>Ankerpunkt</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="270"/>
+        <source>Left</source>
+        <translation>Links</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="275"/>
+        <source>HCenter</source>
+        <translation>HZentriert</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="280"/>
+        <source>Right</source>
+        <translation>Rechts</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="289"/>
+        <source>Top</source>
+        <translation>Oben</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="294"/>
+        <source>VCenter</source>
+        <translation>VMitte</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="299"/>
+        <source>Bottom</source>
+        <translation>Unten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="317"/>
+        <source>Data defined properties...</source>
+        <translation>Datendefinierte Eigenschaften...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="172"/>
+        <source>Border width</source>
+        <translation>Randbreite</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="64"/>
+        <source>Angle</source>
+        <translation>Winkel</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="28"/>
+        <source>Size</source>
+        <translation>Größe</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="324"/>
+        <source>SVG Groups</source>
+        <translation>SVG-Gruppen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="331"/>
+        <source>SVG Image</source>
+        <translation>SVG-Bild</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="399"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetSvgSelector</name>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formular</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="23"/>
+        <source>SVG Images</source>
+        <translation>SVG-Bilder</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="30"/>
+        <source>SVG Groups</source>
+        <translation>SVG-Gruppen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="110"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="117"/>
+        <source>Generated path will be relative to current SVG search directories or to Project file</source>
+        <translation>Erzeugter Pfad wird relativ zu aktuellem SVG-Suchverzeichnisse oder Projektdatei sein</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="120"/>
+        <source>Relative path</source>
+        <translation>Relativer Pfad</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetVectorFieldBase</name>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formular</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="72"/>
+        <source>Y attribute</source>
+        <translation>Y-Attribut</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="108"/>
+        <source>Scale</source>
+        <translation>Maßstab </translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="49"/>
+        <source>X attribute</source>
+        <translation>X-Attribut</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="135"/>
+        <source>Vector field type</source>
+        <translation>Vektorfeldtyp</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="141"/>
+        <source>Height only</source>
+        <translation>Nur Höhe</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="148"/>
+        <source>Polar</source>
+        <translation>Polar</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="155"/>
+        <source>Cartesian</source>
+        <translation>Kartesisch</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="165"/>
+        <source>Angle units</source>
+        <translation>Winkeleinheit</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="171"/>
+        <source>Degrees</source>
+        <translation>Grad</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="178"/>
+        <source>Radians</source>
+        <translation>Bogenmaß</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="190"/>
+        <source>Angle orientation</source>
+        <translation>Drehsinn</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="203"/>
+        <source>Counterclockwise from east</source>
+        <translation>Gegen Uhrzeiger</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="196"/>
+        <source>Clockwise from north</source>
+        <translation>In Uhrzeiger</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="95"/>
+        <source>Distance unit</source>
+        <translation>Distanzeinheit</translation>
+    </message>
+</context>
+<context>
+    <name>XMLDialog</name>
+    <message>
+        <location filename="../python/plugins/MetaSearch/ui/xmldialog.ui" line="14"/>
+        <source>XML Request / Response</source>
+        <translation>XML-Anfrage/-Antwort</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/MetaSearch/ui/xmldialog.ui" line="20"/>
+        <source>Request</source>
+        <translation>Anfrage</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/MetaSearch/ui/xmldialog.ui" line="30"/>
+        <source>Response</source>
+        <translation>Antwort</translation>
+    </message>
+</context>
+<context>
+    <name>[pluginname]GuiBase</name>
+    <message>
+        <location filename="../src/plugins/plugin_template/pluginguibase.ui" line="13"/>
+        <source>QGIS Plugin Template</source>
+        <translation>QGIS-Erweiterungsvorlage</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/plugin_template/pluginguibase.ui" line="47"/>
+        <source>Plugin Template</source>
+        <translation>Erweiterungsvorlage</translation>
+    </message>
+</context>
+<context>
+    <name>checkDock</name>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.ui" line="14"/>
+        <source>Topology Checker</source>
+        <translation>Topologie-Prüfung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.ui" line="41"/>
+        <source>Validate All</source>
+        <translation>Alle prüfen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.ui" line="48"/>
+        <source>Validate Extent</source>
+        <translation>Prüfe Ausmasse</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.ui" line="72"/>
+        <source>Topology not checked yet</source>
+        <translation>Topologie noch nicht geprüft</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.ui" line="30"/>
+        <source>Configure</source>
+        <translation>Konfigurieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.ui" line="59"/>
+        <source>Show topology errors</source>
+        <translation>Topologiefehler anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.ui" line="62"/>
+        <source>Show errors</source>
+        <translation>Fehler anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.ui" line="84"/>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="216"/>
+        <source>Select automatic fix</source>
+        <translation>Reparatur automatisch wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.ui" line="92"/>
+        <source>Fix!</source>
+        <translation>Reparieren!</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="176"/>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="195"/>
+        <source>No errors were found</source>
+        <translation>Es wurden keine Fehler gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="223"/>
+        <source>Invalid first layer</source>
+        <translation>Erster Layer ungültig</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="223"/>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="233"/>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="257"/>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="266"/>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="285"/>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="340"/>
+        <source>Topology plugin</source>
+        <translation>Topologie-Erweiterung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="233"/>
+        <source>Invalid first geometry</source>
+        <translation>Erste Geometrie ungültig</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="234"/>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="267"/>
+        <source>Topology test</source>
+        <translation>Topologie-Prüfung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="234"/>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="267"/>
+        <source>Feature not found in the layer.
+The layer has probably changed.
+Run topology check again.</source>
+        <translation>Objekt nicht auf Layer gefunden.
+Der Layer wurde wahrscheinlich geändert.
+Topopologie-Prüfung wiederholen.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="257"/>
+        <source>Invalid second layer</source>
+        <translation>Zweiter Layer ungültig</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="266"/>
+        <source>Invalid second geometry</source>
+        <translation>Zweite Geometrie ungültig</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="285"/>
+        <source>Invalid conflict</source>
+        <translation>Ungültiger Konflikt</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="321"/>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="399"/>
+        <source>%1 errors were found</source>
+        <translation>%1 Fehler gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="325"/>
+        <source>Topology fix error</source>
+        <translation>Topologiereparaturfehler</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="325"/>
+        <source>Fixing failed!</source>
+        <translation>Reparatur fehlgeschlagen!</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="340"/>
+        <source>Layer %1 not found in registry.</source>
+        <translation>Layer %1 nicht in Registratur gefunden.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="350"/>
+        <source>Abort</source>
+        <translation>Abbrechen</translation>
+    </message>
+</context>
+<context>
+    <name>context_help</name>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1434"/>
+        <source>&lt;h3&gt;Database connection&lt;/h3&gt;
+</source>
+        <translation>&lt;h3&gt;Datenbankverbindung&lt;/h3&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1350"/>
+        <source>&lt;h3&gt;Create a new WMS connection&lt;/h3&gt;
+WMS layers can be added quite simply, as long as you know the URL to access the WMS server, you have a serviceable connection to that server, and the server understands HTTP as the data transport mechanism.&lt;p&gt;
+QGIS currently can act as a WMS client that understands WMS 1.1, 1.1.1 and 1.3 servers.
+&lt;p&gt;
+&lt;a href=&quot;#serv&quot;&gt;Servers&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#load&quot;&gt;Loading WMS Layers&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#lay&quot;&gt;Layer Order&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#search&quot;&gt;Server Search&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;serv&quot;&gt;
+&lt;h4&gt;Servers&lt;/h4&gt;
+&lt;/a&gt;
+To define a new WMS server in the &lt;label&gt;Server Connections&lt;/label&gt; section, select &lt;label&gt;New&lt;/label&gt;. Then enter the parameters to connect to your desired WMS server.&lt;p&gt;
+You can add some servers to play with by clicking the &lt;label&gt;Add default servers&lt;/label&gt; button. This will add at least three WMS servers for you to use.&lt;p&gt;
+Once the new WMS Server connection has been created, it will be preserved for future QGIS sessions.
+
+&lt;a name=&quot;load&quot;&gt;
+&lt;h5&gt;Loading WMS Layers&lt;/h5&gt;
+&lt;/a&gt;
+Select the &lt;label&gt;Connect&lt;/label&gt; button to retrieve the capabilities of the selected server. This includes the Image encoding, Layers, Layer Styles and Projections.&lt;br/&gt;
+While downloading data from the WMS server, the download progress is visualized in the left bottom of the WMS Plugin dialog.&lt;p&gt;
+The &lt;label&gt;Image encoding&lt;/label&gt; section now lists the formats that are supported by both the client and server.&lt;br/&gt;
+Choose one depending on your image accuracy requirements.&lt;p&gt;
+You can select several layers at once, they will be combined at the WMS Server and transmitted to QGIS in one go.&lt;p&gt;
+Each WMS Layer can be presented in multiple CRSs, depending on the capability of the WMS server. To choose a CRS, select &lt;label&gt;Change...&lt;/label&gt;
+
+&lt;a name=&quot;lay&quot;&gt;
+&lt;h4&gt;Layer Order&lt;/h4&gt;
+&lt;/a&gt;
+On this tab you can change the order of loaded WMS layers.
+
+&lt;a name=&quot;search&quot;&gt;
+&lt;h4&gt;Server Search&lt;/h4&gt;
+&lt;/a&gt;
+On this tab you can search for WMS servers. It is possible to enter a search-string in the text field an hit the &lt;label&gt;Search&lt;/label&gt; button.&lt;p&gt;
+To visualize the results, select an table entry, press the &lt;label&gt;Add selected row to WMS list&lt;/label&gt; button and change back to the &lt;label&gt;Servers&lt;/label&gt; tab.&lt;p&gt;
+You only need to request the list of layers by clicking the &lt;label&gt;Connect&lt;/label&gt; button.
+</source>
+        <translation>&lt;h3&gt;Layer eines Servers hinzufügen&lt;/h3&gt;
+Wenn Sie zu Ihrem WMS-Server die Zugriffs-URL kennen, eine brauchbare Verbindung dazu haben und er HTTP als Datentransportmechanismus versteht, können Sie WMS-Layer einfach hinzufügen.&lt;p&gt;
+QGIS als WMS-Client versteht derzeit Server mit WMS 1.1, 1.1.1 und 1.3.
+&lt;p&gt;
+&lt;a href=&quot;#serv&quot;&gt;Server&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#load&quot;&gt;WMS-Layer laden&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#lay&quot;&gt;Layerreihenfolge&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#search&quot;&gt;Serversuche&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;serv&quot;&gt;
+&lt;h4&gt;Server&lt;/h4&gt;
+&lt;/a&gt;
+Um einen neuen WMS-Server unter &lt;label&gt;Server&lt;/label&gt; hinzufügen, wählen Sie &lt;label&gt;Neu&lt;/label&gt;.  Dann geben sie die Verbindungsparameter Ihres gewünschten WMS-Server ein.&lt;p&gt;
+Zum Ausprobieren können Sie mit dem Knopf &lt;label&gt;Vorgegebene Server ergänzen&lt;/label&gt; einige Server hinzufügen.  Dies fügt Ihnen mindestens drei WMS-Server hinzu.&lt;p&gt;
+Sobald eine neue WMS-Serververbindung erstellt wurde, wird sie für zukünftige QGIS-Sitzungen gespeichert.
+
+&lt;a name=&quot;load&quot;&gt;
+&lt;h5&gt;WMS-Layer laden&lt;/h5&gt;
+&lt;/a&gt;
+Über den Knopf &lt;label&gt;Verbinden&lt;/label&gt; erfragen Sie die angebotenen Möglichkeiten des gewählten Servers. Diese umfassen Bildkodierung, Layer, Layerstile und Projektionen.&lt;br/&gt;
+Während Sie Daten vom WMS-Server beziehen, wird der Fortschritt unten links im Dialog angezeigt.&lt;p&gt;
+Die &lt;label&gt;Bildkodierung&lt;/label&gt; zeigt nun die Liste die Formate an, die sowohl Server als auch Client unterstützen.&lt;br/&gt;
+Treffen Sie eine Ihren Anforderung entsprechende Auswahl.&lt;p&gt;
+Sie können gleichzeitig mehrere Layer wählen, die dann auf Serverseite zusammengestellt und in einem Stück an QGIS übermittelt werden.&lt;p&gt;
+Jeder WMS-Layer kann, abhängig der Möglichkeiten des WMS-Servers, in mehreren KBS angezeigt werden. Um ein KBS zu wählen, klicken Sie auf &lt;label&gt;Ändern...&lt;/label&gt;
+
+&lt;a name=&quot;lay&quot;&gt;
+&lt;h4&gt;Layerreihenfolge&lt;/h4&gt;
+&lt;/a&gt;
+Unter diesem Reiter können Sie die Reihenfolge der geladenen WMS-Layer ändern.
+
+&lt;a name=&quot;search&quot;&gt;
+&lt;h4&gt;Serversuche&lt;/h4&gt;
+&lt;/a&gt;
+Unter diesem Reiter können Sie nach WMS-Servern suchen.  Sie können einen Suchbegriff in einem Textfeld angeben, nachdem dann über den Knopf &lt;label&gt;Suche&lt;/label&gt; gesucht wird.&lt;p&gt;
+Um das Ergebnis anzuzeigen, wählen Sie einen Eintrag und klicken auf &lt;label&gt;Gewählte Zeile der WMS-Liste hinzufügen&lt;/label&gt; und wechseln wieder zum Reiter &lt;label&gt;Server&lt;/label&gt;.&lt;p&gt;
+Sie können dann die Layerliste mit einem Klick auf den Knopf &lt;label&gt;Verbinden&lt;/label&gt; erfragen.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="778"/>
+        <source>&lt;h3&gt;Identify Features&lt;/h3&gt;
+&lt;p&gt;
+The results dialog shows all the features identified within the search tolerance. To see the results details, expand the feature information on the left of each feature.
+&lt;/p&gt;
+&lt;p&gt;
+The search radius can be set in the options dialog &lt;label&gt;Settings &gt; Options &gt; Map tools&lt;/label&gt;, Identify section, as a percentage of map width. In this section you may also set identify mode to &lt;label&gt;Current layer&lt;/label&gt;, &lt;label&gt;Top down, stop at first&lt;/label&gt;, &lt;label&gt;Top down&lt;/label&gt;. &lt;br&gt;
+You may also tick an &lt;label&gt;Open feature form, if a single feature is identified&lt;/label&gt; option.&lt;br&gt;
+Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Settings &gt; Project Properties &gt; Identifiable layers&lt;/label&gt; where all the layers names are listed, their type (vector, raster, etc.) and ability to be identified.
+&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Objekte identifizieren&lt;/h3&gt; 
+&lt;p&gt; 
+Der Ergebnisdialog zeigt alle Objekte an, die innerhalb der Suchtoleranz identifiziert wurden.  Um die Ergebnisse zu sehen, klappen Sie die Objektinformation eines jeden Objekts auf.&lt;/p&gt; 
+&lt;p&gt; 
+Der Suchradius kann unter &lt;label&gt;Einstellungen &gt; Optionen &gt; Kartenwerkzeuge&lt;/label&gt;, Abfragewerkzeug in Prozent der Kartenbreite eingestellt werden. In diesem Abschnitt können Sie außerdem den Abfragemodus auf &lt;label&gt;Aktuellen Layer&lt;/label&gt;, &lt;label&gt;Von oben nach unten, beim Ersten halten&lt;/label&gt; und &lt;label&gt;Von oben nach unten&lt;/label&gt; einstellen.&lt;br&gt;
+Sie können auch &lt;label&gt;Objektformular öffnen, wenn ein einzelnes Objekt abgefragt wird&lt;/label&gt; abhaken.&lt;br&gt;
+Die abfragbare Layer können in Dialog Projekteigenschaften unter &lt;label&gt;Einstellungen &gt; Projekteinstellungen &gt; Abfragbare Layer&lt;/label&gt; gewählt werden.  Dort werden die Layernamen, ihr Typ (Vektor, Raster, etc.) und die Abfragbarkeit aufgeführt.&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="11"/>
+        <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
+&lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
+raster of an input point vector layer.  The density is calculated based on the
+number of points in a location, with larger numbers of clustered points resulting
+in larger values. Heatmaps allow easy identification of &quot;hotspots&quot; and
+clustering of points.&lt;/p&gt;
+
+&lt;h2&gt;Dialog Parameters&lt;/h2&gt;
+
+&lt;h3&gt;Input point layer&lt;/h3&gt;
+&lt;p&gt;The input is always a vector layer of point type. All the point vector layers that are currently loaded in the canvas are shown in the drop-down list. Click the dropdown button and select the desired layer.&lt;/p&gt;
+
+&lt;h3&gt;Output raster&lt;/h3&gt;
+&lt;p&gt;The output raster location and filename can be set by clicking the &lt;label&gt;...&lt;/label&gt; button next to the output raster textbox.&lt;br/&gt;
+&lt;b&gt;Note:&lt;/b&gt; The file format is automatically added depending upon the output format selected, if not explicitly given.&lt;/p&gt;
+
+&lt;h3&gt;Output format&lt;/h3&gt;
+&lt;p&gt;All the file creation supporting GDAL formats are available in the drop down list. Click and select the required output format for your file.&lt;br/&gt;
+&lt;b&gt;Note:&lt;/b&gt; GeoTiff and ERDAS Imagine .img formats are recommended. Some formats make the application crash. Kindly stick to the recommended formats until the crash issue is resolved or use other formats if you know GDAL supports it completely.&lt;/p&gt;
+
+&lt;h3&gt;Radius (bandwidth)&lt;/h3&gt;
+&lt;p&gt;Used to specify the heatmap search radius (or kernel bandwidth) in meters or map units. The radius specifies the distance around a point at which the influence
+  of the point will be felt. Larger values result in greater smoothing, but smaller values may show finer details and variation in point density.&lt;/p&gt;
+
+&lt;h3&gt;Advanced Options&lt;/h3&gt;
+
+&lt;h4&gt;Rows and Columns&lt;/h4&gt;
+&lt;p&gt;Used to change the dimensions of the output raster file. These values are also linked to the &lt;b&gt;Cell size X&lt;/b&gt; and &lt;b&gt;Cell size Y&lt;/b&gt; values. 
+Increasing the number of rows or colums will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
+are also linked, so doubling the number of rows will automatically double the number of columns and the cell sizes will also be halved. The geographical area of the output raster will remain the same!&lt;/p&gt;
+
+&lt;h4&gt;Cell size X and Y&lt;/h4&gt;
+&lt;p&gt;Control the geographic size of each pixel in the output raster. Changing these values will also change the number of Rows and Columns in the output
+  raster.&lt;/p&gt;
+  
+&lt;h4&gt;Kernel shape&lt;/h4&gt;
+&lt;p&gt;The kernel shape controls the rate at which the influence of a point decreases as the distance from the point increases. Different kernels decay at
+different rates, so a triweight kernel gives features greater weight for distances closer to the point than the Epanechnikov kernel does. Consequently,
+triweight results in &quot;sharper&quot; hotspots, and Epanechnikov results in &quot;smoother&quot; hotspots. A number of standard kernel functions are available in QGIS,
+which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4&gt;Decay ratio&lt;/h4&gt;
+&lt;p&gt;For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.&lt;/p&gt;
+
+&lt;h4&gt;Use radius from field&lt;/h4&gt;
+&lt;p&gt;Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.&lt;/p&gt;
+
+&lt;h4&gt;Use weight from field&lt;/h4&gt;
+&lt;p&gt;Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.&lt;/p&gt;
+
+&lt;h2&gt;Further Details&lt;/h2&gt;
+&lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
+
+</source>
+        <translation>&lt;h1&gt;Heatmap-Erweiterung&lt;/h1&gt;
+&lt;p&gt;Die Heatmap-Erweiterung erzeugt mit Hilfe von Kerndichteschätzung ein Dichteraster (Heatmap) für einen Punktlayer. Die Dichte wird auf Basis der Punktanzahl an einer Stelle berechnet, je größer die Anzahl der in einer Punkthäufung desto größer der Rasterwert.
+
+&lt;h2&gt;Parameter&lt;/h2&gt;
+
+&lt;h3&gt;Eingabepunktlayer&lt;/h3&gt;
+&lt;p&gt;Die Eingabe ist jeweils ein Punktlayer. In die Liste werden alle derzeit in die Karte geladenen Punktlayer übernommen.  Klicken Sie auf den Pfeil neben der Liste und wählen Sie den gewünschten Layer.&lt;/p&gt;
+
+&lt;h3&gt;Ausgaberaster&lt;/h3&gt;
+&lt;p&gt;Der Dateiname für das Ausgaberaster kann durch Klick auf &lt;label&gt;...&lt;/label&gt; neben dem Eingabefeld gewählt werden.&lt;br/&gt;
+&lt;b&gt;Hinweis:&lt;/b&gt; Wenn nicht explizit angegeben, wird die Dateiendung abhängig vom gewählten Ausgabeformat automatisch ergänzt,&lt;/p&gt;
+
+&lt;h3&gt;Ausgabeformat&lt;/h3&gt;
+&lt;p&gt;Alle Formate deren Erzeugung GDAL unterstützt sind in der Liste verfügbar. Wählen Sie das gewünschte Ausgabeformat Ihrer Datei.&lt;br/&gt;
+&lt;b&gt;Hinweis:&lt;/b&gt; Die Formate GeoTiff und ERDAS Imagine .img werden empfohlen. Einige Formate können die Applikation zum Absturz bringen. Bleiben Sie bitte bei den empfohlenen Formate bis die Absturzursache beseitig ist oder wählen Sie ein anderes Format, wenn Sie wissen, dass GDAL es voll unterstützt.&lt;/p&gt;
+
+&lt;h3&gt;Heatmap Punktattribute&lt;/h3&gt;
+&lt;h4&gt;Radius (Bandbreite)&lt;/h4&gt;
+&lt;p&gt;Der Pufferradius gibt den Abstand um einen Punkt herum an, in dem die Wirkung des Punktes spürbar ist. Große Werte führen zu größer Glättung, aber kleinere Werte können genauere Resultate ergeben.&lt;br/&gt;
+&lt;b&gt;Hinweise:&lt;/b&gt; Der Wert ist immer ganzzahlig.&lt;/p&gt;
+
+&lt;h4&gt;Kernform&lt;/h4&gt;
+&lt;p&gt;Der Kernform-Parameter bestimmt die Rate in der der Einfluß eines Punktes mit
+zunehmenden Abstand zum Punkt verfällt. Es sind mehrere Standardkernfunktionen
+verfügbar, welche im &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;englischen
+Wikipedia&lt;/a&gt; näher beschrieben sind.&lt;p&gt;
+
+&lt;h4&gt;Radius aus Feld nutzen&lt;/h4&gt;
+&lt;p&gt;Wahlweise kann auch ein Attribut angegeben werden, das die Kernradien für die einzelnen Punkte des Eingabelayers festlegt.&lt;/p&gt;
+
+&lt;h4&gt;Gewicht aus Feld nutzen&lt;/h4&gt;
+&lt;p&gt;Wahlweise kann auch ein Attribut mit Punktgewichten zur stärkeren Gewichtung einiger Punkte des Eingabelayers verwendet werden.&lt;/p&gt;
+
+&lt;h4&gt;Verfallrate&lt;/h4&gt;
+&lt;p&gt;Für dreieckige Kerne gibt die Verfallrate gibt den Betrag des Einfluß der äußersten Pixel des Pufferradius an. Ein Wert von 0 definiert einen dreieckigen Standardkern, bei dem der Einfluß auf Null sinkt, wenn die Entfernung des Pixels sich dem definierten Radius nähert.  Im Gegensatz dazu definiert ein Wert von 1, dass kein Verfall bei zunehmendem Abstand stattfindet.&lt;/p&gt;
+
+&lt;h2&gt;Weitere Einzelheiten&lt;/h2&gt;
+&lt;p&gt;Sie können über aruntheguy at gmail dot com mit dem Autor Kontakt aufnehmen.&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="914"/>
+        <source>&lt;h3&gt;Create a New Oracle Connection&lt;/h3&gt;
+This dialog allows you to define the settings for a connection to a Oracle database.
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;label&gt;Name&lt;/label&gt; A name to identify the connection settings.
+
+&lt;li&gt; &lt;label&gt;Database&lt;/label&gt; SID or SERVICE_NAME of the Oracle instance.
+
+&lt;li&gt; &lt;label&gt;Host&lt;/label&gt; Name or IP address of the computer hosting the database server
+
+&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; IP port used by the database server
+
+&lt;li&gt; &lt;label&gt;Username&lt;/label&gt; Database user name.
+&lt;li&gt; &lt;label&gt;Password&lt;/label&gt; Database password.
+
+&lt;li&gt; &lt;label&gt;Save Username&lt;/label&gt; Indicates whether to save the database user name in the connection configuration.
+
+&lt;li&gt; &lt;label&gt;Save Password&lt;/label&gt; Indicates whether to save the database password in the connection settings.  &lt;font color=&quot;red&quot;&gt;Passwords are saved in &lt;strong&gt;clear text&lt;/strong&gt; in the system configuration and in the project files!&lt;/font&gt;
+
+&lt;li&gt; &lt;label&gt;Only look in meta data table&lt;/label&gt; Restricts the displayed tables to those that are in the all_sdo_geom_metadata view. This can speed up the initial display of spatial tables.
+
+&lt;li&gt; &lt;label&gt;Only look for user&apos;s tables&lt;/label&gt; When searching for spatial tables restrict the search to tables that are owner by the user.
+
+&lt;li&gt; &lt;label&gt;Also list tables with no geometry&lt;/label&gt;  Indicates that tables without geometry should also be listed by default.
+
+&lt;li&gt; &lt;label&gt;Use estimated table statistics for the layer metadata&lt;/label&gt; When
+the layer is setup various metadata is required for the Oracle table. This
+includes information such as the table row count, geometry type and spatial
+extents of the data in the geometry column. If the table contains a large
+number of rows determining this metadata is time consuming. By activating this
+option the following fast table metadata operations are done: Row count is
+determined from all_tables.num_rows. Table extents are always determined with
+the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied. The table
+geometry is determined from the first 100 non-null geometry rows in the table.
+
+&lt;li&gt; &lt;label&gt;Only existing geometry types&lt;/label&gt; Only list the existing
+geometry types and don&apos;t offer to add others.
+
+&lt;/ul&gt;
+</source>
+        <translation>&lt;h3&gt;Neue Oracle-Verbindung erstellen&lt;/h3&gt;
+In diesem Dialog kann eine Verbindung zu einer Oracle-Datenbank eingestellt werden.
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;label&gt;Name&lt;/label&gt; Ein Name um die Verbindung zu identifizieren.
+
+&lt;li&gt; &lt;label&gt;Database&lt;/label&gt; SID oder SERVICE_NAME der Oracle-Instanz
+
+&lt;li&gt; &lt;label&gt;Host&lt;/label&gt; Name oder IP-Adresse des Computers, der den Datenbankserver beherbergt.
+
+&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; IP-Port des Datenbankservers
+
+&lt;li&gt; &lt;label&gt;Benutzername&lt;/label&gt; Datenbankbenutzername.
+&lt;li&gt; &lt;label&gt;Passwort&lt;/label&gt; Datenbankpasswort.
+
+&lt;li&gt; &lt;label&gt;Benutzername speichern&lt;/label&gt; Legt fest, dass der Benutzername in
+der Verbindungseinstellungen gespeichert werden soll.
+
+&lt;li&gt; &lt;label&gt;Passwort speichern&lt;/label&gt; Legt fest, dass das Passwort in den
+Verbindungseinstellungen gespeichert werden soll.  &lt;font color=&quot;red&quot;&gt;Passworte
+werden dann im &lt;strong&gt;Klartext&lt;/strong&gt; in der Systemkonfiguration und
+Projektdateien gespeichert!&lt;/font&gt;
+
+&lt;li&gt; &lt;label&gt;Nur in der Metadatentabelle suchen&lt;/label&gt; Schränkt die
+angezeigten Tabelle auf die in der Sicht all_sdo_geom_metadata enthaltenen ein.
+Dies kann  die anfängliche Anzeige der räumlichen Tabellen beschlgen.
+
+&lt;li&gt; &lt;label&gt;Nur Tabellen des Benutzers berücksichtigen&lt;/label&gt; Bei der
+Suche nach räumlichen Tabellen nur die berücksichtigen, die dem
+angemeldeten Benutzer gehören.
+
+&lt;li&gt; &lt;label&gt;Auch geometrielose Tabelle anzeigen&lt;/label&gt;  Legt fest das auch
+Tabellen ohne Geometrie angezeigt werden sollen.
+
+&lt;li&gt; &lt;label&gt;Tabellenstatistiken nutzen&lt;/label&gt; Wenn ein Layer geladen wird,
+werden verschiedene Metadaten fü die Oracle-Tabelle benötigt.  Dies
+umfaßt die Zeilenanzahl, Geometrietyp und die räumliche
+Ausmaße der Geometriespalte.  Wenn die Tabelle viele Zeilen enthält
+kann die Bestimmung dieser Daten zeitaufwendig sein.  Durch die Aktivierung
+diese Option werden folgende schnelle Tabellenoperation vorgenommen: Die
+Zeilenanzahl wird über all_tables.num_rows bestimmt.  Die
+Tabellenausmaße werden mit SDO_TUNE.EXTENTS_OF bestimmt auch wennn ein
+Layerfilter gesetzt ist. Der Geometrietype wird aus den ersten 100 nicht-leeren
+Geometriezeilen bestimmt.
+
+&lt;/ul&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="775"/>
+        <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
+
+</source>
+        <translation>&lt;h3&gt;GPS-Erweiterung&lt;/h3&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="987"/>
+        <source>&lt;h3&gt;Add PostGIS Tables&lt;/h3&gt;
+This dialog allows you to add PostGIS layers (tables with a geometry column) to the QGIS map canvas.
+&lt;p&gt;
+&lt;a href=&quot;#connect&quot;&gt;Connections&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#add&quot;&gt;Adding Layers&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#filter&quot;&gt;Filtering a Layer&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#search&quot;&gt;Search options&lt;/a&gt;&lt;br/&gt;
+
+&lt;a href=&quot;#connect&quot;&gt;
+&lt;h4&gt;Connections&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;Choose the connection to use from the drop-down box and click &lt;label&gt;Connect&lt;/label&gt;.
+&lt;li&gt;If there are no connections, use the &lt;label&gt;New&lt;/label&gt; button to create a connection.
+&lt;li&gt;To modify a connection, click the &lt;label&gt;Edit&lt;/label&gt; button.
+&lt;/ul&gt;
+&lt;a name=&quot;add&quot;&gt;
+&lt;h4&gt;Adding Layers&lt;/h4&gt;
+&lt;/a&gt;
+To add a layer:
+&lt;ol&gt;
+&lt;li&gt;Choose the desired connection from the drop-down box.
+&lt;li&gt;Click &lt;label&gt;Connect&lt;/label&gt;.
+&lt;li&gt;Find the layer you want to add in the list and click on it to select it.
+&lt;li&gt;You can select additional layers by holding down the Ctrl key and clicking.
+&lt;li&gt;Click &lt;label&gt;Add&lt;/label&gt; to add the layer(s) to the map.
+&lt;/ol&gt;
+&lt;a name=&quot;filter&quot;&gt;
+&lt;h4&gt;Filtering a Layer&lt;/h4&gt;
+&lt;/a&gt;
+To filter a layer before adding it to the map, double click on its name or use &lt;label&gt;Build query&lt;/label&gt; button. This will open the Query Builder, allowing you to build up a SQL statement to use in filtering the records.
+
+&lt;a name=&quot;search&quot;&gt;
+&lt;h4&gt;Search options&lt;/h4&gt;
+&lt;/a&gt;
+Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
+</source>
+        <translation>&lt;h3&gt;PostGIS-Tabelle hinzufügen&lt;/h3&gt;
+In diesem Dialog können Sie PostgreSQL/jPostGIS-Layern (Tabellen mit Geometriespalten) zur Karte hinzufügen.
+&lt;p&gt;
+&lt;a href=&quot;#connect&quot;&gt;Verbindungen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#add&quot;&gt;Layer hinzufügen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#filter&quot;&gt;Layer filtern&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#search&quot;&gt;Suchoptionen&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;connect&quot;&gt;
+&lt;h4&gt;Verbindungen&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;Wählen Sie eine Verbindung aus der Liste und klicken Sie auf &lt;label&gt;Verbinden&lt;/label&gt;.
+&lt;li&gt;Wenn es keine Verbindung gibt, klicken Sie auf &lt;label&gt;Neu&lt;/label&gt;, um eine Verbindung anzulegen.
+&lt;li&gt;Um eine Verbindung zu verändern, klicken Sie auf &lt;label&gt;Bearbeiten&lt;/label&gt;.
+&lt;/ul&gt;
+&lt;a name=&quot;add&quot;&gt;
+&lt;h4&gt;Layer hinzufügen&lt;/h4&gt;
+&lt;/a&gt;
+Um einen Layer hinzuzufügen:
+&lt;ol&gt;
+&lt;li&gt;Wählen Sie die gewünschte Verbindung aus der Liste, 
+&lt;li&gt;klicken Sie auf &lt;label&gt;Verbinden&lt;/label&gt;,
+&lt;li&gt;suchen Sie den Layer, den Sie der Liste hinzufügen wollen und klicken Sie ihn an um ihn auszuwählen, 
+&lt;li&gt;Sie können zusätzliche Layer wählen indem Sie die Ctrl-Taste gedrückt halten,
+&lt;li&gt;klicken Sie auf &lt;label&gt;Hinzufügen&lt;/label&gt; um den/die Layer der Karte hinzuzufügen.
+&lt;/ol&gt;
+&lt;a name=&quot;filter&quot;&gt;
+&lt;h4&gt;Layer filtern&lt;/h4&gt;
+&lt;/a&gt;
+Um Layer vor dem Hinzufügen zu Filtern klicken Sie doppelt auf deren Namen oder benutzen den Knopf &lt;label&gt;Abfrage erstellen&lt;/label&gt;.  Daraufhin öffnet sich der Abfrageeditor, in dem Sie SQL-Anweisungen zum Filtern der Datensätze festlegen können.
+
+&lt;a name=&quot;#search&quot;&gt;
+&lt;h4&gt;Suchoptionen&lt;/h4&gt;
+&lt;/a&gt;
+Durch Abhaken von &lt;label&gt;Suchoptionen&lt;/label&gt; werden weitere Möglichkeiten zur Suche nach verschiedenen Spaltentyp mit folgenden Modi zugeschaltet: &lt;label&gt;Platzhalter&lt;/label&gt; oder &lt;label&gt;RegAusdr&lt;/label&gt;.
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="715"/>
+        <source>&lt;h3&gt;Field Calculator&lt;/h3&gt;
+The field calculator allows you to update fields with expressions.
+
+&lt;h4&gt;Supported Operations&lt;/h4&gt;
+
+&lt;table border=1&gt;
+&lt;tr&gt;
+  &lt;th&gt;Operation&lt;/th&gt;
+  &lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;
+    &lt;tt&gt;column_name&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&quot;column_name&quot;&lt;/tt&gt;
+  &lt;/td&gt;
+  &lt;td&gt;value of field &lt;tt&gt;column_name&lt;/tt&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&apos;&lt;tt&gt;string&lt;/tt&gt;&apos;&lt;/td&gt;&lt;td&gt;literal string value&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;number&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;number&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NULL&lt;/td&gt;&lt;td&gt;null value&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;exp(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Euler&apos;s number e to the power of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ln(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;natural log (i.e. base e) of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;log10(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;log base 10 of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;log(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;b&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;log base &lt;tt&gt;b&lt;/tt&gt; of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;sqrt(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;square root&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;sin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;sine of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;cos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;cosine of &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;tan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;tangent of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;asin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;inverse sine of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;acos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;inverse cosine of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;atan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;inverse tangent of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to int(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convert string &lt;tt&gt;a&lt;/tt&gt; to integer&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to real(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convert string &lt;tt&gt;a&lt;/tt&gt; to real&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to string(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convert number &lt;tt&gt;a&lt;/tt&gt; to string&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;lower(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convert string &lt;tt&gt;a&lt;/tt&gt; to lower case&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;upper(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convert string &lt;tt&gt;a&lt;/tt&gt; to upper case&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;length(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;length of string &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;atan2(&lt;tt&gt;y&lt;/tt&gt;,&lt;tt&gt;x&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;inverse tangent of &lt;tt&gt;y&lt;/tt&gt;/&lt;tt&gt;x&lt;/tt&gt; using the signs of the two arguments to determine the quadrant of the result.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;replacethis&lt;/tt&gt;,&lt;tt&gt;withthat&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;replace &lt;tt&gt;replacethis&lt;/tt&gt; with &lt;tt&gt;withthat&lt;/tt&gt; in string &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;regexp_replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;replacethis&lt;/tt&gt;,&lt;tt&gt;withthat&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;replace the regular expression &lt;tt&gt;replacethis&lt;/tt&gt; with &lt;tt&gt;withthat&lt;/tt&gt; in string &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;substr(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;from&lt;/tt&gt;,&lt;tt&gt;len&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;&lt;tt&gt;len&lt;/tt&gt; characters of string &lt;tt&gt;a&lt;/tt&gt; starting from &lt;tt&gt;from&lt;/tt&gt; (first character index is 1)&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; || &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;concatenate strings &lt;tt&gt;a&lt;/tt&gt; and &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$rownum&lt;/td&gt;&lt;td&gt;number current row&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$area&lt;/td&gt;&lt;td&gt;area of polygon&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$perimeter&lt;/td&gt;&lt;td&gt;perimeter of polygon&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$length&lt;/td&gt;&lt;td&gt;area of line&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$id&lt;/td&gt;&lt;td&gt;feature id&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$x&lt;/td&gt;&lt;td&gt;x coordinate of point&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$y&lt;/td&gt;&lt;td&gt;y coordinate of point&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;xat(&lt;tt&gt;n&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;x coordinate of &lt;tt&gt;n&lt;/tt&gt;th point of a line (indices start at 0; negative values apply to the last index)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yat(&lt;tt&gt;n&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;y coordinate of &lt;tt&gt;n&lt;/tt&gt;th point of a line (indices start at 0; negative values apply to the last index)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ^ &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; raised to the power of &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; * &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; multiplied by &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; / &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; divided by &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; + &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; plus &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; - &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; minus &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;+&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;positive sign&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negative value of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+</source>
+        <translation>&lt;h3&gt;Feldrechner&lt;/h3&gt;
+Der Feldrechner erlaubt Ihnen Felder mit Ausdrücken zu setzen.
+
+&lt;h4&gt;Unterstützte Operationen&lt;/h4&gt;
+
+&lt;table border=1&gt;
+&lt;tr&gt;
+  &lt;th&gt;Operation&lt;/th&gt;
+  &lt;th&gt;Beschreibung&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;
+    &lt;tt&gt;spaltenname&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&quot;spaltenname&quot;&lt;/tt&gt;
+  &lt;/td&gt;
+  &lt;td&gt;Wert des Feldes &lt;tt&gt;spaltenname&lt;/tt&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&apos;string&apos;&lt;/td&gt;&lt;td&gt;Eine Zeichenkettenwert&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;i&gt;zahl&lt;/i&gt;&lt;/td&gt;&lt;td&gt;Zahl&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NULL&lt;/td&gt;&lt;td&gt;Nullwert&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; OR &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; oder &lt;tt&gt;b&lt;/tt&gt; ist wahr.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; AND &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; und &lt;tt&gt;b&lt;/tt&gt; ist wahr.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NOT &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;invertierter Wahrheitswert von &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; IS NULL&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; hat keinen Wert&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; IS NOT NULL&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; hat einen Wert&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; IN ( wert[, wert] )&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ist unter den aufgeführten Werten&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; NOT IN ( wert[, wert] )&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ist nicht unter den aufgeführten Werten&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; = &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; und &lt;tt&gt;b&lt;/tt&gt; sind gleich.&lt;/td&gt;&lt;tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;
+    &lt;tt&gt;a&lt;/tt&gt; != &lt;tt&gt;b&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;a&lt;/tt&gt; &amp;lt;&amp;gt; &lt;tt&gt;b&lt;/tt&gt;
+  &lt;/td&gt;
+  &lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; und &lt;tt&gt;b&lt;/tt&gt; sind nicht gleich&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; &amp;lt;= &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ist kleiner oder gleich &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; &amp;gt;= &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ist größer oder gleich &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; &amp;gt; &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ist größer als &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; &amp;lt; &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ist kleiner als &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ~ &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; entspricht dem regulären Ausdruck &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; LIKE &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; entspricht &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ILIKE &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; entspricht &lt;tt&gt;b&lt;/tt&gt; (ohne Berücksichtigung der Groß-/Kleinschreibung)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;sqrt(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Wurzel aus &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;sin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Sinus von &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;cos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Cosinus von &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;tan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Tangens von &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;asin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Arcussinus von &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;acos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Arcuscosinus von &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;atan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Arcustangens von &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to int(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Zeichenkette &lt;tt&gt;a&lt;/tt&gt; in Ganzzahl umwandeln&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to real(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Zeichenkette &lt;tt&gt;a&lt;/tt&gt; in Realzahl umwandeln&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to string(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Zahl &lt;tt&gt;a&lt;/tt&gt; in Zeichenkette umwandeln&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;lower(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Zeichenkette &lt;tt&gt;a&lt;/tt&gt; in Kleinbuchstaben umwandeln&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;upper(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Zeichenkette &lt;tt&gt;a&lt;/tt&gt; in Großbuchstaben umwandeln&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;length(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Länge der Zeichenkette &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;atan2(y,x)&lt;/td&gt;&lt;td&gt;Arcustangens von y/x mit Vorzeichen der beiden Argumenten, um den Quadranten des Ergebnisses zu bestimmen.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;i&gt;streiche&lt;/i&gt;,&lt;i&gt;setze&lt;/i&gt;)&lt;/td&gt;&lt;td&gt;In der Zeichenkette &lt;tt&gt;a&lt;/tt&gt; &lt;i&gt;streiche&lt;/i&gt; durch &lt;i&gt;setze&lt;/i&gt; ersetzen.&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;regexp_replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;i&gt;streiche&lt;/i&gt;,&lt;i&gt;setze&lt;/i&gt;)&lt;/td&gt;&lt;td&gt;In der Zeichenkette &lt;tt&gt;a&lt;/tt&gt; den regulären Ausdruck &lt;i&gt;streiche&lt;/i&gt; durch &lt;i&gt;setze&lt;/i&gt; ersetzen.&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;substr(&lt;tt&gt;a&lt;/tt&gt;,&lt;i&gt;von&lt;/i&gt;,&lt;i&gt;länge&lt;/i&gt;)&lt;/td&gt;&lt;td&gt;&lt;i&gt;lünge&lt;/i&gt; Zeichen der Zeichenkette &lt;tt&gt;a&lt;/tt&gt; ab Stelle &lt;i&gt;von&lt;/i&gt; (Das erste Zeichen hat den Index 1)&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; || &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;Zeichenkette &lt;tt&gt;a&lt;/tt&gt; and &lt;tt&gt;b&lt;/tt&gt; zusammenziehen&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$rownum&lt;/td&gt;&lt;td&gt;Aktuelle Zeilennummer&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$area&lt;/td&gt;&lt;td&gt;Fläche des Polygons&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$perimeter&lt;/td&gt;&lt;td&gt;Umfang des Polygons&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$length&lt;/td&gt;&lt;td&gt;Länge der Linien&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$id&lt;/td&gt;&lt;td&gt;Objektkennung&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$x&lt;/td&gt;&lt;td&gt;X-Koordinate eines Punkts&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$y&lt;/td&gt;&lt;td&gt;Y-Koordinate eines Punkts&lt;/td&gt;&lt;/tr&gt;
++&lt;tr&gt;&lt;td&gt;xat(n)&lt;/td&gt;&lt;td&gt;X-Koordinate des n-ten Punkts einer Linie (Indizes beginnen bei 0; Negative Werte beziehen sich auf das Linienende)&lt;/td&gt;&lt;/tr&gt;
++&lt;tr&gt;&lt;td&gt;yat(n)&lt;/td&gt;&lt;td&gt;Y-Koordinate des n-ten Punkts einer Linie (Indizes beginnen bei 0; Negative Werte beziehen sich auf das Linienende)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ^ &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;Potenz &lt;tt&gt;b&lt;/tt&gt; von &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; * &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; mit &lt;tt&gt;b&lt;/tt&gt; multipliziert&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; / &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; durch &lt;tt&gt;b&lt;/tt&gt; geteilt&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; + &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; addiert zu &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; - &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; weniger &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;+&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;Positives Vorzeichen&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;Negativer Wert von &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="795"/>
+        <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
+</source>
+        <translation>&lt;h3&gt;Neue OGR-Datenbankverbindung&lt;/h3&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="378"/>
+        <source>&lt;h3&gt; North Arrow Plugin&lt;/h3&gt;
+Displays a north arrow overlayed onto the map.
+&lt;p&gt;
+At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.</source>
+        <translation>&lt;h3&gt;Nordpfeil-Erweiterung&lt;/h3&gt;
+Zeigt einen Nordpfeil über der Karte an.
+&lt;p&gt;
+Gegenwärtig steht nur ein Stil zur Verfügung.  Sie können den Winkel des 
+Pfeils einstellen oder QGIS die Richtung automatisch einstellen lassen. Wenn 
+Sie QGIS die Richtung feststellen lassen, versucht es sein bestes, um zu erraten 
+wie der Pfeil orientiert sein sollte.  Zur Platzierung können Sie aus vier, den 
+vier Ecken der Karte entsprechenden, Positionen wählen.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="382"/>
+        <source>&lt;h3&gt;Scale bar Plugin&lt;/h3&gt;
+Draws a scale bar on the map.
+&lt;p&gt;
+You can control the style and placement, as well as the labeling of the bar.
+QGIS only supports displaying the scale in the same units as your map frame. So
+if the units of your layers are in meters, you can&apos;t create a scale bar in
+feet. Likewise if you are using decimal degrees, you can&apos;t create a scale bar
+to display distance in meters.&lt;/p&gt; &lt;p&gt;
+To add a scale bar:
+&lt;ol&gt;
+&lt;li&gt;Choose the placement from the &lt;label&gt;Placement&lt;/label&gt; drop-down list.&lt;/li&gt;
+&lt;li&gt;Choose the style from the &lt;label&gt;Scale bar style&lt;/label&gt; list.&lt;/li&gt;
+&lt;li&gt;Select the color for the bar &lt;label&gt;Color of bar&lt;/label&gt; or use the default black color.&lt;/li&gt;
+&lt;li&gt;Set the size of the bar and its label &lt;label&gt;Size of bar&lt;/label&gt;. &lt;/li&gt;
+&lt;li&gt;Make sure the &lt;label&gt;Enable scale bar&lt;/label&gt; checkbox is checked.&lt;/li&gt;
+&lt;li&gt;Optionally choose to automatically snap to a round number when the canvas is resized &lt;label&gt;Automatically snap to round number on resize&lt;/label&gt;.&lt;/li&gt;
+&lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+</source>
+        <translation>&lt;h3&gt;Maßstabserweiterung&lt;/h3&gt;
+Zeichnet einen Maßstab auf die Karte.
+&lt;p&gt;
+Sie können den Stil und die Platzierung wie auch die Beschriftungen beeinflussen.  QGIS unterstützt die Darstellung von Maßstäben nur in der gleichen Einheit wie die der Karte.  Wenn die Einheit Ihrer Layer Meter ist, können Sie den Maßstab nicht in Fuß angeben lassen. Genauso können Sie, wenn Sie Grad benutzen, die Abstände auf dem Maßstab nicht in Metern anzeigen.&lt;/p&gt;
+
+&lt;p&gt;Um ein Maßstabsleiste hinzuzufügen: 
+&lt;ol&gt;
+&lt;li&gt;Wählen Sie eine Platzierung aus der Liste &lt;label&gt;Platzierung&lt;/label&gt;.&lt;/li&gt;
+&lt;li&gt;Wählen Sie einen Stile aus der Liste &lt;label&gt;Maßstabsstil&lt;/label&gt;.&lt;/li&gt;
+&lt;li&gt;Wählen Sie die &lt;label&gt;Farbe des Maßstabs&lt;/label&gt; oder benutzen Sie die Voreinstellung Schwarz.&lt;/li&gt;
+&lt;li&gt;Legen Sie die &lt;label&gt;Größe des Maßstabs&lt;/label&gt; fest.&lt;/li&gt;
+&lt;li&gt;Stellen Sie sicher das Kontrollkästchen &lt;label&gt;Aktiviere Maßstab&lt;/label&gt; angehakt ist.&lt;/li&gt;
+&lt;li&gt;Wahlweise können Sie mit &lt;label&gt;Bei Größenänderung automatisch auf runde 
+Zahlen einstellen&lt;/label&gt; dafür sorgen, dass die Maßstabsleiste runde Zahlen 
+anzeigt.&lt;/li&gt;
+&lt;li&gt;Klicke Sie auf &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="788"/>
+        <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
+There are two measure tools: length and area. With them, you can measure both distances and areas on the map canvas. Currently the tools provide results in metric units only. A single right mouse click stops the measuring, while two right mouse clicks starts measuring anew.
+&lt;h4&gt;Measuring Lengths&lt;/h4&gt;
+To measure lengths, select the tool and click along the path you want to measure. The length of each segment is displayed as is the total length for the path.
+&lt;h4&gt;Measuring Areas&lt;/h4&gt;
+To measure areas, select the tool and click to create the area. The total area is dynamically displayed as you click.
+</source>
+        <translation>&lt;h3&gt;Messwerkzeuge&lt;/h3&gt; 
+Es gibt Messwerkzeuge für Länge und Fläche.  Zur Zeit liefern sie nur metrische Ergebnisse. Ein einfacher Rechtsklick beendet die Messung, während zwei Rechtsklicks eine neue Messung einleiten. 
+
+&lt;h4&gt;Längen messen&lt;/h4&gt;
+Um Längen zu messen, wählen Sie das Werkzeug und klicken entlang eines Weges, den Sie messen möchten.  Außer den Längen der einzelnen Segmente wird auch die Gesamtlänge des Weges angezeigt.  Mit dem Messwerkzeug können Sie sowohl Abstände als auch Flächen auf der Karte messen. 
+
+&lt;h4&gt;Flächen messen&lt;/h4&gt;
+Um Flächen zu messen, wählen Sie das Werkzeug und klicken dann um die Fläche zu erzeugen. Die Gesamtgröße wird währenddessen laufend angezeigt. 
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="227"/>
+        <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
+The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; General&lt;/label&gt;.&lt;p&gt;
+
+The number of total number of layer features, filtered features and selected features is printed on the window header.&lt;p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;Selecting&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;Sorting&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;Filtering&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;Editing&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;Field Calculator&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;Selecting&quot;&gt;
+&lt;h4&gt;Selecting&lt;/h4&gt;
+&lt;/a&gt;
+Rows can be selected by clicking on the row number on the left side of the row. Subsequent rows can be selected by holding the mouse button down and moving the mouse to the other end of the selection. Multiple non-subsequent rows can be selected by holding the &lt;label&gt;Ctrl&lt;/label&gt; key.&lt;br&gt;
+A continuous selection can be made by holding the &lt;label&gt;Shift&lt;/label&gt; key and clicking on several row headers on the left side of the rows. All rows between the current cursor position and the clicked row are selected.
+
+&lt;a name=&quot;Sorting&quot;&gt;
+&lt;h4&gt;Sorting&lt;/h4&gt;
+&lt;/a&gt;
+Each column can be sorted by clicking on its column header. A small arrow indicates the sort order (downward pointing means descending values from the top row down, upward pointing means ascending values from the top row down).&lt;br&gt;
+Activate the &lt;label&gt;Selected on top&lt;/label&gt; button to show the selected rows always on top, regardless of the current sort column.
+
+&lt;a name=&quot;Filtering&quot;&gt;
+&lt;h4&gt;Filtering&lt;/h4&gt;
+&lt;/a&gt;
+To only navigate through parts of your data, you can use the filter button on the bottom left. The following options are available.
+&lt;h5&gt;Show All Features&lt;/h5&gt;
+Shows all features of the layer.
+&lt;h5&gt;Show Selected Features&lt;/h5&gt;
+Shows all features which are currently selected.
+&lt;h5&gt;Show Features Visible on Map&lt;/h5&gt;
+Shows all features which are currently visible on the map canvas, taking the currently visible extent and scale based visibility into account.
+&lt;h5&gt;Show Edited and New Features&lt;/h5&gt;
+Shows only edited and new features. In this mode, features with uncommitted changes are shown and this is therefore a good filter to review changes, before committing them. Please note, that deleted features are not shown in this mode.
+&lt;h5&gt;Column Filter&lt;/h5&gt;
+A simple filter, which lets you filter by an attribute. If the attribute contains text, it looks for sub-strings also. Searching for &lt;b&gt;man&lt;/b&gt; will therefore also show records containing &lt;b&gt;woman&lt;/b&gt;. After changing the filter text, press &lt;label&gt;Enter&lt;/label&gt; or click on &lt;label&gt;Apply&lt;/label&gt;. You can also toggle the check-box &lt;label&gt;Case sensitive&lt;/label&gt;, so your filter will also match &lt;b&gt;Night&lt;/b&gt; when your search text is &lt;b&gt;night&lt;/b&gt;.   
+&lt;h5&gt;Advanced Filter&lt;/h5&gt;
+For more complex searches, this mode offers a powerful expression builder, which is similar to a SQL WHERE clause. Please refer to the built-in help of the expression builder for details on the syntax.
+
+&lt;a name=&quot;Editing&quot;&gt;
+&lt;h4&gt;Editing&lt;/h4&gt;
+&lt;/a&gt;
+To edit values, you first have to switch the layer to editing mode. To switch to editing mode click on the &lt;label&gt;Toggle editing mode&lt;/label&gt; (pencil) button or press &lt;label&gt;Ctrl + E&lt;/label&gt;. Afterwards double-click on the value you want to edit or place the cursor on it and use the &lt;label&gt;Space&lt;/label&gt;-Key. You can customize the widgets used for field editing in &lt;label&gt;Vector Layer Properties &gt; Fields&lt;/label&gt;  
+
+&lt;a name=&quot;FieldCalc&quot;&gt;
+&lt;h4&gt;Field Calculator&lt;/h4&gt;
+&lt;/a&gt;
+The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table allows performing calculations on basis of existing attribute values or defined functions, e.g. to calculate length or area of geometry features.&lt;br&gt;
+The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
+The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
+</source>
+        <translation>&lt;h3&gt;Attributtabelle&lt;/h3&gt;
+Die Attributtabelle zeigt Objekte des gewählten Layers an.  Jede Zeile stelle ein Objekt auf der Karte mit seinem Attributen in mehreren Spalten.  Die Objekt in der Tabelle können durchsucht, ausgewählt, verschieben und auch bearbeitet werden.  Die Attributtabelle erscheint normalerweise als separates Fenster.   Wenn Sie es geöffnet haben, aber es nicht mehr sehen können, ist es vermutlich unter dem QGIS-Hauptfenster verschwunden.  Sie können das Fenster auch gedockt anzeigen indem Sie unter &lt;label&gt;Einstellungen &gt; Optionen &gt; Allgemein&lt;/label&gt; ein Häkchen bei &lt;label&gt;Attributtabelle gedockt öffnen&lt;/label&gt; setzen.&lt;p&gt;
+
+Die Nummer des Tabellenobjekts ist in der führenden Spalte angegeben&lt;p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;Auswählen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;Sortieren&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Searching&quot;&gt;Suchen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Field&quot;&gt;Feldrechner&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;Selecting&quot;&gt;
+&lt;h4&gt;Auswählen&lt;/h4&gt;
+&lt;/a&gt;
+Zeilen können durch Klicken auf die Zeilennummer auf der linken Seite der Zeile ausgewählt werden.  Die Auswahl einer Zeile ändern die aktuelle Cursorposition nicht.  Mehrere Zeilen können durch Drücken der Taste &lt;label&gt;Strg&lt;/label&gt; gewählt werden.  Eine fortlaufende Auswahl kann durch Drücken der Taste &lt;label&gt;Umschalt&lt;/label&gt; und Klicken auf mehrere Zeilentitel auf der linken Seite der Zeile erreicht werden.   Damit werden alle Zeilen zwischen der aktuellen und der angeklickten Zeile werden gewählt.
+
+&lt;a name=&quot;Sorting&quot;&gt;
+&lt;h4&gt;Sortieren&lt;/h4&gt;
+&lt;/a&gt;
+Jede Spalte kann durch Klick auf den Spaltentitel sortiert werden.  Ein kleiner Pfeil zeigt die Sortierreihenfolge an (Nach unten bedeutet absteigende Werte von oben nach unten und nach oben aufsteigende Werte von oben nach unten).&lt;br&gt; Benutzen Sie den Knopf &lt;label&gt;Ausgewählte nach oben&lt;/label&gt; um die gewählten Tabellenzeilen als erste anzuzeigen.  Um nur die gewählten Datensätze anzuzeigen haken Sie das Kontrollkästchen &lt;label&gt;Nur gewählte Datensätze zeigen&lt;/label&gt; ab.
+
+&lt;a name=&quot;Searching&quot;&gt;
+&lt;h4&gt;Suchen&lt;/h4&gt;
+&lt;/a&gt;
+Für eine einfache Suche nach Attribute einer Spalte kann das &lt;label&gt;Suche nach&lt;/label&gt; eingesetzt werden.  Wählen Sie das Feld (Spalte), das durchsucht werden soll aus der Auswahlliste und klicken Sie auf den Knopf &lt;label&gt;Suchen&lt;/label&gt;.&lt;br&gt; Für komplexere Suche verwenden Sie bitte &lt;label&gt;Erweitere Suche&lt;/label&gt; Dieser Knopf öffnet den Abfrageeditor und erlaubt Ihnen Zeilen zu wählen, die zu einer SQL-ähnlichen Where-Klausel passen.
+
+&lt;a name=&quot;Field&quot;&gt;
+&lt;h4&gt;Feldrechner&lt;/h4&gt;
+&lt;/a&gt;
+Der Knopf &lt;label&gt;Feldrechner&lt;/label&gt; in der Attributtabelle ermöglicht Berechnungen auf mit vorhandenen Attributwerten oder definierten Funktionen.  Z.B.  kann die Länge oder Fläche von Geometrieobjekten berechnet werden.&lt;br/&gt;
+Die Ergebnisse können in eine neue Attributspalte geschrieben oder eine vorhandene Spalte damit überschrieben werden.&lt;br/&gt;
+Um den Feldrechner zu öffnen, müssen Sie den Vektorlayer zuvor in den Bearbeitungsmodus versetzen.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1110"/>
+        <source>&lt;h3&gt;Project Properties&lt;/h3&gt;
+This dialog allows you to set a number of properties related to the &lt;label&gt;Project&lt;/label&gt;. A Project is a saved set of layers and their settings, as well as other information required to restore the project from disk.&lt;p&gt;
+
+&lt;a href=&quot;#general&quot;&gt;General Tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#crs&quot;&gt;Coordinate Reference System (CRS) Tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#layers&quot;&gt;Identifiable layers Tab&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;General Tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;table border=1&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Project title&lt;/label&gt;&lt;/td&gt;&lt;td&gt;A descriptive title for the project. This title will be displayed in the title bar of the QGIS window&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Selection color&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Selected features are displayed on the map using this color.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Background color&lt;/label&gt;&lt;/td&gt;&lt;td&gt;The color of the map canvas.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Save paths&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Ability to save the paths as absolute or relative.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Layer units&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Choose the units appropriate for the layers in the project.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Precision&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Use the manual setting to set the precision of the display in the status bar. As the mouse is moved over the map canvas, the coordinates are updated and displayed in the status bar using the precision you choose. Automatic (the default) results in a default precision based on the map units.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Digitizing&lt;/label&gt;&lt;/td&gt;&lt;td&gt;The option &lt;label&gt; Enable topological editing&lt;/label&gt; enables editing and maintaining common boundaries in polygon mosaics. Editing a vertex in shared boundary will result in updating both boundaries.&lt;p&gt;
+To avoid digitizing all vertices of the common boundary select &lt;label&gt;Avoid intersections of new polygons&lt;/label&gt;. In the dialog window tick appropriate layers to which the new polygon will be adjusted. Draw the new polygon in the way it overlap the existing one, it will be cut automatically. &lt;p&gt;
+&lt;label&gt;Snapping options&lt;/label&gt; allows you to set the snapping tolerance in pixels or map units and the snapping mode: &lt;label&gt;to vertex&lt;/label&gt;, &lt;label&gt;to segment&lt;/label&gt;, &lt;label&gt;to vertex and segment&lt;/label&gt; for every layer separately.&lt;/td&gt;&lt;/tr&gt;
+
+&lt;/table&gt;
+&lt;a name=&quot;crs&quot;&gt;
+&lt;h4&gt;Coordinate Reference System (CRS) Tab&lt;/h4&gt;
+&lt;/a&gt;
+The Coordinate Reference System (CRS) tab allows you to set the projection for the current project and enable on the fly transformation. You do not need to have a saved project to setup and enable &apos;on the fly&apos; CRS transformation.
+&lt;p&gt;To use &apos;on the fly&apos; CRS transformation, click the &lt;label&gt;Enable &apos;on the fly&apos; CRS transformation&lt;/label&gt; check box. Then choose the projection for the project (map canvas) from the list of Geographic or Projected coordinate systems.
+&lt;p&gt;You can find a coordinate system by entering its name, EPSG code or the QGIS ID and clicking the &lt;label&gt;Find&lt;/label&gt; button.
+&lt;p&gt;The list of recently used coordinate systems will be available on the bottom for quick access.
+
+&lt;a name=&quot;layers&quot;&gt;
+&lt;h4&gt;Identifiable layers Tab&lt;/h4&gt;
+&lt;/a&gt;
+On this tab you can choose on which layers the identify tool will work.
+</source>
+        <translation>&lt;h3&gt;Projekteigenschaften&lt;/h3&gt;
+In diesem Dialog können Sie die Eigenschaften des &lt;label&gt;Projekts&lt;/label&gt; einstellen. In einem Projekt werden eine Menge von Layern mit Ihren Einstellungen sowie andere Information, die zur Wiederherstellung des Projekts beim Laden von Festplatte benötigt werden, gespeichert.&lt;/p&gt;
+
+&lt;a href=&quot;#general&quot;&gt;Reiter allgemein&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#crs&quot;&gt;Reiter Koordinatenbezugssystem (KBS)&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#layers&quot;&gt;Reiter abfragbare Layer&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;Reiter Allgemein&lt;/h4&gt;
+&lt;/a&gt;
+&lt;table border=1&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Projekttitel&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Ein beschreibender Titel für das Projekt. Dieser Titel wird in der Titelzeile des QGIS-Fenster angezeigt.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Auswahlfarbe&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Ausgewählte Objekte werden in der Karte in dieser Farbe angezeigt.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Hintergrundfarbe&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Die Farbe des Kartenhintergrunds.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Pfade speichern&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Möglichkeit Pfade absolut oder relativ zu speichern.&lt;/td&gt;&lt;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Layereinheiten&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Wählen Sie die Einheiten der Layer des Projekts&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Genauigkeit&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Benutzen Sie die manuelle Einstellungen der Anzeigegenauigkeit in der Statuszeile. Während die Maus über die Karte bewegt wird, werden die Koordinaten ständig mit der gewählten Genauigkeit in der Statuszeile angezeigt. Automatisch (die Voreinstellung) führt zu einer von den Karteneinheiten abhängigen Voreinstellung.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Digitalisierung&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Die Option &lt;label&gt;Ermögliche topologisches Editieren&lt;/label&gt; gestattet bearbeiten und weiterführen von Polygonmosaiken. Das Verschieben des Stützpunkts einer gemeinsamer Grenze führt zur Änderung beider Grenzen.&lt;p&gt;
+Um die Digitalisierung aller gemeinsamen Punkte einer Grenze zu vermeiden dient die Option &lt;label&gt;Überschneidung von neuen Polygonen vermeiden...&lt;/label&gt;. Im Dialogfenster sind die gewünschten Layer zu wählen an die das neue Polygon angepasst werden soll.  Die Flächen der Polygone, die das neue Polygon überdeckt, 
+werden automatisch entfernt.&lt;p&gt;
+&lt;label&gt;Fangoptionen&lt;/label&gt; erlaubt Ihnen für jeden einzelnen Layer eine Fangtoleranz in Pixeln oder Karteneinheiten und den Fangmodus einzustellen: &lt;label&gt;zum Stützpunkt&lt;/label&gt;, &lt;label&gt;zu Segment&lt;/label&gt; oder &lt;label&gt;zum Stützpunkt oder Segment&lt;/label&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;crs&quot;&gt;
+&lt;h4&gt;Reiter Koordinatenbezugssystem (KBS)&lt;/h4&gt;
+&lt;/a&gt;
+Der Reiter Koordinatenbezugssystem (KBS) erlaubt Ihnen die Einstellung der Projektion des aktuellen Projekts und das aktivieren der Projektion zur Laufzeit. Sie brauchen das Projekt nicht zu speichern, um die &apos;On-The-Fly&apos;-Transformation einzustellen oder zu aktivieren.&lt;p&gt;
+Um die Transformation zu benutzen, klicken Sie auf &lt;label&gt;&apos;On-The-Fly&apos;-KBS-Transformation aktivieren&lt;/label&gt;, dann wählen Sie die Projektion des Projekts (Karte) aus der Liste der geographischen oder projizierte Koordinatensysteme.
+&lt;p&gt;
+Sie können ein Koordinatensystem suchen indem Sie die PostGIS SRID, den EPSG-Code oder den QGIS ID eingeben und auf &lt;label&gt;Suchen&lt;/label&gt; klicken.
+
+&lt;a name=&quot;layers&quot;&gt;
+&lt;h4&gt;Abfragbare Layer&lt;/h4&gt;
+&lt;/a&gt;
+
+Auf diesem Reiter können Sie einstellen welche Layern das Abfragewerkzeug berücksichtigt.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1191"/>
+        <source>&lt;h3&gt;Add SpatiaLite Tables&lt;/h3&gt;
+To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
+The connections you define will be remembered for further use and available to choose from the drop down menu.
+</source>
+        <translation>&lt;h3&gt;SpatiaLite-Tabelle(n) hinzufügen&lt;/h3&gt;
+
+Um eine neue Verbindung zu erstellen, klicken Sie auf den Knopf 
+&lt;label&gt;Neu&lt;/label&gt; und benutzen die Dateiauswahl, um auf Ihre 
+SpatiaLite-Datenbank, die die Erweiterung &lt;i&gt;.sqlite&lt;/i&gt; trägt, zu weisen.&lt;p&gt;
+Die Verbindungen, die Sie festlegen, werden zur weiteren Benutzung gespeichert 
+und in der Liste zur Auswahl angeboten.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1197"/>
+        <source>&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
+This dialog allows you to work with vector layer settings and properties. There are seven tabs:
+&lt;p&gt;
+&lt;a href=&quot;#symbology&quot;&gt;Symbology&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#labels&quot;&gt;Labels&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Attributes&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#general&quot;&gt;General&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#metadata&quot;&gt;Metadata&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#actions&quot;&gt;Actions&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#diagram&quot;&gt;Diagram Overlay&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;symbology&quot;&gt;
+&lt;h4&gt;Symbology&lt;/h4&gt;
+&lt;/a&gt;
+To change the symbology for a layer, simply double click on its legend entry and the vector &lt;label&gt;Layer Properties&lt;/label&gt; dialog will be shown.&lt;p&gt;
+Within this dialog you can style your vector layer. Depending on the selected rendering option you have the possibility to also classify your map features.
+
+&lt;h5&gt;Legend type&lt;/h5&gt;
+QGIS supports a number of symbology renderers to control how vector features are displayed. Currently the following renderers are available:
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Single symbol&lt;/label&gt; - a single style is applied to every object in the layer.
+&lt;li&gt;&lt;label&gt;Graduated symbol&lt;/label&gt; - objects within the layer are displayed with different symbols classified by the values of a particular field.
+&lt;li&gt;&lt;label&gt;Continuous color&lt;/label&gt; - objects within the layer are displayed with a spread of colors classified by the numerical values within a specified field.
+&lt;li&gt;&lt;label&gt;Unique value&lt;/label&gt; - objects are classified by the unique values within a specified field with each value having a different symbol.
+&lt;/ul&gt;
+
+&lt;h5&gt;New symbology&lt;/h5&gt;
+Click &lt;label&gt;New symbology&lt;/label&gt; button to use new symbology implementation for the layer.
+
+&lt;h5&gt;Vector transparency&lt;/h5&gt;
+QGIS allows setting a transparency for every vector layer. This can be done with the slider &lt;label&gt;Transparency&lt;/label&gt;. This is very useful for overlaying several vector layers.
+
+&lt;h5&gt;Saving styles&lt;/h5&gt;
+Once you have styled your layer you also could save your layer-style to a separate file (with *.qml ending). To do this, use the button &lt;label&gt;Save Style...&lt;/label&gt;. No need to say that &lt;label&gt;Load Style...&lt;/label&gt; loads your saved layer-style-file.&lt;br/&gt;
+If you wish to always use a particular style whenever the layer is loaded, use the &lt;label&gt;Save As Default&lt;/label&gt; button to make your style the default. Also, if you make changes to the style that you are not happy with, use the &lt;label&gt;Restore Default Style&lt;/label&gt; button to revert to your default style.
+
+&lt;a name=&quot;labels&quot;&gt;
+&lt;h4&gt;Labels&lt;/h4&gt;
+&lt;/a&gt;
+The Labels tab allows you to enable labeling features and control a number of options related to fonts, placement, style, alignment and buffering.&lt;br/&gt;
+Check the &lt;label&gt;Display labels&lt;/label&gt; check box to enable labeling.
+
+&lt;h5&gt;Basic Label options&lt;/h5&gt;
+Choose the field to label with.&lt;p&gt;
+Select the use the &lt;label&gt;Font&lt;/label&gt; and  &lt;label&gt;Color&lt;/label&gt; buttons to set the font and color. You can also change the angle and the placement of the text-label.&lt;p&gt;
+If have labels extending over several lines, check &lt;label&gt;Multiline labels?&lt;/label&gt;. QGIS will check for a true line return in your label field and insert the line breaks accordingly. A true line return is a single character &amp;#92;n, (not two separate characters, like a backslash &amp;#92; followed by the character n).
+
+&lt;h5&gt;Placement&lt;/h5&gt;
+Change the label placement by selecting one of the radio buttons in the &lt;label&gt;Placement&lt;/label&gt; group.
+
+&lt;h5&gt;Font size units&lt;/h5&gt;
+The &lt;label&gt;Font size units&lt;/label&gt; allows you to select between &lt;label&gt;Points&lt;/label&gt; or &lt;label&gt;Map units&lt;/label&gt;.
+
+&lt;h5&gt;Buffer labels&lt;/h5&gt;
+To buffer the labels means putting a backdrop around them to make them stand out better. To buffer the lakes labels:
+&lt;ol&gt;
+&lt;li&gt;Click the &lt;label&gt;Buffer Labels&lt;/label&gt; check box to enable buffering.
+&lt;li&gt;Choose a size for the buffer using the spin box.
+&lt;li&gt;Choose a color by clicking on &lt;label&gt;Color&lt;/label&gt; and choosing your favorite from the color selector. You can also set some transparency for the buffer if you prefer.
+&lt;li&gt;Click &lt;label&gt;Apply&lt;/label&gt; to see if you like the changes.
+&lt;/ol&gt;
+Notice you can also specify the buffer size in map 
+units if that works out better for you.
+
+&lt;h5&gt;Data defined placement, properties, buffer, position&lt;/h5&gt;
+The remaining entries inside the &lt;label&gt;Label&lt;/label&gt; tab allow you control the appearance of the labels using attributes stored in the layer. The entries beginning with &lt;label&gt;Data defined&lt;/label&gt; allow you to set all the parameters for the labels using fields in the layer.
+
+
+&lt;a name=&quot;attributes&quot;&gt;
+&lt;h4&gt;Attributes&lt;/h4&gt;
+&lt;/a&gt;
+Within the &lt;label&gt;Attributes&lt;/label&gt; tab the attributes of the selected data set can be manipulated. The buttons &lt;label&gt;New Column&lt;/label&gt; and &lt;label&gt;Delete Column&lt;/label&gt; can be used, when the data set is in editing mode. The OGR library supports to add new columns, but not to remove them, if you have a GDAL version &gt;= 1.6 installed. Otherwise only columns from PostGIS layers can be edited.&lt;p&gt;
+The &lt;label&gt;Toggle editing mode&lt;/label&gt; button toggles this mode.&lt;p&gt;
+Within the Attributes tab you also find an edit widget column. This column can be used to define values or a range of values that are allowed to be added to the specific attribute table column. If you click on the &lt;label&gt;edit widget&lt;/label&gt; button, a dialog opens, where you can define different widgets. These widgets are:&lt;br/&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Line edit&lt;/label&gt; an edit field which allows entering simple text (or restrict to numbers for numeric attributes).
+&lt;li&gt;&lt;label&gt;Classification&lt;/label&gt; Displays a combo box with the values used for classification, if you have chosen &lt;label&gt;unique value&lt;/label&gt; as legend type in the symbology tab of the properties dialog.
+&lt;li&gt;&lt;label&gt;Range&lt;/label&gt; Allows setting of numeric values from a specific range. The edit widget can be either a slider or a spin box.
+&lt;li&gt;&lt;label&gt;Unique value&lt;/label&gt; The user can select one of the values already used in the attribute table. If &lt;label&gt;editable&lt;/label&gt; is activated, a line edit is shown with auto completion support, but additional values are possible, otherwise a combo box is used.
+&lt;li&gt;&lt;label&gt;File name&lt;/label&gt; Simplifies the selection by adding a file chooser dialog.
+&lt;li&gt;&lt;label&gt;Value map&lt;/label&gt; a combo box with predefined items. The value is stored in the attribute, the description is shown in the combo box. You can define values manually or load them from a layer or a csv file.
+&lt;li&gt;&lt;label&gt;Enumeration&lt;/label&gt; Opens a combo box with values that can be used within the columns type. This is currently only supported by the Postgres provider.
+&lt;li&gt;&lt;label&gt;Immutable&lt;/label&gt; The immutable attribute column is read-only. The user is not able to modify the content.
+&lt;li&gt;&lt;label&gt;Hidden&lt;/label&gt; A hidden attribute column is invisible to the user.
+&lt;li&gt;&lt;label&gt;Checkbox&lt;/label&gt; A check box is shown.  The value representing the state of the check box in the attribute has to be entered.
+&lt;li&gt;&lt;label&gt;Text edit&lt;/label&gt; A text edit field is shown, that allows entering multiline text.
+&lt;/ul&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;General&lt;/h4&gt;
+&lt;/a&gt;
+The General tab allows you to change the display name, set scale dependent rendering options, create a spatial index of the vector file (only for OGR supported formats and PostGIS) and view or change the projection of the specific vector layer.&lt;p&gt;
+You can also set a provider specific filter expressions using the &lt;label&gt;Query Builder&lt;/label&gt;.
+
+&lt;h5&gt;Subset&lt;/h5&gt;
+The &lt;label&gt;Query Builder&lt;/label&gt; button allows you to limit the features of a layer to a subset matching an provider specific filter expression.
+
+&lt;a name=&quot;metadata&quot;&gt;
+&lt;h4&gt;Metadata&lt;/h4&gt;
+&lt;/a&gt;
+The &lt;label&gt;Metadata&lt;/label&gt; tab contains information about the layer, including specifics about the type and location, number of features, feature type, and the editing capabilities. The Layer Spatial Reference System section, providing projection information, is displayed on this tab. This is a quick way to get information about the layer.
+
+&lt;a name=&quot;actions&quot;&gt;
+&lt;h4&gt;Actions&lt;/h4&gt;
+&lt;/a&gt;
+QGIS provides the ability to perform an action based on the attributes of a feature. This can be used to perform any number of actions, for example, running a program with arguments built from the attributes of a feature or passing parameters to a web reporting tool. &lt;br/&gt;
+Actions are useful when you frequently want to run an external application or view a web page based on one or more values in your vector layer.&lt;p&gt;
+
+The new implementation of actions uses the QGIS expression engine to do evaluations. Each expression is evaluated and replaced by its result at runtime.&lt;p&gt;
+An expression must be enclosed between &lt;code&gt;[%&lt;/code&gt; and &lt;code&gt;%]&lt;/code&gt; - the GUI has some buttons which do that for you automatically. 
+The &lt;label&gt;Insert expression...&lt;/label&gt; button launches the &lt;label&gt;Expression builder&lt;/label&gt; which allows writing an expression easily, the &lt;label&gt;Insert field&lt;/label&gt; button inserts into the action a placeholder like &lt;code&gt;[% &quot;fieldname&quot; %]&lt;/code&gt; where fieldname is the name of the field selected in the field dropdown list.&lt;p&gt;
+
+See the User Guide for further information.
+
+&lt;h5&gt;Using Actions&lt;/h5&gt;
+Actions can be invoked from the &lt;label&gt;Identify Results&lt;/label&gt; dialog or using the &lt;label&gt;Run feature action&lt;/label&gt; tool on the toolbar.&lt;p&gt;
+
+Each action adds a little set of custom expressions to the default set available in the &lt;label&gt;Expression builder&lt;/label&gt;.&lt;br/&gt;
+While running actions from the &lt;label&gt;Identify Results&lt;/label&gt; dialog the custom expression &lt;code&gt;$currfield&lt;/code&gt; will be replaced with the value of the selected field in the dialog, using the &lt;label&gt;Run feature action&lt;/label&gt; tool the following custom expressions are available (instead of $currfield):
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;$clickx&lt;/code&gt; returns the x coordinate of the click position on the canvas&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$clicky&lt;/code&gt; returns the y coordinate of the click position on the canvas&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$layerid&lt;/code&gt; returns the ID of the selected layer in the legend&lt;/li&gt;
+&lt;/ul&gt;
+
+Note: the &lt;label&gt;Run feature action&lt;/label&gt; tool executes the actions on all the matching features, where as &lt;label&gt;Identify Results&lt;/label&gt; allows you to select which specific feature to run action on.&lt;p&gt;
+
+
+&lt;h5&gt;Action Examples&lt;/h5&gt;
+You can add some example actions by clicking on the &lt;label&gt;Add default actions&lt;/label&gt; button.
+
+
+&lt;a name=&quot;diagram&quot;&gt;
+&lt;h4&gt;Diagram Overlay&lt;/h4&gt;
+&lt;/a&gt;
+The Diagram tab allows you to add a graphic overlay to a vector layer. To activate this feature, open the &lt;label&gt;Plugin Manager&lt;/label&gt; and select the &lt;label&gt;Diagram Overlay&lt;/label&gt; plugin. After this, there is a new tab in the vector &lt;label&gt;Layer Properties&lt;/label&gt; dialog where the settings for diagrams may be entered.&lt;p&gt;
+The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
+of the diagram size according to a classification attribute.
+</source>
+        <translation>&lt;h3&gt;Vektorlayereigenschaften&lt;/h3&gt;
+In diesem Dialog können Sie an den Vektorlayereinstellungen und -eigenschaften arbeiten. Es gibt sieben Reiter:
+&lt;p&gt;
+&lt;a href=&quot;#symbology&quot;&gt;Darstellung&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#labels&quot;&gt;Beschriftungen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Attribute&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#general&quot;&gt;Allgemein&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#metadata&quot;&gt;Metadaten&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#actions&quot;&gt;Aktionen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#diagram&quot;&gt;Diagramm-Überlagerung&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;symbology&quot;&gt;
+&lt;h4&gt;Darstellung&lt;/h4&gt;
+&lt;/a&gt;
+Um die Darstellung eines Layers zu ändern, klicken Sie einfach doppelt auf seinen Legendeneintrag und der Dialog &lt;label&gt;Layereigenschaften&lt;/label&gt; wird angezeigt.&lt;p&gt;
+In diesem Dialog können Sie Ihren Vektorlayer gestalten.  Abhängig von den Zeichnungseinstellungen haben Sie auch die Möglichkeit Ihre Kartenobjekte zu klassifizieren. 
+
+&lt;h5&gt;Darstellungen&lt;/h5&gt;
+QGIS unterstützt eine Reihe von unterschiedlichen Darstellungen für Vektorobjekte.  Derzeit sind folgende Darstellungen verfügbar:
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Einzelsymbol&lt;/label&gt; - alle Objekte werden gleich dargestellt
+&lt;li&gt;&lt;label&gt;Abgestuftes Symbol&lt;/label&gt; - Objekte eines Layers werden abhängig vom Wert eines bestimmten Attributs klassifiziert und darstellt.
+&lt;li&gt;&lt;label&gt;Fortlaufende Farbe&lt;/label&gt; - Objekte eines Layers werden abhängig vom nummerische Wert eines bestimmten Attribute in einem Farbverlauf dargestellt.
+&lt;li&gt;&lt;label&gt;Eindeutiger Wert&lt;/label&gt; - Jedem möglichen Wert eines bestimmten Attributs kann ein unterschiedliches Symbol zugeordnet werden.
+&lt;/ul&gt;
+
+&lt;h5&gt;Neue Darstellung&lt;/h5&gt;
+Klicken Sie auf den Knopf &lt;label&gt;Neue Darstellung&lt;/label&gt;, um den Layer in der neuen Darstellung anzuzeigen.
+
+&lt;h5&gt;Vektortransparenz&lt;/h5&gt;
+Für jeden Vektorlayer kann in QGIS eine Transparenz eingestellt werden. Dies erfolgt über den Schieber &lt;label&gt;Transparenz&lt;/label&gt; und ist sehr nützlich, um mehrere Vektorlayer übereinander zu legen.
+
+&lt;h5&gt;Stilvorgaben speichern&lt;/h5&gt;
+Wenn Sie Ihren Layer gestaltet haben, können Sie Ihre Gestaltung in einer gesonderten Datei (mit Endung &lt;code&gt;*.qml&lt;/code&gt;) speichern.  Benutzen Sie dazu den Knopf &lt;label&gt;Stil speichern...&lt;/label&gt;.  Dass &lt;label&gt;Stil laden...&lt;/label&gt; Ihren gespeicherten Stil wieder läd, sollte klar sein.
+&lt;p&gt;Wenn Sie wann immer Sie den Layer laden den gleichen Stil verwenden wollen, können Sie ihn über den Knopf &lt;label&gt;Als Vorgabe speichern&lt;/label&gt; voreinstellen.  Außerdem können Sie mit dem Knopf &lt;label&gt;Stilvorgaben wiederherstellen&lt;/label&gt; Ihre Änderungen jederzeit zurücknehmen, wenn Sie mit Ihnen nicht glücklich sind. 
+
+&lt;a name=&quot;labels&quot;&gt;
+&lt;h4&gt;Beschriftungen&lt;/h4&gt;
+&lt;/a&gt;
+Unter dem Reiter Beschriftungen können Sie die Beschriftungen einschalten und einige Einstellungen zu Schriftarten, Platzierung, Stil, Ausrichtung und Freistellung vornehmen.&lt;br/&gt;
+Setzen Sie das Häkchen in &lt;label&gt;Beschriftungen anzeigen&lt;/label&gt;, um die Beschriftungen einzuschalten.
+
+&lt;h5&gt;Grundlegende Beschriftungsoptionen&lt;/h5&gt;
+Wählen Sie ein anzuschreibendes Feld.&lt;p&gt;
+Wählen Sie die zu benutzende &lt;label&gt;Schriftart&lt;/label&gt; und &lt;label&gt;Farbe&lt;/label&gt;.  Sie können auch den Winkel und die Platzierung der Beschriftung wählen.&lt;p&gt;
+Wenn Sie mehrzeilige Beschriftungen haben, setzen Sie ein Häkchen in &lt;label&gt;Mehrzeilige Beschriftungen?&lt;/label&gt;.  QGIS wird dann echte Zeilenumbrüche in Ihrem Beschriftungsfeld entsprechend behandeln. Ein echter Zeilenumbruch in ein einzelnes Zeichen &lt;code&gt;&amp;#92;n&lt;/code&gt; (ASCII LINEFEED; nicht zwei einzelne Zeichen wie umgekehrter Schrägstrich gefolgt von einem Buchstaben n).
+
+&lt;h5&gt;Platzierung&lt;/h5&gt;
+Ändern Sie die Beschriftungsplatzierung indem Sie eine Optionsfeld der Gruppe &lt;label&gt;Platzierung&lt;/label&gt; wählen.
+
+&lt;h5&gt;Schriftgrößen(-einheiten)&lt;/h5&gt;
+Unter &lt;label&gt;Schriftgrößen&lt;/label&gt; können Sie zwischen &lt;label&gt;Punkten&lt;/label&gt; oder &lt;label&gt;Karteneinheiten&lt;/label&gt; wählen.
+
+&lt;h5&gt;Beschriftungen freistellen&lt;/h5&gt;
+Beschriftungen freizustellen bedeutet dahinter einen Rand zu zeichnen, um sie besser hervorzuheben.  Dazu:
+&lt;ol&gt;
+&lt;li&gt;Setzen Sie eine Haken in &lt;label&gt;Beschriftungen freistellen&lt;/label&gt;, um die Freistellung zu aktivieren,
+&lt;li&gt;Wählen Sie die Größe des Puffers.
+&lt;li&gt;Wählen Sie die Farbe durch Klick auf &lt;label&gt;Farbe&lt;/label&gt; Ihre Lieblingsfarbe. Falls Sie es vorziehen, können Sie auch Transparenz wählen.
+&lt;li&gt;Klicken Sie auf &lt;label&gt;Anwenden&lt;/label&gt;, um zu sehen, ob Ihnen die Änderungen gefallen.
+&lt;/ol&gt;
+Beachten Sie, dass Sie die Puffergröße auch in Karteneinheiten angeben können, wenn Ihnen das besser paßt.
+
+&lt;h5&gt;Datendefinierte Platzierung, Eigenschaften, Freistellung und Position&lt;/h5&gt; 
+Die verbleibenden Einträge im Reiter &lt;label&gt;Beschriftung&lt;/label&gt; erlauben es Ihnen die Erscheinung der Beschriftungen mit im Layer gespeicherten Attributen zu steuern. Die mit &lt;label&gt;Datendefiniert&lt;/label&gt; beginnenden Einträge gestatten es Ihnen alle Parameter der Beschriftungen über Felder des Layers zu setzen. 
+
+&lt;a name=&quot;attributes&quot;&gt;
+&lt;h4&gt;Attribute&lt;/h4&gt;
+&lt;/a&gt;
+Im Reiter &lt;label&gt;Attribute&lt;/label&gt; können die Attribute des gewählten Layers geändert werden.  Die Knöpfe &lt;label&gt;Neue Spalte&lt;/label&gt; und &lt;label&gt;Spalte löschen&lt;/label&gt; sind im Bearbeitungsmodus verfügbar. Die OGR-Bibliothek unterstützt für Shapedateien das Hinzufügen von Feldern (ab GDAL 1.6), aber nicht das Löschen. Sonst können nur Spalten von PostGIS-Layers bearbeitet werden.
+&lt;p&gt;Der Knopf &lt;label&gt;Bearbeitungsmodus umschalten&lt;/label&gt; wechselt den Modus. 
+&lt;p&gt;Im Reiter Attribute finden sie auch eine Spalte Bearbeitungselement. Diese Spalte kann verwendet werden, um Werte oder Wertebereich festzulegen die für die jeweilige Attributspalte erlaubt sind. Wenn Sie auf einen Knopf in der Spalte &lt;label&gt;Bearbeitungselement&lt;/label&gt; klicken, öffnet sich ein Dialog in dem sie Bearbeitungselement einstellen können. Diese Elemente sind:&lt;br/&gt; 
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Eingabezeile&lt;/label&gt; Ein Bearbeitungsfeld in dem einfacher Text (oder nur Zahlen für numerische Attribute) eingegeben werden kann.
+&lt;li&gt;&lt;label&gt;Klassifikation&lt;/label&gt; Zeigt ein Kombinationsfeld (Combobox) mit den Werten an, die auch für die Darstellung &lt;label&gt;Eindeutige Werte&lt;/label&gt; verwendet.
+&lt;li&gt;&lt;label&gt;Range&lt;/label&gt; Gestattet die Einstellung eines Wertebereichs für numerische Werte. Das Bearbeitungselement kann als Eingabezeile oder Schieber dargestellt werden.
+&lt;li&gt;&lt;label&gt;Eindeutige Werte&lt;/label&gt; Der Benutzer kann über ein Kombinationsfeld aus Werten wählen, die bereits in der Attributspalte verwendet werden. Wenn &lt;label&gt;Änderbar&lt;/label&gt; aktiv ist, wird eine Eingabezeile mit automatischer Vervollständigung angezeigt und es sind auch neue Eingaben möglich.
+&lt;li&gt;&lt;label&gt;Dateiname&lt;/label&gt; Vereinfacht die Eingabe durch Hinzufügen eine Dateiauswahl.
+&lt;li&gt;&lt;label&gt;Wertabbildung&lt;/label&gt; eine Kombinationsfeld mit vordefinierten Werten. Der Wert wird im Attribut gespeichert, die Beschreibung im Kombinationsfeld angezeigt. Sie können die Werte manuell eingeben oder aus einem Layer oder einer CSV-Datei laden.
+&lt;li&gt;&lt;label&gt;Aufzählung&lt;/label&gt; öffnet ein Kombinationsfeld mit den möglichen Werten des Spaltentyps. Dies wird gegenwärtig nur für PostGIS-Layer unterstützt.
+&lt;li&gt;&lt;label&gt;Unveränderbar&lt;/label&gt; Eine unveränderliche Spalte ist schreibgeschützt. Der Benutzer kann den Inhalt nicht ändern.
+&lt;li&gt;&lt;label&gt;Versteckt&lt;/label&gt; Versteckte Felder sind für den Benutzer unsichtbar.
+&lt;li&gt;&lt;label&gt;Kontrollkästchen&lt;/label&gt; Ein Kontrollkästchen wird angezeigt.  Im Dialog sind die Werte einzugeben, die für den jeweiligen Kästchenzustand im Attribut abbilden.
+&lt;li&gt;&lt;label&gt;Textfeld&lt;/label&gt; Es wird ein Eingabefeld angezeigt, dass die Eingabe von mehrzeiligem Text erlaubt.
+&lt;/ul&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;Allgemein&lt;/h4&gt;
+&lt;/a&gt;
+Im Reiter &lt;label&gt;Allgemein&lt;/label&gt; kann der Anzeigename, das massstabsabhängige Zeichnen eingestellt werden, räumliche Indizes für Vektorlayer (nur OGR- und PostGIS-Layer) und die Projektion des Vektorlayers eingesehen oder verändert werden.&lt;p&gt; 
+Sie können über &lt;label&gt;Abfrageerstellung&lt;/label&gt; auch Filterausdrücke festlegen.
+
+&lt;h5&gt;Untermenge&lt;/h5&gt;
+Der Knopf &lt;label&gt;Abfrageerstellung&lt;/label&gt; erlaubt die Objekte eines Layer auf eine einem Ausdruck genügende Untermenge zu beschränken.
+
+&lt;a name=&quot;metadata&quot;&gt;
+&lt;h4&gt;Metadaten&lt;/h4&gt;
+&lt;/a&gt;
+Der Reiter &lt;label&gt;Metadaten&lt;/label&gt; einhält Information über den Layer, einschließlich Einzelheiten zu Typ und Ort, Objektanzahl, Objekttyp und Bearbeitungsmöglichkeiten. Im Abschnitt &lt;label&gt;Räumliches Bezugssystem des Layers&lt;/label&gt; stehen Information zur Projektion. Dies ist ein einfacher Weg, um Informationen zum Layer zu erhalten.
+
+&lt;a name=&quot;actions&quot;&gt;
+&lt;h4&gt;Aktionen&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;QGIS bietet die Möglichkeit Aktionen mit Attributen eines Objekts auszuführen.  Dies kann dazu genutzt werden eine Reihe von Aktionen durchzuführen.  Zum Beispiel ein Programm mit Argumenten aufzurufen, die aus Attributen eines Objekts gebildet werden oder um Parameter an ein Webberichtswerkzeug zu übergeben.
+&lt;p&gt;Aktionen sind sinnvoll, wenn man oft externe Anwendungen aufrufen oder Webseite abhängig von einem oder mehreren Attributwerten Ihres Vektorlayers anzeigen möchte. Ein Beispiel ist an auf einem Attribut basierende Suche.
+&lt;p&gt;Im Benutzerhandbuch finden Sie nährere Informationen.  
+
+&lt;h5&gt;Aktionen verwenden&lt;/h5&gt;
+Aktionen können aus dem &lt;label&gt;Abfragewerkzeug&lt;/label&gt; heraus aufgerufen werden.
+
+&lt;a name=&quot;diagram&quot;&gt;
+&lt;h4&gt;Diagramm-Überlagerung&lt;/h4&gt;
+&lt;/a&gt;
+Der Reiter Diagramm-Überlagerung gestattet Ihnen über dem Layer eine Grafik einzublenden. Um diese Möglichkeit einzuschalten, öffnen Sie &lt;label&gt;Erweiterungen verwalten...&lt;/label&gt; und aktivieren die Erweiterung &lt;label&gt;Diagramm Überlagerung&lt;/label&gt;.  Danach steht Ihnen ein neuer Reiter im Dialog &lt;label&gt;Layereigenschaften&lt;/label&gt;, in dem Sie die Diagrammeinstellungen vornehmen können, zur Verfügung.
+&lt;p&gt;Die gegenwärtige Diagramm-Implementierung ermöglicht Kuchen- und Balkendiagramme sowie die lineare Skalierung gemäß eines Klassifikationsattribut.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="279"/>
+        <source>&lt;h3&gt;Spatial Bookmarks&lt;/h3&gt;
+Spatial Bookmarks allow you to &quot;bookmark&quot; a geographic location and return to it later.
+&lt;p&gt;
+&lt;a href=&quot;#creating&quot;&gt;Creating a Bookmark&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#working&quot;&gt;Working with Bookmarks&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#zooming&quot;&gt;Zooming to a Bookmark&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#deleting&quot;&gt;Deleting a Bookmark&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#updating&quot;&gt;Updating a Bookmark&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;creating&quot;&gt;
+&lt;h4&gt;Creating a Bookmark&lt;/h4&gt;
+&lt;/a&gt;
+To create a bookmark:
+&lt;ol&gt;
+&lt;li&gt;Zoom or pan to the area of interest.
+&lt;li&gt;Click on the &lt;label&gt;New bookmark&lt;/label&gt; or type Ctrl-B.
+&lt;li&gt;Enter a descriptive name for the bookmark (up to 255 characters).
+&lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt; to add the bookmark or &lt;label&gt;Cancel&lt;/label&gt; to exit without adding the bookmark.
+&lt;/ol&gt;
+Note that you can have multiple bookmarks with the same name.
+&lt;a name=&quot;working&quot;&gt;
+&lt;h4&gt;Working with Bookmarks&lt;/h4&gt;
+&lt;/a&gt;
+To use or manage bookmarks, click on the &lt;label&gt;Show bookmarks&lt;/label&gt; button or choose &lt;label&gt;Show Bookmarks&lt;/label&gt; from the &lt;label&gt;View&lt;/label&gt; menu. The bookmarks dialog allows you to zoom to or delete a bookmark. You can not edit the bookmark name or coordinates.
+&lt;a name=&quot;zooming&quot;&gt;
+&lt;h5&gt;Zooming to a Bookmark&lt;/h5&gt;
+&lt;/a&gt;
+From the Geo spatial Bookmarks dialog, select the desired bookmark by clicking on it, then click the &lt;label&gt;Zoom to&lt;/label&gt; button.
+&lt;p&gt;
+You can also zoom to a bookmark by double-clicking on it.
+&lt;a name=&quot;deleting&quot;&gt;
+&lt;h5&gt;Deleting a Bookmark&lt;/h5&gt;
+&lt;/a&gt;
+To delete a bookmark from the Bookmarks dialog, click on it then click the &lt;label&gt;Delete&lt;/label&gt; button. Confirm your choice by clicking &lt;label&gt;OK&lt;/label&gt; or cancel the delete by clicking &lt;label&gt;Cancel&lt;/label&gt;.
+&lt;a name=&quot;updating&quot;&gt;
+&lt;h5&gt;Updating a Bookmark&lt;/h5&gt;
+&lt;/a&gt;
+To update the extent of a bookmark, click on it then click the &lt;label&gt;Update&lt;/label&gt; button. Confirm your choice by clicking &lt;label&gt;OK&lt;/label&gt; or cancel the update by clicking &lt;label&gt;Cancel&lt;/label&gt;.
+
+</source>
+        <translation>&lt;h3&gt;Räumliche Lesezeichen&lt;/h3&gt;
+Mit räumliche Lesezeichen kann man sich geographische Positionen merken, um später dorthin zurückzukehren. 
+
+&lt;p&gt;
+&lt;a href=&quot;#creating&quot;&gt;Ein Lesezeichen anlegen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#working&quot;&gt;Mit Lesezeichen arbeiten&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#zooming&quot;&gt;Zu einem Lesezeichen zoomen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#deleting&quot;&gt;Ein Lesezeichen löschen&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;creating&quot;&gt;
+&lt;h4&gt;Ein Lesezeichen anlegen&lt;/h4&gt;
+&lt;/a&gt;
+Um ein Lesezeichen anzulegen: 
+&lt;ol&gt;
+&lt;li&gt;Zum interessanten Punkt zoomen,
+&lt;li&gt;auf &lt;label&gt;Neues Lesezeichen&lt;/label&gt; klicken oder Strg-B eingeben,
+&lt;li&gt;einen beschreibenden Lesezeichennamen eingeben (bis zu 255 Zeichen),
+&lt;li&gt;auf &lt;label&gt;OK&lt;/label&gt; klicken, um das Lesezeichen hinzuzufügen oder &lt;label&gt;Abbrechen&lt;/label&gt; um den Vorgang abzubrechen. 
+&lt;/ol&gt;
+Beachten Sie, dass Sie mehrere Lesezeichen gleichen Namens anlegen können.
+
+&lt;a name=&quot;working&quot;&gt;
+&lt;h4&gt;Mit Lesezeichen arbeiten&lt;/h4&gt;
+&lt;/a&gt;
+Um Ihre Lesezeichen zu bearbeiten, klicken Sie auf &lt;label&gt;Lesezeichen anzeigen&lt;/label&gt; oder wählen Sie &lt;label&gt;Lesezeichen anzeigen&lt;/label&gt; aus dem &lt;label&gt;Ansicht&lt;/label&gt;-Menü. Aus dem Dialog können Sie zum Lesezeichen zoomen oder Lesezeichen löschen.   Sie können den Lesezeichennamen oder dessen Koordinaten jedoch nicht ändern.
+
+&lt;a name=&quot;zooming&quot;&gt;
+&lt;h5&gt;Zu einem Lesezeichen zoomen&lt;/h5&gt;
+&lt;/a&gt;
+Wählen Sie das gewünschte Lesezeichen aus dem Dialog durch Anklicken und dann auf den &lt;label&gt;Zoom nach&lt;/label&gt;.
+&lt;p&gt;Sie können auch durch Doppelklick auf das Lesezeichen zoomen.
+
+&lt;a name=&quot;deleting&quot;&gt;
+&lt;h5&gt;Ein Lesezeichen löschen&lt;/h5&gt;
+&lt;/a&gt;
+Um ein Lesezeichen im Dialog zu löschen, klicken Sie auf &lt;label&gt;Löschen&lt;/label&gt;.  Bestätigen Sie Ihre Wahl mit &lt;label&gt;OK&lt;/label&gt; oder brechen Sie den Vorgang mit &lt;label&gt;Abbrechen&lt;/label&gt; ab.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1388"/>
+        <source>&lt;h3&gt;Road graph plugin settings&lt;/h3&gt;
+&lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any polyline layer and plots this path over the road network.&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#creating&quot;&gt;Plugin units&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#topologyTolerance&quot;&gt;Topology tolerance&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#layerSettings&quot;&gt;Transport layer settings&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;a name=&quot;creating&quot;&gt;
+&lt;h4&gt;Plugin units&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;You can adjust the units of the calculated distance and time of the path. Select the units in &lt;label&gt;Distance unit&lt;/label&gt; and &lt;label&gt;Time unit&lt;/label&gt;.&lt;/p&gt;
+
+&lt;a name=&quot;topologyTolerance&quot;&gt;
+&lt;h4&gt;Topology tolerance&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;&lt;label&gt;Topology tolerance&lt;/label&gt; - the distance in units of the project. If the distance of two points falls short the topological tolerance, they are considered to be the vertex. A topological tolerance value greater than zero slows down the plugin, but you can use not ideal data sources.&lt;/p&gt;
+
+&lt;h5&gt;Note&lt;/h5&gt;
+&lt;p&gt;The Road graph plugin considers two roads as linked, if they have a common node. A Node is uniquely identified by it&apos;s coordinates. However, in the process of digitizing errors may occur. The errors sometimes occur when the network is transformed from one coordinate reference system to another. This might cause the Road graph plugin to consider connected roads as disconnected. In that case the topological tolerance should be set to a value greater than zero.&lt;/p&gt;
+
+&lt;a name=&quot;LayerSettings&quot;&gt;
+&lt;h4&gt;Transport layer settings&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;&lt;label&gt;Layer&lt;/label&gt; - the data layer of roads.&lt;/p&gt;
+&lt;p&gt;&lt;label&gt;Field direction&lt;/label&gt; - the value of this field indicates how to interpret the Road graph plugin layers feature. &lt;label&gt;Value for forward direction&lt;/label&gt; - the direction of movement corresponds to the order of points in a feature. &lt;label&gt;Value for reverse direction&lt;/label&gt; - the direction of movement corresponds to the reverse order of points in the feature. &lt;label&gt;Value for two-way direction&lt;/label&gt; - both possible.&lt;/p&gt;
+&lt;p&gt;Speed field&lt;/p&gt; - field containing the recorded speed on the road.&lt;/p&gt;
+
+&lt;h5&gt;Default settings&lt;/h5&gt;
+&lt;p&gt;If the attribute table of your linear layer does not contain the required fields or fields contain unexpected values, the plugin will use default values. You can set them in the default tab &lt;label&gt;Default settings&lt;/label&gt;.&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Straßengraph Erweitungseinstellungen&lt;/h3&gt;
+&lt;p&gt;Straßengraph ist eine C++-Erweiterung für QGIS, die den kürzesten Weg zwischen zwei Punkten auf jedem Polylinien-Layer berechnet und ihn über dem Straßennetz anzeigt.&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#creating&quot;&gt;Einheiten der Erweiterung&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#topologyTolerance&quot;&gt;Topologietoleranz&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#layerSettings&quot;&gt;Verkehrslayereinstellung&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;a name=&quot;creating&quot;&gt;
+&lt;h4&gt;Einheiten der Erweiterung&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;Sie können die berechneten Längen und Zeiten verschiedenen Einheiten anzeigen. Wählen Sie sie unter &lt;label&gt;Längeneinheit&lt;/label&gt; und &lt;label&gt;Zeiteinheit&lt;/label&gt; ein.&lt;/p&gt;
+
+&lt;a name=&quot;topologyTolerance&quot;&gt;
+&lt;h4&gt;Topologietoleranz&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;&lt;label&gt;Topologietoleranz&lt;/label&gt; - der Abstand in Projekteinheiten. Wenn zwei Punkt diesen Abstand unterschreiten, werden sie als gleich verstanden.  Ein Wert größe Null verlangsamt die Erweiterung, ermöglicht aber die Nutzung von qualitativ schlechteren Datenquellen.&lt;/p&gt;
+
+&lt;h5&gt;Hinweis&lt;/h5&gt;
+&lt;p&gt;Die Straßengraph-Erweitungen betrachtet zwei Straßen als verbunden, wenn sie einen gemeinsamen Knoten haben. Knoten über ihre Koordinate eindeutig. Es kann aber vorkommen, dass bei der Digitalisierung Fehler auftreten. Diese treten manchmal auch auf, wenn von einem in andere Koordinatensystem transformiert wird. Dieser Effekt führt dazu, dass verbundene Straßen nicht als solches erkannt werden. In diesem Fall sollte die Topologietoleranz auf einen Wert größer Null erhöht werden.&lt;/p&gt;
+
+&lt;a name=&quot;LayerSettings&quot;&gt;
+&lt;h4&gt;Verkehrslayereinstellung&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;&lt;label&gt;Layer&lt;/label&gt; - der Layer mit dem Straßennetz.&lt;/p&gt;
+&lt;p&gt;&lt;label&gt;Richtungsfeld&lt;/label&gt; - der Wert diese Feldes gibt an wie die Erweiterung die Straßen interpretieren soll. &lt;label&gt;Wert für Vorwärts&lt;/label&gt; - die Bewegungsrichtung entspricht der Reihenfolge der Linienpunkte. &lt;label&gt;Wert für Rückwärts&lt;/label&gt; - die Bewegungsrichtung ist der Reihenfolge der Linienpunkte entgegengesetzt. &lt;label&gt;Wert für beide Richtungen&lt;/label&gt; - Die Straße ist in beide Richtungen befahrbar.&lt;/p&gt;
+&lt;p&gt;Geschwindigkeitsfeld&lt;/p&gt; - ein Feld, dass die aufgezeichnete Geschwindigkeit auf dieser Straße angibt.&lt;/p&gt;
+
+&lt;h5&gt;Voreinstellungen&lt;/h5&gt;
+&lt;p&gt;Wenn die Attributtabelle Ihres Linienlayers nicht die erforderlichen Felder oder Felder mit unerwarteten Werten enthält, werden Voreinstellungen verwendet. Sie können diese unter dem Reiter &lt;label&gt;Voreinstellungen&lt;/label&gt; festlegen.&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1145"/>
+        <source>&lt;h3&gt;Query Builder&lt;/h3&gt;
+The query builder allows you to create provider specific filter expressions.
+
+These are usually evaluated much faster than the generic QGIS expressions, but
+are sometimes limited (e.g. for shape files) or behave diffently.
+
+&lt;h4&gt;Providers&lt;/h4&gt;
+
+&lt;table border=1&gt;
+&lt;tr&gt;
+  &lt;th&gt;Provider&lt;/th&gt;
+  &lt;th&gt;Documentation&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;OGR&lt;/td&gt;
+  &lt;td&gt;where clauses depending on the
+    &lt;a href=&quot;http://www.gdal.org/ogr/ogr_formats.html&quot;&gt;format&lt;/a&gt; (eg.
+    &lt;a href=&quot;http://www.gdal.org/ogr/ogr_sql.html&quot;&gt;OGR SQL&lt;/a&gt;
+    for shape files)
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;PostgreSQL/PostGIS&lt;/td&gt;
+  &lt;td&gt;where clauses using
+    &lt;a href=&quot;http://www.postgresql.org/docs/&quot;&gt;PostgreSQL&lt;/a&gt; and
+    &lt;a href=&quot;http://postgis.net/documentation&quot;&gt;PostGIS&lt;/a&gt; 
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;SpatiaLite&lt;/td&gt;
+  &lt;td&gt;where clauses using
+    &lt;a href=&quot;http://www.sqlite.org/lang_select.html&quot;&gt;SQLite&lt;/a&gt; and
+    &lt;a href=&quot;http://www.gaia-gis.it/gaia-sins/spatialite-sql-4.1.0.html&quot;&gt;SpatiaLite&lt;/a&gt;
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;Oracle Spatial/Locator&lt;/td&gt;
+  &lt;td&gt;where clauses using
+    &lt;a href=&quot;http://docs.oracle.com/cd/B28359_01/appdev.111/b28400/sdo_index_query.htm#autoId9&quot;&gt;Oracle Spatial/Locator&lt;/a&gt;
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td colspan=2&gt;...&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+</source>
+        <translation>&lt;h3&gt;Abfrageerstellung&lt;/h3&gt;
+Mit der Abfrageerstellungen können datenlieferanten spezifische Ausdrücke erstellt werden.
+
+Dies werden normalerweise viel schneller ausgeführt das generische QGIS-Ausdrücke, sind aber manchmal nur eingeschränkt (z.B. bei Shapedateien) oder verhalten sich anders.
+
+&lt;h4&gt;Datenlieferant&lt;/h4&gt;
+
+&lt;table border=1&gt;
+&lt;tr&gt;
+  &lt;th&gt;Datenlieferant&lt;/th&gt;
+  &lt;th&gt;Dokumentation&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;OGR&lt;/td&gt;
+  &lt;td&gt;where-Klauseln abhängig vom &lt;a href=&quot;http://www.gdal.org/ogr/ogr_formats.html&quot;&gt;Format&lt;/a&gt; (z.B.
+    &lt;a href=&quot;http://www.gdal.org/ogr/ogr_sql.html&quot;&gt;OGR SQL&lt;/a&gt;
+    bei Shapedateien)
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;PostgreSQL/PostGIS&lt;/td&gt;
+  &lt;td&gt;where-Klauseln gemäß &lt;a href=&quot;http://www.postgresql.org/docs/&quot;&gt;PostgreSQL&lt;/a&gt; und
+    &lt;a href=&quot;http://postgis.net/documentation&quot;&gt;PostGIS&lt;/a&gt; 
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;SpatiaLite&lt;/td&gt;
+  &lt;td&gt;where-Klauseln gemäß
+    &lt;a href=&quot;http://www.sqlite.org/lang_select.html&quot;&gt;SQLite&lt;/a&gt; und
+    &lt;a href=&quot;http://www.gaia-gis.it/gaia-sins/spatialite-sql-4.1.0.html&quot;&gt;SpatiaLite&lt;/a&gt;
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;Oracle Spatial/Locator&lt;/td&gt;
+  &lt;td&gt;where-Klauseln gemäß
+    &lt;a href=&quot;http://docs.oracle.com/cd/B28359_01/appdev.111/b28400/sdo_index_query.htm#autoId9&quot;&gt;Oracle Spatial/Locator&lt;/a&gt;
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td colspan=2&gt;...&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="65"/>
+        <source>&lt;h1&gt;Python Console for QGIS&lt;/h1&gt;
+&lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Settings&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td&gt;
+The QGIS Python Console is an interactive shell for the python command executions. 
+It also has a python file editor that allows you to edit and save your python scripts. 
+Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
+The console is split in two main panes, top and bottom one 
+resizable by using the horizontal splitter. Output area pane is a widget read-only which 
+shows the commands output. You can drag and drop or copy and paste text into input area and 
+execute code snippets from the output pane by selecting some text and clicking on the 
+&lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
+No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
+python shell for input commands.&lt;br&gt;To access to the python file editor use the 
+&lt;label&gt;Show editor&lt;/label&gt; button 
+from the toolbar. The editor allows editing and saving python files and it offers basic functionality 
+for managing your code (comment and 
+uncomment code, check syntax, share the code via codepad.org and much more).
+&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Console&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;ul&gt;
+&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+&lt;ol&gt;
+&lt;li&gt;Python&lt;/li&gt;
+&lt;li&gt;PyQGIS&lt;/li&gt;
+&lt;li&gt;PyQt4&lt;/li&gt;
+&lt;li&gt;QScintilla2&lt;/li&gt;
+&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
+The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
+&lt;br&gt;
+&lt;/ul&gt;
+&lt;/td&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;table&gt;
+&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
+&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td&gt;Import Processing class&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;ul&gt;
+&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+&lt;ol&gt;
+&lt;li&gt;Python&lt;/li&gt;
+&lt;li&gt;PyQGIS&lt;/li&gt;
+&lt;li&gt;PyQt4&lt;/li&gt;
+&lt;li&gt;QScintilla2&lt;/li&gt;
+&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
+&lt;br&gt;
+&lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
+(this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
+&lt;br&gt;
+&lt;/ul&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Settings&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Further settings for python console:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion:&lt;/label&gt; If checked the code completion is enabled. You can get autocompletion
+from current document, from installed APIs and both from APIs and current document&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion threshold:&lt;/label&gt; Sets the threshold to display the autocompletion list (in chars typed)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Automatic parentheses insertion:&lt;/label&gt; If checked enables the autoclosing for bracket&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto-save script before running:&lt;/label&gt; Allows you to save automatically the
+script to be executed in order to avoid to save it after any modification.
+This action will store a temporary file into the temporary system directory 
+that will be automatically deleted after running.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using preloaded APIs file:&lt;/label&gt; You can choose whether use the preload APIs file or load some APIs files saved on your system.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
+from the close button. This allows you to save the geometry to be restored to the next start.
+&lt;/p&gt;
+</source>
+        <translation>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Python Konsole für QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Konsole&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Einstellungen&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				Die QGIS Python Konsole ist eine interaktive Shell für Python Kommandoausführungen. 
+				Ebenfalls beinhaltet sie einen Python Dateieditor der das Editieren und speichern von Python Dateien erlaubt. 
+				Konsole und Editor basieren auf PyQScintilla2.&lt;br&gt;
+				Die Konsole ist aufgeteilt in zwei Hauptfenster, Oberes und Unteres welche in der Größe veränderbar sind. Das Ausgabefeld ist ein ein &quot;nur lesen&quot; Feld welches nur die Ausgabe des jeweiligen Kommandos anzeigt. In das Eingabefeld kann per kopieren/einfügen oder drag and drop text eingefügt werden und es können code schnippsel aus dem Ausgabefeld eingefügt werden indem der Text selektiert wird und auf &lt;label&gt;Füge Ausgewähltes ein&lt;/label&gt; aus dem Kontextmenü geklickt wird. 
+				Es spielt hierbei keine Rolle ob der ausgewählte Text den Interpreter Prompt (&gt;&gt;&gt;, ...) beinhaltet. Das Eingabefeld ist die Interaktive Python Shell für Eingabekommandos.&lt;br&gt; Um den Python Dateieditor zu benutzen klicken sie auf &lt;label&gt;Zeige Editor&lt;/label&gt; aus der Toolbar. Mit Hilfe des Editors kann man Python Dateien editieren und abspeichern und er beinhaltet grundlegende Funktionen um den Code zu verwalten (Code kommentieren, unkommentieren, Syntaxprüfung, Codeaustausch mit Hilfe von codepad und vieles mehr).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Konsole&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Hauptfunktionen:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Codevervollständigung, Syntax Highlighting, Calltips für folgende APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; um die Autovervollständigungsliste zu seigen.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; um die Befehlshistorienliste zu zeigen.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Codeschnippseausführung mittels &lt;label&gt;Zeige ausgewähltes&lt;/label&gt; Kommando aus dem Ausgabefeld.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Öffne QGIS API dokumentation mittels Eingabe von &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Öffne PyQGIS Cookbook mittel Eingabe von &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Speichere und Lösche die Historie der Befehle unter Zuhilfenahme des Kontextmenüs des Eingabefeldes. 
+			Die Historie wird in die Datei ~/.qgis2/console_history.txt gespeichert&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Lösche Python Konsole&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importiere Processing class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importiere PyQt4.QtCore class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool zum importieren von PyQt4.QtGui class&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Führe Befehl aus (wirkt wie ein drücken auf die Entertaste)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Einstellungen&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Hilfe&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Hauptfunktionen:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Codevervollständigung, Syntax Highlighting, Calltips für folgende APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; zeigt die Autovervollständigungsliste.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Austausch von Codeteilen mittels codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntaxprüfung.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Objektinspector: ein Klassen und Funktionsbrowser.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Gehe zu einer Objektdefinition mittels Mausklick. (aus dem Objektinspektor)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Ausführung von Codeteilen mittels &lt;label&gt;Zeige ausgewähltes&lt;/label&gt; Kommando.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Führe das Ganze script aus mittels &lt;label&gt;Run script&lt;/label&gt; Kommando 
+			(Dies erzeugt eine Bytekompilierte Datei mit dem Anhang .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Einstellungen&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Weitere Einstellungen für die Python Konsole:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autovervollständigung:&lt;/label&gt; Wenn markiert ist die Codevervollständigung aktiviert. Die Vervollständigung funktioniert aus dem aktuellen Dokument, aus den installierten APIs und beides (Dokument und APIs)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Autovervollständigung Schwellenwert:&lt;/label&gt; Setzt den Schwellenwert ab wieviel eingegebenen Buchstaben die Autovervollständigung einsetzt.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Automatische Klammerneinfügung:&lt;/label&gt; Wenn gesetzt werden Klammern automatisch geschlossen&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto-save script vor Start:&lt;/label&gt; Erlaubt das Script automatisch abzuspeichern bevor es gestartet wird.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Benutze geladene APIs Datei:&lt;/label&gt; Es kann zwischen bereits geladenen API Dateien oder APIs zum Laden aus dem Dateisystem ausgewählt werden.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Benutze vorbereitete APIs Datei:&lt;/label&gt; Wenn ausgewählt wird die *.pap Datei für die Codevervollständigung genutzt. Um eine solche Datei vorzubereiten muss zumindest eine *.api Datei geladen und dann compiliert werden mittels &lt;label&gt;Compiliere Apis...&lt;/label&gt; Knopf.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Notiz:&lt;/b&gt; Um den Status des Konsolenwidgets zu speichern muss die Konsole über den schliessen Knopf geschlossen werden. Dies erlaubt die Wiederherstellung des Fensterstatus beim nächsten Start.
+&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="331"/>
+        <source>&lt;h3&gt;Custom Coordinate Reference System Definition&lt;/h3&gt;
+If QGIS does not provide the coordinate reference system you need, you can define a custom CRS. &lt;p&gt;
+To define a CRS, select &lt;label&gt;Custom CRS&lt;/label&gt; from the &lt;label&gt;Edit&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; (KDE, Windows) menu. Custom CRS are stored in your QGIS user database. In addition to your custom CRS, this database also contains your spatial bookmarks and other custom data.
+
+&lt;h4&gt;Define&lt;/h4&gt;
+To create a new CRS, click the &lt;label&gt;New&lt;/label&gt; button and enter:
+&lt;ul&gt;
+&lt;li&gt;descriptive name 
+&lt;li&gt;CRS parameters
+&lt;/ul&gt;
+Note that the Parameters must begin with a +proj=-block, to represent the new coordinate reference
+system.
+&lt;p&gt;
+Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
+</source>
+        <translation>&lt;h3&gt;Definition eines Benutzerkoordinatensystems&lt;/h3&gt;
+Wenn QGIS ein benötigtes Koordinatensystem nicht zur Verfügung stellt, können Sie ein Benutzer-KBS definieren.
+&lt;p&gt;Um ein KBS anzugeben, wählen Sie &lt;label&gt;Benutzerkoordinatensystem...&lt;/label&gt; aus dem Menü &lt;label&gt;Bearbeiten&lt;/label&gt; (GNOME, OSX) bzw. &lt;label&gt;Einstellungen&lt;/label&gt; (KDE, Windows).  Benutzer-KBS werden in Ihrer QGIS-Benutzerdatenbank gespeichert.  Neben Ihren Benutzer-KBS enthält diese auch die räumlichen Lesezeichen und andere Benutzerdaten.
+
+&lt;h4&gt;Definieren&lt;/h4&gt;
+Um ein neues KBS anzulegen, klicken Sie auf den Knopf &lt;label&gt;Neu (Sternchen)&lt;/label&gt; und machen folgende Eingabe: 
+&lt;dl&gt; 
+&lt;dt&gt;Name&lt;/dt&gt;&lt;dd&gt;Beschreibung&lt;/dd&gt;
+&lt;dt&gt;Parameter&lt;/dt&gt;&lt;dd&gt;KBS Parameter (PROJ.4 Format)&lt;/dd&gt;
+&lt;/dl&gt; 
+&lt;p&gt; 
+Beachten Sie, dass die Parameter mit einem Block &lt;code&gt;+proj=&lt;/code&gt; beginnen müssen, um ein neues 
+Koordinatensystem darzustellen. 
+&lt;p&gt; 
+Ein Benutzer-KBS in QGIS zu definieren erfordert gutes Verständnis der PROJ.4-Projektionsbibiliothek. Zum Einstieg sei auf &lt;em&gt;&lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt;, A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990&lt;/em&gt; verwiesen.  Dieses Handbuch beschreibt die Benutzung von &lt;em&gt;PROJ.4&lt;/em&gt; und die zugehörigen Kommandozeilenwerkzeuge. Die kartographischen Parameter in &lt;em&gt;PROJ.4&lt;/em&gt; sind im diesem Handbuch beschrieben und sind die gleichen wie die in QGIS benutzten.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="346"/>
+        <source>&lt;h3&gt;Copyright Label&lt;/h3&gt;
+Draws a copyright label with information.&lt;br/&gt;
+You can add any random text to the map not only a copyright label.
+&lt;p&gt;
+&lt;a href=&quot;#howto&quot;&gt;How to&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#text&quot;&gt;Text formatting&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;howto&quot;&gt;
+&lt;h4&gt;How to&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ol&gt;
+&lt;li&gt;Make sure the plugin is loaded.
+&lt;li&gt;Click on &lt;label&gt;View &gt; Decorations &gt; Copyright Label&lt;/label&gt;.
+&lt;li&gt;Enter the text you want to place on the map. You can use HTML.
+&lt;li&gt;Choose the placement of the label from the &lt;label&gt;Placement Bottom Right&lt;/label&gt; drop-down box.
+&lt;li&gt;Make sure the &lt;label&gt;Enable Copyright Label check box&lt;/label&gt; is checked.
+&lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.
+&lt;/ol&gt;
+&lt;a name=&quot;text&quot;&gt;
+&lt;h4&gt; Text formatting &lt;/h4&gt;
+&lt;/a&gt;
+This plugin supports basic HTML markup tags for formatting text. For example:
+
+&lt;ul&gt;
+&lt;li&gt;&amp;lt;B&amp;gt;&lt;b&gt; Bold text &lt;/b&gt;&amp;lt;/B&amp;gt;
+&lt;/li&gt;
+&lt;li&gt;&amp;lt;I&amp;gt;&lt;i&gt; Italics &lt;/i&gt;&amp;lt;/I&amp;gt;
+&lt;/li&gt;
+&lt;li&gt;&amp;lt;U&amp;gt;&lt;u&gt; Underlined text &lt;/u&gt;&amp;lt;/U&amp;gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</source>
+        <translation>&lt;h3&gt;Copyright Label-Erweiterung&lt;/h3&gt;
+Zeichnet einen Urheberrechtshinweis mit Informationen.&lt;br/&gt;
+Sie können der Karte beliebigen Text hinzufügen nicht nur einen Urheberrechtshinweis. 
+&lt;p&gt;
+&lt;a href=&quot;#howto&quot;&gt;Wie&apos;s geht?&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#text&quot;&gt;Textformatierung&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;howto&quot;&gt;
+&lt;h4&gt;Wie&apos;s geht?&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ol&gt;
+&lt;li&gt;Stellen Sie sicher, dass die Erweiterung geladen ist.
+&lt;li&gt;Klicken Sie auf &lt;label&gt;Erweiterungen &gt; Dekorationen &gt; Urheberrechtshinweis &lt;/label&gt; oder benutzen Sie den Knopf &lt;label&gt;Urheberrechtshinweis&lt;/label&gt; aus der Werkzeugleiste.
+&lt;li&gt;Geben Sie den Text ein, den Sie auf die Karte setzen wollen. Sie können HTML verwenden.
+&lt;li&gt;Wählen Sie die Platzierung der Beschriftung aus der Liste unten rechts.
+&lt;li&gt;Vergewissern Sie sich, dass das Kontrollkästchen &lt;label&gt;Urheberrechtshinweise aktivieren&lt;/label&gt; angehakt ist..
+&lt;li&gt;Klicken Sie auf &lt;label&gt;OK&lt;/label&gt;.
+&lt;/ol&gt;
+&lt;a name=&quot;text&quot;&gt;
+&lt;h4&gt;Textformatierung&lt;/h4&gt;
+&lt;/a&gt;
+Diese Erweiterung unterstützt grundlegende HTML-Hervorhebungstags zur Textformatierung. Zum Beispiel: 
+
+&lt;ul&gt;
+&lt;li&gt;&amp;lt;B&amp;gt;&lt;b&gt; Fett &lt;/b&gt;&amp;lt;/B&amp;gt;
+&lt;/li&gt;
+&lt;li&gt;&amp;lt;I&amp;gt;&lt;i&gt; Kursiv &lt;/i&gt;&amp;lt;/I&amp;gt;
+&lt;/li&gt;
+&lt;li&gt;&amp;lt;U&amp;gt;&lt;u&gt; Unterstrichen &lt;/u&gt;&amp;lt;/U&amp;gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="797"/>
+        <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
+You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
+&lt;h4&gt;Database&lt;/h4&gt;
+Choose the database from the drop-down list. This list is created from your saved SpatiaLite connections. If you don&apos;t have a saved connection or want to create a new database, click on the button (&lt;label&gt;...&lt;/label&gt;) to the right of the drop-down.
+&lt;h4&gt;Layer name&lt;/h4&gt;
+Enter a name for the layer you want to create. The name should be one word. You can use underscores in the name if you like.
+&lt;h4&gt;Geometry column&lt;/h4&gt;
+Enter a name for the geometry column or accept the default.
+&lt;h4&gt;Type&lt;/h4&gt;
+Choose the type of layer you want to create. 
+&lt;h4&gt;EPSG SRID&lt;/h4&gt;
+Enter the EPSG number for the spatial reference id (SRID). By default the SRID for WGS 84 is filled in for you. Click on &lt;label&gt;Find SRID&lt;/label&gt; button to change the coordinate reference system of the layer if needed. The SRID must exist within the spatial_ref_sys in your SpatiaLite database. You can search for the SRID using partial matches on both name and SRID.
+&lt;h4&gt;Create an auto-incrementing Primary Key&lt;/h4&gt;
+Clicking this check box will add a primary key to the new layer. This key field will be auto-incrementing, meaning you don&apos;t have to enter a value for it when adding features to the attribute table of the layer.
+&lt;h4&gt;New attribute&lt;/h4&gt;
+Add the desired attributes by clicking on the &lt;label&gt;Add to attributes list&lt;/label&gt; button after you have specified a name and type for the attribute. Only real, integer, and string attributes are supported.&lt;br/&gt;
+Width and precision are irrelevant in a SpatiaLite database so you do not have to specify these.
+&lt;h4&gt;Attributes list&lt;/h4&gt;
+In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
+
+&lt;p&gt;
+Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.
+&lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
+</source>
+        <translation>&lt;h3&gt;Einen neuen SpatiaLite-Layer erzeugen&lt;/h3&gt;
+In diesem Dialog können Sie eine neue SpatiaLite-Datenbank und/oder einen leeren SpatiaLite Layer zur Bearbeitung erzeugen.  Unten werden die Eingabemöglichkeiten des Dialogs beschrieben.
+&lt;h4&gt;Datenbank&lt;/h4&gt;
+Wählen Sie die Datenbank aus der Liste.  Diese Liste wird aus den gespeicherten SpatiaLite-Verbindungen erzeugt.  Wenn sie keine gespeicherten Verbindungen haben oder oder eine neue Datenbank erzeugen wollen Klicken Sie auf &lt;label&gt;...&lt;/label&gt; rechts der Liste.
+&lt;h4&gt;Layername&lt;/h4&gt;
+Geben Sie dem Layer, den Sie erzeugen wollen, einen Namen.  Der Name sollte nur ein Wort sein.  Wenn Sie wollen, können Sie auch Unterstriche verwenden
+&lt;h4&gt;Geometriespalte&lt;/h4&gt;
+Geben Sie der Geometriespalte einen Namen oder übernehmen Sie die Voreinstellung.
+&lt;h4&gt;Typ&lt;/h4&gt;
+Legen Sie den Layertyp fest, den Sie erzeugen wollen.
+&lt;h4&gt;EPSG-SRID&lt;/h4&gt;
+Geben Sie einen EPSG-Code für die SRID (räumliche Bezugskennung) an.  Für die SRID wird Ihnen WGS 84 vorgeschlagen.  Klicken Sie auf den Knopf &lt;label&gt;SRID finden&lt;/label&gt; um das Koordinatenbezugssystem ggf. zu ändern.  Die SRID muss in der Tabelle spatial_ref_sys in Ihre Datenbank existieren. Sie können SRIDs suchen indem Sie Suchbegriffe verwenden, die ganz oder teilweise zu Namen oder SRIDs passen.
+&lt;h4&gt;Einen automatisch inkrementierenden Primärschlüssel erzeugen&lt;/h4&gt;
+Das Anwählen dieses Kontrollkästchen fügt dem Layer einen Primärschlüssel hinzu.  Diese Feld wird automatisch inkrementiert, sodass Sie keinen keinen Wert dafür beim Hinzufügen von Objekten zum Layer eingeben müssen.
+&lt;h4&gt;Neue Attribute&lt;/h4&gt;
+Fügen Sie die gewünschten Attribute durch Klicken auf den Knopf &lt;label&gt;Attribute zur Liste hinzufügen&lt;/label&gt; nachdem Sie Namen und Type des Attributes festgelegt haben.  Nur Fließkomma-, ganzzahlige und Zeichenkettenattribute werden unterstützt.&lt;br/&gt;
+Breite und Genauigkeit sind irrelevant in einer SpatiaLite-Datenbank, daher brauchen Sie sie nicht anzugeben.
+&lt;h4&gt;Attributliste&lt;/h4&gt;
+In diesem Abschnitt sehen Sie die Attributliste.  Um eins davon zu löschen, klicken Sie auf den Knopf &lt;label&gt;Gewähltes Attribut löschen&lt;/label&gt;.
+
+&lt;p&gt;
+Klicken Sie auf &lt;label&gt;OK&lt;/label&gt; um den Layer anzulegen und den Dialog zu schließen.
+&lt;label&gt;Abbruch&lt;/label&gt; schließt den Dialog ohne weitere Änderung.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="833"/>
+        <source>&lt;h3&gt;Open Vector Layer Dialog&lt;/h3&gt;
+
+The open vector layer dialog is used to add vector data to the QGIS map view. Vector data are spatial data described using geometries of points, lines and polygons (enclosed areas).&lt;/p&gt;
+QGIS supports vector data in a number of formats, including those supported by the OGR library data provider plugin, such as ESRI shape files, MapInfo MIF (interchange format) and MapInfo TAB (native format).&lt;/p&gt;
+QGIS supports PostGIS layers in a PostgreSQL database and SpatiaLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats can be found in Appendix A.1 of the User Guide.&lt;/p&gt;
+Detailed description how to proceed with vector data is described in chapter 5 &apos;Working with Vector Data&apos;.
+</source>
+        <translation>&lt;h3&gt;Vektorlayer hinzufügen&lt;/h3&gt;
+
+Der Dialog &quot;Vektorlayer hinzufügen&quot; wird zum Hinzufügen von Vektordaten zur QGIS-Karte benutzt. Vektordaten sind räumliche Daten, die durch Punkte, Linien oder Polygone (umschlossene Flächen) beschrieben werden.&lt;/p&gt;
+QGIS unterstützt eine Reihen von Formaten, einschließlich deren der OGR-Datenlieferanten-Erweiterung.  Dies sind z.B. ESRI Shapedateien, MapInfo MIF- (Austauschformat) und MapInfo TAB-Dateien (natives Format).&lt;/p&gt;
+QGIS unterstützt PostGIS-Layer in einer PostgreSQL-Datenbank und SpatiaLite-Layer.  Unterstützung für zusätzliche Datentypen (z.B. getrennter Text) wird durch weitere Datenlieferanten-Erweiterungen gestellt.  Eine Liste der durch OGR unterstützten Formate ist im Anhang A.1 des Benutzerhandbuchs zu finden.&lt;/p&gt;
+Eine genaue Beschreibung wie mit Vektordaten umzugehen ist, steht im Kapitel 5 &apos;Arbeiten mit Vektordaten&apos;.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="954"/>
+        <source>&lt;h3&gt;Create a New PostGIS Connection&lt;/h3&gt;
+This dialog allows you to define the settings for a connection to a PostgreSQL/PostGIS database.
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;label&gt;Name&lt;/label&gt; A name to identify the connection settings.
+
+&lt;li&gt; &lt;label&gt;Service&lt;/label&gt; A name of a service listed in the &lt;a href=&quot;http://www.postgresql.org/docs/current/static/libpq-pgservice.html&quot;&gt;Connection Service File&lt;/a&gt;.
+
+&lt;li&gt; &lt;label&gt;Host&lt;/label&gt; Name or IP address of the computer hosting the database server (leave blank for local connections or services).
+
+&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; IP port used by the database server (leave blank for local connections or to use default port 5432).
+
+&lt;li&gt; &lt;label&gt;Database&lt;/label&gt; Name of the database (leave blank for default database).
+
+&lt;li&gt; &lt;label&gt;SSL mode&lt;/label&gt; &lt;a href=&quot;http://www.postgresql.org/docs/9.0/static/libpq-ssl.html#LIBPQ-SSL-SSLMODE-STATEMENTS&quot;&gt;SSL mode&lt;/a&gt; of the connection
+
+&lt;li&gt; &lt;label&gt;Username&lt;/label&gt; Database user name.
+&lt;li&gt; &lt;label&gt;Password&lt;/label&gt; Database password.
+
+&lt;li&gt; &lt;label&gt;Save Username&lt;/label&gt; Indicates whether to save the database user name in the connection configuration.
+
+&lt;li&gt; &lt;label&gt;Save Password&lt;/label&gt; Indicates whether to save the database password in the connection settings.  &lt;font color=&quot;red&quot;&gt;Passwords are saved in &lt;strong&gt;clear text&lt;/strong&gt; in the system configuration and in the project files!&lt;/font&gt;
+
+&lt;li&gt; &lt;label&gt;Only look in the geometry_columns table&lt;/label&gt; Indicates that only &quot;listed&quot; geometry columns should be used - opposed to scanning all tables for geometry columns.
+
+&lt;li&gt; &lt;label&gt;Only look in the &apos;public&apos; schema&lt;/label&gt; Indicates that only tables in the &apos;public&apos; schema should be considers - opposed to all accessible tables.
+
+&lt;li&gt; &lt;label&gt;Also list tables with no geometry&lt;/label&gt;  Indicates that tables without geometry should also be listed by default.
+
+&lt;li&gt; &lt;label&gt;Use estimated table metadata&lt;/label&gt; When initializing layers, various queries may be needed to establish the characteristics of the geometries stored in the database table.  When this option is checked, these queries examine only a sample of the rows and use the table statistics, rather than the entire table.  This can drastically speed up operations on large datasets, but may result in incorrect characterization of layers (eg. the &lt;font color=&quot;red&quot;&gt;feature count&lt;/font&gt; of filtered layers will not be accurately determined).
+
+&lt;/ul&gt;
+</source>
+        <translation>&lt;h3&gt;Neue PostGIS-Verbindung erstellen&lt;/h3&gt;
+In diesem Dialog kann eine Verbindung zu einer PostgreSQL-Datenbank eingestellt werden.
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;label&gt;Name&lt;/label&gt; Ein Name um die Verbindung zu identifizieren.
+
+&lt;li&gt; &lt;label&gt;Dienst&lt;/label&gt; Der Name eines Dienstes aus der &lt;a href=&quot;http://www.postgresql.org/docs/current/static/libpq-pgservice.html&quot;&gt;Connection Service Datei (englisch)&lt;/a&gt;.
+
+&lt;li&gt; &lt;label&gt;Host&lt;/label&gt; Name oder IP-Adresse des Computers, der den Datenbankserver beherbergt (für lokale Verbindungen und Dienste frei lassen).
+
+&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; IP-Port des Datenbankservers (für lokale Verbindungen oder den voreingestellten Port 5432 frei lassen).
+
+&lt;li&gt; &lt;label&gt;Datenbank&lt;/label&gt; Name der Datenbank (für die voreingestellte Datenbank leer lassen).
+
+&lt;li&gt; &lt;label&gt;SSL-Modus&lt;/label&gt; &lt;a href=&quot;http://www.postgresql.org/docs/9.0/static/libpq-ssl.html#LIBPQ-SSL-SSLMODE-STATEMENTS&quot;&gt;SSL-Modus (englisch)&lt;/a&gt; der Verbindung.
+
+&lt;li&gt; &lt;label&gt;Benutzername&lt;/label&gt; Datenbankbenutzername.
+&lt;li&gt; &lt;label&gt;Passwort&lt;/label&gt; Datenbankpasswort.
+
+&lt;li&gt; &lt;label&gt;Benutzername speichern&lt;/label&gt; Legt fest, dass der Benutzername in der Verbindungseinstellungen gespeichert werden soll.
+
+&lt;li&gt; &lt;label&gt;Passwort speichern&lt;/label&gt; Legt fest, dass das Passwort in den Verbindungseinstellungen gespeichert werden soll.  &lt;font color=&quot;red&quot;&gt;Passworte werden dann im &lt;strong&gt;Klartext&lt;/strong&gt; in der Systemkonfiguration und Projektdateien gespeichert!&lt;/font&gt;
+
+&lt;li&gt; &lt;label&gt;Nur in geometry_columns nachsehen&lt;/label&gt; Legt fest, dass nur &quot;gelistete&quot; Geometriespalten benutzt werden sollen - statt alle Tabellen nach Geometriespalten zu durchsuchen.
+
+&lt;li&gt; &lt;label&gt;Nur im Schema &apos;public&apos; nachsehen&lt;/label&gt; Legt fest, dass nur das Schema &apos;public&apos; berücksichtigt werden soll - statt alle zugänglichen Tabellen.
+
+&lt;li&gt; &lt;label&gt;Auch geometrielose Tabellen anzeigen&lt;/label&gt;  Legt fest, dass normalerweise nicht nur Tabellen mit Geometrie, sondern alle Tabellen aufgelistet werden sollen.
+
+&lt;li&gt; &lt;label&gt;Geschätzte Tabellenmetadaten nutzen&lt;/label&gt; Wenn die Layer initialisiert werden, können mehrere Abfragen nötig sein, um die Eigenschaften der Geometrien der Datenbanktabelle zu bestimmen.  Wenn diese Option gewählt ist werden die Abfragen nur einige Zeilen und die Tabellenstatistiken, statt der gesamten Tabelle, betrachten.  Dies beschleunigt die Benutzung Layer erheblich, kann aber auch zu falschen Ergebnissen führen (z.B. wird die &lt;font color=&quot;red&quot;&gt;Objektanzahl&lt;/font&gt; von gefilterten Layern nicht genau bestimmt).
+
+&lt;/ul&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1024"/>
+        <source>&lt;h3&gt;Manage and install Plugins&lt;/h3&gt;
+
+&lt;p&gt;
+Manage and install plugins.
+&lt;/p&gt;
+
+
+&lt;a href=&quot;#installedtab&quot;&gt;Installed tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#getmoretab&quot;&gt;Get more tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#newtab&quot;&gt;New tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#upgradabletab&quot;&gt;Upgradable tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#invalidtab&quot;&gt;Invalid tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#settingstab&quot;&gt;Settings tab&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;installedtab&quot;&gt;
+&lt;h4&gt;Installed tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+This tab shows you the list of currently installed plugins on your system. Both
+python and C++ plugins are listed.
+&lt;/p&gt;
+&lt;p&gt;
+You can enable or disable them by clicking the checkbox in front of the name.&lt;br/&gt;
+Selecting an item show the plugin information in the detail pane.
+&lt;/p&gt;
+&lt;p&gt;
+There is a context menu (right click) available, to change the sorting on:
+name, number of downloads, votes and status.
+&lt;/p&gt;
+
+
+&lt;a name=&quot;getmoretab&quot;&gt;
+&lt;h4&gt;Get more tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+This tab shows you the list of available plugins from the remote repositories.
+It is downloaded once if you start up. But you can change that in the Settings
+&lt;/p&gt;
+&lt;p&gt;
+Selecting an item shows you the plugin information in the detail pane.
+&lt;/p&gt;
+
+&lt;a name=&quot;newtab&quot;&gt;
+&lt;h4&gt;New tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+This tab will be shown when a new plugin is made available! It will be shown
+just once.
+&lt;/p&gt;
+
+&lt;a name=&quot;upgradabletab&quot;&gt;
+&lt;h4&gt;Upgradable tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+This tab is only available if one of your installed plugins can be upgraded
+from the remote repositories.
+&lt;/p&gt;
+
+&lt;a name=&quot;Invalid tab&quot;&gt;
+&lt;h4&gt;Invalid tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+This tab is only available if there is a invalid plugin. Mostly caused by an error 
+during loading the plugin.
+&lt;/p&gt;
+
+&lt;a name=&quot;settingstab&quot;&gt;
+&lt;h4&gt;Settings tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+In this tab you can change the Settings for the plugin manager.
+&lt;/p&gt;
+&lt;p&gt;
+It is possible to check how often QGIS will download the list and update information 
+from the available repositories.
+&lt;/p&gt;
+&lt;p&gt;
+By checking the &apos;Show experimental plugins&apos; checkbox, all plugins will be shown
+in the lists, even the ones that are considered &apos;experimental&apos; by the author.
+
+&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
+Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Erweiterungen verwalten und installieren&lt;/h3&gt;
+
+&lt;p&gt;
+Erweiterungen verwalten und installieren.
+&lt;/p&gt;
+
+
+&lt;a href=&quot;#installedtab&quot;&gt;Reiter Installierte&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#getmoretab&quot;&gt;Reiter Mehr holen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#newtab&quot;&gt;Reiter Neu&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#upgradabletab&quot;&gt;Reiter Aktualisierbar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#invalidtab&quot;&gt;Reiter Ungültig&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#settingstab&quot;&gt;Reiter Einstellungen&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;installedtab&quot;&gt;
+&lt;h4&gt;Reiter Installiert&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Dieser Reiter zeigt die derzeit installierten Erweiterungen ihres System an. Sowohl Python- als auch C++-Erweiterung werden angezeigt.
+&lt;/p&gt;
+&lt;p&gt;
+Sie können durch das Kontrollkästchen vor ihrem Namen (de-)aktiviert werden.&lt;br/&gt;
+Die Auswahl eines Elements zeigt deren Informationen im Detailbereich an.
+&lt;/p&gt;
+&lt;p&gt;
+Es gibt ein Kontextmenü (Rechtsklick) in dem Sie nach Name, Downloadanzahl, Stimmen und Status sortieren können.
+&lt;/p&gt;
+
+
+&lt;a name=&quot;getmoretab&quot;&gt;
+&lt;h4&gt;Reiter Mehr holen&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Dieser Reiter zeigt die Liste alle verfügbaren Erweiterungen in fernen Repositorien an.
+Es wird beim Start geladen. Dies kann aber auch in den Einstellungen geändert werden.
+&lt;/p&gt;
+&lt;p&gt;
+Die Auswahl eines Elements zeigt die Informationen im Detailbereich.
+&lt;/p&gt;
+
+&lt;a name=&quot;newtab&quot;&gt;
+&lt;h4&gt;Reiter Neu&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+In diesem Reiter wird angezeigt wenn eine neue Erweiterung verfügbar wird. Es wird nur einmal angezeigt.
+&lt;/p&gt;
+
+&lt;a name=&quot;upgradabletab&quot;&gt;
+&lt;h4&gt;Reiter Aktualisierbar&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Dieser Reiter ist nur verfügbar, sobald es Aktualisierungen für installierte Erweiterungen in fernen Repositorien gibt.
+&lt;/p&gt;
+
+&lt;a name=&quot;Invalid tab&quot;&gt;
+&lt;h4&gt;Reiter Ungültig&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Dieser Reiter ist nur verfügbar, wenn eine ungültige Erweiterung installiert ist. Mit anderen Worten, wenn es Fehler beim Laden der Erweiterung gab.
+&lt;/p&gt;
+
+&lt;a name=&quot;settingstab&quot;&gt;
+&lt;h4&gt;Reiter Einstellungen&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Auf diesem Reiter können die Einstellungen der Erweiterungsverwaltung geändert werden.
+&lt;/p&gt;
+&lt;p&gt;
+Es kann eingestellt werden wie oft QGIS die Erweiterungsliste und Aktualisierungsinformationen aus fernen Repositorien lädt.
+&lt;/p&gt;
+&lt;p&gt;
+Mit dem Kontrollkästchen &apos;Experimentelle Erweiterungen anzeigen&apos; werden alle Erweiterungen, also auch die durch den Autor als &apos;experimentell&apos; markierten, angezeigt.
+
+&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
+Hinweis: Experimentelle Erweiterungen sind grundsätzliche für den Produktiveinsatz ungeeignet. Diese Erweiterungen befinden sich in einer sehr frühen Entwicklungsphase und sollten als &quot;unvollständig&quot; oder &quot;Machbarkeitsstudie&quot; angesehen werden. Das QGIS-Entwicklungsteam rät von der Installation ab, es sei denn nur zu Testzwecken.
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1195"/>
+        <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
+</source>
+        <translation>&lt;h3&gt;Stil-Manager&lt;/h3&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1419"/>
+        <source>&lt;h3&gt;Finding shortest path&lt;/h3&gt;
+&lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Vector &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#howto&quot;&gt;How to&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;a name=&quot;howto&quot;&gt;
+&lt;h4&gt;How to&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;You can select start and end points with the select buttons next to the fields.
+Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest path calculation using the optimization criterion selected in the &lt;label&gt;Criterion&lt;/label&gt; combobox. The &lt;label&gt;Export&lt;/label&gt; button allow you to export a calculated path to a new vector layer, and the button &lt;label&gt;Clear&lt;/label&gt; will erase all fields and remove the points and calculated path from map canvas.&lt;/p&gt;
+
+&lt;h5&gt;Note&lt;/h5&gt;
+&lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Den kürzesten Weg finden&lt;/h3&gt;
+&lt;p&gt;Straßengraph ist eine C++-Erweiterung für QGIS, die den kürzesten Weg zwischen zwei Punkten auf jedem Linienlayer bestimmt und über dem Straßennetz anzeigt. Bevor die Erweiterung genutzt werden kann, muß sie konfiguriert werden. Dies erfolgt unter &lt;label&gt;Erweiterungen &amp;rarr; Straßengraph &amp;rarr; Einstellungen&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#howto&quot;&gt;Wie&apos;s geht&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;a name=&quot;howto&quot;&gt;
+&lt;h4&gt;Wie&apos;s geht&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;Sie können Start- und Endpunkt mit den Knöpfen neben &lt;label&gt;Start&lt;/label&gt; und &lt;label&gt;Stopp&lt;/label&gt; auswählen.
+Durch Klick auf &lt;label&gt;Berechnen&lt;/label&gt; wird der kürzeste Weg mit dem Optimierungskriterium, das unter &lt;label&gt;Kriterium&lt;/label&gt; gewählt ist, ausgeführt. Mit &lt;label&gt;Export&lt;/label&gt; können Sie den berechneten Weg in einem neuen Vektorlayer speichern und mit &lt;label&gt;Löschen&lt;/label&gt; alle Felder, die Punkte sowie den berechneten Weg aus der Karte löschen.&lt;/p&gt;
+
+&lt;h5&gt;Hinweis&lt;/h5&gt;
+&lt;p&gt;Um den Start- und Endpunkt der Route mit dem Straßennetz zu verbinden wählt die Erweiterung den nächsten Knoten oder die nächste Kante des Graphen. Sie können aber an jedem Punkt des Graphen beginnen. Allerdings wird der Abstand vom Start- bzw. Endpunkt zum Straßennetz nicht berücksichtigt.&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="840"/>
+        <source>&lt;h3&gt;Options&lt;/h3&gt;
+This dialog allows you to select some basic options for QGIS. There are eight tabs:
+&lt;p&gt;
+
+&lt;a href=&quot;#general&quot;&gt;General&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#ren&quot;&gt;Rendering &amp; SVG&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#map&quot;&gt;Map tools&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#over&quot;&gt;Overlay&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#digit&quot;&gt;Digitizing&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#crs&quot;&gt;CRS&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#loc&quot;&gt;Locale&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#net&quot;&gt;Network &amp; Proxy&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;General&lt;/h4&gt;
+&lt;/a&gt;
+On this tab you can set general options for project behavior on opening/saving, default map appearance, your favorite icon theme and many others.
+&lt;a name=&quot;ren&quot;&gt;
+&lt;h4&gt;Rendering &amp; SVG&lt;/h4&gt;
+&lt;/a&gt;
+Within this tab you can set general rendering options for map layers.&lt;br&gt;
+By default, QGIS renders all visible layers whenever the map canvas must be refreshed. The events that trigger a refresh of the map canvas include:
+&lt;ul&gt;
+&lt;li&gt;Adding a layer
+&lt;li&gt;Panning or zooming
+&lt;li&gt;Resizing the QGIS window
+&lt;li&gt;Changing the visibility of a layer or layers
+&lt;/ul&gt;
+QGIS allows you to control the rendering process in a number of ways:&lt;p&gt;
+You can set an option to always load new layers without drawing them.&lt;br&gt;
+This means the layer will be added to the map, but its visibility check box in the legend will be unchecked by default. To set this option, uncheck the &lt;label&gt;By default new layers added to the map should be displayed&lt;/label&gt; check box.&lt;p&gt;
+You can set an option to update the map display as features are drawn. &lt;br&gt;
+By default, QGIS does not display any features for a layer until the entire layer has been rendered. To update the display as features are read from the data store, set the &lt;label&gt;Number of features to draw before updating the display&lt;/label&gt; to an appropriate value. Setting a value of 0 disables update during drawing (this is the default). Setting a value too low will result in poor performance as the map canvas is continually updated during the reading of the features. A suggested value to start with is 500.
+&lt;a name=&quot;map&quot;&gt;
+&lt;h4&gt;Map tools&lt;/h4&gt;
+&lt;/a&gt;
+&lt;h5&gt;Identify&lt;/h5&gt;
+The &lt;label&gt;Mode&lt;/label&gt; setting determines which layers will be shown by the &lt;label&gt;Identify&lt;/label&gt; tool. By switching to &lt;label&gt;Top down&lt;/label&gt; instead of &lt;label&gt;Current layer&lt;/label&gt; attributes for all identifiable layers will be shown with the &lt;label&gt;Identify&lt;/label&gt; tool.
+&lt;h5&gt;Measure tool&lt;/h5&gt;
+Here you can set an ellipsoid for distance calculations, measurement units and preferred color of rubber band.
+&lt;h5&gt;Panning and zooming&lt;/h5&gt;
+Allows defining mouse wheel action and zoom factor.
+&lt;a name=&quot;over&quot;&gt;
+&lt;h4&gt;Overlay&lt;/h4&gt;
+&lt;/a&gt;
+Define placement algorithm for labels. Choose between &lt;label&gt;central point (fastest)&lt;/label&gt;, &lt;label&gt;chain (fast)&lt;/label&gt;, &lt;label&gt;popmusic tabu chain (slow)&lt;/label&gt;, &lt;label&gt;popmusic tabu (slow)&lt;/label&gt; and &lt;label&gt;popmusic chain (very slow)&lt;/label&gt;.
+
+&lt;a name=&quot;digit&quot;&gt;
+&lt;h4&gt;Digitizing&lt;/h4&gt;
+&lt;/a&gt;
+&lt;h5&gt;Rubber band&lt;/h5&gt;
+In the &lt;label&gt;Digitizing&lt;/label&gt; tab you can define settings for digitizing line width and color.
+&lt;h5&gt;Snapping&lt;/h5&gt;
+Here you can define a general, project wide snapping tolerance. &lt;p&gt;
+You can select between &lt;label&gt;To vertex&lt;/label&gt;, &lt;label&gt;To segment&lt;/label&gt; or &lt;label&gt;To vertex and segment&lt;/label&gt; as default snap mode. You can also define a default snapping tolerance and a search radius for vertex edits. The tolerance can be set either in map units or in pixels. The advantage of choosing pixels, is that the snapping tolerance doesn&apos;t have to be changed after zoom operations.&lt;p&gt;
+A layer based snapping tolerance can be defined by choosing &lt;label&gt;Settings&lt;/label&gt; (or &lt;label&gt;File&lt;/label&gt;) &gt; &lt;label&gt;Project Properties...&lt;/label&gt;. In the &lt;label&gt;General&lt;/label&gt; tab, section &lt;label&gt;Digitize&lt;/label&gt; you can click on &lt;label&gt;Snapping options...&lt;/label&gt; to enable and adjust snapping mode and tolerance on a layer basis.
+&lt;h5&gt;Vertex markers&lt;/h5&gt;
+You can define marker style as &lt;label&gt;Semi transparent circle&lt;/label&gt;, &lt;label&gt;Cross&lt;/label&gt; or &lt;label&gt;None&lt;/label&gt; and size; you can also set showing markers only for selected features.
+&lt;h5&gt;Enter attribute values&lt;/h5&gt;
+By default, after digitizing a new feature, QGIS asks you to enter attribute values for that feature. Ticking &lt;label&gt;Suppress attributes pop-up windows after each created feature&lt;/label&gt; allows you to enter the attributes later.
+&lt;a name=&quot;crs&quot;&gt;
+&lt;h4&gt;CRS&lt;/h4&gt;
+&lt;/a&gt;
+QGIS no longer sets the map CRS to the coordinate reference system of the first layer loaded. When you start a QGIS session with layers that do not have a CRS, you need to check and define the CRS definition for these layers. This can be done globally on this tab.&lt;p&gt;
+The global default CRS &lt;i&gt;proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs&lt;/i&gt; comes predefined in QGIS but can of course be changed, and the new definition will be saved for subsequent QGIS sessions.
+&lt;a name=&quot;lov&quot;&gt;
+&lt;h4&gt;Locale&lt;/h4&gt;
+&lt;/a&gt;
+Informs you about active system locale. To change it tick &lt;label&gt;Override system locale&lt;/label&gt; and restart QGIS.
+&lt;a name=&quot;net&quot;&gt;
+&lt;h4&gt;Network &amp; Proxy&lt;/h4&gt;
+&lt;/a&gt;
+Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, user, and password.
+</source>
+        <translation>&lt;h3&gt;Optionen&lt;/h3&gt;
+Diese Dialog erlaubt einige grundlegenden Einstellungen für QGIS.  Es gibt folgende Reiter: 
+&lt;p&gt;
+
+&lt;a href=&quot;#general&quot;&gt;Allgemein&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#ren&quot;&gt;Darstellung &amp; SVG&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#map&quot;&gt;Kartenwerkzeuge&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#over&quot;&gt;Überlagern&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#digit&quot;&gt;Digitalisierung&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#crs&quot;&gt;KBS&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#loc&quot;&gt;Sprache&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#net&quot;&gt;Netwerk &amp; Proxy&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;Allgemein&lt;/h4&gt;
+&lt;/a&gt;
+Auf diesem Reiter kann man allgemeine Voreinstellungen zum Verhalten beim Öffnen und Speichern von Projekte, der Kartendatenstellung, dem gewünschten Iconthema und einigen andere treffen.
+&lt;a name=&quot;ren&quot;&gt;
+&lt;h4&gt;Darstellungen &amp; SVG&lt;/h4&gt;
+&lt;/a&gt;
+In diesem Reiter kann man Voreinstellungen zur Layern treffen.&lt;br&gt;
+Normalerweise werden alle Layer in QGIS gezeichnet, wenn die Kartenansicht aktualisiert werden muss.  Die passiert z.B. wenn:
+&lt;ul&gt;
+&lt;li&gt;ein Layer hinzugefügt wird
+&lt;li&gt;Verschieben des oder Zoomen im Kartenausschnitts
+&lt;li&gt;Veränderung der QGIS-Fenstergröße
+&lt;li&gt;Änderung der Sichtbarkeit von Layern
+&lt;/ul&gt;
+Es gibt einige Möglichkeiten den QGIS-Zeichenvorgang zu beeinflussen: 
+&lt;ul&gt;
+&lt;li&gt;Layer können hinzugefügt werden, ohne das sie gezeichnet werden: Dies bedeutet, dass der Layer zur Karte hinzugefügt wird, aber das Sichtbarkeitskontrollkästchen in der Legende nicht automatisch angehakt ist.  Diese Option wird mit Kontrollkästchen &lt;label&gt;Normalerweise werden alle neuen Layer im Kartenfenster angezeigt&lt;/label&gt; gesteuert.&lt;/li&gt;
+
+&lt;li&gt;Sie können einstellen, dass die Kartenansicht aktualisiert wird, während die Objekte gezeichnet werden: Normalerweise zeigt QGIS Objekte erst an, wenn der Layer komplett gezeichnet wurde. Um die Anzeige während des Ladens von Objekten zu aktualisieren, setzen Sie im Feld &lt;label&gt;Anzahl von Objekt nach deren Zeichnung die Anzeige aktualsiert werden soll&lt;/label&gt; einen passenden Wert. Der Wert von 0 ist voreingestellt und schaltet die Funktion ab. Wählen Sie den Wert zu niedrig leidet die Geschwindigkeit, da die Kartenanzeige während des Ladens laufend aktualisiert werden muss.  Ein guter Startwert ist 500.
+&lt;/ul&gt;
+
+&lt;a name=&quot;map&quot;&gt;
+&lt;h4&gt;Kartenwerkzeuge&lt;/h4&gt;
+&lt;/a&gt;
+
+&lt;h5&gt;Abfrage&lt;/h5&gt;
+Die Einstellung &lt;label&gt;Modus&lt;/label&gt; legt fest welche Layer durch Werkzeug &lt;label&gt;Objekte abfragen&lt;/label&gt; angezeigt werden. &lt;label&gt;Von oben nach unten&lt;/label&gt; statt &lt;label&gt;Aktueller Layer&lt;/label&gt; bewirkt, dass alle angezeigten Layer abgefragt werden. 
+
+&lt;h5&gt;Messwerkzeug&lt;/h5&gt;
+Hier können Sie einen Ellipsoid für Entfernungsberechnungen, Maßeinheiten und die bevorzugte Farbe des Gummibandes einstellen.
+
+&lt;h5&gt;Verschieben und Zoomen&lt;/h5&gt;
+Erlaubt die Einstellung von Mausradaktion und -zoomfaktor.
+
+&lt;a name=&quot;over&quot;&gt;
+&lt;h4&gt;Überlagerung&lt;/h4&gt;
+&lt;/a&gt;
+Legen Sie einen Platzierungsalgorithmus für Beschriftungen fest. Wählen Sie zwischen &lt;label&gt;Zentrum (am schnellsten)&lt;/label&gt;, &lt;label&gt;Kette (schnell)&lt;/label&gt;, &lt;label&gt;Popmusik-Tabu-Kette (langsam)&lt;/label&gt;, &lt;label&gt;Popmusik-Tabu (langsam)&lt;/label&gt; und &lt;label&gt;Popmusik-Kette (sehr 
+langsam)&lt;/label&gt;.
+
+&lt;a name=&quot;digit&quot;&gt;
+&lt;h4&gt;Digitalisierung&lt;/h4&gt;
+&lt;/a&gt;
+&lt;h5&gt;Gummiband&lt;/h5&gt;
+Auf dem Reiter &lt;label&gt;Digitalisierung&lt;/label&gt; können Sie die Linienbreite und -farbe des Gummibandes zum Digitalisierung einstellen.
+&lt;h5&gt;Objektfang&lt;/h5&gt;
+Hier können Sie eine allgemeine, projektweite Objektfangtoleranz angeben.&lt;p&gt;
+Sie können den Fangmodus auf &lt;label&gt;zum Stützpunkt&lt;/label&gt;, &lt;label&gt;zum Segment&lt;/label&gt; oder &lt;label&gt;zu Stützpunkt und Segment&lt;/label&gt; einstellen. Auch können Sie eine Fangtoleranz und einen Suchradius für die Stützpunktbearbeitung angeben. Die Toleranz kann in Karteneinheiten oder Pixeln angegeben werden. Wählen Sie Pixel haben Sie den Vorteil, das die Fangtoleranz nicht nach Zoomoperationen geändert werden 
+muss.&lt;p&gt;
+Eine Layer basierte Fangtoleranz können Sie über &lt;label&gt;Einstellungen&lt;/label&gt; (oder &lt;label&gt;Datei&lt;/label&gt;) &gt; &lt;label&gt;Projekteigenschaften...&lt;/label&gt; festlegen.  Dort können Sie im Reiter &lt;label&gt;Allgemein&lt;/label&gt;, Abschnitt &lt;label&gt;Digitalisierung&lt;/label&gt; auf &lt;label&gt;Fangoptionen...&lt;/label&gt; klicken, um den Fangmodus auf Layerbasis zu konfigurieren. 
+
+&lt;h5&gt;Knickpunktmarken&lt;/h5&gt;
+Sie können den Markerstil auf &lt;label&gt;Teiltransparenter Kreis&lt;/label&gt;, &lt;label&gt;Kreuz&lt;/label&gt; oder &lt;label&gt;Keine&lt;/label&gt; und die Größe einstellen.
+
+&lt;h5&gt;Attributwerte eingeben&lt;/h5&gt;
+Normalerweise wird der Benutzer nach dem Digitalisieren eines neuen Objekts aufgefordert Attributwerte dafür einzugeben.  Durch das Abhaken von &lt;label&gt;Eingabe der Attributwerte bei der Erstellung neuere Objekte unterdrücken&lt;/label&gt; kann man dies unterdrücken und die Attribute nachträglich eingeben.
+
+&lt;a name=&quot;crs&quot;&gt;
+&lt;h4&gt;KBS&lt;/h4&gt;
+&lt;/a&gt;
+QGIS setzt das Karten-KBS nicht mehr auf das des ersten geladenen Layers.  Wenn Sie Ihre QGIS-Sitzung mit Layern beginnen, die kein KBS haben, müssen Sie die KBS-Definition dieser Layer überprüfen und festlegen.  Dies kann hier global passieren.&lt;p&gt;
+Das voreingestellte globale KBS &lt;code&gt;proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs&lt;/code&gt; ist in QGIS vordefiniert, kann aber geändert werden und die neue Definition wird für zukünftige QGIS-Sitzungen gespeichert.
+&lt;a name=&quot;loc&quot;&gt;
+&lt;h4&gt;Sprache&lt;/h4&gt;
+&lt;/a&gt;
+Informiert über die aktive Sprachumgebung des Systems.  Um eine andere zu wählen, haken Sie &lt;label&gt;System-Locale überschreiben&lt;/label&gt; an, wählen die gewünschte Umgebung und starten QGIS neu. 
+&lt;a name=&quot;net&quot;&gt;
+&lt;h4&gt;Netzwerk &amp; Proxy&lt;/h4&gt;
+&lt;/a&gt;
+Haken Sie &lt;label&gt;Proxy für Webzugriff benutzen an&lt;/label&gt; und setzen Sie Host und Port sowie ggf. Benutzer und Passwort und den Proxytyp.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="821"/>
+        <source>&lt;h3&gt;Create New Vector Layer&lt;/h3&gt;
+To create a new layer for editing, choose &lt;label&gt;New Vector Layer&lt;/label&gt; from the &lt;label&gt;Layer&lt;/label&gt; menu.&lt;br/&gt;
+With this dialog you can create a shape file layer.
+&lt;h4&gt;Type&lt;/h4&gt;
+Choose the type of layer &lt;label&gt;Point&lt;/label&gt;, &lt;label&gt;Line&lt;/label&gt; or &lt;label&gt;Polygon&lt;/label&gt;.&lt;br/&gt;
+Click on &lt;label&gt;Specify CRS&lt;/label&gt; button to change the coordinate reference system of the layer if needed.
+&lt;h4&gt;New attribute&lt;/h4&gt;
+Add the desired attributes by clicking on the &lt;label&gt;Add to attributes list&lt;/label&gt; button after you have specified a name and type for the attribute. Only real, integer, and string attributes are supported.&lt;br/&gt;
+You can also define the width and precision of the new attribute column.
+&lt;h4&gt;Attributes list&lt;/h4&gt;
+In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
+</source>
+        <translation>&lt;h3&gt;Einen neuen Vektorlayer erzeugen&lt;/h3&gt;
+Um einen neuen Vektorlayer zur Bearbeitung zu erzeugen, wählen Sie &lt;label&gt;Neuen Vektorlayer erzeugen&lt;/label&gt; aus dem Menü &lt;label&gt;Layer&lt;/label&gt;&lt;br/&gt;
+Mit diesem Dialog können einen Shapedatei-Layer erzeugen.
+
+&lt;h4&gt;Typ&lt;/h4&gt;
+Wählen Sie &lt;label&gt;Punkt&lt;/label&gt;, &lt;label&gt;Linie&lt;/label&gt; oder &lt;label&gt;Polygon&lt;/label&gt; als Layertyp.&lt;br/&gt;
+Klicken Sie auf den Knopf &lt;label&gt;KBS angeben&lt;/label&gt;, um ggf. das Koordinatenbezugssystem festzulegen.
+
+&lt;h4&gt;Neue Attribute&lt;/h4&gt;
+Ein gewünschtes Attribut fügen Sie über den Knopf &lt;label&gt;Der Attributliste hinzufügen&lt;/label&gt; hinzu, nachdem Sie einen Name und den Attributtyp festgelegt haben. Derzeit werden Fließkomma- (Real), ganze Zahlen (Integer) und Zeichenketten unterstützt.&lt;br/&gt; Sie können auch die Breite und Genauigkeit der neuen Attributspalte angeben. 
+
+&lt;h4&gt;Attributliste&lt;/h4&gt;
+In diesem Abschnitt werden die vorhandenen Attribute aufgelistet. Um ein Attribute zu löschen klicken Sie es an und wählen dann &lt;label&gt;Gewähltes Attribute löschen&lt;/label&gt;.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1336"/>
+        <source>&lt;h3&gt;Save vector layer as...&lt;/h3&gt;
+
+&lt;p&gt;This dialog allows you to save vector data in various formats using GDAL/OGR.
+
+&lt;ul&gt;
+&lt;li&gt;From the &lt;label&gt;Format&lt;/label&gt; list you can select the destination format (as advertised by OGR).
+&lt;li&gt;At &lt;label&gt;Save as&lt;/label&gt; you can enter a destination files name or select one using the &lt;label&gt;Browse&lt;/label&gt; button.
+&lt;li&gt;In the &lt;label&gt;Encoding&lt;/label&gt; list you can define in which encoding the data should be saved.
+&lt;li&gt;Using the &lt;label&gt;CRS&lt;/label&gt; you can select a CRS into which the data about to be saved should be reprojected.
+&lt;li&gt;OGR also has various options for the different formats it supports.  Use the &lt;label&gt;datasource&lt;/label&gt; creation field to set the datasource options and the &lt;label&gt;layer&lt;/label&gt; creation options. Enter one options per line (e.g. &lt;code&gt;SPATIALITE=yes&lt;/code&gt; in the &lt;label&gt;datasource&lt;/label&gt; to create a spatialite database using the SQLite driver).
+&lt;/ul&gt;
+
+See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
+</source>
+        <translation>&lt;h3&gt;Vektorlayer speichern als...&lt;/h3&gt;
+
+&lt;p&gt;Dieser Dialog erlaubt Ihnen Vektordaten mit Hilfe von GDAL/OGR in vielfältigen Formaten zu speichern.
+
+&lt;ul&gt;
+&lt;li&gt;Aus der &lt;label&gt;Format&lt;/label&gt;-Liste können Sie ein von OGR angebotenes Zielformat wählen.
+&lt;li&gt;Bei &lt;label&gt;Speichern unter&lt;/label&gt; können Sie eine Zieldateinamen eingeben oder mit dem Knopf &lt;label&gt;Durchsuchen&lt;/label&gt; einen wählen.
+&lt;li&gt;Aus der &lt;label&gt;Kodierung&lt;/label&gt;-sliste können Sie die Kodierung wählen in der die Daten gespeichert werden sollen.
+&lt;li&gt;Mit dem Knopf &lt;label&gt;KBS&lt;/label&gt; können Sie das KBS festlegen in das die zu speichernden Daten projiiziert werden sollen.
+&lt;li&gt;OGR bietet außerdem eine Vielzahl von Optionen für unterschiedlichen Formate, die es unterstützt.  Erzeugungsoptionen für die Datenquelle tragen Sie in das Feld &lt;label&gt;Datenquelle&lt;/label&gt; ein. Das Feld &lt;label&gt;Layer&lt;/label&gt; ist für Erzeugungsoptionen für den Layer vorgesehen. Geben Sie je Option eine Zeile an (z.B. &lt;code&gt;SPATIALITE=yes&lt;/code&gt; im Feld &lt;label&gt;Datenquelle&lt;/label&gt;, um eine SpatiaLite-Datenbank mit dem SQLite-Treiber zu erzeugen).
+&lt;/ul&gt;
+
+Ein Liste der unterstützten Formate und deren Optionen finden Sie unter &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; (Englisch).
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="401"/>
+        <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
+Loads and displays delimited text files
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;Overview&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overview&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;A &amp;quot;delimited text file&amp;quot; contains data in which each record starts on a new line, and 
+is split into fields by a delimiter such as a comma.  
+This type of file is commonly exported from spreadsheets (for example CSV files) or databases.  
+Typically the first line of a delimited text file contains the names of the fields.  
+&lt;/p&gt;
+&lt;p&gt;
+Delimited text files can be loaded into QGIS as a layer. 
+The records can be displayed spatially either as a point
+defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
+describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
+only table, which can then be joined to other tables in QGIS.
+&lt;/p&gt;
+&lt;p&gt;
+In addition to the geometry definition the file can contain text, integer, and real number fields.  By default 
+QGIS will choose the type of field based on its the non blank values of the field.  If all can be interpreted
+as integer then the type will be integer, if all can be interpreted as real numbers then the type will
+be double, otherwise the type will be text.
+&lt;/p&gt;
+&lt;p&gt;
+QGIS can also read the types from an OGR CSV driver compatible &amp;quot;csvt&amp;quot; file.  
+This is a file alongside the data file, but with a &amp;quot;t&amp;quot; appended to the file name. 
+The file should just contain one linewhich lists the type of each field. 
+Valid types are &amp;quot;integer&amp;quot;, &amp;quot;real&amp;quot;, &amp;quot;string&amp;quot;, &amp;quot;date&amp;quot;, &amp;quot;time&amp;quot;, and &amp;quot;datetime&amp;quot;. The date, time, and datetime types are treated as strings in QGIS.
+Each type may be followed by a width and precision, for example &amp;quot;real(10.4)&amp;quot;.
+The list of types are separated by commas, regardless of the delimiter used in the data file.  An
+example of a valid format file would be:
+&lt;/p&gt;
+
+&lt;pre&gt;
+&amp;quot;integer&amp;quot;,&amp;quot;string&amp;quot;,&amp;quot;string(20)&amp;quot;,&amp;quot;real(20.4)&amp;quot;
+&lt;/pre&gt;
+
+&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
+be split into fields), and defining the geometry is represented.  
+This is managed with the delimited text dialog as detailed below.  
+The dialog box displays a sample from the beginning of the file which shows how the format
+options have been applied.
+&lt;/p&gt;
+&lt;h5&gt;Choosing the data file&lt;/h5&gt;
+&lt;p&gt;Use the &amp;quot;Browse...&amp;quot; button to select the data file.  Once the file is selected the
+layer name will automatically be populated based on the file name.  The layer name is used to represent
+the data in the QGIS legend.  
+&lt;/p&gt;
+&lt;p&gt;
+By default files are assumed to be encoded as UTF-8.  However other file
+encodings can be selected.  For example &amp;quot;System&amp;quot; uses the default encoding for the operating system.  
+It is safer to use an explicit coding if the QGIS project needs to be portable.
+&lt;/p&gt;
+&lt;h5&gt;Specifying the file format&lt;/h5&gt;
+&lt;p&gt;The file format can be one of
+&lt;ul&gt;
+    &lt;li&gt;CSV file format.  This is a format commonly used by spreadsheets, in which fields are delimited
+    by a comma character, and quoted using a &amp;quot;(quote) character.  Within quoted fields, a quote
+    mark is entered as &amp;quot;&amp;quot;.&lt;/li&gt;
+    &lt;li&gt;Selected delimiters.  Each record is split into fields using one or more  delimiter character.
+    Quote characters are used for fields which may contain delimiters.  Escape characters may be used 
+    to treat the following character as a normal character (ie to include delimiter, quote, and 
+    new line characters in text fields).  The use of delimiter, quote, and escape characters is detailed &lt;a href=&quot;#csv&quot;&gt;below&lt;/a&gt;.
+    &lt;li&gt;Regular expression.  Each line is split into fields using a &amp;quot;regular expression&amp;quot; delimiter.
+    The use of regular expressions is details &lt;a href=&quot;#regexp&quot;&gt;below&lt;/a&gt;.
+&lt;/ul&gt;
+&lt;h5&gt;Record and field options&lt;/h5&gt;
+&lt;p&gt;The following options affect the selection of records and fields from the data file&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Number of header lines to discard: used to ignore header lines at the beginning of the text file&lt;/li&gt;
+    &lt;li&gt;First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.&lt;/li&gt;
+    &lt;li&gt;Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). &lt;/li&gt;
+    &lt;li&gt;Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
+    affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
+    single delimiter.  Quoted fields are never discarded.&lt;/li&gt;
+    &lt;li&gt;Decimal separator is comma: if selected then commas instead of points are used as the decimal separator in real numbers.  For
+    example &lt;tt&gt;-51,354&lt;/tt&gt; is equivalent to -51.354.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5&gt;Geometry definition&lt;/h5&gt;
+&lt;p&gt;The geometry is can be define as one of&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Point coordinates: each feature is represented as a point defined by X and Y coordinates.&lt;/li&gt;
+    &lt;li&gt;Well known text (WKT) geometry: each feature is represented as a well known text string, for example
+    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  See details of the &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt; format.
+    &lt;li&gt;No geometry (attribute only table): records will not be displayed on the map, but can be viewed
+    in the attribute table and joined to other layers in QGIS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For point coordinates the following options apply:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;X field: specifies the field containing the X coordinate&lt;/li&gt;
+    &lt;li&gt;Y field: specifies the field containing the Y coordinate&lt;/li&gt;
+    &lt;li&gt;DMS angles: if selected coordinates are represented as degrees/minutes/seconds
+    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
+    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
+    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
+    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Geometry field: the field containing the well known text definition.&lt;/li&gt;
+    &lt;li&gt;Geometry type: one of &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or &amp;quot;Polygon&amp;quot;.
+    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
+    which geometry type is displayed in text files containing multiple geometry types. Records containing
+   other geometry types are discarded.   
+    If &amp;quot;Detect&amp;quot; is selected then the type of the first geometry in the file will be used.
+    &amp;quot;Point&amp;quot; includes POINT and MULTIPOINT WKT types, &amp;quot;Line&amp;quot; includes LINESTRING and
+    MULTLINESTRING WKT types, and &amp;quot;Polygon&amp;quot; includes POLYGON and MULTIPOLYGON WKT types.
+&lt;/ul&gt;
+&lt;h5&gt;Layer settings&lt;/h5&gt;
+&lt;p&gt;Layer settings control the way the layer is managed in QGIS.  The options available are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
+This option may be useful for files larger than a few megabytes in size.&lt;/li&gt;
+&lt;li&gt;Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
+from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
+for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
+&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
+reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
+extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
+application will change the file. &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Records are split into fields using three character sets: 
+delimiter characters, quote characters, and escape characters.  
+Other characters in the record are considered as data, split into
+fields by delimiter characters. 
+Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
+&lt;/p&gt;
+&lt;p&gt;
+Quote and escape characters cannot be the same as delimiter characters - they
+will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
+if they are.&lt;/p&gt;
+&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
+is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
+can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
+&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
+contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
+start and end with the same quote character.  Quote characters cannot occur within a field unless they
+are escaped.&lt;/p&gt;
+&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
+(that is, to stop it being treated as a new line, delimiter, or quote character).  
+&lt;/p&gt;
+&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
+&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
+&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
+of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
+&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
+If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
+ then these are extracted as fields. 
+ If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
+In this case the regular expression is matched against each line.  If the line does not match it is discarded
+as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
+is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
+unintuitive) means of loading data with fixed width fields.  For example the 
+expression
+&lt;pre&gt;
+^(.{5})(.{10})(.{20})(.{20})
+&lt;/pre&gt;
+&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
+Lines less than 55 characters long will be discarded.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+The delimited text layer recognizes the following 
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
+&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
+It will accept geometries with
+a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;
+It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
+system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
+preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
+In both cases the SRID is ignored.
+&lt;/p&gt;
+
+
+
+&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;/h4&gt; 
+&lt;p&gt;Each record in the delimited text file is split into fields representing
+attributes of the record.  Usually the attribute names are taken from the first
+data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
+Also if records have more fields than are defined in the header record then these
+will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
+QGIS may override 
+the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
+or are duplicated.
+&lt;/p&gt;
+&lt;p&gt;
+In addition to the attributes explicitly in the data file QGIS assigns a unique 
+feature id to each record which is the line number in the source file on which
+the record starts.  
+&lt;/p&gt;
+&lt;p&gt;
+Each attribute also has a data type, one of string (text), integer, or real number.
+The data type is inferred from the content of the fields - if every non blank value
+is a valid integer then the type is integer, otherwise if it is a valid real
+number then the type is real, otherwise the type is string.  Note that this is
+based on the content of the fields - quoting fields does not change the way they
+are interpreted.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;/h4&gt; 
+&lt;pre&gt;
+X;Y;ELEV
+-300120;7689960;13
+-654360;7562040;52
+1640;7512840;3
+&lt;/pre&gt;
+&lt;p&gt;This file:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
+&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
+&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
+&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;/h4&gt;
+&lt;pre&gt;
+id|wkt
+1|POINT(172.0702250 -43.6031036)
+2|POINT(172.0702250 -43.6031036)
+3|POINT(172.1543206 -43.5731302)
+4|POINT(171.9282585 -43.5493308)
+5|POINT(171.8827359 -43.5875983)
+&lt;/pre&gt;
+&lt;p&gt;This file:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Has two fields defined in the header row: id and wkt.
+  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
+  &lt;li&gt;Specifies each point using the WKT notation
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
+The pattern is:
+&lt;/p&gt;
+&lt;pre&gt;
+from PyQt4.QtCore import QUrl, QString
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+
+# Define the data source
+filename=&quot;test.csv&quot;
+uri=QUrl.fromLocalFile(filename)
+uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
+uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
+uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
+# ... other delimited text parameters
+layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
+# Add the layer to the map
+if layer.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer( layer )
+&lt;/pre&gt;
+&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
+&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
+The following options can be added
+&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
+       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
+       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
+       no default for regexp files.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
+       Additional fields in each record will be discarded. The default is 0 - include all fields.
+       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
+       used.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
+       specified then a dialog box may request this information from the user
+       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
+&lt;/ul&gt;
+
+
+</source>
+        <translation>&lt;h3&gt;Getrennter Textlayer&lt;/h3&gt;
+Läd und zeigt getrennten Text ans
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;Überblick&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;Erzeugung eines getrennten Textlayers&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#csv&quot;&gt;Wie Trenn-, Anführungs- und Ausnahmezeichen funktionieren&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#regexp&quot;&gt;Wie reguläre Ausdrücke als Trennzeichen funktionieren&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#wkt&quot;&gt;Wie WKT interpretiert wird&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Attribute in getrennten Textdateien&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#example&quot;&gt;Beispiel einer Textdatei mit X,Y-Punktkoordinaten&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#wkt_example&quot;&gt;Beispiel einer Textdatei mit WKT-Geometrien&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#python&quot;&gt;Getrennte Textdateilayern in Python benutzen&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Überblick&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Eine &amp;quot;getrennter Textdatei&amp;quot; enthält Daten in denen jeder Datensatz in einer neuen Zeile beginnt, die durch Trennzeichen wie ein Komma in Felder aufgeteilt ist.
+Dieser Dateityp wird üblicherweise von Tabellenkalkulationen (z.B. CSV-Dateien) oder Datenbanken ausgegeben.  
+Normalerweise enthält die erste Zeile einer getrennten Textdatei die Feldnamen.  
+&lt;/p&gt;
+&lt;p&gt;
+Getrennte Textdateien können in QGIS als Layer geladen werden. 
+Die Datensätze können räumlich entweder als durch X- und Y-Koordinaten definierte Punktkoordinaten oder als Well-Known-Text-Geometriedefinition (WKT), die Punkte, Linien und Polygone beliebiger Komplexität beschreibt, dargestellt werden. Die Datei kann auch nur als Attributtabelle geladen werden, die mit anderen Tabellen in QGIS verknüpft werden können.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;p&gt;
+Zusätzlich zur Geometriedefinition kann die Datei Text, ganze und Fließkommazahlen enthalten. QGIS wird den Feldtyp nach dem Inhalt der nicht leeren Felder wählen. Wenn alle als ganze Zahl interpretiert werden können, werden sie als gnaze Zahl, wenn alle als Fließkommazahl, werden sie als Fließkommazahl und ansonsten als Zeichenkette angesehen.
+&lt;/p&gt;
+&lt;p&gt;
+QGIS kann die Typen auch einer OGR-CSV-Treiber kompatiblen &amp;quot;csvt&amp;quot;-Datei lesen. Diese Datei liegt nebene der Datendatei, aber mit einem an den Dateinamen angehängtem &amp;quot;t&amp;quot;. Die Datei sollte nur eine Zeile enthalten, die die Feldtypen auflistet. Gültige Typen sind &amp;quot;integer&amp;quot; (ganze Zahl), &amp;quot;real&amp;quot; (Fließkommazahl), &amp;quot;string&amp;quot; (Zeichenkette), &amp;quot;date&amp;quot; (Datum), &amp;quot;time&amp;quot; (Zeit) und &amp;quot;datetime&amp;quot; (Datum&amp;amp;Zeit). Datum, Zeit und Datum&amp;amp;Zeit werden in QGIS als Zeichenketten behandelt. Jedem Typ kann die Breite und Genauigkeit angefügt werden (z.B. &amp;quot;real(10.4)&amp;quot;. Die einzelnen Typen werden unabhängig von den Trennzeichen der Datendatei durch Kommata getrennt.  Ein Beispiel für eine gültige Formatdatei könnte sein:
+&lt;/p&gt;
+
+&lt;pre&gt;
+&amp;quot;integer&amp;quot;,&amp;quot;string&amp;quot;,&amp;quot;string(20)&amp;quot;,&amp;quot;real(20.4)&amp;quot;
+&lt;/pre&gt;
+
+&lt;/p&gt;
+&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Getrennten Textlayer erzeugen&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Zur Erzeugung eines getrennten Textlayers muß eine Datei gewählt, das Format definiert (wie jeder Datensatz in Felder aufgeteilt wird) und festgelegt werden wird die Geometrierepräsentation angegeben werden.  
+Dies wird über den im folgenden beschriebenen Getrennter Textdialog eingegeben.  
+Der dialog zeigt ein Beispiele am Anfang der Datei an, die zeigen wie sich die Einstellungen auswirken.
+&lt;/p&gt;
+&lt;h5&gt;Dateiauswahl&lt;/h5&gt;
+&lt;p&gt;Klicken Sie auf den &amp;quot;Durchsuchen...&amp;quot;-Knopf um die Datei zu wählen.  Sobald die Datei gewählt ist, wird der Layername automatisch mit dem Dateinamen gefüllt.  Der Layername wird benutzt, um die Daten in der Legende anzuzeigen.  
+&lt;/p&gt;
+&lt;p&gt;
+Normalerweise wird davon ausgegangen, dass die Dateien in UTF-8 kodiert sind.  Es können jedoch andere Kodierungen gewählt werden.  Z.B. nutzt &amp;quot;System&amp;quot; die voreingestellte Kodierung des Betriebssystems. 
+Es ist sicherer eine explizite Kodierung anzugeben, wenn das QGIS-Projekt portierbar sein muß.
+&lt;/p&gt;
+&lt;h5&gt;Dateiformat festlegen&lt;/h5&gt;
+&lt;p&gt;Folgende Dateiformat sind verfügbar:
+&lt;ul&gt;
+    &lt;li&gt;CSV-Dateiformat.  Dies ist ein Format, das üblicherweise von Tabellenkalkulationen benutzt wird. Hier sind die Felder durch ein Komma begrenzt und durch das Anführungszeichen &amp;quot; umschlossen.  Zwischen den Anführungszeichen wird ein Anführungszeichen durch &amp;quot;&amp;quot; eingegeben.&lt;/li&gt;
+    &lt;li&gt;Gewählte Trennzeichen.  Jeder Datensatz wird durch ein oder mehrere Trennzeichen in Felder ausgeteilt.
+    Anführungszeichen werden für Felder verwendet, die Trennzeichen enthalten können.  Ausnahmezeichen könnten verwendet werden, um das darauffolgenden Zeichen als normales Zeichen (um Trennzeichen, Anführungszeichen und Zeilenumbrüche in Textfelden anzugeben).  Die Verwendung von Trenn-, Anführungs- und Ausnahmezeichen ist  &lt;a href=&quot;#csv&quot;&gt;unten&lt;/a&gt; näher ausgeführt.
+    &lt;li&gt;Regulärer Ausdruck.  Jede Zeile wird mit &amp;quot;regulären Ausdrücken&amp;quot; als Trennzeichen in Felder aufgeteilt.
+    Der Verwendung von regulären Ausdrücken ist &lt;a href=&quot;#regexp&quot;&gt;unten&lt;/a&gt; näher ausgeführt.
+&lt;/ul&gt;
+&lt;h5&gt;Datensatz und Feldoptionen&lt;/h5&gt;
+&lt;p&gt;Die folgenden Optionen beeinflussen die Auswahl von Datensätzen und Feldern aus der Datei&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Anzahl der zu überspringenden führenden Zeilen: um führende Zeilen zu ignorieren&lt;/li&gt;
+    &lt;li&gt;Erster Datensatz enthält Feldnamen: wenn gewählt wird die erste Zeile (nach den ignorierten Zeilen) als Feldnamenzeile statt Datenzeile interpretiert.&lt;/li&gt;
+    &lt;li&gt;Felder kürzen: wenn gewählt, werden führende und schließende Leerzeichen abgeschnitten (außer für Felder in Anführungszeichen).&lt;/li&gt;
+    &lt;li&gt;Leere Felder verwerfen: wenn gewählt, werden leere Felder (nach Kürzung) verworfen.  Dies beeinflußt die Zurordnung der Daten zu Feldern und entspricht der Behandlung von aufeinanderfolgenden Trennzeichen als ein Trennzeichen.  Felder in Anführungszeichen werden nie verworfen.&lt;/li&gt;
+    &lt;li&gt;Dezimaltrennzeichen ist Komma: wenn gewählt, werden Kommata statt Punkte als Dezimaltrennzeichen in Fließkommazahlen verwendet.  Beispiel &lt;tt&gt;-51,354&lt;/tt&gt; entspricht -51.354.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5&gt;Geometrie-Definition&lt;/h5&gt;
+&lt;p&gt;Folgende Geometriedefinitionen sind verfügbar:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Punktkoordinaten: jedes Objekt wird als durch X- und Y-Koordinaten repräsentiert.&lt;/li&gt;
+    &lt;li&gt;Well-Known-Text-Geometrie (WKT): jedes Objekt wird durch eine WKT-Zeichenkette repräsentiert, z.B.
+    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  Siehe &lt;a href=&quot;#wkt&quot;&gt;Well-Known-Text&lt;/a&gt;-Format.
+    &lt;li&gt;Keine Geometrie (Nur Attributtabelle): Datensätze werden nicht in der Karte angezeigt, können aber in der Attributtabelle angezeigt und mit anderen Tabellen in QGIS verknüpft werden.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Für Punktkoordinaten gelten folgenden Einstellungen:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;X-Feld: gibt das Feld an, das die X-Koordinate enthält&lt;/li&gt;
+    &lt;li&gt;Y Feld: gibt das Feld an, das die Y-Koordinate enthält&lt;/li&gt;
+    &lt;li&gt;DMS-Winkel: wenn gewählt, werden Koordinaten in Grad/Minute/Sekunde oder Grad/Minute repräsentiert. QGIS ist bei der Interpretation von Grad/Minuten/Sekunden ser nachsichtig. Eine gültige DMS-Koordinaten enthält drei numerische Felder mit einem optionalen Hemisphärenpräfix oder -suffix (N, E oder + sind positiv, S, W oder - sind  negativ).  Weitere nicht numerische Zeichen werden verworfen.  Z.B. ist &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; eine gültige Koordinate.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Für Well-Known-Text-Geometrien gelten folgende Einstellungen:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Geometriefeld: das Feld, dass die Well-Known-Text-Definition enthält.&lt;/li&gt;
+    &lt;li&gt;Geometrietyp: &amp;quot;Bestimmen&amp;quot; (bestimmen), &amp;quot;Punkt&amp;quot;, &amp;quot;Linie&amp;quot;, oder &amp;quot;Polygon&amp;quot;. QGIS-Layer können nur einen Geometrietyp ( Punkt, Linie oder Polygon) darstellen. Diese Einstellung legt fest welcher Geometrietyp angezeigt wird, wenn eine Datei mehrere Geometrietypen enthält. Datensätze die davon abweichen werden verworfen. Wenn &amp;quot;Bestimmen&amp;quot; gewählt ist, wird der Geometrietyp der ersten Geometrie der Datei verwendet.
+    &amp;quot;Punkt&amp;quot; umfaßt POINT und MULTIPOINT WKT-Typen, &amp;quot;Line&amp;quot; umfaßt LINESTRING und MULTLINESTRING WKT-Typen und &amp;quot;Polygon&amp;quot; umfaßt POLYGON und MULTIPOLYGON WKT-Typen.
+&lt;/ul&gt;
+&lt;h5&gt;Layereinstellungen&lt;/h5&gt;
+&lt;p&gt;Layereinstellungen steuern wie ein Layer in QGIS behandelt wird.  Folgende Einstellungen sind verfügbar:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Räumlichen Index nutzen. Einen räumlichen Index erzeugen, der die Anzeige- und räumliche Auswahlgeschwindigkeit verbessert.
+Diese Option kann für Dateien sinnvoll sein, deren Größe einige MB übersteigt.&lt;/li&gt;
+&lt;li&gt;Untermengen-Index nutzen. Einen Index erzeugen, wenn eine Untermenge verwendet wird (entweder durch die Angabe eines Filters in den Layereigenschaftendialog oder implizite Untermenge, wenn nicht alle Geometrien gültig sind).  Der Index wird nur erzeugt, wenn eine Untermenge definiert ist.&lt;/li&gt;
+&lt;li&gt;Datei überwachen.  Wenn dies eingestellt ist, überwacht QGIS die Datei auf Änderungen durch Applikationen und läd sie neue, wenn es geändert wird.  Die Karte wird nicht neugezeichnet bis der Benutzer sie aktualisiert, aber Indizes und Ausmaße werden neugeladen.  Diese Option sollte gewählt werden, wenn Indizes benutzt werden und es wahrscheinlich ist, dass anderen Applikationen die Datei ändern.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;Wie Trenn-, Anführungs- und Ausnahmezeichen verwendet werden&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Datensätze werden durch drei Zeichenarten in Felder aufgeteilt: 
+Trenn-, Anführungs- und Ausnahmezeichen.  
+Andere Zeichen im Datensatz werden als Daten betrachtet und durch Trennzeichen in Felder aufgeteilt. Anführungszeichen treten gepaart auf und bewriken das der Text dazwischen wie Daten behandelt wird.  Ausnahmezeichen bewirken, dass darauffolgede Zeichen als Daten behandelt werden.   
+&lt;/p&gt;
+&lt;p&gt;
+Anführungs- und Ausnahmezeichen dürfen keine Trennzeichen sein - sie werden ignoriert, wenn sie es sind. Ausnahmezeichen können auch Anführungszeichen sein, verhalten sich aber unterschiedlich, wenn sie es sind.&lt;/p&gt;
+&lt;p&gt;Trennzeichen markieren die Feldenden.  Wenn mehr als ein Trennzeichen definiert ist, kann ein jedes das Feldende markieren. Die Anführungs- und Ausnahmezeichen   übersteuern das Trennzeichen, sodaß es als normales Datenzeichen behandelt wird.&lt;/p&gt;
+&lt;p&gt;Anführungszeichen können verwendet werden, um den Anfang und das Ende von Feldern zu markieren. Solche Felder können Trennzeichen enthalten und über mehrere Zeilen der Textdatei gehen. Wenn ein Feld in Anführungszeichen steht müssen die Anführungszeichen an beiden Ende übereinstimmen. Anführungszeichen für nicht in einem vorkommen außer sie sind mit einem Ausnahmezeichen versehen.&lt;/p&gt;
+&lt;p&gt;Ausnahmezeichen, die keine Anführungszeichen sind sorgen dafür, dass das folgende Zeichen als Datenzeichen behandelt wird (d.h. nicht mehr als Zeilenumbruch, Trenn- oder Anführungszeichen behandelt wird).  
+&lt;/p&gt;
+&lt;p&gt;Ausnahmezeichen, die auch Anführungszeichen sind, haben einen sehr viel begrenzden Effekt.  Sie wirken nur innerhalb von Anführungszeichen und nehme nur sich selbst aus. Wenn beispielsweise 
+&lt;tt&gt;&apos;&lt;/tt&gt; ein Anführungs- und Ausnahmezeichen ist, repräsentiert die Zeichenkette
+&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; den Wert Smith&apos;s&amp;nbsp;Creek.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;Wie reguläre Ausdrücke funktionieren&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Reguläre Ausdrücke sind eine Minisprache um Zeichenmuster auszudrücken.  Es gibt viele Syntaxvarianten für reguläre Ausdrücke - QGIS nutzt die Syntax der Klasse &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; des &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; Frameworks.&lt;/p&gt;
+&lt;p&gt;In einer durch regulären Ausdruck getrennten Datei wird jede Zeile als Datensatz behandelt.  Jeder Treffer des regulären Ausdrucks in der Zeile wird als Feldende behandelt. Wenn der reguläre Ausdruck Erfassungsgruppen (engl. capture groups; z.B. &lt;tt&gt;(cat|dog)&lt;/tt&gt;) enthält werden diese als Felder extrahiert. Wenn dies nicht gewünscht ist, sollten Nicht-Erfassungsgruppen (z.B. &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;) verwendet werden.
+&lt;/p&gt;
+&lt;p&gt;Der reguläre Ausdruck wird anders behandelt, wenn es sich auf den Anfang der Zeile bezieht (d.h, wenn das Muster mit &lt;tt&gt;^&lt;/tt&gt; beginnt).
+In diesem Fall wird der Ausdruck auf jede Zeile angewendet. Wenn die Zeile kein Treffer ist, wird sie als ungültige Datensatz verworfen.  Jede Erfassungsgruppe im Ausdruck wird als Feld behandelt.  Der reguläre Ausdruck ist ungültig, wenn er keine Erfassungsgruppen enthält.  Zum Beispiel kann folgendes als ein (etwas uneingängiges) Mittel zum Laden von Daten mit festen Feldbreite verwendet werden:
+&lt;pre&gt;
+^(.{5})(.{10})(.{20})(.{20})
+&lt;/pre&gt;
+&lt;p&gt;extrahiert vier Felder der Breiten 5, 10, 20 und 20 Zeichen einer jeden Zeile.  
+Zeilen mit weniger als 55 Zeichen werden verworfen.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;Wie WKT-Texte interpretiert werden&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+Ein getrennter Textlayer erkennt folgende &lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;Well-Known-Text&lt;/a&gt;-Typen - 
+&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
+Es akzeptiert Geometrien mit einer Z-Koordinate (z.B. &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), eine Messung (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;) oder beides (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;
+Es unterstützt auch die PostGIS-EWKT-Variante, in der die Geometrie mit einer räumlichen Referenzsystem-ID eingeleitet wird (z.B. &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;) und die Informix-Variante in der eine WKT nur mit einer ganzzahligen räumlichen Referenzsystem-ID eingeleitet wird (z.B. &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
+In beiden Fällen wird die SRID ignoriert.
+&lt;/p&gt;
+
+
+
+&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attribute in getrennten Textdateien&lt;/a&gt;&lt;/h4&gt; 
+&lt;p&gt;Jeder Datensatz wird in Felder aufgeteilt, die die Attribute des Datensatzes repräsentieren.  Normalerweise werden die Attributname der ersten Zeile entnommen.  Wenn sie keine Feldnamen enthält werden sie mit &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt; usw. benannt.  
+Auch wenn es mehr Datensätzen mehr Felder als die in der Kopfzeile definierten hat, werden diese mit &lt;tt&gt;field_#&lt;/tt&gt; benannt, wobei # die Feldnummer ist (zu beachten ist, das leere Felder am Ende des Datensatzes ignoriert werden).
+QGIS kann andere Feldnamen verwenden, wenn die Namen in der Textdateien Zahlen sind oder Namen wie &lt;tt&gt;field_#&lt;/tt&gt; haben oder doppelt vorkommen.
+&lt;/p&gt;
+&lt;p&gt;
+Zusätzlich zu den Attributen, die explizit in der Datei vorkommen, vergibt QGIS jedem Datensatz die Zeilennummer in der er beginnt als eindeutige Objektkennung.  
+&lt;/p&gt;
+&lt;p&gt;
+Jedes Attribut hat auch einen Datentyp aus Zeichenkette (String, Text), ganzer Zahl oder Fließkommazahl.
+Der Datentyp wird aus dem Inhalt des Felds hergeleitet -wenn jeder nicht leere Wert eine ganze Zahl ist der Feldtyp Ganzzahl, wenn er eine gültige Fließkommazahl ist, ist der Feldtype Fließkommazahl und sonst ist der Typ Zeichenkette .  Zu beachten ist, das dies auf den Inhalten der Felder basiert, Anführungszeichen beeinflußen die Interpretation der Werte nicht.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Beispiel für eine Textdatei mit X-,Y-Punktkoordinaten&lt;/a&gt;&lt;/h4&gt; 
+&lt;pre&gt;
+X;Y;ELEV
+-300120;7689960;13
+-654360;7562040;52
+1640;7512840;3
+&lt;/pre&gt;
+&lt;p&gt;Die Datei:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; benutzt &lt;b&gt;;&lt;/b&gt; als Trennzeichen. Jedes Zeichen kann als Trennzeichen für Felder verwendet werden.&lt;/li&gt;
+&lt;li&gt;Die erste Zeile ist die Kopfzeile. Es enthält die Feldnamen X, Y und ELEV.&lt;/li&gt;
+&lt;li&gt;Die X-Koordinaten stehen im Feld X.&lt;/li&gt;
+&lt;li&gt;Die Y Koordinaten stehen im Feld Y.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Beispiel für eine Textdatei mit WKT-Geometrien&lt;/a&gt;&lt;/h4&gt;
+&lt;pre&gt;
+id|wkt
+1|POINT(172.0702250 -43.6031036)
+2|POINT(172.0702250 -43.6031036)
+3|POINT(172.1543206 -43.5731302)
+4|POINT(171.9282585 -43.5493308)
+5|POINT(171.8827359 -43.5875983)
+&lt;/pre&gt;
+&lt;p&gt;Diese Datei&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;hat zwei Felder in der Kopfzeile: id und wkt.
+  &lt;li&gt;nutzt &lt;b&gt;|&lt;/b&gt; als Trennzeichen.&lt;/li&gt;
+  &lt;li&gt;gibt jeden Punkt in WKT-Notation an
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Getrennte Textlayer mit Python verwenden&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Getrennte Textlayerdatenquellen können mit Python in ähnlicher Weise wie andere Vektorlayer erzeugt werden.
+Das Muster ist:
+&lt;/p&gt;
+&lt;pre&gt;
+from PyQt4.QtCore import QUrl, QString
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+
+# Define the data source
+filename=&quot;test.csv&quot;
+uri=QUrl.fromLocalFile(filename)
+uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
+uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
+uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
+# ... other delimited text parameters
+layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
+# Add the layer to the map
+if layer.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer( layer )
+&lt;/pre&gt;
+&lt;p&gt;Dies könnte zum Laden des &lt;a href=&quot;#wkt_example&quot;&gt;zweiten&lt;/a&gt; Beispiels oben verwendet werden.&lt;/p&gt;
+&lt;p&gt;Die Konfiguration wird durch die Query-Items in der URI festgelegt.
+Die folgenden Optionen können verwendet werden
+&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; legt die Dateikodierung fest.  Voreingestellt ist &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; legt den Trennzeichentyp fest.  Gültige Werte sind  csv, 
+       regexp, und whitespace (das nur ein Sonderfall von regexp ist).  Voreingestellt ist csv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; legt das Trennzeichen, das für CSV oder regexp formatierte Dateien verwendet wird, fest.  Voreingestellt ist CSV-Dateien ist &lt;tt&gt;,&lt;/tt&gt;.  Für regexp gibt es keine Voreinstellung.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (für CSV-Dateien) legt die Anführungszeichen fest. Voreingestellt ist &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (für CSV-Dateien) legt Ausnahmezeichen fest, das das folgende Zeichen von ihrer Sonderbedeutung ausnimmt. Voreingestellt ist &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; legt die Anzahl der Zeilen fest, die am Anfang der Datei übersprungen werden sollen. Voreingestellt ist 0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; legt fest, ob der erste Datensatz Feldnamen enthält. Voreingestellt ist yes.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; legt fest, ob führende oder schließende Leerzeichen abgeschnitten von nicht mit Anführungszeichen umschlossenen Felder abgeschnitten werden sollen. Voreingestellt ist no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; legt die Feldhöchstzahl fest, die aus der Datei geladen werden. Weitere Felder in den Datensätzen werden verworfen.Voreingestellt ist 0 - alle Felder einschließen
+       (Diese Option ist in der Dialogbox nicht vorhanden).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; legt fest, ob leere nicht in Anführungszeichen stehende Felder verworfen werden (angewendet nach trimFields). Voreingestellt ist no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; legt einen alternatives Zeichen als Dezimaltrennerzeichen in numerischen Feldern fest.  Voreingestellt ist Punkt (&lt;tt&gt;.&lt;/tt&gt;).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;wktField=feldname&lt;/tt&gt; legt den Namen oder die Feldnummer (beginnend mit 1) des Feldes fest, das eine WKT-Geometrie enthält&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;xField=feldname&lt;/tt&gt; legt den Name oder die Feldnummer (beginnend mit 1) des Feldes fest, das die X-Koordinate enthält (gilt nur, wenn kein wktField angegeben ist)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;yField=feldname&lt;/tt&gt; legt den Name oder die Feldnummer (beginnend mit 1) des Feldes fest, das die Y-Koordinate enthält (gilt nur, wenn kein wktField angegeben ist)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; legt den Geometrietyp der WKT-Felder an oder &lt;tt&gt;none&lt;/t&gt;, um nur die Attributtabelle zu laden.  Voreingestellt ist auto.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; legt einen Ausdruck fest, der die zu verwendende Untermenge der Datensätze identifiziert.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; legt das zu verwendende Koordinatensystem des Vektorlayers in einem durch QgsCoordinateReferenceSystem.createFromString (z.B. &amp;quot;EPSG:4167&amp;quot;) akzeptierten Formats fest.  Wenn dies nicht angegeben ist, kann die ein Dialog diese vom Benutzer erfragen (abhängig von der QGIS-KBS-Einstellung)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; legt fest, das der Datenlieferanz einen Index beim ersten Laden aufbauen soll, um die Untermenge festzulegen.  Der Index kommt bei explizit definierten Untermengen und implizite Untermenge mit gültigen Geometrien zu Anwendung.  Voreingestellt ist, dass der Index, wenn möglicht erstellt wird.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; legt fest, das ein räumlicher Index beim ersten Lesen der Datei erstellt werden soll.  Voreingestellt ist, dass kein Index erstellt wird. &lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; legt fest, dass der Datenlieferant das Dateisystem auf Dateiänderungen überwachen soll.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; legt fest, ob Fehler beim Laden des Layers in einem Dialog angezeigt werden sollen (in jedem Fall werden sie in QGIS-Protokoll geschrieben). Voreingestellt ist no.  Diese Option ist in der Oberfläche nicht verfügbar&lt;/li&gt;
+&lt;/ul&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="319"/>
+        <source>&lt;h3&gt;Print Composer&lt;/h3&gt;
+
+&lt;p&gt;
+The print composer lets you arrange items onto a page, which can then be printed. Items include the content of the map canvas, the scale bar, the legend, and arbitrary images.
+&lt;/p&gt;
+
+&lt;p&gt;
+Click on one of the icons along the top of the composer window to select what type of item to place on the page, then click and draw on the page to place the item. The size of some items, such as the map canvas and scale bar can be set by clicking and dragging on the page. Other items have a fixed size, but which can be changed later on by highlighting the item and then adjusting the size fields in the left hand pane.
+
+&lt;/p&gt;
+
+</source>
+        <translation>&lt;h3&gt;Druckzusammenstellung&lt;/h3&gt;
+
+&lt;p&gt;
+Die Druckzusammenstellung dient zum Arrangement von Elementen auf einer Seite, die dann gedruckt werden können.  Diese Elemente umfassen den Karteninhalt, einen Maßstab, die Legende und beliebige Bilder. 
+&lt;/p&gt;
+
+&lt;p&gt;
+Klicken Sie auf einen der Icons oben im Dialogfenster, um den Elementtyp festzulegen, den Sie auf die Seite bringen wollen.  Dann klicken und zeichnen Sie auf die Seite, um das Element zu platzieren.  Die Größe einiger Element, wie der Karte und des Maßstabs, kann durch Klicken und Ziehen auf der Seite eingestellt werden.  Andere Elemente haben eine feste Größe, die aber später durch hervorheben des Elements und Anpassung der Größenfelder im linken Bereich geändert werden kann. 
+&lt;/p&gt; 
+</translation>
+    </message>
+</context>
+<context>
+    <name>dxf2shpConverter</name>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="80"/>
+        <source>Converts DXF files in Shapefile format</source>
+        <translation>Konvertiert DXF-Dateien ins Shape-Format</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="87"/>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="119"/>
+        <source>&amp;Dxf2Shp</source>
+        <translation>&amp;Dxf2Shp</translation>
+    </message>
+</context>
+<context>
+    <name>dxf2shpConverterGui</name>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="14"/>
+        <source>Dxf Importer</source>
+        <translation>DXF-Importer</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="25"/>
+        <source>Input and output</source>
+        <translation>Ein- und Ausgabe</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="31"/>
+        <source>Input DXF file</source>
+        <translation>Eingabe-DXF-Datei</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="41"/>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="58"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="48"/>
+        <source>Output file</source>
+        <translation>Ausgabedatei</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="65"/>
+        <source>Export text labels</source>
+        <translation>Beschriftungen exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="75"/>
+        <source>Output file type</source>
+        <translation>Ausgabedateityp</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="81"/>
+        <source>Polyline</source>
+        <translation>Polylinie</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="88"/>
+        <source>Polygon</source>
+        <translation>Polygon</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="95"/>
+        <source>Point</source>
+        <translation>Punkt</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="51"/>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="57"/>
+        <source>Warning</source>
+        <translation>Warnung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="51"/>
+        <source>Please specify a file to convert.</source>
+        <translation>Bitte Datei zur Konvertierung angeben.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="57"/>
+        <source>Please specify an output file</source>
+        <translation>Bitte Ausgabedatei angeben</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="128"/>
+        <source>Fields description:
+* Input DXF file: path to the DXF file to be converted
+* Output Shp file: desired name of the shape file to be created
+* Shp output file type: specifies the type of the output shape file
+* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain information about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
+
+---
+Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
+CNR, Milan Unit (Information Technology), Construction Technologies Institute.
+For support send a mail to scala@itc.cnr.it
+</source>
+        <translation>Feldbeschreibung:
+* DXF-Eingabedatei: Pfad zur zu konvertierenden DXF-Datei
+* Ausgabe-Shape-Datei: Gewünschter Name der zu erzeugenden Shapedatei
+* Typ der Ausgabe-Shape-Datei: gibt den Typ der Ausgabe-Shape-Datei
+* Beschriftungen exportieren: Es wird ein zusätzlicher Shapepunkt-Layer erzeugt, dessen zugehörige DBF-Tabelle Informationen über das &quot;TEXT&quot;-Feld der DXF-Datei und die Zeichenketten selbst enthält.
+
+---
+Entwickelt von Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
+CNR, Milan Unit (Information Technology), Construction Technologies Institute.
+Unterstützung unter scala@itc.cnr.it
+</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="157"/>
+        <source>Choose a DXF file to open</source>
+        <translation>DXF-Datei wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="159"/>
+        <source>DXF files</source>
+        <translation>DXF-Dateien</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="172"/>
+        <source>Choose a file name to save to</source>
+        <translation>Dateiname zum Speichern wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="174"/>
+        <source>Shapefile</source>
+        <translation>Shapedateien</translation>
+    </message>
+</context>
+<context>
+    <name>eVis</name>
+    <message>
+        <location filename="../src/plugins/evis/evis.cpp" line="112"/>
+        <source>eVis Database Connection</source>
+        <translation>eVis-Datenbankverbindung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evis.cpp" line="114"/>
+        <source>eVis Event Id Tool</source>
+        <translation>eVis-Ereignis-ID-Werkzeug</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evis.cpp" line="116"/>
+        <source>eVis Event Browser</source>
+        <translation>eVis-Ereignisbrowser</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evis.cpp" line="120"/>
+        <source>Create layer from a database query</source>
+        <translation>Layer aus einer Datenbankabfrage erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evis.cpp" line="121"/>
+        <source>Open an Event Browers and display the selected feature</source>
+        <translation>Einen Ereignisbrowser öffnen und gewählte Objekte anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evis.cpp" line="122"/>
+        <source>Open an Event Browser to explore the current layer&apos;s features</source>
+        <translation>Einen Ereignisbrowser öffnen, um die Objekte des aktuellen Layers zu erforschen</translation>
+    </message>
+</context>
+<context>
+    <name>eVisDatabaseConnectionGui</name>
+    <message>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="75"/>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="229"/>
+        <source>Undefined</source>
+        <translation>Undefiniert</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="77"/>
+        <source>No predefined queries loaded</source>
+        <translation>Keine verdefinierten Abfragen geladen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="82"/>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="84"/>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="316"/>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="456"/>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="458"/>
+        <source>Open File</source>
+        <translation>Datei öffnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="226"/>
+        <source>New Database connection requested...</source>
+        <translation>Neue Datenbankverbindung angefordert...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="231"/>
+        <source>Error: You must select a database type</source>
+        <translation>Fehler: Sie müssen einen Datenbanktyp auswählen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="239"/>
+        <source>Error: No host name entered</source>
+        <translation>Fehler: Kein Hostname eingegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="246"/>
+        <source>Error: No database name entered</source>
+        <translation>Fehler: Kein Datenbankname eingegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="288"/>
+        <source>Connection to [%1.%2] established</source>
+        <translation>Verbindung zu [%1.%2] aufgebaut</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="289"/>
+        <source>connected</source>
+        <translation>verbunden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="292"/>
+        <source>Tables</source>
+        <translation>Tabellen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="301"/>
+        <source>Connection to [%1.%2] failed: %3</source>
+        <translation>Verbindung zu [%1.%2] gescheitert: %3</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="415"/>
+        <source>Error: Parse error at line %1, column %2: %3</source>
+        <translation>Fehler: Parserfehler in Zeile %1, Spalte %2: %3</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="420"/>
+        <source>Error: Unabled to open file [%1]</source>
+        <translation>Fehler: Konnte Datei nicht öffnen [%1]</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="476"/>
+        <source>Error: Query failed: %1</source>
+        <translation>Fehler: Abfrage gescheitert: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="530"/>
+        <source>Error: Could not create temporary file, process halted</source>
+        <translation>Fehler: Konnte Temporärdatei nicht erzeugen, Prozess angehalten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="537"/>
+        <source>Error: A database connection is not currently established</source>
+        <translation>Fehler: Es besteht derzeit keine Datenbankverbindung</translation>
+    </message>
+</context>
+<context>
+    <name>eVisDatabaseConnectionGuiBase</name>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="13"/>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="153"/>
+        <source>Database Connection</source>
+        <translation>Datenbankverbindung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="47"/>
+        <source>Predefined Queries</source>
+        <translation>Vordefinierte Abfragen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="65"/>
+        <source>Load predefined queries</source>
+        <translation>Vordefinierte Abfragen laden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="68"/>
+        <source>Loads an XML file with predefined queries. Use the Open File window to locate the XML file that contains one or more predefined queries using the format described in the user guide.</source>
+        <translation>Läd eine XML-Datei mit vordefinierten Abfragen. Nutzen Sie das Datei öffnen-Fenster, um die XML-Datei aufzufinden, die eine oder mehrere vordefinierte Abfragen in dem im Benutzerhandbuch definierten Format enthält.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="98"/>
+        <source>The description of the selected query.</source>
+        <translation>Die Beschreibung der gewählten Abfrage.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="108"/>
+        <source>Select the predefined query you want to use from the drop-down list containing queries identified from the file loaded using the Open File icon above. To run the query you need to click on the SQL Query tab. The query will be automatically entered in the query window.</source>
+        <translation>Wählen Sie die gewünschte vordefinierte Abfragen aus der Drop-Down-Liste mit den Abfragen, die über Datei öffnen  geladen wurden. Um die Abfrage auszuführen müssen Sie auf die SQL-Abfrage-Reiter klicken. Die Abfrage wird automatisch in das Abfragefenster übernommen.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="165"/>
+        <source>not connected</source>
+        <translation>Nicht verbunden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="175"/>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Connection Status: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Verbindungsstatus: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="185"/>
+        <source>Database Host</source>
+        <translation>Datenbank-Host</translation>
+    </message>
+    <message utf8="true">
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="192"/>
+        <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
+        <translation>Einen Datenbank-Host eingeben. Wenn die Datenbank sich auf Ihrer Arbeitsstation befindet sollten Sie &quot;localhost&quot; eingeben. Wenn Sie &quot;MSAccess&quot; als Datenbanktyp gewählt haben, ist diese Option nicht verfügbar. </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="202"/>
+        <source>Password to access the database.</source>
+        <translation>Passwort zum Zugriff auf die Datenbank.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="212"/>
+        <source>Enter the name of the database.</source>
+        <translation>Name der Datenbank eingeben.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="232"/>
+        <source>Username</source>
+        <translation>Benutzername</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="239"/>
+        <source>Enter the port through which the database must be accessed if a MYSQL database is used.</source>
+        <translation>Port über den die Datenbank angesprochen werden soll, wenn eine MySQL-Datenbank benutzt wird.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="249"/>
+        <source>Connect to the database using the parameters selected above. If the connection was successful a message will be displayed in the Output Console below saying the connection was established. </source>
+        <translation>Verbindung zur Datenbank mit den oben angegebenen Parametern aufnehmen.  Wenn die Verbindung erfolgreich war, wird unten in der Ausgabekonsole eine entsprechende Nachricht angezeigt. </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="252"/>
+        <source>Connect</source>
+        <translation>Verbinden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="262"/>
+        <source>User name to access the database.</source>
+        <translation>Benutzernamen für Datenbankzugriff angeben.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="269"/>
+        <source>Select the type of database from the list of supported databases in the drop-down menu.</source>
+        <translation>Wählen Sie eine Datenbanktyp aus der Liste der unterstützten Datenbanken aus dem Drop-Down-Menü.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="289"/>
+        <source>Database Name</source>
+        <translation>Datenbankname</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="296"/>
+        <source>Password</source>
+        <translation>Passwort</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="303"/>
+        <source>Database Type</source>
+        <translation>Datenbanktyp</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="310"/>
+        <source>Port</source>
+        <translation>Port</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="350"/>
+        <source>SQL Query</source>
+        <translation>SQL-Abfrage</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="375"/>
+        <source>Run the query entered above. The status of the query will be displayed in the Output  Console below.</source>
+        <translation>Die obige Abfrage ausführen. Der Status der Abfrage wird unten in der Ausgabekonsole angezeigt.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="378"/>
+        <source>Run Query</source>
+        <translation>Abfrage ausführen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="388"/>
+        <source>Enter the query you want to run in this window.</source>
+        <translation>In diesem Fenster die Abfrage eingeben, die Sie ausführen wollen.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="435"/>
+        <source>A window for status messages to be displayed.</source>
+        <translation>Ein Fenster für anzuzeigende Statusnachrichten.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="458"/>
+        <source>Output Console</source>
+        <translation>Ausgabekonsole</translation>
+    </message>
+</context>
+<context>
+    <name>eVisDatabaseLayerFieldSelectionGuiBase</name>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="16"/>
+        <source>Database File Selection</source>
+        <translation>Datenbankdatei-Auswahl</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="45"/>
+        <source>The name of the field that contains the Y coordinate of the points.</source>
+        <translation>Der Name des Feldes, das die Y-Koordinate der Punkte enthält.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="58"/>
+        <source>The name of the field that contains the X coordinate of the points.</source>
+        <translation>Der Name des Feldes, das die X-Koordinate der Punkte enthält.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="68"/>
+        <source>Enter the name for the new layer that will be created and displayed in QGIS.</source>
+        <translation>Einen Name für den Layer eingeben, der in QGIS erstellt und angezeigt werden wird.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="75"/>
+        <source>Y Coordinate</source>
+        <translation>Y-Koordinate</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="82"/>
+        <source>X Coordinate</source>
+        <translation>X-Koordinate</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="89"/>
+        <source>Name of New Layer</source>
+        <translation>Name des neuen Layers</translation>
+    </message>
+</context>
+<context>
+    <name>eVisGenericEventBrowserGui</name>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="140"/>
+        <source>Generic Event Browser</source>
+        <translation>Allgemeiner Ereignisbrowser</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="164"/>
+        <source>Field</source>
+        <translation>Feld</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="164"/>
+        <source>Value</source>
+        <translation>Wert</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="215"/>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="221"/>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="238"/>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="244"/>
+        <source>Warning</source>
+        <translation>Warnung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="215"/>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="238"/>
+        <source>This tool only supports vector data</source>
+        <translation>Dieses Werkzeug unterstützt nur Vektordaten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="221"/>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="244"/>
+        <source>No active layers found</source>
+        <translation>Keine aktiven Layer gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="250"/>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="281"/>
+        <source>Error</source>
+        <translation>Fehler</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="250"/>
+        <source>Unable to connect to either the map canvas or application interface</source>
+        <translation>Konnte keine Verbindung zum Kartenfenster oder der Anwendungsschnittstelle aufnehmen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="281"/>
+        <source>An invalid feature was received during initialization</source>
+        <translation>Ein ungültiges Objekt wurde während der Initialisierung empfangen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="316"/>
+        <source>Event Browser - Displaying records 01 of %1</source>
+        <translation>Ereignis-Browser - 01 von %1 Datensätzen angezeigt</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="803"/>
+        <source>Attribute Contents</source>
+        <translation>Attributinhalt</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1016"/>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1038"/>
+        <source>Event Browser - Displaying records %1 of %2</source>
+        <translation>Ereignis-Browser - %1 von %2 Datensätzen angezeigt</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1111"/>
+        <source>Select Application</source>
+        <translation>Anwendung auswählen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1111"/>
+        <source>All ( * )</source>
+        <translation>Alle ( * )</translation>
+    </message>
+</context>
+<context>
+    <name>eVisGenericEventBrowserGuiBase</name>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="34"/>
+        <source>Display</source>
+        <translation>Anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="63"/>
+        <source>Use the Previous button to display the previous photo when more than one photo is available for display.</source>
+        <translation>Benutzen Sie den Knopf &quot;Vorheriges&quot;, um das vorherige Foto anzuzeigen, wenn mehr als ein Foto zur Anzeige verfügbar ist.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="66"/>
+        <source>Previous</source>
+        <translation>Vorheriges</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="82"/>
+        <source>Use the Next button to display the next photo when more than one photo is available for display.</source>
+        <translation>Benutzen Sie den Knopf &quot;Nächstes&quot;, um das folgende Foto anzuzeigen, wenn mehr als ein Foto zur Anzeige verfügbar ist.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="85"/>
+        <source>Next</source>
+        <translation>Nächstes</translation>
+    </message>
+    <message utf8="true">
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="113"/>
+        <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
+        <translation>Alle Attributinformation des mit dem angezeigten Foto verknüpften Punktes wird hier angezeigt.  Wenn der durch den angezeigten Datensatz referenzierte Dateityp kein Bild ist, aber er in &quot;Externe Anwendungen konfigurieren&quot;-Reiter definiert ist, kann über eine Doppelklick auf den Feldwert mit dem Dateipfad die Anwendung zur Anzeige oder Abspielung des Dateiinhalts geöffnet. Wenn die Dateierweiterung erkannt wurde, werden die Attributdaten in grün angezeigt.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="117"/>
+        <source>1</source>
+        <translation>1</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="131"/>
+        <source>Image display area</source>
+        <translation>Bildanzeigebereich</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="134"/>
+        <source>Display area for the image.</source>
+        <translation>Bereich in dem das Bild angezeigt wird.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="165"/>
+        <source>Options</source>
+        <translation>Optionen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="171"/>
+        <source>File path</source>
+        <translation>Dateipfad</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="177"/>
+        <source>Attribute containing path to file</source>
+        <translation>Attribute, das den Pfad enthält</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="199"/>
+        <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
+        <translation>Nutzen Sie die Drop-Down-Liste, um das Felder zur wählen, dass das Bildverzeichnis enthält. Dieser kann ein absoluter oder relativer Pfad sein.</translation>
+    </message>
+    <message utf8="true">
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="222"/>
+        <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
+        <translation>Wenn angehakt wird der Pfad zum Bild durch anhängen des in der &quot;Dateipfad-Attribut&quot;-Drop-Down-Liste ausgewählten Attributs an &quot;Grundpfad&quot; unten definiert.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="225"/>
+        <source>Path is relative</source>
+        <translation>Pfad ist relativ</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="248"/>
+        <source>If checked, the relative path values will be saved for the next session.</source>
+        <translation>Wenn angehakt werden relative Pfadwerte für die nächste Sitzung gespeichert.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="254"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="379"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="548"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="645"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="710"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="774"/>
+        <source>Remember this</source>
+        <translation>Dies merken</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="267"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="392"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="561"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="658"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="723"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="787"/>
+        <source>Reset to default</source>
+        <translation>Auf Voreinstellung zurücksetzen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="273"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="395"/>
+        <source>Resets the values on this line to the default setting.</source>
+        <translation>Setzt die Werte dieser Zeile auf die Voreinstellungen zurück.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="276"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="398"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="567"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="664"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="729"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="793"/>
+        <source>Reset</source>
+        <translation>Zurücksetzen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="296"/>
+        <source>Compass bearing</source>
+        <translation>Kompaßrichtung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="302"/>
+        <source>Attribute containing compass bearing</source>
+        <translation>Attribut, das die Kompaßrichtung enthält</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="324"/>
+        <source>Use the drop-down list to select the field containing the compass bearing for the image. This bearing usually references the direction the camera was pointing when the image was acquired. </source>
+        <translation>Nutzen Sie die Drop-Down-Liste, um das Feld der Kompaßrichtung des Bildes zu wählen. Dies Richtung bezieht sich normalerweise auf die Richtung in die die Kamera zeigte als das Bild aufgenommen wurde. </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="347"/>
+        <source>If checked an arrow pointing in the direction defined by the attribute in the field selected from the drop-down list to the right will be displayed in the QGIS window on top of the point for this image.</source>
+        <translation>Wenn angehakt wird ein Pfeil in der Richtung des Attributwert aus dem in der Drop-Down-Liste gewählten Feld im QGIS-Fenster über dem Punkt dieses Bildes angezeigt.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="350"/>
+        <source>Display compass bearing</source>
+        <translation>Kompaßrichtung anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="373"/>
+        <source>If checked, the Display Compass Bearing values will be saved for the next session.</source>
+        <translation>Wenn angehakt, werden die Kompaßrichtungswerte für die nächste Sitzung gespeichert.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="418"/>
+        <source>Compass offset</source>
+        <translation>Kompaßversatz</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="427"/>
+        <source>Define the compass offset manually.</source>
+        <translation>Den Kompaßversatz manuell angeben.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="430"/>
+        <source>Manual</source>
+        <translation>Manuell</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="446"/>
+        <source>A value to be added to the compass bearing. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
+        <translation>Ein Wert, der zur Kompaßrichtung addiert wird. Dies gestattet den Ausgleich der Deklination (Richtungsanpassung von magnetischer zur echter Nord-Richtung).  Östliche Deklinationen sollten positive und westliche negative Werte eingeben. </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="481"/>
+        <source>Define the compass offset using a field from the vector layer attribute table.</source>
+        <translation>Kompaßversatz gemäß eines Feldes der Vektorlayerattributtabelle.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="484"/>
+        <source> From Attribute</source>
+        <translation> Aus Attribut</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="506"/>
+        <source>Use the drop-down list to select the field containing the compass bearing offset. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
+        <translation>Die Drop-Down-Liste benutzen, um das Feld, das die Kompaßrichtung enthält, festzulegen. Dies gestattet Ihnen die Deklination zur kompensieren (Richtungsanpassung von magnetischer zur echter Nord-Richtung). Östliche Deklinationen sollten positive und westliche negative Werte eingeben. </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="542"/>
+        <source>If checked, the compass offset values will be saved for the next session.</source>
+        <translation>Wenn angehakt, wird der Kompaßversatz bis zur nächsten Sitzung gespeichert.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="564"/>
+        <source>Resets the compass offset values to the default settings.</source>
+        <translation>Kompaßversatzwerte auf die Voreinstellung zurücksetzen.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="587"/>
+        <source>Relative paths</source>
+        <translation>Relative Pfad</translation>
+    </message>
+    <message utf8="true">
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="593"/>
+        <source>The base path or url from which images and documents can be “relative”</source>
+        <translation>Der Grundpfad oder URL zu denen auf den sich &quot;relative&quot; Bilder und Dokumente beziehen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="613"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="626"/>
+        <source>Base Path</source>
+        <translation>Grundpfad</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="629"/>
+        <source>The Base Path onto which the relative path defined above will be appended.</source>
+        <translation>Der Grundpfad an den oben angegebene relative Pfade angehängt werden.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="639"/>
+        <source>If checked, the Base Path will be saved for the next session.</source>
+        <translation>Wenn angehakt wird der Grundpfad zur nächsten Sitzung gespeichert.</translation>
+    </message>
+    <message utf8="true">
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="661"/>
+        <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
+        <translation>Legt den voreingestellten Grundpfad fest, der das Verzeichnis des Vektorlayers mit den Bildinformationen ist.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="690"/>
+        <source>If checked, the Base Path will append only the file name instead of the entire relative path (defined above) to create the full directory path to the file. </source>
+        <translation>Wenn angehakt, wird der Grundpfad nur dem Dateiname statt dem ganzen, oben festgelegten, relativen Pfad vorangestellt, um den vollständigen Verzeichnispfad der Datei zu erzeugen. </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="693"/>
+        <source>Replace entire path/url stored in image path attribute with user defined
+Base Path (i.e. keep only filename from attribute)</source>
+        <translation>Gesamten im Bildpfadattribut gespeicherten Pfad/URL ersetzen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="704"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="768"/>
+        <source>If checked, the  current check-box setting will be saved for the next session.</source>
+        <translation>Wenn angehakt, wird die aktuelle Einstellung zur nächsten Sitzung gespeichert.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="726"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="790"/>
+        <source>Clears the check-box on this line.</source>
+        <translation>Löscht die Auswahl dieser Zeile.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="755"/>
+        <source>If checked, the same path rules that are defined for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</source>
+        <translation>Wenn angehakt, werden die gleiche Pfadregel die für Bilder definiert sind auf für andere Dokumente wie Filme, Textdokumente und Audiodateien verwendet. Wenn nicht angehakt werden die Pfadregeln nur auf Bilder angewendet und für andere ignoriert.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="758"/>
+        <source>Apply Path to Image rules when loading docs in external applications</source>
+        <translation>Bildpfadregel auch anwenden, wenn Dokumente mit externen Anwendungen geladen werden</translation>
+    </message>
+    <message utf8="true">
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="823"/>
+        <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
+        <translation>Speichern sichert die Einstellungen ohne die Optionsseite zu schließen. &quot;Voreinstellungen wiederherstellen&quot; wird alle Felder auf ihre Voreinstellungen zurücksetzen.  Es hat den gleichen Effekt wie alle &quot;Auf Voreinstellungen zurücksetzen&quot; einzel anzuklicken. </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="834"/>
+        <source>Configure External Applications</source>
+        <translation>Externe Anwendungen konfigurieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="855"/>
+        <source>File extension and external application in which to load a document of that type</source>
+        <translation>Dateierweitungen und externe Anwendungen mit der Dateien dieses Typs geladen werden sollen festlegen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="880"/>
+        <source>A table containing file types that can be opened using eVis. Each file type needs a file extension and the path to an application that can open that type of file. This provides the capability of opening a broad range of files such as movies, sound recording, and text documents instead of only images. </source>
+        <translation>Eine Tabelle, die Dateitypen enthält, die mit eVis geöffnet werden können. Jeder Dateityp braucht eine Dateierweiterung und einen Pfad zur Anwendung, die diesen Typ öffnen kann. Dies ermöglicht es eine große Breite von Dateien wie Filmen, Audioaufnahmen und Textdokumenten statt nur Bildern zu öffnen. </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="884"/>
+        <source>Extension</source>
+        <translation>Erweiterung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="889"/>
+        <source>Application</source>
+        <translation>Anwendung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="899"/>
+        <source>Add new file type</source>
+        <translation>Neuen Dateityp hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="902"/>
+        <source>Add a new file type with a unique extension and the path for the application that can open the file.</source>
+        <translation>Eine neuen Dateityp anlegen mit einer eindeutigen Erweiterung und der Anwendung, die die Datei öffnen kann.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="916"/>
+        <source>Delete current row</source>
+        <translation>Aktuelle Zeile löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="919"/>
+        <source>Delete the file type highlighted in the table and defined by a file extension and a path to an associated application.</source>
+        <translation>Den in der Tabelle hervorgehobenen Dateityp löschen.</translation>
+    </message>
+</context>
+<context>
+    <name>eVisImageDisplayWidget</name>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="50"/>
+        <source>Zoom in</source>
+        <translation>Hineinzoomen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="51"/>
+        <source>Zoom in to see more detail.</source>
+        <translation>Hineinzoomen um mehr Details zu sehen.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="52"/>
+        <source>Zoom out</source>
+        <translation>Herauszoomen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="53"/>
+        <source>Zoom out to see more area.</source>
+        <translation>Herauszoomen, um einen größeren Bereich zu sehen.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="54"/>
+        <source>Zoom to full extent</source>
+        <translation>Zur vollen Ausdehnung zoomen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="55"/>
+        <source>Zoom to display the entire image.</source>
+        <translation>Zoomen um das ganze Bild zu sehen.</translation>
+    </message>
+</context>
+<context>
+    <name>fTools</name>
+    <message>
+        <source>QGIS version detected: </source>
+        <translation>Festgestellte QGIS-Version: </translation>
+    </message>
+    <message>
+        <source>This version of fTools requires at least QGIS version 1.0.0
+Plugin will not be enabled.</source>
+        <translation>Diese fTools-Version erfordert mindestens QGIS Version 1.0.0
+Erweiterung wird nicht aktiviert.</translation>
+    </message>
+    <message>
+        <source>&amp;Analysis Tools</source>
+        <translation>&amp;Analyse-Werkzeuge</translation>
+    </message>
+    <message>
+        <source>Distance matrix</source>
+        <translation>Distanzmatrix</translation>
+    </message>
+    <message>
+        <source>Sum line lengths</source>
+        <translation>Linienlängen summieren</translation>
+    </message>
+    <message>
+        <source>Points in polygon</source>
+        <translation>Punkte in Polygonen</translation>
+    </message>
+    <message>
+        <source>Basic statistics</source>
+        <translation>Grundstatistik</translation>
+    </message>
+    <message>
+        <source>List unique values</source>
+        <translation>Eindeutige Werte auflisten</translation>
+    </message>
+    <message>
+        <source>Nearest neighbour analysis</source>
+        <translation>Nächster Nachbaranalyse</translation>
+    </message>
+    <message>
+        <source>Mean coordinate(s)</source>
+        <translation>Mittlere Koordinate(n)</translation>
+    </message>
+    <message>
+        <source>Line intersections</source>
+        <translation>Linienschnittpunkte</translation>
+    </message>
+    <message>
+        <source>&amp;Research Tools</source>
+        <translation>&amp;Forschungswerkzeuge</translation>
+    </message>
+    <message>
+        <source>Random selection</source>
+        <translation>Zufällige Auswahl</translation>
+    </message>
+    <message>
+        <source>Random selection within subsets</source>
+        <translation>Zufällige Auswahl in Untermengen</translation>
+    </message>
+    <message>
+        <source>Random points</source>
+        <translation>Zufällige Punkte</translation>
+    </message>
+    <message>
+        <source>Regular points</source>
+        <translation>Regelmäßige Punkte</translation>
+    </message>
+    <message>
+        <source>Vector grid</source>
+        <translation>Vektorgitter</translation>
+    </message>
+    <message>
+        <source>Select by location</source>
+        <translation>Nach Position wählen</translation>
+    </message>
+    <message>
+        <source>Polygon from layer extent</source>
+        <translation>Polygon aus Layergrenzen</translation>
+    </message>
+    <message>
+        <source>&amp;Geoprocessing Tools</source>
+        <translation>&amp;Geoverarbeitungswerkzeuge</translation>
+    </message>
+    <message>
+        <source>Convex hull(s)</source>
+        <translation>Konvexe Hülle(n)</translation>
+    </message>
+    <message>
+        <source>Buffer(s)</source>
+        <translation>Puffer</translation>
+    </message>
+    <message>
+        <source>Intersect</source>
+        <translation>Schnittmengen</translation>
+    </message>
+    <message>
+        <source>Union</source>
+        <translation>Vereinigungen</translation>
+    </message>
+    <message>
+        <source>Symetrical difference</source>
+        <translation>Symmetrische Differenz</translation>
+    </message>
+    <message>
+        <source>Clip</source>
+        <translation>Clip</translation>
+    </message>
+    <message>
+        <source>Dissolve</source>
+        <translation>Auflösen</translation>
+    </message>
+    <message>
+        <source>Difference</source>
+        <translation>Differenz</translation>
+    </message>
+    <message>
+        <source>Eliminate sliver polygons</source>
+        <translation>Splitterpolygone entfernen</translation>
+    </message>
+    <message>
+        <source>G&amp;eometry Tools</source>
+        <translation>G&amp;eometrie-Werkzeuge</translation>
+    </message>
+    <message>
+        <source>Export/Add geometry columns</source>
+        <translation>Geometriesspalten exportieren/hinzufügen</translation>
+    </message>
+    <message>
+        <source>Check geometry validity</source>
+        <translation>Geometriegültigkeit prüfen</translation>
+    </message>
+    <message>
+        <source>Polygon centroids</source>
+        <translation>Polygonschwerpunkt</translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation</source>
+        <translation>Delaunay-Triangulation</translation>
+    </message>
+    <message>
+        <source>Voronoi Polygons</source>
+        <translation>Voronoi-Polygone</translation>
+    </message>
+    <message>
+        <source>Extract nodes</source>
+        <translation>Knoten extrahieren</translation>
+    </message>
+    <message>
+        <source>Simplify geometries</source>
+        <translation>Geometrien vereinfachen</translation>
+    </message>
+    <message>
+        <source>Densify geometries</source>
+        <translation>Geometrien verdichten</translation>
+    </message>
+    <message>
+        <source>Multipart to singleparts</source>
+        <translation>Mehr- zu einteilig</translation>
+    </message>
+    <message>
+        <source>Singleparts to multipart</source>
+        <translation>Ein- zu mehrteilig</translation>
+    </message>
+    <message>
+        <source>Polygons to lines</source>
+        <translation>Polygon zu Linie</translation>
+    </message>
+    <message>
+        <source>Lines to polygons</source>
+        <translation>Linien zu Polygonen</translation>
+    </message>
+    <message>
+        <source>&amp;Data Management Tools</source>
+        <translation>&amp;Datenmanagement-Werkzeuge</translation>
+    </message>
+    <message>
+        <source>Define current projection</source>
+        <translation>Aktuelle Projektion definieren</translation>
+    </message>
+    <message>
+        <source>Join attributes by location</source>
+        <translation>Attribute nach Position zusammenführen</translation>
+    </message>
+    <message>
+        <source>Split vector layer</source>
+        <translation>Vektorlayer teilen</translation>
+    </message>
+    <message>
+        <source>Merge shapefiles to one</source>
+        <translation>Shapedateien zu einer zusammenführen</translation>
+    </message>
+    <message>
+        <source>Create spatial index</source>
+        <translation>Räumlichen Index erzeugen</translation>
+    </message>
+</context>
+<context>
+    <name>function_help</name>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2026"/>
+        <source>&lt;h3&gt;week() function&lt;/h3&gt;
+Extract the week number from a date, or the number of weeks
+from a &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;week(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - is date or datetime. The date to extract the week from.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of weeks from.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;week(&apos;2012-05-12&apos;) &amp;rarr; 19&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(tointerval(&apos;3 weeks&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion week()&lt;/h3&gt;
+Bestimmt die Woche eines Datums oder die Anzahl der Wochen
+eines &lt;code&gt;Intervalls&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;week(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - ist date oder datetime. Das Datum dessen Woche zur&amp;uuml;ckgegeben werden soll.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - ist Interval. Das Intervall dessen L&amp;auml;nge in Wochen zur&amp;uuml;ckgegeben werden soll.
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;week(&apos;2012-05-12&apos;) &amp;rarr; 19&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(tointerval(&apos;3 weeks&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="336"/>
+        <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
+A conditional expression that can be used to evaluate multiple expressions and
+return a result.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;condition&lt;/i&gt; THEN &lt;i&gt;result&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;result&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] marks optional components
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  WHEN condition&lt;/i&gt; - The condition expression to evaluate. &lt;br&gt;
+&lt;i&gt;  THEN result&lt;/i&gt; - If &lt;i&gt;condition&lt;/i&gt; evaluates to True then &lt;i&gt;result&lt;/i&gt; is evaluated and returned. &lt;br&gt;
+&lt;i&gt;  ELSE result&lt;/i&gt; - If none of the above conditions evaluated to True then &lt;i&gt;result&lt;/i&gt; is evaluated and returned. &lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;None&apos;&lt;/i&gt;
+        ELSE &lt;i&gt;&quot;column&quot;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;CASE Ausdruck&lt;/h3&gt;
+Ist ein bedingter Ausdruck mit dem mehrere Ausdr&amp;uuml;cken ausgewertet und ein
+Ergebnis zur&amp;uuml;ckgegeben werden kann.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;bedingung&lt;/i&gt; THEN &lt;i&gt;ergebnis&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;ergebnis&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] markiert optionale Komponenten
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  WHEN bedingung&lt;/i&gt; - Der Bedingungsausdruck. &lt;br&gt;
+&lt;i&gt;  THEN ergebnis&lt;/i&gt; - Wenn die &lt;i&gt;bedingung&lt;/i&gt; True ergibt, wird der Ausdruck &lt;i&gt;ergebnis&lt;/i&gt; ausgewertet und zur&amp;uuml;ckgegeben. &lt;br&gt;
+&lt;i&gt;  ELSE ergebnis&lt;/i&gt; - Wenn keine der Bedingungen erf&amp;uuml;llt ist, wird der Ausdruck &lt;i&gt;ergebnis&lt;/i&gt; ausgewertet und zur&amp;uuml;ckgegeben. &lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;Leer&apos;&lt;/i&gt;
+        ELSE &lt;i&gt;&quot;column&quot;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1650"/>
+        <source>&lt;h3&gt;right() function&lt;/h3&gt;
+Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters of the string.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;right(string, pos)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string. The string.
+&lt;br&gt;
+&lt;code&gt;length&lt;/code&gt; - is int. The number of characters from the right to return.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion right()&lt;/h3&gt;
+Ergibt letzten &lt;i&gt;n&lt;/i&gt; Zeichen von rechts.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;right(zeichenkette,laenge)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - ist string. Die Zeichenkette.
+&lt;br&gt;
+&lt;code&gt;laenge&lt;/code&gt; - ist int. Die Anzahl der von rechts zur&amp;uuml;ckzugebenden Zeichen von rechts.
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;right(&apos;Hallo Welt&apos;,4) &amp;rarr; &apos;Welt&apos;&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="365"/>
+        <source>
+&lt;h3&gt;Color Group&lt;/h3&gt;
+This group contains functions for manipulating colors
+</source>
+        <translation>&lt;h3&gt;Farbgruppe&lt;/h3&gt;
+Diese Gruppe enthält Funktionen zur Farbmanipulation
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1357"/>
+        <source>&lt;h3&gt;length() function&lt;/h3&gt;
+Returns the length of a string.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     length(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to count the length of.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion length()&lt;/h3&gt;
+Liefert die L&amp;auml;nge einer Zeichenkette.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     length(&lt;i&gt;zeichenkette&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  zeichenkette&lt;/i&gt; &amp;rarr; ist eine Zeichenkette.  Die Zeichenkette deren L&amp;auml;nge zu bestimmen ist.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     length(&apos;HALLO&apos;) &amp;rarr; 5&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2012"/>
+        <source>&lt;h3&gt;upper() function&lt;/h3&gt;
+Converts a string to upper case letters.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     upper(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to upper case.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion upper()&lt;/h3&gt;
+Wandelt eine Zeichenkette in Gro&amp;szlig;buchstaben.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     upper(&lt;i&gt;zeichenkette&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  zeichenkette&lt;/i&gt; &amp;rarr; ist eine Zeichenkette.  Die Zeichenkette, die in Gro&amp;szlig;buchstaben umzuwandeln ist.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="606"/>
+        <source>&lt;h3&gt;bbox function&lt;/h3&gt;
+Returns 1 if the geometries spatially intersect the bounding box defined and 0 if they don&apos;t.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;bbox( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion bbox&lt;/h3&gt;
+Gibt 1 zurück, wenn sich die Ausmaße der beiden Geometrien räumlich überschneiden und anderenfalls 0 zurück.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;bbox( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+a &amp;rarr; geometrie
+b &amp;rarr; geometrie
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; ergibt 1&lt;/pre&gt;
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; ergibt 0&lt;/pre</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1341"/>
+        <source>&lt;h3&gt;left() function&lt;/h3&gt;
+Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters of the string.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;left(string, length)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string. The string.
+&lt;br&gt;
+&lt;code&gt;length&lt;/code&gt; - is int. The number of characters from the left to return.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion left()&lt;/h3&gt;
+Ergibt ersten &lt;i&gt;n&lt;/i&gt; Zeichen von links.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;left(zeichenkette, laenge)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;zeichenkette&lt;/code&gt; - ist eine Zeichenkette. Die Zeichenkette.
+&lt;br&gt;
+&lt;code&gt;laenge&lt;/code&gt; - ist eine Zahl. Die Anzahl der zur&amp;uuml;ckzugebenden Zeichen.
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;left(&apos;Hallo Welt&apos;,5) &amp;rarr; &apos;Hallo&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="241"/>
+        <source>&lt;h3&gt;$scale function&lt;/h3&gt;
+Returns the current scale of the map canvas.
+&lt;br&gt;
+Note: This function is only available in some contexts and will be 0 otherwise. 
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;$scale&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;$scale &amp;rarr; 10000&lt;/code&gt;&lt;br&gt;
+
+
+</source>
+        <translation>&lt;h3&gt;Funktion $scale&lt;/h3&gt;
+Liefert den aktuellen Ma&amp;szlig;stab der Kartenanzeige.
+&lt;br&gt;
+Hinweis: Die Funktion ist nur in einigen Zusammenh&amp;auml;ngen verf&amp;uuml;gbar und sonst 0.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;$scale&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;$scale &amp;rarr; 10000&lt;/code&gt;&lt;br&gt;
+
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="673"/>
+        <source>&lt;h3&gt;ceil() function&lt;/h3&gt;
+Rounds a number upwards.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;ceil(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion ceil()&lt;/h3&gt;
+Rundet eine Zahl auf.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;ceil(wert)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;wert&lt;/code&gt; - eine Zahl.
+&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1930"/>
+        <source>&lt;h3&gt;toreal() function&lt;/h3&gt;
+Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     toreal(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to real number.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion toreal()&lt;/h3&gt;
+Wandelt eine Zeichenkette in eine Flie&amp;szlig;kommazahl.  Nichts &amp;auml;ndert sich, wenn die
+Zeichenkette nicht in eine Zahl umgewandelt werden kann (z.B. ist &apos;123.56asd&apos;
+ung&amp;uuml;ltig).  Zahlen werden beim Speichern gerundet, wenn die Genauigkeit kleiner
+als des Umwandlungsergebnis ist.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     toreal(&lt;i&gt;zeichenkette&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  zeichenkette&lt;/i&gt; &amp;larr; eine Zeichenkette.  Die Zeichenkette, die in eine Flie&amp;szlig;kommazahl umgewandelt werden soll.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toreal(&apos;123.45&apos;) -&gt; 123.45&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2077"/>
+        <source>&lt;h3&gt;xat() function&lt;/h3&gt;
+Retrieves a x coordinate of the current feature
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;xat(i)&lt;/code&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion xat()&lt;/h3&gt;
+Liefert eine X-Koordinate der Geometrie der aktuellen Geometrie.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;xat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;i&lt;/code&gt; - ist int. X-Koordinate des n-ten Punkts einer Linie (Indizes beginnen bei 0; Negative Werte beziehen sich auf das Linienende)
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="177"/>
+        <source>&lt;h3&gt;$numpages function&lt;/h3&gt;
+Returns the total number of pages in the composition.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$numpages&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion $numpages&lt;/h3&gt;
+Gibt die Gesamtseitenzahl einer Druckzusammenstellung aus.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$numpages&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1802"/>
+        <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
+Return the index of a regular expression in a string.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+     strpos(&lt;i&gt;haystack&lt;/i&gt;, &lt;i&gt;needle&lt;/i&gt;)
+&lt;br&gt;&lt;br&gt;
+Returns -1 if the expression isn&apos;t found.
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  haystack&lt;/i&gt; &amp;rarr; is string.  The string that is to be searched.&lt;br&gt;
+&lt;i&gt;  needle&lt;/i&gt; &amp;rarr; is string.  The regular expression to look for.&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion strpos()&lt;/h3&gt;
+Bestimmt die Position eines regul&amp;auml;ren Ausdrucks in einer Zeichenkette.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+     strpos(&lt;i&gt;heuhaufen&lt;/i&gt;,&lt;i&gt;nadel&lt;/i&gt;)/i&gt;)
+&lt;br&gt;&lt;br&gt;
+Gibt -1 zur&amp;uuml;ck, wenn der Ausdruck nicht gefunden wurde.
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  heuhaufen&lt;/i&gt; &amp;rarr; ist string.  Zeichenkette in der gesucht werden soll.&lt;br&gt;
+&lt;i&gt;  nadel&lt;/i&gt; &amp;rarr; ist string.  Der gesuchte regul&amp;auml;re Ausdruck.&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;GOOD BYE&apos;) &amp;rarr; -1&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1554"/>
+        <source>&lt;h3&gt;rand() function&lt;/h3&gt;
+Returns a random integer within the range specified by the minimum and 
+maximum argument (inclusive).
+&lt;br&gt;
+This function takes two arguments.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;rand(min, max)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;min&lt;/code&gt; - an integer representing the smallest possible random number desired.&lt;br&gt;
+&lt;code&gt;max&lt;/code&gt; - an integer representing the largest possible random number desired.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion rand()&lt;/h3&gt;
+Liefert eine Zufallszahl zwischen den Argumenten zur&amp;uuml;ck (inklusiv).
+&lt;br&gt;
+Dies Funktion hat zwei Argumente.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;rand(min, max)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;min&lt;/code&gt; - eine ganze Zahl, die die kleinste Zufallszahl angibt.&lt;br&gt;
+&lt;code&gt;max&lt;/code&gt; - eine ganze Zahl, die die gr&amp;ouml;&amp;szlig;te Zufallszahl angibt.&lt;br&gt;
+&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="53"/>
+        <source>&lt;h3&gt;$atlasgeometry function&lt;/h3&gt;
+Returns the geometry of the current feature iterated in atlas.
+Can be used for rule based display of geometry when using atlas.
+For example to only show geometries of other layers when their geometry 
+intersects the iterated geometry of features using atlas.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasgeometry&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;$atlasgeometry Funktion&lt;/h3&gt;
+Gibt die Geometrie des in Atlas iterierten Objekts zurück.
+Wird verwendet für Regelbasierte Darstellung unter Benutzung von Atlas.
+Zum Beispiel um nur die Geometrien anderer Layer zu zeigen wenn deren 
+Geometrie den durch Atlas iterierten Layer in dessen Geomtrien schneidet.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasgeometry&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Kein
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="38"/>
+        <source>&lt;h3&gt;$atlasfeatureid function&lt;/h3&gt;
+Returns the feature id of the current row while using atlas.
+This enables you to use features of atlas in rules 
+and for example show or hide features based on their id.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasfeatureid&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;$atlasfeatureid Funktion&lt;/h3&gt;
+Gibt die Objektid der aktuellen Zeile bei benutzung von Atlas zurück.
+Dies ermöglicht Objekte in Atlas regelbasiert zu wählen um zum 
+Beispiel Objekte anhand deren id anzuzeigen oder zu verstecken.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasfeatureid&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+None
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="646"/>
+        <source>&lt;h3&gt;bounds_width function&lt;/h3&gt;
+Returns the width of the bounding box of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;bounds_width(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geom &amp;rarr; a geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; bounds_width($geometry) &amp;rarr; returns width of bounding box of $geometry&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion bounds_width&lt;/h3&gt;
+Gibt die Breite der Geometrie. Berechnungen erfolgen im räumliches Bezugssystem der Geometrie. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;bounds_width(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+geom &amp;rarr; eine Geometrie
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; bounds_width($geometry) &amp;rarr; ergibt die Breite der $geometry&lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1034"/>
+        <source>&lt;h3&gt;floor() function&lt;/h3&gt;
+Rounds a number downwards.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;floor(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion floor()&lt;/h3&gt;
+Rundet eine Zahl ab.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;floor(wert)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;wert&lt;/code&gt; - eine Zahl.
+&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="633"/>
+        <source>&lt;h3&gt;bounds_height function&lt;/h3&gt;
+Returns the height of the bounding box of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;bounds_height(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geom &amp;rarr; a geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; bounds_height($geometry) &amp;rarr; returns height of bounding box of $geometry&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion bounds_height&lt;/h3&gt;
+Gibt die Höhe der Geometrie. Berechnungen erfolgen im räumliches Bezugssystem der Geometrie. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;bounds_height(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+geom &amp;rarr; eine Geometrie
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; bounds_height($geometry) &amp;rarr; ergibt die Höhe der $geometry&lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1903"/>
+        <source>&lt;h3&gt;toint() function&lt;/h3&gt;
+Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to integer number.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion toint()&lt;/h3&gt;
+Wandelt eine Zeichenkette in eine ganze Zahl um.  Bricht ab, wenn die Zeichenkette nicht in eine Zahl umgewandelt werden kann (&apos;123asd&apos; ist z.B. ung&amp;uuml;ltig).
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     toint(&lt;i&gt;zeichenkette&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  zeichenkette&lt;/i&gt; &amp;rarr; ist eine Zeichenkette.  Die in eine ganze Zahl umzuwandelnde Zeichenkette.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2115"/>
+        <source>&lt;h3&gt;yat() function&lt;/h3&gt;
+Retrieves a y coordinate of the current feature
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;yat(i)&lt;/code&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion yat()&lt;/h3&gt;
+Liefert eine Y-Koordinate der Geometrie der aktuellen Geometrie.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;xat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;i&lt;/code&gt; - ist int. Y-Koordinate des n-ten Punkts einer Linie (Indizes beginnen bei 0; Negative Werte beziehen sich auf das Linienende)
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1944"/>
+        <source>&lt;h3&gt;tostring() function&lt;/h3&gt;
+Converts a number to string.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     tostring(&lt;i&gt;number&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;number&lt;/i&gt; &amp;rarr; is integer or real.  The number to convert to string.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion tostring()&lt;/h3&gt;
+Wandelt eine Zahl in eine Zeichenkette um.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     tostring(&lt;i&gt;zahl&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;zahl&lt;/i&gt; &amp;rarr; ist eine ganze oder Flie&amp;szlig;kommazahl.  Die in eine Zeichenkette umzuwandelnde Zahl.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="228"/>
+        <source>&lt;h3&gt;$rownum function&lt;/h3&gt;
+Returns the number of the current row.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$rownum&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion $rownum&lt;/h3&gt;
+Ergibt die Zeilennummer des aktuellen Datensatzes
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$rownum&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="576"/>
+        <source>&lt;h3&gt;atan2() function&lt;/h3&gt;
+Returns arcustangens of y/x using the signs of the two 
+arguments to determine the quadrant of the result
+
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     atan2(&lt;i&gt;real&lt;/i&gt;, &lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; y coordinate difference&lt;br&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; x coordinate difference&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+     atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion atan2()&lt;/h3&gt;
+Gibt den Arcustangens von y/x unter Ber&amp;uuml;cksichtung der Vorzeichen der beiden
+Argumente zur&amp;uuml;ck, um den den Quadranten des Ergebnisses zu bestimmen.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     atan2(&lt;i&gt;dy&lt;/i&gt;, &lt;i&gt;dx&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;dy&lt;/i&gt; &amp;rarr; y Ordinatendifferenz&lt;br&gt;
+&lt;i&gt;dx&lt;/i&gt; &amp;rarr; x Ordinatendifferenz&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1776"/>
+        <source>&lt;h3&gt;sin() function&lt;/h3&gt;
+Returns sinus of an angle.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     sin(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; angle in radians.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+     sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion sin()&lt;/h3&gt;
+Gibt den Sinus eines Winkels zur&amp;uuml;ck.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     sin(&lt;i&gt;winkel&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;winkel&lt;/i&gt; &amp;rarr; Winkel im Bogenma&amp;szlig;.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1499"/>
+        <source>&lt;h3&gt;month() function&lt;/h3&gt;
+Extract the month part from a date, or the number of months
+from a &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;month(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - is date or datetime. The date to extract the month from.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of months from.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;month(&apos;2012-05-12&apos;) &amp;rarr; 05&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(tointerval(&apos;3 months&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
+
+</source>
+        <translation>&lt;h3&gt;month() function&lt;/h3&gt;
+Bestimmt den Monat eines Datums/Zeit oder die Anzahl der Monate
+aus einem &lt;code&gt;Intervall&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;month(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(Intervall)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - ist date oder datetime. Das Datum aus dem der Monat bestimmt werden soll.&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - ist Interval. Das Intervall dessen Monatsanzahl zur&amp;uuml;ckgegeben werden soll.
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;month(&apos;2012-05-12&apos;) &amp;rarr; 05&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(tointerval(&apos;3 months&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="11"/>
+        <source>&lt;h3&gt;$area function&lt;/h3&gt;
+Returns the area size of the current feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$area&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion $area&lt;/h3&gt;
+Liefert den Fl&amp;auml;cheninhalt des aktuellen Objekts
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$area&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;$area &amp;rarr; 4711.42&lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="961"/>
+        <source>&lt;h3&gt;day() function&lt;/h3&gt;
+Extract the day from a date, or the number of days
+from a &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;day(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - is date or datetime. The date to extract the day from.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of days from.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;day(&apos;2012-05-12&apos;) &amp;rarr; 12&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(tointerval(&apos;3 days&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion day()&lt;/h3&gt;
+Tag eines Datum oder Anzahl der Tage eines &lt;code&gt;Intervalls&lt;/code&gt;.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;day(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(Intervall)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - ist date oder datetime. Das Datum oder die Zeit dessen Tag bestimmt werden soll.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - ist Interval. Das Interval aus dem die Anzahl der Tage bestimmt werden soll.
+
+&lt;h4&gt;Beispiele&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;day(&apos;2012-05-12&apos;) &amp;rarr; 12&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(tointerval(&apos;3 days&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1877"/>
+        <source>&lt;h3&gt;todate() function&lt;/h3&gt;
+Convert a string into Qt data type.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;todate(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string in Qt date format.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
+        <translation>&lt;h3&gt;Funktion todate()&lt;/h3&gt;
+Wandelt eine Zeichenkette in eine Qt-Datumstyp um.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;todate(&apos;zeichenkette&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;zeichenkette&lt;/code&gt; - eine Zeichenkette im Qt-Datumsformat.
+&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1432"/>
+        <source>&lt;h3&gt;lpad() function&lt;/h3&gt;
+Returns a string with supplied width padded
+using the fill character.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;lpad(string, length, fill)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string. The string.
+&lt;br&gt;
+&lt;code&gt;length&lt;/code&gt; - is int. The length of the new string.
+&lt;br&gt;
+&lt;code&gt;fill&lt;/code&gt; - is char. The character to padd the remaining space with. 
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion lpad()&lt;/h3&gt;
+Ergibt eine mit einem am Ende mit einem Zeichen auf eine bestimmte L&amp;auml;nge aufgef&amp;uuml;llte Zeichenkette.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;lpad(zeichenkette, laenge, fuellzeichen)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;zeichenkette&lt;/code&gt; - ist string. Die Zeichenkette.
+&lt;br&gt;
+&lt;code&gt;laenge&lt;/code&gt; - ist int. Die L&amp;auml;nge der neuen Zeichenkette.
+&lt;br&gt;
+&lt;code&gt;fuellzeichen&lt;/code&gt; - ist char. Das Zeichen mit dem die Zeichenkette am Ende aufgef&amp;uuml;llt werden soll. 
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;code&gt;lpad(&apos;Hallo&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Halloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="504"/>
+        <source>&lt;h3&gt;acos() function&lt;/h3&gt;
+Returns arcuscosinus of a value in radians.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     acos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; cos of an angle.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+     acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion acos()&lt;/h3&gt;
+Gibt den Arcuscosinus eines Werts im Bogenma&amp;szlig; zur&amp;uuml;ck.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     acos(&lt;i&gt;wert&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;wert&lt;/i&gt; &amp;rarr; Cosinus eines Winkels.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="391"/>
+        <source>&lt;h3&gt;Fields and Values&lt;/h3&gt;
+Contains a list of fields from the layer.  Sample values can also be accessed via right-click.
+&lt;br&gt;&lt;br&gt;
+Select the field name from the list then right-click to access context menu with options to load sample values from the selected field.
+
+&lt;p&gt;&lt;h4&gt;Note:&lt;/h4&gt;
+Loading field values from WFS layers isn&apos;t supported, before the layer is
+actually inserted, ie. when building queries.
+&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Felder und Werte&lt;/h3&gt;
+Enth&amp;auml;lt einen Feldliste des Layers.  Beispielwerte k&amp;ouml;nnen per Rechtsklick geladen werden.
+&lt;br&gt;&lt;br&gt;
+W&amp;auml;hlen Sie ein Feld aus der Liste und klicken Sie dann rechts um in ein Kontextmen&amp;uuml; zu gelangen
+in der Optionen zum Laden von Beispielwerten aus dem gew&amp;auml;hlten Feld angeboten werden.
+
+&lt;p&gt;&lt;h4&gt;Hinweis:&lt;/h4&gt;
+Feldwerte aus WFS-Layern zu laden bevor die Layer tatsächlich geladen wurde, wird nicht unterstützt, d.h bei der Eingabe von Abfragen.
+&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1387"/>
+        <source>&lt;h3&gt;log() function&lt;/h3&gt;
+Returns the value of the logarithm of the passed value and base.
+&lt;br&gt;
+This function takes two arguments.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;log(base, value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;base&lt;/code&gt; - any positive number.&lt;br&gt;
+&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion log()&lt;/h3&gt;
+Gibt ist der Logarithmus von des &amp;uuml;bergebenen Wertes zur &amp;uuml;bergebenen Basis zur&amp;uuml;ck.
+&lt;br&gt;
+Die Funktion akzeptiert zwei Werte.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;log(basis, wert)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;basis&lt;/code&gt; - eine positive Zahl.
+&lt;code&gt;wert&lt;/code&gt; - eine positive Zahl.
+&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="401"/>
+        <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
+This group contains functions that operate on geometry objects e.g length, area.
+</source>
+        <translation>&lt;h3&gt;Gruppe Geometrie&lt;/h3&gt;
+Dies Gruppe enth&amp;auml;lt Funktionen f&amp;uuml;r Geometrieobjekten (z.B. L&amp;auml;nge und Fl&amp;auml;cheninhalt).
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="381"/>
+        <source>&lt;h3&gt;Field&lt;/h3&gt;
+Double click to add field name to expression string.
+&lt;br&gt;&lt;br&gt;
+Right-Click on field name to open context menu sample value loading options.
+
+&lt;p&gt;&lt;h4&gt;Note:&lt;/h4&gt;
+Loading field values from WFS layers isn&apos;t supported, before the layer is
+actually inserted, ie. when building queries.
+&lt;/p&gt;
+</source>
+        <translation>Klicken Sie den Feldnamen doppelt um ihn dem Ausdruck hinzuzufügen.
+&lt;br&gt;&lt;br&gt;
+Per Rechtsklick auf den Feldnamen können Sie ein Kontextmenü mit Optionen zum Laden von Beispielwerten öffnen.
+
+&lt;p&gt;&lt;h4&gt;Hinweis:&lt;/h4&gt;
+Feldwerte aus WFS-Layern zu laden bevor die Layer tatsächlich geladen wurde, wird nicht unterstützt, d.h bei der Eingabe von Abfragen.
+&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="190"/>
+        <source>&lt;h3&gt;$page function&lt;/h3&gt;
+Returns the current page number within a composition.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$page&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion $page&lt;/h3&gt;
+Gibt die aktuelle Seitennummer in einer Druckzusammenstellung aus.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$page&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1021"/>
+        <source>&lt;h3&gt;exp() function&lt;/h3&gt;
+Returns exponential of an value.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     exp(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; number.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+     exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion exp()&lt;/h3&gt;
+Gibt die Exponentialfunktion eines Wert zur&amp;uuml;ck.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     exp(&lt;i&gt;zahl&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;zahl&lt;/i&gt; &amp;rarr; Zahl.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1687"/>
+        <source>&lt;h3&gt;rpad() function&lt;/h3&gt;
+Returns a string with supplied width padded
+using the fill character.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;rpad(string, width, fill)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string. The string.
+&lt;br&gt;
+&lt;code&gt;width&lt;/code&gt; - is int. The length of the new string.
+&lt;br&gt;
+&lt;code&gt;fill&lt;/code&gt; - is char. The character to padd the remaining space with. 
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion rpad()&lt;/h3&gt;
+Ergibt eine mit einem am Anfang mit einem Zeichen auf eine bestimmte L&amp;auml;nge aufgef&amp;uuml;llte Zeichenkette.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;rpad(zeichenkette, laenge, fuellzeichen)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;zeichenkette&lt;/code&gt; - ist string. Die Zeichenkette.  &lt;br&gt;
+&lt;code&gt;laenge&lt;/code&gt; - ist int. Die L&amp;auml;nge der neuen Zeichenkette.  &lt;br&gt;
+&lt;code&gt;fuellzeichen&lt;/code&gt; - ist char.  Das Zeichen mit dem die Zeichenkette aufgef&amp;uuml;llt werden soll.
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rpad(&apos;Hallo&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHallo&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1666"/>
+        <source>&lt;h3&gt;round() function&lt;/h3&gt;
+Rounds a number to number of decimal places.
+&lt;br&gt;
+This function can take one or two arguments depending on what is needed.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;round(decimal,places)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;round(decimal)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;decimal&lt;/code&gt; - is decimal. The decimal number to be rounded.
+&lt;br&gt;
+&lt;code&gt;places&lt;/code&gt; - is int. The number of places to round decimal too. Can be negative.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;round(1234.567, 2 ) &amp;rarr; 1234.57&lt;/code&gt;&lt;br&gt;
+use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;br&gt;
+&lt;code&gt;round(1234.567) &amp;rarr; 1235&lt;/code&gt;&lt;br&gt;
+
+
+</source>
+        <translation>&lt;h3&gt;Funktion round()&lt;/h3&gt;
+Rundet eine Zahl auf eine gegebene Anzahl von Nachkommastellen.
+&lt;br&gt;
+Dies Funktion kann ein oder zwei Argumente haben.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;round(zahl,stellen)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;round(zahl)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;zahl&lt;/code&gt; - ist eine Zahl. Die Zahl die gerundet werden soll.
+&lt;br&gt;
+&lt;code&gt;stellen&lt;/code&gt; - ist Ganzahl. Die Anzahl der Nachkommastellen auf die gerundet werden soll. Kann negativ sein.
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;round(1234.567, 2) &amp;rarr; 1234.57&lt;/code&gt;&lt;br&gt;
+Um zur n&amp;auml;chsten ganzen Zahl zu runden: &lt;code&gt;round(zahl)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;round(1234.567) &amp;rarr; 1235&lt;/code&gt;&lt;br&gt;
+
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="151"/>
+        <source>&lt;h3&gt;$now function&lt;/h3&gt;
+Returns the current date and time
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$now&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion $now&lt;/h3&gt;
+Ergibt aktuelles Datum und Zeit
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$now&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="778"/>
+        <source>&lt;h3&gt;color_hsl() function&lt;/h3&gt;
+Returns a string representation of a color based on its hue, saturation, and lightness attributes
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_hsl(&lt;i&gt;hue, saturation, lightness&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; the lightness percentage of the color as an integer value from 0 to 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsl(100,50,70) &amp;rarr; &apos;166,217,140&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion color_hsl()&lt;/h3&gt;
+Gibt eine Farbe als Zeichenkette basierend auf ihrem Farbton, ihrer S&amp;auml;ttigung und Helligkeit zur&amp;uuml;ck.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_hsl(&lt;i&gt;farbton, s&amp;auml;ttigung, helligkeit&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;  farbton&lt;/i&gt; &amp;rarr; Der Farbton der Farbe, als ganzzahliger Wert zwischen 0 und 360.&lt;br&gt;
+&lt;i&gt;  s&amp;auml;ttigung&lt;/i&gt; &amp;rarr; Der S&amp;auml;ttigung der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.&lt;br&gt;
+&lt;i&gt;  helligkeit&lt;/i&gt; &amp;rarr; Die Helligkeit der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     color_hsl(100,50,70) &amp;rarr; &apos;166,217,140&apos;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1706"/>
+        <source>&lt;h3&gt;scale_exp() function&lt;/h3&gt;
+Transforms a given value from an input domain to an output range using an exponential curve. This function can be used to ease values in or out 
+of the specified output range.   
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     scale_exp(&lt;i&gt;val&lt;/i&gt;,&lt;i&gt;domain_min&lt;/i&gt;,&lt;i&gt;domain_max&lt;/i&gt;,&lt;i&gt;range_min&lt;/i&gt;,&lt;i&gt;range_max&lt;/i&gt;,&lt;i&gt;exponent&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  val&lt;/i&gt; &amp;rarr; is a value in the input domain. The function will return a corresponding scaled value in the output range.&lt;br&gt;
+&lt;i&gt;  domain_min, domain_max&lt;/i&gt; &amp;rarr; specify the input domain, the smallest and largest values the input &lt;i&gt;val&lt;/i&gt; should take.&lt;br&gt;
+&lt;i&gt;  range_min, range_max&lt;/i&gt; &amp;rarr; specify the output range, the smallest and largest values which should be output by the function.&lt;br&gt;
+&lt;i&gt;  exponent&lt;/i&gt; &amp;rarr; a positive value (greater than 0), which dictates the way input values are mapped to the output range. Large exponents will cause the output values to &apos;ease in&apos;, starting slowly before
+accelerating as the input values approach the domain maximum. Smaller exponents (less than 1) will cause output values to &apos;ease out&apos;, where the mapping starts quickly but slows as it approaches the domain maximum.&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;b&gt;Easing in, using an exponent of 2:&lt;/b&gt;&lt;br&gt;
+     scale_exp(5,0,10,0,100,2) &amp;rarr; 25&lt;br&gt;
+     scale_exp(7.5,0,10,0,100,2) &amp;rarr; 56.25&lt;br&gt;
+     scale_exp(9.5,0,10,0,100,2) &amp;rarr; 90.25&lt;br&gt;               
+     &lt;br&gt;
+&lt;b&gt;Easing out, using an exponent of 0.5:&lt;/b&gt;&lt;br&gt;          
+     scale_exp(3,0,10,0,100,0.5) &amp;rarr; 54.772&lt;br&gt;
+     scale_exp(6,0,10,0,100,0.5) &amp;rarr; 77.459&lt;br&gt;
+     scale_exp(9,0,10,0,100,0.5) &amp;rarr; 94.868&lt;br&gt;          
+     
+     
+</source>
+        <translation>&lt;h3&gt;Funktion scale_linear()&lt;/h3&gt;
+Formt einen gegebenen Wert aus einem Ausgangsbereich mittels einer exponentielle Kurve in einen Ausgabebereich um. Die Funktion kann verwendet um Werte in oder aus einem Ausgabebereichs einzupassen.
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     scale_exp(&lt;i&gt;wert&lt;/i&gt;,&lt;i&gt;quell_min&lt;/i&gt;,&lt;i&gt;quell_max&lt;/i&gt;,&lt;i&gt;ziel_min&lt;/i&gt;,&lt;i&gt;ziel_max&lt;/i&gt;,&lt;i&gt;exponent&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  wert&lt;/i&gt; &amp;rarr; ist ein Wert im Ausgangsbereich. Die Funktion gibt einen korrespondierend skalierten Wert im Ausgabebereich zurück.&lt;br&gt;
+&lt;i&gt;  quell_min, quell_max&lt;/i&gt; &amp;rarr; gibt den Ausgangsbereich an, der kleinste und größte Wert den der Eingabewert &lt;i&gt;wert&lt;/i&gt; annehmen kann.&lt;br&gt;
+&lt;i&gt;  ziel_min, ziel_max&lt;/i&gt; &amp;rarr; gibt den Ausgabebereich an, der kleinste und größte Wert den der Rückgabewert der Funktion annehmen kann.&lt;br
+&lt;i&gt;  exponent&lt;/i&gt; &amp;rarr; ein positive Zahl (größer als 0), welche vorgibt wie die Eingabe auf den Ausgabebereich abgebildet werden soll. Große Exponenten sorgen für Ausgabewerten sich erst langsam und dann immer schneller dem Maximum des Ausgabebereichs nähern, während der Eingabewert sich dem Ende des Ausgangsbereichs nähert.  Kleinere Exponenten (kleiner als 1) sorgen dafür das die Ausgabewerte bei der die Abbildung erst schnell und dann immer langsamer dem Maximum des Ausgabebereichs nähern.&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;b&gt;Langsame annähern, mit einem Exponenten von 2:&lt;/b&gt;&lt;br&gt;
+     scale_exp(5,0,10,0,100,2) &amp;rarr; 25&lt;br&gt;
+     scale_exp(7.5,0,10,0,100,2) &amp;rarr; 56.25&lt;br&gt;
+     scale_exp(9.5,0,10,0,100,2) &amp;rarr; 90.25&lt;br&gt;               
+     &lt;br&gt;
+&lt;b&gt;Schnell annähern, mit einem Exponenten von 0,5:&lt;/b&gt;&lt;br&gt;          
+     scale_exp(3,0,10,0,100,0.5) &amp;rarr; 54.772&lt;br&gt;
+     scale_exp(6,0,10,0,100,0.5) &amp;rarr; 77.459&lt;br&gt;
+     scale_exp(9,0,10,0,100,0.5) &amp;rarr; 94.868&lt;br&gt;          
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="921"/>
+        <source>&lt;h3&gt;convexHull function&lt;/h3&gt;
+Returns the convex hull of a geometry. It represents the minimum convex geometry that encloses all geometries within the set.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;convexHull( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+a &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; returns POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion convexHull&lt;/h3&gt;
+Gibt die konvexe Hülle einer Geometrie zurück. Es stellt die minimale konvexe Geometrie dar, sie alle Geometrien des Satzes umfassen.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;convexHull( a, b)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; ergibt POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1999"/>
+        <source>&lt;h3&gt;union function&lt;/h3&gt;
+Returns a geometry that represents the point set union of the geometries.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;union( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( union( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))  )   &amp;rarr; returns MULTIPOINT(4 4, 5 5)&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion union&lt;/h3&gt;
+Gibt eine Geometrie zurück, die alle Punkte beider Geometrien abdeckt.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;union( $geometry , $geometry)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+geometry &amp;rarr; Geometrie
+geometry &amp;rarr; Geometrie
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( union( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))  )   &amp;rarr; ergibt MULTIPOINT(4 4, 5 5)&lt;/pre</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2089"/>
+        <source>&lt;h3&gt;xmax function&lt;/h3&gt;
+Returns the maximum x coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;xmax(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geom &amp;rarr; a geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; xmax($geometry) &amp;rarr; returns maximum x coordinate of $geometry&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion xmax()&lt;/h3&gt;
+Gibt die größte X-Koordinate einer Geometrie zurück. Berechnung erfolgt im räumlichen Bezugssystem der Geometrie.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;xmax(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  geom&lt;/i&gt; &amp;rarr; eine Geometrie.&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;xmax($geometry) &amp;rarr; ergibt die maximale X-Koordinate von $geometry&lt;/pre&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="620"/>
+        <source>&lt;h3&gt;bounds function&lt;/h3&gt;
+Returns a geometry which represents the bounding box of an input geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;bounds(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geom &amp;rarr; a geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; bounds($geometry) &amp;rarr; returns bounding box of $geometry&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion bounds&lt;/h3&gt;
+Ergibt das Begrenzungsrechteck als Geometrie. Berechnungen erfolgen im räumliches Bezugssystem der Geometrie. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;bounds(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+geom &amp;rarr; eine Geometrie
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; bounds($geometry) &amp;rarr; ergibt das Begrenzungsrechteck der $geometry&lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2147"/>
+        <source>&lt;h3&gt;ymax function&lt;/h3&gt;
+Returns the maximum y coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;ymax(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geom &amp;rarr; a geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; ymax($geometry) &amp;rarr; returns maximum y coordinate of $geometry&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion ymax()&lt;/h3&gt;
+Gibt den größten Y-Koordinate einer Geometrie zurück. Berechnung erfolgt im räumlichen Bezugssystem der Geometrie.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;ymax(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  geom&lt;/i&gt; &amp;rarr; eine Geometrie.&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;ymax($geometry) &amp;rarr; ergibt die maximale Y-Koordinate von $geometry&lt;/pre&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="907"/>
+        <source>&lt;h3&gt;contains function&lt;/h3&gt;
+Returns true if and only if no points of b lie in the exterior of a, and at least one point of the interior of b lies in the interior of a. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;contains( geometry a , geometry b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion contains&lt;/h3&gt;
+ Gibt dann und nur dann true zurück, wenn keine Punkte von b außerhalb von a liegen und mindestens ein innerer Punkt von b innerhalb von a liegt.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;contains( a , b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; Geometrie
+b &amp;rarr; Geometrie
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; ergibt 1&lt;/pre&gt;
+&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; ergibt 0&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2060"/>
+        <source>&lt;h3&gt;wordwrap() function&lt;/h3&gt;
+Returns a string wrapped to a maximum/minimum number of characters.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     wordwrap(&lt;i&gt;string,wrap_length[,delimiter_string]&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to be wrapped.&lt;br&gt;
+&lt;i&gt;  wrap_length&lt;/i&gt; &amp;rarr; is number.  If positive, the number represents the ideal maximum number of characters to wrap; if negative, the number represents the minimum number of characters to wrap.&lt;br&gt;
+&lt;i&gt;  delimiter_string&lt;/i&gt; &amp;rarr; is string.  The delimiter string to wrap to a new line (&lt;u&gt;optional&lt;/u&gt;).&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
+     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion wordwrap()&lt;/h3&gt;
+Gibt eine auf eine maximal/minimale Länge umgebrochene Zeichenkette zurück.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     wordwrap(&lt;i&gt;string,wrap_length[,delimiter_string]&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; ist eine Zeichenkette.  Die umzubrechende Zeichenkette.&lt;br&gt;
+&lt;i&gt;  wrap_length&lt;/i&gt; &amp;rarr; ist eine Zahl.  Positive Zahlen bedeuten die ideale Maximalzahl von umzubrechenden Zeichen, der Betrag von negative Zahlen gibt die Minimalzahl der umzubrechenden Zeichen an.&lt;br&gt;
+&lt;i&gt;  delimiter_string&lt;/i&gt; &amp;rarr; ist eine Zeichenkette.  Die Trennzeichen für einen Zeilenumbruch (&lt;u&gt;optional&lt;/u&gt;).&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiele&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
+     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="844"/>
+        <source>
+&lt;h3&gt;color_rgb() function&lt;/h3&gt;
+Returns a string representation of a color based on its red, green, and blue components
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_rgb(&lt;i&gt;red, green, blue&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  red&lt;/i&gt; &amp;rarr; the red component as an integer value from 0 to 255.&lt;br&gt;
+&lt;i&gt;  green&lt;/i&gt; &amp;rarr; the green component as an integer value from 0 to 255.&lt;br&gt;
+&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; the blue component as an integer value from 0 to 255.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_rgb(255,127,0) &amp;rarr; &apos;255,127,0&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion color_rgb()&lt;/h3&gt;
+Gibt eine Farbe als Zeichenkette basierend auf ihrem Rot-, Gr&amp;uuml;n-, Blauanteil zur&amp;uuml;ck.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_rgb(&lt;i&gt;rot, gr&amp;uuml;n, blau&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;  rot&lt;/i&gt; &amp;rarr; Der Rot-Anteil der Farbe, als ganze Zahl zwischen 0 und 255.&lt;br&gt;
+&lt;i&gt;  gr&amp;uuml;n&lt;/i&gt; &amp;rarr; Der Gr&amp;uuml;n-Anteil der Farbe, als ganze Zahl zwischen 0 und 255.&lt;br&gt;
+&lt;i&gt;  blau&lt;/i&gt; &amp;rarr; Der Blau-Anteil der Farbe, als ganze Zahl zwischen 0 und 255.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="741"/>
+        <source>
+&lt;h3&gt;color_cmyk() function&lt;/h3&gt;
+Returns a string representation of a color based on its cyan, magenta, yellow and black components
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_cmyk(&lt;i&gt;cyan, magenta, yellow, black&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; the cyan component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; the magenta component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  yellow&lt;/i&gt; &amp;rarr; the yellow component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  black&lt;/i&gt; &amp;rarr; the black component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_cmyk(100,50,0,10) &amp;rarr; &apos;0,115,230&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion color_cmyk()&lt;/h3&gt;
+Gibt eine Farbe als Zeichenkette basierend auf ihrem Cyan-, Magenta- Gelb- und Schwarzanteil zur&amp;uuml;ck.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_cmyk(&lt;i&gt;cyan, magenta, gelb, schwarz&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; Der Cyan-Anteil der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; Der Magenta-Anteil der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.&lt;br&gt;
+&lt;i&gt;  gelb&lt;/i&gt; &amp;rarr; Der Gelb-Anteil der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.&lt;br&gt;
+&lt;i&gt;  schwarz&lt;/i&gt; &amp;rarr; Der Schwarz-Anteil der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     color_cmyk(100,50,0,10) &amp;rarr; &apos;0,115,230&apos;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1314"/>
+        <source>&lt;h3&gt;intersection function&lt;/h3&gt;
+Returns a geometry that represents the shared portion of geometry a and geometry b.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;intersection( geometry a , geometry b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; returns LINESTRING(3 3, 4 4)&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion intersection&lt;/h3&gt;
+Gibt eine Geometrie zurück, die den gemeinsamen Teil der Geometrien a und b darstellt.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;intersection( a, b)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+a &amp;rarr; Geometrie
+b &amp;rarr; Geometrie
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; ergibt LINESTRING(3 3, 4 4)&lt;/pre&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1533"/>
+        <source>
+&lt;h3&gt;ramp_color() function&lt;/h3&gt;
+Returns a string representing a color from a color ramp. 
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     ramp_color(&lt;i&gt;ramp_name,value&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  ramp_name&lt;/i&gt; &amp;rarr; the name of the color ramp as a string, for example &apos;Spectral&apos;.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; the position on the ramp to select the color from as a real number between 0 and 1.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     ramp_color(&apos;Spectral&apos;,0.3) &amp;rarr; &apos;253,190,115,255&apos;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Note:&lt;/h4&gt;
+The color ramps available vary between QGIS installations.  This function
+may not give the expected results if you move your Quantum project.
+&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion ramp_color()&lt;/h3&gt;
+Gibt eine Farbe als Zeichenkette zur&amp;uuml;ck, die eine Farbe aus einem Farbverlauf darstellt.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     ramp_color(&lt;i&gt;verlaufname,wert&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  verlaufname&lt;/i&gt; &amp;rarr; der Name des Farbverlaufs als Zeichenkette, z.B. &apos;Spectral&apos;.&lt;br&gt;
+&lt;i&gt;  wert&lt;/i&gt; &amp;rarr; die Position im Farbverlauf als Flie&amp;szlig;kommazahl zwischen 0 und 1.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     ramp_color(&apos;Spectral&apos;,0.3) &amp;rarr; &apos;253,190,115,255&apos;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Bemerkung:&lt;/h4&gt;
+Die Farbverl&amp;auml;ufe k&amp;ouml;nnen sich zwischen verschiedenen QGIS-Installationen
+unterscheiden.  Diese Funktion kann daher unterschiedliche Ergebnisse liefern.
+&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="418"/>
+        <source>&lt;h3&gt;IS expression&lt;/h3&gt;
+Returns 1 if a is the same as b.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;a IS b&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;A&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 4      &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2+2    &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2      &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; $geometry IS NULL  &amp;rarr; returns 0, if your geometry is not NULL&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Ausdruck IS&lt;/h3&gt;
+Ergibt 1, wenn a gleich b ist.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;a IS b&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;A&apos;  &amp;rarr; ergibt 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;a&apos;  &amp;rarr; ergibt 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 4      &amp;rarr; ergibt 1 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2+2    &amp;rarr; ergibt 1 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2      &amp;rarr; ergibt 0 &lt;/pre&gt;
+&lt;pre&gt; $geometry IS NULL  &amp;rarr; ergibt 0, wenn die Geometrie nicht NULL ist&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="811"/>
+        <source>&lt;h3&gt;color_hsv() function&lt;/h3&gt;
+Returns a string representation of a color based on its hue, saturation, and value attributes
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_hsv(&lt;i&gt;hue, saturation, value&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; the value percentage of the color as an integer from 0 to 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsv(40,100,100) &amp;rarr; &apos;255,170,0&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion color_hsl()&lt;/h3&gt;
+Gibt eine Farbe als Zeichenkette basierend auf ihrem Farbton, ihrer S&amp;auml;ttigung und ihres Betrag zur&amp;uuml;ck.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_hsv(&lt;i&gt;farbton, s&amp;auml;ttigung, betrag&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;  farbton&lt;/i&gt; &amp;rarr; Der Farbton der Farbe, als ganzzahliger Wert zwischen 0 und 360.&lt;br&gt;
+&lt;i&gt;  s&amp;auml;ttigung&lt;/i&gt; &amp;rarr; Der S&amp;auml;ttigung der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.&lt;br&gt;
+&lt;i&gt;  betrag&lt;/i&gt; &amp;rarr; Die Betrag der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     color_hsv(40,100,100) &amp;rarr; &apos;255,170,0&apos;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="404"/>
+        <source>&lt;h3&gt;ILIKE expression&lt;/h3&gt;
+Returns 1 if the first parameter matches case-insensitive the supplied pattern. LIKE can be used instead of ILIKE to make the match case-sensitive. Works with numbers also.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;string/number ILIKE pattern&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;A&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Ausdruck ILIKE&lt;/h3&gt;
+Liefert 1, wenn der erste Parameter dem gegebenen Muster (ohne Berücksichtung der Groß-/Kleinschreibung) entspricht. LIKE kann statt ILIKE kann verwendet werden, wenn die Groß-/Kleinschreibung berücksichtigt werden soll. Funktioniert auch mit Zahlen.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;Zeichenkette/Zahl LIKE Muster&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;A&apos;  &amp;rarr; ergibt 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; ergibt 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; ergibt 0 &lt;/pre</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="436"/>
+        <source>&lt;h3&gt;LIKE expression&lt;/h3&gt;
+Returns 1 if the first parameter matches the supplied pattern. Works with numbers also.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;string/number LIKE pattern&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;A&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Ausdruck LIKE&lt;/h3&gt;
+Ergibt 1m wenn der erste Parameter dem gegebenen Muster entspricht. Funktioniert auch mit Zahlen.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;Zeichenkette/Zahl LIKE Muster&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;A&apos;  &amp;rarr; ergibt 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; ergibt 0 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; ergibt 0 &lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2160"/>
+        <source>&lt;h3&gt;ymin function&lt;/h3&gt;
+Returns the minimum y coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;ymin(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geom &amp;rarr; a geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; ymin($geometry) &amp;rarr; returns minimum y coordinate of $geometry&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion ymin()&lt;/h3&gt;
+Gibt den kleinste Y-Koordinate einer Geometrie zurück. Berechnung erfolgt im räumlichen Bezugssystem der Geometrie.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;ymin(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  geom&lt;/i&gt; &amp;rarr; eine Geometrie.&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;ymin($geometry) &amp;rarr; ergibt die minimale Y-Koordinate von $geometry&lt;/pre&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1255"/>
+        <source>&lt;h3&gt;geomFromGML function&lt;/h3&gt;
+Returns a geometry from a GML representation of geometry
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;geomFromGML(text)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+text &amp;rarr; GML representation of a geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomFromGML( &apos;&lt;gml:LineString srsName=&quot;EPSG:4326&quot;&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;&apos;) &amp;rarr; returns a geometry&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion geomFromGML&lt;/h3&gt;
+Gibt eine aus einer GML-Repräsentation erzeugte Geometrie zurück.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;geomFromGML(text)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+text &amp;rarr; GML-Repräsentation einer Geometrie
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; geomFromGML( &apos;&lt;gml:LineString srsName=&quot;EPSG:4326&quot;&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;&apos;) &amp;rarr; ergibt eine Geometrie&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="378"/>
+        <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
+This group contains functions for handling date and time data.
+</source>
+        <translation>&lt;h3&gt;Datum- und Zeitgruppe&lt;/h3&gt;
+Diese Gruppe enth&amp;auml;lt Funktionen zur Verarbeitung von Daten und Zeiten.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="879"/>
+        <source>&lt;h3&gt;combine function&lt;/h3&gt;
+Returns the combination of geometry a and geometry b.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;combine( geometry a , geometry b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4,  2 1 )&apos; ))  )    &amp;rarr; returns MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
+&lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; returns LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion combine&lt;/h3&gt;
+Ergibt die Kombination der Geometrien a und b.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;combine( a , b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geometry &amp;rarr; Geometrie
+geometry &amp;rarr; Geometrie
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4,  2 1 )&apos; ))  )    &amp;rarr; ergibt MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
+&lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; ergibt LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1327"/>
+        <source>&lt;h3&gt;intersects function&lt;/h3&gt;
+Returns 1 if the geometries spatially intersect (share any portion of space) and 0 if they don&apos;t.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;intersects( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion intersects&lt;/h3&gt;
+Gibt 1 zurück, wenn die Geometrien sich räumlich überschneiden (d.h. einen Raum gemeinsam haben) und 0, wenn das nicht der Fall ist.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;intersects( a , b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; Geometrie
+b &amp;rarr; Geometrie
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="701"/>
+        <source>&lt;h3&gt;clamp() function&lt;/h3&gt;
+Restricts an input value to a specified range.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     clamp(&lt;i&gt;minimum&lt;/i&gt;,&lt;i&gt;input&lt;/i&gt;,&lt;i&gt;maximum&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  minimum&lt;/i&gt; &amp;rarr; The smallest value &lt;i&gt;input&lt;/i&gt; is allowed to take.&lt;br&gt;
+&lt;i&gt;  input&lt;/i&gt; &amp;rarr; a value which will be restricted to the range specified by &lt;i&gt;minimum&lt;/i&gt; and &lt;i&gt;maximum&lt;/i&gt;.&lt;br&gt;
+&lt;i&gt;  maximum&lt;/i&gt; &amp;rarr; The largest value &lt;i&gt;input&lt;/i&gt; is allowed to take.&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     clamp(1,5,10) &amp;rarr; 5 (&lt;i&gt;input&lt;/i&gt; is between 1 and 10 so is returned unchanged)&lt;br&gt;
+     clamp(1,0,10) &amp;rarr; 1 (&lt;i&gt;input&lt;/i&gt; is less than minimum value of 1, so function returns 1)&lt;br&gt;
+     clamp(1,11,10) &amp;rarr; 10 (&lt;i&gt;input&lt;/i&gt; is greater than maximum value of 10, so function returns 10)&lt;br&gt;
+     
+     
+</source>
+        <translation>&lt;h3&gt;clamp() Funktion&lt;/h3&gt;
+Eingabewert auf eine gegebenen Bereich beschränken.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     clamp(&lt;i&gt;minimum&lt;/i&gt;,&lt;i&gt;wert&lt;/i&gt;,&lt;i&gt;maximum&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  minimum&lt;/i&gt; &amp;rarr; Der kleinste Wert, den die Rückgabe annehmen kann.&lt;br&gt;
+&lt;i&gt;  wert&lt;/i&gt; &amp;rarr; ein Wert der auf den Bereich zwischen &lt;i&gt;minimum&lt;/i&gt; und &lt;i&gt;maximum&lt;/i&gt; beschränkt wird.&lt;br&gt;
+&lt;i&gt;  maximum&lt;/i&gt; &amp;rarr; Der größte Wert, den die Rückgabe annehmen kann.&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     clamp(1,5,10) &amp;rarr; 5 (&lt;i&gt;wert&lt;/i&gt; ist zwischen 1 und 10 und wird daher unverändert zurückgegeben)&lt;br&gt;
+     clamp(1,0,10) &amp;rarr; 1 (&lt;i&gt;wert&lt;/i&gt; ist kleiner als das Minimum 1, daher wird 1 zurückgegeben)&lt;br&gt;
+     clamp(1,11,10) &amp;rarr; 10 (&lt;i&gt;wert&lt;/i&gt; ist größer als das Maximum 10, daher wird 10 zurückgegeben)&lt;br&gt;
+     
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="994"/>
+        <source>&lt;h3&gt;disjoint function&lt;/h3&gt;
+Returns 1 if the geometries do not &quot;spatially intersect&quot; - if they do not share any space together. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;disjoint( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion disjoint&lt;/h3&gt;
+Gibt 1 zurück, wenn die Geometrien sich nicht räumlich überschneiden - d.h. wenn sie keinen gemeinsamen Raum haben.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;disjoint( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; ergibt 1&lt;/pre&gt;
+&lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; ergibt 0&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1268"/>
+        <source>&lt;h3&gt;geomFromWKT function&lt;/h3&gt;
+Returns a geometry created from a Well-Known Text (WKT) representation.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;geomFromWKT(text)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+text &amp;rarr; Well-Known Text (WKT) representation of a geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; returns a geometry&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion geomFromWKT&lt;/h3&gt;
+Erzeugt aus einer Well-Known-Text-Repräsentation (WKT) eine Geometrie.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;geomFromWKT(text)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+text &amp;rarr; Well-Known Text-Repräsentation (WKT) einer Geometrie
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; ergibt eine Geometrie&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="659"/>
+        <source>&lt;h3&gt;buffer function&lt;/h3&gt;
+Returns a geometry that represents all points whose distance from this geometry is less than or equal to distance. Calculations are in the Spatial Reference System of this Geometry. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;buffer(a, b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; distance for the buffer
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; buffer($geometry, 10.5 ) &amp;rarr; returns a polygon&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion buffer&lt;/h3&gt;
+Gibt eine Geometrie zurück, die alle Punkte enthält, deren Abstand von der Geometrie kleiner gleich dem gegebenen Wert sind. Die Berechungen beziehen sich auf das räumliche Bezugssystem der Geometrie.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;buffer(a,b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; Geometrie
+b    &amp;rarr; Distanz
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; buffer($geometry, 10.5 ) &amp;rarr; ergibt ein Polygon&lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="24"/>
+        <source>&lt;h3&gt;$atlasfeature function&lt;/h3&gt;
+In atlas generation, returns the current feature that is iterated over on the coverage layer. This can be used with the &apos;attribute&apos; function
+to return attribute values from the current atlas feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasfeature&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;attribute( $atlasfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current atlas feature&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion $atlasfeature&lt;/h3&gt;
+Bei der Atlas-Erzeugung gib es das aktuelle Objekts beim Durchlaufen des Decklayer zurück. Es kann mit der Funktion &apos;attribute&apos; verwendet werden, um die Attributwerte des aktuellen Atlas-Objekts zu erhalten.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasgeometry&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Kein
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; attribute( $atlasfeature, &apos;name&apos; ) &amp;rarr; ergibt den Wert des Attributs &apos;name&apos; des aktuellen Atlas-Objekts&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="69"/>
+        <source>&lt;h3&gt;$currentfeature function&lt;/h3&gt;
+Returns the current feature being evaluated. This can be used with the &apos;attribute&apos; function
+to evaluate attribute values from the current feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$currentfeature&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion $currentfeature&lt;/h3&gt;
+Gibt das Objekt zurück, dass gerade ausgewertet wird. Dies kann mit der Funktion &apos;attribute&apos; benutzt werden um die Attributwerte des aktuellen Objekts zu bestimmen.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$currentfeature&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; geibt den Wert des Attributs &apos;name&apos; des aktuellen Objekts zurück&lt;/pre&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="109"/>
+        <source>&lt;h3&gt;$id function&lt;/h3&gt;
+Returns the feature id of the current row.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$id&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion $id&lt;/h3&gt;
+Liefert die Feature-ID des aktuellen Objekts zur&amp;uuml;ck.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$id&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="254"/>
+        <source>&lt;h3&gt;$uuid function&lt;/h3&gt;
+Generates a Universally Unique Identifier (UUID) for each row using the Qt
+&lt;a href=&apos;http://qt-project.org/doc/qt-4.8/quuid.html#createUuid&apos;&gt;QUuid::createUuid&lt;/a&gt;
+method.  Each UUID is 38 characters long.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$uuid&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion $uuid&lt;/h3&gt;
+Generiert eine universal eindeutige Kennung (UUID) mit der Qt-Methode &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/quuid.html#createUuid&apos;&gt;QUuid::createUuid&lt;/a&gt; für jede Zeile.  Jede Kennung ist 38 Zeichen lang.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$uuid&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="592"/>
+        <source>&lt;h3&gt;attribute function&lt;/h3&gt;
+Returns the value of a specified attribute from a feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;attribute( feature, attribute_name )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+feature &amp;rarr; a feature&lt;br /&gt;
+attribute_name &amp;rarr; name of attribute to be returned
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Function attribut&lt;/h3&gt;
+Gibt den Wert des angegebenen Attributs eines Objekts zurück.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;attribute( feature, attribute_name )&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+feature &amp;rarr; ein Objekt&lt;br /&gt;
+attribute_name &amp;rarr; Name des zurückzugebenden Attributs
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; gibt den Wert des Attributs &apos;name&apos; des aktuellen Objekts zurück&lt;/pre&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="947"/>
+        <source>&lt;h3&gt;crosses function&lt;/h3&gt;
+Returns 1 if the supplied geometries have some, but not all, interior points in common.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;crosses( $geometry , $geometry)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion crosses&lt;/h3&gt;
+Gibt 1 zurück, wenn die übergebenen Geometrien einige aber nicht alle innere Punkten gemeinsam haben.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;crosses( $geometry , $geometry)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+geometry &amp;rarr; Geometrie
+geometry &amp;rarr; Geometrie
+
+&lt;h4&gt;Beispiele&lt;/h4&gt;
+&lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; gibt 1 zurück&lt;/pre&gt;
+&lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; gibt 0 zurück&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1281"/>
+        <source>&lt;h3&gt;geomToWKT function&lt;/h3&gt;
+Returns the Well-Known Text (WKT) representation of the geometry without SRID metadata.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;geomToWKT(a)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion geomToWKT&lt;/h3&gt;
+Ergibt die Well-Known-Text-Darstellung (WKT) der Geometrie ohne räumlichen Bezugssystem zurück.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;geomToWKT(a)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+a &amp;rarr;  Geometriee
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1971"/>
+        <source>&lt;h3&gt;touches function&lt;/h3&gt;
+Returns 1 if the geometries have at least one point in common, but their interiors do not intersect.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;touches( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; touches( geomFromWKT( &apos;LINESTRING(5 3 , 4 4)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion touches&lt;/h3&gt;
+Gibt 1 zurück, wenn die übergebenen Geometrie mindestens einen Punkt gemeinsam haben, aber es keine gemeinsamen inneren Punkte gibt.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;touches( $geometry , $geometry)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+geometry &amp;rarr; Geometrie
+geometry &amp;rarr; Geometrie
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; touches( geomFromWKT( &apos;LINESTRING(5 3 , 4 4)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; ergibt 1&lt;/pre&gt;
+&lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; ergibt 0&lt;/pre&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1519"/>
+        <source>&lt;h3&gt;overlaps function&lt;/h3&gt;
+Returns 1 if the geometries share space, are of the same dimension, but are not completely contained by each other.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;overlaps( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion overlaps&lt;/h3&gt;
+Gibt 1 zurück, wenn die Geometrien gemeinsamen Raum haben, von gleicher Dimension, aber nicht komplett ineinander enthalten sind.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;overlaps( a, b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; ergibt 1&lt;/pre&gt;
+&lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; ergibt 0&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="294"/>
+        <source>&lt;h3&gt;AND logical operator&lt;/h3&gt;
+Returns 1 when condition a and b are true.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt; condition a AND condition b &lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; 4 = 2+2 AND 1 = 1  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; 4 = 2+2 AND 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Logischer Operator AND&lt;/h3&gt;
+Ergibt 1, wenn die Bedingungen a und b erfüllt sind.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt; bedingung a AND bedingung b &lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; 4 = 2+2 AND 1 = 1  &amp;rarr; ergibt 1 &lt;/pre&gt;
+&lt;pre&gt; 4 = 2+2 AND 1 = 2  &amp;rarr; ergibt 0 &lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="96"/>
+        <source>&lt;h3&gt;$geometry function&lt;/h3&gt;
+Returns the geometry of the current feature. Can be used for processing with other functions.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$geometry&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion $geometry&lt;/h3&gt;
+Gibt die Geometrie des aktuellen Objekts zurück. Kann zur Verarbeitung mit anderen Funktion verwendet werden.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$geometry&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="468"/>
+        <source>&lt;h3&gt;OR logical operator&lt;/h3&gt;
+Returns 1 when condition a or b is true.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt; condition a OR condition b &lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; 4 = 2+2 OR 1 = 1  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; 4 = 2+2 OR 1 = 2  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; 4 = 2   OR 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Logischer Operator OR&lt;/h3&gt;
+Ergibt 1m wenn die Bedingung a oder b erfüllt ist.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt; bedingung a OR bedingung b &lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; 4 = 2+2 OR 1 = 1  &amp;rarr; ergibt 1 &lt;/pre&gt;
+&lt;pre&gt; 4 = 2+2 OR 1 = 2  &amp;rarr; ergibt 1 &lt;/pre&gt;
+&lt;pre&gt; 4 = 2 OR 1 = 2  &amp;rarr; ergibt 0 &lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="688"/>
+        <source>&lt;h3&gt;centroid function&lt;/h3&gt;
+Returns the geometric center of a geometry.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;centroid(a)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; centroid($geometry) &amp;rarr; returns a point geometry&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion centroid&lt;/h3&gt;
+Gibt das geometrische Zentrum der Geometrie zurück.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;centroid(a)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+a &amp;rarr; geometry
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; centroid($geometry) &amp;rarr; returns a point&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2046"/>
+        <source>&lt;h3&gt;within function&lt;/h3&gt;
+Returns 1 if the geometry a is completely inside geometry b
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;within( geometry a , geometry b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; within( geomFromWKT( &apos;POINT( 0.5 0.5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )    &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; within( geomFromWKT( &apos;POINT( 5 5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )        &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion within&lt;/h3&gt;
+Gibt 1 zurück, wenn die Geometire a komplett innerhalb der Geometrie b liegt
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;within( a , b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; Geometrie
+b &amp;rarr; Geometrie
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; within( geomFromWKT( &apos;POINT( 0.5 0.5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )    &amp;rarr; ergibt 1&lt;/pre&gt;
+&lt;pre&gt; within( geomFromWKT( &apos;POINT( 5 5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )        &amp;rarr; ergibt 0&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="134"/>
+        <source>&lt;h3&gt;$map function&lt;/h3&gt;
+Returns the id of the current map item if the map is being drawn in a composition, or &quot;canvas&quot; if the map is being
+drawn within the main QGIS window.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$map&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;$map &amp;rarr; &quot;overview_map&quot; (within a composer item)&lt;br /&gt;
+$map &amp;rarr; &quot;canvas&quot; (within the main QGIS main canvas)&lt;/pre&gt;
+
+
+</source>
+        <translation>&lt;h3&gt;Funktion $map&lt;/h3&gt;
+Gibt die Kennung des aktuellen Druckzusammenstellungselements zurück, wenn die Karte in einer Druckzusammenstellung gezeichnet wird oder &quot;canvas&quot;, wenn die Karte im QGIS-Fenster gezeichnet wird.
+.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$map&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+None
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;$map &amp;rarr; &quot;overview_map&quot; (in einem Zusammenstellungselement)&lt;br /&gt;
+$map &amp;rarr; &quot;canvas&quot; (im QGIS-Kartenfenster)&lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1008"/>
+        <source>&lt;h3&gt;distance function&lt;/h3&gt;
+ Returns the minimum distance (based on spatial ref) between two geometries in projected units.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;distance( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; distance( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(4 8)&apos; ))    &amp;rarr; returns 4&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion distance&lt;/h3&gt;
+ Gibt den minimalen Abstand (basierend auf dem Raumbezug) zwischen zwei Geometrien in projiizierten Einheiten.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;distance( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; distance( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(4 8)&apos; ))    &amp;rarr; ergibt 4&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="981"/>
+        <source>&lt;h3&gt;difference function&lt;/h3&gt;
+Returns a geometry that represents that part of geometry a that does not intersect with geometry b.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;difference( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; returns LINESTRING(4 4, 5 5)&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion difference&lt;/h3&gt;
+Gibt eine Geometrie zurück, die den Teil der Geometrie a repräsentiert, der die Geometrie b nicht schneidet.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;difference( geometry a , geometry b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; Geometrie
+b &amp;rarr; Geometrie
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; ergibt LINESTRING(4 4, 5 5)
+&lt;/pre&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="453"/>
+        <source>&lt;h3&gt;NOT&lt;/h3&gt;
+Returns 1 if a is not the same as b.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt; a NOT b &lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; &apos;a&apos; IS NOT &apos;b&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;a&apos; IS NOT &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS NOT 2+2    &amp;rarr; returns 0 &lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;NOT&lt;/h3&gt;
+Gibt 1 zurück, wenn a ungleich b ist.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt; a NOT b &lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; &apos;a&apos; IS NOT &apos;b&apos;  &amp;rarr; ergibt 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;a&apos; IS NOT &apos;a&apos;  &amp;rarr; ergibt 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS NOT 2+2    &amp;rarr; ergibt 0 &lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1836"/>
+        <source>&lt;h3&gt;symDifference function&lt;/h3&gt;
+Returns a geometry that represents the portions of a and b that do not intersect.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;symDifference( geometry a, geometry b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( symDifference(  geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 8 8)&apos; ))   )   &amp;rarr; returns LINESTRING(5 5, 8 8)&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion symDifference&lt;/h3&gt;
+Gibt eine Geometrie zurück, die die Teile der Geometrien a und b darstellen, die sich nicht schneiden.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;symDifference( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+a &amp;rarr; Geometrie
+b &amp;rarr; Geometrie
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( symDifference(  geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 8 8)&apos; ))   )   &amp;rarr; ergibt LINESTRING(5 5, 8 8)&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="203"/>
+        <source>&lt;h3&gt;$perimeter function&lt;/h3&gt;
+Returns the perimeter length of the current feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$perimeter&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion $perimeter&lt;/h3&gt;
+Liefert den Umfang des aktuellen Objekts zur&amp;uuml;ck.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$perimeter&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1917"/>
+        <source>&lt;h3&gt;tointerval() function&lt;/h3&gt;
+Converts a string to a interval type.  Can be used to take days, hours, month, etc off a date. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;tointerval(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string. Format {n} days {n} hours {n} months
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
+        <translation>&lt;h3&gt;Funktion tointerval()&lt;/h3&gt;
+Wandelt eine Zeichenkette in einen Interval-Typ.  Kann verwendet werden um Tagen, Stunden, Monaten etc von Daten abzuziehen.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;tointerval(&apos;zeichenkette&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;zeichenkette&lt;/code&gt; - eine Zeichenkette. Format {n} Tage {n} Stunden {n} Monate
+&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1293"/>
+        <source>&lt;h3&gt;hour() function&lt;/h3&gt;
+Extract the hour from a datetime or time, or the number of hours
+from a &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;hour(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - is datetime or time. The date to extract the hour from.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of hours from.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;hour(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 13&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(tointerval(&apos;3 hours&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-07-22T13:00:00&apos;,&apos;2012-07-22T10:00:00&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion hour()&lt;/h3&gt;
+Bestimmt die Stunde eines Datums/Zeit oder die Anzahl der Stunden
+aus einem &lt;code&gt;Intervall&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;hour(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(Intervall)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - ist date oder datetime. Das Datum/die Zeit dessen Stunde bestimmt werden soll.
+&lt;br&gt;
+&lt;code&gt;Intervall&lt;/code&gt; - ist Interval. Das Intervall aus der die Stundenzahl bestimmt werden soll.
+
+&lt;h4&gt;Beispiele&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;hour(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 13&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(tointerval(&apos;3 hours&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-07-22T13:00:00&apos;,&apos;2012-07-22T10:00:00&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="794"/>
+        <source>&lt;h3&gt;color_hsla() function&lt;/h3&gt;
+Returns a string representation of a color based on its hue, saturation, lightness and alpha (transparency) attributes
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_hsla(&lt;i&gt;hue, saturation, lightness, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; the lightness percentage of the color as an integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion color_hsl()&lt;/h3&gt;
+Gibt eine Farbe als Zeichenkette basierend auf ihrem Farbton, ihrer S&amp;auml;ttigung, ihrer Helligkeit und ihrer Transparenz zur&amp;uuml;ck.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_hsla(&lt;i&gt;farbton, s&amp;auml;ttigung, helligkeit, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;  farbton&lt;/i&gt; &amp;rarr; Der Farbton der Farbe, als ganzzahliger Wert zwischen 0 und 360.&lt;br&gt;
+&lt;i&gt;  s&amp;auml;ttigung&lt;/i&gt; &amp;rarr; Der S&amp;auml;ttigung der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.&lt;br&gt;
+&lt;i&gt;  helligkeit&lt;/i&gt; &amp;rarr; Die Helligkeit der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; Die Transparenz der Farbe, als ganzzahliger Prozentsatz zwischen 0 (g&amp;auml;nzlich transparent) und 100 (deckend).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     color_hsla(100,50,70,200) &amp;rarr; &apos;#166,217,140,200&apos;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="216"/>
+        <source>&lt;h3&gt;$pi constant&lt;/h3&gt;
+Returns pi as value for calculations
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$pi&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;$pi Konstante&lt;/h3&gt;
+Liefert den Wert von pi f&amp;uuml;r Berechnungen
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$pi&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="485"/>
+        <source>&lt;h3&gt;Record Group&lt;/h3&gt;
+This group contains functions that operate on record identifiers.
+</source>
+        <translation>&lt;h3&gt;Gruppe Datensatz&lt;/h3&gt;
+Diese Gruppe enth&amp;auml;lt Funktionen, die mit Datensatzkennungen arbeiten.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1958"/>
+        <source>&lt;h3&gt;totime() function&lt;/h3&gt;
+Convert a string into Qt time type.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;totime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string in Qt time format.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
+        <translation>&lt;h3&gt;Funktion totime()&lt;/h3&gt;
+Wandelt eine Zeichenkette in einen Qt-Zeittyp um.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;totime(&apos;zeichenkette&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;zeichenkette&lt;/code&gt; - eine Zeichenkette im Qt-Zeitformat.
+&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1634"/>
+        <source>&lt;h3&gt;replace() function&lt;/h3&gt;
+Returns a string with the the supplied string replaced.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     replace(&lt;i&gt;string,before,after&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
+&lt;i&gt;  before&lt;/i&gt; &amp;rarr; is string.  The string to replace.&lt;br&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace &lt;i&gt;before&lt;/i&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion replace()&lt;/h3&gt;
+Liefert eine Zeichenkette in der die angegebene Zeichenkette ersetzt ist.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     replace(&lt;i&gt;zeichenkette,vorher,nachher&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  zeichenkette&lt;/i&gt; &amp;rarr; ist eine Zeichenkette.  Die urspr&amp;uuml;ngliche Zeichenkette.&lt;br&gt;
+&lt;i&gt;  vorher&lt;/i&gt; &amp;rarr; ist eine Zeichenkette.  Die zu ersetzende Zeichenkette.&lt;br&gt;
+&lt;i&gt;  nacher&lt;/i&gt; &amp;rarr; ist eine Zeichenkette.  Die Zeichenkette durch die &lt;i&gt;vorher&lt;/i&gt; ersetzen soll&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="369"/>
+        <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
+This group contains functions to handle conditional checks in expressions.
+</source>
+        <translation>&lt;h3&gt;Gruppe Bedingungen&lt;/h3&gt;
+Dies Gruppe enth&amp;auml;lt Funktionen die mit Bedingungen umgehen.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="491"/>
+        <source>&lt;h3&gt;abs() function&lt;/h3&gt;
+Returns the absolute value of a number.&lt;br&gt;
+
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - a number.&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion abs()&lt;/h3&gt;
+Gibt den Betrag einer Zahl zur&amp;uuml;ck.&lt;br&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+abs(&lt;i&gt;wert&lt;/i&gt;)&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;wert&lt;/code&gt; - ein Zahl.&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1450"/>
+        <source>&lt;h3&gt;max() function&lt;/h3&gt;
+Returns the largest value in a set of values.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+     max(&lt;i&gt;value&lt;i&gt;[,&lt;i&gt;value&lt;/i&gt;...])
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; a number.&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     max(2,10.2,5.5) &amp;rarr; 10.2
+</source>
+        <translation>&lt;h3&gt;Funktion max()&lt;/h3&gt;
+Gibt den gr&amp;ouml;&amp;szlig;ten Wert eine Menge von Werte zur&amp;uuml;ck.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+     max(&lt;i&gt;wert&lt;i&gt;[,&lt;i&gt;wert&lt;/i&gt;...])
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  wert&lt;/i&gt; &amp;rarr; eine Zahl.&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     max(2,10.2,5.5) &amp;rarr; 10.2
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1789"/>
+        <source>&lt;h3&gt;sqrt() function&lt;/h3&gt;
+Returns square root of a value
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     sqrt(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; number.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+     sqrt(9) &amp;rarr; 3&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion sqrt()&lt;/h3&gt;
+Gibt die Quadratwurzel eines Werts zur&amp;uuml;ck.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     sqrt(&lt;i&gt;radikant&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;radikant&lt;/i&gt; &amp;rarr; Zahl aus der die Wurzel gezogen werden soll.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     sqrt(9) &amp;rarr; 3&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="372"/>
+        <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
+This group contains functions that operate on condition.
+</source>
+        <translation>&lt;h3&gt;Conditions Group&lt;/h3&gt;
+This group contains functions that operate on condition.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="759"/>
+        <source>
+&lt;h3&gt;color_cmyka() function&lt;/h3&gt;
+Returns a string representation of a color based on its cyan, magenta, yellow, black and alpha (transparency) components
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_cmyka(&lt;i&gt;cyan, magenta, yellow, black, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; the cyan component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; the magenta component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  yellow&lt;/i&gt; &amp;rarr; the yellow component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  black&lt;/i&gt; &amp;rarr; the black component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion color_cmyka()&lt;/h3&gt;
+Gibt eine Farbe als Zeichenkette basierend auf ihrem Cyan-, Magenta- Gelb-,
+Schwarzanteil und Alpha-/Transparenzanteil zur&amp;uuml;ck.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_cmyk(&lt;i&gt;cyan, magenta, gelb, schwarz, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; Der Cyan-Anteil der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; Der Magenta-Anteil der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.&lt;br&gt;
+&lt;i&gt;  gelb&lt;/i&gt; &amp;rarr; Der Gelb-Anteil der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.&lt;br&gt;
+&lt;i&gt;  schwarz&lt;/i&gt; &amp;rarr; Der Schwarz-Anteil der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; Der Alpha/Transparenz-Anteil der Farbe, als ganzzahliger Prozentsatz zwischen 0 (g&amp;auml;nzlich transparent) und 100 (deckend).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1238"/>
+        <source>&lt;h3&gt;format_number() function&lt;/h3&gt;
+Returns a number formatted with the locale separator for thousands. 
+Also truncates the number to the number of supplied places. 
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;format_number(number,places)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;number&lt;/code&gt; - is number. The number to be formatted.
+&lt;br&gt;
+&lt;code&gt;places&lt;/code&gt; - is int. The number of decimal places to truncate the string
+to.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion format_number()&lt;/h3&gt;
+Liefert eine mit dem lokalen Tausendertrenner versehene Zahl zur&amp;uuml;ck und
+beschr&amp;auml;nkt die Zahl auch auf die angegebene Anzahl von Nachkommastellen.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;format_number(zahl,nachkommastellen)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;zahl&lt;/code&gt; - ist Zahl. Die zu formatierende Zahl
+&lt;br&gt;
+&lt;code&gt;places&lt;/code&gt; - ist Ganzzahl. Die Anzahl der Nachkommastellen.
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10.000.000,33&lt;/code&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2127"/>
+        <source>&lt;h3&gt;year() function&lt;/h3&gt;
+Extract the year part from a date, or the number of years
+from a &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;year(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - is date or datetime. The date to extract the year from.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of years from.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;year(&apos;2012-05-12&apos;) &amp;rarr; 2012&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(tointerval(&apos;3 Years&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion year()&lt;/h3&gt;
+Bestimmt das Jahr eines Datums oder die L&amp;auml;nge eines &lt;code&gt;Intervals&lt;/code&gt; in Jahren.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;year(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - ist date oder datetime. Das Datum dessen Jahr zur&amp;uuml;ckgegeben werden soll.&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - ist Interval. Das Interval dessen L&amp;auml;nge in Jahren zur&amp;uuml;ckgegeben werden soll.
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;year(&apos;2012-05-12&apos;) &amp;rarr; 2012&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(tointerval(&apos;3 Years&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="308"/>
+        <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
+A conditional expression that can be used to evaluate multiple expressions and
+return a result.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;condition&lt;/i&gt; THEN &lt;i&gt;result&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;result&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] marks optional components
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  WHEN condition&lt;/i&gt; - The condition expression to evaluate. &lt;br&gt;
+&lt;i&gt;  THEN result&lt;/i&gt; - If &lt;i&gt;condition&lt;/i&gt; evaluates to True then &lt;i&gt;result&lt;/i&gt; is evaluated and returned. &lt;br&gt;
+&lt;i&gt;  ELSE result&lt;/i&gt; - If none of the above conditions evaluated to True then &lt;i&gt;result&lt;/i&gt; is evaluated and returned. &lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;None&apos;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;CASE Ausdruck&lt;/h3&gt;
+Ist ein bedingter Ausdruck mit dem mehrere Ausdr&amp;uuml;cken ausgewertet und ein
+Ergebnis zur&amp;uuml;ckgegeben werden kann.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;bedingung&lt;/i&gt; THEN &lt;i&gt;ergebnis&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;ergebnis&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] markiert optionale Komponenten
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  WHEN bedingung&lt;/i&gt; - Der Bedingungsausdruck. &lt;br&gt;
+&lt;i&gt;  THEN ergebnis&lt;/i&gt; - Wenn die &lt;i&gt;bedingung&lt;/i&gt; True ergibt, wird der Ausdruck &lt;i&gt;ergebnis&lt;/i&gt; ausgewertet und zur&amp;uuml;ckgegeben. &lt;br&gt;
+&lt;i&gt;  ELSE ergebnis&lt;/i&gt; - Wenn keine der Bedingungen erf&amp;uuml;llt ist, wird der Ausdruck &lt;i&gt;ergebnis&lt;/i&gt; ausgewertet und zur&amp;uuml;ckgegeben. &lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;Leer&apos;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1571"/>
+        <source>&lt;h3&gt;randf() function&lt;/h3&gt;
+Returns a random float within the range specified by the minimum and 
+maximum argument (inclusive).
+&lt;br&gt;
+This function takes two arguments.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;randf(min, max)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;min&lt;/code&gt; - a float representing the smallest possible random number desired.&lt;br&gt;
+&lt;code&gt;max&lt;/code&gt; - a float representing the largest possible random number desired.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion randf()&lt;/h3&gt;
+Gibt eine zuf&amp;auml;llige Flie&amp;szlig;kommazahl in den gegebenen Grenzen zur&amp;uuml;ck (inklusiv).
+&lt;br&gt;
+Diese Funktion hat zwei Argumente.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;randf(min, max)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;min&lt;/code&gt; - eine Flie&amp;szlig;kommazahl, die die minimale Zufallszahl angibt.&lt;br&gt;
+&lt;code&gt;max&lt;/code&gt; - eine Flie&amp;szlig;kommazahl, die die maximale Zufallszahl angibt.&lt;br&gt;
+&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2102"/>
+        <source>&lt;h3&gt;xmin function&lt;/h3&gt;
+Returns the minimum x coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;xmin(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geom &amp;rarr; a geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; xmin($geometry) &amp;rarr; returns minimum x coordinate of $geometry&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion xmin()&lt;/h3&gt;
+Gibt den kleinste X-Koordinate einer Geometrie zurück. Berechnung erfolgt im räumlichen Bezugssystem der Geometrie.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;xmin(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  geom&lt;/i&gt; &amp;rarr; eine Geometrie.&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;xmin($geometry) &amp;rarr; ergibt die minimale X-Koordinate von $geometry&lt;/pre&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1735"/>
+        <source>&lt;h3&gt;scale_linear() function&lt;/h3&gt;
+Transforms a given value from an input domain to an output range using linear interpolation. 
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     scale_linear(&lt;i&gt;val&lt;/i&gt;,&lt;i&gt;domain_min&lt;/i&gt;,&lt;i&gt;domain_max&lt;/i&gt;,&lt;i&gt;range_min&lt;/i&gt;,&lt;i&gt;range_max&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  val&lt;/i&gt; &amp;rarr; is a value in the input domain. The function will return a corresponding scaled value in the output range.&lt;br&gt;
+&lt;i&gt;  domain_min, domain_max&lt;/i&gt; &amp;rarr; specify the input domain, the smallest and largest values the input &lt;i&gt;val&lt;/i&gt; should take.&lt;br&gt;
+&lt;i&gt;  range_min, range_max&lt;/i&gt; &amp;rarr; specify the output range, the smallest and largest values which should be output by the function.&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     scale_linear(5,0,10,0,100) &amp;rarr; 50&lt;br&gt;
+     scale_linear(0.2,0,1,0,360) &amp;rarr; 72 &lt;i&gt;(eg, scaling a value between 0 and 1 to an angle between 0 and 360)&lt;/i&gt;&lt;br&gt;
+     scale_linear(1500,1000,10000,9,20) &amp;rarr; 10.22 &lt;i&gt;(eg, scaling a population which varies between 1000 and 10000 to a font size between 9 and 20)&lt;/i&gt;&lt;br&gt;
+     
+     
+</source>
+        <translation>&lt;h3&gt;Funktion scale_linear()&lt;/h3&gt;
+Formt einen gegebenen Wert aus einem Ausgangsbereich mittels linearer Interpolation in einen Ausgabebereich um.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     scale_linear(&lt;i&gt;wert&lt;/i&gt;,&lt;i&gt;quelle_min&lt;/i&gt;,&lt;i&gt;quelle_max&lt;/i&gt;,&lt;i&gt;ziel_min&lt;/i&gt;,&lt;i&gt;ziel_max&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  wert&lt;/i&gt; &amp;rarr; ein Wert im Ausgangsbereich. Die Funktion gibt den korrespondierenden skalierten Wert im Ausgabebereich zur&amp;uuml;ck.&lt;br&gt;
+&lt;i&gt;  quelle_min, quelle_max&lt;/i&gt; &amp;rarr; legt den Ausgangsbereich fest - denn kleinsten und gr&amp;ouml;&amp;szlig;ten Wert in dem sich &lt;i&gt;wert&lt;/i&gt; bewegt.&lt;br&gt;
+&lt;i&gt;  ziel_min, ziel_max&lt;/i&gt; &amp;rarr; legt den Ausgabebereich fest - denn kleinsten und gr&amp;ouml;&amp;szlig;ten Wert in dem sich das Funktionergebnis bewegt.&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     scale_linear(5,0,10,0,100) &amp;rarr; 50&lt;br&gt;
+     scale_linear(0.2,0,1,0,360) &amp;rarr; 72 &lt;i&gt;(z.B. um einen Wert zwischen 0 und 1 auf eine Winkel zwischen 0 und 360 skalieren)&lt;/i&gt;&lt;br&gt;
+     scale_linear(1500,1000,10000,9,20) &amp;rarr; 10.22 &lt;i&gt;(z.B. um eine Bev&amp;ouml;lkerungszahl zwischen 1000 und 10000 auf eine Schriftgr&amp;ouml;&amp;szlig;e zwischen 9 und 20 zu skalieren)&lt;/i&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1985"/>
+        <source>&lt;h3&gt;trim() function&lt;/h3&gt;
+Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     trim(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string. The string to trim.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion trim()&lt;/h3&gt;
+Entfernt f&amp;uuml;hrende und schlie&amp;szlig;ende Leerzeichen (Leerzeichen, Tabs usw.) aus einer Zeichenkette.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     trim(&lt;i&gt;zeichenkette&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  zeichenkette&lt;/i&gt; &amp;rarr; eine Zeichenkett. Zu k&amp;uuml;rzende Zeichenkette.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     trim(&apos;   hallo welt    &apos;) &amp;rarr; &apos;hallo welt&apos;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1478"/>
+        <source>&lt;h3&gt;minute() function&lt;/h3&gt;
+Extract the minute from a datetime or time, or the number of minutes
+from a &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;minute(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - is datetime or time. The date to extract the minute from.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of minutes from.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;minute(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 24&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(tointerval(&apos;3 minutes&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 20&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion minute()&lt;/h3&gt;
+Bestimmt die Minute eines Datums/Zeit oder die Anzahl der Minuten
+eines &lt;code&gt;Intervalls&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;minute(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(Intervall)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;datetime&lt;/code&gt; - ist datetime oder time. Das Datum aus der die Minute bestimmt werden soll.&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. Das Intervall aus dem die Minutenanzahl bestimmt werden soll.
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;minute(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 24&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(tointerval(&apos;3 minutes&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 20&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="517"/>
+        <source>&lt;h3&gt;age() function&lt;/h3&gt;
+Returns the difference between two dates.
+&lt;br&gt;&lt;br&gt;
+The difference is returned as a &lt;code&gt;Interval&lt;/code&gt; 
+and needs to be used with one of the following functions
+in order to extract useful information:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;year&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;month&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;week&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;day&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;hour&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;minute&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;second&lt;/code&gt;
+&lt;/ul&gt;
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;age(string,string)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(datetime,datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(string,datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(datetime,string)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string. A string in date format.
+&lt;br&gt;
+&lt;code&gt;datetime&lt;/code&gt; - is date or datetime. A date or datetime type.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;) &amp;rarr; Interval&lt;/code&gt;&lt;br&gt;
+use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion age()&lt;/h3&gt;
+Gibt den Unterschied zwischen zwei Daten zur&amp;uuml;ck.
+&lt;br&gt;&lt;br&gt;
+Der Unterschied wird als &lt;code&gt;Intervall&lt;/code&gt; zur&amp;uuml;ckgegeben
+und mu&amp;szlig; mit folgenden Funktionen weiterverarbeitet werde, um
+sinnvolle Informationen zu erhalten:
+&gt;&lt;code&gt;year&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;month&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;week&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;day&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;hour&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;minute&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;second&lt;/code&gt;
+&lt;/ul&gt;
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;age(zeichenkette,zeichenkette)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(datetime,datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(zeichenkette,datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(datetime,zeichenkette)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;zeichenkette&lt;/code&gt; - ist string. Eine Zeichenkette in Datumsformat. &lt;br&gt;
+&lt;code&gt;datetime&lt;/code&gt; - ist date oder datetime. Eine Datums oder eine Zeit.
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;) &amp;rarr; Intervall&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day&lt;/code&gt; benutzen um die Anzahl der Tage zur bestimmen&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1404"/>
+        <source>&lt;h3&gt;log10() function&lt;/h3&gt;
+Returns the value of the base 10 logarithm of the passed expression.
+&lt;br&gt;
+This function takes one argument.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;log10(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion log10()&lt;/h3&gt;
+Gibt den Logarithmus des &amp;uuml;bergebenen Wertes zur Basis 10 zur&amp;uuml;ck.
+&lt;br&gt;
+Diese Funktion akzeptiert ein Argument.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;log10(wert)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;wert&lt;/code&gt; - eine positive Zahl.
+&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="375"/>
+        <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
+This group contains functions to convert on data type to another e.g string to integer, integer to string.
+</source>
+        <translation>&lt;h3&gt;Umwandlungsgruppe&lt;/h3&gt;
+Diese Gruppe enth&amp;auml;lt Funktionen, die einen Datentypen in einen anderen umwandeln (z.B. Zeichenketten zu Ganzzahlen oder zur&amp;uuml;ck).
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="934"/>
+        <source>&lt;h3&gt;cos() function&lt;/h3&gt;
+Returns cosinus of an angle.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     cos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; angle in radians.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+     cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion cos()&lt;/h3&gt;
+Gibt den Cosinus eines Winkels zur&amp;uuml;ck.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     cos(&lt;i&gt;winkel&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;winkel&lt;/i&gt; &amp;rarr; Winkel im Bogenma&amp;szlig;.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="482"/>
+        <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
+This group contains operators e.g + - * 
+</source>
+        <translation>&lt;h3&gt;Gruppe Operatoren&lt;/h3&gt;
+Die Gruppe enth&amp;auml;lt Operatoren (z.B. +, - und *)
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1755"/>
+        <source>&lt;h3&gt;second() function&lt;/h3&gt;
+Extract the seconds from a datetime or time, or the number of seconds
+from a &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;second(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - is datetime or time. The date to extract the second from.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of seconds from.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;second(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 57&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(tointerval(&apos;3 seconds&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 1200&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion second()&lt;/h3&gt;
+Bestimmt die Sekunde eines Datums/Zeit oder die Anzahl der Sekunden
+aus einem &lt;code&gt;Intervall&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;second(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(Intervall)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - ist datetime oder time. Das Datum dessen Sekunden bestimmt werden sollen.&lt;br&gt;
+&lt;code&gt;Intervall&lt;/code&gt; - ist Interval. Ergib die Intervalll&amp;auml;nge in Sekunden.
+
+&lt;h4&gt;Beispiele&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;second(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 57&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(tointerval(&apos;3 seconds&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 1200&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="563"/>
+        <source>&lt;h3&gt;atan() function&lt;/h3&gt;
+Returns arcustanget of a value in radians.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     atan(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; tan of an angle.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+     atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion atan()&lt;/h3&gt;
+Gibt den Arcustanget eines Werts im Bogenma&amp;szlig; zur&amp;uuml;ck.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     atan(&lt;i&gt;zahl&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;zahl&lt;/i&gt; &amp;rarr; Tangens eines Winkels.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="122"/>
+        <source>&lt;h3&gt;$length function&lt;/h3&gt;
+Returns the length of the current feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$length&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion $length&lt;/h3&gt;
+Liefert die L&amp;auml;nge der aktuellen Geometrie.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$length&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1862"/>
+        <source>&lt;h3&gt;title() function&lt;/h3&gt;
+Converts all words of a string to title case (all words lower case with leading
+capital letter).
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     title(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to convert to title case.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion title()&lt;/h3&gt;
+Wandelt alle Worte einer Zeichenkette in Kleinbuchstaben mit gro&amp;szlig;em Anfangsbuchstaben um.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     title(&lt;i&gt;zeichenkette&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  zeichenkette&lt;/i&gt; &amp;rarr; ist eine Zeichenkette.  Die Zeichenkette, deren Worte in Kleinbuchstaben mit gro&amp;szlig;em Anfangsbuchstaben umgewandelt werden.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     title(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1588"/>
+        <source>&lt;h3&gt;regexp_match() function&lt;/h3&gt;
+Returns true if any part of a string matches the supplied regular expression.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_match(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to test against the regular expression.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to test against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion regexp_match()&lt;/h3&gt;
+Gibt 1 zur&amp;uuml;ck, wenn irgendein Teil der Zeichenkette dem gegebenen regul&amp;auml;ren Ausdruck entspricht.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_match(&lt;i&gt;zeichenkette,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  zeichenkette&lt;/i&gt; &amp;rarr; eine Zeichenkette.  Die Zeichenkette, die mit dem regul&amp;auml;ren Ausdruck verglichen werden soll.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; eine Zeichenkette.  Der regul&amp;auml;re Ausdruck mit dem verglichen werden. Backslash-Zeichen m&amp;uuml;ssen doppelt ausgenommen werden (z.B. &quot;&amp;#92;&amp;#92;s&quot; f&amp;uuml;r ein Leerzeichen). Genügsame (engl. non-greedy) reguläre Ausdrücke werde nicht unterstützt.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_match(&apos;QGIS ROCKT&apos;,&apos;&amp;#92;&amp;#92;sROCKT&apos;) &amp;rarr; 1&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1820"/>
+        <source>&lt;h3&gt;substr() function&lt;/h3&gt;
+Return a part of a string
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     substr(&lt;i&gt;string,startpos,length&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The full string.&lt;br&gt;
+&lt;i&gt;  startpos&lt;/i&gt; &amp;rarr; is number.  The start position to extract from.&lt;br&gt;
+&lt;i&gt;  length&lt;/i&gt; &amp;rarr; is number.  The length of the string to extract.&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion substr()&lt;/h3&gt;
+Liefert einen Teil einer Zeichenkette
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     substr(&lt;i&gt;zeichenkette,startpos,l&amp;auml;nge&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  zeichenkette&lt;/i&gt; &amp;rarr; ist eine Zeichenkette.  Die vollst&amp;auml;ndige Zeichenkette.&lt;br&gt;
+&lt;i&gt;  startpos&lt;/i&gt; &amp;rarr; ist eine Zahl.  Die Startposition des Teils.&lt;br&gt;
+&lt;i&gt;  l&amp;auml;nge&lt;/i&gt; &amp;rarr; ist eine Zahl.  Die L&amp;auml;nge des Teils.&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1049"/>
+        <source>&lt;h3&gt;format() function&lt;/h3&gt;
+Format a string using supplied arguments. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;format(&apos;string&apos;, arg, [arg...n])&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string.  String with Qt QString place holders.  Use %1, %2, etc for placeholders. Placeholders can be repeated. 
+&lt;br&gt;
+&lt;code&gt;arg [arg...n]&lt;/code&gt; - any type. Any number of args. 
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
+        <translation>&lt;h3&gt;Funktion format()&lt;/h3&gt;
+Formatiert eine Zeichenkette mit den gegebenen Argumenten.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;format(&apos;zeichenkette&apos;, arg, [arg...n])&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;zeichenkette&lt;/code&gt; - ist eine Zeichenkette.  Zeichenkette mit Qt QString Platzhaltern.  %1, %2, usw. als Platzhalter. Platzhalter k&amp;ouml;nnen sich wiederholen.
+&lt;br&gt;
+&lt;code&gt;arg [arg...n]&lt;/code&gt; - jeder Typ. Beliebige Anzahl von Argumenten
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format(&apos;Dies %1 ein %2&apos;,&apos;ist&apos;, &apos;Test&apos;) &amp;rarr; Dies ist ein Test&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1603"/>
+        <source>&lt;h3&gt;regexp_replace() function&lt;/h3&gt;
+Returns a string with the supplied regular expression replaced.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_replace(&lt;i&gt;string,regex,after&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion regexp_replace()&lt;/h3&gt;
+Liefert eine Zeichenkette in der der angegebene regul&amp;auml;re Ausdruck ersetzt wurde.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_replace(&lt;i&gt;a&lt;/i&gt;, &lt;i&gt;streiche&lt;/i&gt;, &lt;i&gt;setze&lt;/i&gt;)
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;a&lt;/i&gt; &amp;rarr; ist string.  Die urspr&amp;uuml;ngliche Zeichenkette.&lt;br&gt;
+&lt;i&gt;streiche&lt;/i&gt; &amp;rarr; ist string.  Die zu ersetzende regul&amp;auml;re Ausdruck. Backslash-Zeichen m&amp;uuml;ssen doppelt ausgenommen werden (z.B. &quot;&amp;#92;&amp;#92;s&quot; f&amp;uuml;r ein Leerzeichen). Genügsame (engl. non-greedy) reguläre Ausdrücke werde nicht unterstützt.&lt;br&gt;
+&lt;i&gt;setze&lt;/i&gt; &amp;rarr; ist string.  Die Zeichenkette durch die &lt;i&gt;streiche&lt;/i&gt; ersetzt werden soll&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;(SHOULD)&apos;,&apos;DOES (was:&amp;#92;1)&apos;)&lt;/pre&gt; &amp;rarr; &apos;QGIS DOES (was: SHOULD) ROCK&apos;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1619"/>
+        <source>&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
+Returns the portion of a string which matches a supplied regular expression.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_substr(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The input string.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to match against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion regexp_substr()&lt;/h3&gt;
+Liefert den Teil einer Zeichenkette zur&amp;uuml;ck, die dem gegebenen regul&amp;auml;ren Ausdruck entspricht.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_substr(&lt;i&gt;zeichenkette,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  zeichenkette&lt;/i&gt; &amp;rarr; eine Zeichenkette.  Die Eingabezeichenkette.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; eine Zeichenkette.  Der anzuwendende regul&amp;auml;re Ausdruck. Backslash-Zeichen m&amp;uuml;ssen doppelte ausgenommen werden (z.B. &quot;&amp;#92;&amp;#92;s&quot; f&amp;uuml;r Leerzeichen). Genügsame (engl. non-greedy) reguläre Ausdrücke werde nicht unterstützt.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="281"/>
+        <source>&lt;h3&gt;$y function&lt;/h3&gt;
+Returns the y coordinate of the current feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$y&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion $y&lt;/h3&gt;
+Liefert die Y-Koordinate des aktuellen Objekts zur&amp;uuml;ck.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$y&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="861"/>
+        <source>
+&lt;h3&gt;color_rgba() function&lt;/h3&gt;
+Returns a string representation of a color based on its red, green, blue, and alpha (transparency) components
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_rgba(&lt;i&gt;red, green, blue, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  red&lt;/i&gt; &amp;rarr; the red component as an integer value from 0 to 255.&lt;br&gt;
+&lt;i&gt;  green&lt;/i&gt; &amp;rarr; the green component as an integer value from 0 to 255.&lt;br&gt;
+&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; the blue component as an integer value from 0 to 255.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion color_rgba()&lt;/h3&gt;
+Gibt eine Farbe als Zeichenkette basierend auf ihrem Rot-, Gr&amp;uuml;n-, Blauanteil und ihrer Transparenz zur&amp;uuml;ck.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_rgba(&lt;i&gt;rot, gr&amp;uuml;n, blau, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;  rot&lt;/i&gt; &amp;rarr; Der Rot-Anteil der Farbe, als ganze Zahl zwischen 0 und 256.&lt;br&gt;
+&lt;i&gt;  gr&amp;uuml;n&lt;/i&gt; &amp;rarr; Der Gr&amp;uuml;n-Anteil der Farbe, als ganze Zahl zwischen 0 und 256.&lt;br&gt;
+&lt;i&gt;  blau&lt;/i&gt; &amp;rarr; Der Blau-Anteil der Farbe, als ganze Zahl zwischen 0 und 256.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; Die Transparenz der Farbe, als ganze Zahl zwischen 0 (g&amp;auml;nzlich transparent) und 256 (volldeckend).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="268"/>
+        <source>&lt;h3&gt;$x function&lt;/h3&gt;
+Returns the x coordinate of the current feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$x&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion $x&lt;/h3&gt;
+Liefert die X-Koordinate des aktuellen Punkts zur&amp;uuml;ck.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$x&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="450"/>
+        <source>&lt;h3&gt;Math Group&lt;/h3&gt;
+This group contains math functions e.g square root, sin and cos
+</source>
+        <translation>&lt;h3&gt;Gruppe Mathematik&lt;/h3&gt;
+Die Gruppe enth&amp;auml;lt mathematische Funktionen (z.B. Quadratwurzel, Sinus und Cosinus)
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1464"/>
+        <source>&lt;h3&gt;min() function&lt;/h3&gt;
+Returns the smallest value in a set of values.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+     min(&lt;i&gt;value&lt;i&gt;[,&lt;i&gt;value&lt;/i&gt;...])
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; a number.&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     min(20.5,10,6.2) &amp;rarr; 6.2
+</source>
+        <translation>&lt;h3&gt;Funktion min()&lt;/h3&gt;
+Gibt den kleinsten Wert eine Menge von Werten zur&amp;uuml;ck.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+     min(&lt;i&gt;wert&lt;i&gt;[,&lt;i&gt;wert&lt;/i&gt;...])
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  wert&lt;/i&gt; &amp;rarr; eine Zahl.&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     min(20.5,10,6.2) &amp;rarr; 6.2
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1420"/>
+        <source>&lt;h3&gt;lower() function&lt;/h3&gt;
+Converts a string to lower case letters.
+
+&lt;p&gt;&lt;h4&gt;  Syntax&lt;/h4&gt;
+     lower(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;  Arguments&lt;/h4&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to lower case.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
+     lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion lower()&lt;/h3&gt;
+Wandelt eine Zeichenkette in Kleinbuchstaben um.
+
+&lt;p&gt;&lt;h4&gt;  Syntax&lt;/h4&gt;
+     lower(&lt;i&gt;zeichenkette&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;  Argumente&lt;/h4&gt;
+&lt;i&gt;  zeichenkette&lt;/i&gt; &amp;rarr; ist eine Zeichenkette.  Die Zeichenkette, die in Kleinbuchstaben umzuwandeln ist.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;  Beispiel&lt;/h4&gt;
+     lower(&apos;Hallo Welt&apos;) &amp;rarr; &apos;hallo welt&apos;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="164"/>
+        <source>&lt;h3&gt;$numfeatures function&lt;/h3&gt;
+In atlas generation, returns the total number of features within the coverage layer.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$numfeatures&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;$numfeatures function&lt;/h3&gt;
+Bei der Atlantenerzeugung gibt es die Gesamtzahl der Objekte des Deckungslayers aus.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$numfeatures&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="488"/>
+        <source>&lt;h3&gt;String Group&lt;/h3&gt;
+This group contains functions that operate on strings e.g replace, convert to upper case.
+</source>
+        <translation>&lt;h3&gt;Gruppe Zeichenketten&lt;/h3&gt;
+Dies Gruppen enth&amp;auml;lt Funktionen f&amp;uuml;r Zeichenketten (z.B. Ersetzen und in Gro&amp;szlig;buchstaben umwandeln).
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="893"/>
+        <source>&lt;h3&gt;concat() function&lt;/h3&gt;
+Concatenates several strings to one.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+     concat(&lt;i&gt;string&lt;i&gt;[,&lt;i&gt;string&lt;/i&gt;...])
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  a string.&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
+</source>
+        <translation>&lt;h3&gt;Funktion concat()&lt;/h3&gt;
+F&amp;uuml;gt Zeichenketten zu einer zusammen.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     substr(&lt;i&gt;zeichenkette&lt;i&gt;[, &lt;i&gt;zeichenkette&lt;/i&gt;...])&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  zeichenkette&lt;/i&gt; &amp;rarr; ist string.  Ein Zeichenkette.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="721"/>
+        <source>&lt;h3&gt;coalesce() function&lt;/h3&gt;
+Returns the first non-NULL value from the expression list.
+&lt;br&gt;
+This function can take any number of arguments.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;coalesce(expression1, expression2 ...)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;expression&lt;/code&gt; - any valid expression or value, irregardless of type.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;coalesce(NULL, 2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(NULL, 2, 3) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(7, NULL, 3*2) &amp;rarr; 7&lt;/code&gt;&lt;br&gt;&lt;br&gt;
+&lt;code&gt;coalesce(&quot;fieldA&quot;, &quot;fallbackField&quot;, &apos;ERROR&apos;) &amp;rarr; value of fieldA if it is non-NULL
+ else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion coalesce()&lt;/h3&gt;
+Liefert den ersten Wert, der nicht NULL ist, einer Ausdruckliste.
+&lt;br&gt;
+Diese Funktion kann beliebig viele Argumente haben.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;coalesce(ausdruck1, ausdruck2...)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;ausdruck&lt;/code&gt; - ein g&amp;uuml;ltige Ausdruck jeden Typs
+&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;coalesce(NULL, 2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(NULL, 2, 3) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(7, NULL, 3*2) &amp;rarr; 7&lt;/code&gt;&lt;br&gt;&lt;br&gt;
+&lt;code&gt;coalesce(&quot;attributA&quot;, &quot;anderesFeld&quot;, &apos;FEHLER&apos;) &amp;rarr; Wert des Attributs attributA falls es nicht NULL ist,
+ sonst der Wert des Attributes &quot;anderesFeld&quot; oder die Zeichenkette &apos;FEHLER&apos;, wenn beide NULL sind.&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="550"/>
+        <source>&lt;h3&gt;asin() function&lt;/h3&gt;
+Returns arcussinus of a value in radians.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     asin(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; sin of an angle.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+     asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion asin()&lt;/h3&gt;
+Gibt den Arcussinus eines Werts im Bogenma&amp;szlig; zur&amp;uuml;ck.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     asin(&lt;i&gt;wert&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;wert&lt;/i&gt; &amp;rarr; Sinus des Werts.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1890"/>
+        <source>&lt;h3&gt;todatetime() function&lt;/h3&gt;
+Convert a string into Qt data time type.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;todatetime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string in Qt date time format.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
+        <translation>&lt;h3&gt;Funktion todatetime()&lt;/h3&gt;
+Wandelt eine Zeichenkette in einen Qt-Datum&amp;amp;Zeit-Typ.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;todatetime(&apos;zeichenkette&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;zeichenkette&lt;/code&gt; - eine Zeichenkette im Qt-Datum&amp;amp;Zeit-Format.
+&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1063"/>
+        <source>&lt;h3&gt;format_date() function&lt;/h3&gt;
+Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;format_date(&apos;string&apos;, &apos;format_string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string. Date/Time/DateTime string.
+&lt;br&gt;
+&lt;code&gt;format_string&lt;/code&gt; - is string. String template used to format the string.
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Expression&lt;/th&gt;
+
+        &lt;th&gt;Output&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;d&lt;/td&gt;
+
+      &lt;td&gt;the day as number without a leading zero (1 to 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dd&lt;/td&gt;
+
+      &lt;td&gt;the day as number with a leading zero (01 to 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ddd&lt;/td&gt;
+
+      &lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos; to &apos;Sun&apos;). Uses &lt;a href=
+      &quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dddd&lt;/td&gt;
+
+      &lt;td&gt;the long localized day name (e.g. &apos;Monday&apos; to &apos;Sunday&apos;). Uses &lt;a href=
+      &quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;M&lt;/td&gt;
+
+      &lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MM&lt;/td&gt;
+
+      &lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMM&lt;/td&gt;
+
+      &lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos; to &apos;Dec&apos;). Uses &lt;a href=
+      &quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMMM&lt;/td&gt;
+
+      &lt;td&gt;the long localized month name (e.g. &apos;January&apos; to &apos;December&apos;). Uses &lt;a href=
+      &quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yy&lt;/td&gt;
+
+      &lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yyyy&lt;/td&gt;
+
+      &lt;td&gt;the year as four digit number&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+  &lt;p&gt;These expressions may be used for the time part of the format string:&lt;/p&gt;
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Expression&lt;/th&gt;
+
+        &lt;th&gt;Output&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;h&lt;/td&gt;
+
+      &lt;td&gt;the hour without a leading zero (0 to 23 or 1 to 12 if AM/PM display)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;hh&lt;/td&gt;
+
+      &lt;td&gt;the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;H&lt;/td&gt;
+
+      &lt;td&gt;the hour without a leading zero (0 to 23, even with AM/PM display)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;HH&lt;/td&gt;
+
+      &lt;td&gt;the hour with a leading zero (00 to 23, even with AM/PM display)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;m&lt;/td&gt;
+
+      &lt;td&gt;the minute without a leading zero (0 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;mm&lt;/td&gt;
+
+      &lt;td&gt;the minute with a leading zero (00 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;s&lt;/td&gt;
+
+      &lt;td&gt;the second without a leading zero (0 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ss&lt;/td&gt;
+
+      &lt;td&gt;the second with a leading zero (00 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;z&lt;/td&gt;
+
+      &lt;td&gt;the milliseconds without leading zeroes (0 to 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;zzz&lt;/td&gt;
+
+      &lt;td&gt;the milliseconds with leading zeroes (000 to 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;AP or A&lt;/td&gt;
+
+      &lt;td&gt;interpret as an AM/PM time. &lt;i&gt;AP&lt;/i&gt; must be either &quot;AM&quot; or &quot;PM&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ap or a&lt;/td&gt;
+
+      &lt;td&gt;Interpret as an AM/PM time. &lt;i&gt;ap&lt;/i&gt; must be either &quot;am&quot; or &quot;pm&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion format_date()&lt;/h3&gt;
+Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt Datum- und Zeitformate. Siehe &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;format_date(&apos;zeichenkette&apos;, &apos;format&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;zeichenkette&lt;/code&gt; - eine Zeichenkette. Datum/Zeit/Datum&amp;amp;Zeit-Zeichenkette.
+&lt;br&gt;
+&lt;code&gt;format&lt;/code&gt; - eine Zeichenkette. Vorlage zur Formatierung.
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Ausdruck&lt;/th&gt;
+
+        &lt;th&gt;Ausgabe&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;d&lt;/td&gt;
+
+      &lt;td&gt;Der Tag als Zahl ohne f&amp;uuml;hrende Null (1 to 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dd&lt;/td&gt;
+
+      &lt;td&gt;Der Tag als Zahl mit f&amp;uuml;hrender Null (01 to 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ddd&lt;/td&gt;
+
+      &lt;td&gt;Der abgek&amp;uuml;rzte lokale Tagname (z.B. &apos;Mon&apos; bis &apos;Son&apos;). Siehe &lt;a href=&quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dddd&lt;/td&gt;
+
+      &lt;td&gt;Der lokale Tagname (z.B. &apos;Montag&apos; to &apos;Sonntag&apos;). Siehe &lt;a href=&quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;M&lt;/td&gt;
+
+      &lt;td&gt;Der Monat als Zahl ohne f&amp;uuml;hrende Null (1-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MM&lt;/td&gt;
+
+      &lt;td&gt;Der Monat als Zahl mit f&amp;uuml;hrender Null (01-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMM&lt;/td&gt;
+
+      &lt;td&gt;Der abgek&amp;uuml;rzte lokale Monatsname (z.B. &apos;Jan&apos; bis &apos;Dez&apos;). Siehe &lt;a href=&quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMMM&lt;/td&gt;
+
+      &lt;td&gt;Der lokale Monatsname (z.B. &apos;Januar&apos; to &apos;Dezember&apos;). Siehe &lt;a href=&quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yy&lt;/td&gt;
+
+      &lt;td&gt;Das Jahr als zweistellige Zahl (00-99)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yyyy&lt;/td&gt;
+
+      &lt;td&gt;Das Jahr als vierstellige Zahl&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+  &lt;p&gt;Diese Ausdr&amp;uuml;cke k&amp;ouml;nnen zum Formatieren des Zeitanteils verwendet werden:&lt;/p&gt;
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Ausdruck&lt;/th&gt;
+
+        &lt;th&gt;Ausgabe&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;h&lt;/td&gt;
+
+      &lt;td&gt;die Stunde ohne f&amp;uuml;hrende Null (0 to 23 oder 1 to 12 bei AM/PM Anzeige)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;hh&lt;/td&gt;
+
+      &lt;td&gt;die Stunde mit f&amp;uuml;hrender Null (00 to 23 oder 01 to 12 bei AM/PM Anzeige)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;H&lt;/td&gt;
+
+      &lt;td&gt;die Stunde ohne f&amp;uuml;hrende Null (0 to 23 auch bei AM/PM Anzeige)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;HH&lt;/td&gt;
+
+      &lt;td&gt;die Stunde mit f&amp;uuml;hrender Null (0 to 23 auch bei AM/PM Anzeige)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;m&lt;/td&gt;
+
+      &lt;td&gt;Die Minute ohne f&amp;uuml;hrende Null (0 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;mm&lt;/td&gt;
+
+      &lt;td&gt;Die Minute mit f&amp;uuml;hrender Null (00 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;s&lt;/td&gt;
+
+      &lt;td&gt;Die Sekunde ohne f&amp;uuml;hrende Null (0 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ss&lt;/td&gt;
+
+      &lt;td&gt;Die Sekunde mit f&amp;uuml;hrender Null (00 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;z&lt;/td&gt;
+
+      &lt;td&gt;Die Millisekunde ohne f&amp;uuml;hrende Null (0 to 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;zzz&lt;/td&gt;
+
+      &lt;td&gt;Die Millisekunde mit f&amp;uuml;hrender Null (000 to 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;AP or A&lt;/td&gt;
+
+      &lt;td&gt;als AM/PM Zeit interpretiren. &lt;i&gt;AP&lt;/i&gt; muss entweder &quot;AM&quot; oder &quot;PM&quot; sein.&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ap or a&lt;/td&gt;
+
+      &lt;td&gt;als AM/PM Zeit interpretiren. &lt;i&gt;ap&lt;/i&gt; muss entweder &quot;am&quot; oder &quot;pm&quot; sein.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1849"/>
+        <source>&lt;h3&gt;tan() function&lt;/h3&gt;
+Returns tangent of an angle.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     tan(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; angle in radians.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+     tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion tan()&lt;/h3&gt;
+Gibt den Tangens eines Winkel zur&amp;uuml;ck.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     tan(&lt;i&gt;winkel&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;winkel&lt;/i&gt; &amp;rarr; Winkel im Bogenma&amp;szlig;.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="83"/>
+        <source>&lt;h3&gt;$feature function&lt;/h3&gt;
+In atlas generation, returns the current feature number that is iterated over on the coverage layer.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$feature&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion $feature&lt;/h3&gt;
+Beid der Atlantenerzeugung gibt es die aktuelle Objektanzahl auf dem Deckungslayer zur&amp;uuml;ck.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$feature&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
+
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1371"/>
+        <source>&lt;h3&gt;ln() function&lt;/h3&gt;
+Returns the value of the natural logarithm of the passed expression.
+&lt;br&gt;
+This function takes one argument.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;ln(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion ln()&lt;/h3&gt;
+Gibt den nat&amp;uuml;rlichen Logrithmus des gegebenen Ausdrucks zur&amp;uuml;ck.
+&lt;br&gt;
+Die Funktion akzeptiert ein Argument.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;ln(wert)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;wert&lt;/code&gt; - eine positive Zahl.
+&lt;br&gt;
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="827"/>
+        <source>&lt;h3&gt;color_hsva() function&lt;/h3&gt;
+Returns a string representation of a color based on its hue, saturation, value and alpha (transparency) attributes
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_hsva(&lt;i&gt;hue, saturation, value, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; the value percentage of the color as an integer from 0 to 100.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion color_hsla()&lt;/h3&gt;
+Gibt eine Farbe als Zeichenkette basierend auf ihrem Farbton, ihrer S&amp;auml;ttigung, ihres Betrags und Alpha/Transparenz zur&amp;uuml;ck.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_hsva(&lt;i&gt;farbton, s&amp;auml;ttigung, betrag, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;i&gt;  farbton&lt;/i&gt; &amp;rarr; Der Farbton der Farbe, als ganzzahliger Wert zwischen 0 und 360.&lt;br&gt;
+&lt;i&gt;  s&amp;auml;ttigung&lt;/i&gt; &amp;rarr; Der S&amp;auml;ttigung der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.&lt;br&gt;
+&lt;i&gt;  betrag&lt;/i&gt; &amp;rarr; Die Betrag der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; Die Transparenz der Farbe, als ganzzahliger Prozentsatz zwischen 0 (g&amp;auml;nzlich transparent) und 100 (deckend).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Beispiel&lt;/h4&gt;
+     color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
+</translation>
+    </message>
+</context>
+<context>
+    <name>geometryThread</name>
+    <message>
+        <source>Merge all</source>
+        <translation>Alle zusammenführen</translation>
+    </message>
+    <message>
+        <source>Polygon area</source>
+        <translation>Polygonfläche</translation>
+    </message>
+    <message>
+        <source>Polygon perimeter</source>
+        <translation>Polygonumfang</translation>
+    </message>
+    <message>
+        <source>Line length</source>
+        <translation>Linienlänge</translation>
+    </message>
+    <message>
+        <source>Point x ordinate</source>
+        <translation>X-Punktordinate</translation>
+    </message>
+    <message>
+        <source>Point y ordinate</source>
+        <translation>Y-Punktordinate</translation>
+    </message>
+</context>
+<context>
+    <name>grasslabel</name>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="7"/>
+        <source>(1-256)</source>
+        <translation>(1-256)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="8"/>
+        <source>(Optional) column to read labels</source>
+        <translation>(Optionale) Spalte zum Lesen von Beschriftungen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="9"/>
+        <source>3D-Viewer (NVIZ)</source>
+        <translation>3D-Anzeige (NVIZ)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="10"/>
+        <source>3d Visualization</source>
+        <translation>3d-Visualisierung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="11"/>
+        <source>Add a value to the current category values</source>
+        <translation>Einen Wert den aktuellen Kategoriewerten hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="12"/>
+        <source>Add elements to layer (ALL elements of the selected layer type!)</source>
+        <translation>Elemente zu Layer hinzufügen (ALLE Elemente des gewählten Layertyps!)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="13"/>
+        <source>Add missing centroids to closed boundaries</source>
+        <translation>Fehlende Schwerpunkt zu geschlossenen Flächen ergänzen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="14"/>
+        <source>Add one or more columns to attribute table</source>
+        <translation>Eine oder mehrere Sparten zur Attributtabelle hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="15"/>
+        <source>Allocate network</source>
+        <translation>Netzwerk belegen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="16"/>
+        <source>Assign constant value to column</source>
+        <translation>Konstanten Wert einer Spalte zuweisen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="17"/>
+        <source>Assign new constant value to column only if the result of query is TRUE</source>
+        <translation>Konstanten Wert nur zuweisen, wenn die Abfrage WAHR ist</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="18"/>
+        <source>Assign new value as result of operation on columns to column in attribute table</source>
+        <translation>Neuen Wert aus Operation auf Spalten einer Attributtabellenspalte zuweisen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="19"/>
+        <source>Assign new value to column as result of operation on columns only if the result of query is TRUE</source>
+        <translation>Neuen Wert aus Operation auf Spalten einer Attributtabellenspalte zuweisen, wenn die Abfrage WAHR ist</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="20"/>
+        <source>Attribute field</source>
+        <translation>Attributfeld</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="21"/>
+        <source>Attribute field (interpolated values)</source>
+        <translation>Attributfeld (interpolierte Werte)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="22"/>
+        <source>Attribute field to (over)write</source>
+        <translation>Zu (über-)schreibendes Attributfeld</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="23"/>
+        <source>Attribute field to join</source>
+        <translation>Zusammenzuführendes Attributfeld</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="24"/>
+        <source>Auto-balancing of colors for LANDSAT-TM raster</source>
+        <translation>Farben von LANDSAT-TM-Rasters automatisch angleichen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="25"/>
+        <source>Bicubic or bilinear spline interpolation with Tykhonov regularization</source>
+        <translation>Bikubische oder bi-lineare Spline-Interpolation mit Tichonow-Regularisierung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="26"/>
+        <source>Bilinear interpolation utility for raster maps</source>
+        <translation>Bilineare Interpolationswerkzeug für Rasterkarten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="27"/>
+        <source>Blend color components for two rasters by given ratio</source>
+        <translation>Farbkomponenten zweier Raster einem Verhältnis anpassen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="28"/>
+        <source>Blend red, green, raster layers to obtain one color raster</source>
+        <translation>Rot- und Grünrasterlayer angleichen, um ein Farbraster zu erhalten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="29"/>
+        <source>Break (topologically clean) polygons (imported from non topological format, like ShapeFile). Boundaries are broken on each point shared between 2 and more polygons where angles of segments are different</source>
+        <translation>Polygone (topologisch sauber) aufbrechen (aus einem nicht topologischen Format wie Shape importiert). Grenzen werden an jedem Punkt geteilt, der zwischen zwei oder mehr Polygonen geteilt werden, wo die Winkel der Segmente unterschiedlich sind</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="30"/>
+        <source>Break lines at each intersection of vector</source>
+        <translation>Linien an jedem Vektorschnittpunkt aufbrechen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="31"/>
+        <source>Brovey transform to merge multispectral and high-res panchromatic channels</source>
+        <translation>Brovey-Transformation anwenden, um multispektrale und farbhochaufgelöste Kanäle zu mischen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="32"/>
+        <source>Buffer</source>
+        <translation>Puffer</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="33"/>
+        <source>Build polylines from lines</source>
+        <translation>Polygone aus Linien bilden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="34"/>
+        <source>Calculate average of raster within areas with the same category in a user-defined base map</source>
+        <translation>Rasterdurchschnitt innerhalb gleichkategorisierter Flächen in benutzerdefinierten Grundkarte bilden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="35"/>
+        <source>Calculate covariance/correlation matrix for user-defined rasters</source>
+        <translation>Kovarianz-/Korelationsmatrix für benutzerdefinierte Raster berechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="36"/>
+        <source>Calculate error matrix and kappa parameter for accuracy assessment of classification result</source>
+        <translation>Fehlermatrix und Kappa-Parameter für Genauigkeitsbewertung von Klassifikationsergebnissen berechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="37"/>
+        <source>Calculate geometry statistics for vectors</source>
+        <translation>Geometriestatistik für Vektoren berechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="38"/>
+        <source>Calculate linear regression from two rasters: y = a + b*x</source>
+        <translation>Lineare Regression zweier Raster berechnen: y = a + bx</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="39"/>
+        <source>Calculate median of raster within areas with the same category in a user-defined base map</source>
+        <translation>Rastermittel innerhalb gleichkategorierierter Flächen benutzerdefinierten Karte bilden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="40"/>
+        <source>Calculate mode of raster within areas with the same category in a user-defined base map</source>
+        <translation>Rastermodus innerhalb gleichkategorierierter Flächen benutzerdefinierten Karte bilden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="41"/>
+        <source>Calculate optimal index factor table for LANDSAT-TM raster</source>
+        <translation>Optimale Indexfaktortabelle für LANDSAT-TM-Raster berechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="42"/>
+        <source>Calculate raster surface area</source>
+        <translation>Rasteroberfläche berechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="43"/>
+        <source>Calculate shadow maps from exact sun position</source>
+        <translation>Schattenkarten nach exakter Sonnenposition berechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="44"/>
+        <source>Calculate shadow maps from sun position determinated by date/time</source>
+        <translation>Schattenkarten nach durch Datum/Zeit bestimmter Sonnenposition berechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="45"/>
+        <source>Calculate statistics for raster</source>
+        <translation>Rasterstatistik berechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="46"/>
+        <source>Calculate univariate statistics for numeric attributes in a data table</source>
+        <translation>Eindimensionale Statistik nummerischer Attribute einer Datentabelle berechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="47"/>
+        <source>Calculate univariate statistics from raster based on vector objects</source>
+        <translation>Eindimensionale Statistik eines vektorbasierten Rasters berechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="48"/>
+        <source>Calculate univariate statistics from the non-null cells of raster</source>
+        <translation>Eindimensionale Statistik des Nicht-Null-Zellen eines Rasters berechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="49"/>
+        <source>Calculate univariate statistics of vector map features</source>
+        <translation>Eindimensionale Statistik von Vektorkartenobjekten berechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="50"/>
+        <source>Calculate volume of data clumps, and create vector with centroids of clumps</source>
+        <translation>Volumen aus Datenhaufen berechnen und Vektor mit deren Schwerpunkten erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="51"/>
+        <source>Category or object oriented statistics</source>
+        <translation>Kategorie- oder objektorientierte Statistik</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="52"/>
+        <source>Cats</source>
+        <translation>Kategorien</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="53"/>
+        <source>Cats (select from the map or using their id)</source>
+        <translation>Cats (aus der Karte oder über ihren Id wählen)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="54"/>
+        <source>Change category values and labels</source>
+        <translation>Kategoriewerte und Beschriftungen ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="55"/>
+        <source>Change field</source>
+        <translation>Feld ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="56"/>
+        <source>Change layer number</source>
+        <translation>Layernummer ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="57"/>
+        <source>Change resolution</source>
+        <translation>Layerauflösung ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="58"/>
+        <source>Change the type of boundary dangle to line</source>
+        <translation>Typ der Grenzüberstände auf Linien ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="59"/>
+        <source>Change the type of bridges connecting area and island or 2 islands from boundary to line</source>
+        <translation>Ändere den Typ der Brücke die eine Fläche mit einer Insel oder 2 Inseln miteinander verbindet von Grenze zu Linie</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="60"/>
+        <source>Change the type of geometry elements</source>
+        <translation>Typ der Geometrieelemente ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="61"/>
+        <source>Choose appropriate format</source>
+        <translation>Passende Format wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="62"/>
+        <source>Columns management</source>
+        <translation>Spaltenverwaltung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="63"/>
+        <source>Compares bit patterns with raster</source>
+        <translation>Vergleicht Bitmuster mit Rastern</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="64"/>
+        <source>Compress and decompress raster</source>
+        <translation>Raster komprimieren oder entpacken</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="65"/>
+        <source>Compress raster</source>
+        <translation>Raster komprimieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="66"/>
+        <source>Computes a coordinate transformation based on the control points</source>
+        <translation>Berechnet eine auf Kontrolpunkten basierende Koordinatentransformation</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="67"/>
+        <source>Concentric circles</source>
+        <translation>Konzentrische Kreise</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="68"/>
+        <source>Connect nodes by shortest route (traveling salesman)</source>
+        <translation>Knoten durch kürzesten Weg verbinden (Traveling-Salesmen)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="69"/>
+        <source>Connect selected nodes by shortest tree (Steiner tree)</source>
+        <translation>Verbinde gewählte Knoten durch kürzesten Baum (Steinerbaum)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="70"/>
+        <source>Connect vector to database</source>
+        <translation>Vektor mit Datenbank verbinden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="71"/>
+        <source>Convert 2D vector to 3D by sampling raster</source>
+        <translation>2D- zur 3D-Vektor durch Rasterabtastung konvertieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="72"/>
+        <source>Convert 2D vector to 3D vector by sampling of elevation raster. Default sampling by nearest neighbour</source>
+        <translation>2D- zur 3D-Vektor durch Rasterhöhenabtastung konvertieren. Standardabtastung durch nächsten Nachbarn</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="73"/>
+        <source>Convert GRASS binary vector to GRASS ASCII vector</source>
+        <translation>Binären GRASS-Vektor in GRASS-ASCII-Vektor umwandeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="74"/>
+        <source>Convert a raster to vector within GRASS</source>
+        <translation>Raster innerhalb von GRASS in Vektor umwandeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="75"/>
+        <source>Convert a vector to raster within GRASS</source>
+        <translation>Vektor innerhalb von GRASS in Raster umwandeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="76"/>
+        <source>Convert bearing and distance measurements to coordinates and vice versa</source>
+        <translation>Richtungs- und Abstandsmessungen in Koordinaten und umgekehrt umwandeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="77"/>
+        <source>Convert boundaries to lines</source>
+        <translation>Grenzen in Linien umwandeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="78"/>
+        <source>Convert centroids to points</source>
+        <translation>Schwerpunkte in Punkte umwandeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="79"/>
+        <source>Convert coordinates</source>
+        <translation>Koordinaten umwandeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="80"/>
+        <source>Convert coordinates from one projection to another (cs2cs frontend)</source>
+        <translation>Koordinaten von einer Projektion in eine andere umwandeln (cs2cs-Oberfläche)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="81"/>
+        <source>Convert lines to boundaries</source>
+        <translation>Linien in Grenzen umwandeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="82"/>
+        <source>Convert points to centroids</source>
+        <translation>Punkte in Schwerpunkte umwandeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="83"/>
+        <source>Convert raster to vector areas</source>
+        <translation>Raster- in Vektorflächen wandeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="84"/>
+        <source>Convert raster to vector lines</source>
+        <translation>Raster- in Vektorlinien umwandeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="85"/>
+        <source>Convert raster to vector points</source>
+        <translation>Raster- in Vektorpunkte umwandeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="86"/>
+        <source>Convert vector to raster using attribute values</source>
+        <translation>Vektor in Raster durch Attributwerte umwandeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="87"/>
+        <source>Convert vector to raster using constant</source>
+        <translation>Vektor nach Raster mit einer Konstante umwandeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="88"/>
+        <source>Convex hull</source>
+        <translation>Konvexe Hülle</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="89"/>
+        <source>Copy a table</source>
+        <translation>Eine Tabelle kopieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="90"/>
+        <source>Copy also attribute table (only the table of layer 1 is currently supported)</source>
+        <translation>Auch Attributtabelle kopieren (nur die Tabelle des ersten Layers wird derzeit unterstützt)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="91"/>
+        <source>Count of neighbouring points</source>
+        <translation>Benachbarte Punkte zählen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="92"/>
+        <source>Create 3D volume map based on 2D elevation and value rasters</source>
+        <translation>3D-Volumenkarte basierend auf einer 2D-Höhenkarte und weiteren Rasterkarten erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="93"/>
+        <source>Create a MASK for limiting raster operation</source>
+        <translation>Maske (MASK) erzeugen, um Rasteroperationen zu begrenzen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="94"/>
+        <source>Create a map containing concentric rings</source>
+        <translation>Karte konzentrischer Ringe erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="95"/>
+        <source>Create a raster plane</source>
+        <translation>Rasterfläche erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="96"/>
+        <source>Create and add new table to vector</source>
+        <translation>Neue Tabelle zu Vektor erzeugen und hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="97"/>
+        <source>Create and/or modify raster support files</source>
+        <translation>Rastersupportdateien erzeugen und/oder ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="98"/>
+        <source>Create aspect raster from DEM (digital elevation model)</source>
+        <translation>Expositionsraster aus DEM (Digitales Höhenmodell; engl. digital elevation map) erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="99"/>
+        <source>Create cross product of category values from multiple rasters</source>
+        <translation>Kreuzprodukt der Kategoriewerte mehrerer Raster erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="100"/>
+        <source>Create fractal surface of given fractal dimension</source>
+        <translation>Fraktale Oberfläche einer gegeben Fraktaldimension erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="101"/>
+        <source>Create grid in current region</source>
+        <translation>Gitter in aktueller Region erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="102"/>
+        <source>Create new GRASS location and transfer data into it</source>
+        <translation>Eine neue GRASS-Location erstellen und Daten darin übertragen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="103"/>
+        <source>Create new GRASS location from metadata file</source>
+        <translation>Neue GRASS-Location aus Metadatendatei erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="104"/>
+        <source>Create new GRASS location from raster data</source>
+        <translation>Neue GRASS-Location aus Rasterdaten erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="105"/>
+        <source>Create new GRASS location from vector data</source>
+        <translation>Neue GRASS-Location aus Vektordaten erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="106"/>
+        <source>Create new layer with category values based upon user&apos;s reclassification of categories in existing raster</source>
+        <translation>Neue Karte erzeugen, deren Kategoriewerte auf einer Reklassifikation der Kategorien einer existierenden Rasterkarte basieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="107"/>
+        <source>Create new location from .prj (WKT) file</source>
+        <translation>Eine neue Location aus .prj (WKT)-Datei erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="108"/>
+        <source>Create new raster by combining other rasters</source>
+        <translation>Neues Raster durch Kombination vorhandener Raster erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="109"/>
+        <source>Create new vector by combining other vectors</source>
+        <translation>Neuen Vektor durch Kombination anderer Vektoren bilden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="110"/>
+        <source>Create new vector with current region extent</source>
+        <translation>Neuen Vektor mit aktueller Regionsausdehnung erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="111"/>
+        <source>Create nodes on network</source>
+        <translation>Knoten auf Netzwerk bilden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="112"/>
+        <source>Create parallel line to input lines</source>
+        <translation>Parallele Linien zu Eingabelinien erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="113"/>
+        <source>Create points</source>
+        <translation>Punkte erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="114"/>
+        <source>Create points along input lines</source>
+        <translation>Punkte entlang von Eingabelinien erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="115"/>
+        <source>Create points/segments from input vector lines and positions</source>
+        <translation>Punkte/Segmente von Eingabevektorlinien und -positionen bilden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="116"/>
+        <source>Create quantization file for floating-point raster</source>
+        <translation>Quantisierungsdatei zu Fließkommaraster erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="117"/>
+        <source>Create random 2D/3D vector points</source>
+        <translation>Zufällige 2D/3D-Vektorpunkte erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="118"/>
+        <source>Create random cell values with spatial dependence</source>
+        <translation>Zufällige Zellwerte mit räumlicher Abhängigkeit erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="119"/>
+        <source>Create random points</source>
+        <translation>Zufällige Punkte erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="120"/>
+        <source>Create random raster</source>
+        <translation>Zufälliges Raster erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="121"/>
+        <source>Create random vector point contained in raster</source>
+        <translation>Zufälligen Vektorpunkt in einem Raster erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="122"/>
+        <source>Create raster images with textural features from raster (first serie of indices)</source>
+        <translation>Rasterbilder mit Texteigenschaften aus Raster erzeugen (erste Serie von Indizes)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="123"/>
+        <source>Create raster of distance to features in input layer</source>
+        <translation>Raster aus Objektabständen in Eingabelayer erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="124"/>
+        <source>Create raster of gaussian deviates with user-defined mean and standard deviation</source>
+        <translation>Gaußsches Raster mit Benutzerdefinierter Mittelwert und Standardabweichung erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="125"/>
+        <source>Create raster of uniform random deviates with user-defined range</source>
+        <translation>Raster mit einheitlichen zufälligen Abweichungen aus Benutzerdefiniertem Bereich erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="126"/>
+        <source>Create raster with contiguous areas grown by one cell</source>
+        <translation>Raster mit angrenzenden Gebieten die um eine Zelle gewachsen sind erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="127"/>
+        <source>Create raster with textural features from raster (second serie of indices)</source>
+        <translation>Raster mit-Textur von Rasterdaten (zweite Serie von Indices) erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="128"/>
+        <source>Create red, green and blue rasters combining hue, intensity, and saturation (his) values from rasters</source>
+        <translation>Rot, Grün und Blau Raster aus Kombination der Rasterwerte aus Farbton, Intensität und Sättigung erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="129"/>
+        <source>Create shaded map</source>
+        <translation>Erzeuge schattierte Karte</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="130"/>
+        <source>Create slope raster from DEM (digital elevation model)</source>
+        <translation>Neigungsraster aus DHM (Digitales Höhen Modell) erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="131"/>
+        <source>Create standard vectors</source>
+        <translation>Erzeuge Standard Vektoren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="132"/>
+        <source>Create surface from rasterized contours</source>
+        <translation>Erzeuge Oberfläche aus Rasterkonturen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="133"/>
+        <source>Create vector contour from raster at specified levels</source>
+        <translation>Erstellen von Vektorkonturen von Rasterdaten an bestimmten Ebenen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="134"/>
+        <source>Create vector contour from raster at specified steps</source>
+        <translation>Erstellen Sie Vektorkontur von Rasterdaten in festgelegten Schritten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="135"/>
+        <source>Create watershed basin</source>
+        <translation>Erstelle Einzugsgebietbecken</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="136"/>
+        <source>Create watershed subbasins raster</source>
+        <translation>Erstelle Teileinzugsgebietsraster</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="137"/>
+        <source>Cut network by cost isolines</source>
+        <translation>Schnitt durch Netzwerk entlang veranschlagten Isolinien</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="138"/>
+        <source>DXF vector layer</source>
+        <translation>DXF-Vektorlayer</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="139"/>
+        <source>Database</source>
+        <translation>Datenbank</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="140"/>
+        <source>Database connection</source>
+        <translation>Datenbankverbindung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="141"/>
+        <source>Database file</source>
+        <translation>Datenbankdatei</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="142"/>
+        <source>Database management</source>
+        <translation>Datenbankverwaltung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="143"/>
+        <source>Delaunay triangulation (areas)</source>
+        <translation>Delaunay-Triangulation (Flächen)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="144"/>
+        <source>Delaunay triangulation (lines)</source>
+        <translation>Delaunay-Triangulation (Linien)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="145"/>
+        <source>Delaunay triangulation, Voronoi diagram and convex hull</source>
+        <translation>Delaunay-Triangulation. Voronoi-Diagramm und konvexe Hülle</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="146"/>
+        <source>Delete category values</source>
+        <translation>Kategoriewerte löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="147"/>
+        <source>Develop images and group</source>
+        <translation>Bilder und Gruppen entwickeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="148"/>
+        <source>Develop map</source>
+        <translation>Karte entwickeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="149"/>
+        <source>Directory of rasters to be linked</source>
+        <translation>Verzeichnis der zu verbindenden Raster</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="150"/>
+        <source>Disconnect vector from database</source>
+        <translation>Vektor von Datenbank abkoppeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="151"/>
+        <source>Display general DB connection</source>
+        <translation>Allgemeine Datenbankverbindung anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="152"/>
+        <source>Display list of category values found in raster</source>
+        <translation>In einem Raster gefundenen Kategoriewerte anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="153"/>
+        <source>Display projection information from PROJ.4 projection description file</source>
+        <translation>Projektionsinformation von PROJ.4-Projektionsbeschreibungsdatei</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="154"/>
+        <source>Display projection information from PROJ.4 projection description file and create a new location based on it</source>
+        <translation>Zeige Projektionsinformationen aus PROJ.4 Projektionsbeschreibungsdatei und erstelle daraus einen neuen Standort</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="155"/>
+        <source>Display projection information from a georeferenced file (raster, vector or image) and create a new location based on it</source>
+        <translation>Zeige Projektionsinformationen aus einer georeferenzierten Datei (Raster-, Vektor-oder Bild), und erstelle daraus einen neuen Standort</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="156"/>
+        <source>Display projection information from georeferenced ASCII file containing WKT projection description</source>
+        <translation>Zeige Projektionsinformation aus georeferenzierter ASCII-Datei mit WKT-Projektionsbeschreibung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="157"/>
+        <source>Display projection information from georeferenced ASCII file containing WKT projection description and create a new location based on it</source>
+        <translation>Zeige Projektionsinformation aus georeferenzierter ASCII-Datei die eine WKT-Projektionsbeschreibung enthält und erstelle daraus einen neuen Standort</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="158"/>
+        <source>Display projection information from georeferenced file (raster, vector or image)</source>
+        <translation>Zeige Projektionsinformation aus georeferenzierter Datei (Raster, Vektor oder Bild)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="159"/>
+        <source>Display projection information of the current location</source>
+        <translation>Zeige Projektionsinformation des aktuellen Standortes</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="160"/>
+        <source>Display raster category values and labels</source>
+        <translation>Zeige Rasterkategoriewerte und Beschriftung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="161"/>
+        <source>Display results of SQL selection from database</source>
+        <translation>Zeige Ergebnisse der SQL-Auswahl aus der Datenbank</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="162"/>
+        <source>Display the HTML manual pages of GRASS</source>
+        <translation>Zeige die HTML-Handbuchseiten von GRASS</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="163"/>
+        <source>Display vector attributes</source>
+        <translation>Zeige Vektorattribute</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="164"/>
+        <source>Display vector map attributes with SQL</source>
+        <translation>Zeige Vektorkartenattribute mit SQL</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="165"/>
+        <source>Dissolves boundaries between adjacent areas sharing a common category number or attribute</source>
+        <translation>Löst die Grenzen zwischen anliegenden Gebieten auf die eine gemeinsame Kategorie-Nummer oder Attribut haben</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="166"/>
+        <source>Download and import data from WMS server</source>
+        <translation>Download und Import der Daten aus WMS-Server</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="167"/>
+        <source>Drop column from attribute table</source>
+        <translation>Entferne Spalte aus Attributtabelle</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="168"/>
+        <source>E00 vector layer</source>
+        <translation>E00-Vektorebene</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="169"/>
+        <source>Elevation raster for height extraction (optional)</source>
+        <translation>Höhenraster (optional)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="170"/>
+        <source>Execute any SQL statement</source>
+        <translation>Eine SQL-Anweisung ausführen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="171"/>
+        <source>Export 3 GRASS rasters (R,G,B) to PPM image at the resolution of the current region</source>
+        <translation>Drei GRASS-Raster (R, G, B) in PPM-Bild in der Auflösung der aktuellen Region exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="172"/>
+        <source>Export from GRASS</source>
+        <translation>Aus GRASS exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="173"/>
+        <source>Export raster as non-georeferenced PNG image format</source>
+        <translation>Raster in nicht georeferenziertes PNG-Bildformat exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="174"/>
+        <source>Export raster from GRASS</source>
+        <translation>Raster aus GRASS exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="175"/>
+        <source>Export raster series to MPEG movie</source>
+        <translation>Rasterserie als MPEG-Film exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="176"/>
+        <source>Export raster to 8/24bit TIFF image at the resolution of the current region</source>
+        <translation>Raster als 8/24-Bit-TIFF-Bild in der Auflösung der aktuellen Region exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="177"/>
+        <source>Export raster to ASCII text file</source>
+        <translation>Raster als ASCII-Textdatei exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="178"/>
+        <source>Export raster to ESRI ARCGRID</source>
+        <translation>Raster als ESRI-ARCGRID exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="179"/>
+        <source>Export raster to GRIDATB.FOR map file (TOPMODEL)</source>
+        <translation>Raster als GRIDATB.FOR Mapfile (TOPMODEL) exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="180"/>
+        <source>Export raster to Geo TIFF</source>
+        <translation>Raster als GeoTIFF exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="181"/>
+        <source>Export raster to POVRAY height-field file</source>
+        <translation>Raster als POVRAY-Höhenfelddatei exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="182"/>
+        <source>Export raster to PPM image at the resolution of the current region</source>
+        <translation>Raster in PPM-Bild in der Auflösung der aktuellen Region exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="183"/>
+        <source>Export raster to VTK-ASCII</source>
+        <translation>Raster als VTK-ASCII exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="184"/>
+        <source>Export raster to Virtual Reality Modeling Language (VRML)</source>
+        <translation>Raster in Virtual-Reality-Modeling-Language (VRML) exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="185"/>
+        <source>Export raster to binary MAT-File</source>
+        <translation>Raster als binäre MAT-Datei exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="186"/>
+        <source>Export raster to binary array</source>
+        <translation>Raster als binäres Array exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="187"/>
+        <source>Export raster to text file as x,y,z values based on cell centers</source>
+        <translation>Raster in Textdatei als x-,y- und z-Werte der Zellzentren exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="188"/>
+        <source>Export raster to various formats (GDAL library)</source>
+        <translation>Raster in vielen Formaten exportieren (GDAL-Bibliothek)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="189"/>
+        <source>Export vector from GRASS</source>
+        <translation>Vektor aus GRASS exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="190"/>
+        <source>Export vector table from GRASS to database format</source>
+        <translation>Vektortabelle in Datenbankformat aus GRASS exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="191"/>
+        <source>Export vector to DXF</source>
+        <translation>Vektor als DXF exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="192"/>
+        <source>Export vector to GML</source>
+        <translation>Vektor als GML exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="193"/>
+        <source>Export vector to Mapinfo</source>
+        <translation>Vektor als Mapinfo exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="194"/>
+        <source>Export vector to POV-Ray</source>
+        <translation>Vektor als POV-Ray exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="195"/>
+        <source>Export vector to PostGIS (PostgreSQL) database table</source>
+        <translation>Vektor in PostGIS/PostgreSQL-Datenbanktabellen exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="196"/>
+        <source>Export vector to SVG</source>
+        <translation>Vektor als SVG exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="197"/>
+        <source>Export vector to Shapefile</source>
+        <translation>Vektor als Shapedatei exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="198"/>
+        <source>Export vector to VTK-ASCII</source>
+        <translation>Vektor als VTK-ASCII exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="199"/>
+        <source>Export vector to various formats (OGR library)</source>
+        <translation>Vektor in verschiedenen Formaten exportieren (OGR-Bibliothek)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="200"/>
+        <source>Exports attribute tables into various format</source>
+        <translation>Attributtabelle in vielen Formaten exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="201"/>
+        <source>Extract features from vector</source>
+        <translation>Objekte aus Vektor extrahieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="202"/>
+        <source>Extract selected features</source>
+        <translation>Gewählte Objekte exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="203"/>
+        <source>Extracts terrain parameters from DEM</source>
+        <translation>Geländeparameter aus DEM extrahieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="204"/>
+        <source>Extrudes flat vector object to 3D with fixed height</source>
+        <translation>Flaches Vektorobjekt mit fester Höhe in 3D extrudieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="205"/>
+        <source>Extrudes flat vector object to 3D with height based on attribute</source>
+        <translation>Flaches Vektorobjekt mit Höhe aus einem Attribute in 3D extrudieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="206"/>
+        <source>Fast fourier transform for image processing</source>
+        <translation>Schnelle Fourier-Transformation für Bildverarbeitung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="207"/>
+        <source>Feature type (for polygons, choose Boundary)</source>
+        <translation>Objekttyp (für Polygone Boundary wählen)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="208"/>
+        <source>File management</source>
+        <translation>Dateiverwaltung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="209"/>
+        <source>Fill lake from seed at given level</source>
+        <translation>See aus Quelle einer gegebenen Höhe füllen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="210"/>
+        <source>Fill lake from seed point at given level</source>
+        <translation>See aus Quellenpunkt einer gegebenen Höhe füllen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="211"/>
+        <source>Fill no-data areas in raster using v.surf.rst splines interpolation</source>
+        <translation>Leerflächen in Raster nach v.surf.rst Spline-Interpolation füllen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="212"/>
+        <source>Filter and create depressionless elevation map and flow direction map from elevation raster</source>
+        <translation>Depressionsloses Höhenmodell filtern und generieren und eine Fließrichtungskarte auf Basis eines gegebenen Höhenmodells</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="213"/>
+        <source>Filter image</source>
+        <translation>Bild filtern</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="214"/>
+        <source>Find nearest element in vector &apos;to&apos; for elements in vector &apos;from&apos;. Various information about this relation may be uploaded to attribute table of input vector &apos;from&apos;</source>
+        <translation>Finde nächstgelegenes Element im Vektor &quot;bis&quot; für Elemente im Vektor &apos;aus&apos;. Verschiedene Informationen über diese Beziehung können hochgeladen werden in Attributtabelle des Eingabevektors &apos;aus&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="215"/>
+        <source>Find shortest path on vector network</source>
+        <translation>Kürzesten Weg in einem Vektornetzwerk finden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="216"/>
+        <source>GRASS MODULES</source>
+        <translation>GRASS-MODULE</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="217"/>
+        <source>GRASS shell</source>
+        <translation>GRASS-Eingabeaufforderung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="218"/>
+        <source>Gaussian kernel density</source>
+        <translation>Gaußsche-Kerndichte</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="219"/>
+        <source>Generalization</source>
+        <translation>Generalisierung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="220"/>
+        <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) coordinates</source>
+        <translation>Raster aus der kommulierten Kosten für die Bewegung zwischen zwei Orten basierend auf einem Kosteneingaberaster und Startpunktkoordinaten erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="221"/>
+        <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) raster</source>
+        <translation>Raster aus der kommulierten Kosten für die Bewegung zwischen zwei Orten basierend auf einem Kosteneingabe- und Startpunktkoordinatenraster erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="222"/>
+        <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) vector</source>
+        <translation>Raster aus der kommulierten Kosten für die Bewegung zwischen zwei Orten basierend auf einem Kosteneingaberaster und Startpunktkoordinatenvektor erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="223"/>
+        <source>Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) coordinates</source>
+        <translation>Raster aus der kommulierten Kosten für die Bewegung zwischen zwei Orten basierend auf Höhen- und Reibungseingaberaster und Startpunktkoordinate(n) erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="224"/>
+        <source>Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) vector</source>
+        <translation>Raster aus der kommulierten Kosten für die Bewegung zwischen zwei Orten basierend auf Höhen- und Reibungseingaberaster und Startpunktkoordinatenvektor erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="225"/>
+        <source>Generate surface</source>
+        <translation>Oberfläche erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="226"/>
+        <source>Generate vector contour lines</source>
+        <translation>Vektorkonturlinien erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="227"/>
+        <source>Generates area statistics for rasters</source>
+        <translation>Rasterflächenstatistik erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="228"/>
+        <source>Georeferencing, rectification, and import Terra-ASTER imagery and DEM using gdalwarp</source>
+        <translation>Terra-ASTER-Bilder und relative DGMs mit gdalwarp georeferenzieren, rektifizieren und importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="229"/>
+        <source>Graphical raster map calculator</source>
+        <translation>Grafischer Rasterkartenrechner</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="230"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="231"/>
+        <source>Hue Intensity Saturation (HIS) to Red Green Blue (RGB) raster color transform function</source>
+        <translation>Rastertransformationfunktion für HIS- (Hue-Intensity-Saturation) in RGB-Farbraum (Rot-Grün-Blau)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="232"/>
+        <source>Hydrologic modelling</source>
+        <translation>Hydrologische Modellierung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="233"/>
+        <source>Imagery</source>
+        <translation>Bildverarbeitung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="234"/>
+        <source>Import ASCII raster</source>
+        <translation>ASCII-Raster importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="235"/>
+        <source>Import DXF vector</source>
+        <translation>DXF-Vektor importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="236"/>
+        <source>Import ESRI ARC/INFO ASCII GRID</source>
+        <translation>ESRI-ARC/INFO-ASCII-Gitter importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="237"/>
+        <source>Import ESRI E00 vector</source>
+        <translation>ESRI-E00-Vektor importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="238"/>
+        <source>Import GDAL supported raster</source>
+        <translation>Von GDAL-unterstütztes Raster importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="239"/>
+        <source>Import GDAL supported raster and create a fitted location</source>
+        <translation>Von GDAL-unterstütztes Raster importieren und passende Location erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="240"/>
+        <source>Import GRIDATB.FOR (TOPMODEL)</source>
+        <translation>GRIDTB.FOR (TOPMODEL) importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="241"/>
+        <source>Import MapGen or MatLab vector</source>
+        <translation>MapGen- oder MatLab-Vektor importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="242"/>
+        <source>Import OGR vector</source>
+        <translation>OGR-Vektor importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="243"/>
+        <source>Import OGR vector and create a fitted location</source>
+        <translation>OGR-Vektor importieren und dazu passende Location erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="244"/>
+        <source>Import OGR vectors in a given data source combining them in a GRASS vector</source>
+        <translation>OGR-Vektoren aus gegebener Quelle importieren und zu einem GRASS-Vektor kombinieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="245"/>
+        <source>Import SPOT VGT NDVI</source>
+        <translation>SPOT-VGT-NDVI importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="246"/>
+        <source>Import SRTM HGT</source>
+        <translation>SRTM-HGT importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="247"/>
+        <source>Import US-NGA GEOnet Names Server (GNS) country file</source>
+        <translation>US-NGA GEOnet Names Server (GNS) Länderdatei importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="248"/>
+        <source>Import all OGR/PostGIS vectors in a given data source and create a fitted location</source>
+        <translation>Alle OGR/PostGIS-Vektoren einer gegebenen Datenquelle importieren und passende Location erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="249"/>
+        <source>Import attribute tables in various formats</source>
+        <translation>Attributtabellen in vielen Formaten importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="250"/>
+        <source>Import binary MAT-File(v4)</source>
+        <translation>Binäre MAT-File(v4) importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="251"/>
+        <source>Import binary raster</source>
+        <translation>Binäres Raster importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="252"/>
+        <source>Import from database into GRASS</source>
+        <translation>Datenbank in GRASS importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="253"/>
+        <source>Import geonames.org country files</source>
+        <translation>geonames.org-Länderdateien importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="254"/>
+        <source>Import into GRASS</source>
+        <translation>In GRASS importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="255"/>
+        <source>Import loaded raster</source>
+        <translation>Geladenes Raster importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="256"/>
+        <source>Import loaded raster and create a fitted location</source>
+        <translation>Geladenes Raster importieren und passende Location erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="257"/>
+        <source>Import loaded vector</source>
+        <translation>Geladenen Vektor importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="258"/>
+        <source>Import loaded vector and create a fitted location</source>
+        <translation>Geladenen Vektor importieren und passende Location erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="259"/>
+        <source>Import only some layers of a DXF vector</source>
+        <translation>Nur einige Layer eines DXF-Vektors importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="260"/>
+        <source>Import raster from ASCII polygon/line</source>
+        <translation>Raster aus ASCII-Polygon/-Linie importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="261"/>
+        <source>Import raster from coordinates using univariate statistics</source>
+        <translation>Raster aus Koordinaten mit eindimensionaler Verteilungsstatistik importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="262"/>
+        <source>Import raster into GRASS</source>
+        <translation>Raster in GRASS importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="263"/>
+        <source>Import raster into GRASS from QGIS view</source>
+        <translation>Raster aus QGIS-Anzeige in GRASS importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="264"/>
+        <source>Import raster into GRASS from external data sources in GRASS</source>
+        <translation>Raster aus externen Datenquellen in GRASS in GRASS importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="265"/>
+        <source>Import text file</source>
+        <translation>Textdatei importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="266"/>
+        <source>Import vector from gps using gpsbabel</source>
+        <translation>Vektor aus GPS mit gpsbabel importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="267"/>
+        <source>Import vector from gps using gpstrans</source>
+        <translation>Vektor aus GPS mit gpstrans importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="268"/>
+        <source>Import vector into GRASS</source>
+        <translation>Vektor in GRASS importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="269"/>
+        <source>Import vector points from database table containing coordinates</source>
+        <translation>Vektorpunkt aus Datenbank mit Koordinaten importieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="270"/>
+        <source>Input nodes</source>
+        <translation>Knoten eingeben</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="271"/>
+        <source>Input table</source>
+        <translation>Tabelle eingeben</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="272"/>
+        <source>Interpolate surface</source>
+        <translation>Fläche interpolieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="273"/>
+        <source>Inverse distance squared weighting raster interpolation</source>
+        <translation>Rasterinterpolation mit inverser  quadratischer Abstandsgewichtung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="274"/>
+        <source>Inverse distance squared weighting raster interpolation based on vector points</source>
+        <translation>Rasterinterpolation mit auf Vektorpunkten basierender inverser  quadratischer Abstandsgewichtung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="275"/>
+        <source>Inverse fast fourier transform for image processing</source>
+        <translation>Inverse schnelle Fourier-Transformation zur Bildverarbeitung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="276"/>
+        <source>Join table to existing vector table</source>
+        <translation>Tabelle mit vorhandener Vektortabelle zusammenführen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="277"/>
+        <source>Layers categories management</source>
+        <translation>Layerkategorienverwaltung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="278"/>
+        <source>Line-of-sight raster analysis</source>
+        <translation>Sichtachsen-Rasteranalyse</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="279"/>
+        <source>Link GDAL supported raster as GRASS raster</source>
+        <translation>GDAL-unterstütztes Raster als GRASS-Raster verbinden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="280"/>
+        <source>Link GDAL supported raster loaded in QGIS as GRASS raster</source>
+        <translation>In QGIS geladenenes GDAL-unterstütztes Raster als GRASS-Raster verbinden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="281"/>
+        <source>Link all GDAL supported rasters in a directory as GRASS rasters</source>
+        <translation>Alle GDAL-unterstützte Raster eines Verzeichnisses als GRASS-Raster verbinden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="282"/>
+        <source>Loaded layer</source>
+        <translation>Geladener Layer</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="283"/>
+        <source>Locate the closest points between objects in two raster maps</source>
+        <translation>Nächste Punkte zwischen Objekten in zwei Rasterkasten bestimmen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="284"/>
+        <source>Make each output cell function of the values assigned to the corresponding cells in the input rasters</source>
+        <translation>Jede Ausgabezelle zur Funktion der korrespondierenden Zellen des Eingaberasters machen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="285"/>
+        <source>Manage features</source>
+        <translation>Objekte verwalten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="286"/>
+        <source>Manage image colors</source>
+        <translation>Bildfarben verwalten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="287"/>
+        <source>Manage map colors</source>
+        <translation>Kartenfarben verwalten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="288"/>
+        <source>Manage raster cells value</source>
+        <translation>Rasterzellwerte verwalten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="289"/>
+        <source>Manage training dataset</source>
+        <translation>Trainingsdatensatz verwalten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="290"/>
+        <source>Map algebra</source>
+        <translation>Karten-Algebra</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="291"/>
+        <source>Map type conversion</source>
+        <translation>Kartentypumwandlung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="292"/>
+        <source>MapGen or MatLab vector layer</source>
+        <translation>MapGen- oder MapLab-Vektorlayer</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="293"/>
+        <source>Mask</source>
+        <translation>Maske</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="294"/>
+        <source>Maximal tolerance value (higher value=more simplification)</source>
+        <translation>Maximae Toleranzwert (höhere Wert = mehr Vereinfachung)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="295"/>
+        <source>Metadata support</source>
+        <translation>Metadaten-Unterstützung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="296"/>
+        <source>Minimum size for each basin (number of cells)</source>
+        <translation>Minimalgröße jedes Beckens (Zellenanzahl)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="297"/>
+        <source>Mosaic up to 4 images</source>
+        <translation>Mosaik aus bis zu 4 Bildern bilden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="298"/>
+        <source>Name for new raster file (specify file extension)</source>
+        <translation>Name der neuen Rasterdatei (Dateierweitungen angeben)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="299"/>
+        <source>Name for new vector file (specify file extension)</source>
+        <translation>Name der neuen Vektordatei (Dateierweiterung angeben)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="300"/>
+        <source>Name for output vector map (optional)</source>
+        <translation>Name für Ausgabevektorkarte (optional)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="301"/>
+        <source>Name for the output raster map (optional)</source>
+        <translation>Name für Ausgaberasterkarte (optional)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="302"/>
+        <source>Neighborhood analysis</source>
+        <translation>Nachbarschaftsanalyse</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="303"/>
+        <source>Network analysis</source>
+        <translation>Netzwerkanalyse</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="304"/>
+        <source>Network maintenance</source>
+        <translation>Netzwerkwartung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="305"/>
+        <source>Number of rows to be skipped</source>
+        <translation>Anzahl zu überspringender Zeilen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="306"/>
+        <source>Others</source>
+        <translation>Andere</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="307"/>
+        <source>Output GML file</source>
+        <translation>GML-Ausgabedatei</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="308"/>
+        <source>Output Shapefile</source>
+        <translation>Ausgabeshapedatei</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="309"/>
+        <source>Output layer name (used in GML file)</source>
+        <translation>Ausgabelayername (für GML-Datei)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="310"/>
+        <source>Output raster values along user-defined transect line(s)</source>
+        <translation>Ausgaberasterwerte </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="311"/>
+        <source>Overlay</source>
+        <translation>Überlagern</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="312"/>
+        <source>Overlay maps</source>
+        <translation>Karten überlagern</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="313"/>
+        <source>Path to GRASS database of input location (optional)</source>
+        <translation>Pfad zur GRASS-Datenbank der Eingabelocation (optional)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="314"/>
+        <source>Path to the OGR data source</source>
+        <translation>Pfad zur OGR-Datenquelle</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="315"/>
+        <source>Percentage of first layer (0-99)</source>
+        <translation>Prozentsatz des ersten Layers (0-99)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="316"/>
+        <source>Perform affine transformation (shift, scale and rotate, or GPCs) on vector</source>
+        <translation>Affine-Transformation auf Vektor ausführen (verschieben, skalieren und rotieren oder GPCs) </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="317"/>
+        <source>Print projection information from a georeferenced file</source>
+        <translation>Projektionsinformation aus einer georeferenzierten Datei anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="318"/>
+        <source>Print projection information from a georeferenced file and create a new location based on it</source>
+        <translation>Projektionsinformation aus einer georeferenzierten Datei anzeigen und eine darauf basierende Location erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="319"/>
+        <source>Print projection information of the current location</source>
+        <translation>Projektion der aktuellen Location anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="320"/>
+        <source>Projection conversion of vector</source>
+        <translation>Projektionskonvertierung eines Vektors</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="321"/>
+        <source>Projection management</source>
+        <translation>Projektionsverwaltung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="322"/>
+        <source>Put geometry variables in database</source>
+        <translation>Geometrievariablen in Datenbank schreiben</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="323"/>
+        <source>Query rasters on their category values and labels</source>
+        <translation>Raster nach Kategoriewerten und Beschriftungen abfragen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="324"/>
+        <source>Random location perturbations of vector points</source>
+        <translation>Zufällige Positionsstörung von Vektorpunkten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="325"/>
+        <source>Randomly partition points into test/train sets</source>
+        <translation>Punkte zufällig in Test-/Trainingsdatensätze aufteilen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="326"/>
+        <source>Raster</source>
+        <translation>Raster</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="327"/>
+        <source>Raster buffer</source>
+        <translation>Rasterpuffer</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="328"/>
+        <source>Raster file matrix filter</source>
+        <translation>Rasterdateimatrixfilter</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="329"/>
+        <source>Raster neighbours analysis</source>
+        <translation>Rasternachbarschaftsanalyse</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="330"/>
+        <source>Raster support</source>
+        <translation>Rasterunterstützung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="331"/>
+        <source>Re-project raster from a location to the current location</source>
+        <translation>Raster von einer auf die aktuelle Location re-projizieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="332"/>
+        <source>Rebuild topology of a vector in mapset</source>
+        <translation>Topologie eines Vektors des Mapsets neuberechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="333"/>
+        <source>Rebuild topology of all vectors in mapset</source>
+        <translation>Topologie aller Vektoren eines Mapsets neuberechnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="334"/>
+        <source>Recategorize contiguous cells to unique categories</source>
+        <translation>Fortlaufende Zellen eindeutigen Kategorien zuweisen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="335"/>
+        <source>Reclass category values</source>
+        <translation>Kategoriewerte reklassifizieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="336"/>
+        <source>Reclass category values using a column attribute (integer positive)</source>
+        <translation>Kategoriewerte nach einem Spaltenattribute reklassifizieren (ganzzahlig positiv)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="337"/>
+        <source>Reclass category values using a rules file</source>
+        <translation>Kategoriewerte nach einer Regeldatei reklassifizieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="338"/>
+        <source>Reclass raster using reclassification rules</source>
+        <translation>Raster nach einer Regeldatei reklassifizieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="339"/>
+        <source>Reclass raster with patches larger than user-defined area size (in hectares)</source>
+        <translation>Neuklassifizierung des Rasters mit Patches größer als die benutzerdefinierte Flächengröße (ha)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="340"/>
+        <source>Reclass raster with patches smaller than user-defined area size (in hectares)</source>
+        <translation>Neuklassifizierung des Rasters mit Patches kleiner als die Benutzerdefinierte Flächengröße (ha)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="341"/>
+        <source>Reclassify raster greater or less than user-defined area size (in hectares)</source>
+        <translation>Neuklassifizieren des Rasters größer oder kleiner als benutzerdefinierte Flächengröße (ha)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="342"/>
+        <source>Recode categorical raster using reclassification rules</source>
+        <translation>Umcodieren des kategorischen Rasters mit Neueinstufungsregeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="343"/>
+        <source>Recode raster</source>
+        <translation>Umkodierungsraster</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="344"/>
+        <source>Reconnect vector to a new database</source>
+        <translation>Vektor wieder mit Datenbank verbinden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="345"/>
+        <source>Red Green Blue (RGB) to Hue Intensity Saturation (HIS) raster color transformation function</source>
+        <translation>Farbtransformationfunktion - Rot Grün Blau (RGB) nach Hue Saturation Intensity (HIS) Raster</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="346"/>
+        <source>Region settings</source>
+        <translation>Regionseinstellung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="347"/>
+        <source>Register external data sources in GRASS</source>
+        <translation>Externe Datenquellen in GRASS registrieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="348"/>
+        <source>Regularized spline with tension raster interpolation based on vector points</source>
+        <translation>Regularisierte Spline- mit Spannungsraster-Interpolation basierend auf Vektor-Punkten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="349"/>
+        <source>Reinterpolate and compute topographic analysis using regularized spline with tension and smoothing</source>
+        <translation>Neuinterpolation und berechnen der topografischen Analyse mit regularisiertem Spline mit Spannung und Glättung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="350"/>
+        <source>Remove all lines or boundaries of zero length</source>
+        <translation>Entferne alle Linien oder Grenzen der Länge Null</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="351"/>
+        <source>Remove bridges connecting area and island or 2 islands</source>
+        <translation>Entferne Brücken die Fläche und Insel oder 2 Inseln verbinden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="352"/>
+        <source>Remove dangles</source>
+        <translation>Überstände (Dangles) löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="353"/>
+        <source>Remove duplicate area centroids</source>
+        <translation>Doppelte Flächenschwerpunkte löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="354"/>
+        <source>Remove duplicate lines (pay attention to categories!)</source>
+        <translation>Doppelte Linien löschen (auf Kategorien achten)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="355"/>
+        <source>Remove existing attribute table of vector</source>
+        <translation>Entferne vorhandene Attributtabelle des Vektors</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="356"/>
+        <source>Remove outliers from vector point data</source>
+        <translation>Entferne Ausreißer aus Vektorpunktdaten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="357"/>
+        <source>Remove small angles between lines at nodes</source>
+        <translation>Entferne kleine Winkel zwischen Linien an den Knotenpunkten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="358"/>
+        <source>Remove small areas, the longest boundary with adjacent area is removed</source>
+        <translation>Entferne kleine Flächen, die längste Grenze mit angrenzendem Gebiet wird entfernt</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="359"/>
+        <source>Remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachement of centroid), first and last segment of the boundary is never changed</source>
+        <translation>Entferne Knoten in den Schwellenwert von Linien und Grenzen, Grenze wird nur beschnitten wenn Topologie nicht beschädigt ist (neue Kreuzung, veränderte Aufhängung der Schwerpunktes), erstes und letztes Segment der Grenze wird nie geändert</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="360"/>
+        <source>Rename column in attribute table</source>
+        <translation>Umbenennen von Spalte in Attributtabelle</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="361"/>
+        <source>Reports</source>
+        <translation>Berichte</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="362"/>
+        <source>Reports and statistics</source>
+        <translation>Berichte und Statistiken</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="363"/>
+        <source>Reproject raster from another Location</source>
+        <translation>Reprojiziere Raster von einem anderen Standort</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="364"/>
+        <source>Reproject vector from another Location</source>
+        <translation>Reprojiziere Vektor von einem anderen Standort</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="365"/>
+        <source>Resample raster using aggregation</source>
+        <translation>Neuberechnen von Raster mit Hilfe von Aggregation</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="366"/>
+        <source>Resample raster using interpolation</source>
+        <translation>Neuberechnen von Raster mit Hilfe von Interpolation</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="367"/>
+        <source>Resample raster. Set new resolution first</source>
+        <translation>Neuberechnen von Raster. Auflösung zuerst setzen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="368"/>
+        <source>Rescale the range of category values in raster</source>
+        <translation>Ändere den Maßstabsbereich der Kategoriewerte im Raster</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="369"/>
+        <source>Sample raster at site locations</source>
+        <translation>Beispielraster auf Standorten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="370"/>
+        <source>Save the current region as a named region</source>
+        <translation>Speichere aktuelle Region als benannte Region</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="371"/>
+        <source>Select features by attributes</source>
+        <translation>Wähle Eigenschaften nach Attributen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="372"/>
+        <source>Select features overlapped by features in another map</source>
+        <translation>Wähle Eigenschaften nach Eigenschaften einer anderen Karte</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="373"/>
+        <source>Separator (| , 	 etc.)</source>
+        <translation>Trennzeichen (| , 	 etc.)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="374"/>
+        <source>Set PostgreSQL DB connection</source>
+        <translation>Setze PostgreSQL DB Verbindung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="375"/>
+        <source>Set boundary definitions by edge (n-s-e-w)</source>
+        <translation>Setze Grenzdefinitionen nach Kante (n-s-e-w)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="376"/>
+        <source>Set boundary definitions for raster</source>
+        <translation>Setze Grenzdefinitionen für Raster</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="377"/>
+        <source>Set boundary definitions from raster</source>
+        <translation>Setze Grenzdefinitionen aus Raster</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="378"/>
+        <source>Set boundary definitions from vector</source>
+        <translation>Setze Grenzdefinitionen aus Vektor</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="379"/>
+        <source>Set boundary definitions to current or default region</source>
+        <translation>Setze Grenzdefinitionen nach aktueller oder default-Region</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="380"/>
+        <source>Set color rules based on stddev from a map&apos;s mean value</source>
+        <translation>Setze Farbregeln basierend auf Standardabweichung des Mittelwerts einer Karte</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="381"/>
+        <source>Set general DB connection</source>
+        <translation>Setze allgemeine DB Verbindung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="382"/>
+        <source>Set general DB connection with a schema (PostgreSQL only)</source>
+        <translation>Setze Allgemeine DB Verbindung nach Schema (nur PostgreSQL)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="383"/>
+        <source>Set raster color table</source>
+        <translation>Setze Rasterfarbtabelle</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="384"/>
+        <source>Set raster color table from existing raster</source>
+        <translation>Setze Rasterfarbtabelle aus existierendem Raster</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="385"/>
+        <source>Set raster color table from setted tables</source>
+        <translation>Setze Rasterfarbtabelle aus gesetzten Tabellen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="386"/>
+        <source>Set raster color table from user-defined rules</source>
+        <translation>Setze Rasterfarbtabelle aus benutzerdefinierten Regeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="387"/>
+        <source>Set region to align to raster</source>
+        <translation>Setze Region ausgerichtet am Raster</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="388"/>
+        <source>Set the region to match multiple rasters</source>
+        <translation>Setze Region entsprechend mehreren Rastern</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="389"/>
+        <source>Set the region to match multiple vectors</source>
+        <translation>Setze Region entsprechend mehreren Vektoren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="390"/>
+        <source>Set user/password for driver/database</source>
+        <translation>Setze Benutzer/Passwort für Treiber/Datenbank</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="391"/>
+        <source>Sets the boundary definitions for a raster map</source>
+        <translation>Setzt die Grenzdefinitionen für eine Rasterkarte</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="392"/>
+        <source>Show database connection for vector</source>
+        <translation>Datenbankverbindung für Vektor anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="393"/>
+        <source>Shrink current region until it meets non-NULL data from raster</source>
+        <translation>Verkleinere aktuelle Region, bis Nicht-NULL-Daten von Rasterdaten erfüllt werden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="394"/>
+        <source>Simple map algebra</source>
+        <translation>Einfache Kartenalgebra</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="395"/>
+        <source>Simplify vector</source>
+        <translation>Vereinfache Vektor</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="396"/>
+        <source>Snap lines to vertex in threshold</source>
+        <translation>Fange Linien auf Schwellenscheitel</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="397"/>
+        <source>Solar and irradiation model</source>
+        <translation>Solar und Bestrahlungsmodell</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="398"/>
+        <source>Spatial analysis</source>
+        <translation>Räumliche Analysen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="399"/>
+        <source>Spatial models</source>
+        <translation>Räumliche Modelle</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="400"/>
+        <source>Split lines to shorter segments</source>
+        <translation>Trenne Linien zu kürzeren Segmenten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="401"/>
+        <source>Statistics</source>
+        <translation>Statistik</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="402"/>
+        <source>Sum raster cell values</source>
+        <translation>Rasterzellenwerte summieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="403"/>
+        <source>Surface management</source>
+        <translation>Oberflächenverwaltung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="404"/>
+        <source>Tables management</source>
+        <translation>Tabellenverwaltung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="405"/>
+        <source>Tabulate mutual occurrence (coincidence) of categories for two rasters</source>
+        <translation>Tabelliere gemeinsames Auftreten (Koinzidenz) der Klassen für zwei Raster</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="406"/>
+        <source>Take vector stream data, transform it to raster, and subtract depth from the output DEM</source>
+        <translation>Nimm Vektordaten, wandle sie in Rasterdaten-und subtrahiere Tiefe aus der Ausgabe DEM</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="407"/>
+        <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 4 raster</source>
+        <translation>Tasseled Cap (Thomas Kauth) Transformation für LANDSAT-TM 4 Raster</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="408"/>
+        <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 5 raster</source>
+        <translation>Tasseled Cap (Thomas Kauth) Transformation für LANDSAT-TM 5 Raster</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="409"/>
+        <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 7 raster</source>
+        <translation>Tasseled Cap (Thomas Kauth) Transformation für LANDSAT-TM 7 Raster</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="410"/>
+        <source>Tassled cap vegetation index</source>
+        <translation>Tasseled Cap Vegetationsindex</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="411"/>
+        <source>Terrain analysis</source>
+        <translation>Geländeanalyse</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="412"/>
+        <source>Tests of normality on vector points</source>
+        <translation>Tests der Normalität auf Vektor-Punkten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="413"/>
+        <source>Text file</source>
+        <translation>Textdatei</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="414"/>
+        <source>Thin no-zero cells that denote line features</source>
+        <translation>Dünne nicht-Null-Zellen die Linieneigenschaften bezeichnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="415"/>
+        <source>Toolset for cleaning topology of vector map</source>
+        <translation>Werkzeugsatz für die Bereinigung der Topologie einer Vektorkarte</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="416"/>
+        <source>Topology management</source>
+        <translation>Topologieverwaltung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="417"/>
+        <source>Trace a flow through an elevation model</source>
+        <translation>Verfolge eine Strömung durch ein Höhenmodell</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="418"/>
+        <source>Transform cells with value in null cells</source>
+        <translation>Transformiere-Zellen mit Wert in Null-Zellen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="419"/>
+        <source>Transform features</source>
+        <translation>Transformiere Funktionen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="420"/>
+        <source>Transform image</source>
+        <translation>Transformiere Bild</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="421"/>
+        <source>Transform null cells in value cells</source>
+        <translation>Transformiere NULL-Zellen in Werte-Zellen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="422"/>
+        <source>Transform value cells in null cells</source>
+        <translation>Transformiere Werte-Zellen in NULL-Zellen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="423"/>
+        <source>Type in map names separated by a comma</source>
+        <translation>Geben Sie Kartennamen durch ein Komma getrennt ein</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="424"/>
+        <source>Update raster statistics</source>
+        <translation>Aktualisiere Rasterstatistik</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="425"/>
+        <source>Update vector map metadata</source>
+        <translation>Aktualisiere Vektorkarten-Metadaten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="426"/>
+        <source>Upload raster values at positions of vector points to the table</source>
+        <translation>Lade Rasterwerte an den Positionen von Vektorpunkten in die Tabelle</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="427"/>
+        <source>Upload vector values at positions of vector points</source>
+        <translation>Lade Vektorwerte an Positionen von Vektorpunkten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="428"/>
+        <source>Vector</source>
+        <translation>Vektor</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="429"/>
+        <source>Vector buffer</source>
+        <translation>Vektorpuffer</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="430"/>
+        <source>Vector geometry analysis</source>
+        <translation>Vektorgeometrieanalyse</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="431"/>
+        <source>Vector intersection</source>
+        <translation>Vektoren schneiden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="432"/>
+        <source>Vector non-intersection</source>
+        <translation>Nichtschneidende Vektoren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="433"/>
+        <source>Vector subtraction</source>
+        <translation>Vektorsubtraktion</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="434"/>
+        <source>Vector union</source>
+        <translation>Vektorvereinigung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="435"/>
+        <source>Vector update by other maps</source>
+        <translation>Vektor mit anderen Karten aktualisieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="436"/>
+        <source>Visibility graph construction</source>
+        <translation>Sichtbarkeitsgrapherstellung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="437"/>
+        <source>Voronoi diagram (area)</source>
+        <translation>Voronoi-Diagramm (Flächen)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="438"/>
+        <source>Voronoi diagram (lines)</source>
+        <translation>Voronoi-Diagramm (Linien)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="439"/>
+        <source>Watershed Analysis</source>
+        <translation>Wasserscheidenanalyse</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="440"/>
+        <source>Which column for the X coordinate? The first is 1</source>
+        <translation>Welche Spalte enthält die X-Koordinate? Die erste ist 1</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="441"/>
+        <source>Which column for the Y coordinate?</source>
+        <translation>Welche Spalte enthält die Y-Koordinate?</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="442"/>
+        <source>Which column for the Z coordinate? If 0, z coordinate is not used</source>
+        <translation>Welche Spalte enthält die Z-Koordinate? Bei 0 wird die Z-Koordinate nicht verwendet</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="443"/>
+        <source>Work with vector points</source>
+        <translation>Mit Vektorpunkten arbeiten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="444"/>
+        <source>Write only features link to a record</source>
+        <translation>Nur Objektverbindung in einen Datensatz schreiben</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="445"/>
+        <source>Zero-crossing edge detection raster function for image processing</source>
+        <translation>Nulldurchgangskantendetektionsrasterfunktion für die Bildverarbeitung</translation>
+    </message>
+</context>
+<context>
+    <name>optionsDialog</name>
+    <message>
+        <source>Warning!</source>
+        <translation>Warnung!</translation>
+    </message>
+    <message>
+        <source>You need to add some APIs file in order to compile</source>
+        <translation>Einige API-Dateien müssen zum Kompilieren hinzugefügt werden</translation>
+    </message>
+    <message>
+        <source>Please specify API file or check &quot;Use preloaded API files&quot;</source>
+        <translation>Bitte eine API-Datei angeben oder &quot;API-Dateien vorladen&quot; wählen</translation>
+    </message>
+    <message>
+        <source>The APIs file was not compiled, click on &quot;Compile APIs...&quot;</source>
+        <translation>Die API-Datei wurde nicht kompiliert, klicken Sie auf &quot;APIs kompilieren...&quot;</translation>
+    </message>
+</context>
+<context>
+    <name>parent</name>
+    <message>
+        <source>Cannot parse XML file: %s</source>
+        <translation>Kann XML-Datei nicht verarbeiten: %s</translation>
+    </message>
+    <message>
+        <source>Cannot open file: %s</source>
+        <translation>Kann Datei nicht öffnen: %s</translation>
+    </message>
+    <message>
+        <source>Invalid CSW connections XML.</source>
+        <translation>Ungültige CSW-Verbindungs-XML.</translation>
+    </message>
+    <message>
+        <source>Loading Connections</source>
+        <translation>Lade Verbindungen</translation>
+    </message>
+</context>
+<context>
+    <name>rulesDialog</name>
+    <message>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="14"/>
+        <source>Topology Rule Settings</source>
+        <translation>Topologieregeleinstellungen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="20"/>
+        <source>Current Rules</source>
+        <translation>Aktuelle Regeln</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="100"/>
+        <source>Add Rule</source>
+        <translation>Regel hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="112"/>
+        <source>Rule</source>
+        <translation>Regel</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="117"/>
+        <source>Layer #1</source>
+        <translation>1. Layer</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="122"/>
+        <source>Layer #2</source>
+        <translation>2. Layer</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="66"/>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="127"/>
+        <source>Tolerance</source>
+        <translation>Toleranz</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="132"/>
+        <source>Layer1ID</source>
+        <translation>Layer1ID</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="137"/>
+        <source>Layer2ID</source>
+        <translation>Layer2ID</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="33"/>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="52"/>
+        <source>No layer</source>
+        <translation>Kein Layer</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="93"/>
+        <source>Delete Rule</source>
+        <translation>Regel löschen</translation>
+    </message>
+</context>
+<context>
+    <name>topolTest</name>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="232"/>
+        <source>Invalid second geometry.</source>
+        <translation>Zweite Geometrie ungültig.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="232"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="235"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="276"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="282"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="408"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="414"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="531"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="537"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="543"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="770"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="776"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="871"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="942"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="1176"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="1265"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="1350"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="1441"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="1515"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="1556"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="1675"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="1681"/>
+        <source>Topology plugin</source>
+        <translation>Topologie-Erweiterung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="235"/>
+        <source>Invalid first geometry.</source>
+        <translation>Erste Geometrie ungültig.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="276"/>
+        <source>First geometry invalid in dangling line test.</source>
+        <translation>Erste Geometrie im Überstandtest ungültig.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="282"/>
+        <source>Failed to import first geometry into GEOS in dangling line test.</source>
+        <translation>Konnte erste Geometrie im Überstandtest nicht in GEOS laden.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="408"/>
+        <source>Invalid second geometry in duplicate geometry test.</source>
+        <translation>Zweite Geometrie im doppelte Geometrientest ungültig.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="414"/>
+        <source>Failed to import second geometry into GEOS in duplicate geometry test.</source>
+        <translation>Konnte erste Geometrie im doppelte Geometrientest nicht in GEOS laden.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="531"/>
+        <source>Invalid second geometry in overlaps test.</source>
+        <translation>Zweite Geometrie im Überlappungstest ungültig.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="537"/>
+        <source>Failed to import second geometry into GEOS in overlaps test.</source>
+        <translation>Konnte zweite Geometrie im Überlappungstest nicht in GEOS laden.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="543"/>
+        <source>Skipping invalid second geometry of feature %1 in overlaps test.</source>
+        <translation>Überspringe zweite Geometrie des Objekts %1 in Überlappungstest.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="770"/>
+        <source>Skipping invalid first geometry in pseudo line test.</source>
+        <translation>Überspringe ungültige erste Geometrie in Pseudolinientest.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="776"/>
+        <source>Failed to import first geometry into GEOS in pseudo line test.</source>
+        <translation>Konnte erste Geometrie im Pseudolinientest nicht in GEOS laden.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="871"/>
+        <source>Invalid geometry in validity test.</source>
+        <translation>Ungültige Geometrie in Gültigkeitstest.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="942"/>
+        <source>Invalid geometry in covering test.</source>
+        <translation>Ungültige Geometrie in Deckungstext.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="1176"/>
+        <source>Second geometry missing.</source>
+        <translation>Zweite Geometrie fehlt.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="1265"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="1350"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="1441"/>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="1515"/>
+        <source>Second geometry missing or GEOS import failed.</source>
+        <translation>Zweite Geometrie fehlt oder GEOS-Import fehlgeschlagen.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="1556"/>
+        <source>Missing geometry in multipart check.</source>
+        <translation>Geometrie fehlt in Mehrteiligkeitstest.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="1675"/>
+        <source>First layer not found in registry.</source>
+        <translation>Erster Layer nicht in Registratur gefunden.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/topolTest.cpp" line="1681"/>
+        <source>Second layer not found in registry.</source>
+        <translation>Zweiter Layer nicht in Registratur gefunden.</translation>
+    </message>
+</context>
+<context>
+    <name>visualThread</name>
+    <message>
+        <source>Max. len:</source>
+        <translation>Max. Länge: </translation>
+    </message>
+    <message>
+        <source>Min. len:</source>
+        <translation>Min. Länge: </translation>
+    </message>
+    <message>
+        <source>Mean. len:</source>
+        <translation>Mittlere Länge: </translation>
+    </message>
+    <message>
+        <source>Filled:</source>
+        <translation>Gefüllt: </translation>
+    </message>
+    <message>
+        <source>Empty:</source>
+        <translation>Leer: </translation>
+    </message>
+    <message>
+        <source>N:</source>
+        <translation>N:</translation>
+    </message>
+    <message>
+        <source>Mean:</source>
+        <translation>Durchschnitt: </translation>
+    </message>
+    <message>
+        <source>StdDev:</source>
+        <translation>Std.Abw: </translation>
+    </message>
+    <message>
+        <source>Sum:</source>
+        <translation>Summe: </translation>
+    </message>
+    <message>
+        <source>Min:</source>
+        <translation>Min: </translation>
+    </message>
+    <message>
+        <source>Max:</source>
+        <translation>Max: </translation>
+    </message>
+    <message>
+        <source>CV:</source>
+        <translation>CV: </translation>
+    </message>
+    <message>
+        <source>Number of unique values:</source>
+        <translation>Anzahl der eindeutigen Werte: </translation>
+    </message>
+    <message>
+        <source>Range:</source>
+        <translation>Bereich: </translation>
+    </message>
+    <message>
+        <source>Median:</source>
+        <translation>Mittel: </translation>
+    </message>
+    <message>
+        <source>Observed mean distance:</source>
+        <translation>Beobachteter mittlerer Abstand: </translation>
+    </message>
+    <message>
+        <source>Expected mean distance:</source>
+        <translation>Erwarteter mittlerer Abstand: </translation>
+    </message>
+    <message>
+        <source>Nearest neighbour index:</source>
+        <translation>Nächster Nachbarindex: </translation>
+    </message>
+    <message>
+        <source>Z-Score:</source>
+        <translation>Z-Score:</translation>
+    </message>
+</context>
+<context>
+    <name>widgetNumberInput</name>
+    <message>
+        <location filename="../python/plugins/processing/ui/widgetNumberInput.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formular</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/processing/ui/widgetNumberInput.ui" line="36"/>
+        <source>Open number input dialog</source>
+        <translation>Zahleneingabedialog öffnen</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/processing/ui/widgetNumberInput.ui" line="39"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+</context>
+<context>
+    <name>widgetOutputSelect</name>
+    <message>
+        <location filename="../python/plugins/processing/ui/widgetOutputSelect.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formular</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/processing/ui/widgetOutputSelect.ui" line="29"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+</context>
+</TS>
