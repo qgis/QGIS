@@ -56,7 +56,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   addGuiTip( myTip );
   myTip.setTitle( tr( "QGIS Mailing lists" ) );
   myTip.setContent( tr( "If you need help using QGIS"
-                        " we have a 'users'  mailing list where users help each other with issues"
+                        " we have a 'users' mailing list where users help each other with issues"
                         " related to using our sofware. We also have a 'developers' mailing list."
                         " for those wanting help and to discuss things relating to the QGIS code base."
                         " Details on how to subscribe are in the <a href=\"http://qgis.org/en/site/forusers/support.html#mailing-lists\">community section</a> of"
@@ -64,7 +64,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                       ) );
   addGuiTip( myTip );
   myTip.setTitle( tr( "Is it 'QGIS' or 'Quantum GIS'?" ) );
-  myTip.setContent( tr( "Both used to be correct, but we recently decided to just use 'QGIS'.  For articles we suggest you write 'QGIS is ....'"
+  myTip.setContent( tr( "Both used to be correct, but we recently decided to just use 'QGIS'. For articles we suggest you write 'QGIS is ....'"
                       ) );
   addGenericTip( myTip );
   myTip.setTitle( tr( "How do I refer to QGIS?" ) );

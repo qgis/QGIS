@@ -470,13 +470,13 @@
        <item>
         <widget class="QCheckBox" name="cbxUseHeader">
          <property name="toolTip">
-          <string>Field names are read from the first record.  If not selected then fields are numbered</string>
+          <string>Field names are read from the first record. If not selected then fields are numbered</string>
          </property>
          <property name="statusTip">
-          <string>Field names are read from the first record.  If not selected then fields are numbered</string>
+          <string>Field names are read from the first record. If not selected then fields are numbered</string>
          </property>
          <property name="whatsThis">
-          <string>Field names are read from the first record.  If not selected then fields are numbered</string>
+          <string>Field names are read from the first record. If not selected then fields are numbered</string>
          </property>
          <property name="text">
           <string>First record has field names</string>
@@ -916,13 +916,13 @@
                  </size>
                 </property>
                 <property name="toolTip">
-                 <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
+                 <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character. These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
                 </property>
                 <property name="statusTip">
-                 <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
+                 <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character. These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
                 </property>
                 <property name="whatsThis">
-                 <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
+                 <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character. These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
                 </property>
                 <property name="maxLength">
                  <number>10</number>
@@ -965,13 +965,13 @@
               <item>
                <widget class="QLineEdit" name="txtEscapeChars">
                 <property name="toolTip">
-                 <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
+                 <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character). If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
                 </property>
                 <property name="statusTip">
-                 <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
+                 <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character). If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
                 </property>
                 <property name="whatsThis">
-                 <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
+                 <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character). If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
                 </property>
                 <property name="text">
                  <string>&quot;</string>
