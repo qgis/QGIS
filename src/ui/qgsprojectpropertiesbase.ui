@@ -238,8 +238,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>781</height>
+                <width>637</width>
+                <height>698</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -843,8 +843,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>781</height>
+                <width>328</width>
+                <height>54</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -902,8 +902,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>781</height>
+                <width>141</width>
+                <height>100</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -983,8 +983,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>781</height>
+                <width>379</width>
+                <height>336</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1359,7 +1359,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
+                <y>-596</y>
                 <width>671</width>
                 <height>1595</height>
                </rect>
@@ -1519,30 +1519,6 @@
                   <string notr="true">projowsserver</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12">
-                  <item row="0" column="0" colspan="2">
-                   <layout class="QHBoxLayout" name="grpWMSPrecision">
-                    <item>
-                     <widget class="QLabel" name="label_5">
-                      <property name="text">
-                       <string>GetFeatureInfo geometry precision (decimal places)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QSpinBox" name="mWMSPrecisionSpinBox">
-                      <property name="minimum">
-                       <number>1</number>
-                      </property>
-                      <property name="maximum">
-                       <number>17</number>
-                      </property>
-                      <property name="value">
-                       <number>8</number>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
                   <item row="1" column="0">
                    <widget class="QgsCollapsibleGroupBox" name="grpWMSExt">
                     <property name="title">
@@ -1824,21 +1800,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_2">
-                    <item>
-                     <widget class="QLabel" name="mWMSUrlLabel">
-                      <property name="text">
-                       <string>Advertised URL</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="mWMSUrlLineEdit"/>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="5" column="0" colspan="2">
+                  <item row="8" column="0" colspan="2">
                    <layout class="QGridLayout" name="gridLayout_3">
                     <item row="1" column="1">
                      <widget class="QLabel" name="mMaxWidthLabel">
@@ -1885,7 +1847,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="6" column="0" colspan="2">
+                  <item row="9" column="0" colspan="2">
                    <layout class="QHBoxLayout" name="horizontalLayout_10">
                     <item>
                      <widget class="QLabel" name="mWMSImageQualityLabel">
@@ -1909,6 +1871,44 @@
                        <number>90</number>
                       </property>
                      </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="4" column="0" colspan="2">
+                   <layout class="QHBoxLayout" name="grpWMSPrecision">
+                    <item>
+                     <widget class="QLabel" name="label_5">
+                      <property name="text">
+                       <string>GetFeatureInfo geometry precision (decimal places)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QSpinBox" name="mWMSPrecisionSpinBox">
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>17</number>
+                      </property>
+                      <property name="value">
+                       <number>8</number>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="5" column="0" colspan="2">
+                   <layout class="QHBoxLayout" name="horizontalLayout_2">
+                    <item>
+                     <widget class="QLabel" name="mWMSUrlLabel">
+                      <property name="text">
+                       <string>Advertised URL</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="mWMSUrlLineEdit"/>
                     </item>
                    </layout>
                   </item>
@@ -2108,8 +2108,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>781</height>
+                <width>170</width>
+                <height>54</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
