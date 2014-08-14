@@ -2107,7 +2107,7 @@ void QgsOptions::saveDefaultDatumTransformations()
 
 void QgsOptions::on_mButtonAddColor_clicked()
 {
-  QColor newColor = QColorDialog::getColor( QColor(), this->parentWidget(), tr( "Select color" ) );
+  QColor newColor = QColorDialog::getColor( QColor(), this->parentWidget(), tr( "Select color" ), QColorDialog::ShowAlphaChannel );
   if ( !newColor.isValid() )
   {
     return;
@@ -2140,7 +2140,7 @@ void QgsOptions::on_mTreeCustomColors_itemDoubleClicked( QTreeWidgetItem* item, 
 {
   if ( column == 0 )
   {
-    QColor newColor = QColorDialog::getColor( item->data( 0, PaletteColorRole ).value<QColor>(), this->parentWidget(), tr( "Select color" ) );
+    QColor newColor = QColorDialog::getColor( item->data( 0, PaletteColorRole ).value<QColor>(), this->parentWidget(), tr( "Select color" ), QColorDialog::ShowAlphaChannel );
     if ( !newColor.isValid() )
     {
       return;
