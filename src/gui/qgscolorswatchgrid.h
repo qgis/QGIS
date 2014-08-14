@@ -71,6 +71,11 @@ class GUI_EXPORT QgsColorSwatchGrid: public QWidget
      */
     void setBaseColor( const QColor baseColor );
 
+    /**Gets the list of colors shown in the grid
+     * @returns list of colors currently shown in the grid
+     */
+    QgsNamedColorList* colors() { return &mColors; }
+
   public slots:
 
     /**Reload colors from scheme and redraws the widget

@@ -53,6 +53,11 @@ class QgsColorSwatchGrid: QWidget
      * @see baseColor
      */
     void setBaseColor( const QColor baseColor );
+    
+    /**Gets the list of colors shown in the grid
+     * @returns list of colors currently shown in the grid
+     */
+    QgsNamedColorList* colors();
 
   public slots:
 
