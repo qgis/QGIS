@@ -39,15 +39,11 @@ from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
 from processing.gui.Help2Html import  getHtmlFromHelpFile
 from processing.modeler.ModelerUtils import ModelerUtils
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterDataObject
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterMultipleInput
-from processing.core.parameters import ParameterVector
+from processing.core.parameters import *
 from processing.tools import dataobjects
 
 
-class Input():
+class ModelerParameter():
 
     def __init__(self, param=None, pos=None):
         self.param = param
@@ -58,10 +54,10 @@ class Input():
 
     @staticmethod
     def fromdict(d):
-        return Input(d["param"], d["pos"])
+        return ModelerParameter(d["param"], d["pos"])
 
 
-class Output():
+class ModelerOutput():
 
     def __init__(self, description=""):
         self.description = description

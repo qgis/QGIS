@@ -29,7 +29,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui, QtWebKit
 from processing.modeler.ModelerAlgorithm import ValueFromInput,\
-    ValueFromOutput, Algorithm, Output
+    ValueFromOutput, Algorithm, ModelerOutput
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
@@ -165,7 +165,7 @@ class ModelerParametersDialog(QtGui.QDialog):
         self.webView = QtWebKit.QWebView()
 
         html = None
-        url = None        
+        url = None
         isText, help = self._alg.help()
         if help is not None:
             if isText:
@@ -467,7 +467,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             if not output.hidden:
                 name = unicode(self.valueItems[output.name].text())
                 if name.strip() != '' and name != ModelerParametersDialog.ENTER_NAME:
-                    alg.outputs[output.name] = Output(name)
+                    alg.outputs[output.name] = ModelerOutput(name)
 
         selectedOptions = self.dependenciesPanel.selectedoptions
         availableDependencies = self.getAvailableDependencies()

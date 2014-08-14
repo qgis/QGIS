@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 from PyQt4 import QtCore, QtGui
-from processing.modeler.ModelerAlgorithm import Input, Algorithm, Output
+from processing.modeler.ModelerAlgorithm import ModelerParameter, Algorithm, ModelerOutput
 from processing.modeler.ModelerParameterDefinitionDialog import \
         ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
@@ -43,12 +43,13 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         super(ModelerGraphicItem, self).__init__(None, None)
         self.model = model
         self.element = element
-        if isinstance(element, Input):
+        print element.__class__
+        if isinstance(element, ModelerParameter):
             icon = QtGui.QIcon(os.path.dirname(__file__)
                                + '/../images/input.png')
             self.pixmap = icon.pixmap(20, 20, state=QtGui.QIcon.On)
             self.text = element.param.description
-        elif isinstance(element, Output):
+        elif isinstance(element, ModelerOutput):
             # Output name
             icon = QtGui.QIcon(os.path.dirname(__file__)
                                + '/../images/output.png')
@@ -63,7 +64,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         self.setFlag(QtGui.QGraphicsItem.ItemSendsGeometryChanges, True)
         self.setZValue(1000)
 
-        if not isinstance(element, Output):
+        if not isinstance(element, ModelerOutput):
             icon = QtGui.QIcon(os.path.dirname(__file__)
                                + '/../images/edit.png')
             pt = QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH / 2
@@ -132,7 +133,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         self.editElement()
 
     def contextMenuEvent(self, event):
-        if isinstance(self.element, Output):
+        if isinstance(self.element, ModelerOutput):
             return
         popupmenu = QtGui.QMenu()
         removeAction = popupmenu.addAction('Remove')
@@ -161,7 +162,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
                     'Activate them them before trying to activate it.')
 
     def editElement(self):
-        if isinstance(self.element, Input):
+        if isinstance(self.element, ModelerParameter):
             dlg = ModelerParameterDefinitionDialog(self.model,
                     param=self.element.param)
             dlg.exec_()
@@ -181,7 +182,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
                 self.model.updateModelerView()
 
     def removeElement(self):
-        if isinstance(self.element, Input):
+        if isinstance(self.element, ModelerParameter):
             if not self.model.removeParameter(self.element.param.name):
                 QtGui.QMessageBox.warning(None, 'Could not remove element',
                         'Other elements depend on the selected one.\n'
@@ -217,7 +218,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
                              ModelerGraphicItem.BOX_HEIGHT + 2)
         painter.setPen(QtGui.QPen(QtCore.Qt.gray, 1))
         color = QtGui.QColor(125, 232, 232)
-        if isinstance(self.element, Input):
+        if isinstance(self.element, ModelerParameter):
             color = QtGui.QColor(179, 179, 255)
         elif isinstance(self.element, Algorithm):
             color = QtCore.Qt.white
