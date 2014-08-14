@@ -15,12 +15,13 @@ class QgsMapToolIdentify : QgsMapTool
       LayerSelection
     };
 
-    enum LayerType
+    enum Type
     {
-      AllLayers,
       VectorLayer,
-      RasterLayer
+      RasterLayer,
+      AllLayers
     };
+    typedef QFlags<QgsMapToolIdentify::Type> LayerType;
 
     struct IdentifyResult
     {

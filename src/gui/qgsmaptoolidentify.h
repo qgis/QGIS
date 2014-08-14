@@ -44,6 +44,7 @@ class QgsHighlight;
 class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 {
     Q_OBJECT
+    Q_FLAGS( LayerType )
 
   public:
 
@@ -56,12 +57,13 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       LayerSelection
     };
 
-    enum LayerType
+    enum Type
     {
-      AllLayers = -1,
-      VectorLayer,
-      RasterLayer
+      VectorLayer = 1,
+      RasterLayer = 2,
+      AllLayers = VectorLayer | RasterLayer
     };
+    Q_DECLARE_FLAGS( LayerType, Type )
 
     struct IdentifyResult
     {
@@ -177,5 +179,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     //! menu for layer selection
     void handleMenuHover();
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolIdentify::LayerType )
 
 #endif
