@@ -305,7 +305,7 @@ class QgsComposition : QGraphicsScene
       @param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
       @param pos item position. Optional, take position from xml if 0
       @param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
-      @note parameters mapsToResotre, addUndoCommands pos and pasteInPlace not available in python bindings
+      @note parameters mapsToRestore, addUndoCommands pos and pasteInPlace not available in python bindings
      */
     void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc );
 
