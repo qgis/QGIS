@@ -45,6 +45,8 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): 
 {
   mHtmlUnitsToMM = htmlUnitsToMM();
   mWebPage = new QWebPage();
+  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
   mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
   QObject::connect( mWebPage, SIGNAL( loadFinished( bool ) ), this, SLOT( frameLoaded( bool ) ) );
   if ( mComposition )
@@ -181,6 +183,20 @@ void QgsComposerHtml::loadHtml()
     qApp->processEvents();
   }
 
+  renderCachedImage();
+  recalculateFrameSizes();
+  //trigger a repaint
+  emit contentsChanged();
+}
+
+void QgsComposerHtml::frameLoaded( bool ok )
+{
+  Q_UNUSED( ok );
+  mLoaded = true;
+}
+
+void QgsComposerHtml::recalculateFrameSizes()
+{
   if ( frameCount() < 1 )  return;
 
   QSize contentsSize = mWebPage->mainFrame()->contentsSize();
@@ -196,23 +212,10 @@ void QgsComposerHtml::loadHtml()
   contentsSize.setWidth( maxFrameWidth * mHtmlUnitsToMM );
 
   mWebPage->setViewportSize( contentsSize );
-  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
-  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
   mSize.setWidth( contentsSize.width() / mHtmlUnitsToMM );
   mSize.setHeight( contentsSize.height() / mHtmlUnitsToMM );
-
-  renderCachedImage();
-
-  recalculateFrameSizes();
+  QgsComposerMultiFrame::recalculateFrameSizes();
   emit changed();
-  //trigger a repaint
-  emit contentsChanged();
-}
-
-void QgsComposerHtml::frameLoaded( bool ok )
-{
-  Q_UNUSED( ok );
-  mLoaded = true;
 }
 
 void QgsComposerHtml::renderCachedImage()
