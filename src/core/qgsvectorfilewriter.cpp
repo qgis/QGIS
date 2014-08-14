@@ -764,7 +764,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          ) );
 
   datasetOptions.insert( "USE_EXTENSIONS", new BoolOption(
-                           QObject::tr( "If defined to YES, extension fields  will be written. "
+                           QObject::tr( "If defined to YES, extension fields will be written. "
                                         "If the field name not found in the base schema matches "
                                         "the foo_bar pattern, foo will be considered as the namespace "
                                         "of the element, and a <foo:bar> element will be written. "
