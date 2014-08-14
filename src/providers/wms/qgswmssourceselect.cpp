@@ -1067,7 +1067,7 @@ void QgsWMSSourceSelect::showError( QgsWmsProvider * wms )
   }
   else
   {
-    mv->setMessageAsPlainText( tr( "Could not understand the response.  The %1 provider said:\n%2" ).arg( wms->name() ).arg( wms->lastError() ) );
+    mv->setMessageAsPlainText( tr( "Could not understand the response. The %1 provider said:\n%2" ).arg( wms->name() ).arg( wms->lastError() ) );
   }
   mv->showMessage( true ); // Is deleted when closed
 }

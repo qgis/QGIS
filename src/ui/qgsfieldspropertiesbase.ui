@@ -64,7 +64,7 @@
      <item>
       <widget class="QLabel" name="label_3">
        <property name="toolTip">
-        <string>QGIS forms can have a Python function that is called when the form is opened.  
+        <string>QGIS forms can have a Python function that is called when the form is opened.
 Use this function to add extra logic to your forms.
 
 An example is (in module MyForms.py):
@@ -85,7 +85,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
      <item>
       <widget class="QLineEdit" name="leEditFormInit">
        <property name="toolTip">
-        <string>QGIS forms can have a Python function that is called when the form is opened.  
+        <string>QGIS forms can have a Python function that is called when the form is opened.
 Use this function to add extra logic to your forms.
 
 An example is (in module MyForms.py):

@@ -212,7 +212,7 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
   teStatus->append( msg );
   msg = QString( "%1" ).arg( getDescriptionLayerShow( false ) );
   teStatus->append( msg );
-  msg = tr( "Total of features =  %1" ).arg( mFeatureResult.size() );
+  msg = tr( "Total of features = %1" ).arg( mFeatureResult.size() );
   teStatus->append( msg );
   teStatus->append( "" );
   teStatus->append( tr( "Total of invalid features:" ) );
