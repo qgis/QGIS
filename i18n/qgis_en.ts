@@ -20944,7 +20944,7 @@ and current file is [%3]</source>
     <name>QgsCustomColorScheme</name>
     <message>
         <location filename="../src/core/qgscolorscheme.h" line="106"/>
-        <source>Custom color palette</source>
+        <source>Standard colors</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -37404,11 +37404,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="2281"/>
-        <source>Custom color palette</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2300"/>
         <source>Add color</source>
         <translation type="unfinished"></translation>
@@ -38020,6 +38015,11 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4103"/>
         <source>Enable &apos;on the &amp;fly&apos; reprojection by default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="2281"/>
+        <source>Standard colors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
