@@ -1074,7 +1074,7 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
   if ( format == "GeoJSON" )
   {
     fcString = "{\"type\": \"FeatureCollection\",\n";
-    fcString += " \"bbox\": [ " + QString::number( rect->xMinimum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) ) + ", " + QString::number( rect->yMinimum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) ) + ", " + QString::number( rect->xMaximum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) ) + ", " + QString::number( rect->yMaximum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) ) + "],\n";
+    fcString += " \"bbox\": [ " + qgsDoubleToString( rect->xMinimum(), 8 ) + ", " + qgsDoubleToString( rect->yMinimum(), 8 ) + ", " + qgsDoubleToString( rect->xMaximum(), 8 ) + ", " + qgsDoubleToString( rect->yMaximum(), 8 ) + "],\n";
     fcString += " \"features\": [\n";
     result = fcString.toUtf8();
     request.startGetFeatureResponse( &result, format );
@@ -1167,7 +1167,7 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
     QDomElement bbElem = doc.createElement( "gml:boundedBy" );
     if ( format == "GML3" )
     {
-      QDomElement envElem = QgsOgcUtils::rectangleToGMLEnvelope( rect, doc );
+      QDomElement envElem = QgsOgcUtils::rectangleToGMLEnvelope( rect, doc, 8 );
       if ( !envElem.isNull() )
       {
         if ( crs.isValid() )
@@ -1180,7 +1180,7 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
     }
     else
     {
-      QDomElement boxElem = QgsOgcUtils::rectangleToGMLBox( rect, doc );
+      QDomElement boxElem = QgsOgcUtils::rectangleToGMLBox( rect, doc, 8 );
       if ( !boxElem.isNull() )
       {
         if ( crs.isValid() )
@@ -1691,10 +1691,10 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateRefer
   {
     QgsRectangle box = geom->boundingBox();
 
-    fStr += " \"bbox\": [ " + QString::number( box.xMinimum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) ) + ", " + QString::number( box.yMinimum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) ) + ", " + QString::number( box.xMaximum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) ) + ", " + QString::number( box.yMaximum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) ) + "],\n";
+    fStr += " \"bbox\": [ " + qgsDoubleToString( box.xMinimum(), 8 ) + ", " + qgsDoubleToString( box.yMinimum(), 8 ) + ", " + qgsDoubleToString( box.xMaximum(), 8 ) + ", " + qgsDoubleToString( box.yMaximum(), 8 ) + "],\n";
 
     fStr += "  \"geometry\": ";
-    fStr += geom->exportToGeoJSON();
+    fStr += geom->exportToGeoJSON( 8 );
     fStr += ",\n";
   }
 
@@ -1757,12 +1757,12 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
     QgsGeometry* geom = feat->geometry();
 
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
-    QDomElement gmlElem = QgsOgcUtils::geometryToGML( geom, doc );
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML( geom, doc, 8 );
     if ( !gmlElem.isNull() )
     {
       QgsRectangle box = geom->boundingBox();
       QDomElement bbElem = doc.createElement( "gml:boundedBy" );
-      QDomElement boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc );
+      QDomElement boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc, 8 );
 
       if ( crs.isValid() )
       {
@@ -1816,12 +1816,12 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
     QgsGeometry* geom = feat->geometry();
 
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
-    QDomElement gmlElem = QgsOgcUtils::geometryToGML( geom, doc, "GML3" );
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML( geom, doc, "GML3", 8 );
     if ( !gmlElem.isNull() )
     {
       QgsRectangle box = geom->boundingBox();
       QDomElement bbElem = doc.createElement( "gml:boundedBy" );
-      QDomElement boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc );
+      QDomElement boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc, 8 );
 
       if ( crs.isValid() )
       {

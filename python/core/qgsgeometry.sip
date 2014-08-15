@@ -364,17 +364,19 @@ class QgsGeometry
     /** Returns a Geometry representing the points making up this Geometry that do not make up other. */
     QgsGeometry* symDifference( QgsGeometry* geometry ) /Factory/;
 
-    /** Exports the geometry to mWkt
+    /** Exports the geometry to WKT
+     *  @note precision parameter added in 2.4
      *  @return true in case of success and false else
      */
-    QString exportToWkt() const;
+    QString exportToWkt( const int &precision = 17 ) const;
 
-    /** Exports the geometry to mGeoJSON
-     *  @return true in case of success and false else
+    /** Exports the geometry to GeoJSON
+     *  @return a QString representing the geometry as GeoJSON
      *  @note added in 1.8
      *  @note python binding added in 1.9
+     *  @note precision parameter added in 2.4
      */
-    QString exportToGeoJSON() const;
+    QString exportToGeoJSON( const int &precision = 17 ) const;
 
     /** try to convert the geometry to the requested type
      * @param destType the geometry type to be converted to
