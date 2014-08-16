@@ -128,6 +128,7 @@ qgscolorbutton.cpp
 qgscolorbuttonv2.cpp
 qgscolordialog.cpp
 qgscolorswatchgrid.cpp
+qgscolorschemelist.cpp
 qgscodeeditor.cpp
 qgscodeeditorpython.cpp
 qgscodeeditorsql.cpp
@@ -226,6 +227,7 @@ SET(QGIS_GUI_MOC_HDRS
 qgscolorbutton.h
 qgscolorbuttonv2.h
 qgscolorswatchgrid.h
+qgscolorschemelist.h
 
 raster/qgsrasterminmaxwidget.h
 raster/qgspalettedrendererwidget.h

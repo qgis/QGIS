@@ -243,7 +243,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void on_mButtonAddColor_clicked();
     void on_mButtonRemoveColor_clicked();
-    void on_mTreeCustomColors_itemDoubleClicked( QTreeWidgetItem* item, int column );
 
   private:
     QStringList i18nList();
@@ -259,8 +258,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void addCustomEnvVarRow( QString varName, QString varVal, QString varApply = QString() );
 
     void saveDefaultDatumTransformations();
-
-    void setPaletteColor( QTreeWidgetItem *item, QColor color );
 
   protected:
     QgisAppStyleSheet* mStyleSheetBuilder;

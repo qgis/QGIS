@@ -263,7 +263,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -2301,31 +2301,15 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0" rowspan="4">
-                   <widget class="QTreeWidget" name="mTreeCustomColors">
-                    <property name="rootIsDecorated">
-                     <bool>false</bool>
-                    </property>
-                    <property name="columnCount">
-                     <number>2</number>
-                    </property>
-                    <column>
-                     <property name="text">
-                      <string>Color</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Label</string>
-                     </property>
-                    </column>
-                   </widget>
-                  </item>
                   <item row="1" column="1">
                    <widget class="QPushButton" name="mButtonRemoveColor">
                     <property name="text">
                      <string>Remove color</string>
                     </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0" rowspan="4">
+                   <widget class="QgsColorSchemeList" name="mTreeCustomColors">
                    </widget>
                   </item>
                  </layout>
@@ -4707,6 +4691,11 @@
    <class>QgsScaleComboBox</class>
    <extends>QWidget</extends>
    <header>qgsscalecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorSchemeList</class>
+   <extends>QTreeView</extends>
+   <header>qgscolorschemelist.h</header>
   </customwidget>
  </customwidgets>
  <resources>
