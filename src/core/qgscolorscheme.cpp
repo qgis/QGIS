@@ -86,13 +86,31 @@ QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString context, cons
   Q_UNUSED( baseColor );
 
   //fetch predefined custom colors
+  QgsNamedColorList colorList;
   QSettings settings;
+
+  //check if settings contains custom palette
+  if ( !settings.contains( QString( "/colors/ypalettecolors" ) ) )
+  {
+    //no custom palette, return default colors
+    colorList.append( qMakePair( QColor( "#000000" ), QString() ) );
+    colorList.append( qMakePair( QColor( "#ffffff" ), QString() ) );
+    colorList.append( qMakePair( QColor( "#a6cee3" ), QString() ) );
+    colorList.append( qMakePair( QColor( "#1f78b4" ), QString() ) );
+    colorList.append( qMakePair( QColor( "#b2df8a" ), QString() ) );
+    colorList.append( qMakePair( QColor( "#33a02c" ), QString() ) );
+    colorList.append( qMakePair( QColor( "#fb9a99" ), QString() ) );
+    colorList.append( qMakePair( QColor( "#e31a1c" ), QString() ) );
+    colorList.append( qMakePair( QColor( "#fdbf6f" ), QString() ) );
+    colorList.append( qMakePair( QColor( "#ff7f00" ), QString() ) );
+
+    return colorList;
+  }
 
   QList< QVariant > customColorVariants = settings.value( QString( "/colors/palettecolors" ) ).toList();
   QList< QVariant > customColorLabels = settings.value( QString( "/colors/palettelabels" ) ).toList();
 
   //generate list from custom colors
-  QgsNamedColorList colorList;
   int colorIndex = 0;
   for ( QList< QVariant >::iterator it = customColorVariants.begin();
         it != customColorVariants.end(); ++it )
