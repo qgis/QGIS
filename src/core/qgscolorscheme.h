@@ -62,6 +62,21 @@ class CORE_EXPORT QgsColorScheme
     virtual QgsNamedColorList fetchColors( const QString context = QString(),
                                            const QColor baseColor = QColor() ) = 0;
 
+    /**Returns whether the color scheme is editable
+     * @returns true if scheme is editable
+     * @see setColors
+    */
+    virtual bool isEditable() const { return false; }
+
+    /**Sets the colors for the scheme. This method is only valid for editable color schemes.
+     * @param colors list of colors for the scheme
+     * @param context to set colors for
+     * @param baseColor base color to set colors for
+     * @returns true if colors were set successfully
+     * @see isEditable
+    */
+    virtual bool setColors( const QgsNamedColorList colors, const QString context = QString(), const QColor baseColor = QColor() );
+
     /**Clones a color scheme
      * @returns copy of color scheme
     */
@@ -107,6 +122,10 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 
     virtual QgsNamedColorList fetchColors( const QString context = QString(),
                                            const QColor baseColor = QColor() );
+
+    virtual bool isEditable() const { return true; }
+
+    virtual bool setColors( const QgsNamedColorList colors, const QString context = QString(), const QColor baseColor = QColor() );
 
     QgsColorScheme* clone() const;
 };

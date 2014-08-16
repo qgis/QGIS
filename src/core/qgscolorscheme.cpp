@@ -30,6 +30,15 @@ QgsColorScheme::~QgsColorScheme()
 
 }
 
+bool QgsColorScheme::setColors( const QgsNamedColorList colors, const QString context, const QColor baseColor )
+{
+  //base implementation does nothing
+  Q_UNUSED( colors );
+  Q_UNUSED( context );
+  Q_UNUSED( baseColor );
+  return false;
+}
+
 
 //
 // QgsRecentColorScheme
@@ -90,7 +99,7 @@ QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString context, cons
   QSettings settings;
 
   //check if settings contains custom palette
-  if ( !settings.contains( QString( "/colors/ypalettecolors" ) ) )
+  if ( !settings.contains( QString( "/colors/palettecolors" ) ) )
   {
     //no custom palette, return default colors
     colorList.append( qMakePair( QColor( "#000000" ), QString() ) );
@@ -127,6 +136,29 @@ QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString context, cons
   }
 
   return colorList;
+}
+
+bool QgsCustomColorScheme::setColors( const QgsNamedColorList colors, const QString context, const QColor baseColor )
+{
+  Q_UNUSED( context );
+  Q_UNUSED( baseColor );
+
+  // save colors to settings
+  QSettings settings;
+  QList< QVariant > customColors;
+  QList< QVariant > customColorLabels;
+
+  QgsNamedColorList::const_iterator colorIt = colors.constBegin();
+  for ( ; colorIt != colors.constEnd(); ++colorIt )
+  {
+    QVariant color = ( *colorIt ).first;
+    QVariant label = ( *colorIt ).second;
+    customColors.append( color );
+    customColorLabels.append( label );
+  }
+  settings.setValue( QString( "/colors/palettecolors" ), customColors );
+  settings.setValue( QString( "/colors/palettelabels" ), customColorLabels );
+  return true;
 }
 
 QgsColorScheme *QgsCustomColorScheme::clone() const
