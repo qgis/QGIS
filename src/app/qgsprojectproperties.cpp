@@ -46,6 +46,7 @@
 #include "qgsrelationmanagerdialog.h"
 #include "qgsrelationmanager.h"
 #include "qgisapp.h"
+#include "qgscolorschemeregistry.h"
 
 //qt includes
 #include <QColorDialog>
@@ -477,6 +478,15 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mStyle = QgsStyleV2::defaultStyle();
   populateStyles();
 
+  // Color palette
+  QList<QgsProjectColorScheme *> projectSchemes;
+  QgsColorSchemeRegistry::instance()->schemes( projectSchemes );
+  if ( projectSchemes.length() > 0 )
+  {
+    mTreeProjectColors->setScheme( projectSchemes.at( 0 ) );
+  }
+
+
   // Project macros
   QString pythonMacros = QgsProject::instance()->readEntry( "Macros", "/pythonCode", QString::null );
   grpPythonMacros->setChecked( !pythonMacros.isEmpty() );
@@ -885,6 +895,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "DefaultStyles", "/ColorRamp", cboStyleColorRamp->currentText() );
   QgsProject::instance()->writeEntry( "DefaultStyles", "/AlphaInt", ( int )( 255 - ( mTransparencySlider->value() * 2.55 ) ) );
   QgsProject::instance()->writeEntry( "DefaultStyles", "/RandomColors", cbxStyleRandomColors->isChecked() );
+  mTreeProjectColors->saveColorsToScheme();
 
   // store project macros
   QString pythonMacros = ptePythonMacros->text();
@@ -1656,4 +1667,21 @@ void QgsProjectProperties::projectionSelectorInitialized()
   }
 
   updateEllipsoidUI( myIndex );
+}
+
+void QgsProjectProperties::on_mButtonAddColor_clicked()
+{
+  QColor newColor = QColorDialog::getColor( QColor(), this->parentWidget(), tr( "Select color" ), QColorDialog::ShowAlphaChannel );
+  if ( !newColor.isValid() )
+  {
+    return;
+  }
+  activateWindow();
+
+  mTreeProjectColors->addColor( newColor );
+}
+
+void QgsProjectProperties::on_mButtonRemoveColor_clicked()
+{
+  mTreeProjectColors->removeSelection();
 }

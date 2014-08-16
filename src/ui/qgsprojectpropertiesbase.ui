@@ -191,7 +191,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="mProjOpts_01">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -211,8 +211,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>779</height>
+                <width>650</width>
+                <height>657</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -848,8 +848,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>132</width>
-                <height>100</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -920,17 +920,11 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>376</width>
-                <height>324</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox">
                  <property name="title">
@@ -1252,17 +1246,43 @@
                 </layout>
                </item>
                <item>
-                <spacer name="verticalSpacer_2">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_7">
+                 <property name="title">
+                  <string>Project colors</string>
                  </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
+                 <layout class="QGridLayout" name="gridLayout_12">
+                  <item row="2" column="1">
+                   <spacer name="verticalSpacer_12">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QPushButton" name="mButtonAddColor">
+                    <property name="text">
+                     <string>Add color</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QPushButton" name="mButtonRemoveColor">
+                    <property name="text">
+                     <string>Remove color</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0" rowspan="4">
+                   <widget class="QgsColorSchemeList" name="mTreeProjectColors"/>
+                  </item>
+                 </layout>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -2010,8 +2030,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>779</height>
+                <width>166</width>
+                <height>46</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2114,6 +2134,11 @@
    <extends>QWidget</extends>
    <header>qgscodeeditorpython.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorSchemeList</class>
+   <extends>QTreeView</extends>
+   <header>qgscolorschemelist.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

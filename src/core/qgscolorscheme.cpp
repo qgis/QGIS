@@ -18,7 +18,8 @@
 #include "qgscolorscheme.h"
 
 #include <QSettings>
-
+#include "qgsproject.h"
+#include "qgssymbollayerv2utils.h"
 
 QgsColorScheme::QgsColorScheme()
 {
@@ -164,4 +165,72 @@ bool QgsCustomColorScheme::setColors( const QgsNamedColorList colors, const QStr
 QgsColorScheme *QgsCustomColorScheme::clone() const
 {
   return new QgsCustomColorScheme();
+}
+
+
+QgsProjectColorScheme::QgsProjectColorScheme()
+{
+
+}
+
+QgsProjectColorScheme::~QgsProjectColorScheme()
+{
+
+}
+
+QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString context, const QColor baseColor )
+{
+  Q_UNUSED( context );
+  Q_UNUSED( baseColor );
+
+  QgsNamedColorList colorList;
+
+  QStringList colorStrings = QgsProject::instance()->readListEntry( "Palette", "/Colors" );
+  QStringList colorLabels = QgsProject::instance()->readListEntry( "Palette", "/Labels" );
+
+  //generate list from custom colors
+  int colorIndex = 0;
+  for ( QStringList::iterator it = colorStrings.begin();
+        it != colorStrings.end(); ++it )
+  {
+    QColor color = QgsSymbolLayerV2Utils::decodeColor( *it );
+    QString label;
+    if ( colorLabels.length() > colorIndex )
+    {
+      label = colorLabels.at( colorIndex );
+    }
+
+    colorList.append( qMakePair( color, label ) );
+    colorIndex++;
+  }
+
+  return colorList;
+}
+
+bool QgsProjectColorScheme::setColors( const QgsNamedColorList colors, const QString context, const QColor baseColor )
+{
+  Q_UNUSED( context );
+  Q_UNUSED( baseColor );
+
+  // save colors to project
+  QSettings settings;
+  QStringList customColors;
+  QStringList customColorLabels;
+
+  QgsNamedColorList::const_iterator colorIt = colors.constBegin();
+  for ( ; colorIt != colors.constEnd(); ++colorIt )
+  {
+    QString color = QgsSymbolLayerV2Utils::encodeColor(( *colorIt ).first );
+    QString label = ( *colorIt ).second;
+    customColors.append( color );
+    customColorLabels.append( label );
+  }
+  QgsProject::instance()->writeEntry( "Palette", "/Colors", customColors );
+  QgsProject::instance()->writeEntry( "Palette", "/Labels", customColorLabels );
+  return true;
+}
+
+QgsColorScheme *QgsProjectColorScheme::clone() const
+{
+  return new QgsProjectColorScheme();
 }

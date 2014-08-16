@@ -166,6 +166,10 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! sets the right ellipsoid for measuring (from settings)
     void projectionSelectorInitialized();
 
+    void on_mButtonAddColor_clicked();
+
+    void on_mButtonRemoveColor_clicked();
+
   signals:
     //! Signal used to inform listeners that the mouse display precision may have changed
     void displayPrecisionChanged();

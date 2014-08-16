@@ -130,4 +130,29 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
     QgsColorScheme* clone() const;
 };
 
+/** \ingroup core
+ * \class QgsProjectColorScheme
+ * \brief A color scheme which contains project specific colors set through project properties dialog.
+ * \note Added in version 2.5
+ */
+class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
+{
+  public:
+
+    QgsProjectColorScheme();
+
+    virtual ~QgsProjectColorScheme();
+
+    virtual QString schemeName() const { return QT_TR_NOOP( "Project colors" ); }
+
+    virtual QgsNamedColorList fetchColors( const QString context = QString(),
+                                           const QColor baseColor = QColor() );
+
+    virtual bool isEditable() const { return true; }
+
+    virtual bool setColors( const QgsNamedColorList colors, const QString context = QString(), const QColor baseColor = QColor() );
+
+    QgsColorScheme* clone() const;
+};
+
 #endif
