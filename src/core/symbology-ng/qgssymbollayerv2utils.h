@@ -229,23 +229,34 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QDomElement saveColorRamp( QString name, QgsVectorColorRampV2* ramp, QDomDocument& doc );
 
     /**
+     * Attempts to parse a string as a list of colors using a variety of common formats, including hex
+     * codes, rgb and rgba strings.
+     * @param colorStr string representing the color list
+     * @returns list of parsed colors
+     * @note added in 2.5
+     */
+    static QList< QColor > parseColorList( const QString colorStr );
+
+    /**
      * Attempts to parse a string as a color using a variety of common formats, including hex
      * codes, rgb and rgba strings.
      * @param colorStr string representing the color
+     * @param strictEval set to true for stricter color parsing rules
      * @returns parsed color
      * @note added in 2.3
      */
-    static QColor parseColor( QString colorStr );
+    static QColor parseColor( QString colorStr, bool strictEval = false );
 
     /**
      * Attempts to parse a string as a color using a variety of common formats, including hex
      * codes, rgb and rgba strings.
      * @param colorStr string representing the color
      * @param containsAlpha if colorStr contains an explicit alpha value then containsAlpha will be set to true
+     * @param strictEval set to true for stricter color parsing rules
      * @returns parsed color
      * @note added in 2.3
      */
-    static QColor parseColorWithAlpha( const QString colorStr, bool &containsAlpha );
+    static QColor parseColorWithAlpha( const QString colorStr, bool &containsAlpha, bool strictEval = false );
 
     /**Returns the line width scale factor depending on the unit and the paint device*/
     static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );

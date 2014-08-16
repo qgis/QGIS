@@ -2732,13 +2732,64 @@ QDomElement QgsSymbolLayerV2Utils::saveColorRamp( QString name, QgsVectorColorRa
   return rampEl;
 }
 
-QColor QgsSymbolLayerV2Utils::parseColor( QString colorStr )
+QList<QColor> QgsSymbolLayerV2Utils::parseColorList( const QString colorStr )
 {
-  bool hasAlpha;
-  return parseColorWithAlpha( colorStr, hasAlpha );
+  QList<QColor> colors;
+
+  //try splitting string at newlines
+  QStringList components = colorStr.split( QRegExp( "\n" ) );
+  QStringList::iterator it = components.begin();
+  for ( ; it != components.end(); ++it )
+  {
+    QColor result = parseColor( *it, true );
+    if ( result.isValid() )
+    {
+      colors << result;
+    }
+  }
+  if ( colors.length() > 0 )
+  {
+    return colors;
+  }
+
+  //try splitting string at whitespace
+  components = colorStr.simplified().split( QString( " " ) );
+  it = components.begin();
+  for ( ; it != components.end(); ++it )
+  {
+    QColor result = parseColor( *it, true );
+    if ( result.isValid() )
+    {
+      colors << result;
+    }
+  }
+  if ( colors.length() > 0 )
+  {
+    return colors;
+  }
+
+  //try splitting string at commas
+  components = colorStr.split( QString( "," ) );
+  it = components.begin();
+  for ( ; it != components.end(); ++it )
+  {
+    QColor result = parseColor( *it, true );
+    if ( result.isValid() )
+    {
+      colors << result;
+    }
+  }
+
+  return colors;
 }
 
-QColor QgsSymbolLayerV2Utils::parseColorWithAlpha( const QString colorStr, bool &containsAlpha )
+QColor QgsSymbolLayerV2Utils::parseColor( QString colorStr , bool strictEval )
+{
+  bool hasAlpha;
+  return parseColorWithAlpha( colorStr, hasAlpha, strictEval );
+}
+
+QColor QgsSymbolLayerV2Utils::parseColorWithAlpha( const QString colorStr, bool &containsAlpha, bool strictEval )
 {
   QColor parsedColor;
 
@@ -2754,16 +2805,19 @@ QColor QgsSymbolLayerV2Utils::parseColorWithAlpha( const QString colorStr, bool 
     }
   }
 
-  //color in hex format, without #
-  QRegExp hexColorRx2( "^\\s*(?:[0-9a-fA-F]{3}){1,2}\\s*$" );
-  if ( hexColorRx2.indexIn( colorStr ) != -1 )
+  if ( !strictEval )
   {
-    //add "#" and parse
-    parsedColor.setNamedColor( QString( "#" ) + colorStr );
-    if ( parsedColor.isValid() )
+    //color in hex format, without #
+    QRegExp hexColorRx2( "^\\s*(?:[0-9a-fA-F]{3}){1,2}\\s*$" );
+    if ( hexColorRx2.indexIn( colorStr ) != -1 )
     {
-      containsAlpha = false;
-      return parsedColor;
+      //add "#" and parse
+      parsedColor.setNamedColor( QString( "#" ) + colorStr );
+      if ( parsedColor.isValid() )
+      {
+        containsAlpha = false;
+        return parsedColor;
+      }
     }
   }
 

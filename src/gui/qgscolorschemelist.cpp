@@ -266,7 +266,7 @@ QVariant QgsColorSchemeModel::headerData( int section, Qt::Orientation orientati
 
 Qt::DropActions QgsColorSchemeModel::supportedDropActions() const
 {
-  return Qt::MoveAction | Qt::CopyAction;;
+  return Qt::MoveAction | Qt::CopyAction;
 }
 
 QStringList QgsColorSchemeModel::mimeTypes() const
@@ -352,6 +352,17 @@ bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction ac
     }
   }
 
+  if ( droppedColors.length() == 0 && data->hasText() )
+  {
+    //attempt to read color data from mime text
+    QList< QColor > parsedColors = QgsSymbolLayerV2Utils::parseColorList( data->text() );
+    QList< QColor >::iterator it = parsedColors.begin();
+    for ( ; it != parsedColors.end(); ++it )
+    {
+      droppedColors << qMakePair( *it, QString() );
+    }
+  }
+
   if ( droppedColors.length() == 0 && data->hasColor() )
   {
     //attempt to read color data directly from mime
@@ -359,16 +370,6 @@ bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction ac
     if ( mimeColor.isValid() )
     {
       droppedColors << qMakePair( mimeColor, QString() );
-    }
-  }
-
-  if ( droppedColors.length() == 0 && data->hasText() )
-  {
-    //attempt to read color data from mime text
-    QColor textColor = QgsSymbolLayerV2Utils::parseColor( data->text() );
-    if ( textColor.isValid() )
-    {
-      droppedColors << qMakePair( textColor, QString() );
     }
   }
 

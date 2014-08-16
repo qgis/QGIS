@@ -213,7 +213,6 @@ bool QgsProjectColorScheme::setColors( const QgsNamedColorList colors, const QSt
   Q_UNUSED( baseColor );
 
   // save colors to project
-  QSettings settings;
   QStringList customColors;
   QStringList customColorLabels;
 

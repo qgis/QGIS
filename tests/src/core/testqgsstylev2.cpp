@@ -55,6 +55,7 @@ class TestStyleV2: public QObject
     void testLoadColorRamps();
     void testSaveLoad();
     void testParseColor();
+    void testParseColorList();
 };
 
 
@@ -282,6 +283,122 @@ void TestStyleV2::testParseColor()
     QVERIFY( hasAlpha == i.value().second );
     ++i;
   }
+}
+
+void TestStyleV2::testParseColorList()
+{
+  //ensure that majority of single parseColor tests work for lists
+  //note that some are not possible, as the colors may be ambiguous when treated as a list
+  QMap< QString, QColor > colorTests;
+  colorTests.insert( "bad color", QColor( ) );
+  colorTests.insert( "red", QColor( 255, 0, 0 ) );
+  colorTests.insert( "#ff00ff", QColor( 255, 0, 255 ) );
+  colorTests.insert( "#99AA00", QColor( 153, 170, 0 ) );
+  colorTests.insert( "#GG0000", QColor() );
+  //colorTests.insert( "000000", QColor( 0, 0, 0 ) );
+  //colorTests.insert( "00ff00", QColor( 0, 255, 0 ) );
+  //colorTests.insert( "00gg00", QColor() );
+  colorTests.insert( "00ff000", QColor() );
+  //colorTests.insert( "fff", QColor( 255, 255, 255 ) );
+  colorTests.insert( "fff0", QColor() );
+  colorTests.insert( "0,0,0", QColor( 0, 0, 0 ) );
+  colorTests.insert( "127,60,0", QColor( 127, 60, 0 ) );
+  colorTests.insert( "255,255,255", QColor( 255, 255, 255 ) );
+  //colorTests.insert( "256,60,0", QColor() );
+  colorTests.insert( "rgb(127,60,0)", QColor( 127, 60, 0 ) );
+  colorTests.insert( "rgb(255,255,255)", QColor( 255, 255, 255 ) );
+  colorTests.insert( "rgb(256,60,0)", QColor() );
+  colorTests.insert( " rgb(  127, 60 ,  0 ) ", QColor( 127, 60, 0 ) );
+  colorTests.insert( "rgb(127,60,0);", QColor( 127, 60, 0 ) );
+  colorTests.insert( "(127,60,0);", QColor( 127, 60, 0 ) );
+  colorTests.insert( "(127,60,0)", QColor( 127, 60, 0 ) );
+  colorTests.insert( "127,060,000", QColor( 127, 60, 0 ) );
+  colorTests.insert( "0,0,0,0", QColor( 0, 0, 0, 0 ) );
+  colorTests.insert( "127,60,0,0.5", QColor( 127, 60, 0, 128 ) );
+  colorTests.insert( "255,255,255,0.1", QColor( 255, 255, 255, 26 ) );
+  colorTests.insert( "rgba(127,60,0,1.0)", QColor( 127, 60, 0, 255 ) );
+  colorTests.insert( "rgba(255,255,255,0.0)", QColor( 255, 255, 255, 0 ) );
+  colorTests.insert( " rgba(  127, 60 ,  0  , 0.2 ) ", QColor( 127, 60, 0, 51 ) );
+  colorTests.insert( "rgba(127,60,0,0.1);", QColor( 127, 60, 0, 26 ) );
+  colorTests.insert( "(127,60,0,1);", QColor( 127, 60, 0, 255 ) );
+  colorTests.insert( "(127,60,0,1.0)", QColor( 127, 60, 0, 255 ) );
+  colorTests.insert( "127,060,000,1", QColor( 127, 60, 0, 255 ) );
+  colorTests.insert( "0%,0%,0%", QColor( 0, 0, 0 ) );
+  colorTests.insert( "50 %,60 %,0 %", QColor( 127, 153, 0 ) );
+  colorTests.insert( "100%, 100%, 100%", QColor( 255, 255, 255 ) );
+  colorTests.insert( "rgb(50%,60%,0%)", QColor( 127, 153, 0 ) );
+  colorTests.insert( "rgb(100%, 100%, 100%)", QColor( 255, 255, 255 ) );
+  colorTests.insert( " rgb(  50 % , 60 % ,  0  % ) ", QColor( 127, 153, 0 ) );
+  colorTests.insert( "rgb(50%,60%,0%);", QColor( 127, 153, 0 ) );
+  colorTests.insert( "(50%,60%,0%);", QColor( 127, 153, 0 ) );
+  colorTests.insert( "(50%,60%,0%)", QColor( 127, 153, 0 ) );
+  colorTests.insert( "050%,060%,000%", QColor( 127, 153, 0 ) );
+  colorTests.insert( "0%,0%,0%,0", QColor( 0, 0, 0, 0 ) );
+  colorTests.insert( "50 %,60 %,0 %,0.5", QColor( 127, 153, 0, 128 ) );
+  colorTests.insert( "100%, 100%, 100%, 1.0", QColor( 255, 255, 255, 255 ) );
+  colorTests.insert( "rgba(50%,60%,0%, 1.0)", QColor( 127, 153, 0, 255 ) );
+  colorTests.insert( "rgba(100%, 100%, 100%, 0.0)", QColor( 255, 255, 255, 0 ) );
+  colorTests.insert( " rgba(  50 % , 60 % ,  0  %, 0.5 ) ", QColor( 127, 153, 0, 128 ) );
+  colorTests.insert( "rgba(50%,60%,0%,0);", QColor( 127, 153, 0, 0 ) );
+  colorTests.insert( "(50%,60%,0%,1);", QColor( 127, 153, 0, 255 ) );
+  colorTests.insert( "(50%,60%,0%,1.0)", QColor( 127, 153, 0, 255 ) );
+  colorTests.insert( "050%,060%,000%,0", QColor( 127, 153, 0, 0 ) );
+
+  QMap<QString, QColor >::const_iterator i = colorTests.constBegin();
+  while ( i != colorTests.constEnd() )
+  {
+    QgsDebugMsg( "color list string: " +  i.key() );
+    QList< QColor > result = QgsSymbolLayerV2Utils::parseColorList( i.key() );
+    if ( i.value().isValid() )
+    {
+      QCOMPARE( result.length(), 1 );
+      QVERIFY( result.at( 0 ) == i.value() );
+    }
+    else
+    {
+      QCOMPARE( result.length(), 0 );
+    }
+    ++i;
+  }
+
+  QList< QPair< QString, QList<QColor> > > colorListTests;
+  QList<QColor> list1;
+  list1 << QColor( QString( "blue" ) ) << QColor( QString( "red" ) ) << QColor( QString( "green" ) );
+  colorListTests.append( qMakePair( QString( "blue red green" ), list1 ) );
+  colorListTests.append( qMakePair( QString( "blue,red,green" ), list1 ) );
+  colorListTests.append( qMakePair( QString( "blue\nred\ngreen" ), list1 ) );
+  QList<QColor> list2;
+  list2 << QColor( QString( "#ff0000" ) ) << QColor( QString( "#00ff00" ) ) << QColor( QString( "#0000ff" ) );
+  colorListTests.append( qMakePair( QString( "#ff0000 #00ff00 #0000ff" ), list2 ) );
+  colorListTests.append( qMakePair( QString( "#ff0000,#00ff00,#0000ff" ), list2 ) );
+  colorListTests.append( qMakePair( QString( "#ff0000\n#00ff00\n#0000ff" ), list2 ) );
+  QList<QColor> list3;
+  list3 << QColor( QString( "#ff0000" ) ) << QColor( QString( "#00ff00" ) ) << QColor( QString( "#0000ff" ) );
+  colorListTests.append( qMakePair( QString( "rgb(255,0,0) rgb(0,255,0) rgb(0,0,255)" ), list3 ) );
+  colorListTests.append( qMakePair( QString( "rgb(255,0,0)\nrgb(0,255,0)\nrgb(0,0,255)" ), list3 ) );
+
+  QList< QPair< QString, QList<QColor> > >::const_iterator it = colorListTests.constBegin();
+  while ( it != colorListTests.constEnd() )
+  {
+    QgsDebugMsg( "color list string: " + ( *it ).first );
+    QList< QColor > result = QgsSymbolLayerV2Utils::parseColorList(( *it ).first );
+    if (( *it ).second.length() > 0 )
+    {
+      QCOMPARE( result.length(), ( *it ).second.length() );
+      int index = 0;
+      for ( QList<QColor>::const_iterator colorIt = ( *it ).second.constBegin();  colorIt != ( *it ).second.constEnd(); ++colorIt )
+      {
+        QVERIFY( result.at( index ) == ( *colorIt ) );
+        index++;
+      }
+    }
+    else
+    {
+      QCOMPARE( result.length(), 0 );
+    }
+    ++it;
+  }
+
 }
 
 
