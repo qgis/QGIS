@@ -11,8 +11,8 @@ layer = processing.getObject(Input)
 inputFields = layer.pendingFields()
 fieldIdxs = []
 fields = Fields.split(',')
-for f in fields:  
-    idx = inputFields.indexFromName(f)  
+for f in fields:
+    idx = inputFields.indexFromName(f)
     if  idx == -1:
         raise GeoAlgorithmExecutionException('Field not found:' + f)
     fieldIdxs.append(idx)

@@ -150,7 +150,7 @@ bool QgsFields::append( const QgsField& field, FieldOrigin origin, int originInd
   return true;
 }
 
-bool QgsFields::appendExpressionField(const QgsField& field, int originIndex)
+bool QgsFields::appendExpressionField( const QgsField& field, int originIndex )
 {
   if ( mNameToIndex.contains( field.name() ) )
     return false;

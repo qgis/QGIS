@@ -23,7 +23,7 @@
 
 
 QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
-  : QgsCodeEditor( parent )
+    : QgsCodeEditor( parent )
 {
   if ( !parent )
   {

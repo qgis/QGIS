@@ -53,7 +53,7 @@ void QgsAttributeAction::removeAction( int index )
   }
 }
 
-void QgsAttributeAction::doAction(int index, const QgsFeature& feat, int defaultValueIndex )
+void QgsAttributeAction::doAction( int index, const QgsFeature& feat, int defaultValueIndex )
 {
   QMap<QString, QVariant> substitutionMap;
   if ( defaultValueIndex >= 0 )

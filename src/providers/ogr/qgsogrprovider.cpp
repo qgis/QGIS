@@ -447,7 +447,7 @@ QgsOgrProvider::~QgsOgrProvider()
 
   repack();
 
-  if( ogrDataSource )
+  if ( ogrDataSource )
   {
     OGR_DS_Destroy( ogrDataSource );
   }
@@ -551,7 +551,7 @@ QString QgsOgrProvider::subsetString()
 QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
 {
   QString geom;
-  switch ( (int)type )
+  switch (( int )type )
   {
     case wkbUnknown:            geom = "Unknown"; break;
     case wkbPoint:              geom = "Point"; break;
@@ -624,7 +624,7 @@ QStringList QgsOgrProvider::subLayers() const
 
     QgsDebugMsg( QString( "id = %1 name = %2 layerGeomType = %3" ).arg( i ).arg( theLayerName ).arg( layerGeomType ) );
 
-    if ( wkbFlatten(layerGeomType) != wkbUnknown )
+    if ( wkbFlatten( layerGeomType ) != wkbUnknown )
     {
       int theLayerFeatureCount = OGR_L_GetFeatureCount( layer, 0 );
 
@@ -660,10 +660,10 @@ QStringList QgsOgrProvider::subLayers() const
       {
         fCount[wkbUnknown] = 0;
       }
-      bool bIs25D = ( (layerGeomType & wkb25DBit) != 0 );
+      bool bIs25D = (( layerGeomType & wkb25DBit ) != 0 );
       foreach ( OGRwkbGeometryType gType, fCount.keys() )
       {
-        QString geom = ogrWkbGeometryTypeName( (bIs25D) ? (OGRwkbGeometryType) (gType | wkb25DBit) : gType );
+        QString geom = ogrWkbGeometryTypeName(( bIs25D ) ? ( OGRwkbGeometryType )( gType | wkb25DBit ) : gType );
 
         QString sl = QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( fCount.value( gType ) ).arg( geom );
         QgsDebugMsg( "sub layer: " + sl );

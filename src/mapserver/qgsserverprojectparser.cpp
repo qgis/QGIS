@@ -64,8 +64,8 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QStr
 }
 
 QgsServerProjectParser::QgsServerProjectParser()
-   : mXMLDoc( 0 )
-   , mUseLayerIDs( false )
+    : mXMLDoc( 0 )
+    , mUseLayerIDs( false )
 {
 }
 

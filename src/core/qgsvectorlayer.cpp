@@ -2046,13 +2046,13 @@ bool QgsVectorLayer::addAttribute( const QgsField &field )
   return mEditBuffer->addAttribute( field );
 }
 
-void QgsVectorLayer::remAttributeAlias( int attIndex)
+void QgsVectorLayer::remAttributeAlias( int attIndex )
 {
   if ( attIndex < 0 || attIndex >= pendingFields().count() )
     return;
 
   QString name = pendingFields()[ attIndex ].name();
-  if ( mAttributeAliasMap.contains(name) )
+  if ( mAttributeAliasMap.contains( name ) )
   {
     mAttributeAliasMap.remove( name );
     emit layerModified();
@@ -2895,11 +2895,11 @@ QVariant QgsVectorLayer::minimumValue( int index )
   else if ( origin == QgsFields::OriginEdit || origin == QgsFields::OriginExpression )
   {
     // the layer is editable, but in certain cases it can still be avoided going through all features
-    if (  origin == QgsFields::OriginEdit &&
-          mEditBuffer->mDeletedFeatureIds.isEmpty() &&
-          mEditBuffer->mAddedFeatures.isEmpty() && !
-          mEditBuffer->mDeletedAttributeIds.contains( index ) &&
-          mEditBuffer->mChangedAttributeValues.isEmpty() )
+    if ( origin == QgsFields::OriginEdit &&
+         mEditBuffer->mDeletedFeatureIds.isEmpty() &&
+         mEditBuffer->mAddedFeatures.isEmpty() && !
+         mEditBuffer->mDeletedAttributeIds.contains( index ) &&
+         mEditBuffer->mChangedAttributeValues.isEmpty() )
     {
       return mDataProvider->minimumValue( index );
     }

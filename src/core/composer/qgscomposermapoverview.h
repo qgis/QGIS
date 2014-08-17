@@ -96,7 +96,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QObject
     */
     void connectSignals();
 
-public slots:
+  public slots:
 
     void overviewExtentChanged();
 
