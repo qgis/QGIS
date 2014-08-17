@@ -131,7 +131,7 @@ class GUI_EXPORT QgsColorSwatchGrid: public QWidget
     void draw( QPainter &painter );
 
     /**Calculate swatch corresponding to a position within the widget
-     * @param pos position
+     * @param position position
      * @returns swatch number (starting at 0), or -1 if position is outside a swatch
      */
     int swatchForPosition( const QPoint &position ) const;

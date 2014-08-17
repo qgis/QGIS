@@ -173,6 +173,7 @@ namespace pal
        * \param y y coordinates of the point
        * \param scale map scale is 1:scale
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
+       * \param delta_width delta width
        * \param angle orientation of the label
        * \return the number of generated cadidates
        */
@@ -189,6 +190,7 @@ namespace pal
        * \param scale map scale is 1:scale
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the line
+       * \param delta_width delta width
        * \return the number of generated cadidates
        */
       int setPositionForLine( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width );
@@ -207,6 +209,7 @@ namespace pal
        * \param scale map scale is 1:scale
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the polygon
+       * \param delta_width delta width
        * \return the number of generated cadidates
        */
       int setPositionForPolygon( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width );
