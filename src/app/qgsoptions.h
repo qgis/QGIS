@@ -242,7 +242,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_mAddDefaultTransformButton_clicked();
 
     void on_mButtonAddColor_clicked();
-    void on_mButtonRemoveColor_clicked();
 
   private:
     QStringList i18nList();

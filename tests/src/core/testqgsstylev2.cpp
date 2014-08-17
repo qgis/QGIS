@@ -367,15 +367,20 @@ void TestStyleV2::testParseColorList()
   colorListTests.append( qMakePair( QString( "blue red green" ), list1 ) );
   colorListTests.append( qMakePair( QString( "blue,red,green" ), list1 ) );
   colorListTests.append( qMakePair( QString( "blue\nred\ngreen" ), list1 ) );
+  colorListTests.append( qMakePair( QString( "blue\nred green" ), list1 ) );
+  colorListTests.append( qMakePair( QString( "blue\nred,green" ), list1 ) );
   QList<QColor> list2;
   list2 << QColor( QString( "#ff0000" ) ) << QColor( QString( "#00ff00" ) ) << QColor( QString( "#0000ff" ) );
   colorListTests.append( qMakePair( QString( "#ff0000 #00ff00 #0000ff" ), list2 ) );
   colorListTests.append( qMakePair( QString( "#ff0000,#00ff00,#0000ff" ), list2 ) );
   colorListTests.append( qMakePair( QString( "#ff0000\n#00ff00\n#0000ff" ), list2 ) );
+  colorListTests.append( qMakePair( QString( "#ff0000\n#00ff00 #0000ff" ), list2 ) );
+  colorListTests.append( qMakePair( QString( "#ff0000\n#00ff00,#0000ff" ), list2 ) );
   QList<QColor> list3;
   list3 << QColor( QString( "#ff0000" ) ) << QColor( QString( "#00ff00" ) ) << QColor( QString( "#0000ff" ) );
   colorListTests.append( qMakePair( QString( "rgb(255,0,0) rgb(0,255,0) rgb(0,0,255)" ), list3 ) );
   colorListTests.append( qMakePair( QString( "rgb(255,0,0)\nrgb(0,255,0)\nrgb(0,0,255)" ), list3 ) );
+  colorListTests.append( qMakePair( QString( "rgb(255,0,0)\nrgb(0,255,0) rgb(0,0,255)" ), list3 ) );
 
   QList< QPair< QString, QList<QColor> > >::const_iterator it = colorListTests.constBegin();
   while ( it != colorListTests.constEnd() )

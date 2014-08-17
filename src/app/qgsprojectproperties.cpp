@@ -479,6 +479,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   populateStyles();
 
   // Color palette
+  connect( mButtonCopyColors, SIGNAL( clicked() ), mTreeProjectColors, SLOT( copyColors() ) );
+  connect( mButtonRemoveColor, SIGNAL( clicked() ), mTreeProjectColors, SLOT( removeSelection() ) );
+  connect( mButtonPasteColors, SIGNAL( clicked() ), mTreeProjectColors, SLOT( pasteColors() ) );
+
   QList<QgsProjectColorScheme *> projectSchemes;
   QgsColorSchemeRegistry::instance()->schemes( projectSchemes );
   if ( projectSchemes.length() > 0 )
@@ -1679,9 +1683,4 @@ void QgsProjectProperties::on_mButtonAddColor_clicked()
   activateWindow();
 
   mTreeProjectColors->addColor( newColor );
-}
-
-void QgsProjectProperties::on_mButtonRemoveColor_clicked()
-{
-  mTreeProjectColors->removeSelection();
 }

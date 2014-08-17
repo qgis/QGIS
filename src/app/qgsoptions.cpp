@@ -688,6 +688,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   //
   // Color palette
   //
+  connect( mButtonCopyColors, SIGNAL( clicked() ), mTreeCustomColors, SLOT( copyColors() ) );
+  connect( mButtonRemoveColor, SIGNAL( clicked() ), mTreeCustomColors, SLOT( removeSelection() ) );
+  connect( mButtonPasteColors, SIGNAL( clicked() ), mTreeCustomColors, SLOT( pasteColors() ) );
 
   //find custom color scheme from registry
   QList<QgsCustomColorScheme *> customSchemes;
@@ -2085,9 +2088,4 @@ void QgsOptions::on_mButtonAddColor_clicked()
   activateWindow();
 
   mTreeCustomColors->addColor( newColor );
-}
-
-void QgsOptions::on_mButtonRemoveColor_clicked()
-{
-  mTreeCustomColors->removeSelection();
 }

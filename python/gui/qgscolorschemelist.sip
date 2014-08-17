@@ -120,6 +120,8 @@ class QgsColorSchemeList: QTreeView
      */
     void setScheme( QgsColorScheme* scheme, const QString context = QString(), const QColor baseColor = QColor() );
 
+  public slots:
+
     /**Saves the current colors shown in the list back to a color scheme, if supported
      * by the color scheme.
      * @note this method is only effective if the color scheme is editable
@@ -135,6 +137,16 @@ class QgsColorSchemeList: QTreeView
      * @param label optional label for color
      */
     void addColor( const QColor color, const QString label = QString() );
+
+    /**Pastes colors from clipboard to the list
+     * @see copyColors
+     */
+    void pasteColors();
+
+    /**Copies colors from the list to the clipboard
+     * @see pasteColors
+     */
+    void copyColors();
 
 };
 

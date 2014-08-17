@@ -263,7 +263,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>4</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -2281,18 +2281,12 @@
                   <string>Standard colors</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12">
-                  <item row="2" column="1">
-                   <spacer name="verticalSpacer_12">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
+                  <item row="3" column="1">
+                   <widget class="QPushButton" name="mButtonPasteColors">
+                    <property name="text">
+                     <string>Paste colors</string>
                     </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
+                   </widget>
                   </item>
                   <item row="0" column="1">
                    <widget class="QPushButton" name="mButtonAddColor">
@@ -2308,8 +2302,27 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0" rowspan="4">
-                   <widget class="QgsColorSchemeList" name="mTreeCustomColors">
+                  <item row="0" column="0" rowspan="6">
+                   <widget class="QgsColorSchemeList" name="mTreeCustomColors"/>
+                  </item>
+                  <item row="4" column="1">
+                   <spacer name="verticalSpacer_12">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QPushButton" name="mButtonCopyColors">
+                    <property name="text">
+                     <string>Copy colors</string>
+                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -4688,14 +4701,14 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsScaleComboBox</class>
-   <extends>QWidget</extends>
-   <header>qgsscalecombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsColorSchemeList</class>
    <extends>QTreeView</extends>
    <header>qgscolorschemelist.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleComboBox</class>
+   <extends>QWidget</extends>
+   <header>qgsscalecombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources>

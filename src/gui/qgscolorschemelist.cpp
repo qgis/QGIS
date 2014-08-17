@@ -19,8 +19,9 @@
 #include "qgssymbollayerv2utils.h"
 #include <QPainter>
 #include <QColorDialog>
-#include <QDomDocument>
 #include <QMimeData>
+#include <QClipboard>
+
 //For model testing
 //#include "modeltest.h"
 
@@ -89,6 +90,45 @@ void QgsColorSchemeList::removeSelection()
 void QgsColorSchemeList::addColor( const QColor color, const QString label )
 {
   mModel->addColor( color, label );
+}
+
+void QgsColorSchemeList::pasteColors()
+{
+  QgsNamedColorList pastedColors = QgsSymbolLayerV2Utils::colorListFromMimeData( QApplication::clipboard()->mimeData() );
+
+  if ( pastedColors.length() == 0 )
+  {
+    //no pasted colors
+    return;
+  }
+
+  //insert pasted colors
+  QgsNamedColorList::const_iterator colorIt = pastedColors.constBegin();
+  for ( ; colorIt != pastedColors.constEnd(); ++colorIt )
+  {
+    mModel->addColor(( *colorIt ).first, ( *colorIt ).second );
+  }
+}
+
+void QgsColorSchemeList::copyColors()
+{
+  QList<int> rows;
+  foreach ( const QModelIndex &index, selectedIndexes() )
+  {
+    rows << index.row();
+  }
+  //remove duplicates
+  QList<int> rowsToCopy =  QList<int>::fromSet( rows.toSet() );
+
+  QgsNamedColorList colorsToCopy;
+  foreach ( const int row, rowsToCopy )
+  {
+    colorsToCopy << mModel->colors().at( row );
+  }
+
+  //copy colors
+  QMimeData* mimeData = QgsSymbolLayerV2Utils::colorListToMimeData( colorsToCopy );
+  QApplication::clipboard()->setMimeData( mimeData );
 }
 
 //
@@ -275,15 +315,13 @@ QStringList QgsColorSchemeModel::mimeTypes() const
   types << "text/xml";
   types << "text/plain";
   types << "application/x-color";
+  types << "application/x-colorobject-list";
   return types;
 }
 
 QMimeData* QgsColorSchemeModel::mimeData( const QModelIndexList &indexes ) const
 {
-  QMimeData* mimeData = new QMimeData();
-  QDomDocument xmlDoc;
-  QDomElement xmlRootElement = xmlDoc.createElement( "ColorSchemeModelDragData" );
-  xmlDoc.appendChild( xmlRootElement );
+  QgsNamedColorList colorList;
 
   QModelIndexList::const_iterator indexIt = indexes.constBegin();
   for ( ; indexIt != indexes.constEnd(); ++indexIt )
@@ -291,13 +329,10 @@ QMimeData* QgsColorSchemeModel::mimeData( const QModelIndexList &indexes ) const
     if (( *indexIt ).column() > 0 )
       continue;
 
-    QDomElement namedColor = xmlDoc.createElement( "NamedColor" );
-    namedColor.setAttribute( "color", QgsSymbolLayerV2Utils::encodeColor( mColors[( *indexIt ).row()].first ) );
-    namedColor.setAttribute( "label", mColors[( *indexIt ).row()].second );
-    xmlRootElement.appendChild( namedColor );
+    colorList << qMakePair( mColors[( *indexIt ).row()].first, mColors[( *indexIt ).row()].second );
   }
-  mimeData->setData( "text/xml", xmlDoc.toByteArray() );
 
+  QMimeData* mimeData = QgsSymbolLayerV2Utils::colorListToMimeData( colorList, false );
   return mimeData;
 }
 
@@ -316,62 +351,7 @@ bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction ac
   }
 
   int beginRow = row != -1 ? row : rowCount( QModelIndex() );
-  QgsNamedColorList droppedColors;
-
-  //prefer xml format
-  if ( data->hasFormat( "text/xml" ) )
-  {
-    //get XML doc
-    QByteArray encodedData = data->data( "text/xml" );
-    QDomDocument xmlDoc;
-    xmlDoc.setContent( encodedData );
-
-    QDomElement dragDataElem = xmlDoc.documentElement();
-    if ( dragDataElem.tagName() != "ColorSchemeModelDragData" )
-    {
-      return false;
-    }
-
-    QDomNodeList nodeList = dragDataElem.childNodes();
-    int nChildNodes = nodeList.size();
-    QDomElement currentElem;
-
-    for ( int i = 0; i < nChildNodes; ++i )
-    {
-      currentElem = nodeList.at( i ).toElement();
-      if ( currentElem.isNull() )
-      {
-        continue;
-      }
-
-      QPair< QColor, QString> namedColor;
-      namedColor.first =  QgsSymbolLayerV2Utils::decodeColor( currentElem.attribute( "color", "255,255,255,255" ) );
-      namedColor.second = currentElem.attribute( "label", "" );
-
-      droppedColors << namedColor;
-    }
-  }
-
-  if ( droppedColors.length() == 0 && data->hasText() )
-  {
-    //attempt to read color data from mime text
-    QList< QColor > parsedColors = QgsSymbolLayerV2Utils::parseColorList( data->text() );
-    QList< QColor >::iterator it = parsedColors.begin();
-    for ( ; it != parsedColors.end(); ++it )
-    {
-      droppedColors << qMakePair( *it, QString() );
-    }
-  }
-
-  if ( droppedColors.length() == 0 && data->hasColor() )
-  {
-    //attempt to read color data directly from mime
-    QColor mimeColor = data->colorData().value<QColor>();
-    if ( mimeColor.isValid() )
-    {
-      droppedColors << qMakePair( mimeColor, QString() );
-    }
-  }
+  QgsNamedColorList droppedColors = QgsSymbolLayerV2Utils::colorListFromMimeData( data );
 
   if ( droppedColors.length() == 0 )
   {

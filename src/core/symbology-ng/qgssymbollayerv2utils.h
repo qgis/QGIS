@@ -33,6 +33,7 @@ class QgsVectorColorRampV2;
 
 typedef QMap<QString, QString> QgsStringMap;
 typedef QMap<QString, QgsSymbolV2* > QgsSymbolV2Map;
+typedef QList< QPair< QColor, QString > > QgsNamedColorList;
 
 class QDomDocument;
 class QDomElement;
@@ -238,6 +239,23 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QList< QColor > parseColorList( const QString colorStr );
 
     /**
+     * Attempts to parse mime data as a list of named colors
+     * @param data mime data to parse
+     * @returns list of parsed colors
+     * @note added in 2.5
+     */
+    static QgsNamedColorList colorListFromMimeData( const QMimeData *data );
+
+    /**
+     * Creates mime data from a list of named colors
+     * @param colorList list of named colors
+     * @param allFormats set to true to include additional mime formats, include text/plain and application/x-color
+     * @returns mime data containing encoded colors
+     * @note added in 2.5
+     */
+    static QMimeData* colorListToMimeData( const QgsNamedColorList colorList, const bool allFormats = true );
+
+    /**
      * Attempts to parse a string as a color using a variety of common formats, including hex
      * codes, rgb and rgba strings.
      * @param colorStr string representing the color
@@ -322,6 +340,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
      * @note added in 2.2
      */
     static QString fieldOrExpressionFromExpression( QgsExpression* expression );
+
 };
 
 class QPolygonF;
