@@ -456,7 +456,7 @@ void QgsComposerMapGrid::drawGridNoTransform( QgsRenderContext &context, double 
         {
           if ( mGridStyle == QgsComposerMap::Cross )
           {
-            //apply a treshold to avoid calculate point if the two points are very close together (can lead to artifacts)
+            //apply a threshold to avoid calculate point if the two points are very close together (can lead to artifacts)
             crossEnd1 = (( intersectionPoint - vIt->second.p1() ).manhattanLength() > 0.01 ) ?
                         QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, vIt->second.p1(), mCrossLength ) : intersectionPoint;
             crossEnd2 = (( intersectionPoint - vIt->second.p2() ).manhattanLength() > 0.01 ) ?
@@ -496,7 +496,7 @@ void QgsComposerMapGrid::drawGridNoTransform( QgsRenderContext &context, double 
       {
         if ( vIt->second.intersect( hIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
         {
-          //apply a treshold to avoid calculate point if the two points are very close together (can lead to artifacts)
+          //apply a threshold to avoid calculate point if the two points are very close together (can lead to artifacts)
           crossEnd1 = (( intersectionPoint - hIt->second.p1() ).manhattanLength() > 0.01 ) ?
                       QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, hIt->second.p1(), mCrossLength ) : intersectionPoint;
           crossEnd2 = (( intersectionPoint - hIt->second.p2() ).manhattanLength() > 0.01 )  ?

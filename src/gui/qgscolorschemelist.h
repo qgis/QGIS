@@ -28,7 +28,7 @@ class QMimeData;
  * @see QgsColorSchemeList
  * @note introduced in QGIS 2.5
  */
-class QgsColorSwatchDelegate : public QAbstractItemDelegate
+class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
 
@@ -54,7 +54,7 @@ class QgsColorSwatchDelegate : public QAbstractItemDelegate
  * @see QgsColorSchemeList
  * @note introduced in QGIS 2.5
  */
-class CORE_EXPORT QgsColorSchemeModel: public QAbstractItemModel
+class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
 {
     Q_OBJECT
 
