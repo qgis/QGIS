@@ -56,7 +56,8 @@ bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
   if ( dataOk && mLocalSimplification )
   {
     QgsGeometry* geometry = f.geometry();
-    if ( geometry ) simplify( f );
+    if ( geometry )
+      simplify( f );
   }
   return dataOk;
 }
@@ -133,7 +134,8 @@ bool QgsAbstractFeatureIterator::simplify( QgsFeature& feature )
     QgsGeometry* geometry = feature.geometry();
 
     QGis::GeometryType geometryType = geometry->type();
-    if ( geometryType == QGis::Line || geometryType == QGis::Polygon ) return mGeometrySimplifier->simplifyGeometry( geometry );
+    if ( geometryType == QGis::Line || geometryType == QGis::Polygon )
+      return mGeometrySimplifier->simplifyGeometry( geometry );
   }
   return false;
 }
