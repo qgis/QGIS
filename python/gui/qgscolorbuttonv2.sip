@@ -14,7 +14,7 @@ class QgsColorButtonV2: QToolButton
 %End
 
   public:
-    
+
     /**Construct a new color button.
      * @param parent The parent QWidget for the dialog
      * @param cdt The title to show in the color chooser dialog
@@ -157,7 +157,7 @@ class QgsColorButtonV2: QToolButton
     QgsColorSchemeRegistry* colorSchemeRegistry();
 
   public slots:
-  
+
     /**Sets the current color for the button. Will emit a colorChanged signal if the color is different
      * to the previous color.
      * @param color new color for the button
@@ -202,7 +202,7 @@ class QgsColorButtonV2: QToolButton
     void setToDefaultColor();
 
   signals:
-  
+
     /**Is emitted whenever a new color is set for the button. The color is always valid.
      * In case the new color is the same no signal is emitted, to avoid infinite loops.
      * @param color New color
@@ -210,10 +210,10 @@ class QgsColorButtonV2: QToolButton
     void colorChanged( const QColor &color );
 
   protected:
-  
+
     void changeEvent( QEvent* e );
     void showEvent( QShowEvent* e );
-    
+
     /**Returns a checkboard pattern pixmap for use as a background to transparent colors
      */
     static const QPixmap& transparentBackground();
@@ -252,5 +252,5 @@ class QgsColorButtonV2: QToolButton
      * Reimplemented to accept dropped colors
      */
     void dropEvent( QDropEvent *e );
-    
+
 };

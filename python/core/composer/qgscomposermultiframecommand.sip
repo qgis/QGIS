@@ -12,15 +12,15 @@ class QgsComposerMultiFrameCommand : QUndoCommand
 
     void savePreviousState();
     void saveAfterState();
-    
+
     QDomDocument previousState() const;
     QDomDocument afterState() const;
 
     /**Returns true if previous state and after state are valid and different*/
     bool containsChange() const;
-    
+
     const QgsComposerMultiFrame* multiFrame() const;
-     
+
   protected:
 
     QgsComposerMultiFrameCommand(); //forbidden

@@ -15,14 +15,14 @@
  * stacking of items in the composition to the last known state, and emit the corresponding signals
  * as required.
  */
- 
+
 class QgsComposerModel : QAbstractItemModel
 {
 %TypeHeaderCode
 #include "qgscomposermodel.h"
 %End
   public:
-  
+
     /**Constructor
      * @param composition parent composition
      */
@@ -185,7 +185,7 @@ class QgsComposerModel : QAbstractItemModel
     void updateItemVisibility( QgsComposerItem *item );
 
   public slots:
-  
+
     /**Sets an item as the current selection from a QModelIndex
      * @param index QModelIndex of item to set as selected
      * @note added in QGIS 2.5

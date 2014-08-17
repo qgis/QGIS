@@ -59,7 +59,7 @@ class QgsSymbolLayerV2Utils
 
     static QString encodeScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
     static QgsSymbolV2::ScaleMethod decodeScaleMethod( QString str );
-    
+
     static QPainter::CompositionMode decodeBlendMode( const QString& s );
 
     static QIcon symbolPreviewIcon( QgsSymbolV2* symbol, QSize size );
@@ -199,7 +199,7 @@ class QgsSymbolLayerV2Utils
      * @note added in 2.5
      */
     static QList< QColor > parseColorList( const QString colorStr );
-    
+
     /**
      * Attempts to parse mime data as a list of named colors
      * @param data mime data to parse
@@ -216,7 +216,7 @@ class QgsSymbolLayerV2Utils
      * @note added in 2.5
      */
     static QMimeData* colorListToMimeData( const QgsNamedColorList colorList, const bool allFormats = true );
-    
+
     /**
      * Exports colors to a gpl GIMP palette file
      * @param file destination file
@@ -235,7 +235,7 @@ class QgsSymbolLayerV2Utils
      * @see saveColorsToGpl
     */
     static QgsNamedColorList importColorsFromGpl( QFile &file, bool &ok );
-    
+
     /**
      * Attempts to parse a string as a color using a variety of common formats, including hex
      * codes, rgb and rgba strings.

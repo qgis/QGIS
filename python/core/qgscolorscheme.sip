@@ -54,7 +54,7 @@ class QgsColorScheme
      * @see isEditable
     */
     virtual bool setColors( const QgsNamedColorList colors, const QString context = QString(), const QColor baseColor = QColor() );
-    
+
     /**Clones a color scheme
      * @returns copy of color scheme
     */
@@ -108,7 +108,7 @@ class QgsCustomColorScheme : QgsColorScheme
 
     virtual QgsNamedColorList fetchColors( const QString context = QString(),
                                            const QColor baseColor = QColor() );
-                                           
+
     virtual bool isEditable() const;
 
     virtual bool setColors( const QgsNamedColorList colors, const QString context = QString(), const QColor baseColor = QColor() );

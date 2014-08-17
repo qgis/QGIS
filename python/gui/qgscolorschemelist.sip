@@ -30,7 +30,7 @@ class QgsColorSchemeModel: QAbstractItemModel
 %End
 
   public:
-  
+
       /**Constructor
      * @param scheme color scheme for list
      * @param context context string for color scheme
@@ -86,7 +86,7 @@ class QgsColorSchemeModel: QAbstractItemModel
      * @param label label for color
      */
     void addColor( const QColor color, const QString label = QString() );
-    
+
 };
 
 /** \ingroup gui
@@ -137,7 +137,7 @@ class QgsColorSchemeList: QTreeView
      * @see importColorsFromGpl
      */
     bool exportColorsToGpl( QFile &file );
-    
+
   public slots:
 
     /**Removes any selected colors from the list

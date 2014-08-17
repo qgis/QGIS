@@ -64,7 +64,7 @@ class QgsComposerShape: QgsComposerItem
      * QgsComposerItem as it needs to call updateBoundingRect after the shape's size changes
     */
     void setSceneRect( const QRectF& rectangle );
-    
+
     //Overriden to return shape type
     virtual QString displayName() const;
 

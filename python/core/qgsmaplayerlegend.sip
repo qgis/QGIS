@@ -13,7 +13,7 @@ class QgsLayerTreeModelLegendNode : QObject
 %TypeHeaderCode
 #include <qgsmaplayerlegend.h>
 %End
-    
+
   public:
 
     /** Return pointer to the parent layer node */
@@ -82,7 +82,7 @@ class QgsMapLayerLegend : QObject
 %TypeHeaderCode
 #include <qgsmaplayerlegend.h>
 %End
-    
+
   public:
     explicit QgsMapLayerLegend( QObject *parent /TransferThis/ = 0 );
 
