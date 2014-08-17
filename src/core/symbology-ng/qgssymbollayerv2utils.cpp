@@ -2953,6 +2953,101 @@ QMimeData* QgsSymbolLayerV2Utils::colorListToMimeData( const QgsNamedColorList c
   return mimeData;
 }
 
+bool QgsSymbolLayerV2Utils::saveColorsToGpl( QFile &file, const QString paletteName, QgsNamedColorList colors )
+{
+  if ( !file.open( QIODevice::ReadWrite ) )
+  {
+    return false;
+  }
+
+  QTextStream stream( &file );
+  stream << "GIMP Palette" << endl;
+  if ( paletteName.isEmpty() )
+  {
+    stream << "Name: QGIS Palette" << endl;
+  }
+  else
+  {
+    stream << "Name: " << paletteName << endl;
+  }
+  stream << "Columns: 4" << endl;
+  stream << "#" << endl;
+
+  for ( QgsNamedColorList::ConstIterator colorIt = colors.constBegin(); colorIt != colors.constEnd(); ++colorIt )
+  {
+    QColor color = ( *colorIt ).first;
+    if ( !color.isValid() )
+    {
+      continue;
+    }
+    stream << QString( "%1 %2 %3" ).arg( color.red(), 3 ).arg( color.green(), 3 ).arg( color.blue(), 3 );
+    stream << "\t" << (( *colorIt ).second.isEmpty() ? color.name() : ( *colorIt ).second ) << endl;
+  }
+  file.close();
+
+  return true;
+}
+
+QgsNamedColorList QgsSymbolLayerV2Utils::importColorsFromGpl( QFile &file, bool &ok )
+{
+  QgsNamedColorList importedColors;
+
+  if ( !file.open( QIODevice::ReadOnly ) )
+  {
+    ok = false;
+    return importedColors;
+  }
+
+  QTextStream in( &file );
+
+  QString line = in.readLine();
+  if ( !line.startsWith( "GIMP Palette" ) )
+  {
+    ok = false;
+    return importedColors;
+  }
+
+  //ignore lines until after "#"
+  while ( !in.atEnd() && !line.startsWith( "#" ) )
+  {
+    line = in.readLine();
+  }
+  if ( in.atEnd() )
+  {
+    ok = false;
+    return importedColors;
+  }
+
+  //ready to start reading colors
+  while ( !in.atEnd() )
+  {
+    line = in.readLine();
+    QStringList parts = line.simplified().split( " " );
+    if ( parts.length() < 3 )
+    {
+      continue;
+    }
+    int red = parts.at( 0 ).toInt();
+    int green = parts.at( 1 ).toInt();
+    int blue = parts.at( 2 ).toInt();
+    QColor color = QColor( red, green, blue );
+
+    //try to read color name
+    QString label;
+    parts = line.split( "\t" );
+    if ( parts.length() > 1 )
+    {
+      label = parts.at( parts.length() - 1 );
+    }
+
+    importedColors << qMakePair( color, label );
+  }
+
+  file.close();
+  ok = true;
+  return importedColors;
+}
+
 QColor QgsSymbolLayerV2Utils::parseColor( QString colorStr , bool strictEval )
 {
   bool hasAlpha;

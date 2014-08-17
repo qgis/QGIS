@@ -81,7 +81,6 @@ class CORE_EXPORT QgsColorScheme
      * @returns copy of color scheme
     */
     virtual QgsColorScheme* clone() const = 0;
-
 };
 
 /** \ingroup core

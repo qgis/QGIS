@@ -191,7 +191,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>3</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="mProjOpts_01">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -1251,7 +1251,14 @@
                   <string>Project colors</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12">
-                  <item row="5" column="1">
+                  <item row="2" column="1">
+                   <widget class="QPushButton" name="mButtonCopyColors">
+                    <property name="text">
+                     <string>Copy colors</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="1">
                    <spacer name="verticalSpacer_12">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
@@ -1271,16 +1278,6 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="1">
-                   <widget class="QPushButton" name="mButtonRemoveColor">
-                    <property name="text">
-                     <string>Remove color</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0" rowspan="7">
-                   <widget class="QgsColorSchemeList" name="mTreeProjectColors"/>
-                  </item>
                   <item row="3" column="1">
                    <widget class="QPushButton" name="mButtonPasteColors">
                     <property name="text">
@@ -1288,10 +1285,27 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="1">
-                   <widget class="QPushButton" name="mButtonCopyColors">
+                  <item row="1" column="1">
+                   <widget class="QPushButton" name="mButtonRemoveColor">
                     <property name="text">
-                     <string>Copy colors</string>
+                     <string>Remove color</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0" rowspan="8">
+                   <widget class="QgsColorSchemeList" name="mTreeProjectColors"/>
+                  </item>
+                  <item row="4" column="1">
+                   <widget class="QPushButton" name="mButtonImportColors">
+                    <property name="text">
+                     <string>Import</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="1">
+                   <widget class="QPushButton" name="mButtonExportColors">
+                    <property name="text">
+                     <string>Export</string>
                     </property>
                    </widget>
                   </item>
@@ -1322,7 +1336,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>536</width>
+                <width>667</width>
                 <height>1570</height>
                </rect>
               </property>
@@ -2044,8 +2058,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>166</width>
-                <height>46</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2156,59 +2170,59 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>buttonBox</tabstop>
-  <tabstop>mOptionsListWidget</tabstop>
   <tabstop>scrollArea_2</tabstop>
-  <tabstop>cbxAbsolutePath</tabstop>
+  <tabstop>mOptionsListWidget</tabstop>
+  <tabstop>titleEdit</tabstop>
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
-  <tabstop>titleEdit</tabstop>
+  <tabstop>cbxAbsolutePath</tabstop>
+  <tabstop>cmbEllipsoid</tabstop>
   <tabstop>leSemiMajor</tabstop>
   <tabstop>leSemiMinor</tabstop>
-  <tabstop>cmbEllipsoid</tabstop>
-  <tabstop>radDegrees</tabstop>
-  <tabstop>radNMiles</tabstop>
-  <tabstop>radFeet</tabstop>
   <tabstop>radMeters</tabstop>
+  <tabstop>radFeet</tabstop>
+  <tabstop>radNMiles</tabstop>
+  <tabstop>radDegrees</tabstop>
   <tabstop>radD</tabstop>
   <tabstop>radDM</tabstop>
   <tabstop>radDMS</tabstop>
-  <tabstop>spinBoxDP</tabstop>
-  <tabstop>radManual</tabstop>
   <tabstop>radAutomatic</tabstop>
+  <tabstop>radManual</tabstop>
+  <tabstop>spinBoxDP</tabstop>
   <tabstop>grpProjectScales</tabstop>
   <tabstop>lstScales</tabstop>
   <tabstop>pbnAddScale</tabstop>
   <tabstop>pbnRemoveScale</tabstop>
   <tabstop>pbnImportScales</tabstop>
   <tabstop>pbnExportScales</tabstop>
+  <tabstop>mWMSFees</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>cbxProjectionEnabled</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>twIdentifyLayers</tabstop>
   <tabstop>scrollArea_4</tabstop>
+  <tabstop>cboStyleMarker</tabstop>
   <tabstop>pbtnStyleMarker</tabstop>
+  <tabstop>cboStyleLine</tabstop>
   <tabstop>pbtnStyleLine</tabstop>
   <tabstop>cboStyleFill</tabstop>
-  <tabstop>cboStyleMarker</tabstop>
   <tabstop>pbtnStyleFill</tabstop>
-  <tabstop>cboStyleLine</tabstop>
   <tabstop>cboStyleColorRamp</tabstop>
   <tabstop>pbtnStyleColorRamp</tabstop>
   <tabstop>mTransparencySlider</tabstop>
   <tabstop>mTransparencySpinBox</tabstop>
   <tabstop>cbxStyleRandomColors</tabstop>
   <tabstop>pbtnStyleManager</tabstop>
+  <tabstop>mTreeProjectColors</tabstop>
+  <tabstop>mButtonAddColor</tabstop>
+  <tabstop>mButtonRemoveColor</tabstop>
+  <tabstop>mButtonCopyColors</tabstop>
+  <tabstop>mButtonPasteColors</tabstop>
+  <tabstop>mButtonImportColors</tabstop>
+  <tabstop>mButtonExportColors</tabstop>
   <tabstop>scrollArea_5</tabstop>
-  <tabstop>grpOWSServiceCapabilities</tabstop>
-  <tabstop>mWMSTitle</tabstop>
-  <tabstop>mWMSContactOrganization</tabstop>
-  <tabstop>mWMSOnlineResourceLineEdit</tabstop>
-  <tabstop>mWMSContactPerson</tabstop>
-  <tabstop>mWMSContactMail</tabstop>
-  <tabstop>mWMSContactPhone</tabstop>
-  <tabstop>mWMSAbstract</tabstop>
-  <tabstop>mWMSFees</tabstop>
+  <tabstop>mWmsUseLayerIDs</tabstop>
+  <tabstop>buttonBox</tabstop>
   <tabstop>mWMSAccessConstraints</tabstop>
   <tabstop>mWMSKeywordList</tabstop>
   <tabstop>mWMSComposerGroupBox</tabstop>
@@ -2245,6 +2259,14 @@
   <tabstop>mWCSUrlLineEdit</tabstop>
   <tabstop>scrollArea_6</tabstop>
   <tabstop>grpPythonMacros</tabstop>
+  <tabstop>grpOWSServiceCapabilities</tabstop>
+  <tabstop>mWMSTitle</tabstop>
+  <tabstop>mWMSContactOrganization</tabstop>
+  <tabstop>mWMSOnlineResourceLineEdit</tabstop>
+  <tabstop>mWMSContactPerson</tabstop>
+  <tabstop>mWMSContactMail</tabstop>
+  <tabstop>mWMSContactPhone</tabstop>
+  <tabstop>mWMSAbstract</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

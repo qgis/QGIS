@@ -120,13 +120,25 @@ class QgsColorSchemeList: QTreeView
      */
     void setScheme( QgsColorScheme* scheme, const QString context = QString(), const QColor baseColor = QColor() );
 
-  public slots:
-
     /**Saves the current colors shown in the list back to a color scheme, if supported
      * by the color scheme.
      * @note this method is only effective if the color scheme is editable
      */
     bool saveColorsToScheme();
+
+    /**Import colors from a GPL palette file to the list
+     * @param file file to import
+     * @see exportColorsToGpl
+     */
+    bool importColorsFromGpl( QFile &file );
+
+    /**Export colors to a GPL palette file from the list
+     * @param file destination file
+     * @see importColorsFromGpl
+     */
+    bool exportColorsToGpl( QFile &file );
+    
+  public slots:
 
     /**Removes any selected colors from the list
      */

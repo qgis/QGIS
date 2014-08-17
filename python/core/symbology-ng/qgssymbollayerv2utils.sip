@@ -218,6 +218,25 @@ class QgsSymbolLayerV2Utils
     static QMimeData* colorListToMimeData( const QgsNamedColorList colorList, const bool allFormats = true );
     
     /**
+     * Exports colors to a gpl GIMP palette file
+     * @param file destination file
+     * @param paletteName name of palette, which is stored in gpl file
+     * @param colors colors to export
+     * @returns true if export was successful
+     * @see importColorsFromGpl
+    */
+    static bool saveColorsToGpl( QFile &file, const QString paletteName, QgsNamedColorList colors );
+
+    /**
+     * Imports colors from a gpl GIMP palette file
+     * @param file source gpl file
+     * @param ok will be true if file was successfully read
+     * @returns list of imported colors
+     * @see saveColorsToGpl
+    */
+    static QgsNamedColorList importColorsFromGpl( QFile &file, bool &ok );
+    
+    /**
      * Attempts to parse a string as a color using a variety of common formats, including hex
      * codes, rgb and rgba strings.
      * @param colorStr string representing the color

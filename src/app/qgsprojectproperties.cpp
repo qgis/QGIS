@@ -1684,3 +1684,61 @@ void QgsProjectProperties::on_mButtonAddColor_clicked()
 
   mTreeProjectColors->addColor( newColor );
 }
+
+void QgsProjectProperties::on_mButtonImportColors_clicked()
+{
+  QSettings s;
+  QString lastDir = s.value( "/UI/lastGplPaletteDir", "" ).toString();
+  QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, "GPL (*.gpl);;All files (*.*)" );
+  activateWindow();
+  if ( filePath.isEmpty() )
+  {
+    return;
+  }
+
+  //check if file exists
+  QFileInfo fileInfo( filePath );
+  if ( !fileInfo.exists() || !fileInfo.isReadable() )
+  {
+    QMessageBox::critical( 0, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
+    return;
+  }
+
+  s.setValue( "/UI/lastGplPaletteDir", fileInfo.absolutePath() );
+  QFile file( filePath );
+  bool importOk = mTreeProjectColors->importColorsFromGpl( file );
+  if ( !importOk )
+  {
+    QMessageBox::critical( 0, tr( "Invalid file" ), tr( "Error, no colors found in palette file" ) );
+    return;
+  }
+}
+
+void QgsProjectProperties::on_mButtonExportColors_clicked()
+{
+  QSettings s;
+  QString lastDir = s.value( "/UI/lastGplPaletteDir", "" ).toString();
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Palette file" ), lastDir, "GPL (*.gpl)" );
+  activateWindow();
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  // ensure filename contains extension
+  if ( !fileName.toLower().endsWith( ".gpl" ) )
+  {
+    fileName += ".gpl";
+  }
+
+  QFileInfo fileInfo( fileName );
+  s.setValue( "/UI/lastGplPaletteDir", fileInfo.absolutePath() );
+
+  QFile file( fileName );
+  bool exportOk = mTreeProjectColors->exportColorsToGpl( file );
+  if ( !exportOk )
+  {
+    QMessageBox::critical( 0, tr( "Error exporting" ), tr( "Error writing palette file" ) );
+    return;
+  }
+}

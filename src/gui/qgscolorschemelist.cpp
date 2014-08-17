@@ -131,6 +131,37 @@ void QgsColorSchemeList::copyColors()
   QApplication::clipboard()->setMimeData( mimeData );
 }
 
+bool QgsColorSchemeList::importColorsFromGpl( QFile &file )
+{
+  QgsNamedColorList importedColors;
+  bool ok = false;
+  importedColors = QgsSymbolLayerV2Utils::importColorsFromGpl( file, ok );
+  if ( !ok )
+  {
+    return false;
+  }
+
+  if ( importedColors.length() == 0 )
+  {
+    //no imported colors
+    return false;
+  }
+
+  //insert imported colors
+  QgsNamedColorList::const_iterator colorIt = importedColors.constBegin();
+  for ( ; colorIt != importedColors.constEnd(); ++colorIt )
+  {
+    mModel->addColor(( *colorIt ).first, ( *colorIt ).second );
+  }
+
+  return true;
+}
+
+bool QgsColorSchemeList::exportColorsToGpl( QFile &file )
+{
+  return QgsSymbolLayerV2Utils::saveColorsToGpl( file, QString(), mModel->colors() );
+}
+
 //
 // QgsColorSchemeModel
 //
