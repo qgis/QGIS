@@ -1109,7 +1109,7 @@ laden</translation>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="345"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id. Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Auswahl von Objekten nach ID vermeiden.  Manchmal- besonders, wenn teure Abfragen durchgeführt/Sichten abgefragt werden - kann das sequentielle Laden der Objekte deutlich schneller als die Abfrage nach ID sein.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id.  Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -9465,7 +9465,7 @@ Nur %1 von %2 Objekten geschrieben.</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="767"/>
         <source>If defined to YES, extension fields will be written. If the field name not found in the base schema matches the foo_bar pattern, foo will be considered as the namespace of the element, and a &lt;foo:bar&gt; element will be written. Otherwise, elements will be written in the &lt;ogr:&gt; namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn auf YES gesetzt, werten Erweiterungsfelder geschrieben. Wenn der im Grundschema nicht vorhandene Feldname dem foo_bar-Muster entspricht, wird foo als Namensraum des Elements angesehen und eine Element &lt;foo:bar&gt; geschrieben. Anderenfalls werden die Element in den &lt;ogr:&gt;-Namensraum gelegt.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1200"/>
@@ -12103,7 +12103,7 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
         <location filename="../src/app/qgisapp.cpp" line="5511"/>
         <location filename="../src/app/qgisapp.cpp" line="5570"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to Layer-&gt;Toggle editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekte können nur auf Layern im Bearbeitungsmodus verschmolzen werden. Bitte mit Layer-&gt;Bearbeitungsmodus umschalten, um das Verschmelzungswerkzeug zu benutzen</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6730"/>
@@ -15508,12 +15508,12 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/gui/qgscolorschemelist.cpp" line="243"/>
         <source>Color</source>
-        <translation type="unfinished">Farbe</translation>
+        <translation>Farbe</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolorschemelist.cpp" line="245"/>
         <source>Label</source>
-        <translation type="unfinished">Beschriftung</translation>
+        <translation>Beschriftung</translation>
     </message>
 </context>
 <context>
@@ -15521,7 +15521,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/gui/qgscolorschemelist.cpp" line="531"/>
         <source>Select color</source>
-        <translation type="unfinished">Farbe wählen</translation>
+        <translation>Farbe wählen</translation>
     </message>
 </context>
 <context>
@@ -21132,6 +21132,10 @@ und aktuelle Datei ist [%3]</translation>
 <context>
     <name>QgsCustomColorScheme</name>
     <message>
+        <source>Custom color palette</source>
+        <translation type="obsolete">Benutzerfarbpalette</translation>
+    </message>
+    <message>
         <location filename="../src/core/qgscolorscheme.h" line="121"/>
         <source>Standard colors</source>
         <translation>Standardfarben</translation>
@@ -22833,7 +22837,7 @@ nicht angezeigt</translation>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="476"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="479"/>
         <source>Field names are read from the first record. If not selected then fields are numbered</source>
-        <translation type="unfinished"></translation>
+        <translation>Feldnamen werden aus der ersten Zeile gelesen. Wenn nicht gewählt werden die Felder durchnummeriert</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="515"/>
@@ -23146,14 +23150,14 @@ nicht angezeigt</translation>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="922"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="925"/>
         <source>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character. These characters are used in addition to the comma, tab, space, colon, and semicolon options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeichen, um Felder der Textdatei zu trennen. Die Trennzeichen können mehr als ein Zeichen sein. Diese Zeichen werden zusätzlich zu Komma, Tab, Leerzeichen, Doppelpunkt und Semikolon verwendet.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="968"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="971"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="974"/>
         <source>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character). If the escape character is the same as a quote character, it only escapes itself and only within quotes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Ausnahmezeichen erzwingt, dass das folgende Zeichen als normales Zeichen behandelt wird (also nicht als Trennzeichen oder Zeilenumbruch). Wenn ein Ausnahmezeichen selbst ein Anführungszeichen ist, nimmt es sich selbst nur innerhalb von Anführungszeichen aus.</translation>
     </message>
     <message>
         <source>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</source>
@@ -24467,7 +24471,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="468"/>
         <source>Output preview: </source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgabevoransicht:</translation>
     </message>
     <message>
         <source>Output preview:   </source>
@@ -24952,7 +24956,18 @@ An example is (in module MyForms.py):
 Reference in Python Init Function like so: MyForms.open
 
 MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS-Formulare könne eine Python-Funktion haben, die aufgerufen wird, wenn das Formular geöffnet wird.
+Dies Funktion kann dazu benutzt werden dem Formular zusätzliche Logik hinzuzufügen.
+
+Ein Beispiel (in Modul Myforms.py) ist:
+
+          def open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
+
+Referenzierung der Python-Init-Funktion wie folgt: MyForms.open
+
+MyForms.py muß im PYTHONPATH, .qgis/python oder im Projektverzeichnis vorhanden sein.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="141"/>
@@ -37114,11 +37129,11 @@ Immer Netzwerk: immer aus dem Netzwerk laden und nicht prüfen, ob im Cache ein 
     </message>
     <message>
         <source>Color label</source>
-        <translation type="obsolete">Farb Beschriftung</translation>
+        <translation type="obsolete">Farbbeschriftung</translation>
     </message>
     <message>
         <source>Please enter a label for the color</source>
-        <translation type="obsolete">Bitte eine Beschriftung zur Farbe eingeben</translation>
+        <translation type="obsolete">Bitte eine Beschriftung für die Farbe eingeben</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="793"/>
@@ -37833,6 +37848,10 @@ Immer Netzwerk: immer aus dem Netzwerk laden und nicht prüfen, ob im Cache ein 
         <location filename="../src/ui/qgsoptionsbase.ui" line="2227"/>
         <source>Map canvas refresh</source>
         <translation>Kartenaktualisierung</translation>
+    </message>
+    <message>
+        <source>Custom color palette</source>
+        <translation type="obsolete">Benutzerfarbpalette</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2300"/>
@@ -41657,7 +41676,7 @@ Die Fehlermeldung der Datenbank war:
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="631"/>
         <source>Database connection was successful, but no accessible tables were found. Please verify that you have SELECT privilege on a table carrying PostGIS geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datenbankverbindung war erfolgreich, jedoch wurden keine zugänglichen Tabellen gefunden. Bitte stellen Sie sicher, dass Sie das SELECT-Recht für eine Tabelle mit PostGIS-Geometrie haben.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="642"/>
@@ -42168,7 +42187,7 @@ Choose ignore to continue loading without the missing layers. Choose cancel to r
     <message>
         <location filename="../src/core/qgscolorscheme.h" line="146"/>
         <source>Project colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektfarben</translation>
     </message>
 </context>
 <context>
@@ -42371,7 +42390,7 @@ Fortfahren?</translation>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1674"/>
         <source>Select color</source>
-        <translation type="unfinished">Farbe wählen</translation>
+        <translation>Farbe wählen</translation>
     </message>
 </context>
 <context>
@@ -42686,17 +42705,17 @@ Fortfahren?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1251"/>
         <source>Project colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektfarben</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1270"/>
         <source>Add color</source>
-        <translation type="unfinished">Farbe hinzufügen</translation>
+        <translation>Farbe hinzufügen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1277"/>
         <source>Remove color</source>
-        <translation type="unfinished">Farbe entfernen</translation>
+        <translation>Farbe entfernen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1325"/>
@@ -47963,7 +47982,7 @@ aber führt danach zu größerer Geschwindigkeit.</translation>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="215"/>
         <source>Total of features = %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Gesamtzahl der Objekte = %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="218"/>
@@ -48822,7 +48841,23 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt; &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;Wir arbeiten wirklich hart, um diese Software für Sie zu erstellen. Haben Sie all die coolen Funktionen gesehen? Wird Ihnen wohlig warm, wenn Sie damit arbeiten? QGIS ist das Produkt eines Teams das sich ihm aus Spaß and Freude verschrieben hat. Wir möchten dass Sie es kopieren und weitergeben und es so vielen Leute wie möglich zugänglich machen. Wenn Sie mit QGIS Geld sparen oder Sie unsere Arbeit gut finden und die Möglichkeit haben uns finanziell zu unterstützen, überlegen Sie sich bitte, ob Sie die Entwicklung von QGIS nicht vielleicht auch unterstützen wollen. Wir verwenden das Geld unserer Sponsoren um Reise- und sonstige Kosten unserer halbjährlichen Entwicklertreffen und allgemeine Kosten zu decken. Nähere Details finden Sie auf der &lt;/span&gt;&lt;a href=&quot;http://qgis.org/de/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS-Sponsoren-Webseite&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;.  Auf der &lt;/span&gt;&lt;a href=&quot;http://qgis.org/de/site/about/sponsorship.html#list-of-sponsors&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsoren-Seite&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; sehen Sie die guten Menschen und Firmen, die uns finanziell helfen - ein ganz großes Dankeschön ihnen allen!&lt;/span&gt;&lt;/p&gt;&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/gold.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/aas_300wide.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/silver.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/vorarlberg.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/gaia.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/bronze.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -50085,12 +50120,12 @@ Es gab ein Problem mit Ihrer Symboldatenbank.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
         <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn Sie Hilfe bei der Benutzung von QGIS brauchen, gibt es eine englische Anwender-Mailingliste, wo die Anwender sich gegenseitig helfen können. Wir haben außerdem eine englische Entwickler-Mailingliste, auf der über die Codebasis diskutiert werden kann.  Details zum Abonnement stehen in der Abteilung &lt;a href=&quot;http://qgis.org/de/site/forusers/support.html#mailing-lists&quot;&gt;Gemeinschaft&lt;/a&gt; auf der QGIS-Homepage.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="67"/>
         <source>Both used to be correct, but we recently decided to just use &apos;QGIS&apos;. For articles we suggest you write &apos;QGIS is ....&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Beides waren richtig. Wir haben aber kürzlich beschlossen nur noch &apos;QGIS&apos; zu verwenden. In Artikeln sollten Sie &apos;QGIS ist...&apos; schreiben</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="117"/>
@@ -52255,7 +52290,8 @@ Fehler war:%2</translation>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1070"/>
         <source>Could not understand the response. The %1 provider said:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Antwort nicht verstanden. Der %1-Provider sagte:
+%2</translation>
     </message>
     <message>
         <source>Could not understand the response.  The %1 provider said:
@@ -58925,7 +58961,16 @@ Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
 CNR, Milan Unit (Information Technology), Construction Technologies Institute.
 For support send a mail to scala@itc.cnr.it
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Feldbeschreibung:
+* DXF-Eingabedatei: Pfad zur zu konvertierenden DXF-Datei
+* Ausgabe-Shape-Datei: Gewünschter Name der zu erzeugenden Shapedatei
+* Typ der Ausgabe-Shape-Datei: gibt den Typ der Ausgabe-Shape-Datei
+* Beschriftungen exportieren: Es wird ein zusätzlicher Shapepunkt-Layer erzeugt, dessen zugehörige DBF-Tabelle Informationen über das &quot;TEXT&quot;-Feld der DXF-Datei und die Zeichenketten selbst enthält.
+
+---
+Entwickelt von Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
+CNR, Milan Unit (Information Technology), Construction Technologies Institute.
+Unterstützung unter scala@itc.cnr.it</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="157"/>
@@ -59196,7 +59241,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="375"/>
         <source>Run the query entered above. The status of the query will be displayed in the Output Console below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die obige Abfrage ausführen. Der Status der Abfrage wird unten in der Ausgabekonsole angezeigt.</translation>
     </message>
     <message>
         <source>Run the query entered above. The status of the query will be displayed in the Output  Console below.</source>
@@ -59580,7 +59625,7 @@ Base Path (i.e. keep only filename from attribute)</source>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="704"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="768"/>
         <source>If checked, the current check-box setting will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn angehakt, wird die aktuelle Einstellung zur nächsten Sitzung gespeichert.</translation>
     </message>
     <message>
         <source>If checked, the  current check-box setting will be saved for the next session.</source>
