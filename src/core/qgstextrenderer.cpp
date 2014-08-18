@@ -930,7 +930,7 @@ void QgsTextRenderer::drawLabelText( const QgsPoint point, const QSizeF size, co
       // scale for any print output or image saving @ specific dpi
       painter->scale( component.dpiRatio(), component.dpiRatio() );
 
-      if ( drawAsOutlines )
+      if ( !drawAsOutlines )
       {
         // draw outlined text
         _fixQPictureDPI( painter );
