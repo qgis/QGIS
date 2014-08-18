@@ -517,7 +517,7 @@ class QgisInterface : QObject
      */
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false ) = 0;
 
-    virtual QDialog* getFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
+    virtual QgsAttributeDialog* getFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
 
     virtual QgsVectorLayerTools* vectorLayerTools() = 0;
 

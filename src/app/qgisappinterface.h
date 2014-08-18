@@ -450,7 +450,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      *
      * @return A feature form
      */
-    virtual QDialog* getFeatureForm( QgsVectorLayer *layer, QgsFeature &feature );
+    virtual QgsAttributeDialog* getFeatureForm( QgsVectorLayer *layer, QgsFeature &feature );
 
     /**
      * Access the vector layer tools instance.
