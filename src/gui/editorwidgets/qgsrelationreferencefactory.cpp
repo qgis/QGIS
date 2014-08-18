@@ -18,15 +18,17 @@
 #include "qgsrelationreferencewidgetwrapper.h"
 #include "qgsrelreferenceconfigdlg.h"
 
-QgsRelationReferenceFactory::QgsRelationReferenceFactory( QgsAttributeEditorContext context, QString name )
+QgsRelationReferenceFactory::QgsRelationReferenceFactory( QString name, QgsAttributeEditorContext context, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
     : QgsEditorWidgetFactory( name )
     , mEditorContext( context )
+    , mCanvas( canvas )
+    , mMessageBar( messageBar )
 {
 }
 
 QgsEditorWidgetWrapper* QgsRelationReferenceFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
-  return new QgsRelationReferenceWidgetWrapper( vl, fieldIdx, editor, mEditorContext, parent );
+  return new QgsRelationReferenceWidgetWrapper( vl, fieldIdx, editor, mEditorContext, mCanvas, mMessageBar, parent );
 }
 
 QgsEditorConfigWidget* QgsRelationReferenceFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
@@ -43,6 +45,8 @@ QgsEditorWidgetConfig QgsRelationReferenceFactory::readConfig( const QDomElement
   cfg.insert( "AllowNULL", configElement.attribute( "AllowNULL" ) == "1" );
   cfg.insert( "ShowForm", configElement.attribute( "ShowForm" ) == "1" );
   cfg.insert( "Relation", configElement.attribute( "Relation" ) );
+  cfg.insert( "MapIdentification", configElement.attribute( "MapIdentification" ) == "1" );
+  cfg.insert( "ReadOnly", configElement.attribute( "ReadOnly" ) == "1" );
 
   return cfg;
 }
@@ -56,4 +60,6 @@ void QgsRelationReferenceFactory::writeConfig( const QgsEditorWidgetConfig& conf
   configElement.setAttribute( "AllowNULL", config["AllowNULL"].toBool() );
   configElement.setAttribute( "ShowForm", config["ShowForm"].toBool() );
   configElement.setAttribute( "Relation", config["Relation"].toString() );
+  configElement.setAttribute( "MapIdentification", config["MapIdentification"].toBool() );
+  configElement.setAttribute( "ReadOnly", config["ReadOnly"].toBool() );
 }

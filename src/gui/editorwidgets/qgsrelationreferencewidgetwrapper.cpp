@@ -19,9 +19,11 @@
 #include "qgsrelationmanager.h"
 
 
-QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QgsAttributeEditorContext context, QWidget* parent )
+QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QgsAttributeEditorContext context, QgsMapCanvas* canvas, QgsMessageBar* messageBar, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
     , mEditorContext( context )
+    , mCanvas( canvas )
+    , mMessageBar( messageBar )
 {
 }
 
@@ -38,23 +40,36 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
 
   mWidget = w;
 
-  mWidget->setEditorContext( mEditorContext );
+  mWidget->setEditorContext( mEditorContext, mCanvas, mMessageBar );
 
-  mWidget->displayEmbedForm( config( "ShowForm", true ).toBool() );
-  connect( mWidget, SIGNAL( showForm() ), this, SLOT( openForm() ) );
+  bool showForm = config( "ShowForm", true ).toBool();
+  bool mapIdent = config( "MapIdentification", false ).toBool();
+  bool readOnlyWidget = config( "ReadOnly", false ).toBool();
+  mWidget->setEmbedForm( showForm );
+  mWidget->setAllowMapIdentification( mapIdent );
+  mWidget->setReadOnlySelector( readOnlyWidget );
 
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( "Relation" ).toString() );
   mWidget->setRelation( relation, config( "AllowNULL" ).toBool() );
 
-  connect( mWidget, SIGNAL( relatedFeatureChanged( QgsFeatureId ) ), this, SLOT( relatedFeatureChanged( QgsFeatureId ) ) );
+  connect( mWidget, SIGNAL( relatedFeatureChanged( QVariant ) ), this, SIGNAL( valueChanged( QVariant ) ) );
 }
 
 QVariant QgsRelationReferenceWidgetWrapper::value()
 {
   if ( !mWidget )
-    return QVariant();
+    return QVariant( field().type() );
 
-  return mWidget->relatedFeature();
+  QVariant v = mWidget->relatedFeature();
+
+  if ( v.isNull() )
+  {
+    return QVariant( field().type() );
+  }
+  else
+  {
+    return v;
+  }
 }
 
 void QgsRelationReferenceWidgetWrapper::setValue( const QVariant& value )
@@ -71,9 +86,4 @@ void QgsRelationReferenceWidgetWrapper::setEnabled( bool enabled )
     return;
 
   mWidget->setRelationEditable( enabled );
-}
-
-void QgsRelationReferenceWidgetWrapper::relatedFeatureChanged( QgsFeatureId featureId )
-{
-  emit valueChanged( featureId );
 }

@@ -23,7 +23,14 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
 {
     Q_OBJECT
   public:
-    explicit QgsRelationReferenceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QgsAttributeEditorContext context, QWidget* parent = 0 );
+    explicit QgsRelationReferenceWidgetWrapper( QgsVectorLayer* vl,
+        int fieldIdx,
+        QWidget* editor,
+        QgsAttributeEditorContext context,
+        QgsMapCanvas* canvas,
+        QgsMessageBar* messageBar,
+        QWidget* parent = 0 );
+
     virtual QWidget* createWidget( QWidget* parent );
     virtual void initWidget( QWidget* editor );
     virtual QVariant value();
@@ -32,12 +39,11 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     virtual void setValue( const QVariant& value );
     virtual void setEnabled( bool enabled );
 
-  private slots:
-    void relatedFeatureChanged( QgsFeatureId featureId );
-
   private:
     QgsRelationReferenceWidget* mWidget;
     QgsAttributeEditorContext mEditorContext;
+    QgsMapCanvas* mCanvas;
+    QgsMessageBar* mMessageBar;
 };
 
 #endif // QGSRELATIONREFERENCEWIDGETWRAPPER_H
