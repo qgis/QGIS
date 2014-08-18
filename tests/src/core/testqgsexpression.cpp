@@ -223,6 +223,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "regexp 3" ) << "'hello' ~ 'llo$'" << false << QVariant( 1 );
 
       // concatenation
+      QTest::newRow( "concat with plus" ) << "'a' + 'b'" << false << QVariant( "ab" );
       QTest::newRow( "concat" ) << "'a' || 'b'" << false << QVariant( "ab" );
       QTest::newRow( "concat with int" ) << "'a' || 1" << false << QVariant( "a1" );
       QTest::newRow( "concat with int" ) << "2 || 'b'" << false << QVariant( "2b" );

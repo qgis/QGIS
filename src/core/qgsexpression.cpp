@@ -2081,6 +2081,12 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, const Q
   switch ( mOp )
   {
     case boPlus:
+      if ( vL.type() == QVariant::String && vR.type() == QVariant::String )
+      {
+        QString sL = getStringValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
+        QString sR = getStringValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
+        return QVariant( sL + sR );
+      }
     case boMinus:
     case boMul:
     case boDiv:
