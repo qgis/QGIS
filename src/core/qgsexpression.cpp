@@ -27,13 +27,14 @@
 #include <limits>
 
 #include "qgsdistancearea.h"
-#include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsogcutils.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
+#include "qgsvectordataprovider.h"
 #include "qgsstylev2.h"
 
 // from parser
@@ -2643,6 +2644,294 @@ bool QgsExpression::NodeCondition::needsGeometry() const
     return true;
 
   return false;
+}
+
+QCache< QPair< QString, QString >, QHash< QString, QgsAttributes > > QgsExpression::NodeJoin::mJoinCache( 10000000 );
+
+QgsExpression::NodeJoin::NodeJoin( Node* expression, QString* table, QString* joinCondition, QString* alias ) : mExpression( expression ), mCachedAttributes()
+{
+  if ( alias )
+  {
+    mTableAlias = *alias;
+    delete alias;
+  }
+
+  if ( table )
+  {
+    mTableId = *table;
+    delete table;
+  }
+
+  if ( joinCondition )
+  {
+    mJoinCondition = *joinCondition;
+  }
+
+  //table id can be layer name or layer id
+  QList<QgsMapLayer *> layersByName = QgsMapLayerRegistry::instance()->mapLayersByName( mTableId );
+  if ( layersByName.size() > 0 )
+  {
+    mJoinLayer = dynamic_cast<QgsVectorLayer*>( layersByName.at( 0 ) );
+  }
+  else
+  {
+    mJoinLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mTableId ) );
+  }
+
+  if ( !mJoinLayer )
+  {
+    return;
+  }
+
+  if ( mTableAlias.isEmpty() )
+  {
+    mTableAlias = mTableId;
+  }
+
+  //join condition in equi join form ('attribute1 = attribute2') ?
+  QStringList equalSplit = mJoinCondition.split( "=" );
+  if ( equalSplit.size() < 2 )
+  {
+    return;
+  }
+
+  QString attribute1 = equalSplit.at( 0 ).trimmed().remove( "\"" );
+  QString attribute2 = equalSplit.at( 1 ).trimmed().remove( "\"" );
+
+  //join condition attribute1 = attribute2? Otherwise, the whole table needs to be scanned
+  mTargetFieldName = ( attribute1.startsWith( mTableAlias ) && attribute1.contains( "." ) ) ? attribute2 : attribute1;
+  mJoinFieldName = ( attribute1.startsWith( mTableAlias ) && attribute1.contains( "." ) ) ? attribute1.remove( 0, mTableAlias.size() + 1 ) : attribute2.remove( 0, mTableAlias.size() + 1 );
+
+  const QgsFields& joinLayerFields = mJoinLayer->pendingFields();
+  mJoinFieldIndex = joinLayerFields.fieldNameIndex( mJoinFieldName );
+  if ( mJoinFieldIndex < 0 )
+  {
+    delete mJoinLayer; mJoinLayer = 0;
+    return;
+  }
+
+  mCachedAttributes = mJoinCache.object( qMakePair( mJoinLayer->id(), mJoinFieldName ) );
+  if ( !mCachedAttributes )
+  {
+    QHash< QString, QgsAttributes >* cache = new QHash< QString, QgsAttributes >();
+    QgsFeatureIterator fit = mJoinLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
+    QgsFeature f;
+    while ( fit.nextFeature( f ) )
+    {
+      const QgsAttributes& attrs = f.attributes();
+      cache->insert( attrs[mJoinFieldIndex].toString(), attrs );
+    }
+    if ( mJoinCache.insert( qMakePair( mJoinLayer->id(), mJoinFieldName ), cache, cache->size() ) )
+    {
+      mCachedAttributes = cache;
+    }
+  }
+}
+
+QgsExpression::NodeJoin::~NodeJoin()
+{
+  delete mExpression;
+}
+
+QgsExpression::NodeType QgsExpression::NodeJoin::nodeType() const
+{
+  return ntJoin;
+}
+
+QVariant QgsExpression::NodeJoin::eval( QgsExpression* parent, const QgsFeature* f )
+{
+  if ( !mExpression )
+  {
+    return QVariant();
+  }
+
+  if ( !mJoinLayer || !f )
+  {
+    return mExpression->eval( parent, f );
+  }
+
+  QgsFeature feat( mCombinedFields );
+  const QgsAttributes& fAtt = f->attributes();
+  for ( int i = 0; i < fAtt.size(); ++i )
+  {
+    feat.setAttribute( i, fAtt.at( i ) );
+  }
+
+  QVariant targetFieldValue = feat.attribute( mTargetFieldName );
+  if ( mJoinLayer && mCachedAttributes )
+  {
+    addJoinedAttributesFromCache( feat, targetFieldValue );
+  }
+  else if ( mJoinLayer )
+  {
+    addJoinedAttributesDirect( mJoinLayer, feat, targetFieldValue );
+  }
+  return mExpression->eval( parent, &feat );
+}
+
+void QgsExpression::NodeJoin::addJoinedAttributesFromCache( QgsFeature& f, const QVariant& joinValue ) const
+{
+  if ( mCachedAttributes )
+  {
+    QHash< QString, QgsAttributes>::const_iterator it = mCachedAttributes->find( joinValue.toString() );
+    if ( it != mCachedAttributes->constEnd() )
+    {
+      int index = mIndexOffset;
+      const QgsAttributes& attr = it.value();
+      for ( int i = 0; i < attr.count(); ++i )
+      {
+        if ( i != mJoinFieldIndex )
+        {
+          f.setAttribute( index, attr[i] );
+          ++index;
+        }
+      }
+    }
+  }
+}
+
+void QgsExpression::NodeJoin::addJoinedAttributesDirect( QgsVectorLayer* joinLayer, QgsFeature& f, const QVariant& joinValue ) const
+{
+  if ( !joinLayer )
+  {
+    return;
+  }
+
+  // no memory cache, query the joined values by setting substring
+  QString subsetString = mJoinLayer->dataProvider()->subsetString(); // provider might already have a subset string
+  QString bkSubsetString = subsetString;
+  if ( !subsetString.isEmpty() )
+  {
+    subsetString.prepend( "(" ).append( ") AND " );
+  }
+
+  subsetString.append( QString( "\"%1\"" ).arg( mJoinFieldName ) );
+
+  if ( joinValue.isNull() )
+  {
+    subsetString += " IS NULL";
+  }
+  else
+  {
+    QString v = joinValue.toString();
+    switch ( joinValue.type() )
+    {
+      case QVariant::Int:
+      case QVariant::LongLong:
+      case QVariant::Double:
+        break;
+
+      default:
+      case QVariant::String:
+        v.replace( "'", "''" );
+        v.prepend( "'" ).append( "'" );
+        break;
+    }
+    subsetString += "=" + v;
+  }
+
+  mJoinLayer->dataProvider()->setSubsetString( subsetString, false );
+
+  // select (no geometry)
+  QgsFeatureRequest request;
+  request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setSubsetOfAttributes( QgsAttributeList() );
+  QgsFeatureIterator fi = mJoinLayer->getFeatures( request );
+
+  // get first feature
+  QgsFeature fet;
+  if ( fi.nextFeature( fet ) )
+  {
+    int index = mIndexOffset;
+    const QgsAttributes& attr = fet.attributes();
+    for ( int i = 0; i < attr.count(); ++i )
+    {
+      if ( i != mJoinFieldIndex )
+      {
+        f.setAttribute( index, attr[i] );
+        ++index;
+      }
+    }
+  }
+  else
+  {
+    // no suitable join feature found, keeping empty (null) attributes
+  }
+
+  joinLayer->dataProvider()->setSubsetString( bkSubsetString, false );
+}
+
+bool QgsExpression::NodeJoin::prepare( QgsExpression* parent, const QgsFields& fields )
+{
+  if ( !mExpression || !mJoinLayer )
+  {
+    return false;
+  }
+
+  const QgsFields& joinLayerFields = mJoinLayer->pendingFields();
+  mCombinedFields = fields;
+  mIndexOffset = mCombinedFields.size();
+  mJoinFieldIndex = joinLayerFields.fieldNameIndex( mJoinFieldName );
+
+  for ( int i = 0; i < joinLayerFields.size(); ++i )
+  {
+    if ( i != mJoinFieldIndex )
+    {
+      QgsField joinField = joinLayerFields.field( i );
+      joinField.setName( mTableAlias + "." + joinField.name() );
+      mCombinedFields.append( joinField, QgsFields::OriginJoin, joinLayerFields.fieldOriginIndex( i ) );
+    }
+  }
+
+  mExpression->prepare( parent, mCombinedFields );
+  return true;
+}
+
+QString QgsExpression::NodeJoin::dump() const
+{
+  if ( !mExpression )
+  {
+    return QString();
+  }
+
+  QString dump = mExpression->dump() + " JOIN '" + mTableId + "'";
+  if ( mTableAlias != mTableId )
+  {
+    dump += ( " AS '" + mTableAlias + "'" );
+  }
+  dump += ( " ON '" + mJoinCondition + "'" );
+  return dump;
+}
+
+QStringList QgsExpression::NodeJoin::referencedColumns() const
+{
+  QStringList columnList;
+
+  QStringList expressionColumns = mExpression->referencedColumns();
+  QStringList::const_iterator exIt = expressionColumns.constBegin();
+  for ( ; exIt != expressionColumns.constEnd(); ++exIt )
+  {
+    if ( !exIt->startsWith( mTableAlias ) )
+    {
+      columnList.append( *exIt );
+    }
+  }
+
+  if ( !mJoinLayer )
+  {
+    return columnList;
+  }
+
+  return ( columnList << mTargetFieldName );
+}
+
+bool QgsExpression::NodeJoin::needsGeometry() const
+{
+  if ( !mExpression )
+  {
+    return false;
+  }
+  return mExpression->needsGeometry();
 }
 
 QString QgsExpression::helptext( QString name )

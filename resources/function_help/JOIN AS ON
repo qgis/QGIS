@@ -1,0 +1,8 @@
+<h3>JOIN AS ON</h3>
+Does an equi-join with a second layer such that those attributes are also available in the expression
+
+<h4>Syntax</h4>
+<pre>JOIN 'layername' AS 'alias' ON 'attribute = "alias.attribute"'</pre>
+
+<h4>Example</h4>
+<pre> attribute + "alias.attr" JOIN 'joinlayer' AS 'alias' ON 'key_attribute = "alias.join_attribute"'</pre>

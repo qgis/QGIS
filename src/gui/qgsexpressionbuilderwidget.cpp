@@ -84,6 +84,11 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   registerItem( "Conditionals", "CASE", casestring );
   registerItem( "Conditionals", "CASE ELSE", caseelsestring );
 
+  QString joinstring = "JOIN 'layername' ON 'attribute = layername.attribute'";
+  QString joinasstring = "JOIN 'layername' AS 'alias' ON 'attribute = alias.attribute'";
+  registerItem( "Join", "JOIN ON", joinstring );
+  registerItem( "Join", "JOIN AS ON", joinasstring );
+
   // Load the functions from the QgsExpression class
   int count = QgsExpression::functionCount();
   for ( int i = 0; i < count; i++ )
