@@ -17,6 +17,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
    qgiscustomwidgets.cpp
    qgscollapsiblegroupboxplugin.cpp
    qgscolorbuttonplugin.cpp
+   qgscolorbuttonv2plugin.cpp
    qgsdatadefinedbuttonplugin.cpp
    qgsfieldcomboboxplugin.cpp
    qgsfieldexpressionwidgetplugin.cpp
@@ -28,6 +29,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
    qgiscustomwidgets.h
    qgscollapsiblegroupboxplugin.h
    qgscolorbuttonplugin.h
+   qgscolorbuttonv2plugin.h
    qgsdatadefinedbuttonplugin.h
    qgsfieldcomboboxplugin.h
    qgsfieldexpressionwidgetplugin.h
@@ -47,6 +49,7 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgiscustomwidgets.h
   qgscollapsiblegroupboxplugin.h
   qgscolorbuttonplugin.h
+  qgscolorbuttonv2plugin.h
   qgsdatadefinedbuttonplugin.h
   qgsfieldcomboboxplugin.h
   qgsfieldexpressionwidgetplugin.h
