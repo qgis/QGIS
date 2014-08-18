@@ -119,5 +119,23 @@ class TestQgsRelation( TestCase ):
 
         QgsMapLayerRegistry.instance().removeAllMapLayers()
 
+    def test_fieldPairs(self):
+        referencedLayer = createReferencedLayer()
+        referencingLayer = createReferencingLayer()
+        QgsMapLayerRegistry.instance().addMapLayers([referencedLayer,referencingLayer])
+
+        rel = QgsRelation()
+
+        rel.setRelationId( 'rel1' )
+        rel.setRelationName( 'Relation Number One' )
+        rel.setReferencingLayer( referencingLayer.id() )
+        rel.setReferencedLayer( referencedLayer.id() )
+        rel.addFieldPair( 'foreignkey', 'y' )
+
+        assert( rel.fieldPairs() == { 'foreignkey': 'y'} )
+
+        QgsMapLayerRegistry.instance().removeAllMapLayers()
+
+
 if __name__ == '__main__':
     unittest.main()

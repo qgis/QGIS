@@ -165,7 +165,8 @@ class QgsRelation
      */
     QMap< QString, QString > fieldPairs() const;
 %MethodCode
-    QList< QgsRelation::FieldPair > pairs = sipCpp->fieldPairs();
+    const QList< QgsRelation::FieldPair >& pairs = sipCpp->fieldPairs();
+    sipRes = new QMap< QString, QString >();
     Q_FOREACH( const QgsRelation::FieldPair& pair, pairs )
     {
         sipRes->insert( pair.first, pair.second );
