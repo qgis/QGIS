@@ -570,7 +570,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * @return true when dialog was accepted
      * @note added in 1.6
      */
-    virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false ) = 0;
+    virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
 
     /**
      * Returns a feature form for a given feature

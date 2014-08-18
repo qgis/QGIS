@@ -230,6 +230,8 @@ bool QgsAttributeForm::save()
 
   emit featureSaved( updatedFeature );
 
+  mLayer->triggerRepaint();
+
   mIsSaving = false;
 
   return success;

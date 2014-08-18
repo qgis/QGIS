@@ -1585,10 +1585,7 @@ void QgsIdentifyResultsDialog::featureForm()
   QgsFeatureAction action( tr( "Attributes changed" ), f, vlayer, idx, -1, this );
   if ( vlayer->isEditable() )
   {
-    if ( action.editFeature() )
-    {
-      mCanvas->refresh();
-    }
+    action.editFeature( false );
   }
   else
   {

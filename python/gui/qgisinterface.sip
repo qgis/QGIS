@@ -515,7 +515,7 @@ class QgisInterface : QObject
      * @return true when dialog was accepted
      * @note added in 1.6
      */
-    virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false ) = 0;
+    virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
 
     virtual QgsAttributeDialog* getFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
 
