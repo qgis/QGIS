@@ -326,7 +326,7 @@ namespace pal
                             const char* labelText = NULL, double labelPosX = 0.0, double labelPosY = 0.0,
                             bool fixedPos = false, double angle = 0.0, bool fixedAngle = false,
                             int xQuadOffset = 0, int yQuadOffset = 0, double xOffset = 0.0, double yOffset = 0.0,
-                            bool alwaysShow = false );
+                            bool alwaysShow = false, double repeatDistance = 0 );
 
       /** return pointer to feature or NULL if doesn't exist */
       Feature* getFeature( const char* geom_id );
@@ -334,7 +334,8 @@ namespace pal
       /** join connected features with the same label text */
       void joinConnectedFeatures();
 
-      void chopFeatures( double chopInterval );
+      /** chop layer features at the repeat distance **/
+      void chopFeaturesAtRepeatDistance();
 
   };
 

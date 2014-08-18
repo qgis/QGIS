@@ -96,6 +96,8 @@ namespace pal
       bool fixedPosition() const { return fixedPos; }
       //Set label rotation to fixed value
       void setFixedAngle( double a ) { fixedRotation = true; fixedAngle = a; }
+      void setRepeatDistance( double dist ) { repeatDist = dist; }
+      double repeatDistance() const { return repeatDist; }
       void setAlwaysShow( bool bl ) { alwaysShow = bl; }
 
     protected:
@@ -120,8 +122,10 @@ namespace pal
       //Fixed (e.g. data defined) angle only makes sense together with fixed position
       bool fixedRotation;
       double fixedAngle; //fixed angle value (in rad)
+      double repeatDist;
 
       bool alwaysShow; //true is label is to always be shown (but causes overlapping)
+
 
       // array of parts - possibly not necessary
       //int nPart;

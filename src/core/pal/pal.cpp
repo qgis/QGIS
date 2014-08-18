@@ -429,8 +429,8 @@ namespace pal
             if ( layer->getMergeConnectedLines() )
               layer->joinConnectedFeatures();
 
-            if ( layer->getRepeatDistance() > 0 )
-              layer->chopFeatures( layer->getRepeatDistance() );
+            layer->chopFeaturesAtRepeatDistance();
+
 
             context->layer = layer;
             context->priority = layersFactor[i];
