@@ -148,6 +148,7 @@ SET(QGIS_CORE_SRCS
   qgssimplifymethod.cpp
   qgssnapper.cpp
   qgsspatialindex.cpp
+  qgstextrenderer.cpp
   qgstolerance.cpp
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
@@ -532,6 +533,7 @@ SET(QGIS_CORE_HDRS
   qgssimplifymethod.h
   qgssnapper.h
   qgsspatialindex.h
+  qgstextrenderer.h
   qgstolerance.h
   qgsvectordataprovider.h
   qgsvectorlayercache.h
