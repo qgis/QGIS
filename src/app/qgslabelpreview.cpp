@@ -83,7 +83,7 @@ void QgsLabelPreview::paintEvent( QPaintEvent *e )
     mContext->setPainter( &p );
     QgsLabelComponent component;
     component.setText( text() );
-    QgsTextRenderer::drawLabelBuffer( *mContext, component, *mTmpLyr );
+    QgsTextRenderer::drawBufferPart( *mContext, component, *mTmpLyr );
   }
 
   QPainterPath path;

@@ -61,13 +61,13 @@ QgsDxfPalLabeling::~QgsDxfPalLabeling()
   delete mSettings;
 }
 
-void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, QgsTextRenderer::DrawLabelType drawType, double dpiRatio )
+void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, QgsTextRenderer::TextComponentPart drawType, double dpiRatio )
 {
   Q_UNUSED( context );
   Q_UNUSED( drawType );
   Q_UNUSED( dpiRatio );
 
-  if ( drawType == QgsTextRenderer::LabelBuffer )
+  if ( drawType == QgsTextRenderer::LabelPart )
   {
     return;
   }

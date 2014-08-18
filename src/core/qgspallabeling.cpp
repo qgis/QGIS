@@ -3980,15 +3980,15 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
     if ( tmpLyr.shapeDraw )
     {
-      drawLabel( *it, context, tmpLyr, QgsTextRenderer::LabelShape );
+      drawLabel( *it, context, tmpLyr, QgsTextRenderer::ShapePart );
     }
 
     if ( tmpLyr.bufferDraw )
     {
-      drawLabel( *it, context, tmpLyr, QgsTextRenderer::LabelBuffer );
+      drawLabel( *it, context, tmpLyr, QgsTextRenderer::LabelPart );
     }
 
-    drawLabel( *it, context, tmpLyr, QgsTextRenderer::LabelText );
+    drawLabel( *it, context, tmpLyr, QgsTextRenderer::TextPart );
 
     if ( mResults->mLabelSearchTree )
     {
@@ -4106,7 +4106,7 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* p
     drawLabelCandidateRect( lp->getNextPart(), painter, xform );
 }
 
-void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, QgsTextRenderer::DrawLabelType drawType, double dpiRatio )
+void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, QgsTextRenderer::TextComponentPart drawType, double dpiRatio )
 {
   // NOTE: this is repeatedly called for multi-part labels
   const QgsMapToPixel* xform = &context.mapToPixel();
@@ -4121,7 +4121,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
   component.setOrigin( outPt );
   component.setRotation( label->getAlpha() );
 
-  if ( drawType == QgsTextRenderer::LabelShape )
+  if ( drawType == QgsTextRenderer::ShapePart )
   {
     // get rotated label's center point
     QgsPoint centerPt( outPt );
@@ -4141,11 +4141,11 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     component.setCenter( centerPt );
     component.setSize( QgsPoint( label->getWidth(), label->getHeight() ) );
 
-    QgsTextRenderer::drawLabelBackground( context, component, tmpLyr );
+    QgsTextRenderer::drawBackgroundPart( context, component, tmpLyr );
   }
 
-  if ( drawType == QgsTextRenderer::LabelBuffer
-       || drawType == QgsTextRenderer::LabelText )
+  if ( drawType == QgsTextRenderer::LabelPart
+       || drawType == QgsTextRenderer::TextPart )
   {
     QString text = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->text();
     QString txt = ( label->getPartId() == -1 ? text : QString( text[label->getPartId()] ) );
@@ -4204,7 +4204,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     //QgsDebugMsgLevel( "drawLabel " + txt, 4 );
     QStringList multiLineList = txt.split( wrapchr );
 
-    QgsTextRenderer::drawLabelText( outPt, QSizeF(), false, multiLineList, drawType, component, tmpLyr, labelfm, context, mDrawOutlineLabels );
+    QgsTextRenderer::drawTextPart( outPt, QSizeF(), false, multiLineList, drawType, component, tmpLyr, labelfm, context, mDrawOutlineLabels );
   }
 
   // NOTE: this used to be within above multi-line loop block, at end. (a mistake since 2010? [LS])
@@ -4216,21 +4216,21 @@ void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
                                       QgsLabelComponent component,
                                       const QgsPalLayerSettings& tmpLyr )
 {
-  QgsTextRenderer::drawLabelBuffer( context, component, tmpLyr );
+  QgsTextRenderer::drawBufferPart( context, component, tmpLyr );
 }
 
 void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     QgsLabelComponent component,
     const QgsPalLayerSettings& tmpLyr )
 {
-  QgsTextRenderer::drawLabelBackground( context, component, tmpLyr );
+  QgsTextRenderer::drawBackgroundPart( context, component, tmpLyr );
 }
 
 void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
                                       QgsLabelComponent component,
                                       const QgsPalLayerSettings& tmpLyr )
 {
-  QgsTextRenderer::drawLabelShadow( context, component, tmpLyr );
+  QgsTextRenderer::drawShadowPart( context, component, tmpLyr );
 }
 
 void QgsPalLabeling::loadEngineSettings()

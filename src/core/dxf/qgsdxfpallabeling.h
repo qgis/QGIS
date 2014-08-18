@@ -32,7 +32,7 @@ class CORE_EXPORT QgsDxfPalLabeling: public QgsPalLabeling
     ~QgsDxfPalLabeling();
 
     QgsRenderContext& renderContext() { return mRenderContext; }
-    void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, QgsTextRenderer::DrawLabelType drawType, double dpiRatio = 1.0 );
+    void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, QgsTextRenderer::TextComponentPart drawType, double dpiRatio = 1.0 );
 
   private:
     QgsDxfExport* mDxfExport;

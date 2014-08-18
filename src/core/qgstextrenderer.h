@@ -282,13 +282,13 @@ class CORE_EXPORT QgsTextRenderer
 {
   public:
 
-    enum DrawLabelType
+    enum TextComponentPart
     {
-      LabelText = 0,
-      LabelBuffer,
-      LabelShape,
-      LabelSVG,
-      LabelShadow
+      TextPart = 0,
+      LabelPart,
+      ShapePart,
+      SVGPart,
+      ShadowPart
     };
 
     /**Draws text using the specified settings
@@ -298,11 +298,13 @@ class CORE_EXPORT QgsTextRenderer
      * @param context render context
      * @param layerSettings pal layer settings
      * @param dpiRatio scaling for dpi
+     * @param drawAsOutlines set to true to draw text as outlines, rather than
+     * text objects. Drawing as outlines is required for correct rendering of buffered text
      * @note added in QGIS 2.5
      */
     static void drawText( const QRectF rect, const double rotation, const QStringList textLines,
                           QgsRenderContext &context, QgsTextRendererSettings &textSettings,
-                          const double dpiRatio = 1.0, const bool drawAsOutlines = false );
+                          const double dpiRatio = 1.0, const bool drawAsOutlines = true );
 
     /**Draws a part of a label using the specified settings
      * @param rect destination rectangle for text
@@ -314,26 +316,26 @@ class CORE_EXPORT QgsTextRenderer
      * @param dpiRatio scaling for dpi
      * @note added in QGIS 2.5
      */
-    static void drawLabel( const QRectF rect, const double rotation, const QStringList textLines,
-                           QgsRenderContext& context, QgsTextRendererSettings& textSettings,
-                           const DrawLabelType drawType, const double dpiRatio, const bool drawAsOutlines );
+    static void drawPart( const QRectF rect, const double rotation, const QStringList textLines,
+                          QgsRenderContext& context, QgsTextRendererSettings& textSettings,
+                          const TextComponentPart componentPart, const double dpiRatio, const bool drawAsOutlines );
 
-    static void drawLabelBackground( QgsRenderContext& context,
-                                     QgsLabelComponent component,
-                                     const QgsTextRendererSettings& textSettings );
+    static void drawBackgroundPart( QgsRenderContext& context,
+                                    QgsLabelComponent component,
+                                    const QgsTextRendererSettings& textSettings );
 
-    static void drawLabelShadow( QgsRenderContext& context,
-                                 QgsLabelComponent component,
-                                 const QgsTextRendererSettings& textSettings );
+    static void drawShadowPart( QgsRenderContext& context,
+                                QgsLabelComponent component,
+                                const QgsTextRendererSettings& textSettings );
 
-    static void drawLabelBuffer( QgsRenderContext& context,
-                                 QgsLabelComponent component,
-                                 const QgsTextRendererSettings& textSettings );
+    static void drawBufferPart( QgsRenderContext& context,
+                                QgsLabelComponent component,
+                                const QgsTextRendererSettings& textSettings );
 
-    static void drawLabelText( const QgsPoint point, const QSizeF size, const bool drawFromTop, const QStringList textLines,
-                               const DrawLabelType drawType, QgsLabelComponent component,
-                               const QgsTextRendererSettings& settings, const QFontMetricsF* fontMetrics,
-                               QgsRenderContext& context, const bool drawAsOutlines );
+    static void drawTextPart( const QgsPoint point, const QSizeF size, const bool drawFromTop, const QStringList textLines,
+                              const TextComponentPart drawType, QgsLabelComponent component,
+                              const QgsTextRendererSettings& settings, const QFontMetricsF* fontMetrics,
+                              QgsRenderContext& context, const bool drawAsOutlines );
 
 };
 

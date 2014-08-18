@@ -548,7 +548,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
     //!drawLabel
     //! @note not available in python bindings
-    virtual void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, QgsTextRenderer::DrawLabelType drawType, double dpiRatio = 1.0 );
+    virtual void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, QgsTextRenderer::TextComponentPart drawType, double dpiRatio = 1.0 );
 
     Q_DECL_DEPRECATED static void drawLabelBuffer( QgsRenderContext& context,
         QgsLabelComponent component,

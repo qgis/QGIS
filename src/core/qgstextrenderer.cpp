@@ -244,20 +244,20 @@ void QgsTextRenderer::drawText( const QRectF rect, const double rotation, const 
 
   if ( textSettings.shapeDraw )
   {
-    drawLabel( rect, rotation, textLines, context, textSettings, LabelShape, dpiRatio, drawAsOutlines );
+    drawPart( rect, rotation, textLines, context, textSettings, ShapePart, dpiRatio, drawAsOutlines );
   }
 
   if ( textSettings.bufferDraw )
   {
-    drawLabel( rect, rotation, textLines, context, textSettings, LabelBuffer, dpiRatio, drawAsOutlines );
+    drawPart( rect, rotation, textLines, context, textSettings, LabelPart, dpiRatio, drawAsOutlines );
   }
 
-  drawLabel( rect, rotation, textLines, context, textSettings, LabelText, dpiRatio, drawAsOutlines );
+  drawPart( rect, rotation, textLines, context, textSettings, TextPart, dpiRatio, drawAsOutlines );
 }
 
-void QgsTextRenderer::drawLabel( const QRectF rect, const double rotation, const QStringList textLines,
-                                 QgsRenderContext &context, QgsTextRendererSettings& textSettings,
-                                 const DrawLabelType drawType, const double dpiRatio, const bool drawAsOutlines )
+void QgsTextRenderer::drawPart( const QRectF rect, const double rotation, const QStringList textLines,
+                                QgsRenderContext &context, QgsTextRendererSettings& textSettings,
+                                const TextComponentPart componentPart, const double dpiRatio, const bool drawAsOutlines )
 {
   if ( !context.painter() )
   {
@@ -271,7 +271,7 @@ void QgsTextRenderer::drawLabel( const QRectF rect, const double rotation, const
   component.setOrigin( origin );
   component.setRotation( rotation );
 
-  if ( drawType == LabelShape )
+  if ( componentPart == ShapePart )
   {
     // get rotated label's center point
     QgsPoint centerPt( origin );
@@ -290,18 +290,18 @@ void QgsTextRenderer::drawLabel( const QRectF rect, const double rotation, const
     component.setCenter( centerPt );
     component.setSize( QgsPoint( rect.width(), rect.height() ) );
 
-    drawLabelBackground( context, component, textSettings );
+    drawBackgroundPart( context, component, textSettings );
   }
 
-  if ( drawType == LabelBuffer || drawType == LabelText )
+  if ( componentPart == LabelPart || componentPart == TextPart )
   {
     QFontMetricsF fontMetrics = QFontMetricsF( textSettings.textFont );
-    drawLabelText( origin, rect.size(), true, textLines, drawType, component, textSettings, &fontMetrics, context, drawAsOutlines );
+    drawTextPart( origin, rect.size(), true, textLines, componentPart, component, textSettings, &fontMetrics, context, drawAsOutlines );
   }
 
 }
 
-void QgsTextRenderer::drawLabelBackground( QgsRenderContext &context, QgsLabelComponent component, const QgsTextRendererSettings &textSettings )
+void QgsTextRenderer::drawBackgroundPart( QgsRenderContext &context, QgsLabelComponent component, const QgsTextRendererSettings &textSettings )
 {
   if ( !context.painter() )
   {
@@ -441,7 +441,7 @@ void QgsTextRenderer::drawLabelBackground( QgsRenderContext &context, QgsLabelCo
       p->rotate( component.rotationOffset() );
       p->translate( -svgSize / 2, svgSize / 2 );
 
-      drawLabelShadow( context, component, textSettings );
+      drawShadowPart( context, component, textSettings );
       p->restore();
 
       delete svgShdwM;
@@ -584,7 +584,7 @@ void QgsTextRenderer::drawLabelBackground( QgsRenderContext &context, QgsLabelCo
 
       component.setSize( QgsPoint( rect.width(), rect.height() ) );
       component.setOffset( QgsPoint( rect.width() / 2, -rect.height() / 2 ) );
-      drawLabelShadow( context, component, textSettings );
+      drawShadowPart( context, component, textSettings );
     }
 
     p->setOpacity(( 100.0 - ( double )( textSettings.shapeTransparency ) ) / 100.0 );
@@ -601,7 +601,7 @@ void QgsTextRenderer::drawLabelBackground( QgsRenderContext &context, QgsLabelCo
   }
 }
 
-void QgsTextRenderer::drawLabelShadow( QgsRenderContext &context, QgsLabelComponent component, const QgsTextRendererSettings &textSettings )
+void QgsTextRenderer::drawShadowPart( QgsRenderContext &context, QgsLabelComponent component, const QgsTextRendererSettings &textSettings )
 {
   if ( !context.painter() )
   {
@@ -752,7 +752,7 @@ void QgsTextRenderer::drawLabelShadow( QgsRenderContext &context, QgsLabelCompon
   }
 }
 
-void QgsTextRenderer::drawLabelBuffer( QgsRenderContext &context, QgsLabelComponent component, const QgsTextRendererSettings &textSettings )
+void QgsTextRenderer::drawBufferPart( QgsRenderContext &context, QgsLabelComponent component, const QgsTextRendererSettings &textSettings )
 {
   if ( !context.painter() )
   {
@@ -791,7 +791,7 @@ void QgsTextRenderer::drawLabelBuffer( QgsRenderContext &context, QgsLabelCompon
     component.setPicture( &buffPict );
     component.setPictureBuffer( penSize / 2.0 );
 
-    drawLabelShadow( context, component, textSettings );
+    drawShadowPart( context, component, textSettings );
   }
 
   p->save();
@@ -810,7 +810,7 @@ void QgsTextRenderer::drawLabelBuffer( QgsRenderContext &context, QgsLabelCompon
   p->restore();
 }
 
-void QgsTextRenderer::drawLabelText( const QgsPoint point, const QSizeF size, const bool drawFromTop, const QStringList textLines, const DrawLabelType drawType, QgsLabelComponent component, const QgsTextRendererSettings &settings, const QFontMetricsF *fontMetrics, QgsRenderContext &context, const bool drawAsOutlines )
+void QgsTextRenderer::drawTextPart( const QgsPoint point, const QSizeF size, const bool drawFromTop, const QStringList textLines, const TextComponentPart drawType, QgsLabelComponent component, const QgsTextRendererSettings &settings, const QFontMetricsF *fontMetrics, QgsRenderContext &context, const bool drawAsOutlines )
 {
   if ( !context.painter() )
   {
@@ -887,10 +887,10 @@ void QgsTextRenderer::drawLabelText( const QgsPoint point, const QSizeF size, co
     component.setRotation( -component.rotation() * 180 / M_PI );
     component.setRotationOffset( 0.0 );
 
-    if ( drawType == LabelBuffer )
+    if ( drawType == LabelPart )
     {
       // draw label's buffer
-      drawLabelBuffer( context, component, settings );
+      drawBufferPart( context, component, settings );
     }
     else
     {
@@ -918,7 +918,7 @@ void QgsTextRenderer::drawLabelText( const QgsPoint point, const QSizeF size, co
         component.setPictureBuffer( 0.0 ); // no pen width to deal with
         component.setOrigin( QgsPoint( 0.0, 0.0 ) );
 
-        drawLabelShadow( context, component, settings );
+        drawShadowPart( context, component, settings );
       }
 
       // paint the text
@@ -930,7 +930,7 @@ void QgsTextRenderer::drawLabelText( const QgsPoint point, const QSizeF size, co
       // scale for any print output or image saving @ specific dpi
       painter->scale( component.dpiRatio(), component.dpiRatio() );
 
-      if ( !drawAsOutlines )
+      if ( drawAsOutlines )
       {
         // draw outlined text
         _fixQPictureDPI( painter );
