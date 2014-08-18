@@ -213,10 +213,8 @@ class QgsMapLayerRegistry : QObject
      */
     void legendLayersAdded( QList<QgsMapLayer*> theMapLayers );
 
-  protected:
-    //! protected constructor
-    QgsMapLayerRegistry( QObject * parent = 0 );
-
   private:
+    QgsMapLayerRegistry(); // private 'cause it's a singleton
+
     void connectNotify( const char * signal );
 }; // class QgsMapLayerRegistry

@@ -239,15 +239,15 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     void legendLayersAdded( QList<QgsMapLayer*> theMapLayers );
 
   protected:
-    //! protected constructor
-    QgsMapLayerRegistry( QObject * parent = 0 );
-
     /** debugging member
         invoked when a connect() is made to this object
     */
     void connectNotify( const char * signal );
 
   private:
+    //! private singleton constructor
+    QgsMapLayerRegistry( QObject * parent = 0 );
+
     static QgsMapLayerRegistry *mInstance;
     QMap<QString, QgsMapLayer*> mMapLayers;
     QSet<QgsMapLayer*> mOwnedLayers;
