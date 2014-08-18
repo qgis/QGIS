@@ -14,27 +14,29 @@ ENDIF (WIN32)
 # Files
 
 SET (QGIS_CUSTOMWIDGETS_SRCS
-   qgiscustomwidgets.cpp
-   qgscollapsiblegroupboxplugin.cpp
-   qgscolorbuttonplugin.cpp
-   qgscolorbuttonv2plugin.cpp
-   qgsdatadefinedbuttonplugin.cpp
-   qgsfieldcomboboxplugin.cpp
-   qgsfieldexpressionwidgetplugin.cpp
-   qgsmaplayercomboboxplugin.cpp
-   qgsscalerangewidgetplugin.cpp
+  qgiscustomwidgets.cpp
+  qgscollapsiblegroupboxplugin.cpp
+  qgscolorbuttonplugin.cpp
+  qgscolorbuttonv2plugin.cpp
+  qgsdatadefinedbuttonplugin.cpp
+  qgsfieldcomboboxplugin.cpp
+  qgsfieldexpressionwidgetplugin.cpp
+  qgsmaplayercomboboxplugin.cpp
+  qgsrelationreferencewidgetplugin.cpp
+  qgsscalerangewidgetplugin.cpp
 )
 
 SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
-   qgiscustomwidgets.h
-   qgscollapsiblegroupboxplugin.h
-   qgscolorbuttonplugin.h
-   qgscolorbuttonv2plugin.h
-   qgsdatadefinedbuttonplugin.h
-   qgsfieldcomboboxplugin.h
-   qgsfieldexpressionwidgetplugin.h
-   qgsmaplayercomboboxplugin.h
-   qgsscalerangewidgetplugin.h
+  qgiscustomwidgets.h
+  qgscollapsiblegroupboxplugin.h
+  qgscolorbuttonplugin.h
+  qgscolorbuttonv2plugin.h
+  qgsdatadefinedbuttonplugin.h
+  qgsfieldcomboboxplugin.h
+  qgsfieldexpressionwidgetplugin.h
+  qgsmaplayercomboboxplugin.h
+  qgsrelationreferencewidgetplugin.h
+  qgsscalerangewidgetplugin.h
 )
 
 QT4_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
@@ -54,6 +56,7 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgsfieldcomboboxplugin.h
   qgsfieldexpressionwidgetplugin.h
   qgsmaplayercomboboxplugin.h
+  qgsrelationreferencewidgetplugin.h
   qgsscalerangewidgetplugin.h
 )
 
@@ -65,7 +68,9 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} 
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/
+  ${CMAKE_CURRENT_SOURCE_DIR}/../core/symbology-ng/
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/
+  ${CMAKE_CURRENT_SOURCE_DIR}/../gui/editorwidgets/
   # ${CMAKE_CURRENT_BINARY_DIR}/../ui (no UI file yet)
 )
 
