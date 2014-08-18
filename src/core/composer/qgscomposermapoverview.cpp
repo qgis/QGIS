@@ -203,7 +203,7 @@ void QgsComposerMapOverview::setFrameMap( const int mapId )
   }
 
   //disconnect old map
-  if ( mFrameMapId != -1 && mComposerMap->composition() )
+  if ( mFrameMapId != -1 && mComposerMap && mComposerMap->composition() )
   {
     const QgsComposerMap* map = mComposerMap->composition()->getComposerMapById( mFrameMapId );
     if ( map )
@@ -218,6 +218,11 @@ void QgsComposerMapOverview::setFrameMap( const int mapId )
 
 void QgsComposerMapOverview::connectSignals()
 {
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
   if ( mFrameMapId != -1 && mComposerMap->composition() )
   {
     const QgsComposerMap* map = mComposerMap->composition()->getComposerMapById( mFrameMapId );
@@ -258,7 +263,7 @@ void QgsComposerMapOverview::overviewExtentChanged()
   }
 
   //if using overview centering, update the map's extent
-  if ( mComposerMap && mComposerMap->composition() && mCentered && mFrameMapId != -1 )
+  if ( mComposerMap->composition() && mCentered && mFrameMapId != -1 )
   {
     QgsRectangle extent = *mComposerMap->currentMapExtent();
 

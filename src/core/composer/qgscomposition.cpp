@@ -1057,8 +1057,9 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     QgsComposerMap* map = ( *mit );
     if ( map )
     {
-      QList<QgsComposerMapOverview* >::iterator overviewIt = map->mapOverviews().begin();
-      for ( ; overviewIt != map->mapOverviews().end(); ++overviewIt )
+      QList<QgsComposerMapOverview* > overviews = map->mapOverviews();
+      QList<QgsComposerMapOverview* >::iterator overviewIt = overviews.begin();
+      for ( ; overviewIt != overviews.end(); ++overviewIt )
       {
         ( *overviewIt )->connectSignals();
       }
