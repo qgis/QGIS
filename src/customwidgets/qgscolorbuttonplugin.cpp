@@ -71,12 +71,12 @@ void QgsColorButtonPlugin::initialize( QDesignerFormEditorInterface *core )
 
 QString QgsColorButtonPlugin::toolTip() const
 {
-  return "A widget to define the scale range";
+  return "Select color";
 }
 
 QString QgsColorButtonPlugin::whatsThis() const
 {
-  return "A widget to define the scale range.";
+  return "";
 }
 
 QString QgsColorButtonPlugin::domXml() const
