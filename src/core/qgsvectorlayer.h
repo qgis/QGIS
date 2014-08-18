@@ -1514,6 +1514,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void removeSelection();
 
+    /**
+     * Will advice the map canvas (and any other interested party) that this layer requires to be repainted.
+     * Will emit a repaintRequested() signal.
+     */
     void triggerRepaint();
 
     /** Update the extents for the layer. This is necessary if features are
