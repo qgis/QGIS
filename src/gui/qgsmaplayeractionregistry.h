@@ -62,7 +62,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     void triggerForLayer( QgsMapLayer* layer );
 
     /** Define the availibility of the action */
-    void setAvailability( Availability availabitly ) {mAvailability = availabitly;}
+    void setAvailability( Availability availability ) {mAvailability = availability;}
     /** Return availibity of action */
     Availability availability() const {return mAvailability;}
 

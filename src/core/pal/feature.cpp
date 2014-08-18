@@ -382,10 +382,12 @@ namespace pal
     //if (nbp==2)
     //   beta = M_PI/2;
 
-    /*double distlabel =  unit_convert( this->distlabel,
+#if 0
+    double distlabel =  unit_convert( this->distlabel,
                                      pal::PIXEL,
                                      layer->pal->map_unit,
-                                     dpi, scale, delta_width );*/
+                                     dpi, scale, delta_width );
+#endif
 
     double lx, ly; /* label pos */
 
@@ -529,10 +531,12 @@ namespace pal
                         dpi, scale, delta_width );
 
 
-    /*double distlabel = unit_convert( this->distlabel,
+#if 0
+    double distlabel = unit_convert( this->distlabel,
                                      pal::PIXEL,
                                      layer->pal->map_unit,
-                                     dpi, scale, delta_width );*/
+                                     dpi, scale, delta_width );
+#endif
 
 
     double *d; // segments lengths distance bw pt[i] && pt[i+1]

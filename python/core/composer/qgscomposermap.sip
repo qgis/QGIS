@@ -494,7 +494,7 @@ class QgsComposerMap : QgsComposerItem
      * @see currentMapExtent
     */
     QPolygonF visibleExtentPolygon() const;
-    
+
     //overriden to show "Map 1" type names
     virtual QString displayName() const;
 

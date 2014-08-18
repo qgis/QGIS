@@ -32,9 +32,9 @@ class QgsMapLayerAction : QAction
     void triggerForLayer( QgsMapLayer* layer );
 
     /** Define the availibility of the action */
-    void setAvailability( Availability availibitly );
+    void setAvailability( Availability availability );
     Availability availability() const;
-    
+
   signals:
     /** Triggered when action has been run for a specific feature */
     void triggeredForFeature( QgsMapLayer* layer, QgsFeature* feature );

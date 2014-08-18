@@ -33,7 +33,7 @@ class QgsComposerUtils
      * @param y in/out: y cooreinate before / after the rotation
     */
     static void rotate( const double angle, double& x, double& y );
-    
+
     /**Ensures that an angle is in the range 0 <= angle < 360
      * @param angle angle in degrees
      * @returns equivalent angle within the range [0, 360)

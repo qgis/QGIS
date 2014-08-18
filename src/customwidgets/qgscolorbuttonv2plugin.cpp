@@ -1,7 +1,7 @@
 /***************************************************************************
-   qgscolorbuttonplugin.cpp
+   qgscolorbuttonv2plugin.cpp
     --------------------------------------
-   Date                 : 25.04.2014
+   Date                 : 18.08.2014
    Copyright            : (C) 2014 Denis Rouzaud
    Email                : denis.rouzaud@gmail.com
 ***************************************************************************
@@ -14,53 +14,53 @@
 ***************************************************************************/
 
 #include "qgiscustomwidgets.h"
-#include "qgscolorbuttonplugin.h"
-#include "qgscolorbutton.h"
+#include "qgscolorbuttonv2plugin.h"
+#include "qgscolorbuttonv2.h"
 
 
-QgsColorButtonPlugin::QgsColorButtonPlugin( QObject *parent )
+QgsColorButtonV2Plugin::QgsColorButtonV2Plugin( QObject *parent )
     : QObject( parent )
     , mInitialized( false )
 {
 }
 
 
-QString QgsColorButtonPlugin::name() const
+QString QgsColorButtonV2Plugin::name() const
 {
-  return "QgsColorButton";
+  return "QgsColorButtonV2";
 }
 
-QString QgsColorButtonPlugin::group() const
+QString QgsColorButtonV2Plugin::group() const
 {
   return QgisCustomWidgets::groupName();
 }
 
-QString QgsColorButtonPlugin::includeFile() const
+QString QgsColorButtonV2Plugin::includeFile() const
 {
-  return "qgscolorbutton.h";
+  return "qgscolorbuttonv2.h";
 }
 
-QIcon QgsColorButtonPlugin::icon() const
+QIcon QgsColorButtonV2Plugin::icon() const
 {
   return QIcon();
 }
 
-bool QgsColorButtonPlugin::isContainer() const
+bool QgsColorButtonV2Plugin::isContainer() const
 {
   return false;
 }
 
-QWidget *QgsColorButtonPlugin::createWidget( QWidget *parent )
+QWidget *QgsColorButtonV2Plugin::createWidget( QWidget *parent )
 {
-  return new QgsColorButton( parent );
+  return new QgsColorButtonV2( parent );
 }
 
-bool QgsColorButtonPlugin::isInitialized() const
+bool QgsColorButtonV2Plugin::isInitialized() const
 {
   return mInitialized;
 }
 
-void QgsColorButtonPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsColorButtonV2Plugin::initialize( QDesignerFormEditorInterface *core )
 {
   Q_UNUSED( core );
   if ( mInitialized )
@@ -69,17 +69,17 @@ void QgsColorButtonPlugin::initialize( QDesignerFormEditorInterface *core )
 }
 
 
-QString QgsColorButtonPlugin::toolTip() const
+QString QgsColorButtonV2Plugin::toolTip() const
 {
   return "Select color";
 }
 
-QString QgsColorButtonPlugin::whatsThis() const
+QString QgsColorButtonV2Plugin::whatsThis() const
 {
   return "";
 }
 
-QString QgsColorButtonPlugin::domXml() const
+QString QgsColorButtonV2Plugin::domXml() const
 {
   return QString( "<ui language=\"c++\">\n"
                   " <widget class=\"%1\" name=\"mColorButton\">\n"

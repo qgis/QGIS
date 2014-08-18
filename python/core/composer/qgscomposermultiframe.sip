@@ -72,7 +72,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @note added in version 2.5
     */
     virtual QString displayName() const;
-    
+
   public slots:
 
     /**Recalculates the portion of the multiframe item which is shown in each of it's
@@ -90,7 +90,7 @@ class QgsComposerMultiFrame: QgsComposerObject
 
   signals:
     void changed();
-    
+
     /**Emitted when the contents of the multi frame have changed and the frames
      * must be redrawn.
     */

@@ -188,7 +188,7 @@ public:
     const QString& currentFilename() const;
 
     void writeXML( QDomElement& elem, QDomDocument& doc ) const;
-    
+
     /**Reads general atlas settings from xml
      * @param elem a QDomElement holding the atlas properties.
      * @param doc QDomDocument for the source xml.

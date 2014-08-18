@@ -150,7 +150,7 @@ class OTBAlgorithm(GeoAlgorithm):
                     if line.startswith("*Parameter"):
                         param = ParameterFactory.getFromString(line[1:])
                         param.isAdvanced = True
-                    else:    
+                    else:
                         param = getParameterFromString(line)
                     # Hack for initializing the elevation parameters from Processing configuration
                     if param.name == "-elev.dem.path" or param.name == "-elev.dem" or "elev.dem" in param.name:

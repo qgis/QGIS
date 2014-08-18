@@ -551,7 +551,7 @@ void QgsVectorLayerFeatureIterator::addVirtualAttributes( QgsFeature& f )
   {
     QMap<int, QgsExpression*>::ConstIterator it = mExpressionFieldInfo.constBegin();
 
-    for( ; it != mExpressionFieldInfo.constEnd(); ++it )
+    for ( ; it != mExpressionFieldInfo.constEnd(); ++it )
     {
       QgsExpression* exp = it.value();
       QVariant val = exp->evaluate( f );

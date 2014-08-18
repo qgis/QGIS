@@ -2281,7 +2281,35 @@
                   <string>Standard colors</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12">
-                  <item row="2" column="1">
+                  <item row="3" column="1">
+                   <widget class="QPushButton" name="mButtonPasteColors">
+                    <property name="text">
+                     <string>Paste colors</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="1">
+                   <widget class="QPushButton" name="mButtonExportColors">
+                    <property name="text">
+                     <string>Export</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QPushButton" name="mButtonAddColor">
+                    <property name="text">
+                     <string>Add color</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QPushButton" name="mButtonRemoveColor">
+                    <property name="text">
+                     <string>Remove color</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="1">
                    <spacer name="verticalSpacer_12">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
@@ -2294,39 +2322,22 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="0" column="1">
-                   <widget class="QPushButton" name="mButtonAddColor">
+                  <item row="2" column="1">
+                   <widget class="QPushButton" name="mButtonCopyColors">
                     <property name="text">
-                     <string>Add color</string>
+                     <string>Copy colors</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0" rowspan="4">
-                   <widget class="QTreeWidget" name="mTreeCustomColors">
-                    <property name="rootIsDecorated">
-                     <bool>false</bool>
+                  <item row="4" column="1">
+                   <widget class="QPushButton" name="mButtonImportColors">
+                    <property name="text">
+                     <string>Import</string>
                     </property>
-                    <property name="columnCount">
-                     <number>2</number>
-                    </property>
-                    <column>
-                     <property name="text">
-                      <string>Color</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Label</string>
-                     </property>
-                    </column>
                    </widget>
                   </item>
-                  <item row="1" column="1">
-                   <widget class="QPushButton" name="mButtonRemoveColor">
-                    <property name="text">
-                     <string>Remove color</string>
-                    </property>
-                   </widget>
+                  <item row="0" column="0" rowspan="8">
+                   <widget class="QgsColorSchemeList" name="mTreeCustomColors"/>
                   </item>
                  </layout>
                 </widget>
@@ -4704,11 +4715,205 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsColorSchemeList</class>
+   <extends>QTreeView</extends>
+   <header>qgscolorschemelist.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScaleComboBox</class>
    <extends>QWidget</extends>
    <header>qgsscalecombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>mOptionsListWidget</tabstop>
+  <tabstop>mOptionsScrollArea_01</tabstop>
+  <tabstop>cmbStyle</tabstop>
+  <tabstop>cmbTheme</tabstop>
+  <tabstop>cmbIconSize</tabstop>
+  <tabstop>mFontFamilyRadioQt</tabstop>
+  <tabstop>mFontFamilyRadioCustom</tabstop>
+  <tabstop>mFontFamilyComboBox</tabstop>
+  <tabstop>spinFontSize</tabstop>
+  <tabstop>mMessageTimeoutSpnBx</tabstop>
+  <tabstop>cbxHideSplash</tabstop>
+  <tabstop>cbxShowTips</tabstop>
+  <tabstop>mBoldGroupBoxTitleChkBx</tabstop>
+  <tabstop>mCustomGroupBoxChkBx</tabstop>
+  <tabstop>mLiveColorDialogsChkBx</tabstop>
+  <tabstop>mCustomSideBarSide</tabstop>
+  <tabstop>mProjectOnLaunchCmbBx</tabstop>
+  <tabstop>mProjectOnLaunchPushBtn</tabstop>
+  <tabstop>mProjectOnLaunchLineEdit</tabstop>
+  <tabstop>cbxProjectDefaultNew</tabstop>
+  <tabstop>pbnProjectDefaultSetCurrent</tabstop>
+  <tabstop>pbnProjectDefaultReset</tabstop>
+  <tabstop>leTemplateFolder</tabstop>
+  <tabstop>pbnTemplateFolderBrowse</tabstop>
+  <tabstop>pbnTemplateFolderReset</tabstop>
+  <tabstop>chbAskToSaveProjectChanges</tabstop>
+  <tabstop>mLayerDeleteConfirmationChkBx</tabstop>
+  <tabstop>chbWarnOldProjectVersion</tabstop>
+  <tabstop>cmbEnableMacros</tabstop>
+  <tabstop>mOptionsScrollArea_03</tabstop>
+  <tabstop>mBtnAddSVGPath</tabstop>
+  <tabstop>mBtnRemoveSVGPath</tabstop>
+  <tabstop>mListSVGPaths</tabstop>
+  <tabstop>mBtnAddPluginPath</tabstop>
+  <tabstop>mBtnRemovePluginPath</tabstop>
+  <tabstop>mListPluginPaths</tabstop>
+  <tabstop>mRestoreDefaultWindowStateBtn</tabstop>
+  <tabstop>mRemoveCustomVarBtn</tabstop>
+  <tabstop>mAddCustomVarBtn</tabstop>
+  <tabstop>mCurrentVariablesTable</tabstop>
+  <tabstop>mCurrentVariablesQGISChxBx</tabstop>
+  <tabstop>mCustomVariablesChkBx</tabstop>
+  <tabstop>mCustomVariablesTable</tabstop>
+  <tabstop>mOptionsScrollArea_11</tabstop>
+  <tabstop>cbxAttributeTableDocked</tabstop>
+  <tabstop>cbxCopyWKTGeomFromTable</tabstop>
+  <tabstop>cmbAttrTableBehaviour</tabstop>
+  <tabstop>spinBoxAttrTableRowCache</tabstop>
+  <tabstop>leNullValue</tabstop>
+  <tabstop>cmbScanItemsInBrowser</tabstop>
+  <tabstop>cmbScanZipInBrowser</tabstop>
+  <tabstop>cmbPromptRasterSublayers</tabstop>
+  <tabstop>cbxIgnoreShapeEncoding</tabstop>
+  <tabstop>cbxAddPostgisDC</tabstop>
+  <tabstop>cbxAddOracleDC</tabstop>
+  <tabstop>mOptionsScrollArea_04</tabstop>
+  <tabstop>chkAddedVisibility</tabstop>
+  <tabstop>chkUseRenderCaching</tabstop>
+  <tabstop>chkParallelRendering</tabstop>
+  <tabstop>chkMaxThreads</tabstop>
+  <tabstop>spinMaxThreads</tabstop>
+  <tabstop>spinMapUpdateInterval</tabstop>
+  <tabstop>mSimplifyDrawingGroupBox</tabstop>
+  <tabstop>mSimplifyDrawingSpinBox</tabstop>
+  <tabstop>mSimplifyDrawingAtProvider</tabstop>
+  <tabstop>chkAntiAliasing</tabstop>
+  <tabstop>spnRed</tabstop>
+  <tabstop>spnGreen</tabstop>
+  <tabstop>spnBlue</tabstop>
+  <tabstop>cboxContrastEnhancementAlgorithmSingleBand</tabstop>
+  <tabstop>cboxContrastEnhancementAlgorithmMultiBandSingleByte</tabstop>
+  <tabstop>cboxContrastEnhancementAlgorithmMultiBandMultiByte</tabstop>
+  <tabstop>cboxContrastEnhancementLimits</tabstop>
+  <tabstop>mRasterCumulativeCutLowerDoubleSpinBox</tabstop>
+  <tabstop>mRasterCumulativeCutUpperDoubleSpinBox</tabstop>
+  <tabstop>spnThreeBandStdDev</tabstop>
+  <tabstop>mLogCanvasRefreshChkBx</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>pbnSelectionColor</tabstop>
+  <tabstop>pbnCanvasColor</tabstop>
+  <tabstop>mOptionsScrollArea_06</tabstop>
+  <tabstop>mTreeCustomColors</tabstop>
+  <tabstop>mButtonAddColor</tabstop>
+  <tabstop>mButtonRemoveColor</tabstop>
+  <tabstop>mButtonCopyColors</tabstop>
+  <tabstop>mButtonPasteColors</tabstop>
+  <tabstop>mButtonImportColors</tabstop>
+  <tabstop>mButtonExportColors</tabstop>
+  <tabstop>mLegendLayersBoldChkBx</tabstop>
+  <tabstop>cbxLegendClassifiers</tabstop>
+  <tabstop>mLegendGroupsBoldChkBx</tabstop>
+  <tabstop>cbxCreateRasterLegendIcons</tabstop>
+  <tabstop>mLegendGraphicResolutionSpinBox</tabstop>
+  <tabstop>mOptionsScrollArea_05</tabstop>
+  <tabstop>spinBoxIdentifyValue</tabstop>
+  <tabstop>mIdentifyHighlightColorButton</tabstop>
+  <tabstop>mIdentifyHighlightBufferSpinBox</tabstop>
+  <tabstop>mIdentifyHighlightMinWidthSpinBox</tabstop>
+  <tabstop>radMeters</tabstop>
+  <tabstop>radFeet</tabstop>
+  <tabstop>radNautical</tabstop>
+  <tabstop>radDegrees</tabstop>
+  <tabstop>mDegreesRadioButton</tabstop>
+  <tabstop>mRadiansRadioButton</tabstop>
+  <tabstop>mDecimalPlacesSpinBox</tabstop>
+  <tabstop>mKeepBaseUnitCheckBox</tabstop>
+  <tabstop>mGonRadioButton</tabstop>
+  <tabstop>pbnMeasureColor</tabstop>
+  <tabstop>spinZoomFactor</tabstop>
+  <tabstop>cmbWheelAction</tabstop>
+  <tabstop>mListGlobalScales</tabstop>
+  <tabstop>pbnAddScale</tabstop>
+  <tabstop>pbnRemoveScale</tabstop>
+  <tabstop>pbnDefaultScaleValues</tabstop>
+  <tabstop>pbnImportScales</tabstop>
+  <tabstop>pbnExportScales</tabstop>
+  <tabstop>mOptionsScrollArea_12</tabstop>
+  <tabstop>mComposerFontComboBox</tabstop>
+  <tabstop>mGridStyleComboBox</tabstop>
+  <tabstop>mGridColorButton</tabstop>
+  <tabstop>mGridResolutionSpinBox</tabstop>
+  <tabstop>mOffsetXSpinBox</tabstop>
+  <tabstop>mOffsetYSpinBox</tabstop>
+  <tabstop>mSnapToleranceSpinBox</tabstop>
+  <tabstop>mOptionsScrollArea_07</tabstop>
+  <tabstop>mValidateGeometries</tabstop>
+  <tabstop>chkDisableAttributeValuesDlg</tabstop>
+  <tabstop>chkReuseLastValues</tabstop>
+  <tabstop>mLineWidthSpinBox</tabstop>
+  <tabstop>mLineColorToolButton</tabstop>
+  <tabstop>mDefaultSnapModeComboBox</tabstop>
+  <tabstop>mDefaultSnappingToleranceSpinBox</tabstop>
+  <tabstop>mSearchRadiusVertexEditSpinBox</tabstop>
+  <tabstop>mDefaultSnappingToleranceComboBox</tabstop>
+  <tabstop>mSearchRadiusVertexEditComboBox</tabstop>
+  <tabstop>cbxSnappingOptionsDocked</tabstop>
+  <tabstop>mMarkerStyleComboBox</tabstop>
+  <tabstop>mMarkerSizeSpinBox</tabstop>
+  <tabstop>mMarkersOnlyForSelectedCheckBox</tabstop>
+  <tabstop>mOffsetQuadSegSpinBox</tabstop>
+  <tabstop>mOffsetJoinStyleComboBox</tabstop>
+  <tabstop>mCurveOffsetMiterLimitComboBox</tabstop>
+  <tabstop>mOptionsScrollArea_02</tabstop>
+  <tabstop>cmbEditCreateOptions</tabstop>
+  <tabstop>pbnEditPyramidsOptions</tabstop>
+  <tabstop>pbnEditCreateOptions</tabstop>
+  <tabstop>lstGdalDrivers</tabstop>
+  <tabstop>mOptionsScrollArea_08</tabstop>
+  <tabstop>leLayerGlobalCrs</tabstop>
+  <tabstop>pbnSelectProjection</tabstop>
+  <tabstop>radUseProjectProjection</tabstop>
+  <tabstop>radPromptForProjection</tabstop>
+  <tabstop>radUseGlobalProjection</tabstop>
+  <tabstop>radOtfTransform</tabstop>
+  <tabstop>radOtfAuto</tabstop>
+  <tabstop>leProjectGlobalCrs</tabstop>
+  <tabstop>radOtfNone</tabstop>
+  <tabstop>pbnSelectOtfProjection</tabstop>
+  <tabstop>mAddDefaultTransformButton</tabstop>
+  <tabstop>mRemoveDefaultTransformButton</tabstop>
+  <tabstop>mDefaultDatumTransformTreeWidget</tabstop>
+  <tabstop>chkShowDatumTransformDialog</tabstop>
+  <tabstop>mOptionsScrollArea_09</tabstop>
+  <tabstop>grpLocale</tabstop>
+  <tabstop>cboLocale</tabstop>
+  <tabstop>mOptionsScrollArea_10</tabstop>
+  <tabstop>leWmsSearch</tabstop>
+  <tabstop>mNetworkTimeoutSpinBox</tabstop>
+  <tabstop>mDefaultTileExpirySpinBox</tabstop>
+  <tabstop>mDefaultTileMaxRetrySpinBox</tabstop>
+  <tabstop>leUserAgent</tabstop>
+  <tabstop>mCacheDirectory</tabstop>
+  <tabstop>mBrowseCacheDirectory</tabstop>
+  <tabstop>mCacheSize</tabstop>
+  <tabstop>mClearCache</tabstop>
+  <tabstop>grpProxy</tabstop>
+  <tabstop>leProxyHost</tabstop>
+  <tabstop>leProxyPort</tabstop>
+  <tabstop>leProxyUser</tabstop>
+  <tabstop>leProxyPassword</tabstop>
+  <tabstop>mProxyTypeComboBox</tabstop>
+  <tabstop>mRemoveUrlPushButton</tabstop>
+  <tabstop>mAddUrlPushButton</tabstop>
+  <tabstop>mExcludeUrlListWidget</tabstop>
+  <tabstop>capitaliseCheckBox</tabstop>
+  <tabstop>cmbLegendDoubleClickAction</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

@@ -68,6 +68,7 @@ void QgsColorSchemeRegistry::addDefaultSchemes()
   //default color schemes
   addColorScheme( new QgsRecentColorScheme() );
   addColorScheme( new QgsCustomColorScheme() );
+  addColorScheme( new QgsProjectColorScheme() );
 }
 
 void QgsColorSchemeRegistry::addColorScheme( QgsColorScheme *scheme )

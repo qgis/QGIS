@@ -161,13 +161,13 @@ class QgsComposerPicture: QgsComposerItem
      * instead
      */
     bool imageSizeConsideringRotation( double& width, double& height ) const /Deprecated/;
-    
+
     /**Calculates corner point after rotation and scaling
      * @deprecated Use QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
      * instead
      */
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const /Deprecated/;
-    
+
     /**Calculates width / height of the bounding box of a rotated rectangle
      * @deprecated Use QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
      * instead

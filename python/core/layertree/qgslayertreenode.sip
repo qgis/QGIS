@@ -118,7 +118,7 @@ class QgsLayerTreeNode : QObject
   protected:
 
     QgsLayerTreeNode( NodeType t );
-    
+
   private:
     QgsLayerTreeNode( const QgsLayerTreeNode& other );
 

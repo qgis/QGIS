@@ -16,7 +16,7 @@ n = polyLayer.featureCount()
 l = 0
 
 writer = processing.VectorWriter(Results, None, polyPrder.fields(),
-					  QGis.WKBMultiPolygon, polyPrder.crs())					
+					  QGis.WKBMultiPolygon, polyPrder.crs())
 
 
 resgeom = QgsGeometry()

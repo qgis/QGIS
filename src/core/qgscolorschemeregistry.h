@@ -77,6 +77,12 @@ class CORE_EXPORT QgsColorSchemeRegistry
     */
     QList<QgsColorScheme *> schemes() const;
 
+    /**Return color schemes of a specific type
+     * @param schemeList destination list for matching schemes
+     * @note not available in python bindings
+    */
+    template<class T> void schemes( QList<T*>& schemeList );
+
   private:
 
     static QgsColorSchemeRegistry *mInstance;
@@ -84,5 +90,20 @@ class CORE_EXPORT QgsColorSchemeRegistry
     QList< QgsColorScheme* > mColorSchemeList;
 
 };
+
+template<class T> void QgsColorSchemeRegistry::schemes( QList<T*>& schemeList )
+{
+  schemeList.clear();
+  QList<QgsColorScheme *> schemeInstanceList = schemes();
+  QList<QgsColorScheme *>::iterator schemeIt = schemeInstanceList.begin();
+  for ( ; schemeIt != schemeInstanceList.end(); ++schemeIt )
+  {
+    T* scheme = dynamic_cast<T*>( *schemeIt );
+    if ( scheme )
+    {
+      schemeList.push_back( scheme );
+    }
+  }
+}
 
 #endif

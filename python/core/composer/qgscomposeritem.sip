@@ -452,7 +452,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @deprecated use QgsComposerUtils::fontDescentMM instead
      */
     double fontDescentMillimeters( const QFont& font ) const /Deprecated/;
-    
+
     /**Returns the font height in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE.
      * Font height equals the font ascent+descent+1 (for baseline).
      * @note Added in version 2.4
@@ -525,7 +525,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @see setId
     */
     QString uuid() const;
-    
+
     /**Get item display name. This is the item's id if set, and if
      * not, a user-friendly string identifying item type.
      * @returns display name for item
@@ -534,7 +534,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @note added in version 2.5
     */
     virtual QString displayName() const;
-    
+
     /**Sets visibility for item.
      * @param visible set to true to show item, false to hide item
      * @note QGraphicsItem::setVisible should not be called directly
@@ -542,8 +542,8 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * the visibility toggle.
      * @note added in version 2.5
     */
-    virtual void setVisibility( const bool visible );   
-    
+    virtual void setVisibility( const bool visible );
+
     /**Returns whether this item is part of a group
      * @returns true if item is in a group
      * @note added in version 2.5
@@ -643,7 +643,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @deprecated will be removed in QGIS 3.0
     */
     bool imageSizeConsideringRotation( double& width, double& height, double rotation ) const /Deprecated/;
-    
+
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
      * @deprecated will be removed in QGIS 3.0
      */
@@ -662,7 +662,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @deprecated will be removed in QGIS 3.0
     */
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const /Deprecated/;
-    
+
     /**Calculates corner point after rotation and scaling
      * @deprecated will be removed in QGIS 3.0
      */
@@ -672,19 +672,19 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @deprecated will be removed in QGIS 3.0
     */
     void sizeChangedByRotation( double& width, double& height, double rotation ) /Deprecated/;
-    
+
     /**Calculates width / height of the bounding box of a rotated rectangle
      * @deprecated will be removed in QGIS 3.0
     */
     void sizeChangedByRotation( double& width, double& height ) /Deprecated/;
-    
+
     /**Rotates a point / vector
      * @param angle rotation angle in degrees, counterclockwise
      * @param x in/out: x coordinate before / after the rotation
      * @param y in/out: y cooreinate before / after the rotation
      * @deprecated use QgsComposerUtils:rotate instead
     */
-    void rotate( double angle, double& x, double& y ) const /Deprecated/;    
+    void rotate( double angle, double& x, double& y ) const /Deprecated/;
 
     /**Return horizontal align snap item. Creates a new graphics line if 0*/
     QGraphicsLineItem* hAlignSnapItem();

@@ -82,7 +82,7 @@ class GrassAlgorithm(GeoAlgorithm):
 
     def getParameterDescriptions(self):
         descs = {}
-        _, helpfile = self.help()        
+        _, helpfile = self.help()
         try:
             infile = open(helpfile)
             lines = infile.readlines()

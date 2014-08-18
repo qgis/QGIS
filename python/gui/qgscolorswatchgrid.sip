@@ -53,7 +53,7 @@ class QgsColorSwatchGrid: QWidget
      * @see baseColor
      */
     void setBaseColor( const QColor baseColor );
-    
+
     /**Gets the list of colors shown in the grid
      * @returns list of colors currently shown in the grid
      */
@@ -149,5 +149,5 @@ class QgsColorSwatchGridAction: QWidgetAction
      * @param color selected color
      */
     void colorChanged( const QColor color );
-    
+
 };

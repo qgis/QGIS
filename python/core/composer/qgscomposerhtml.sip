@@ -5,7 +5,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
 %End
 
  public:
- 
+
     /** Source modes for the HTML content to render in the item
     */
     enum ContentMode
@@ -13,7 +13,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
       Url, /*< Using this mode item fetches its content via a url*/
       ManualHtml /*< HTML content is manually set for the item*/
     };
-    
+
     QgsComposerHtml( QgsComposition* c, bool createUndoCommands );
     QgsComposerHtml();
     ~QgsComposerHtml();
@@ -73,7 +73,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @note added in 2.5
      */
     QString html() const;
-    
+
     /**Returns whether html item will evaluate QGIS expressions prior to rendering
      * the HTML content. If set, any content inside [% %] tags will be
      * treated as a QGIS expression and evaluated against the current atlas
@@ -92,7 +92,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see evaluateExpressions
      * @note added in QGIS 2.5
      */
-    void setEvaluateExpressions( bool evaluateExpressions );    
+    void setEvaluateExpressions( bool evaluateExpressions );
 
     QSizeF totalSize() const;
     void render( QPainter* p, const QRectF& renderExtent );
@@ -144,7 +144,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see useSmartBreaks
      */
     double maxBreakDistance() const;
-    
+
     /**Sets the user stylesheet CSS rules to use while rendering the HTML content. These
      * allow for overriding the styles specified within the HTML source. Setting the stylesheet
      * using this function does not automatically refresh the item's contents. Call loadHtml
@@ -181,7 +181,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @note added in 2.5
      */
     bool userStylesheetEnabled() const;
-    
+
     virtual QString displayName() const;
 
   public slots:
@@ -191,9 +191,9 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see url
      */
     void loadHtml();
-    
+
     void refreshExpressionContext();
-    
+
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 
 };

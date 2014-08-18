@@ -22,30 +22,22 @@ QgsAbstractGeometrySimplifier::~QgsAbstractGeometrySimplifier()
 }
 
 //! Returns whether the device-envelope can be replaced by its BBOX when is applied the specified tolerance
-bool QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( const QgsRectangle& envelope, float mapToPixelTol )
+bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QgsRectangle& envelope, float mapToPixelTol )
 {
   return ( envelope.xMaximum() - envelope.xMinimum() ) < mapToPixelTol && ( envelope.yMaximum() - envelope.yMinimum() ) < mapToPixelTol;
 }
 
 //! Returns whether the device-geometry can be replaced by its BBOX when is applied the specified tolerance
-bool QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( const QVector<QPointF>& points, float mapToPixelTol )
+bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QVector<QPointF>& points, float mapToPixelTol )
 {
-  double xmin =  std::numeric_limits<double>::max(), x, y;
-  double ymin =  std::numeric_limits<double>::max();
-  double xmax = -std::numeric_limits<double>::max();
-  double ymax = -std::numeric_limits<double>::max();
+  QgsRectangle r;
+  r.setMinimal();
 
   for ( int i = 0, numPoints = points.size(); i < numPoints; ++i )
   {
-    x = points[i].x();
-    y = points[i].y();
-
-    if ( xmin > x ) xmin = x;
-    if ( ymin > y ) ymin = y;
-    if ( xmax < x ) xmax = x;
-    if ( ymax < y ) ymax = y;
+    r.combineExtentWith( points[i].x(), points[i].y() );
   }
-  return canbeGeneralizedByDeviceBoundingBox( QgsRectangle( xmin, ymin, xmax, ymax ), mapToPixelTol );
+  return isGeneralizableByDeviceBoundingBox( r, mapToPixelTol );
 }
 
 /***************************************************************************/

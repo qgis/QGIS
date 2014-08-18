@@ -20,6 +20,43 @@
 #include <QObject>
 #include <QtTest>
 
+//dummy color scheme for testing
+class DummyColorScheme : public QgsColorScheme
+{
+  public:
+
+    DummyColorScheme() {}
+
+    virtual ~DummyColorScheme() {}
+
+    virtual QString schemeName() const { return QString( "Dummy scheme" ); }
+
+    virtual QgsNamedColorList fetchColors( const QString context = QString(),
+                                           const QColor baseColor = QColor() )
+    {
+      QList< QPair< QColor, QString> > colors;
+      if ( context == QString( "testscheme" ) )
+      {
+        colors << qMakePair( QColor( 255, 255, 0 ), QString( "schemetest" ) );
+      }
+      else if ( baseColor.isValid() )
+      {
+        colors << qMakePair( baseColor, QString( "base" ) );
+      }
+      else
+      {
+        colors << qMakePair( QColor( 255, 0, 0 ), QString( "red" ) ) << qMakePair( QColor( 0, 255, 0 ), QString() );
+      }
+      return colors;
+    }
+
+    virtual QgsColorScheme* clone() const
+    {
+      return new DummyColorScheme();
+    }
+
+};
+
 class TestQgsColorSchemeRegistry : public QObject
 {
     Q_OBJECT;
@@ -36,6 +73,7 @@ class TestQgsColorSchemeRegistry : public QObject
     void addDefaultSchemes(); // check adding a scheme to an empty registry
     void populateFromInstance(); // check populating an empty scheme from the registry
     void removeScheme(); // check removing a scheme from a registry
+    void matchingSchemes(); //check fetching schemes of specific type
 
   private:
 
@@ -133,6 +171,26 @@ void TestQgsColorSchemeRegistry::removeScheme()
   QVERIFY( !registry->removeColorScheme( recentScheme ) );
 
   delete recentScheme;
+  delete registry;
+}
+
+void TestQgsColorSchemeRegistry::matchingSchemes()
+{
+  QgsColorSchemeRegistry* registry = new QgsColorSchemeRegistry();
+  //add some schemes
+  QgsColorScheme* recentScheme = new QgsRecentColorScheme();
+  registry->addColorScheme( recentScheme );
+  DummyColorScheme* dummyScheme = new DummyColorScheme();
+  registry->addColorScheme( dummyScheme );
+  QVERIFY( registry->schemes().length() == 2 );
+  QList< QgsRecentColorScheme* > recentSchemes;
+  QList< DummyColorScheme* > dummySchemes;
+  registry->schemes( recentSchemes );
+  QVERIFY( recentSchemes.length() == 1 );
+  QCOMPARE( recentSchemes.at( 0 ), recentScheme );
+  registry->schemes( dummySchemes );
+  QVERIFY( dummySchemes.length() == 1 );
+  QCOMPARE( dummySchemes.at( 0 ), dummyScheme );
   delete registry;
 }
 

@@ -218,14 +218,14 @@ void QgsComposerMapOverview::setFrameMap( const int mapId )
 
 void QgsComposerMapOverview::connectSignals()
 {
-    if ( mFrameMapId != -1 && mComposerMap->composition() )
+  if ( mFrameMapId != -1 && mComposerMap->composition() )
+  {
+    const QgsComposerMap* map = mComposerMap->composition()->getComposerMapById( mFrameMapId );
+    if ( map )
     {
-      const QgsComposerMap* map = mComposerMap->composition()->getComposerMapById( mFrameMapId );
-      if ( map )
-      {
-        QObject::connect( map, SIGNAL( extentChanged() ), this, SLOT( overviewExtentChanged() ) );
-      }
+      QObject::connect( map, SIGNAL( extentChanged() ), this, SLOT( overviewExtentChanged() ) );
     }
+  }
 }
 
 void QgsComposerMapOverview::setFrameSymbol( QgsFillSymbolV2 *symbol )
