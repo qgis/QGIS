@@ -156,7 +156,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
 
     if ( !ml )
     {
-      mErrors.append( Error( layerId, "Layer not found in registry." ) );
+      mErrors.append( Error( layerId, tr( "Layer not found in registry." ) ) );
       continue;
     }
 
@@ -188,7 +188,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
       QgsDebugMsg( "extent: " + r1.toString() );
       if ( !r1.isFinite() || !r2.isFinite() )
       {
-        mErrors.append( Error( layerId, "There was a problem transforming layer's' extent. Layer skipped." ) );
+        mErrors.append( Error( layerId, tr( "There was a problem transforming the layer's extent. Layer skipped." ) ) );
         continue;
       }
     }
@@ -237,7 +237,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
                                       mSettings.outputImageFormat() );
       if ( mypFlattenedImage->isNull() )
       {
-        mErrors.append( Error( layerId, "Insufficient memory for image " + QString::number( mSettings.outputSize().width() ) + "x" + QString::number( mSettings.outputSize().height() ) ) );
+        mErrors.append( Error( layerId, tr( "Insufficient memory for image %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
         delete mypFlattenedImage;
         layerJobs.removeLast();
         continue;

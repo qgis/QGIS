@@ -113,7 +113,7 @@ bool QgsVectorLayerRenderer::render()
 
   if ( !mRendererV2 )
   {
-    mErrors.append( "No renderer for drawing." );
+    mErrors.append( QObject::tr( "No renderer for drawing." ) );
     return false;
   }
 
@@ -146,7 +146,7 @@ bool QgsVectorLayerRenderer::render()
       try
       {
         QgsPoint center = mContext.extent().center();
-        double rectSize = ct->sourceCrs().geographicFlag() ?  0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
+        double rectSize = ct->sourceCrs().geographicFlag() ? 0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
 
         QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
         QgsRectangle targetRect = ct->transform( sourceRect );
