@@ -55,6 +55,8 @@ class TestQgsComposerPicture: public QObject
     void pictureExpression();
     void pictureInvalidExpression();
 
+    void pictureRemoteUrl(); //test fetching picture from a url
+
   private:
     QgsComposition* mComposition;
     QgsComposerPicture* mComposerPicture;
@@ -76,7 +78,7 @@ void TestQgsComposerPicture::initTestCase()
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mComposerPicture = new QgsComposerPicture( mComposition );
-  mComposerPicture->setPictureFile( mPngImage );
+  mComposerPicture->setPicturePath( mPngImage );
   mComposerPicture->setSceneRect( QRectF( 70, 70, 100, 100 ) );
   mComposerPicture->setFrameEnabled( true );
 
@@ -273,13 +275,13 @@ void TestQgsComposerPicture::pictureSvgZoom()
   //test picture resize Zoom mode
   mComposition->addComposerPicture( mComposerPicture );
   mComposerPicture->setResizeMode( QgsComposerPicture::Zoom );
-  mComposerPicture->setPictureFile( mSvgImage );
+  mComposerPicture->setPicturePath( mSvgImage );
 
   QgsCompositionChecker checker( "composerpicture_svg_zoom", mComposition );
   QVERIFY( checker.testComposition( mReport, 0, 100 ) );
 
   mComposition->removeItem( mComposerPicture );
-  mComposerPicture->setPictureFile( mPngImage );
+  mComposerPicture->setPicturePath( mPngImage );
 }
 
 void TestQgsComposerPicture::pictureSvgStretch()
@@ -287,7 +289,7 @@ void TestQgsComposerPicture::pictureSvgStretch()
   //test picture resize Stretch mode
   mComposition->addComposerPicture( mComposerPicture );
   mComposerPicture->setResizeMode( QgsComposerPicture::Stretch );
-  mComposerPicture->setPictureFile( mSvgImage );
+  mComposerPicture->setPicturePath( mSvgImage );
   mComposerPicture->setSceneRect( QRectF( 70, 70, 20, 100 ) );
 
   QgsCompositionChecker checker( "composerpicture_svg_stretch", mComposition );
@@ -295,7 +297,7 @@ void TestQgsComposerPicture::pictureSvgStretch()
 
   mComposition->removeItem( mComposerPicture );
   mComposerPicture->setResizeMode( QgsComposerPicture::Zoom );
-  mComposerPicture->setPictureFile( mPngImage );
+  mComposerPicture->setPicturePath( mPngImage );
   mComposerPicture->setSceneRect( QRectF( 70, 70, 100, 100 ) );
 }
 
@@ -304,7 +306,7 @@ void TestQgsComposerPicture::pictureSvgZoomAndResize()
   //test picture resize ZoomResizeFrame mode
   mComposition->addComposerPicture( mComposerPicture );
   mComposerPicture->setResizeMode( QgsComposerPicture::ZoomResizeFrame );
-  mComposerPicture->setPictureFile( mSvgImage );
+  mComposerPicture->setPicturePath( mSvgImage );
   mComposerPicture->setSceneRect( QRectF( 70, 70, 50, 300 ) );
 
   QgsCompositionChecker checker( "composerpicture_svg_zoomresize", mComposition );
@@ -313,7 +315,7 @@ void TestQgsComposerPicture::pictureSvgZoomAndResize()
   mComposition->removeItem( mComposerPicture );
   mComposerPicture->setResizeMode( QgsComposerPicture::Zoom );
   mComposerPicture->setSceneRect( QRectF( 70, 70, 100, 100 ) );
-  mComposerPicture->setPictureFile( mPngImage );
+  mComposerPicture->setPicturePath( mPngImage );
 }
 
 void TestQgsComposerPicture::pictureSvgFrameToImage()
@@ -321,7 +323,7 @@ void TestQgsComposerPicture::pictureSvgFrameToImage()
   //test picture resize FrameToImageSize mode
   mComposition->addComposerPicture( mComposerPicture );
   mComposerPicture->setResizeMode( QgsComposerPicture::FrameToImageSize );
-  mComposerPicture->setPictureFile( mSvgImage );
+  mComposerPicture->setPicturePath( mSvgImage );
 
   QgsCompositionChecker checker( "composerpicture_svg_frametoimage", mComposition );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
@@ -329,7 +331,7 @@ void TestQgsComposerPicture::pictureSvgFrameToImage()
   mComposition->removeItem( mComposerPicture );
   mComposerPicture->setResizeMode( QgsComposerPicture::Zoom );
   mComposerPicture->setSceneRect( QRectF( 70, 70, 100, 100 ) );
-  mComposerPicture->setPictureFile( mPngImage );
+  mComposerPicture->setPicturePath( mPngImage );
 }
 
 void TestQgsComposerPicture::pictureExpression()
@@ -359,6 +361,20 @@ void TestQgsComposerPicture::pictureInvalidExpression()
   mComposerPicture->setUsePictureExpression( true );
 
   QgsCompositionChecker checker( "composerpicture_badexpression", mComposition );
+  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
+
+  mComposition->removeItem( mComposerPicture );
+  mComposerPicture->setUsePictureExpression( false );
+}
+
+void TestQgsComposerPicture::pictureRemoteUrl()
+{
+  //test picture source via bad expression
+  mComposition->addComposerPicture( mComposerPicture );
+
+  mComposerPicture->setPicturePath( "http://www.qgis.org/en/_static/logo.png" );
+
+  QgsCompositionChecker checker( "composerpicture_remote", mComposition );
   QVERIFY( checker.testComposition( mReport, 0, 100 ) );
 
   mComposition->removeItem( mComposerPicture );

@@ -44,16 +44,38 @@ class QgsComposerPicture: QgsComposerItem
      * @param path full path to the source image
      * @see usePictureExpression
      * @see pictureFile
+     * @deprecated use setPicturePath instead
     */
-    void setPictureFile( const QString& path );
+    void setPictureFile( const QString& path ) /Deprecated/;
 
     /**Returns the path of the source image file. Data defined picture source may override
      * this value.
      * @returns path to the source image
      * @see usePictureExpression
      * @see setPictureFile
+     * @deprecated use picturePath instead  
     */
-    QString pictureFile() const;
+    QString pictureFile() const /Deprecated/;
+    
+     /**Sets the source path of the image (may be svg or a raster format). Data defined
+     * picture source may override this value. The path can either be a local path
+     * or a remote (http) path.
+     * @param path path for the source image
+     * @see usePictureExpression
+     * @see picturePath
+     * @note added in QGIS 2.5
+    */
+    void setPicturePath( const QString& path );
+
+    /**Returns the path of the source image. Data defined picture source may override
+     * this value. The path can either be a local path or a remote (http) path.
+     * @returns path for the source image
+     * @see usePictureExpression
+     * @see setPicturePath
+     * @note added in QGIS 2.5
+    */
+    QString picturePath() const;    
+
 
     /**Sets this items bound in scene coordinates such that 1 item size units
      * corresponds to 1 scene size unit and resizes the svg symbol / image

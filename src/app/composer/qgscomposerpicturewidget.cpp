@@ -114,7 +114,7 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
   if ( mPicture )
   {
     mPicture->beginCommand( tr( "Picture changed" ) );
-    mPicture->setPictureFile( filePath );
+    mPicture->setPicturePath( filePath );
     mPicture->update();
     mPicture->endCommand();
   }
@@ -130,7 +130,7 @@ void QgsComposerPictureWidget::on_mPictureLineEdit_editingFinished()
     QFileInfo fileInfo( filePath );
 
     mPicture->beginCommand( tr( "Picture changed" ) );
-    mPicture->setPictureFile( filePath );
+    mPicture->setPicturePath( filePath );
     mPicture->update();
     mPicture->endCommand();
   }
@@ -156,7 +156,7 @@ void QgsComposerPictureWidget::on_mPreviewListWidget_currentItemChanged( QListWi
 
   QString absoluteFilePath = current->data( Qt::UserRole ).toString();
   mPicture->beginCommand( tr( "Picture changed" ) );
-  mPicture->setPictureFile( absoluteFilePath );
+  mPicture->setPicturePath( absoluteFilePath );
   mPictureLineEdit->setText( absoluteFilePath );
   mPicture->update();
   mPicture->endCommand();
@@ -382,7 +382,7 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mResizeModeComboBox->blockSignals( true );
     mAnchorPointComboBox->blockSignals( true );
 
-    mPictureLineEdit->setText( mPicture->pictureFile() );
+    mPictureLineEdit->setText( mPicture->picturePath() );
     mPictureRotationSpinBox->setValue( mPicture->pictureRotation() );
 
     refreshMapComboBox();

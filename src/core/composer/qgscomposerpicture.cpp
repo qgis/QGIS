@@ -25,13 +25,17 @@
 #include "qgsvectorlayer.h"
 #include "qgsmessagelog.h"
 #include "qgsdatadefined.h"
+#include "qgsnetworkcontentfetcher.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFileInfo>
 #include <QImageReader>
 #include <QPainter>
 #include <QSvgRenderer>
-
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QEventLoop>
+#include <QCoreApplication>
 
 QgsComposerPicture::QgsComposerPicture( QgsComposition *composition ) :
     QgsComposerItem( composition ),
@@ -268,20 +272,17 @@ QRect QgsComposerPicture::clippedImageRect( double &boundRectWidthMM, double &bo
       break;
   }
 
-
   return QRect( leftClip, topClip, boundRectWidthPixels, boundRectHeightPixels );
-
 }
 
 void QgsComposerPicture::setPictureFile( const QString& path )
 {
-  mSourceFile.setFileName( path );
-  refreshPicture();
+  setPicturePath( path );
 }
 
 void QgsComposerPicture::refreshPicture()
 {
-  QString source = mSourceFile.fileName();
+  QString source = mSourcePath;
 
   //data defined source set?
   mHasExpressionError = false;
@@ -301,25 +302,55 @@ void QgsComposerPicture::refreshPicture()
     }
   }
 
-  QFile path;
-  path.setFileName( source );
-  loadPicture( path );
+  loadPicture( source );
 }
 
-void QgsComposerPicture::loadPicture( const QFile& file )
+void QgsComposerPicture::loadRemotePicture( const QString &url )
 {
-  if ( !file.exists() )
+  //remote location
+
+  QgsNetworkContentFetcher fetcher;
+  //pause until HTML fetch
+  mLoaded = false;
+  fetcher.fetchContent( QUrl( url ) );
+  connect( &fetcher, SIGNAL( finished() ), this, SLOT( remotePictureLoaded() ) );
+
+  while ( !mLoaded )
+  {
+    qApp->processEvents();
+  }
+
+  QNetworkReply* reply = fetcher.reply();
+  if ( reply )
+  {
+    QImageReader imageReader( reply );
+    mImage = imageReader.read();
+    mMode = RASTER;
+    reply->deleteLater();
+  }
+  else
+  {
+    mMode = Unknown;
+  }
+}
+
+void QgsComposerPicture::loadLocalPicture( const QString &path )
+{
+  QFile pic;
+  pic.setFileName( path );
+
+  if ( !pic.exists() )
   {
     mMode = Unknown;
   }
   else
   {
-    QFileInfo sourceFileInfo( file );
+    QFileInfo sourceFileInfo( pic );
     QString sourceFileSuffix = sourceFileInfo.suffix();
     if ( sourceFileSuffix.compare( "svg", Qt::CaseInsensitive ) == 0 )
     {
       //try to open svg
-      mSVG.load( file.fileName() );
+      mSVG.load( pic.fileName() );
       if ( mSVG.isValid() )
       {
         mMode = SVG;
@@ -335,7 +366,7 @@ void QgsComposerPicture::loadPicture( const QFile& file )
     else
     {
       //try to open raster with QImageReader
-      QImageReader imageReader( file.fileName() );
+      QImageReader imageReader( pic.fileName() );
       if ( imageReader.read( &mImage ) )
       {
         mMode = RASTER;
@@ -347,11 +378,30 @@ void QgsComposerPicture::loadPicture( const QFile& file )
     }
   }
 
+}
+
+void QgsComposerPicture::remotePictureLoaded()
+{
+  mLoaded = true;
+}
+
+void QgsComposerPicture::loadPicture( const QString &path )
+{
+  if ( path.startsWith( "http" ) )
+  {
+    //remote location
+    loadRemotePicture( path );
+  }
+  else
+  {
+    //local location
+    loadLocalPicture( path );
+  }
   if ( mMode != Unknown ) //make sure we start with a new QImage
   {
     recalculateSize();
   }
-  else if ( mHasExpressionError || !( file.fileName().isEmpty() ) )
+  else if ( mHasExpressionError || !( path.isEmpty() ) )
   {
     //trying to load an invalid file or bad expression, show cross picture
     mMode = SVG;
@@ -589,7 +639,18 @@ void QgsComposerPicture::setPictureExpression( QString expression )
 
 QString QgsComposerPicture::pictureFile() const
 {
-  return mSourceFile.fileName();
+  return picturePath();
+}
+
+void QgsComposerPicture::setPicturePath( const QString &path )
+{
+  mSourcePath = path;
+  refreshPicture();
+}
+
+QString QgsComposerPicture::picturePath() const
+{
+  return mSourcePath;
 }
 
 bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
@@ -599,7 +660,7 @@ bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
     return false;
   }
   QDomElement composerPictureElem = doc.createElement( "ComposerPicture" );
-  composerPictureElem.setAttribute( "file", QgsProject::instance()->writePath( mSourceFile.fileName() ) );
+  composerPictureElem.setAttribute( "file", QgsProject::instance()->writePath( mSourcePath ) );
   composerPictureElem.setAttribute( "pictureWidth", QString::number( mPictureWidth ) );
   composerPictureElem.setAttribute( "pictureHeight", QString::number( mPictureHeight ) );
   composerPictureElem.setAttribute( "resizeMode", QString::number(( int )mResizeMode ) );
@@ -668,8 +729,7 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
     setDataDefinedProperty( QgsComposerObject::PictureSource, expressionActive, true, sourceExpression, QString() );
   }
 
-  QString fileName = QgsProject::instance()->readPath( itemElem.attribute( "file" ) );
-  mSourceFile.setFileName( fileName );
+  mSourcePath = QgsProject::instance()->readPath( itemElem.attribute( "file" ) );
 
   //picture rotation
   if ( itemElem.attribute( "pictureRotation", "0" ).toDouble() != 0 )
