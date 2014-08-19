@@ -361,16 +361,6 @@ class CORE_EXPORT QgsPalLayerSettings : public QgsTextRendererSettings
      */
     QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > dataDefinedProperties;
 
-    /** Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
-     * @param size size to convert
-     * @param c rendercontext
-     * @param unit SizeUnit enum value of size
-     * @param rasterfactor whether to consider oversampling
-     * @param mapUnitScale a mapUnitScale clamper
-     * @return font pixel size
-     */
-    int sizeToPixel( double size, const QgsRenderContext& c , SizeUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() ) const;
-
     /** Map of data defined enum to names and old-style indecies
      * The QPair contains a new string for layer property key, and a reference to old-style numeric key (< QGIS 2.0)
      * @note not available in python bindings; added in 1.9

@@ -41,7 +41,6 @@ SET(QGIS_APP_SRCS
   qgslabelpropertydialog.cpp
   qgslabelengineconfigdialog.cpp
   qgslabelinggui.cpp
-  qgslabelpreview.cpp
   qgsloadstylefromdbdialog.cpp
   qgssavestyletodbdialog.cpp
   qgsguivectorlayertools.cpp

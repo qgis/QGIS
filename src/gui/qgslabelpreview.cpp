@@ -17,42 +17,21 @@
 #include <QPainter>
 #include <QFontMetrics>
 
-#include "qgspallabeling.h"
-
 QgsLabelPreview::QgsLabelPreview( QWidget* parent )
     : QLabel( parent )
 {
-  mTmpLyr = new QgsPalLayerSettings();
-
   // construct a device-based render context
   QgsMapToPixel newCoordXForm;
-  newCoordXForm.setParameters( 0, 0, 0, 0 );
+  newCoordXForm.setParameters( 1, 0, 0, 0 );
   mContext = new QgsRenderContext();
   mContext->setMapToPixel( newCoordXForm );
+  mContext->setScaleFactor( 96 / 25.4 );
+  mContext->setUseAdvancedEffects( true );
 }
 
 QgsLabelPreview::~QgsLabelPreview()
 {
-  delete mTmpLyr;
   delete mContext;
-}
-
-void QgsLabelPreview::setTextColor( QColor color )
-{
-  mTextColor = color;
-  update();
-}
-
-void QgsLabelPreview::setBuffer( double size, QColor color, Qt::PenJoinStyle joinStyle, bool noFill )
-{
-  mTmpLyr->bufferSize = size * 88 / 25.4; //assume standard dpi for preview;
-  mTmpLyr->bufferSizeInMapUnits = false;
-  mTmpLyr->bufferColor = color;
-  mTmpLyr->bufferJoinStyle = joinStyle;
-  mTmpLyr->bufferNoFill = noFill;
-
-  mTmpLyr->textFont = font();
-  update();
 }
 
 void QgsLabelPreview::paintEvent( QPaintEvent *e )
@@ -60,38 +39,36 @@ void QgsLabelPreview::paintEvent( QPaintEvent *e )
   Q_UNUSED( e );
   QPainter p( this );
 
-  // TODO: draw all label components when this preview is an actual map canvas
-  // for now, only preview label's text and buffer
-  mTmpLyr->shadowDraw = false;
-
   p.setRenderHint( QPainter::Antialiasing );
-  p.setFont( font() );
-  QFontMetrics fm( font() );
+  QFontMetrics fm( mTextSettings.textFont );
 
   // otherwise thin buffers don't look like those on canvas
-  if ( mTmpLyr->bufferSize != 0 && mTmpLyr->bufferSize < 1 )
-    mTmpLyr->bufferSize = 1;
-
-  double xtrans = 0;
-  if ( mTmpLyr->bufferSize != 0 )
-    xtrans = mTmpLyr->bufferSize / 4;
-
-  p.translate( xtrans, fm.ascent() + 4 );
-
-  if ( mTmpLyr->bufferSize != 0 )
+  if ( mTextSettings.bufferSize != 0 && mTextSettings.bufferSize < 1 )
   {
-    mContext->setPainter( &p );
-    QgsLabelComponent component;
-    component.setText( text() );
-    QgsTextRenderer::drawBufferPart( *mContext, component, *mTmpLyr );
+    mTextSettings.bufferSize = 1;
   }
 
-  QPainterPath path;
-  path.addText( 0, 0, font(), text() );
-  p.setPen( Qt::NoPen );
-  p.setBrush( mTextColor );
-  p.drawPath( path );
+  double xtrans = 0;
+  if ( mTextSettings.bufferSize != 0 )
+  {
+    xtrans = mTextSettings.bufferSize / 4;
+  }
 
-//  p.setPen( mTextColor );
-//  p.drawText( 0, 0, text() );
+  mContext->setPainter( &p );
+
+  QgsTextRenderer::drawText( QRectF( xtrans, fm.ascent() + 4, width() - xtrans, height()), 0, text(), *mContext, mTextSettings );
+}
+
+void QgsLabelPreview::setTextRendererSettings(const QgsTextRendererSettings &textSettings)
+{
+    mTextSettings = QgsTextRendererSettings( textSettings );
+    update();
+}
+
+void QgsLabelPreview::setMapUnitScale(const double scale)
+{
+    QgsMapToPixel newCoordXForm;
+    newCoordXForm.setParameters( scale, 0, 0, 0 );
+    mContext->setMapToPixel( newCoordXForm );
+    update();
 }
