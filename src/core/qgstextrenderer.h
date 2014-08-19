@@ -88,7 +88,6 @@ class CORE_EXPORT QgsTextRendererSettings
     QColor previewBkgrdColor;
 
     //-- text formatting
-
     QString wrapChar;
     double multilineHeight; //0.0 to 10.0, leading between lines as multiplyer of line height
     MultiLineAlign multilineAlign; // horizontal alignment of multi-line labels
@@ -163,6 +162,16 @@ class CORE_EXPORT QgsTextRendererSettings
      * @note added in 1.9, as a better precision replacement for sizeToPixel
      */
     double scaleToPixelContext( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() ) const;
+
+    /** Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
+     * @param size size to convert
+     * @param c rendercontext
+     * @param unit SizeUnit enum value of size
+     * @param rasterfactor whether to consider oversampling
+     * @param mapUnitScale a mapUnitScale clamper
+     * @return font pixel size
+     */
+    int sizeToPixel( double size, const QgsRenderContext& c , SizeUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() ) const;
 
     // temporary stuff: set when layer gets prepared or labeled
     // NOTE: not in Python binding
@@ -303,6 +312,10 @@ class CORE_EXPORT QgsTextRenderer
      * @note added in QGIS 2.5
      */
     static void drawText( const QRectF rect, const double rotation, const QStringList textLines,
+                          QgsRenderContext &context, const QgsTextRendererSettings &textSettings,
+                          const double dpiRatio = 1.0, const bool drawAsOutlines = true );
+
+    static void drawText( const QRectF rect, const double rotation, const QString text,
                           QgsRenderContext &context, QgsTextRendererSettings &textSettings,
                           const double dpiRatio = 1.0, const bool drawAsOutlines = true );
 

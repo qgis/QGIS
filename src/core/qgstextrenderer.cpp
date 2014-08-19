@@ -187,6 +187,8 @@ QgsTextRendererSettings::QgsTextRendererSettings( const QgsTextRendererSettings&
   rasterCompressFactor = s.rasterCompressFactor;
 
   ct = NULL;
+
+  showingShadowRects = false;
 }
 
 
@@ -212,47 +214,67 @@ double QgsTextRendererSettings::scaleToPixelContext( double size, const QgsRende
   return size;
 }
 
+int QgsTextRendererSettings::sizeToPixel( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor, const QgsMapUnitScale& mapUnitScale ) const
+{
+  return ( int )( scaleToPixelContext( size, c, unit, rasterfactor, mapUnitScale ) + 0.5 );
+}
 
-void QgsTextRenderer::drawText( const QRectF rect, const double rotation, const QStringList textLines, QgsRenderContext &context, QgsTextRendererSettings &textSettings, const double dpiRatio, const bool drawAsOutlines )
+
+void QgsTextRenderer::drawText( const QRectF rect, const double rotation, const QStringList textLines, QgsRenderContext &context, const QgsTextRendererSettings &textSettings, const double dpiRatio, const bool drawAsOutlines )
 {
   if ( !context.painter() )
   {
     return;
   }
 
+  QgsTextRendererSettings settings = QgsTextRendererSettings( textSettings );
+
   // Render the components of a label in reverse order
   //   (backgrounds -> text)
 
   //copy scale factor from context
-  textSettings.vectorScaleFactor = context.scaleFactor();
+  settings.vectorScaleFactor = context.scaleFactor();
 
-  if ( textSettings.shadowDraw && textSettings.shadowUnder == QgsTextRendererSettings::ShadowLowest )
+  //convert map unit sizes to pixels
+  double fontSize = settings.textFont.pointSizeF();
+  QgsTextRendererSettings::SizeUnit fontunits = settings.fontSizeInMapUnits ? QgsTextRendererSettings::MapUnits : QgsTextRendererSettings::Points;
+  int fontPixelSize = settings.sizeToPixel( fontSize, context, fontunits, true, settings.fontSizeMapUnitScale );
+  // don't try to show font sizes less than 1 pixel (Qt complains)
+  if ( fontPixelSize < 1 )
   {
-    if ( textSettings.shapeDraw )
+    return;
+  }
+  settings.textFont.setPixelSize( fontPixelSize );
+  settings.textFont.setWordSpacing( settings.sizeToPixel( settings.textFont.wordSpacing(), context, fontunits, false, settings.fontSizeMapUnitScale ) );
+  settings.textFont.setLetterSpacing( QFont::AbsoluteSpacing, settings.sizeToPixel( settings.textFont.letterSpacing(), context, fontunits, false, settings.fontSizeMapUnitScale ) );
+
+  if ( settings.shadowDraw && settings.shadowUnder == QgsTextRendererSettings::ShadowLowest )
+  {
+    if ( settings.shapeDraw )
     {
-      textSettings.shadowUnder = QgsTextRendererSettings::ShadowShape;
+      settings.shadowUnder = QgsTextRendererSettings::ShadowShape;
     }
-    else if ( textSettings.bufferDraw )
+    else if ( settings.bufferDraw )
     {
-      textSettings.shadowUnder = QgsTextRendererSettings::ShadowBuffer;
+      settings.shadowUnder = QgsTextRendererSettings::ShadowBuffer;
     }
     else
     {
-      textSettings.shadowUnder = QgsTextRendererSettings::ShadowText;
+      settings.shadowUnder = QgsTextRendererSettings::ShadowText;
     }
   }
 
-  if ( textSettings.shapeDraw )
+  if ( settings.shapeDraw )
   {
-    drawPart( rect, rotation, textLines, context, textSettings, ShapePart, dpiRatio, drawAsOutlines );
+    drawPart( rect, rotation, textLines, context, settings, ShapePart, dpiRatio, drawAsOutlines );
   }
 
-  if ( textSettings.bufferDraw )
+  if ( settings.bufferDraw )
   {
-    drawPart( rect, rotation, textLines, context, textSettings, LabelPart, dpiRatio, drawAsOutlines );
+    drawPart( rect, rotation, textLines, context, settings, LabelPart, dpiRatio, drawAsOutlines );
   }
 
-  drawPart( rect, rotation, textLines, context, textSettings, TextPart, dpiRatio, drawAsOutlines );
+  drawPart( rect, rotation, textLines, context, settings, TextPart, dpiRatio, drawAsOutlines );
 }
 
 void QgsTextRenderer::drawPart( const QRectF rect, const double rotation, const QStringList textLines,
@@ -766,10 +788,14 @@ void QgsTextRenderer::drawBufferPart( QgsRenderContext &context, QgsLabelCompone
 
   QPainterPath path;
   path.addText( 0, 0, textSettings.textFont, component.text() );
-  QPen pen( textSettings.bufferColor );
+
+  QColor tmpColor( textSettings.bufferColor );
+  // apply any transparency
+  tmpColor.setAlphaF(( 100.0 - ( double )( textSettings.bufferTransp ) ) / 100.0 );
+
+  QPen pen( tmpColor );
   pen.setWidthF( penSize );
   pen.setJoinStyle( textSettings.bufferJoinStyle );
-  QColor tmpColor( textSettings.bufferColor );
   // honor pref for whether to fill buffer interior
   if ( textSettings.bufferNoFill )
   {
@@ -903,7 +929,9 @@ void QgsTextRenderer::drawTextPart( const QgsPoint point, const QSizeF size, con
       QPainter textp;
       textp.begin( &textPict );
       textp.setPen( Qt::NoPen );
-      textp.setBrush( settings.textColor );
+      QColor textColor = settings.textColor;
+      textColor.setAlphaF(( 100.0 - ( double )( settings.textTransp ) ) / 100.0 );
+      textp.setBrush( textColor );
       textp.drawPath( path );
       // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
       //       e.g. some capitalization options, but not others
@@ -940,11 +968,26 @@ void QgsTextRenderer::drawTextPart( const QgsPoint point, const QSizeF size, con
       {
         // draw text as text (for SVG and PDF exports)
         painter->setFont( settings.textFont );
-        painter->setPen( settings.textColor );
+        painter->setPen( textColor );
         painter->setRenderHint( QPainter::TextAntialiasing );
         painter->drawText( 0, 0, component.text() );
       }
     }
     painter->restore();
   }
+}
+
+
+void QgsTextRenderer::drawText( const QRectF rect, const double rotation, const QString text, QgsRenderContext &context, QgsTextRendererSettings &textSettings, const double dpiRatio, const bool drawAsOutlines )
+{
+  QStringList textLines;
+  if ( !textSettings.wrapChar.isEmpty() )
+  {
+    textLines = text.split( textSettings.wrapChar );
+  }
+  else
+  {
+    textLines << text;
+  }
+  drawText( rect, rotation, textLines, context, textSettings, dpiRatio, drawAsOutlines );
 }

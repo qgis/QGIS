@@ -46,7 +46,11 @@
 
 
 QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
-    : QWidget( parent ), mLayer( layer ), mMapCanvas( mapCanvas )
+    : QWidget( parent )
+    , mLayer( layer )
+    , mMapCanvas( mapCanvas )
+    , mDirectSymbBtnGrp( 0 )
+    , mUpsidedownBtnGrp( 0 )
 {
   if ( !layer )
     return;
@@ -67,7 +71,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   mCharDlg = new QgsCharacterSelectorDialog( this );
 
   mRefFont = lblFontPreview->font();
-  mPreviewSize = 24;
+  mPreviewSize = 10;
 
   // main layer label-enabling connections
   connect( chkEnableLabeling, SIGNAL( toggled( bool ) ), mFieldExpressionWidget, SLOT( setEnabled( bool ) ) );
@@ -86,12 +90,46 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   // preview and basic option connections
   connect( btnTextColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( changeTextColor( const QColor& ) ) );
   connect( mFontTranspSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
-  connect( mBufferDrawChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
-  connect( btnBufferColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( changeBufferColor( const QColor& ) ) );
-  connect( spinBufferSize, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
+  connect( comboBlendMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( wrapCharacterEdit, SIGNAL( textEdited( const QString& ) ), this, SLOT( updatePreview() ) );
+  connect( mFontLineHeightSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
+  connect( mFontMultiLineAlignComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
   connect( mBufferTranspSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
   connect( mBufferJoinStyleComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
   connect( mBufferTranspFillChbx, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
+  connect( mBufferDrawChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
+  connect( btnBufferColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( changeBufferColor( const QColor& ) ) );
+  connect( spinBufferSize, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
+  connect( comboBufferBlendMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( mShapeDrawChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
+  connect( mShapeTypeCmbBx, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( mShapeSVGPathLineEdit, SIGNAL( editingFinished() ), this, SLOT( updatePreview() ) );
+  connect( mShapeSizeCmbBx, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( mShapeSizeXSpnBx, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
+  connect( mShapeSizeYSpnBx, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
+  connect( mShapeRotationDblSpnBx, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
+  connect( mShapeRotationCmbBx, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( mShapeOffsetXSpnBx, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
+  connect( mShapeOffsetYSpnBx, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
+  connect( mShapeRadiusXDbSpnBx, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
+  connect( mShapeRadiusYDbSpnBx, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
+  connect( mShapeTranspSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( mShapeBlendCmbBx, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( mShapeFillColorBtn, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( updatePreview() ) );
+  connect( mShapeBorderColorBtn, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( updatePreview() ) );
+  connect( mShapeBorderWidthSpnBx, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
+  connect( mShapePenStyleCmbBx, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( mShadowDrawChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
+  connect( mShadowUnderCmbBx, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( mShadowOffsetAngleSpnBx, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( mShadowOffsetSpnBx, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
+  connect( mShadowOffsetGlobalChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
+  connect( mShadowRadiusDblSpnBx, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
+  connect( mShadowRadiusAlphaChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
+  connect( mShadowTranspSpnBx, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( mShadowScaleSpnBx, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( mShadowColorBtn, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( updatePreview() ) );
+  connect( mShadowBlendCmbBx, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
 
   // internal connections
   connect( mFontTranspSlider, SIGNAL( valueChanged( int ) ), mFontTranspSpinBox, SLOT( setValue( int ) ) );
@@ -703,9 +741,14 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.leftDirectionSymbol = mDirectSymbLeftLineEdit->text();
   lyr.rightDirectionSymbol = mDirectSymbRightLineEdit->text();
   lyr.reverseDirectionSymbol = mDirectSymbRevChkBx->isChecked();
-  lyr.placeDirectionSymbol = ( QgsPalLayerSettings::DirectionSymbols )mDirectSymbBtnGrp->checkedId();
-
-  lyr.upsidedownLabels = ( QgsPalLayerSettings::UpsideDownLabels )mUpsidedownBtnGrp->checkedId();
+  if ( mDirectSymbBtnGrp )
+  {
+    lyr.placeDirectionSymbol = ( QgsPalLayerSettings::DirectionSymbols )mDirectSymbBtnGrp->checkedId();
+  }
+  if ( mDirectSymbBtnGrp )
+  {
+    lyr.upsidedownLabels = ( QgsPalLayerSettings::UpsideDownLabels )mUpsidedownBtnGrp->checkedId();
+  }
 
   lyr.maxCurvedCharAngleIn = mMaxCharAngleInDSpinBox->value();
   // lyr.maxCurvedCharAngleOut must be negative, but it is shown as positive spinbox in GUI
@@ -1141,11 +1184,12 @@ void QgsLabelingGui::blockFontChangeSignals( bool blk )
 void QgsLabelingGui::updatePreview()
 {
   scrollPreview();
-  lblFontPreview->setFont( mRefFont );
-  QFont previewFont = lblFontPreview->font();
-  double fontSize = mFontSizeSpinBox->value();
+
+  QgsTextRendererSettings previewSettings = layerSettings();
+
+  QFont previewFont = previewSettings.textFont;
+  double fontSize = previewFont.pointSizeF();
   double previewRatio = mPreviewSize / fontSize;
-  double bufferSize = 0.0;
   QString grpboxtitle;
   QString sampleTxt = tr( "Text/Buffer sample" );
 
@@ -1156,62 +1200,41 @@ void QgsLabelingGui::updatePreview()
     mPreviewSizeSlider->setEnabled( true );
     grpboxtitle = sampleTxt + tr( " @ %1 pts (using map units)" ).arg( mPreviewSize );
 
-    previewFont.setWordSpacing( previewRatio * mFontWordSpacingSpinBox->value() );
-    previewFont.setLetterSpacing( QFont::AbsoluteSpacing, previewRatio * mFontLetterSpacingSpinBox->value() );
+    previewFont.setWordSpacing( previewRatio * previewFont.wordSpacing() );
+    previewFont.setLetterSpacing( QFont::AbsoluteSpacing, previewRatio * previewFont.letterSpacing() );
+    previewSettings.textFont = previewFont;
 
-    if ( mBufferDrawChkBx->isChecked() )
+    if ( previewSettings.bufferDraw )
     {
-      if ( mBufferUnitWidget->getUnit() == 1 ) // map units
+      if ( previewSettings.bufferSizeInMapUnits ) // map units
       {
-        bufferSize = previewRatio * spinBufferSize->value() / 3.527;
+        previewSettings.bufferSize = previewRatio * previewSettings.bufferSize / 3.527;
+        previewSettings.bufferSizeInMapUnits = false;
       }
       else // millimeters
       {
         grpboxtitle = sampleTxt + tr( " @ %1 pts (using map units, BUFFER IN MILLIMETERS)" ).arg( mPreviewSize );
-        bufferSize = spinBufferSize->value();
       }
     }
   }
   else // in points
   {
-    if ( fontSize > 0 )
-      previewFont.setPointSize( fontSize );
     mPreviewSizeSlider->setEnabled( false );
     grpboxtitle = sampleTxt;
 
-    if ( mBufferDrawChkBx->isChecked() )
+    if ( previewSettings.bufferDraw )
     {
-      if ( mBufferUnitWidget->getUnit() == 0 ) // millimeters
-      {
-        bufferSize = spinBufferSize->value();
-      }
-      else // map units
+      if ( previewSettings.bufferSizeInMapUnits ) // map units
       {
         grpboxtitle = sampleTxt + tr( " (BUFFER NOT SHOWN, in map units)" );
+        previewSettings.bufferDraw = false;
       }
     }
   }
 
-  lblFontPreview->setFont( previewFont );
+  //lblFontPreview->setMapUnitScale( 10.0 / mPreviewSize );
+  lblFontPreview->setTextRendererSettings( previewSettings );
   groupBox_mPreview->setTitle( grpboxtitle );
-
-  QColor prevColor = btnTextColor->color();
-  prevColor.setAlphaF(( 100.0 - ( double )( mFontTranspSpinBox->value() ) ) / 100.0 );
-  lblFontPreview->setTextColor( prevColor );
-
-  bool bufferNoFill = false;
-  if ( mBufferDrawChkBx->isChecked() && bufferSize != 0.0 )
-  {
-    QColor buffColor = btnBufferColor->color();
-    buffColor.setAlphaF(( 100.0 - ( double )( mBufferTranspSpinBox->value() ) ) / 100.0 );
-
-    bufferNoFill = !mBufferTranspFillChbx->isChecked();
-    lblFontPreview->setBuffer( bufferSize, buffColor, mBufferJoinStyleComboBox->penJoinStyle(), bufferNoFill );
-  }
-  else
-  {
-    lblFontPreview->setBuffer( 0, Qt::white, Qt::BevelJoin, bufferNoFill );
-  }
 }
 
 void QgsLabelingGui::scrollPreview()
@@ -1583,6 +1606,7 @@ void QgsLabelingGui::on_mShapeSVGSelectorBtn_clicked()
       mShapeSVGPathLineEdit->setText( svgPath );
     }
   }
+  updatePreview();
 }
 
 void QgsLabelingGui::on_mShapeSVGParamsBtn_clicked()

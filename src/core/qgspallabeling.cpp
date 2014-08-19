@@ -3011,11 +3011,6 @@ void QgsPalLayerSettings::parseDropShadow()
   dataDefinedValEval( "blendmode", QgsPalLayerSettings::ShadowBlendMode, exprVal );
 }
 
-int QgsPalLayerSettings::sizeToPixel( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor, const QgsMapUnitScale& mapUnitScale ) const
-{
-  return ( int )( scaleToPixelContext( size, c, unit, rasterfactor, mapUnitScale ) + 0.5 );
-}
-
 // -------------
 
 QgsPalLabeling::QgsPalLabeling()
@@ -3504,8 +3499,6 @@ void QgsPalLabeling::dataDefinedTextStyle( QgsPalLayerSettings& tmpLyr,
     tmpLyr.textTransp = ddValues.value( QgsPalLayerSettings::FontTransp ).toInt();
   }
 
-  tmpLyr.textColor.setAlphaF(( 100.0 - ( double )( tmpLyr.textTransp ) ) / 100.0 );
-
   //font blend mode
   if ( ddValues.contains( QgsPalLayerSettings::FontBlendMode ) )
   {
@@ -3606,9 +3599,6 @@ void QgsPalLabeling::dataDefinedTextBuffer( QgsPalLayerSettings& tmpLyr,
     QVariant ddColor = ddValues.value( QgsPalLayerSettings::BufferColor );
     tmpLyr.bufferColor = ddColor.value<QColor>();
   }
-
-  // apply any transparency
-  tmpLyr.bufferColor.setAlphaF(( 100.0 - ( double )( tmpLyr.bufferTransp ) ) / 100.0 );
 
   //buffer pen join style
   if ( ddValues.contains( QgsPalLayerSettings::BufferJoinStyle ) )

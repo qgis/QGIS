@@ -166,6 +166,7 @@ qgsgenericprojectionselector.cpp
 qgshighlight.cpp
 qgshtmlannotationitem.cpp
 qgslegendinterface.cpp
+#qgslabelinggui.cpp
 qgsludialog.cpp
 qgsmanageconnectionsdialog.cpp
 qgsmapcanvas.cpp
@@ -212,6 +213,7 @@ qgsslider.cpp
 qgssublayersdialog.cpp
 qgssvgannotationitem.cpp
 qgstextannotationitem.cpp
+qgstextsettingspreview.cpp
 qgsvertexmarker.cpp
 qgsunitselectionwidget.cpp
 )
@@ -360,6 +362,7 @@ qgsfilterlineedit.h
 qgsformannotationitem.h
 qgsgenericprojectionselector.h
 qgshtmlannotationitem.h
+#qgslabelinggui.h
 qgslegendinterface.h
 qgslonglongvalidator.h
 qgsludialog.h
@@ -398,6 +401,7 @@ qgsscalevisibilitydialog.h
 qgssearchquerybuilder.h
 qgsslider.h
 qgssublayersdialog.h
+qgstextsettingspreview.h
 qgsunitselectionwidget.h
 )
 
@@ -444,6 +448,7 @@ qgsfiledropedit.h
 qgsfilterlineedit.h
 qgsgenericprojectionselector.h
 qgshighlight.h
+#qgslabelinggui.h
 qgsmapcanvas.h
 qgsmapcanvasitem.h
 qgsmapcanvasmap.h
@@ -473,6 +478,7 @@ qgsscalevisibilitydialog.h
 qgssearchquerybuilder.h
 qgsslider.h
 qgssublayersdialog.h
+qgstextsettingspreview.h
 qgsvectorlayertools.h
 qgsvertexmarker.h
 qgsnumericsortlistviewitem.h
