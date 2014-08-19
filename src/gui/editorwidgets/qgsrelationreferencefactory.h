@@ -19,10 +19,13 @@
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetfactory.h"
 
+class QgsMapCanvas;
+class QgsMessageBar;
+
 class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsRelationReferenceFactory( QgsAttributeEditorContext context, QString name );
+    QgsRelationReferenceFactory( QString name, QgsAttributeEditorContext context, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
 
     /**
      * Override this in your implementation.
@@ -74,6 +77,8 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
 
   private:
     QgsAttributeEditorContext mEditorContext;
+    QgsMapCanvas* mCanvas;
+    QgsMessageBar* mMessageBar;
 };
 
 #endif // QGSRELATIONREFERENCEFACTORY_H

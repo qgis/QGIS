@@ -26,17 +26,16 @@ QgsRelReferenceConfigDlg::QgsRelReferenceConfigDlg( QgsVectorLayer* vl, int fiel
     : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
+  connect( mComboRelation, SIGNAL( currentIndexChanged( int ) ), this, SLOT( relationChanged( int ) ) );
 
   foreach ( const QgsRelation& relation, vl->referencingRelations( fieldIdx ) )
   {
     mComboRelation->addItem( QString( "%1 (%2)" ).arg( relation.id(), relation.referencedLayerId() ), relation.id() );
     if ( relation.referencedLayer() )
     {
-      mTxtDisplayExpression->setText( relation.referencedLayer()->displayExpression() );
+      mExpressionWidget->setField( relation.referencedLayer()->displayExpression() );
     }
   }
-
-  connect( mPbnPreviewExpression, SIGNAL( clicked() ), this, SLOT( previewExpressionBuilder() ) );
 }
 
 void QgsRelReferenceConfigDlg::setConfig( const QMap<QString, QVariant>& config )
@@ -55,17 +54,29 @@ void QgsRelReferenceConfigDlg::setConfig( const QMap<QString, QVariant>& config 
   {
     mComboRelation->setCurrentIndex( mComboRelation->findData( config[ "Relation" ].toString() ) );
   }
+
+  if ( config.contains( "MapIdentification" ) )
+  {
+    mCbxMapIdentification->setChecked( config[ "MapIdentification"].toBool() );
+  }
+
+  if ( config.contains( "ReadOnly" ) )
+  {
+    mCbxReadOnly->setChecked( config[ "ReadOnly"].toBool() );
+  }
 }
 
-void QgsRelReferenceConfigDlg::on_mComboRelation_indexChanged( int idx )
+void QgsRelReferenceConfigDlg::relationChanged( int idx )
 {
   QString relName = mComboRelation->itemData( idx ).toString();
   QgsRelation rel = QgsProject::instance()->relationManager()->relation( relName );
 
   QgsVectorLayer* referencedLayer = rel.referencedLayer();
+  mExpressionWidget->setLayer( referencedLayer ); // set even if 0
   if ( referencedLayer )
   {
-    mTxtDisplayExpression->setText( referencedLayer->displayExpression() );
+    mExpressionWidget->setField( referencedLayer->displayExpression() );
+    mCbxMapIdentification->setEnabled( referencedLayer->hasGeometryType() );
   }
 }
 
@@ -74,6 +85,8 @@ QgsEditorWidgetConfig QgsRelReferenceConfigDlg::config()
   QgsEditorWidgetConfig myConfig;
   myConfig.insert( "AllowNULL", mCbxAllowNull->isChecked() );
   myConfig.insert( "ShowForm", mCbxShowForm->isChecked() );
+  myConfig.insert( "MapIdentification", mCbxMapIdentification->isEnabled() && mCbxMapIdentification->isChecked() );
+  myConfig.insert( "ReadOnly", mCbxReadOnly->isChecked() );
   myConfig.insert( "Relation", mComboRelation->itemData( mComboRelation->currentIndex() ) );
 
   QString relName = mComboRelation->itemData( mComboRelation->currentIndex() ).toString();
@@ -81,23 +94,9 @@ QgsEditorWidgetConfig QgsRelReferenceConfigDlg::config()
 
   if ( relation.isValid() )
   {
-    relation.referencedLayer()->setDisplayExpression( mTxtDisplayExpression->text() );
+    relation.referencedLayer()->setDisplayExpression( mExpressionWidget->currentField() );
   }
 
   return myConfig;
 }
 
-void QgsRelReferenceConfigDlg::previewExpressionBuilder()
-{
-  QString relName = mComboRelation->itemData( mComboRelation->currentIndex() ).toString();
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( relName );
-
-  // Show expression builder
-  QgsExpressionBuilderDialog dlg( relation.referencedLayer(), mTxtDisplayExpression->text() , this );
-  dlg.setWindowTitle( tr( "Preview Expression" ) );
-
-  if ( dlg.exec() == QDialog::Accepted )
-  {
-    mTxtDisplayExpression->setText( dlg.expressionText() );
-  }
-}

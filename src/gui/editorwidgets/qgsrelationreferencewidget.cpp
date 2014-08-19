@@ -17,71 +17,121 @@
 
 #include <QPushButton>
 #include <QDialog>
+#include <QHBoxLayout>
+#include <QTimer>
 
 #include "qgsattributedialog.h"
+#include "qgsapplication.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgsexpression.h"
 #include "qgsfield.h"
-#include "qgsproject.h"
+#include "qgsgeometry.h"
+#include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
 #include "qgsrelreferenceconfigdlg.h"
-#include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 
-QgsRelationReferenceWidget::QgsRelationReferenceWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QgsAttributeEditorContext context, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+
+QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
+    : QWidget( parent )
+    , mEditorContext( QgsAttributeEditorContext() )
+    , mCanvas( NULL )
+    , mMessageBar( NULL )
+    , mHighlight( NULL )
     , mInitialValueAssigned( false )
-    , mComboBox( NULL )
-    , mAttributeEditorFrame( NULL )
-    , mAttributeEditorLayout( NULL )
-    , mAttributeEditorButton( NULL )
+    , mMapTool( NULL )
+    , mMessageBarItem( NULL )
+    , mRelationName( "" )
+    , mReferencedAttributeDialog( NULL )
     , mReferencedLayer( NULL )
-    , mAttributeDialog( NULL )
-    , mEditorContext( context )
+    , mReferencingLayer( NULL )
+    , mWindowWidget( NULL )
+    , mEmbedForm( false )
+    , mReadOnlySelector( false )
+    , mAllowMapIdentification( false )
 {
+  mTopLayout = new QVBoxLayout( this );
+  mTopLayout->setContentsMargins( 0, 0, 0, 0 );
+  setLayout( mTopLayout );
+
+  QHBoxLayout* editLayout = new QHBoxLayout();
+  editLayout->setContentsMargins( 0, 0, 0, 0 );
+
+  // combobox (for non-geometric relation)
+  mComboBox = new QComboBox( this );
+  editLayout->addWidget( mComboBox );
+
+  // read-only line edit
+  mLineEdit = new QLineEdit( this );
+  mLineEdit->setReadOnly( true );
+  editLayout->addWidget( mLineEdit );
+
+  // open form button
+  mOpenFormButton = new QToolButton( this );
+  mOpenFormAction = new QAction( QgsApplication::getThemeIcon( "/mActionToggleEditing.svg" ), tr( "Open related feature form" ), this );
+  mOpenFormButton->addAction( mOpenFormAction );
+  mOpenFormButton->setDefaultAction( mOpenFormAction );
+  connect( mOpenFormButton, SIGNAL( triggered( QAction* ) ), this, SLOT( openForm() ) );
+  editLayout->addWidget( mOpenFormButton );
+
+  // highlight button
+  mHighlightFeatureButton = new QToolButton( this );
+  mHighlightFeatureAction = new QAction( QgsApplication::getThemeIcon( "/mActionHighlightFeature.svg" ), tr( "Highlight feature" ), this );
+  mScaleHighlightFeatureAction = new QAction( QgsApplication::getThemeIcon( "/mActionScaleHighlightFeature.svg" ), tr( "Scale and highlight feature" ), this );
+  mPanHighlightFeatureAction = new QAction( QgsApplication::getThemeIcon( "/mActionPanHighlightFeature.svg" ), tr( "Pan and highlight feature" ), this );
+  mHighlightFeatureButton->addAction( mHighlightFeatureAction );
+  mHighlightFeatureButton->addAction( mScaleHighlightFeatureAction );
+  mHighlightFeatureButton->addAction( mPanHighlightFeatureAction );
+  mHighlightFeatureButton->setDefaultAction( mHighlightFeatureAction );
+  connect( mHighlightFeatureButton, SIGNAL( triggered( QAction* ) ), this, SLOT( highlightActionTriggered( QAction* ) ) );
+  editLayout->addWidget( mHighlightFeatureButton );
+
+  // map identification button
+  mMapIdentificationButton = new QToolButton( this );
+  mMapIdentificationAction = new QAction( QgsApplication::getThemeIcon( "/mActionMapIdentification.svg" ), tr( "Select on map" ), this );
+  mMapIdentificationButton->addAction( mMapIdentificationAction );
+  mMapIdentificationButton->setDefaultAction( mMapIdentificationAction );
+  connect( mMapIdentificationButton, SIGNAL( triggered( QAction* ) ), this, SLOT( mapIdentification() ) );
+  editLayout->addWidget( mMapIdentificationButton );
+
+  // spacer
+  editLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ) );
+
+  // add line to top layout
+  mTopLayout->addLayout( editLayout );
+
+  // embed form
+  mAttributeEditorFrame = new QgsCollapsibleGroupBox( this );
+  mAttributeEditorFrame->setCollapsed( true );
+  mAttributeEditorLayout = new QVBoxLayout( mAttributeEditorFrame );
+  mAttributeEditorFrame->setLayout( mAttributeEditorLayout );
+  mTopLayout->addWidget( mAttributeEditorFrame );
+
+  // default mode is combobox, non geometric relation and no embed form
+  mLineEdit->hide();
+  mMapIdentificationButton->hide();
 }
 
-QWidget* QgsRelationReferenceWidget::createWidget( QWidget* parent )
+QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
 {
-  return new QWidget( parent );
+  deleteHighlight();
+  delete mMapTool;
 }
 
-void QgsRelationReferenceWidget::initWidget( QWidget* editor )
+void QgsRelationReferenceWidget::setRelation( QgsRelation relation, bool allowNullValue )
 {
-  QGridLayout* layout = new QGridLayout( editor );
-  editor->setLayout( layout );
-
-  mComboBox = new QComboBox( editor );
-  layout->addWidget( mComboBox, 0, 0, 1, 1 );
-
-  if ( config( "ShowForm", true ).toBool() )
-  {
-    mAttributeEditorFrame = new QgsCollapsibleGroupBox( editor );
-    mAttributeEditorLayout = new QVBoxLayout( mAttributeEditorFrame );
-    mAttributeEditorFrame->setLayout( mAttributeEditorLayout );
-
-    layout->addWidget( mAttributeEditorFrame, 1, 0, 1, 3 );
-  }
-  else
-  {
-    mAttributeEditorButton = new QPushButton( tr( "Open Form" ) );
-
-    layout->addWidget( mAttributeEditorButton, 0, 1, 1, 1 );
-
-    connect( mAttributeEditorButton, SIGNAL( clicked() ), this, SLOT( openForm() ) );
-  }
-
-  layout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ), 0, 2, 1, 1 );
-
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( "Relation" ).toString() );
-
   if ( relation.isValid() )
   {
-    if ( config( "AllowNULL" ).toBool() )
+    if ( allowNullValue )
     {
-      mComboBox->addItem( tr( "(no selection)" ), QVariant( field().type() ) );
+      const QString nullValue = QSettings().value( "qgis/nullValue", "NULL" ).toString();
+      mComboBox->addItem( nullValue );
+      mComboBox->setItemData( mComboBox->count() - 1, Qt::gray, Qt::ForegroundRole );
     }
 
+    mReferencingLayer = relation.referencingLayer();
+    mRelationName = relation.name();
     mReferencedLayer = relation.referencedLayer();
     int refFieldIdx = mReferencedLayer->fieldNameIndex( relation.fieldPairs().first().second );
 
@@ -100,6 +150,7 @@ void QgsRelationReferenceWidget::initWidget( QWidget* editor )
       mFidFkMap.insert( f.id(), f.attribute( refFieldIdx ) );
     }
 
+
     // Only connect after iterating, to have only one iterator on the referenced table at once
     connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( referenceChanged( int ) ) );
   }
@@ -110,43 +161,29 @@ void QgsRelationReferenceWidget::initWidget( QWidget* editor )
     font.setItalic( true );
     lbl->setStyleSheet( "QLabel { color: red; } " );
     lbl->setFont( font );
-    layout->addWidget( lbl, 1, 0, 1, 3 );
+    mTopLayout->addWidget( lbl, 1, 0 );
   }
 }
 
-QVariant QgsRelationReferenceWidget::value()
+void QgsRelationReferenceWidget::setRelationEditable( bool editable )
 {
-  QVariant varFid = mComboBox->itemData( mComboBox->currentIndex() );
-  if ( varFid.isNull() )
-  {
-    return QVariant( field().type() );
-  }
-  else
-  {
-    return mFidFkMap.value( varFid.value<QgsFeatureId>() );
-  }
+  mLineEdit->setEnabled( editable );
+  mComboBox->setEnabled( editable );
+  mMapIdentificationButton->setEnabled( editable );
 }
 
-void QgsRelationReferenceWidget::setValue( const QVariant& value )
+void QgsRelationReferenceWidget::setRelatedFeature( const QVariant& value )
+{
+  QgsFeatureId fid = mFidFkMap.key( value );
+  if ( mReferencedLayer )
+    setRelatedFeature( fid );
+}
+
+void QgsRelationReferenceWidget::setRelatedFeature( const QgsFeatureId& fid )
 {
   int oldIdx = mComboBox->currentIndex();
-
-  if ( value.isNull() )
-  {
-    if ( config( "AllowNULL" ).toBool() )
-    {
-      mComboBox->setCurrentIndex( 0 );
-    }
-    else
-    {
-      mComboBox->setCurrentIndex( -1 );
-    }
-  }
-  else
-  {
-    QgsFeatureId fid = mFidFkMap.key( value );
-    mComboBox->setCurrentIndex( mComboBox->findData( fid ) );
-  }
+  int newIdx = mComboBox->findData( fid );
+  mComboBox->setCurrentIndex( newIdx );
 
   if ( !mInitialValueAssigned )
   {
@@ -157,18 +194,208 @@ void QgsRelationReferenceWidget::setValue( const QVariant& value )
       referenceChanged( mComboBox->currentIndex() );
     mInitialValueAssigned = true;
   }
+
+  // update line edit
+  mLineEdit->setText( mFidFkMap.value( fid ).toString() );
 }
 
-void QgsRelationReferenceWidget::setEnabled( bool enabled )
+void QgsRelationReferenceWidget::mapToolDeactivated()
 {
-  mComboBox->setEnabled( enabled );
+  if ( mWindowWidget )
+  {
+    mWindowWidget->show();
+  }
+
+  if ( mMessageBar && mMessageBarItem )
+  {
+    mMessageBar->popWidget( mMessageBarItem );
+  }
+  mMessageBarItem = NULL;
+}
+
+QVariant QgsRelationReferenceWidget::relatedFeature()
+{
+  QVariant varFid = mComboBox->itemData( mComboBox->currentIndex() );
+  if ( varFid.isNull() )
+  {
+    return QVariant();
+  }
+  else
+  {
+    return mFidFkMap.value( varFid.value<QgsFeatureId>() );
+  }
+}
+
+void QgsRelationReferenceWidget::setEditorContext( QgsAttributeEditorContext context, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
+{
+  mEditorContext = context;
+  mCanvas = canvas;
+  mMessageBar = messageBar;
+}
+
+void QgsRelationReferenceWidget::setEmbedForm( bool display )
+{
+  mAttributeEditorFrame->setVisible( display );
+}
+
+void QgsRelationReferenceWidget::setReadOnlySelector( bool readOnly )
+{
+  mComboBox->setHidden( readOnly );
+  mLineEdit->setVisible( readOnly );
+}
+
+void QgsRelationReferenceWidget::setAllowMapIdentification( bool allowMapIdentification )
+{
+  mHighlightFeatureButton->setVisible( allowMapIdentification );
+  mMapIdentificationButton->setVisible( allowMapIdentification );
+}
+
+void QgsRelationReferenceWidget::highlightActionTriggered( QAction* action )
+{
+  if ( action == mHighlightFeatureAction )
+  {
+    highlightFeature();
+  }
+  else if ( action == mScaleHighlightFeatureAction )
+  {
+    highlightFeature( Scale );
+  }
+  else if ( action == mPanHighlightFeatureAction )
+  {
+    highlightFeature( Pan );
+  }
+}
+
+void QgsRelationReferenceWidget::openForm()
+{
+  QgsFeatureId fid = mComboBox->itemData( mComboBox->currentIndex() ).value<QgsFeatureId>();
+
+  QgsFeature feat;
+
+  if ( !mReferencedLayer )
+    return;
+
+  mReferencedLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( feat );
+
+  if ( !feat.isValid() )
+    return;
+
+  // TODO: Get a proper QgsDistanceArea thingie
+  mReferencedAttributeDialog = new QgsAttributeDialog( mReferencedLayer, new QgsFeature( feat ), true, this, true, mEditorContext );
+  mReferencedAttributeDialog->exec();
+  delete mReferencedAttributeDialog;
+}
+
+void QgsRelationReferenceWidget::highlightFeature( CanvasExtent canvasExtent )
+{
+  QgsFeatureId fid = mComboBox->itemData( mComboBox->currentIndex() ).value<QgsFeatureId>();
+
+  QgsFeature feat;
+
+  if ( !mReferencedLayer )
+    return;
+
+  mReferencedLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( feat );
+
+  if ( !feat.isValid() )
+    return;
+
+  if ( !mCanvas )
+    return;
+
+  QgsGeometry* geom = feat.geometry();
+  if ( !geom )
+  {
+    return;
+  }
+
+  // scale or pan
+  if ( canvasExtent == Scale )
+  {
+    QgsRectangle featBBox = geom->boundingBox();
+    featBBox = mCanvas->mapSettings().layerToMapCoordinates( mReferencedLayer, featBBox );
+    QgsRectangle extent = mCanvas->extent();
+    if ( !extent.contains( featBBox ) )
+    {
+      extent.combineExtentWith( &featBBox );
+      extent.scale( 1.1 );
+      mCanvas->setExtent( extent );
+      mCanvas->refresh();
+    }
+  }
+  else if ( canvasExtent == Pan )
+  {
+    QgsPoint center = geom->centroid()->asPoint();
+    center = mCanvas->mapSettings().layerToMapCoordinates( mReferencedLayer, center );
+    mCanvas->zoomByFactor( 1.0, &center ); // refresh is done in this method
+  }
+
+  // highlight
+  deleteHighlight();
+  mHighlight = new QgsHighlight( mCanvas, feat, mReferencedLayer );
+  QSettings settings;
+  QColor color = QColor( settings.value( "/Map/highlight/color", QGis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  int alpha = settings.value( "/Map/highlight/colorAlpha", QGis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
+  double buffer = settings.value( "/Map/highlight/buffer", QGis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
+  double minWidth = settings.value( "/Map/highlight/minWidth", QGis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
+
+  mHighlight->setColor( color ); // sets also fill with default alpha
+  color.setAlpha( alpha );
+  mHighlight->setFillColor( color ); // sets fill with alpha
+  mHighlight->setBuffer( buffer );
+  mHighlight->setMinWidth( minWidth );
+  mHighlight->show();
+
+  QTimer* timer = new QTimer( this );
+  timer->setSingleShot( true );
+  connect( timer, SIGNAL( timeout() ), this, SLOT( deleteHighlight() ) );
+  timer->start( 3000 );
+}
+
+void QgsRelationReferenceWidget::deleteHighlight()
+{
+  if ( mHighlight )
+  {
+    mHighlight->hide();
+    delete mHighlight;
+  }
+  mHighlight = NULL;
+}
+
+void QgsRelationReferenceWidget::mapIdentification()
+{
+  if ( !mReferencedLayer )
+    return;
+
+  QgsVectorLayerTools* tools = mEditorContext.vectorLayerTools();
+  if ( !tools )
+    return;
+  if ( !mCanvas )
+    return;
+
+  mMapTool = new QgsMapToolIdentifyFeature( mReferencedLayer, mCanvas );
+  mCanvas->setMapTool( mMapTool );
+  mWindowWidget = window();
+  mWindowWidget->hide();
+  connect( mMapTool, SIGNAL( featureIdentified( QgsFeatureId ) ), this, SLOT( featureIdentified( QgsFeatureId ) ) );
+  connect( mMapTool, SIGNAL( deactivated() ), this, SLOT( mapToolDeactivated() ) );
+
+  if ( mMessageBar )
+  {
+    QString title = QString( "Relation %1 for %2." ).arg( mRelationName ).arg( mReferencingLayer->name() );
+    QString msg = tr( "identify a feature of %1 to be associated. Press <ESC> to cancel." ).arg( mReferencedLayer->name() );
+    mMessageBarItem = QgsMessageBar::createMessage( title, msg );
+    mMessageBar->pushItem( mMessageBarItem );
+  }
 }
 
 void QgsRelationReferenceWidget::referenceChanged( int index )
 {
   QgsFeatureId fid = mComboBox->itemData( index ).value<QgsFeatureId>();
 
-  emit valueChanged( mFidFkMap.value( fid ) );
+  highlightFeature();
+
+  emit relatedFeatureChanged( mFidFkMap.value( fid ) );
 
   // Check if we're running with an embedded frame we need to update
   if ( mAttributeEditorFrame )
@@ -179,39 +406,31 @@ void QgsRelationReferenceWidget::referenceChanged( int index )
 
     if ( feat.isValid() )
     {
-      // Backup old dialog and delete only after creating the new dialog, so we can "hot-swap" the contained QgsFeature
-      QgsAttributeDialog* oldDialog = mAttributeDialog;
-
-      if ( mAttributeDialog )
+      if ( mReferencedAttributeDialog )
       {
-        mAttributeEditorLayout->removeWidget( mAttributeDialog );
+        mAttributeEditorLayout->removeWidget( mReferencedAttributeDialog );
       }
 
       // TODO: Get a proper QgsDistanceArea thingie
-      mAttributeDialog = new QgsAttributeDialog( mReferencedLayer, new QgsFeature( feat ), true, mAttributeEditorFrame, false, mEditorContext );
-      QWidget* attrDialog = mAttributeDialog;
+      mReferencedAttributeDialog = new QgsAttributeDialog( mReferencedLayer, new QgsFeature( feat ), true, mAttributeEditorFrame, false, mEditorContext );
+      QWidget* attrDialog = mReferencedAttributeDialog;
       attrDialog->setWindowFlags( Qt::Widget ); // Embed instead of opening as window
       mAttributeEditorLayout->addWidget( attrDialog );
       attrDialog->show();
-
-      delete oldDialog;
     }
   }
 }
 
-void QgsRelationReferenceWidget::openForm()
+void QgsRelationReferenceWidget::featureIdentified( const QgsFeatureId& fid )
 {
-  QgsFeatureId fid = mComboBox->itemData( mComboBox->currentIndex() ).value<QgsFeatureId>();
+  setRelatedFeature( fid );
 
-  QgsFeature feat;
+  // deactivate map tool if activate
+  if ( mCanvas && mMapTool )
+  {
+    mCanvas->unsetMapTool( mMapTool );
+  }
 
-  mReferencedLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( feat );
-
-  if ( !feat.isValid() )
-    return;
-
-  // TODO: Get a proper QgsDistanceArea thingie
-  mAttributeDialog = new QgsAttributeDialog( mReferencedLayer, new QgsFeature( feat ), true, widget(), true, mEditorContext );
-  mAttributeDialog->exec();
-  delete mAttributeDialog;
+  if ( mWindowWidget )
+    mWindowWidget->show();
 }

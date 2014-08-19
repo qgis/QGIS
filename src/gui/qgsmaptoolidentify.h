@@ -123,10 +123,6 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     @return a list of IdentifyResult*/
     QList<IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
-  protected:
-    //! rubber bands for layer select mode
-    void deleteRubberBands();
-
   public slots:
     void formatChanged( QgsRasterLayer *layer );
     void layerDestroyed();
@@ -136,7 +132,10 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     void identifyMessage( QString );
     void changedRasterResults( QList<IdentifyResult>& );
 
-  private:
+  protected:
+    //! rubber bands for layer select mode
+    void deleteRubberBands();
+
     /** Performs the identification.
     To avoid beeing forced to specify IdentifyMode with a list of layers
     this has been made private and two publics methods are offered
@@ -154,6 +153,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     bool identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, QgsPoint point );
 
+
+  private:
     //! Private helper
     virtual void convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea );
 

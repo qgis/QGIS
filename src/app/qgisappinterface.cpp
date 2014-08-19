@@ -572,7 +572,7 @@ QAction *QgisAppInterface::actionQgisHomePage() { return qgis->actionQgisHomePag
 QAction *QgisAppInterface::actionCheckQgisVersion() { return qgis->actionCheckQgisVersion(); }
 QAction *QgisAppInterface::actionAbout() { return qgis->actionAbout(); }
 
-bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, bool updateFeatureOnly )
+bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, bool updateFeatureOnly, bool showModal )
 {
   Q_UNUSED( updateFeatureOnly );
   if ( !vlayer )
@@ -581,11 +581,12 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, b
   QgsFeatureAction action( tr( "Attributes changed" ), f, vlayer, -1, -1, QgisApp::instance() );
   if ( vlayer->isEditable() )
   {
-    return action.editFeature();
+    return action.editFeature( showModal );
   }
   else
   {
-    return action.viewFeatureForm();
+    action.viewFeatureForm();
+    return true;
   }
 }
 

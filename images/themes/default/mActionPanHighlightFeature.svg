@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2"
+   sodipodi:docname="mHighlightFeatureAction.svg"
+   inkscape:export-filename="/home/cafuego/Desktop/Simple Lightbulb.png"
+   viewBox="0 0 24 24"
+   sodipodi:version="0.32"
+   inkscape:export-xdpi="90"
+   version="1.0"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-ydpi="90"
+   inkscape:version="0.48.4 r9939"
+   width="100%"
+   height="100%">
+  <defs
+     id="defs4">
+    <radialGradient
+       id="radialGradient3507"
+       gradientUnits="userSpaceOnUse"
+       cy="411.70999"
+       cx="421.85001"
+       gradientTransform="matrix(3.005,-0.17398,0.32376,5.5918,-976.83,-1829.5)"
+       r="74.362"
+       inkscape:collect="always">
+      <stop
+         id="stop2282"
+         style="stop-color:#000000;stop-opacity:0"
+         offset="0" />
+      <stop
+         id="stop2290"
+         style="stop-color:#000000;stop-opacity:.53125"
+         offset="1" />
+      <stop
+         id="stop2286"
+         style="stop-color:#000000"
+         offset="1" />
+    </radialGradient>
+    <radialGradient
+       id="radialGradient3509"
+       gradientUnits="userSpaceOnUse"
+       cy="399.39001"
+       cx="429.14999"
+       gradientTransform="matrix(1,0,0,1.2002,0,-86.091)"
+       r="74.362"
+       inkscape:collect="always">
+      <stop
+         id="stop2245"
+         style="stop-color:#ffffff"
+         offset="0" />
+      <stop
+         id="stop2254"
+         style="stop-color:#ffffff;stop-opacity:.66406"
+         offset=".65625" />
+      <stop
+         id="stop2247"
+         style="stop-color:#ffffff;stop-opacity:.33594"
+         offset="1" />
+    </radialGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     bordercolor="#666666"
+     inkscape:pageshadow="2"
+     inkscape:guide-bbox="true"
+     pagecolor="#ffffff"
+     inkscape:window-height="852"
+     inkscape:zoom="16"
+     inkscape:window-x="65"
+     showgrid="false"
+     borderopacity="1.0"
+     inkscape:current-layer="g2380"
+     inkscape:cx="0.33888657"
+     inkscape:cy="6.375225"
+     showguides="true"
+     inkscape:window-y="25"
+     inkscape:window-width="1615"
+     inkscape:pageopacity="0.0"
+     inkscape:document-units="px"
+     inkscape:window-maximized="0" />
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     transform="translate(-33.326,-710.49302)">
+    <g
+       id="g2380"
+       transform="matrix(3.1015,0,0,3.1015,-994.61,-1036.2)">
+      <g
+         id="g3493"
+         transform="matrix(0.0290863,0,0,0.0290863,324.10418,554.11594)">
+        <path
+           id="path2213"
+           sodipodi:nodetypes="czsczscc"
+           style="fill:#ffff02;fill-rule:evenodd;stroke:#000000;stroke-width:1.25;stroke-miterlimit:0"
+           d="m 404.53,340.87 c -40.148,1.0159 -71.999,27.049 -72.469,74.168 -0.46975,47.111 37.401,37.258 38.406,104.18 0.007,0.44807 35.505,-0.40359 71.669,-0.0152 1.3142,-66.55 38.644,-57.648 38.644,-104.17 1e-5,-46.522 -33.315,-74.168 -74.344,-74.168 -0.60318,0 -1.2311,-0.0171 -1.9062,0"
+           inkscape:connector-curvature="0" />
+        <g
+           id="g2368"
+           transform="translate(0,0.625)">
+          <rect
+             id="rect2300"
+             style="fill:#b8b8b8;fill-rule:evenodd;stroke:#000000;stroke-width:1.25;stroke-miterlimit:0"
+             height="38.386002"
+             width="62.124001"
+             y="519"
+             x="375.35999" />
+          <path
+             id="path2302"
+             style="fill:none;stroke:#626262;stroke-width:2.5"
+             d="m 375.77,520 61.619,5.5558"
+             inkscape:connector-curvature="0" />
+          <path
+             id="path2304"
+             style="fill:none;stroke:#626262;stroke-width:2.5"
+             d="m 375.77,528 61.619,5.5558"
+             inkscape:connector-curvature="0" />
+          <path
+             id="path2306"
+             style="fill:none;stroke:#626262;stroke-width:2.5"
+             d="m 375.77,536 61.619,5.5558"
+             inkscape:connector-curvature="0" />
+          <path
+             id="path2308"
+             style="fill:none;stroke:#626262;stroke-width:2.5"
+             d="m 375.77,551 61.619,5.5558"
+             inkscape:connector-curvature="0" />
+          <path
+             id="path2314"
+             style="fill:none;stroke:#626262;stroke-width:2.5"
+             d="m 375.77,544 61.619,5.5558"
+             inkscape:connector-curvature="0" />
+        </g>
+        <rect
+           id="rect2344"
+           style="fill:#b8b8b8;fill-rule:evenodd;stroke:#000000;stroke-width:1.25;stroke-miterlimit:0"
+           height="9.7182999"
+           width="15.728"
+           y="560.59003"
+           x="398.56" />
+        <path
+           id="rect2326"
+           sodipodi:nodetypes="ccccc"
+           style="fill:#282828;fill-rule:evenodd"
+           d="m 375.04,558.2 62.844,-0.12627 -8.5863,9.2857 h -46.429 l -7.8287,-9.1594 z"
+           inkscape:connector-curvature="0" />
+        <path
+           id="path2278"
+           sodipodi:nodetypes="czsczscc"
+           style="opacity:0.83051004;fill:url(#radialGradient3507);fill-rule:evenodd"
+           d="m 404.53,340.87 c -40.148,1.0159 -71.999,27.049 -72.469,74.168 -0.46975,47.111 37.401,37.258 38.406,104.18 0.007,0.44807 35.505,-0.40359 71.669,-0.0152 1.3142,-66.55 38.644,-57.648 38.644,-104.17 1e-5,-46.522 -33.315,-74.168 -74.344,-74.168 -0.60318,0 -1.2311,-0.0171 -1.9062,0"
+           inkscape:connector-curvature="0" />
+        <path
+           id="path2258"
+           sodipodi:nodetypes="czsczscc"
+           style="fill:url(#radialGradient3509);fill-rule:evenodd"
+           d="m 404.53,340.87 c -40.148,1.0159 -71.999,27.049 -72.469,74.168 -0.46975,47.111 37.401,37.258 38.406,104.18 0.007,0.44807 35.505,-0.40359 71.669,-0.0152 1.3142,-66.55 38.644,-57.648 38.644,-104.17 1e-5,-46.522 -33.315,-74.168 -74.344,-74.168 -0.60318,0 -1.2311,-0.0171 -1.9062,0"
+           inkscape:connector-curvature="0" />
+      </g>
+      <path
+         inkscape:connector-curvature="0"
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="E:\Program Files\QGIS-Dev\themes\gis-0.1.1\path2844.png"
+         sodipodi:nodetypes="cccccccc"
+         id="path2844"
+         d="m 334.7972,568.91478 1.13549,-1.1355 -0.75699,0 0,-0.75699 -0.757,0 0,0.75699 -0.757,0 1.1355,1.1355 z"
+         style="fill:#6d97c4;fill-opacity:1;fill-rule:evenodd;stroke:#415a75;stroke-width:0.25233239;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline;enable-background:new" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#6d97c4;fill-opacity:1;fill-rule:evenodd;stroke:#415a75;stroke-width:0.25233239;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline;enable-background:new"
+         d="m 332.02154,566.13912 1.1355,1.1355 0,-0.757 0.75699,0 0,-0.757 -0.75699,0 0,-0.75699 -1.1355,1.13549 z"
+         id="path2846"
+         sodipodi:nodetypes="cccccccc" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#6d97c4;fill-opacity:1;fill-rule:evenodd;stroke:#415a75;stroke-width:0.25233239;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline;enable-background:new"
+         d="m 334.7972,563.36347 1.13549,1.13549 -0.75699,0 0,0.75699 -0.757,0 0,-0.75699 -0.757,0 1.1355,-1.13549 z"
+         id="path2848"
+         sodipodi:nodetypes="cccccccc" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cccccccc"
+         id="path2850"
+         d="m 337.57285,566.13912 -1.13549,1.1355 0,-0.757 -0.75699,0 0,-0.757 0.75699,0 0,-0.75699 1.13549,1.13549 z"
+         style="fill:#6d97c4;fill-opacity:1;fill-rule:evenodd;stroke:#415a75;stroke-width:0.25233239;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline;enable-background:new" />
+    </g>
+  </g>
+  <metadata
+     id="metadata28">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title></dc:title>
+        <dc:date>2009-01-16T03:09:00</dc:date>
+        <dc:description>A screw-in light bulb</dc:description>
+        <dc:source>https://openclipart.org/detail/21171/light-bulb-by-cafuego-21171</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>cafuego</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>light bulb</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

@@ -279,6 +279,8 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     return false;
   }
 
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
   QMap< QString, QString > commonDerivedAttributes;
 
   commonDerivedAttributes.insert( tr( "(clicked coordinate)" ), point.toString() );
@@ -353,6 +355,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
   QgsDebugMsg( "Feature count on identify: " + QString::number( featureCount ) );
 
+  QApplication::restoreOverrideCursor();
   return featureCount > 0;
 }
 

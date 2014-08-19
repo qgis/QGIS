@@ -39,7 +39,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
   public slots:
     void execute();
     bool viewFeatureForm( QgsHighlight *h = 0 );
-    bool editFeature();
+    bool editFeature( bool showModal = true );
 
     /**
      * Add a new feature to the layer.

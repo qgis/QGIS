@@ -102,49 +102,27 @@ bool QgsFeatureAction::viewFeatureForm( QgsHighlight *h )
   return true;
 }
 
-bool QgsFeatureAction::editFeature()
+bool QgsFeatureAction::editFeature( bool showModal )
 {
-  bool res = false;
-
   if ( !mLayer )
-    return res;
+    return false;
 
   QgsAttributeDialog *dialog = newDialog( false );
 
-  if ( !mLayer->isEditable() )
+  if ( !mFeature.isValid() )
+    dialog->setIsAddDialog( true );
+
+  if ( showModal )
   {
-    res = dialog->exec();
+    dialog->setAttribute( Qt::WA_DeleteOnClose );
+    return dialog->exec();
   }
   else
   {
-    QgsAttributes src = mFeature.attributes();
-    if ( !mFeature.isValid() )
-      dialog->setIsAddDialog( true );
-
-    if ( dialog->exec() )
-    {
-      mLayer->beginEditCommand( text() );
-
-      const QgsAttributes &dst = mFeature.attributes();
-      for ( int i = 0; i < dst.count(); ++i )
-      {
-        if ( dst[i] != src[i] )
-        {
-          mLayer->changeAttributeValue( mFeature.id(), i, dst[i], src[i] );
-        }
-      }
-
-      mLayer->endEditCommand();
-      res = true;
-    }
-    else
-    {
-      res = false;
-    }
+    dialog->show();
   }
 
-  delete dialog;
-  return res;
+  return true;
 }
 
 bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes )

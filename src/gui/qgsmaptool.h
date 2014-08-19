@@ -153,6 +153,12 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! emit signal to clear previous message
     void messageDiscarded();
 
+    //! signal emitted once the map tool is activated
+    void activated();
+
+    //! signal emitted once the map tool is deactivated
+    void deactivated();
+
   private slots:
     //! clear pointer when action is destroyed
     void actionDestroyed();

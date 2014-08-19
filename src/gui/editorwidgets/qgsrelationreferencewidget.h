@@ -17,47 +17,108 @@
 #define QGSRELATIONREFERENCEWIDGET_H
 
 #include "qgsattributeeditorcontext.h"
-#include "qgseditorwidgetwrapper.h"
+#include "qgscollapsiblegroupbox.h"
 #include "qgsfeature.h"
+#include "qgshighlight.h"
+#include "qgsmaptoolidentifyfeature.h"
 
 #include <QComboBox>
-#include <QPushButton>
+#include <QToolButton>
+#include <QLineEdit>
 #include <QVBoxLayout>
 
 class QgsAttributeDialog;
 class QgsVectorLayerTools;
 
-class GUI_EXPORT QgsRelationReferenceWidget : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY( bool embedForm READ embedForm WRITE setEmbedForm )
+    Q_PROPERTY( bool readOnlySelector READ readOnlySelector WRITE setReadOnlySelector )
+    Q_PROPERTY( bool allowMapIdentification READ allowMapIdentification WRITE setAllowMapIdentification )
+
   public:
-    explicit QgsRelationReferenceWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QgsAttributeEditorContext context, QWidget* parent = 0 );
-    virtual QWidget* createWidget( QWidget* parent );
-    virtual void initWidget( QWidget* editor );
-    virtual QVariant value();
+    enum CanvasExtent
+    {
+      Fixed,
+      Pan,
+      Scale
+    };
+
+    explicit QgsRelationReferenceWidget( QWidget* parent );
+
+    ~QgsRelationReferenceWidget();
+
+    void setRelation( QgsRelation relation , bool allowNullValue );
+
+    void setRelationEditable( bool editable );
+
+    void setRelatedFeature( const QVariant &value );
+
+    QVariant relatedFeature();
+
+    void setEditorContext( QgsAttributeEditorContext context, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
+
+    bool embedForm() {return mEmbedForm;}
+    void setEmbedForm( bool display );
+
+    bool readOnlySelector() {return mReadOnlySelector;}
+    void setReadOnlySelector( bool readOnly );
+
+    bool allowMapIdentification() {return mAllowMapIdentification;}
+    void setAllowMapIdentification( bool allowMapIdentification );
 
   signals:
-    void valueChanged( const QVariant& value );
-
-  public slots:
-    virtual void setValue( const QVariant& value );
-    virtual void setEnabled( bool enabled );
+    void relatedFeatureChanged( QVariant );
 
   private slots:
-    void referenceChanged( int index );
+    void highlightActionTriggered( QAction* action );
+    void deleteHighlight();
     void openForm();
+    void mapIdentification();
+    void referenceChanged( int index );
+    void setRelatedFeature( const QgsFeatureId& fid );
+    void featureIdentified( const QgsFeatureId& fid );
+    void mapToolDeactivated();
+
 
   private:
-    bool mInitialValueAssigned;
-    QComboBox* mComboBox;
-    QWidget* mAttributeEditorFrame;
-    QVBoxLayout* mAttributeEditorLayout;
-    QPushButton* mAttributeEditorButton;
-    QgsVectorLayer* mReferencedLayer;
-    QVariant mCurrentValue;
-    QgsAttributeDialog* mAttributeDialog;
-    QHash<QgsFeatureId, QVariant> mFidFkMap; // Mapping from feature id => foreign key
+    void highlightFeature( CanvasExtent canvasExtent = Fixed );
+
+    // initialized
     QgsAttributeEditorContext mEditorContext;
+    QgsMapCanvas* mCanvas;
+    QgsMessageBar* mMessageBar;
+    QgsHighlight* mHighlight;
+    bool mInitialValueAssigned;
+    QgsMapToolIdentifyFeature* mMapTool;
+    QgsMessageBarItem* mMessageBarItem;
+    QString mRelationName;
+    QgsAttributeDialog* mReferencedAttributeDialog;
+    QgsVectorLayer* mReferencedLayer;
+    QgsVectorLayer* mReferencingLayer;
+    QWidget* mWindowWidget;
+
+    // Q_PROPERTY
+    bool mEmbedForm;
+    bool mReadOnlySelector;
+    bool mAllowMapIdentification;
+
+    // UI
+    QVBoxLayout* mTopLayout;
+    QHash<QgsFeatureId, QVariant> mFidFkMap; // Mapping from feature id => foreign key
+    QToolButton* mMapIdentificationButton;
+    QToolButton* mOpenFormButton;
+    QToolButton* mHighlightFeatureButton;
+    QAction* mHighlightFeatureAction;
+    QAction* mScaleHighlightFeatureAction;
+    QAction* mPanHighlightFeatureAction;
+    QAction* mOpenFormAction;
+    QAction* mMapIdentificationAction;
+    QComboBox* mComboBox;
+    QgsCollapsibleGroupBox* mAttributeEditorFrame;
+    QVBoxLayout* mAttributeEditorLayout;
+    QLineEdit* mLineEdit;
 };
 
 #endif // QGSRELATIONREFERENCEWIDGET_H

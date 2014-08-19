@@ -83,6 +83,7 @@ editorwidgets/qgsrangewidgetfactory.cpp
 editorwidgets/qgsrelationwidgetwrapper.cpp
 editorwidgets/qgsrelationreferencefactory.cpp
 editorwidgets/qgsrelationreferencewidget.cpp
+editorwidgets/qgsrelationreferencewidgetwrapper.cpp
 editorwidgets/qgsrelreferenceconfigdlg.cpp
 editorwidgets/qgstexteditconfigdlg.cpp
 editorwidgets/qgstexteditwidget.cpp
@@ -181,6 +182,7 @@ qgsmaptip.cpp
 qgsmaptool.cpp
 qgsmaptoolemitpoint.cpp
 qgsmaptoolidentify.cpp
+qgsmaptoolidentifyfeature.cpp
 qgsmaptoolpan.cpp
 qgsmaptoolzoom.cpp
 qgsmessagebar.cpp
@@ -298,6 +300,7 @@ editorwidgets/qgsphotowidget.h
 editorwidgets/qgsrangeconfigdlg.h
 editorwidgets/qgsrangewidget.h
 editorwidgets/qgsrelationreferencewidget.h
+editorwidgets/qgsrelationreferencewidgetwrapper.h
 editorwidgets/qgsrelationwidgetwrapper.h
 editorwidgets/qgsrelreferenceconfigdlg.h
 editorwidgets/qgstexteditconfigdlg.h
@@ -372,6 +375,7 @@ qgsmapoverviewcanvas.h
 qgsmaptool.h
 qgsmaptoolemitpoint.h
 qgsmaptoolidentify.h
+qgsmaptoolidentifyfeature.h
 qgsmessagebaritem.h
 qgsmessagebar.h
 qgsmessagelogviewer.h
@@ -454,6 +458,7 @@ qgsmaptip.h
 qgsmaptool.h
 qgsmaptoolemitpoint.h
 qgsmaptoolidentify.h
+qgsmaptoolidentifyfeature.h
 qgsmaptoolpan.h
 qgsmaptoolzoom.h
 qgsmessagebaritem.h
@@ -525,6 +530,7 @@ editorwidgets/qgsrangewidget.h
 editorwidgets/qgsrangewidgetfactory.h
 editorwidgets/qgsrelationreferencefactory.h
 editorwidgets/qgsrelationreferencewidget.h
+editorwidgets/qgsrelationreferencewidgetwrapper.h
 editorwidgets/qgsrelationwidgetwrapper.h
 editorwidgets/qgsrelreferenceconfigdlg.h
 editorwidgets/qgstexteditconfigdlg.h
