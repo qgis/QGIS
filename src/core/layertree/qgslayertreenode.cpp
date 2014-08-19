@@ -142,10 +142,12 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode*
 
 void QgsLayerTreeNode::removeChildrenPrivate( int from, int count )
 {
-  if ( count <= 0 )
+  if ( from < 0 || count <= 0 )
     return;
 
   int to = from + count - 1;
+  if ( to >= mChildren.count() )
+    return;
   emit willRemoveChildren( this, from, to );
   while ( --count >= 0 )
   {

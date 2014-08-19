@@ -36,9 +36,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mCustomLayerTree( 0 )
     , mComposerMap( 0 )
 {
-  mLegendModel2 = new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot() );
-  mLegendModel2->setFlag( QgsLayerTreeModel::AllowSymbologyChangeState, false );
-  mLegendModel2->setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
+  mLegendModel2 = new QgsLegendModelV2( QgsProject::instance()->layerTreeRoot() );
 
   adjustBoxSize();
 
@@ -253,11 +251,6 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   style( QgsComposerLegendStyle::Symbol ).writeXML( "symbol", composerLegendStyles, doc );
   style( QgsComposerLegendStyle::SymbolLabel ).writeXML( "symbolLabel", composerLegendStyles, doc );
 
-#if 0
-  //write model properties
-  mLegendModel.writeXML( composerLegendElem, doc );
-#endif
-
   if ( mCustomLayerTree )
   {
     // if not using auto-update - store the custom layer tree
@@ -327,21 +320,8 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
     mComposerMap = mComposition->getComposerMapById( itemElem.attribute( "map" ).toInt() );
   }
 
-#if 0
-  //read model properties
-  QDomNodeList modelNodeList = itemElem.elementsByTagName( "Model" );
-  if ( modelNodeList.size() > 0 )
-  {
-    QDomElement modelElem = modelNodeList.at( 0 ).toElement();
-    mLegendModel.readXML( modelElem, doc );
-  }
-#endif
-
   QDomElement layerTreeElem = itemElem.firstChildElement( "layer-tree-group" );
-  if ( layerTreeElem.isNull() )
-  {
-    setCustomLayerTree( QgsLayerTreeGroup::readXML( layerTreeElem ) );
-  }
+  setCustomLayerTree( QgsLayerTreeGroup::readXML( layerTreeElem ) );
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
@@ -436,4 +416,46 @@ void QgsComposerLegend::invalidateCurrentMap()
     disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
   }
   mComposerMap = 0;
+}
+
+// -------------------------------------------------------------------------
+#include "qgslayertreemodellegendnode.h"
+#include "qgsvectorlayer.h"
+
+QgsLegendModelV2::QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject* parent )
+  : QgsLayerTreeModel( rootNode, parent )
+{
+  setFlag( QgsLayerTreeModel::AllowSymbologyChangeState, false );
+  setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
+}
+
+QVariant QgsLegendModelV2::data( const QModelIndex& index, int role ) const
+{
+  // handle custom layer node labels
+  if ( QgsLayerTreeNode* node = index2node( index ) )
+  {
+    if ( QgsLayerTree::isLayer( node ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) && !node->customProperty( "legend/title-label" ).isNull() )
+    {
+      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
+      QString name = node->customProperty( "legend/title-label" ).toString();
+      if ( nodeLayer->customProperty( "showFeatureCount", 0 ).toInt() && role == Qt::DisplayRole )
+      {
+        QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( nodeLayer->layer() );
+        if ( vlayer && vlayer->pendingFeatureCount() >= 0 )
+          name += QString( " [%1]" ).arg( vlayer->pendingFeatureCount() );
+      }
+      return name;
+    }
+  }
+
+  return QgsLayerTreeModel::data( index, role );
+}
+
+Qt::ItemFlags QgsLegendModelV2::flags( const QModelIndex& index ) const
+{
+  // make the legend nodes selectable even if they are not by default
+  if ( index2symnode( index ) )
+    return QgsLayerTreeModel::flags( index ) | Qt::ItemIsSelectable;
+
+  return QgsLayerTreeModel::flags( index );
 }

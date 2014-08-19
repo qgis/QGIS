@@ -31,8 +31,10 @@
 #include "qgsapplication.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreemodellegendnode.h"
 #include "qgslegendrenderer.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsproject.h"
@@ -52,7 +54,16 @@ class QgsComposerLegendMenuProvider : public QObject, public QgsLayerTreeViewMen
       if ( !mView->currentNode() )
         return 0;
 
+      if ( mWidget->legend()->autoUpdateModel() )
+        return 0; // no editing allowed
+
       QMenu* menu = new QMenu();
+
+      if ( QgsLayerTree::isLayer( mView->currentNode() ) )
+      {
+        menu->addAction( tr( "Reset to defaults" ), mWidget, SLOT( resetLayerNodeToDefaults() ) );
+        menu->addSeparator();
+      }
 
       QgsComposerLegendStyle::Style currentStyle = QgsLegendRenderer::nodeLegendStyle( mView->currentNode(), mView->layerTreeModel() );
 
@@ -163,6 +174,8 @@ void QgsComposerLegendWidget::setGuiElements()
   }
   mFontColorButton->setColor( mLegend->fontColor() );
   blockAllSignals( false );
+
+  on_mCheckBoxAutoUpdate_stateChanged( mLegend->autoUpdateModel() ? Qt::Checked : Qt::Unchecked );
 }
 
 void QgsComposerLegendWidget::on_mWrapCharLineEdit_textChanged( const QString &text )
@@ -474,6 +487,23 @@ void QgsComposerLegendWidget::on_mColumnSpaceSpinBox_valueChanged( double d )
   }
 }
 
+
+static void _moveLegendNode( QgsLayerTreeLayer* nodeLayer, int legendNodeIndex, int offset )
+{
+  QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( nodeLayer );
+
+  if ( legendNodeIndex < 0 || legendNodeIndex >= order.count() )
+    return;
+  if ( legendNodeIndex + offset < 0 || legendNodeIndex + offset >= order.count() )
+    return;
+
+  int id = order.takeAt( legendNodeIndex );
+  order.insert( legendNodeIndex + offset, id );
+
+  QgsMapLayerLegendUtils::setLegendNodeOrder( nodeLayer, order );
+}
+
+
 void QgsComposerLegendWidget::on_mMoveDownToolButton_clicked()
 {
   if ( !mLegend )
@@ -481,49 +511,22 @@ void QgsComposerLegendWidget::on_mMoveDownToolButton_clicked()
     return;
   }
 
-  QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
-  if ( !itemModel )
-  {
+  QModelIndex index = mItemTreeView->selectionModel()->currentIndex();
+  QModelIndex parentIndex = index.parent();
+  if ( !index.isValid() || index.row() == mItemTreeView->model()->rowCount( parentIndex ) - 1 )
     return;
-  }
 
-  QModelIndex currentIndex = mItemTreeView->currentIndex();
-  if ( !currentIndex.isValid() )
-  {
+  QgsLayerTreeModelLegendNode* legendNode = mItemTreeView->layerTreeModel()->index2symnode( index );
+  if ( !legendNode )
     return;
-  }
-
-  //is there an older sibling?
-  int row = currentIndex.row();
-  QModelIndex youngerSibling = currentIndex.sibling( row + 1, 0 );
-
-  if ( !youngerSibling.isValid() )
-  {
-    return;
-  }
 
   mLegend->beginCommand( "Moved legend item down" );
-  QModelIndex parentIndex = currentIndex.parent();
-  QList<QStandardItem*> itemToMove;
-  QList<QStandardItem*> youngerSiblingItem;
 
-  if ( !parentIndex.isValid() ) //move toplevel (layer) item
-  {
-    youngerSiblingItem = itemModel->takeRow( row + 1 );
-    itemToMove = itemModel->takeRow( row );
-    itemModel->insertRow( row, youngerSiblingItem );
-    itemModel->insertRow( row + 1, itemToMove );
-  }
-  else //move child (classification) item
-  {
-    QStandardItem* parentItem = itemModel->itemFromIndex( parentIndex );
-    youngerSiblingItem = parentItem->takeRow( row + 1 );
-    itemToMove = parentItem->takeRow( row );
-    parentItem->insertRow( row, youngerSiblingItem );
-    parentItem->insertRow( row + 1, itemToMove );
-  }
+  _moveLegendNode( legendNode->parent(), index.row(), 1 );
+  mItemTreeView->layerTreeModel()->refreshLayerSymbology( legendNode->parent() );
 
-  mItemTreeView->setCurrentIndex( itemModel->indexFromItem( itemToMove.at( 0 ) ) );
+  mItemTreeView->setCurrentIndex( mItemTreeView->layerTreeModel()->index( index.row() + 1, 0, parentIndex ) );
+
   mLegend->update();
   mLegend->endCommand();
 }
@@ -535,57 +538,41 @@ void QgsComposerLegendWidget::on_mMoveUpToolButton_clicked()
     return;
   }
 
-  QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
-  if ( !itemModel )
-  {
+  QModelIndex index = mItemTreeView->selectionModel()->currentIndex();
+  QModelIndex parentIndex = index.parent();
+  if ( !index.isValid() || index.row() == 0 )
     return;
-  }
 
-  QModelIndex currentIndex = mItemTreeView->currentIndex();
-  if ( !currentIndex.isValid() )
-  {
+  QgsLayerTreeModelLegendNode* legendNode = mItemTreeView->layerTreeModel()->index2symnode( index );
+  if ( !legendNode )
     return;
-  }
 
   mLegend->beginCommand( "Moved legend item up" );
-  //is there an older sibling?
-  int row = currentIndex.row();
-  QModelIndex olderSibling = currentIndex.sibling( row - 1, 0 );
 
-  if ( !olderSibling.isValid() )
-  {
-    return;
-  }
+  _moveLegendNode( legendNode->parent(), index.row(), -1 );
+  mItemTreeView->layerTreeModel()->refreshLayerSymbology( legendNode->parent() );
 
-  QModelIndex parentIndex = currentIndex.parent();
-  QList<QStandardItem*> itemToMove;
-  QList<QStandardItem*> olderSiblingItem;
+  mItemTreeView->setCurrentIndex( mItemTreeView->layerTreeModel()->index( index.row() - 1, 0, parentIndex ) );
 
-  if ( !parentIndex.isValid() ) //move toplevel item
-  {
-    itemToMove = itemModel->takeRow( row );
-    olderSiblingItem = itemModel->takeRow( row - 1 );
-    itemModel->insertRow( row - 1, itemToMove );
-    itemModel->insertRow( row, olderSiblingItem );
-
-  }
-  else //move classification items
-  {
-    QStandardItem* parentItem = itemModel->itemFromIndex( parentIndex );
-    itemToMove = parentItem->takeRow( row );
-    olderSiblingItem = parentItem->takeRow( row - 1 );
-    parentItem->insertRow( row - 1, itemToMove );
-    parentItem->insertRow( row, olderSiblingItem );
-  }
-
-  mItemTreeView->setCurrentIndex( itemModel->indexFromItem( itemToMove.at( 0 ) ) );
   mLegend->update();
   mLegend->endCommand();
 }
 
 void QgsComposerLegendWidget::on_mCheckBoxAutoUpdate_stateChanged( int state )
 {
+  mLegend->beginCommand( "Auto update changed" );
+
   mLegend->setAutoUpdateModel( state == Qt::Checked );
+
+  mLegend->update();
+  mLegend->endCommand();
+
+  // do not allow editing of model if auto update is on - we would modify project's layer tree
+  QList<QWidget*> widgets;
+  widgets << mMoveDownToolButton << mMoveUpToolButton << mRemoveToolButton << mAddToolButton
+          << mEditPushButton << mCountToolButton << mUpdateAllPushButton << mAddGroupToolButton;
+  foreach ( QWidget* w, widgets )
+    w->setEnabled( state != Qt::Checked );
 }
 
 void QgsComposerLegendWidget::on_mMapComboBox_currentIndexChanged( int index )
@@ -676,9 +663,37 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
   foreach ( const QModelIndex &index, selectionModel->selectedIndexes() )
     indexes << index;
 
+  // first try to remove legend nodes
+  QHash<QgsLayerTreeLayer*, QList<int> > nodesWithRemoval;
   foreach ( const QPersistentModelIndex index, indexes )
   {
-    mLegend->modelV2()->removeRow( index.row(), index.parent() );
+    if ( QgsLayerTreeModelLegendNode* legendNode = mItemTreeView->layerTreeModel()->index2symnode( index ) )
+    {
+      QgsLayerTreeLayer* nodeLayer = legendNode->parent();
+      nodesWithRemoval[nodeLayer].append( index.row() );
+    }
+  }
+  foreach ( QgsLayerTreeLayer* nodeLayer, nodesWithRemoval.keys() )
+  {
+    QList<int> toDelete = nodesWithRemoval[nodeLayer];
+    qSort( toDelete.begin(), toDelete.end(), qGreater<int>() );
+    QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( nodeLayer );
+
+    foreach ( int i, toDelete )
+    {
+      if ( i >= 0 && i < order.count() )
+        order.removeAt( i );
+    }
+
+    QgsMapLayerLegendUtils::setLegendNodeOrder( nodeLayer, order );
+    mItemTreeView->layerTreeModel()->refreshLayerSymbology( nodeLayer );
+  }
+
+  // then remove layer tree nodes
+  foreach ( const QPersistentModelIndex index, indexes )
+  {
+    if ( index.isValid() && mItemTreeView->layerTreeModel()->index2node( index ) )
+      mLegend->modelV2()->removeRow( index.row(), index.parent() );
   }
 
   mLegend->adjustBoxSize();
@@ -693,38 +708,60 @@ void QgsComposerLegendWidget::on_mEditPushButton_clicked()
     return;
   }
 
-  QgsLayerTreeNode* currentNode = mItemTreeView->currentNode();
+  QModelIndex idx = mItemTreeView->selectionModel()->currentIndex();
+  QgsLayerTreeModel* model = mItemTreeView->layerTreeModel();
+  QgsLayerTreeNode* currentNode = model->index2node( idx );
+  QgsLayerTreeModelLegendNode* legendNode = model->index2symnode( idx );
+  QString currentText;
 
-  // TODO: support layer node, legend node
-
-  if ( !QgsLayerTree::isGroup( currentNode ) )
-    return;
-
-  QString currentText = QgsLayerTree::toGroup( currentNode )->name();
+  if ( QgsLayerTree::isGroup( currentNode ) )
+  {
+    currentText = QgsLayerTree::toGroup( currentNode )->name();
+  }
+  else if ( QgsLayerTree::isLayer( currentNode ) )
+  {
+    currentText = QgsLayerTree::toLayer( currentNode )->layerName();
+    QVariant v = currentNode->customProperty( "legend/title-label" );
+    if ( !v.isNull() )
+      currentText = v.toString();
+  }
+  else if ( legendNode )
+  {
+    currentText = legendNode->data( Qt::EditRole ).toString();
+  }
 
   bool ok;
   QString newText = QInputDialog::getText( this, tr( "Legend item properties" ), tr( "Item text" ),
                                            QLineEdit::Normal, currentText, &ok );
-  if ( !ok )
+  if ( !ok || newText == currentText )
     return;
 
   mLegend->beginCommand( tr( "Legend item edited" ) );
-  QgsLayerTree::toGroup( currentNode )->setName( newText );
+
+  if ( QgsLayerTree::isGroup( currentNode ) )
+  {
+    QgsLayerTree::toGroup( currentNode )->setName( newText );
+  }
+  else if ( QgsLayerTree::isLayer( currentNode ) )
+  {
+    currentNode->setCustomProperty( "legend/title-label", newText );
+  }
+  else if ( legendNode )
+  {
+    QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( legendNode->parent() );
+    int originalIndex = ( idx.row() >= 0 && idx.row() < order.count() ? order[idx.row()] : -1 );
+    QgsMapLayerLegendUtils::setLegendNodeUserLabel( legendNode->parent(), originalIndex, newText );
+    model->refreshLayerSymbology( legendNode->parent() );
+  }
+
   mLegend->adjustBoxSize();
   mLegend->update();
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mUpdatePushButton_clicked()
+void QgsComposerLegendWidget::resetLayerNodeToDefaults()
 {
   if ( !mLegend )
-  {
-    return;
-  }
-
-  //get current item
-  QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
-  if ( !itemModel )
   {
     return;
   }
@@ -736,17 +773,30 @@ void QgsComposerLegendWidget::on_mUpdatePushButton_clicked()
     return;
   }
 
-  QStandardItem* currentItem = itemModel->itemFromIndex( currentIndex );
-  if ( !currentItem )
+  QgsLayerTreeLayer* nodeLayer = 0;
+  if ( QgsLayerTreeNode* node = mItemTreeView->layerTreeModel()->index2node( currentIndex ) )
   {
-    return;
+    if ( QgsLayerTree::isLayer( node ) )
+      nodeLayer = QgsLayerTree::toLayer( node );
+  }
+  if ( QgsLayerTreeModelLegendNode* legendNode = mItemTreeView->layerTreeModel()->index2symnode( currentIndex ) )
+  {
+    nodeLayer = legendNode->parent();
   }
 
+  if ( !nodeLayer )
+    return;
+
   mLegend->beginCommand( tr( "Legend updated" ) );
-  if ( mLegend->model() )
+
+  foreach ( QString key, nodeLayer->customProperties() )
   {
-    mLegend->model()->updateItem( currentItem );
+    if ( key.startsWith( "legend/" ) )
+      nodeLayer->removeCustomProperty( key );
   }
+
+  mItemTreeView->layerTreeModel()->refreshLayerSymbology( nodeLayer );
+
   mLegend->update();
   mLegend->adjustBoxSize();
   mLegend->endCommand();
@@ -799,33 +849,12 @@ void QgsComposerLegendWidget::updateLegend()
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Legend updated" ) );
-    QgisApp* app = QgisApp::instance();
-    if ( !app )
-    {
-      return;
-    }
 
-    //get layer id list
-    QStringList layerIdList;
-    const QgsComposerMap* linkedMap = mLegend->composerMap();
-    if ( linkedMap && linkedMap->keepLayerSet() )
-    {
-      //if there is a linked map, and if that linked map has a locked layer set, we take the layerIdList from that ComposerMap
-      layerIdList = linkedMap->layerSet();
-    }
-    else
-    {
-      //we take the layerIdList from the Canvas
-      QgsMapCanvas* canvas = app->mapCanvas();
-      if ( canvas )
-      {
-        layerIdList = canvas->mapSettings().layers();
-      }
-    }
+    // this will reset the model completely, loosing any changes
+    mLegend->setAutoUpdateModel( true );
+    mLegend->setAutoUpdateModel( false );
 
-
-    //and also group info
-    mLegend->model()->setLayerSetAndGroups( QgsProject::instance()->layerTreeRoot() );
+    mLegend->update();
     mLegend->endCommand();
   }
 }
@@ -901,6 +930,9 @@ void QgsComposerLegendWidget::selectedChanged( const QModelIndex & current, cons
 
   mCountToolButton->setChecked( false );
   mCountToolButton->setEnabled( false );
+
+  if ( mLegend && mLegend->autoUpdateModel() )
+    return;
 
   QgsLayerTreeNode* currentNode = mItemTreeView->currentNode();
   if ( !QgsLayerTree::isLayer( currentNode ) )

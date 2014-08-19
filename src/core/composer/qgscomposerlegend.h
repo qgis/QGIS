@@ -21,6 +21,7 @@
 #include "qgscomposerlegendstyle.h"
 #include "qgscomposeritem.h"
 #include "qgscomposerlegenditem.h"
+#include "qgslayertreemodel.h"
 #include "qgslegendmodel.h"
 #include "qgslegendsettings.h"
 
@@ -30,6 +31,20 @@ class QgsComposerGroupItem;
 class QgsComposerLayerItem;
 class QgsComposerMap;
 class QgsLegendRenderer;
+
+
+/** \ingroup MapComposer
+ * Item model implementation based on layer tree model for composer legend
+ */
+class QgsLegendModelV2 : public QgsLayerTreeModel
+{
+  public:
+    QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
+
+    QVariant data( const QModelIndex& index,  int role ) const;
+
+    Qt::ItemFlags flags( const QModelIndex &index ) const;
+};
 
 
 /** \ingroup MapComposer
@@ -59,7 +74,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     QgsLegendModel* model() {return &mLegendModel;}
 
     //! @note added in 2.6
-    QgsLayerTreeModel* modelV2() { return mLegendModel2; }
+    QgsLegendModelV2* modelV2() { return mLegendModel2; }
 
     //! @note added in 2.6
     void setAutoUpdateModel( bool autoUpdate );
@@ -165,7 +180,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     QgsLegendModel mLegendModel;
 
-    QgsLayerTreeModel* mLegendModel2;
+    QgsLegendModelV2* mLegendModel2;
     QgsLayerTreeGroup* mCustomLayerTree;
 
     QgsLegendSettings mSettings;

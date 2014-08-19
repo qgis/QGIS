@@ -40,6 +40,8 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     /**Updates the legend layers and groups*/
     void updateLegend();
 
+    QgsComposerLegend* legend() { return mLegend; }
+
   public slots:
 
     void on_mWrapCharLineEdit_textChanged( const QString& text );
@@ -74,7 +76,7 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void on_mAddToolButton_clicked();
     void on_mEditPushButton_clicked();
     void on_mCountToolButton_clicked( bool checked );
-    void on_mUpdatePushButton_clicked();
+    void resetLayerNodeToDefaults();
     void on_mUpdateAllPushButton_clicked();
     void on_mAddGroupToolButton_clicked();
 

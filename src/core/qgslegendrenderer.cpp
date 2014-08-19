@@ -558,7 +558,7 @@ QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup* nodeGroup, QPainter
 
 QgsComposerLegendStyle::Style QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNode* node, QgsLayerTreeModel* model )
 {
-  QString style = node->customProperty( "legendStyle" ).toString();
+  QString style = node->customProperty( "legend/title-style" ).toString();
   if ( style == "hidden" )
     return QgsComposerLegendStyle::Hidden;
   else if ( style == "group" )
@@ -597,7 +597,7 @@ void QgsLegendRenderer::setNodeLegendStyle( QgsLayerTreeNode* node, QgsComposerL
   }
 
   if ( !str.isEmpty() )
-    node->setCustomProperty( "legendStyle", str );
+    node->setCustomProperty( "legend/title-style", str );
   else
-    node->removeCustomProperty( "legendStyle" );
+    node->removeCustomProperty( "legend/title-style" );
 }

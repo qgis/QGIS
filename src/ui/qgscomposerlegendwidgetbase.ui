@@ -168,28 +168,12 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
-             <widget class="QToolButton" name="mUpdatePushButton">
-              <property name="toolTip">
-               <string>Update legend. User defined labels are preserved.</string>
-              </property>
+             <widget class="QCheckBox" name="mCheckBoxAutoUpdate">
               <property name="text">
-               <string>Update item</string>
+               <string>Auto update</string>
               </property>
-              <property name="iconSize">
-               <size>
-                <width>24</width>
-                <height>24</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="mUpdateAllPushButton">
-              <property name="toolTip">
-               <string>Update whole legend. Layers are added/removed according to main application legend. User defined labels will be deleted.</string>
-              </property>
-              <property name="text">
-               <string>Update all</string>
+              <property name="checked">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -205,6 +189,16 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item>
+             <widget class="QToolButton" name="mUpdateAllPushButton">
+              <property name="toolTip">
+               <string>Update whole legend. Layers are added/removed according to main application legend. User defined labels will be deleted.</string>
+              </property>
+              <property name="text">
+               <string>Update all</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -374,16 +368,6 @@
              </spacer>
             </item>
            </layout>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="mCheckBoxAutoUpdate">
-            <property name="text">
-             <string>Auto update</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>

@@ -104,6 +104,10 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Return layer node to which a symbology node belongs to. Returns null pointer if index is not a symbology node.
     QgsLayerTreeLayer* layerNodeForSymbologyNode( const QModelIndex& index ) const;
 
+    // TODO: rename to some better name
+    //! @note added in 2.6
+    static QgsLayerTreeModelLegendNode* index2symnode( const QModelIndex& index );
+
     //! Return list of legend nodes attached to a particular layer node
     //! @note added in 2.6
     QList<QgsLayerTreeModelLegendNode*> layerLegendNodes( QgsLayerTreeLayer* nodeLayer );
@@ -165,8 +169,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     //! emit dataChanged() for layer tree node items
     void recursivelyEmitDataChanged( const QModelIndex& index = QModelIndex() );
-
-    static QgsLayerTreeModelLegendNode* index2symnode( const QModelIndex& index );
 
     static const QIcon& iconGroup();
 

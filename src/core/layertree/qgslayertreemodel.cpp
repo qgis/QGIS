@@ -461,9 +461,9 @@ void QgsLayerTreeModel::setRootGroup( QgsLayerTreeGroup* newRootGroup )
 
   mRootNode = newRootGroup;
 
-  connectToRootNode();
-
   endResetModel();
+
+  connectToRootNode();
 }
 
 void QgsLayerTreeModel::refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer )

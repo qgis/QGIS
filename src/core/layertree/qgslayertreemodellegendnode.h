@@ -55,6 +55,9 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     virtual bool isEmbeddedInParent() const { return mEmbeddedInParent; }
     virtual void setEmbeddedInParent( bool embedded ) { mEmbeddedInParent = embedded; }
 
+    virtual QString userLabel() const { return mUserLabel; }
+    virtual void setUserLabel( const QString& userLabel ) { mUserLabel = userLabel; }
+
     struct ItemContext
     {
       //! Painter
@@ -99,6 +102,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
   protected:
     QgsLayerTreeLayer* mParent;
     bool mEmbeddedInParent;
+    QString mUserLabel;
 };
 
 #include "qgslegendsymbolitemv2.h"
@@ -127,8 +131,7 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
 
     virtual void setEmbeddedInParent( bool embedded );
 
-    void setUserLabel( const QString& userLabel ) { mUserLabel = userLabel; }
-    QString userLabel() const { return mUserLabel; }
+    void setUserLabel( const QString& userLabel ) { mUserLabel = userLabel; updateLabel(); }
 
   private:
     void updateLabel();
@@ -136,7 +139,6 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
   private:
     QgsLegendSymbolItemV2 mItem;
     mutable QIcon mIcon; // cached symbol preview
-    QString mUserLabel;
     QString mLabel;
 };
 

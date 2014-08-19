@@ -145,7 +145,7 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
   }
   else if ( role == Qt::EditRole )
   {
-    return mItem.label();
+    return mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
   }
   else if ( role == Qt::DecorationRole )
   {
