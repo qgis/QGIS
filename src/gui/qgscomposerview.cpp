@@ -1399,6 +1399,15 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     //holding shift while pressing cursor keys results in a big step
     increment = 10.0;
   }
+  else if ( e->modifiers() & Qt::AltModifier )
+  {
+    //holding alt while pressing cursor keys results in a 1 pixel step
+    double viewScale = transform().m11();
+    if ( viewScale > 0 )
+    {
+      increment = 1 / viewScale;
+    }
+  }
 
   if ( e->key() == Qt::Key_Left )
   {
