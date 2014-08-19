@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsfilenamewidget.cpp
+    qgsfilenamewidgetwrapper.cpp
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,19 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsfilenamewidget.h"
+#include "qgsfilenamewidgetwrapper.h"
 
 #include "qgsfilterlineedit.h"
 
 #include <QFileDialog>
 #include <QGridLayout>
 
-QgsFileNameWidget::QgsFileNameWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
+QgsFileNameWidgetWrapper::QgsFileNameWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
 {
 }
 
-QVariant QgsFileNameWidget::value()
+QVariant QgsFileNameWidgetWrapper::value()
 {
   QVariant value;
 
@@ -38,7 +38,7 @@ QVariant QgsFileNameWidget::value()
   return value;
 }
 
-QWidget* QgsFileNameWidget::createWidget( QWidget* parent )
+QWidget* QgsFileNameWidgetWrapper::createWidget( QWidget* parent )
 {
   QWidget* container = new QWidget( parent );
   container->setBackgroundRole( QPalette::Window );
@@ -57,7 +57,7 @@ QWidget* QgsFileNameWidget::createWidget( QWidget* parent )
   return container;
 }
 
-void QgsFileNameWidget::initWidget( QWidget* editor )
+void QgsFileNameWidgetWrapper::initWidget( QWidget* editor )
 {
   mLineEdit = qobject_cast<QLineEdit*>( editor );
   if ( !mLineEdit )
@@ -76,7 +76,7 @@ void QgsFileNameWidget::initWidget( QWidget* editor )
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
 }
 
-void QgsFileNameWidget::setValue( const QVariant& value )
+void QgsFileNameWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mLineEdit )
     mLineEdit->setText( value.toString() );
@@ -85,7 +85,7 @@ void QgsFileNameWidget::setValue( const QVariant& value )
     mLabel->setText( value.toString() );
 }
 
-void QgsFileNameWidget::selectFileName()
+void QgsFileNameWidgetWrapper::selectFileName()
 {
   QString text;
 

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsrangewidget.h
+    qgsvaluerelationwidgetwrapper.h
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,39 +13,50 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSRANGEWIDGET_H
-#define QGSRANGEWIDGET_H
+#ifndef QGSVALUERELATIONWIDGETWRAPPER_H
+#define QGSVALUERELATIONWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
 
-#include <QSpinBox>
-#include <QDoubleSpinBox>
+#include <QComboBox>
+#include <QListWidget>
 
-#include "qgsdial.h"
-#include "qgsslider.h"
+class QgsValueRelationWidgetFactory;
 
-class GUI_EXPORT QgsRangeWidget : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
+
   public:
-    explicit QgsRangeWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent = 0 );
+    typedef QPair < QVariant, QString > ValueRelationItem;
+    typedef QVector < ValueRelationItem > ValueRelationCache;
+
+  public:
+    explicit QgsValueRelationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+
 
     // QgsEditorWidgetWrapper interface
   public:
-    virtual QVariant value();
+    QVariant value();
 
   protected:
-    virtual QWidget* createWidget( QWidget* parent );
-    virtual void initWidget( QWidget* editor );
+    QWidget* createWidget( QWidget* parent );
+    void initWidget( QWidget* editor );
+    static ValueRelationCache createCache( const QgsEditorWidgetConfig& config );
 
   public slots:
-    virtual void setValue( const QVariant& value );
+    void setValue( const QVariant& value );
 
   private:
-    QSpinBox* mIntSpinBox;
-    QDoubleSpinBox* mDoubleSpinBox;
-    QSlider* mSlider;
-    QDial* mDial;
+    QComboBox* mComboBox;
+    QListWidget* mListWidget;
+
+    ValueRelationCache mCache;
+    QgsVectorLayer* mLayer;
+
+    friend class QgsValueRelationWidgetFactory;
 };
 
-#endif // QGSRANGEWIDGET_H
+Q_DECLARE_METATYPE( QgsValueRelationWidgetWrapper::ValueRelationCache )
+
+#endif // QGSVALUERELATIONWIDGETWRAPPER_H

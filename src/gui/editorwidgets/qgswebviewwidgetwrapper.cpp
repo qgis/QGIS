@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgswebviewwidget.cpp
+    qgswebviewwidgetwrapper.cpp
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswebviewwidget.h"
+#include "qgswebviewwidgetwrapper.h"
 
 #include "qgsfilterlineedit.h"
 #include "qgsnetworkaccessmanager.h"
@@ -21,18 +21,18 @@
 #include <QGridLayout>
 #include <QFileDialog>
 
-QgsWebViewWidget::QgsWebViewWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
+QgsWebViewWidgetWrapper::QgsWebViewWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
 {
 }
 
-void QgsWebViewWidget::loadUrl( const QString &url )
+void QgsWebViewWidgetWrapper::loadUrl( const QString &url )
 {
   if ( mWebView )
     mWebView->load( url );
 }
 
-QVariant QgsWebViewWidget::value()
+QVariant QgsWebViewWidgetWrapper::value()
 {
   QVariant v;
 
@@ -42,7 +42,7 @@ QVariant QgsWebViewWidget::value()
   return v;
 }
 
-QWidget* QgsWebViewWidget::createWidget( QWidget* parent )
+QWidget* QgsWebViewWidgetWrapper::createWidget( QWidget* parent )
 {
   QWidget* container = new QWidget( parent );
   QGridLayout* layout = new QGridLayout( container );
@@ -61,7 +61,7 @@ QWidget* QgsWebViewWidget::createWidget( QWidget* parent )
   return container;
 }
 
-void QgsWebViewWidget::initWidget( QWidget* editor )
+void QgsWebViewWidgetWrapper::initWidget( QWidget* editor )
 {
   QWidget* container;
 
@@ -105,7 +105,7 @@ void QgsWebViewWidget::initWidget( QWidget* editor )
   }
 }
 
-void QgsWebViewWidget::setValue( const QVariant& value )
+void QgsWebViewWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mLineEdit )
     mLineEdit->setText( value.toString() );
@@ -113,7 +113,7 @@ void QgsWebViewWidget::setValue( const QVariant& value )
   loadUrl( value.toString() );
 }
 
-void QgsWebViewWidget::setEnabled( bool enabled )
+void QgsWebViewWidgetWrapper::setEnabled( bool enabled )
 {
   if ( mLineEdit )
     mLineEdit->setEnabled( enabled );
@@ -122,7 +122,7 @@ void QgsWebViewWidget::setEnabled( bool enabled )
     mButton->setEnabled( enabled );
 }
 
-void QgsWebViewWidget::selectFileName()
+void QgsWebViewWidgetWrapper::selectFileName()
 {
   QString text;
 

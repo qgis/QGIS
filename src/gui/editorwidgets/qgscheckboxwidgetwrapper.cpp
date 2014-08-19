@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscheckboxwidget.cpp
+    qgscheckboxwidgetwrapper.cpp
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,15 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscheckboxwidget.h"
+#include "qgscheckboxwidgetwrapper.h"
 
-QgsCheckboxWidget::QgsCheckboxWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
+QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
 {
 }
 
 
-QVariant QgsCheckboxWidget::value()
+QVariant QgsCheckboxWidgetWrapper::value()
 {
   QVariant v;
 
@@ -35,12 +35,12 @@ QVariant QgsCheckboxWidget::value()
   return v;
 }
 
-QWidget* QgsCheckboxWidget::createWidget( QWidget* parent )
+QWidget* QgsCheckboxWidgetWrapper::createWidget( QWidget* parent )
 {
   return new QCheckBox( parent );
 }
 
-void QgsCheckboxWidget::initWidget( QWidget* editor )
+void QgsCheckboxWidgetWrapper::initWidget( QWidget* editor )
 {
   mCheckBox = qobject_cast<QCheckBox*>( editor );
   mGroupBox = qobject_cast<QGroupBox*>( editor );
@@ -51,7 +51,7 @@ void QgsCheckboxWidget::initWidget( QWidget* editor )
     connect( mGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( valueChanged( bool ) ) );
 }
 
-void QgsCheckboxWidget::setValue( const QVariant& value )
+void QgsCheckboxWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mGroupBox )
   {

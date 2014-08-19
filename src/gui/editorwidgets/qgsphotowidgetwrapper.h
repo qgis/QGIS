@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsclassificationwidget.h
+    qgsphotowidgetwrapper.h
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,32 +13,44 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCLASSIFICATIONWIDGET_H
-#define QGSCLASSIFICATIONWIDGET_H
+#ifndef QGSPHOTOWIDGETWRAPPER_H
+#define QGSPHOTOWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
 
-#include <QComboBox>
+#include <QLabel>
+#include <QPushButton>
+#include <QLineEdit>
 
-class GUI_EXPORT QgsClassificationWidget : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsPhotoWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsClassificationWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+    explicit QgsPhotoWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
 
     // QgsEditorWidgetWrapper interface
   public:
     QVariant value();
 
   protected:
-    QWidget*createWidget( QWidget* parent );
+    QWidget* createWidget( QWidget* parent );
     void initWidget( QWidget* editor );
 
   public slots:
     void setValue( const QVariant& value );
+    void setEnabled( bool enabled );
+
+  private slots:
+    void selectFileName();
+    void loadPixmap( const QString& fileName );
 
   private:
-    QComboBox* mComboBox;
+    //! This label is used as a container to display the picture
+    QLabel* mPhotoLabel;
+    //! The line edit containing the path to the picture
+    QLineEdit* mLineEdit;
+    //! The button to open the file chooser dialog
+    QPushButton* mButton;
 };
 
-#endif // QGSCLASSIFICATIONWIDGET_H
+#endif // QGSPHOTOWIDGETWRAPPER_H

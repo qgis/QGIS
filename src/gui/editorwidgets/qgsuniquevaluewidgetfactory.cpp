@@ -15,7 +15,7 @@
 
 #include "qgsuniquevaluewidgetfactory.h"
 
-#include "qgsuniquevaluewidget.h"
+#include "qgsuniquevaluewidgetwrapper.h"
 #include "qgsuniquevaluesconfigdlg.h"
 
 QgsUniqueValueWidgetFactory::QgsUniqueValueWidgetFactory( const QString& name )
@@ -26,7 +26,7 @@ QgsUniqueValueWidgetFactory::QgsUniqueValueWidgetFactory( const QString& name )
 
 QgsEditorWidgetWrapper* QgsUniqueValueWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
-  return new QgsUniqueValuesWidget( vl, fieldIdx, editor, parent );
+  return new QgsUniqueValuesWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
 QgsEditorConfigWidget* QgsUniqueValueWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsrangewidget.cpp
+    qgsrangewidgetwrapper.cpp
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrangewidget.h"
+#include "qgsrangewidgetwrapper.h"
 
 #include "qgsvectorlayer.h"
 
-QgsRangeWidget::QgsRangeWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
+QgsRangeWidgetWrapper::QgsRangeWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
     , mIntSpinBox( 0 )
     , mDoubleSpinBox( 0 )
@@ -26,7 +26,7 @@ QgsRangeWidget::QgsRangeWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* edito
 {
 }
 
-QWidget* QgsRangeWidget::createWidget( QWidget* parent )
+QWidget* QgsRangeWidgetWrapper::createWidget( QWidget* parent )
 {
   QWidget* editor = 0;
 
@@ -66,7 +66,7 @@ QWidget* QgsRangeWidget::createWidget( QWidget* parent )
   return editor;
 }
 
-void QgsRangeWidget::initWidget( QWidget* editor )
+void QgsRangeWidgetWrapper::initWidget( QWidget* editor )
 {
   mDoubleSpinBox = qobject_cast<QDoubleSpinBox*>( editor );
   mIntSpinBox = qobject_cast<QSpinBox*>( editor );
@@ -107,7 +107,7 @@ void QgsRangeWidget::initWidget( QWidget* editor )
 
 }
 
-QVariant QgsRangeWidget::value()
+QVariant QgsRangeWidgetWrapper::value()
 {
   QVariant value;
 
@@ -131,7 +131,7 @@ QVariant QgsRangeWidget::value()
   return value;
 }
 
-void QgsRangeWidget::setValue( const QVariant& value )
+void QgsRangeWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mDoubleSpinBox )
   {

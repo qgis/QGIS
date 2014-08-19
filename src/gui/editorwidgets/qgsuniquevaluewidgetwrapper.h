@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsvaluerelationwidget.h
+    qgsuniquevaluewidgetwrapper.h
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,27 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSVALUERELATIONWIDGET_H
-#define QGSVALUERELATIONWIDGET_H
+#ifndef QGSUNIQUEVALUEWIDGETWRAPPER_H
+#define QGSUNIQUEVALUEWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
 
 #include <QComboBox>
-#include <QListWidget>
+#include <QLineEdit>
 
-class QgsValueRelationWidgetFactory;
-
-class GUI_EXPORT QgsValueRelationWidget : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsUniqueValuesWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
-
   public:
-    typedef QPair < QVariant, QString > ValueRelationItem;
-    typedef QVector < ValueRelationItem > ValueRelationCache;
-
-  public:
-    explicit QgsValueRelationWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
-
+    explicit QgsUniqueValuesWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -42,21 +34,13 @@ class GUI_EXPORT QgsValueRelationWidget : public QgsEditorWidgetWrapper
   protected:
     QWidget* createWidget( QWidget* parent );
     void initWidget( QWidget* editor );
-    static ValueRelationCache createCache( const QgsEditorWidgetConfig& config );
 
   public slots:
     void setValue( const QVariant& value );
 
   private:
     QComboBox* mComboBox;
-    QListWidget* mListWidget;
-
-    ValueRelationCache mCache;
-    QgsVectorLayer* mLayer;
-
-    friend class QgsValueRelationWidgetFactory;
+    QLineEdit* mLineEdit;
 };
 
-Q_DECLARE_METATYPE( QgsValueRelationWidget::ValueRelationCache )
-
-#endif // QGSVALUERELATIONWIDGET_H
+#endif // QGSUNIQUEVALUEWIDGETWRAPPER_H

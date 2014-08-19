@@ -15,7 +15,7 @@
 
 #include "qgswebviewwidgetfactory.h"
 
-#include "qgswebviewwidget.h"
+#include "qgswebviewwidgetwrapper.h"
 #include "qgswebviewconfigdlg.h"
 
 QgsWebViewWidgetFactory::QgsWebViewWidgetFactory( const QString& name )
@@ -26,7 +26,7 @@ QgsWebViewWidgetFactory::QgsWebViewWidgetFactory( const QString& name )
 
 QgsEditorWidgetWrapper* QgsWebViewWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
-  return new QgsWebViewWidget( vl, fieldIdx, editor, parent );
+  return new QgsWebViewWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
 QgsEditorConfigWidget* QgsWebViewWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

@@ -15,7 +15,7 @@
 
 #include "qgsrangewidgetfactory.h"
 #include "qgsrangeconfigdlg.h"
-#include "qgsrangewidget.h"
+#include "qgsrangewidgetwrapper.h"
 #include "qgsvectorlayer.h"
 
 
@@ -26,7 +26,7 @@ QgsRangeWidgetFactory::QgsRangeWidgetFactory( QString name )
 
 QgsEditorWidgetWrapper* QgsRangeWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
-  return new QgsRangeWidget( vl, fieldIdx, editor, parent );
+  return new QgsRangeWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
 QgsEditorConfigWidget* QgsRangeWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

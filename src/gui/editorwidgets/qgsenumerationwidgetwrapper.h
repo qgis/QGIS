@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsenumerationwidget.h
+    qgsenumerationwidgetwrapper.h
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,18 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSENUMERATIONWIDGET_H
-#define QGSENUMERATIONWIDGET_H
+#ifndef QGSENUMERATIONWIDGETWRAPPER_H
+#define QGSENUMERATIONWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
 
 #include <QComboBox>
 
-class GUI_EXPORT QgsEnumerationWidget : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsEnumerationWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsEnumerationWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+    explicit QgsEnumerationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -41,4 +41,4 @@ class GUI_EXPORT QgsEnumerationWidget : public QgsEditorWidgetWrapper
     QComboBox* mComboBox;
 };
 
-#endif // QGSENUMERATIONWIDGET_H
+#endif // QGSENUMERATIONWIDGETWRAPPER_H

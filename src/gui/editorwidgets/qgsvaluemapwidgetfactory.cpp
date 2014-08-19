@@ -15,7 +15,7 @@
 
 #include "qgsvaluemapwidgetfactory.h"
 
-#include "qgsvaluemapwidget.h"
+#include "qgsvaluemapwidgetwrapper.h"
 #include "qgsvaluemapconfigdlg.h"
 
 QgsValueMapWidgetFactory::QgsValueMapWidgetFactory( const QString& name )
@@ -26,7 +26,7 @@ QgsValueMapWidgetFactory::QgsValueMapWidgetFactory( const QString& name )
 
 QgsEditorWidgetWrapper* QgsValueMapWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
-  return new QgsValueMapWidget( vl, fieldIdx, editor, parent );
+  return new QgsValueMapWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
 QgsEditorConfigWidget* QgsValueMapWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

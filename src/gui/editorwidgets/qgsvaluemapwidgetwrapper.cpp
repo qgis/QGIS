@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsvaluemapwidget.cpp
+    qgsvaluemapwidgetwrapper.cpp
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,15 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsvaluemapwidget.h"
+#include "qgsvaluemapwidgetwrapper.h"
 
-QgsValueMapWidget::QgsValueMapWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
+QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
 {
 }
 
 
-QVariant QgsValueMapWidget::value()
+QVariant QgsValueMapWidgetWrapper::value()
 {
   QVariant v;
 
@@ -31,12 +31,12 @@ QVariant QgsValueMapWidget::value()
   return v;
 }
 
-QWidget* QgsValueMapWidget::createWidget( QWidget* parent )
+QWidget* QgsValueMapWidgetWrapper::createWidget( QWidget* parent )
 {
   return new QComboBox( parent );
 }
 
-void QgsValueMapWidget::initWidget( QWidget* editor )
+void QgsValueMapWidgetWrapper::initWidget( QWidget* editor )
 {
   mComboBox = qobject_cast<QComboBox*>( editor );
 
@@ -54,7 +54,7 @@ void QgsValueMapWidget::initWidget( QWidget* editor )
   }
 }
 
-void QgsValueMapWidget::setValue( const QVariant& value )
+void QgsValueMapWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mComboBox )
     mComboBox->setCurrentIndex( mComboBox->findData( value ) );
