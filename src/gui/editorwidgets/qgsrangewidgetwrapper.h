@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgswebviewwidget.h
+    qgsrangewidgetwrapper.h
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,45 +13,39 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSWEBVIEWWIDGET_H
-#define QGSWEBVIEWWIDGET_H
+#ifndef QGSRANGEWIDGETWRAPPER_H
+#define QGSRANGEWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
 
-#include <QWebView>
-#include <QLineEdit>
-#include <QPushButton>
+#include <QSpinBox>
+#include <QDoubleSpinBox>
 
-class GUI_EXPORT QgsWebViewWidget : public QgsEditorWidgetWrapper
+#include "qgsdial.h"
+#include "qgsslider.h"
+
+class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsWebViewWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
-
+    explicit QgsRangeWidgetWrapper ( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent = 0 );
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value();
+    virtual QVariant value();
 
   protected:
-    QWidget* createWidget( QWidget* parent );
-    void initWidget( QWidget* editor );
+    virtual QWidget* createWidget( QWidget* parent );
+    virtual void initWidget( QWidget* editor );
 
   public slots:
-    void setValue( const QVariant& value );
-    void setEnabled( bool enabled );
-
-  private slots:
-    void loadUrl( const QString &url );
-    void selectFileName();
+    virtual void setValue( const QVariant& value );
 
   private:
-    //! This label is used as a container to display the picture
-    QWebView* mWebView;
-    //! The line edit containing the path to the picture
-    QLineEdit* mLineEdit;
-    //! The button to open the file chooser dialog
-    QPushButton* mButton;
+    QSpinBox* mIntSpinBox;
+    QDoubleSpinBox* mDoubleSpinBox;
+    QSlider* mSlider;
+    QDial* mDial;
 };
 
-#endif // QGSWEBVIEWWIDGET_H
+#endif // QGSRANGEWIDGETWRAPPER_H

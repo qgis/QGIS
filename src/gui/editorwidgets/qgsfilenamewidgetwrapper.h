@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsuuidwidget.h
+    qgsfilenamewidgetwrapper.h
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,19 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSUUIDWIDGET_H
-#define QGSUUIDWIDGET_H
+#ifndef QGSFILENAMEWIDGETWRAPPER_H
+#define QGSFILENAMEWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
 
 #include <QLineEdit>
+#include <QPushButton>
 #include <QLabel>
 
-class GUI_EXPORT QgsUuidWidget : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsFileNameWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsUuidWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+    explicit QgsFileNameWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+
+  private slots:
+    void selectFileName();
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -37,11 +41,11 @@ class GUI_EXPORT QgsUuidWidget : public QgsEditorWidgetWrapper
 
   public slots:
     void setValue( const QVariant& value );
-    void setEnabled( bool enabled );
 
   private:
-    QLabel* mLabel;
     QLineEdit* mLineEdit;
+    QPushButton* mPushButton;
+    QLabel* mLabel;
 };
 
-#endif // QGSUUIDWIDGET_H
+#endif // QGSFILENAMEWIDGETWRAPPER_H

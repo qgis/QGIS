@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscolorwidget.h
+    qgshiddenwidgetwrapper.cpp
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,32 +13,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCOLORWIDGET_H
-#define QGSCOLORWIDGET_H
+#include "qgshiddenwidgetwrapper.h"
 
-#include "qgseditorwidgetwrapper.h"
+#include <QWidget>
 
-#include "qgscolorbutton.h"
-
-class GUI_EXPORT  QgsColorWidget : public QgsEditorWidgetWrapper
+QgsHiddenWidgetWrapper::QgsHiddenWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
+    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
 {
-    Q_OBJECT
-  public:
-    explicit QgsColorWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+}
 
-    // QgsEditorWidgetWrapper interface
-  public:
-    QVariant value();
 
-  protected:
-    QWidget*createWidget( QWidget* parent );
-    void initWidget( QWidget* editor );
+QVariant QgsHiddenWidgetWrapper::value()
+{
+  return mValue;
+}
 
-  public slots:
-    void setValue( const QVariant& value );
+QWidget* QgsHiddenWidgetWrapper::createWidget( QWidget* parent )
+{
+  QWidget* wdg = new QWidget( parent );
+  wdg->setVisible( false );
+  return wdg;
+}
 
-  private:
-    QgsColorButton* mColorButton;
-};
+void QgsHiddenWidgetWrapper::initWidget( QWidget* editor )
+{
+  editor->setVisible( false );
+}
 
-#endif // QGSCOLORWIDGET_H
+void QgsHiddenWidgetWrapper::setValue( const QVariant& value )
+{
+  mValue = value;
+}

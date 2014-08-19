@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsphotowidget.cpp
+    qgsphotowidgetwrapper.cpp
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsphotowidget.h"
+#include "qgsphotowidgetwrapper.h"
 
 #include <QGridLayout>
 #include <QFileDialog>
@@ -21,12 +21,12 @@
 
 #include "qgsfilterlineedit.h"
 
-QgsPhotoWidget::QgsPhotoWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
+QgsPhotoWidgetWrapper::QgsPhotoWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
 {
 }
 
-void QgsPhotoWidget::selectFileName()
+void QgsPhotoWidgetWrapper::selectFileName()
 {
   if ( mLineEdit )
   {
@@ -36,7 +36,7 @@ void QgsPhotoWidget::selectFileName()
   }
 }
 
-void QgsPhotoWidget::loadPixmap( const QString &fileName )
+void QgsPhotoWidgetWrapper::loadPixmap( const QString &fileName )
 {
   QPixmap pm( fileName );
   if ( !pm.isNull() && mPhotoLabel )
@@ -59,7 +59,7 @@ void QgsPhotoWidget::loadPixmap( const QString &fileName )
   }
 }
 
-QVariant QgsPhotoWidget::value()
+QVariant QgsPhotoWidgetWrapper::value()
 {
   QVariant v;
 
@@ -69,7 +69,7 @@ QVariant QgsPhotoWidget::value()
   return v;
 }
 
-QWidget* QgsPhotoWidget::createWidget( QWidget* parent )
+QWidget* QgsPhotoWidgetWrapper::createWidget( QWidget* parent )
 {
   QWidget* container = new QWidget( parent );
   QGridLayout* layout = new QGridLayout( container );
@@ -88,7 +88,7 @@ QWidget* QgsPhotoWidget::createWidget( QWidget* parent )
   return container;
 }
 
-void QgsPhotoWidget::initWidget( QWidget* editor )
+void QgsPhotoWidgetWrapper::initWidget( QWidget* editor )
 {
   QWidget* container;
 
@@ -120,7 +120,7 @@ void QgsPhotoWidget::initWidget( QWidget* editor )
   }
 }
 
-void QgsPhotoWidget::setValue( const QVariant& value )
+void QgsPhotoWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mLineEdit )
     mLineEdit->setText( value.toString() );
@@ -128,7 +128,7 @@ void QgsPhotoWidget::setValue( const QVariant& value )
 
 }
 
-void QgsPhotoWidget::setEnabled( bool enabled )
+void QgsPhotoWidgetWrapper::setEnabled( bool enabled )
 {
   if ( mLineEdit )
     mLineEdit->setEnabled( enabled );

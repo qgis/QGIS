@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsuuidwidget.cpp
+    qgsuuidwidgetwrapper.cpp
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,16 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsuuidwidget.h"
+#include "qgsuuidwidgetwrapper.h"
 
 #include <QUuid>
 
-QgsUuidWidget::QgsUuidWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
+QgsUuidWidgetWrapper::QgsUuidWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
 {
 }
 
-QVariant QgsUuidWidget::value()
+QVariant QgsUuidWidgetWrapper::value()
 {
   QVariant v;
 
@@ -34,12 +34,12 @@ QVariant QgsUuidWidget::value()
   return v;
 }
 
-QWidget* QgsUuidWidget::createWidget( QWidget* parent )
+QWidget* QgsUuidWidgetWrapper::createWidget( QWidget* parent )
 {
   return new QLineEdit( parent );
 }
 
-void QgsUuidWidget::initWidget( QWidget* editor )
+void QgsUuidWidgetWrapper::initWidget( QWidget* editor )
 {
   mLineEdit = qobject_cast<QLineEdit*>( editor );
   mLabel = qobject_cast<QLabel*>( editor );
@@ -47,7 +47,7 @@ void QgsUuidWidget::initWidget( QWidget* editor )
     mLineEdit->setEnabled( false );
 }
 
-void QgsUuidWidget::setValue( const QVariant& value )
+void QgsUuidWidgetWrapper::setValue( const QVariant& value )
 {
   if ( value.isNull() )
   {
@@ -67,7 +67,7 @@ void QgsUuidWidget::setValue( const QVariant& value )
   }
 }
 
-void QgsUuidWidget::setEnabled( bool enabled )
+void QgsUuidWidgetWrapper::setEnabled( bool enabled )
 {
   Q_UNUSED( enabled )
   // Do nothing... it is always disabled

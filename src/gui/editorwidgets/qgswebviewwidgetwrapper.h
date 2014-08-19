@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsfilenamewidget.h
+    qgswebviewwidgetwrapper.h
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,23 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSFILENAMEWIDGET_H
-#define QGSFILENAMEWIDGET_H
+#ifndef QGSWEBVIEWWIDGETWRAPPER_H
+#define QGSWEBVIEWWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
 
+#include <QWebView>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QLabel>
 
-class GUI_EXPORT QgsFileNameWidget : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsWebViewWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsFileNameWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+    explicit QgsWebViewWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
 
-  private slots:
-    void selectFileName();
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -41,11 +39,19 @@ class GUI_EXPORT QgsFileNameWidget : public QgsEditorWidgetWrapper
 
   public slots:
     void setValue( const QVariant& value );
+    void setEnabled( bool enabled );
+
+  private slots:
+    void loadUrl( const QString &url );
+    void selectFileName();
 
   private:
+    //! This label is used as a container to display the picture
+    QWebView* mWebView;
+    //! The line edit containing the path to the picture
     QLineEdit* mLineEdit;
-    QPushButton* mPushButton;
-    QLabel* mLabel;
+    //! The button to open the file chooser dialog
+    QPushButton* mButton;
 };
 
-#endif // QGSFILENAMEWIDGET_H
+#endif // QGSWEBVIEWWIDGETWRAPPER_H

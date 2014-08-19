@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsuniquevaluewidget.h
+    qgsuuidwidgetwrapper.h
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,19 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSUNIQUEVALUEWIDGET_H
-#define QGSUNIQUEVALUEWIDGET_H
+#ifndef QGSUUIDWIDGETWRAPPER_H
+#define QGSUUIDWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
 
-#include <QComboBox>
 #include <QLineEdit>
+#include <QLabel>
 
-class GUI_EXPORT QgsUniqueValuesWidget : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsUuidWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsUniqueValuesWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+    explicit QgsUuidWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -37,10 +37,11 @@ class GUI_EXPORT QgsUniqueValuesWidget : public QgsEditorWidgetWrapper
 
   public slots:
     void setValue( const QVariant& value );
+    void setEnabled( bool enabled );
 
   private:
-    QComboBox* mComboBox;
+    QLabel* mLabel;
     QLineEdit* mLineEdit;
 };
 
-#endif // QGSUNIQUEVALUEWIDGET_H
+#endif // QGSUUIDWIDGETWRAPPER_H

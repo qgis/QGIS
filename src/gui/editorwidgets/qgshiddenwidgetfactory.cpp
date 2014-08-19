@@ -15,7 +15,7 @@
 
 #include "qgshiddenwidgetfactory.h"
 
-#include "qgshiddenwidget.h"
+#include "qgshiddenwidgetwrapper.h"
 #include "qgsdummyconfigdlg.h"
 
 QgsHiddenWidgetFactory::QgsHiddenWidgetFactory( const QString& name )
@@ -25,7 +25,7 @@ QgsHiddenWidgetFactory::QgsHiddenWidgetFactory( const QString& name )
 
 QgsEditorWidgetWrapper* QgsHiddenWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
-  return new QgsHiddenWidget( vl, fieldIdx, editor, parent );
+  return new QgsHiddenWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
 QgsEditorConfigWidget* QgsHiddenWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

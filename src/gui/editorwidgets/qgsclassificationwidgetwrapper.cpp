@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsenumerationwidget.cpp
+    qgsclassificationwidgetwrapper.cpp
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,54 +13,52 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsenumerationwidget.h"
+#include "qgsclassificationwidgetwrapper.h"
 
+#include "qgscategorizedsymbolrendererv2.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
 
-QgsEnumerationWidget::QgsEnumerationWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
+QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
 {
 }
 
-
-QVariant QgsEnumerationWidget::value()
+QVariant QgsClassificationWidgetWrapper::value()
 {
-  QVariant value;
-
-  if ( mComboBox )
-    value = mComboBox->itemData( mComboBox->currentIndex() );
-
-  return value;
+  return mComboBox->itemData( mComboBox->currentIndex() );
 }
 
-QWidget* QgsEnumerationWidget::createWidget( QWidget* parent )
+QWidget*QgsClassificationWidgetWrapper::createWidget( QWidget* parent )
 {
   return new QComboBox( parent );
 }
 
-void QgsEnumerationWidget::initWidget( QWidget* editor )
+void QgsClassificationWidgetWrapper::initWidget( QWidget* editor )
 {
   mComboBox = qobject_cast<QComboBox*>( editor );
 
   if ( mComboBox )
   {
-    QStringList enumValues;
-    layer()->dataProvider()->enumValues( fieldIdx(), enumValues );
-
-    Q_FOREACH( const QString& s, enumValues )
+    const QgsCategorizedSymbolRendererV2 *csr = dynamic_cast<const QgsCategorizedSymbolRendererV2 *>( layer()->rendererV2() );
+    if ( csr )
     {
-      mComboBox->addItem( s, s );
+      const QgsCategoryList categories = csr->categories();
+      for ( int i = 0; i < categories.size(); i++ )
+      {
+        QString label = categories[i].label();
+        QString value = categories[i].value().toString();
+        if ( label.isEmpty() )
+          label = value;
+
+        mComboBox->addItem( label, value );
+      }
     }
+
     connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( valueChanged() ) );
   }
 }
 
-void QgsEnumerationWidget::setValue( const QVariant& value )
+void QgsClassificationWidgetWrapper::setValue( const QVariant& value )
 {
-  if ( mComboBox )
-  {
-    mComboBox->setCurrentIndex( mComboBox->findData( value ) );
-  }
+  mComboBox->setCurrentIndex( mComboBox->findData( value ) );
 }
-

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscheckboxwidget.h
+    qgstexteditwrapper.h
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,19 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCHECKBOXWIDGET_H
-#define QGSCHECKBOXWIDGET_H
+#ifndef QGSTEXTEDITWRAPPER_H
+#define QGSTEXTEDITWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
 
-#include <QCheckBox>
-#include <QGroupBox>
+#include <QLineEdit>
+#include <QPlainTextEdit>
+#include <QTextEdit>
 
-class GUI_EXPORT QgsCheckboxWidget : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsCheckboxWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+    explicit QgsTextEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -37,10 +38,12 @@ class GUI_EXPORT QgsCheckboxWidget : public QgsEditorWidgetWrapper
 
   public slots:
     void setValue( const QVariant& value );
+    void setEnabled( bool enabled );
 
   private:
-    QCheckBox* mCheckBox;
-    QGroupBox* mGroupBox;
+    QTextEdit* mTextEdit;
+    QPlainTextEdit* mPlainTextEdit;
+    QLineEdit* mLineEdit;
 };
 
-#endif // QGSCHECKBOXWIDGET_H
+#endif // QGSTEXTEDITWRAPPER_H

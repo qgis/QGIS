@@ -15,7 +15,7 @@
 
 #include "qgstexteditwidgetfactory.h"
 
-#include "qgstexteditwidget.h"
+#include "qgstexteditwrapper.h"
 #include "qgstexteditconfigdlg.h"
 
 QgsTextEditWidgetFactory::QgsTextEditWidgetFactory( const QString& name )
@@ -25,7 +25,7 @@ QgsTextEditWidgetFactory::QgsTextEditWidgetFactory( const QString& name )
 
 QgsEditorWidgetWrapper* QgsTextEditWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
-  return new QgsTextEditWidget( vl, fieldIdx, editor, parent );
+  return new QgsTextEditWrapper( vl, fieldIdx, editor, parent );
 }
 
 QgsEditorConfigWidget* QgsTextEditWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

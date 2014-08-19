@@ -15,7 +15,7 @@
 
 #include "qgsphotowidgetfactory.h"
 
-#include "qgsphotowidget.h"
+#include "qgsphotowidgetwrapper.h"
 #include "qgsphotoconfigdlg.h"
 
 QgsPhotoWidgetFactory::QgsPhotoWidgetFactory( const QString& name )
@@ -26,7 +26,7 @@ QgsPhotoWidgetFactory::QgsPhotoWidgetFactory( const QString& name )
 
 QgsEditorWidgetWrapper* QgsPhotoWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
-  return new QgsPhotoWidget( vl, fieldIdx, editor, parent );
+  return new QgsPhotoWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
 QgsEditorConfigWidget* QgsPhotoWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

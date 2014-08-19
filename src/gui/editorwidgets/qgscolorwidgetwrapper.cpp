@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsvaluemapwidget.h
+    qgscolorwidgetwrapper.cpp
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,32 +13,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSVALUEMAPWIDGET_H
-#define QGSVALUEMAPWIDGET_H
+#include "qgscolorwidgetwrapper.h"
 
-#include "qgseditorwidgetwrapper.h"
-
-#include <QComboBox>
-
-class GUI_EXPORT QgsValueMapWidget : public QgsEditorWidgetWrapper
+QgsColorWidgetWrapper::QgsColorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) :
+    QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
 {
-    Q_OBJECT
-  public:
-    explicit QgsValueMapWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+}
 
-    // QgsEditorWidgetWrapper interface
-  public:
-    QVariant value();
 
-  protected:
-    QWidget* createWidget( QWidget* parent );
-    void initWidget( QWidget* editor );
+QVariant QgsColorWidgetWrapper::value()
+{
+  QVariant v;
 
-  public slots:
-    void setValue( const QVariant& value );
+  if ( mColorButton )
+    v = mColorButton->color();
 
-  private:
-    QComboBox* mComboBox;
-};
+  return v;
+}
 
-#endif // QGSVALUEMAPWIDGET_H
+QWidget* QgsColorWidgetWrapper::createWidget( QWidget* parent )
+{
+  return new QgsColorButton( parent );
+}
+
+void QgsColorWidgetWrapper::initWidget( QWidget* editor )
+{
+  mColorButton = qobject_cast<QgsColorButton*>( editor );
+
+  connect( mColorButton, SIGNAL( colorChanged( QColor ) ), this, SLOT( valueChanged() ) );
+}
+
+void QgsColorWidgetWrapper::setValue( const QVariant& value )
+{
+  if ( mColorButton )
+    mColorButton->setColor( QColor( value.toString() ) );
+}

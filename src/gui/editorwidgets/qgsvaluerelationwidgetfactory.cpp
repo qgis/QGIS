@@ -31,7 +31,7 @@ QgsValueRelationWidgetFactory::QgsValueRelationWidgetFactory( const QString& nam
 
 QgsEditorWidgetWrapper* QgsValueRelationWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
-  return new QgsValueRelationWidget( vl, fieldIdx, editor, parent );
+  return new QgsValueRelationWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
 QgsEditorConfigWidget* QgsValueRelationWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
@@ -77,15 +77,15 @@ QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int f
   Q_UNUSED( vl )
   Q_UNUSED( fieldIdx )
 
-  QgsValueRelationWidget::ValueRelationCache vrCache;
+  QgsValueRelationWidgetWrapper::ValueRelationCache vrCache;
 
   if ( cache.isValid() )
   {
-    vrCache = cache.value<QgsValueRelationWidget::ValueRelationCache>();
+    vrCache = cache.value<QgsValueRelationWidgetWrapper::ValueRelationCache>();
   }
   else
   {
-    vrCache = QgsValueRelationWidget::createCache( config );
+    vrCache = QgsValueRelationWidgetWrapper::createCache( config );
   }
 
   if ( config.value( "AllowMulti" ).toBool() )
@@ -93,7 +93,7 @@ QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int f
     QStringList keyList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," );
     QStringList valueList;
 
-    Q_FOREACH( const QgsValueRelationWidget::ValueRelationItem& item, vrCache )
+    Q_FOREACH( const QgsValueRelationWidgetWrapper::ValueRelationItem& item, vrCache )
     {
       if ( keyList.contains( item.first.toString() ) )
       {
@@ -111,7 +111,7 @@ QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int f
       return settings.value( "qgis/nullValue", "NULL" ).toString();
     }
 
-    Q_FOREACH( const QgsValueRelationWidget::ValueRelationItem& item, vrCache )
+    Q_FOREACH( const QgsValueRelationWidgetWrapper::ValueRelationItem& item, vrCache )
     {
       if ( item.first == value )
       {
@@ -128,6 +128,6 @@ QVariant QgsValueRelationWidgetFactory::createCache( QgsVectorLayer* vl, int fie
   Q_UNUSED( vl )
   Q_UNUSED( fieldIdx )
 
-  return QVariant::fromValue<QgsValueRelationWidget::ValueRelationCache>( QgsValueRelationWidget::createCache( config ) );
+  return QVariant::fromValue<QgsValueRelationWidgetWrapper::ValueRelationCache>( QgsValueRelationWidgetWrapper::createCache( config ) );
 }
 

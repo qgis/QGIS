@@ -15,7 +15,7 @@
 
 #include "qgsclassificationwidgetwrapperfactory.h"
 
-#include "qgsclassificationwidget.h"
+#include "qgsclassificationwidgetwrapper.h"
 #include "qgsdummyconfigdlg.h"
 
 QgsClassificationWidgetWrapperFactory::QgsClassificationWidgetWrapperFactory( const QString& name )
@@ -26,7 +26,7 @@ QgsClassificationWidgetWrapperFactory::QgsClassificationWidgetWrapperFactory( co
 
 QgsEditorWidgetWrapper*QgsClassificationWidgetWrapperFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
-  return new QgsClassificationWidget( vl, fieldIdx, editor, parent );
+  return new QgsClassificationWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
 QgsEditorConfigWidget*QgsClassificationWidgetWrapperFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

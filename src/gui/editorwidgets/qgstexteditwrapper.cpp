@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgstexteditwidget.cpp
+    qgstexteditwrapper.cpp
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstexteditwidget.h"
+#include "qgstexteditwrapper.h"
 
 #include "qgsfield.h"
 #include "qgsfieldvalidator.h"
@@ -21,12 +21,12 @@
 
 #include <QSettings>
 
-QgsTextEditWidget::QgsTextEditWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
+QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
 {
 }
 
-QVariant QgsTextEditWidget::value()
+QVariant QgsTextEditWrapper::value()
 {
   QString v;
 
@@ -59,7 +59,7 @@ QVariant QgsTextEditWidget::value()
     return QVariant( v );
 }
 
-QWidget* QgsTextEditWidget::createWidget( QWidget* parent )
+QWidget* QgsTextEditWrapper::createWidget( QWidget* parent )
 {
   if ( config( "IsMultiline" ).toBool() )
   {
@@ -78,7 +78,7 @@ QWidget* QgsTextEditWidget::createWidget( QWidget* parent )
   }
 }
 
-void QgsTextEditWidget::initWidget( QWidget* editor )
+void QgsTextEditWrapper::initWidget( QWidget* editor )
 {
   mTextEdit = qobject_cast<QTextEdit*>( editor );
   mPlainTextEdit = qobject_cast<QPlainTextEdit*>( editor );
@@ -104,7 +104,7 @@ void QgsTextEditWidget::initWidget( QWidget* editor )
   }
 }
 
-void QgsTextEditWidget::setValue( const QVariant& value )
+void QgsTextEditWrapper::setValue( const QVariant& value )
 {
   QString v;
   if ( value.isNull() )
@@ -130,7 +130,7 @@ void QgsTextEditWidget::setValue( const QVariant& value )
     mLineEdit->setText( v );
 }
 
-void QgsTextEditWidget::setEnabled( bool enabled )
+void QgsTextEditWrapper::setEnabled( bool enabled )
 {
   if ( mTextEdit )
     mTextEdit->setReadOnly( !enabled );
