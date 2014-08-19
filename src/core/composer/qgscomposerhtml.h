@@ -229,6 +229,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     QString mHtml;
     QString mFetchedHtml;
     QString mLastFetchedUrl;
+    QString mActualFetchedUrl; //may be different if page was redirected
     bool mLoaded;
     QSizeF mSize; //total size in mm
     double mHtmlUnitsToMM;

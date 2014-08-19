@@ -21,6 +21,7 @@
 #include "qgsmessagelog.h"
 #include "qgsexpression.h"
 #include "qgslogger.h"
+#include "qgsnetworkcontentfetcher.h"
 
 #include <QCoreApplication>
 #include <QPainter>
@@ -108,58 +109,6 @@ void QgsComposerHtml::setEvaluateExpressions( bool evaluateExpressions )
   loadHtml();
 }
 
-QString QgsComposerHtml::fetchHtml( QUrl url )
-{
-  QUrl nextUrlToFetch = url;
-  QNetworkReply* reply = 0;
-
-  //loop until fetched valid html
-  while ( 1 )
-  {
-    //set contents
-    QNetworkRequest request( nextUrlToFetch );
-    reply = QgsNetworkAccessManager::instance()->get( request );
-    connect( reply, SIGNAL( finished() ), this, SLOT( frameLoaded() ) );
-    //pause until HTML fetch
-    mLoaded = false;
-    while ( !mLoaded )
-    {
-      qApp->processEvents();
-    }
-
-    if ( reply->error() != QNetworkReply::NoError )
-    {
-      QgsMessageLog::logMessage( tr( "HTML fetch %1 failed with error %2" ).arg( reply->url().toString() ).arg( reply->errorString() ) );
-      reply->deleteLater();
-      return QString();
-    }
-
-    QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-    if ( redirect.isNull() )
-    {
-      //no error or redirect, got target
-      break;
-    }
-
-    //redirect, so fetch redirect target
-    nextUrlToFetch = redirect.toUrl();
-    reply->deleteLater();
-  }
-
-  QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
-  if ( !status.isNull() && status.toInt() >= 400 )
-  {
-    QgsMessageLog::logMessage( tr( "HTML fetch %1 failed with error %2" ).arg( reply->url().toString() ).arg( status.toString() ) );
-    reply->deleteLater();
-    return QString();
-  }
-
-  QByteArray array = reply->readAll();
-  reply->deleteLater();
-  mFetchedHtml = QString( array );
-  return mFetchedHtml;
-}
-
 void QgsComposerHtml::loadHtml()
 {
   if ( !mWebPage )
@@ -195,6 +144,7 @@ void QgsComposerHtml::loadHtml()
       {
         loadedHtml = mFetchedHtml;
       }
+
       break;
     }
     case QgsComposerHtml::ManualHtml:
@@ -210,7 +160,7 @@ void QgsComposerHtml::loadHtml()
 
   mLoaded = false;
   //set html, using the specified url as base if in Url mode
-  mWebPage->mainFrame()->setHtml( loadedHtml, mContentMode == QgsComposerHtml::Url ? QUrl( mLastFetchedUrl ) : QUrl() );
+  mWebPage->mainFrame()->setHtml( loadedHtml, mContentMode == QgsComposerHtml::Url ? QUrl( mActualFetchedUrl ) : QUrl() );
 
   //set user stylesheet
   QWebSettings* settings = mWebPage->settings();
@@ -277,6 +227,24 @@ void QgsComposerHtml::renderCachedImage()
   painter.begin( mRenderedPage );
   mWebPage->mainFrame()->render( &painter );
   painter.end();
+}
+
+QString QgsComposerHtml::fetchHtml( QUrl url )
+{
+  QgsNetworkContentFetcher fetcher;
+  //pause until HTML fetch
+  mLoaded = false;
+  fetcher.fetchContent( url );
+  connect( &fetcher, SIGNAL( finished() ), this, SLOT( frameLoaded() ) );
+
+  while ( !mLoaded )
+  {
+    qApp->processEvents();
+  }
+
+  mFetchedHtml = fetcher.contentAsString();
+  mActualFetchedUrl = fetcher.reply()->url().toString();
+  return mFetchedHtml;
 }
 
 QSizeF QgsComposerHtml::totalSize() const
