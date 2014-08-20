@@ -23,18 +23,17 @@ class QgsNetworkContentFetcher : QObject
      * @param url URL to fetch
     */
     void fetchContent( const QUrl url );
-    
+
     /**Returns a reference to the network reply
      * @returns QNetworkReply for fetched URL content
     */
     QNetworkReply* reply();
-     
-     
+
     /**Returns the fetched content as a string
      * @returns string containing network content
     */
     QString contentAsString() const;
-    
+
   signals:
 
     /**Emitted when content has loaded

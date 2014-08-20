@@ -71,7 +71,7 @@ void QgsColorButtonV2Plugin::initialize( QDesignerFormEditorInterface *core )
 
 QString QgsColorButtonV2Plugin::toolTip() const
 {
-  return "Select color";
+  return tr( "Select color" );
 }
 
 QString QgsColorButtonV2Plugin::whatsThis() const

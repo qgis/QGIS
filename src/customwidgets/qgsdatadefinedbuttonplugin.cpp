@@ -71,12 +71,12 @@ void QgsDataDefinedButtonPlugin::initialize( QDesignerFormEditorInterface *core 
 
 QString QgsDataDefinedButtonPlugin::toolTip() const
 {
-  return "A widget to define the scale range";
+  return tr( "A widget to define the scale range" );
 }
 
 QString QgsDataDefinedButtonPlugin::whatsThis() const
 {
-  return "A widget to define the scale range.";
+  return tr( "A widget to define the scale range." );
 }
 
 QString QgsDataDefinedButtonPlugin::domXml() const

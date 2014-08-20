@@ -317,6 +317,7 @@ namespace pal
        * @param xOffset map unit (+/-) to x-offset the label
        * @param yOffset map unit (+/-) to y-offset the label
        * @param alwaysShow whether to skip priority and always show the label (causes overlapping)
+       * @param repeatDistance distance for repeating the label
        *
        * @throws PalException::FeatureExists
        *

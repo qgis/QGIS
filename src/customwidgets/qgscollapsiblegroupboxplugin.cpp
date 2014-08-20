@@ -71,12 +71,12 @@ void QgsCollapsibleGroupBoxPlugin::initialize( QDesignerFormEditorInterface *cor
 
 QString QgsCollapsibleGroupBoxPlugin::toolTip() const
 {
-  return "A collapsible group box";
+  return tr( "A collapsible group box" );
 }
 
 QString QgsCollapsibleGroupBoxPlugin::whatsThis() const
 {
-  return "A collapsible group box with save state capability";
+  return tr( "A collapsible group box with save state capability" );
 }
 
 QString QgsCollapsibleGroupBoxPlugin::domXml() const

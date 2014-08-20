@@ -437,7 +437,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * returns true when dialog was accepted (if shown modal, true otherwise)
      * @param l vector layer
      * @param f feature to show/modify
-     * @param updateFeatureOnly only update the feature update (don't change any attributes of the layer)
+     * @param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
      * @param showModal if true, will wait for the dialog to be executed (only shown otherwise)
      * @note added in 1.6
      */

@@ -71,12 +71,12 @@ void QgsMapLayerComboBoxPlugin::initialize( QDesignerFormEditorInterface *core )
 
 QString QgsMapLayerComboBoxPlugin::toolTip() const
 {
-  return "A combo box to list the layers";
+  return tr( "A combo box to list the layers" );
 }
 
 QString QgsMapLayerComboBoxPlugin::whatsThis() const
 {
-  return "A combo box to list the layers registered in QGIS. Layers might be filtered according to their type.";
+  return tr( "A combo box to list the layers registered in QGIS. Layers might be filtered according to their type." );
 }
 
 QString QgsMapLayerComboBoxPlugin::domXml() const

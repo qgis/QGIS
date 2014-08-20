@@ -71,12 +71,12 @@ void QgsFieldExpressionWidgetPlugin::initialize( QDesignerFormEditorInterface *c
 
 QString QgsFieldExpressionWidgetPlugin::toolTip() const
 {
-  return "An editable combo box to enter an expression";
+  return tr( "An editable combo box to enter an expression" );
 }
 
 QString QgsFieldExpressionWidgetPlugin::whatsThis() const
 {
-  return "An editable combo box to enter an expression. A button allows opening the expression dialog. Expression are evaluated to detect errors.";
+  return tr( "An editable combo box to enter an expression. A button allows opening the expression dialog. Expression are evaluated to detect errors." );
 }
 
 QString QgsFieldExpressionWidgetPlugin::domXml() const

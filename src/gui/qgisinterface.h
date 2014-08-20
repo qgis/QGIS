@@ -567,7 +567,10 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Open feature form
-     * @return true when dialog was accepted
+     * @param l vector layer
+     * @param f feature to show/modify
+     * @param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
+     * @param showModal if true, will wait for the dialog to be executed (only shown otherwise)
      * @note added in 1.6
      */
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
@@ -575,8 +578,8 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Returns a feature form for a given feature
      *
-     * @param layer   The layer for which the dialog will be created
-     * @param feature The feature for which the dialog will be created
+     * @param l The layer for which the dialog will be created
+     * @param f The feature for which the dialog will be created
      *
      * @return A feature form
      */

@@ -71,7 +71,7 @@ void QgsRelationReferenceWidgetPlugin::initialize( QDesignerFormEditorInterface 
 
 QString QgsRelationReferenceWidgetPlugin::toolTip() const
 {
-  return "Relation reference";
+  return tr( "Relation reference" );
 }
 
 QString QgsRelationReferenceWidgetPlugin::whatsThis() const

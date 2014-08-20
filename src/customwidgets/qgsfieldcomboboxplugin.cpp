@@ -71,12 +71,12 @@ void QgsFieldComboBoxPlugin::initialize( QDesignerFormEditorInterface *core )
 
 QString QgsFieldComboBoxPlugin::toolTip() const
 {
-  return "A combo box to list the fields of a layer";
+  return tr( "A combo box to list the fields of a layer" );
 }
 
 QString QgsFieldComboBoxPlugin::whatsThis() const
 {
-  return "A combo box to list the field of a layer.";
+  return tr( "A combo box to list the field of a layer." );
 }
 
 QString QgsFieldComboBoxPlugin::domXml() const

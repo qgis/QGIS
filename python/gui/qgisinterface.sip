@@ -512,15 +512,44 @@ class QgisInterface : QObject
 
     /**
      * Open feature form
-     * @return true when dialog was accepted
+     * @param l vector layer
+     * @param f feature to show/modify
+     * @param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
+     * @param showModal if true, will wait for the dialog to be executed (only shown otherwise)
      * @note added in 1.6
      */
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
 
+    /**
+     * Returns a feature form for a given feature
+     *
+     * @param l The layer for which the dialog will be created
+     * @param f The feature for which the dialog will be created
+     *
+     * @return A feature form
+     */
     virtual QgsAttributeDialog* getFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
 
+    /**
+     * Access the vector layer tools instance.
+     * With the help of this you can access methods like addFeature, startEditing
+     * or stopEditing while giving the user the appropriate dialogs.
+     *
+     * @return An instance of the vector layer tools
+     */
     virtual QgsVectorLayerTools* vectorLayerTools() = 0;
 
+    /** This method is only needed when using a UI form with a custom widget plugin and calling
+     * openFeatureForm or getFeatureForm from Python (PyQt4) and you havn't used the info tool first.
+     * Python will crash bringing QGIS wtih it
+     * if the custom form is not loaded from a C++ method call.
+     *
+     * This method uses a QTimer to call QUiLoader in order to load the form via C++
+     * you only need to call this once after that you can call openFeatureForm/getFeatureForm
+     * like normal
+     *
+     * More information here: http://qt-project.org/forums/viewthread/27098/
+     */
     virtual void preloadForm( QString uifile ) = 0;
 
     /** Return vector layers in edit mode

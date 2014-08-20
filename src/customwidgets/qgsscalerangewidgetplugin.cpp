@@ -71,12 +71,12 @@ void QgsScaleRangeWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
 
 QString QgsScaleRangeWidgetPlugin::toolTip() const
 {
-  return "A widget to define the scale range";
+  return tr( "A widget to define the scale range" );
 }
 
 QString QgsScaleRangeWidgetPlugin::whatsThis() const
 {
-  return "A widget to define the scale range.";
+  return tr( "A widget to define the scale range." );
 }
 
 QString QgsScaleRangeWidgetPlugin::domXml() const

@@ -53,10 +53,10 @@ class QgsComposerPicture: QgsComposerItem
      * @returns path to the source image
      * @see usePictureExpression
      * @see setPictureFile
-     * @deprecated use picturePath instead  
+     * @deprecated use picturePath instead
     */
     QString pictureFile() const /Deprecated/;
-    
+
      /**Sets the source path of the image (may be svg or a raster format). Data defined
      * picture source may override this value. The path can either be a local path
      * or a remote (http) path.
@@ -74,7 +74,7 @@ class QgsComposerPicture: QgsComposerItem
      * @see setPicturePath
      * @note added in QGIS 2.5
     */
-    QString picturePath() const;    
+    QString picturePath() const;
 
 
     /**Sets this items bound in scene coordinates such that 1 item size units
