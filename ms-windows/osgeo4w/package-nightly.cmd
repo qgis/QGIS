@@ -229,6 +229,9 @@ move %PKGDIR%\qt4\plugins\sqldrivers\qsqlspatiallite.dll %OSGEO4W_ROOT%\apps\%PA
 if not exist %OSGEO4W_ROOT%\apps\%PACKAGENAME%\qtplugins\designer mkdir %OSGEO4W_ROOT%\apps\%PACKAGENAME%\qtplugins\designer
 move %PKGDIR%\qt4\plugins\designer\qgis_customwidgets.dll %OSGEO4W_ROOT%\apps\%PACKAGENAME%\qtplugins\designer
 
+if not exist %OSGEO4W_ROOT%\apps\%PACKAGENAME%\python\PyQt4\uic\widget-plugins mkdir %OSGEO4W_ROOT%\apps\%PACKAGENAME%\python\PyQt4\uic\widget-plugins 
+move %PKGDIR%\apps\Python27\Lib\site-packages\PyQt4\uic\widget-plugins\qgis_customwidgets.py %OSGEO4W_ROOT%\apps\%PACKAGENAME%\python\PyQt4\uic\widget-plugins
+
 if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAGENAME%
 tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
