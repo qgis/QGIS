@@ -223,6 +223,7 @@
 
 %Include symbology-ng/qgscategorizedsymbolrendererv2.sip
 %Include symbology-ng/qgsgraduatedsymbolrendererv2.sip
+%Include symbology-ng/qgslegendsymbolitemv2.sip
 %Include symbology-ng/qgssinglesymbolrendererv2.sip
 %Include symbology-ng/qgspointdisplacementrenderer.sip
 %Include symbology-ng/qgsrulebasedrendererv2.sip
