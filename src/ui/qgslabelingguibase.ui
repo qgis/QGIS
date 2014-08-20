@@ -121,7 +121,7 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QgsLabelPreview" name="lblFontPreview">
+               <widget class="QgsTextSettingsPreview" name="lblFontPreview">
                 <property name="enabled">
                  <bool>true</bool>
                 </property>
@@ -5488,9 +5488,9 @@ font-style: italic;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsLabelPreview</class>
+   <class>QgsTextSettingsPreview</class>
    <extends>QLabel</extends>
-   <header>qgslabelpreview.h</header>
+   <header>qgstextsettingspreview.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFieldExpressionWidget</class>
