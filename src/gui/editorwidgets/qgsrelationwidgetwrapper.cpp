@@ -15,31 +15,38 @@
 
 #include "qgsrelationwidgetwrapper.h"
 
-#include "qgsrelationeditor.h"
+#include "qgsrelationeditorwidget.h"
 
 #include <QWidget>
 
 QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer* vl, const QgsRelation& relation, QWidget* editor, QWidget* parent )
     : QgsWidgetWrapper( vl, editor, parent )
     , mRelation( relation )
-    , mRelationWidget( 0 )
+    , mWidget( NULL )
 {
+  initWidget(editor);
 }
 
 QWidget* QgsRelationWidgetWrapper::createWidget( QWidget* parent )
 {
-  return new QWidget( parent );
+  return new QgsRelationEditorWidget( parent );
 }
 
 void QgsRelationWidgetWrapper::setFeature( const QgsFeature& feature )
 {
-  delete( mRelationWidget );
-  mRelationWidget = QgsRelationEditorWidget::createRelationEditor( mRelation, feature, context(), widget() );
-  widget()->layout()->addWidget( mRelationWidget );
+  if ( mWidget )
+    mWidget->setRelationFeature( mRelation, feature, context() );
 }
 
 void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
 {
-  if ( !editor->layout() )
-    editor->setLayout( new QGridLayout( editor ) );
+  QgsRelationEditorWidget* w = dynamic_cast<QgsRelationEditorWidget*>( editor );
+
+  // if the editor cannot be cast to relation editor, insert a new one
+  if ( !w )
+  {
+    w = new QgsRelationEditorWidget( editor );
+  }
+
+  mWidget = w;
 }

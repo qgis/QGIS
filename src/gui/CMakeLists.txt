@@ -202,7 +202,7 @@ qgsrasterformatsaveoptionswidget.cpp
 qgsrasterlayersaveasdialog.cpp
 qgsrasterpyramidsoptionswidget.cpp
 qgsrelationadddlg.cpp
-qgsrelationeditor.cpp
+qgsrelationeditorwidget.cpp
 qgsrelationmanagerdialog.cpp
 qgsrubberband.cpp
 qgsscalecombobox.cpp
@@ -392,7 +392,7 @@ qgsrasterformatsaveoptionswidget.h
 qgsrasterlayersaveasdialog.h
 qgsrasterpyramidsoptionswidget.h
 qgsrelationadddlg.h
-qgsrelationeditor.h
+qgsrelationeditorwidget.h
 qgsrelationmanagerdialog.h
 qgsscalecombobox.h
 qgsscalerangewidget.h
@@ -467,7 +467,7 @@ qgsmessageviewer.h
 qgsoptionsdialogbase.h
 qgsowssourceselect.h
 qgsprojectionselector.h
-qgsrelationeditor.h
+qgsrelationeditorwidget.h
 qgsrubberband.h
 qgsscalecombobox.h
 qgsscalerangewidget.h
