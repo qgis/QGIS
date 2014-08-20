@@ -17,28 +17,50 @@
 #define QGSRELATIONEDITOR_H
 
 #include <QWidget>
+#include <QToolButton>
+#include <QButtonGroup>
+#include <QGridLayout>
 
-#include "ui_qgsrelationeditorwidgetbase.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgscollapsiblegroupbox.h"
+#include "qgsdualview.h"
 #include "qgsrelation.h"
 
-class QgsDualView;
 class QgsFeature;
 class QgsGenericFeatureSelectionManager;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 
-class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox, private Ui::QgsRelationEditorWidgetBase
+class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
 {
     Q_OBJECT
+    Q_PROPERTY( QString qgisRelation READ qgisRelation WRITE setQgisRelation )
+    Q_PROPERTY( QgsDualView::ViewMode viewMode READ viewMode WRITE setViewMode )
 
   public:
-    static QgsRelationEditorWidget* createRelationEditor( const QgsRelation& relation, const QgsFeature& feature, QgsAttributeEditorContext context, QWidget* parent = NULL );
+    /**
+     * @param relation
+     * @param feature
+     * @param context
+     * @param parent
+     */
+    QgsRelationEditorWidget( QWidget* parent = NULL );
+
+    //! Define the view mode for the dual view
+    void setViewMode( QgsDualView::ViewMode mode );
+    QgsDualView::ViewMode viewMode() {return mViewMode;}
+
+    //! Defines the relation ID (from project relations)
+    //! @note use a widget's property to keep compatibility with using basic widget instead of QgsRelationEditorWidget
+    void setQgisRelation( QString qgisRelationId ) {setProperty( "qgisRelation", qgisRelationId );}
+    QString qgisRelation() {return "test";}  //property( "qgisRelation" ).toString()
+
+    void setRelationFeature( const QgsRelation& relation, const QgsFeature& feature, const QgsAttributeEditorContext& context );
 
   private slots:
+    void setViewMode( int mode ) {setViewMode( static_cast<QgsDualView::ViewMode>( mode ) );}
     void onCollapsedStateChanged( bool state );
     void referencingLayerEditingToggled();
-    void viewModeChanged( int mode );
 
     void on_mAddFeatureButton_clicked();
     void on_mLinkFeatureButton_clicked();
@@ -47,22 +69,22 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox, privat
     void on_mToggleEditingButton_toggled( bool state );
 
   private:
-    /**
-     * You should use the static method createRelationEditor
-     *
-     * @param relation
-     * @param feature
-     * @param context
-     * @param parent
-     */
-    QgsRelationEditorWidget( const QgsRelation& relation, const QgsFeature& feature, QgsAttributeEditorContext context, QWidget* parent = NULL );
-
     QgsDualView* mDualView;
+    QgsDualView::ViewMode mViewMode;
     QgsGenericFeatureSelectionManager* mFeatureSelectionMgr;
     QgsAttributeEditorContext mEditorContext;
     QgsRelation mRelation;
     QgsFeature mFeature;
 
+    QToolButton* mToggleEditingButton;
+    QToolButton* mAddFeatureButton;
+    QToolButton* mDeleteFeatureButton;
+    QToolButton* mLinkFeatureButton;
+    QToolButton* mUnlinkFeatureButton;
+    QToolButton* mFormViewButton;
+    QToolButton* mTableViewButton;
+    QGridLayout* mRelationLayout;
+    QButtonGroup* mViewModeButtonGroup;
 };
 
 #endif // QGSRELATIONEDITOR_H

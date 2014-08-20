@@ -32,7 +32,7 @@
 #include "qgslonglongvalidator.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgsrelationeditor.h"
+#include "qgsrelationeditorwidget.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
