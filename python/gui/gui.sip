@@ -112,6 +112,7 @@
 %Include qgssvgannotationitem.sip
 %Include qgsextentgroupbox.sip
 %Include qgsprevieweffect.sip
+%Include qgstextsettingswidget.sip
 
 %Include attributetable/qgsattributetabledelegate.sip
 %Include attributetable/qgsattributetablefiltermodel.sip

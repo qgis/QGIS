@@ -28,7 +28,7 @@ class CORE_EXPORT QgsTextRendererSettings
   public:
     QgsTextRendererSettings();
     QgsTextRendererSettings( const QgsTextRendererSettings& s );
-    ~QgsTextRendererSettings();
+    virtual ~QgsTextRendererSettings();
 
     enum MultiLineAlign
     {

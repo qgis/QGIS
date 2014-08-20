@@ -214,6 +214,7 @@ qgssublayersdialog.cpp
 qgssvgannotationitem.cpp
 qgstextannotationitem.cpp
 qgstextsettingspreview.cpp
+qgstextsettingswidget.cpp
 qgsvertexmarker.cpp
 qgsunitselectionwidget.cpp
 )
@@ -402,6 +403,7 @@ qgssearchquerybuilder.h
 qgsslider.h
 qgssublayersdialog.h
 qgstextsettingspreview.h
+qgstextsettingswidget.h
 qgsunitselectionwidget.h
 )
 
@@ -479,6 +481,7 @@ qgssearchquerybuilder.h
 qgsslider.h
 qgssublayersdialog.h
 qgstextsettingspreview.h
+qgstextsettingswidget.h
 qgsvectorlayertools.h
 qgsvertexmarker.h
 qgsnumericsortlistviewitem.h

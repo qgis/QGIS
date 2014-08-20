@@ -56,19 +56,19 @@ void QgsTextSettingsPreview::paintEvent( QPaintEvent *e )
 
   mContext->setPainter( &p );
 
-  QgsTextRenderer::drawText( QRectF( xtrans, fm.ascent() + 4, width() - xtrans, height()), 0, text(), *mContext, mTextSettings );
+  QgsTextRenderer::drawText( QRectF( xtrans, fm.ascent() + 4, width() - xtrans, height() ), 0, text(), *mContext, mTextSettings );
 }
 
-void QgsTextSettingsPreview::setTextRendererSettings(const QgsTextRendererSettings &textSettings)
+void QgsTextSettingsPreview::setTextRendererSettings( const QgsTextRendererSettings &textSettings )
 {
-    mTextSettings = QgsTextRendererSettings( textSettings );
-    update();
+  mTextSettings = QgsTextRendererSettings( textSettings );
+  update();
 }
 
-void QgsTextSettingsPreview::setMapUnitScale(const double scale)
+void QgsTextSettingsPreview::setMapUnitScale( const double scale )
 {
-    QgsMapToPixel newCoordXForm;
-    newCoordXForm.setParameters( scale, 0, 0, 0 );
-    mContext->setMapToPixel( newCoordXForm );
-    update();
+  QgsMapToPixel newCoordXForm;
+  newCoordXForm.setParameters( scale, 0, 0, 0 );
+  mContext->setMapToPixel( newCoordXForm );
+  update();
 }
