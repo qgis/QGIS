@@ -295,7 +295,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"apps/%PACKAGENAME%/plugins/topolplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/zonalstatisticsplugin.dll" ^
 	"apps/%PACKAGENAME%/qgis_help.exe" ^
-        "apps/qt4/plugins/sqldrivers/qsqlspatialite.dll" ^
+	"apps/qt4/plugins/sqldrivers/qsqlspatialite.dll" ^
 	"apps/%PACKAGENAME%/python/" ^
 	"apps/%PACKAGENAME%/resources/customization.xml" ^
 	"bin/%PACKAGENAME%.bat.tmpl" ^
