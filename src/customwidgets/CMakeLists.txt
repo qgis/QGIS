@@ -101,3 +101,5 @@ INSTALL(TARGETS qgis_customwidgets
   RUNTIME DESTINATION ${QT_PLUGINS_DIR}/designer
   LIBRARY DESTINATION ${QT_PLUGINS_DIR}/designer
 )
+
+INSTALL(FILES ../python/custom_widgets/qgis_customwidgets.py DESTINATION "${PYUIC_WIDGET_PLUGIN_DIRECTORY}")

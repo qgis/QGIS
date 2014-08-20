@@ -1,1 +1,2 @@
 {QT_PLUGIN_DIR}/designer/libqgis_customwidgets.so*
+{PYUIC_WIDGET_PLUGIN_DIRECTORY}/qgis_customwidgets.py

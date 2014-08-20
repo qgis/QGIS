@@ -222,10 +222,6 @@ IF(WITH_QSCIAPI)
     COMMENT "Generating ${PAP_NAME} for console auto-completion (MAY TAKE > 1 MINUTE!)" VERBATIM)
 ENDIF(WITH_QSCIAPI)
 
-IF(WITH_CUSTOM_WIDGETS)
-  INSTALL(FILES custom_widgets/qgis_customwidgets.py DESTINATION "${PYUIC_WIDGET_PLUGIN_DIRECTORY}")
-ENDIF(WITH_CUSTOM_WIDGETS)
-
 # Plugin utilities files to copy to staging or install
 SET(PY_FILES
   __init__.py
