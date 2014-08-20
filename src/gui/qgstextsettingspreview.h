@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgslabelpreview.h
+    qgstextsettingspreview.h
     ---------------------
     begin                : May 2010
     copyright            : (C) 2010 by Marco Hugentobler
@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSLABELPREVIEW_H
-#define QGSLABELPREVIEW_H
+#ifndef QGSTEXTSETTINGSPREVIEW_H
+#define QGSTEXTSETTINGSPREVIEW_H
 
 #include "qgstextrenderer.h"
 
@@ -21,11 +21,11 @@
 
 class QgsRenderContext;
 
-class GUI_EXPORT QgsLabelPreview : public QLabel
+class GUI_EXPORT QgsTextSettingsPreview : public QLabel
 {
   public:
-    QgsLabelPreview( QWidget* parent = NULL );
-    ~QgsLabelPreview();
+    QgsTextSettingsPreview( QWidget* parent = NULL );
+    ~QgsTextSettingsPreview();
 
     void paintEvent( QPaintEvent* e );
 
@@ -40,4 +40,4 @@ class GUI_EXPORT QgsLabelPreview : public QLabel
     QgsRenderContext* mContext;
 };
 
-#endif // LABELPREVIEW_H
+#endif // QGSTEXTSETTINGSPREVIEW_H

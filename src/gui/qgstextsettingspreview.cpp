@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgslabelpreview.cpp
+    qgstextsettingspreview.cpp
     ---------------------
     begin                : May 2010
     copyright            : (C) 2010 by Marco Hugentobler
@@ -12,12 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgslabelpreview.h"
+#include "qgstextsettingspreview.h"
 
 #include <QPainter>
 #include <QFontMetrics>
 
-QgsLabelPreview::QgsLabelPreview( QWidget* parent )
+QgsTextSettingsPreview::QgsTextSettingsPreview( QWidget* parent )
     : QLabel( parent )
 {
   // construct a device-based render context
@@ -29,12 +29,12 @@ QgsLabelPreview::QgsLabelPreview( QWidget* parent )
   mContext->setUseAdvancedEffects( true );
 }
 
-QgsLabelPreview::~QgsLabelPreview()
+QgsTextSettingsPreview::~QgsTextSettingsPreview()
 {
   delete mContext;
 }
 
-void QgsLabelPreview::paintEvent( QPaintEvent *e )
+void QgsTextSettingsPreview::paintEvent( QPaintEvent *e )
 {
   Q_UNUSED( e );
   QPainter p( this );
@@ -59,13 +59,13 @@ void QgsLabelPreview::paintEvent( QPaintEvent *e )
   QgsTextRenderer::drawText( QRectF( xtrans, fm.ascent() + 4, width() - xtrans, height()), 0, text(), *mContext, mTextSettings );
 }
 
-void QgsLabelPreview::setTextRendererSettings(const QgsTextRendererSettings &textSettings)
+void QgsTextSettingsPreview::setTextRendererSettings(const QgsTextRendererSettings &textSettings)
 {
     mTextSettings = QgsTextRendererSettings( textSettings );
     update();
 }
 
-void QgsLabelPreview::setMapUnitScale(const double scale)
+void QgsTextSettingsPreview::setMapUnitScale(const double scale)
 {
     QgsMapToPixel newCoordXForm;
     newCoordXForm.setParameters( scale, 0, 0, 0 );
