@@ -174,7 +174,7 @@ void QgsRelationReferenceWidget::setRelationEditable( bool editable )
 
 void QgsRelationReferenceWidget::setRelatedFeature( const QVariant& value )
 {
-  QgsFeatureId fid = mFidFkMap.key( value );
+  const QgsFeatureId fid = mFidFkMap.key( value );
   if ( mReferencedLayer )
     setRelatedFeature( fid );
 }

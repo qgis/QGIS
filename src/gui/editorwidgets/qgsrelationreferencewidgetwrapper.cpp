@@ -36,7 +36,9 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
 {
   QgsRelationReferenceWidget* w = dynamic_cast<QgsRelationReferenceWidget*>( editor );
   if ( !w )
-    return;
+  {
+    w = new QgsRelationReferenceWidget( editor );
+  }
 
   mWidget = w;
 
