@@ -275,6 +275,7 @@ Depends:
  gdal-bin,
  python-gdal,
  python-matplotlib,
+ libqgis-customwidgets{QGIS_ABI},
  ${python:Depends},
  ${misc:Depends},
  ${sip:Depends}
