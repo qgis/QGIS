@@ -72,6 +72,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/editorwidgets/
   # ${CMAKE_CURRENT_BINARY_DIR}/../ui (no UI file yet)
+  ${GEOS_INCLUDE_DIR}
 )
 
 #############################################################

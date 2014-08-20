@@ -29,7 +29,7 @@ class QgisCustomWidgets : public QObject, public QDesignerCustomWidgetCollection
 
     virtual QList<QDesignerCustomWidgetInterface*> customWidgets() const;
 
-    static QString groupName() {return "QGIS custom widgets";}
+    static QString groupName() { return tr( "QGIS custom widgets" ); }
 
   private:
     QList<QDesignerCustomWidgetInterface*> mWidgets;
