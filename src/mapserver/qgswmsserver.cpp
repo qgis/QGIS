@@ -512,6 +512,21 @@ QDomDocument QgsWMSServer::getContext()
   return doc;
 }
 
+
+static QgsLayerTreeModelLegendNode* _findLegendNodeForRule( QgsLayerTreeModel* legendModel, const QString& rule )
+{
+  foreach ( QgsLayerTreeLayer* nodeLayer, legendModel->rootGroup()->findLayers() )
+  {
+    foreach ( QgsLayerTreeModelLegendNode* legendNode, legendModel->layerLegendNodes( nodeLayer ) )
+    {
+      if ( legendNode->data( Qt::DisplayRole ).toString() == rule )
+        return legendNode;
+    }
+  }
+  return 0;
+}
+
+
 QImage* QgsWMSServer::getLegendGraphics()
 {
   if ( !mConfigParser || !mMapRenderer )
@@ -604,8 +619,9 @@ QImage* QgsWMSServer::getLegendGraphics()
 
   QList<QgsLayerTreeNode*> rootChildren = rootGroup.children();
 
-  // TODO: handle scale, rule
-  //legendModel.setLayerSet( layerIds, scaleDenominator, rule );
+  // TODO: scale
+  //if ( scaleDenominator > 0 )
+  //  legendModel.setLegendFilterByScale( scaleDenominator );
 
   // find out DPI
   QImage* tmpImage = createImage( 1, 1 );
@@ -638,18 +654,15 @@ QImage* QgsWMSServer::getLegendGraphics()
     p.setRenderHint( QPainter::Antialiasing, true );
     p.scale( dpmm, dpmm );
 
-    if ( rootChildren.count() != 0 && QgsLayerTree::isLayer( rootChildren[0] ) )
+    QgsLayerTreeModelLegendNode* legendNode = _findLegendNodeForRule( &legendModel, rule );
+    if ( legendNode )
     {
-      QList<QgsLayerTreeModelLegendNode*> legendNodes = legendModel.layerLegendNodes( QgsLayerTree::toLayer( rootChildren[0] ) );
-      if ( legendNodes.count() != 0 )
-      {
-        QgsLayerTreeModelLegendNode::ItemContext ctx;
-        ctx.painter = &p;
-        ctx.labelXOffset = 0;
-        ctx.point = QPointF();
-        double itemHeight = ruleSymbolHeight / dpmm;
-        legendNodes[0]->drawSymbol( legendSettings, &ctx, itemHeight );
-      }
+      QgsLayerTreeModelLegendNode::ItemContext ctx;
+      ctx.painter = &p;
+      ctx.labelXOffset = 0;
+      ctx.point = QPointF();
+      double itemHeight = ruleSymbolHeight / dpmm;
+      legendNode->drawSymbol( legendSettings, &ctx, itemHeight );
     }
 
     QgsMapLayerRegistry::instance()->removeAllMapLayers();
@@ -669,7 +682,7 @@ QImage* QgsWMSServer::getLegendGraphics()
       {
         foreach ( QgsLayerTreeModelLegendNode* legendNode, legendModel.layerLegendNodes( nodeLayer ) )
         {
-          // TODO legendNode->setUserText( " " ); // empty string = no override, so let's use one space
+          legendNode->setUserLabel( " " ); // empty string = no override, so let's use one space
         }
       }
     }
