@@ -108,9 +108,10 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
   mAttributeEditorFrame->setLayout( mAttributeEditorLayout );
   mTopLayout->addWidget( mAttributeEditorFrame );
 
-  // default mode is combobox, non geometric relation and no embed form
+  // default mode is combobox, no geometric relation and no embed form
   mLineEdit->hide();
   mMapIdentificationButton->hide();
+  mHighlightFeatureButton->hide();
   mAttributeEditorFrame->hide();
 }
 
