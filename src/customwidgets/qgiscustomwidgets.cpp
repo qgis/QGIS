@@ -19,10 +19,12 @@
 
 #include "qgscollapsiblegroupboxplugin.h"
 #include "qgscolorbuttonplugin.h"
+#include "qgscolorbuttonv2plugin.h"
 #include "qgsdatadefinedbuttonplugin.h"
 #include "qgsfieldcomboboxplugin.h"
 #include "qgsfieldexpressionwidgetplugin.h"
 #include "qgsmaplayercomboboxplugin.h"
+#include "qgsrelationreferencewidgetplugin.h"
 #include "qgsscalerangewidgetplugin.h"
 
 
@@ -31,10 +33,12 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
 {
   mWidgets.append( new QgsCollapsibleGroupBoxPlugin );
   mWidgets.append( new QgsColorButtonPlugin );
+  mWidgets.append( new QgsColorButtonV2Plugin );
   mWidgets.append( new QgsDataDefinedButtonPlugin );
   mWidgets.append( new QgsFieldComboBoxPlugin );
   mWidgets.append( new QgsFieldExpressionWidgetPlugin );
   mWidgets.append( new QgsMapLayerComboBoxPlugin );
+  mWidgets.append( new QgsRelationReferenceWidgetPlugin );
   mWidgets.append( new QgsScaleRangeWidgetPlugin );
 }
 

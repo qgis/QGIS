@@ -71,7 +71,7 @@ void QgsRelationReferenceWidgetPlugin::initialize( QDesignerFormEditorInterface 
 
 QString QgsRelationReferenceWidgetPlugin::toolTip() const
 {
-  return "Select color";
+  return "Relation reference";
 }
 
 QString QgsRelationReferenceWidgetPlugin::whatsThis() const
@@ -82,7 +82,7 @@ QString QgsRelationReferenceWidgetPlugin::whatsThis() const
 QString QgsRelationReferenceWidgetPlugin::domXml() const
 {
   return QString( "<ui language=\"c++\">\n"
-                  " <widget class=\"%1\" name=\"mColorButton\">\n"
+                  " <widget class=\"%1\" name=\"mRelationReference\">\n"
                   "  <property name=\"geometry\">\n"
                   "   <rect>\n"
                   "    <x>0</x>\n"
