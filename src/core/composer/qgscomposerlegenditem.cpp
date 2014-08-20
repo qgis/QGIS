@@ -171,24 +171,8 @@ void QgsComposerSymbolV2Item::readXML( const QDomElement& itemElem, bool xServer
     return;
   }
 
-  mItem.setLabel( itemElem.attribute( "text", "" ) );
   setUserText( itemElem.attribute( "userText", "" ) );
   QDomElement symbolsElem = itemElem.firstChildElement( "symbols" );
-  if ( !symbolsElem.isNull() )
-  {
-    QgsSymbolV2Map loadSymbolMap = QgsSymbolLayerV2Utils::loadSymbols( symbolsElem );
-    //we assume there is only one symbol in the map...
-    QgsSymbolV2Map::iterator mapIt = loadSymbolMap.begin();
-    if ( mapIt != loadSymbolMap.end() )
-    {
-      QgsSymbolV2* symbolNg = mapIt.value();
-      if ( symbolNg )
-      {
-        mItem.setSymbol( symbolNg );
-      }
-    }
-    qDeleteAll( loadSymbolMap );
-  }
 }
 
 void QgsComposerSymbolV2Item::setSymbolV2( QgsSymbolV2* s )

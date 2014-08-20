@@ -9,33 +9,43 @@ class QgsSymbolV2;
  * The class stores information about one class/rule of a vector layer renderer in a unified way
  * that can be used by legend model for rendering of legend.
  *
+ * @see QgsSymbolV2LegendNode
  * @note added in 2.6
  */
 class CORE_EXPORT QgsLegendSymbolItemV2
 {
   public:
     QgsLegendSymbolItemV2();
-    //! construct item, does not take ownership of symbol (makes internal clone)
+    //! Construct item. Does not take ownership of symbol (makes internal clone)
     QgsLegendSymbolItemV2( QgsSymbolV2* symbol, const QString& label, const QString& ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1 );
     ~QgsLegendSymbolItemV2();
     QgsLegendSymbolItemV2( const QgsLegendSymbolItemV2& other );
     QgsLegendSymbolItemV2& operator=( const QgsLegendSymbolItemV2& other );
 
+    //! Return associated symbol. May be null.
     QgsSymbolV2* symbol() const { return mSymbol; }
+    //! Return text label
     QString label() const { return mLabel; }
+    //! Return unique identifier of the rule for identification of the item within renderer
     QString ruleKey() const { return mKey; }
+    //! Return whether the item is user-checkable - whether renderer supports enabling/disabling it
     bool isCheckable() const { return mCheckable; }
 
-    //! used for older code that identifies legend entries from symbol pointer within renderer
+    //! Used for older code that identifies legend entries from symbol pointer within renderer
     QgsSymbolV2* legacyRuleKey() const { return mOriginalSymbolPointer; }
 
+    //! Determine whether given scale is within the scale range. Returns true if scale or scale range is invalid (value <= 0)
     bool isScaleOK( double scale ) const;
+    //! Min scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 1000.
+    //! Value <= 0 means the range is unbounded on this side
     int scaleMinDenom() const { return mScaleMinDenom; }
+    //! Max scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 2000.
+    //! Value <= 0 means the range is unbounded on this side
     int scaleMaxDenom() const { return mScaleMaxDenom; }
 
-    //! takes ownership of symbol
+  protected:
+    //! Set symbol of the item. Takes ownership of symbol.
     void setSymbol( QgsSymbolV2* s );
-    void setLabel( const QString& label ) { mLabel = label; }
 
   private:
     //! symbol. owned by the struct. can be null.
