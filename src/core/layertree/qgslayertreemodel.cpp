@@ -43,9 +43,10 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *pare
 
 QgsLayerTreeModel::~QgsLayerTreeModel()
 {
-  foreach ( QList<QgsLayerTreeModelLegendNode*> nodeL, mSymbologyNodes )
+  foreach ( QList<QgsLayerTreeModelLegendNode*> nodeL, mOriginalSymbologyNodes )
     qDeleteAll( nodeL );
-  mSymbologyNodes.clear();
+  mOriginalSymbologyNodes.clear();
+  mSymbologyNodes.clear(); // does not own the nodes
 }
 
 QgsLayerTreeNode* QgsLayerTreeModel::index2node( const QModelIndex& index ) const
@@ -458,6 +459,7 @@ void QgsLayerTreeModel::setRootGroup( QgsLayerTreeGroup* newRootGroup )
   disconnectFromRootNode();
 
   Q_ASSERT( mSymbologyNodes.isEmpty() );
+  Q_ASSERT( mOriginalSymbologyNodes.isEmpty() );
 
   mRootNode = newRootGroup;
 
@@ -539,6 +541,16 @@ QFont QgsLayerTreeModel::layerTreeNodeFont( int nodeType ) const
     QgsDebugMsg( "invalid node type" );
     return QFont();
   }
+}
+
+void QgsLayerTreeModel::setLegendFilterByScale( double scaleDenominator )
+{
+  mLegendFilterByScale = scaleDenominator;
+
+  // this could be later done in more efficient way
+  // by just updating active legend nodes, without refreshing original legend nodes
+  foreach ( QgsLayerTreeLayer* nodeLayer, mRootNode->findLayers() )
+    refreshLayerSymbology( nodeLayer );
 }
 
 void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo )
@@ -664,7 +676,8 @@ void QgsLayerTreeModel::removeSymbologyFromLayer( QgsLayerTreeLayer* nodeLayer )
 {
   if ( mSymbologyNodes.contains( nodeLayer ) )
   {
-    qDeleteAll( mSymbologyNodes[nodeLayer] );
+    qDeleteAll( mOriginalSymbologyNodes[nodeLayer] );
+    mOriginalSymbologyNodes.remove( nodeLayer );
     mSymbologyNodes.remove( nodeLayer );
   }
 }
@@ -681,12 +694,15 @@ void QgsLayerTreeModel::addSymbologyToLayer( QgsLayerTreeLayer* nodeL )
 
   QList<QgsLayerTreeModelLegendNode*> lstNew = layerLegend->createLayerTreeModelLegendNodes( nodeL );
 
-  beginInsertRows( node2index( nodeL ), 0, lstNew.count() - 1 );
+  QList<QgsLayerTreeModelLegendNode*> filteredLstNew = filterLegendNodes( lstNew );
+
+  beginInsertRows( node2index( nodeL ), 0, filteredLstNew.count() - 1 );
 
   foreach ( QgsLayerTreeModelLegendNode* n, lstNew )
     n->setParent( nodeL );
 
-  mSymbologyNodes[nodeL] = lstNew;
+  mOriginalSymbologyNodes[nodeL] = lstNew;
+  mSymbologyNodes[nodeL] = filteredLstNew;
 
   endInsertRows();
 }
@@ -953,4 +969,17 @@ const QIcon& QgsLayerTreeModel::iconGroup()
     icon = QgsApplication::getThemeIcon( "/mActionFolder.png" );
 
   return icon;
+}
+
+QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::filterLegendNodes( const QList<QgsLayerTreeModelLegendNode*>& nodes )
+{
+  QList<QgsLayerTreeModelLegendNode*> filtered;
+  foreach ( QgsLayerTreeModelLegendNode* node, nodes )
+  {
+    if ( mLegendFilterByScale > 0 && !node->isScaleOK( mLegendFilterByScale ) )
+      continue;
+
+    filtered << node;
+  }
+  return filtered;
 }

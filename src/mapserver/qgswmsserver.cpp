@@ -619,9 +619,8 @@ QImage* QgsWMSServer::getLegendGraphics()
 
   QList<QgsLayerTreeNode*> rootChildren = rootGroup.children();
 
-  // TODO: scale
-  //if ( scaleDenominator > 0 )
-  //  legendModel.setLegendFilterByScale( scaleDenominator );
+  if ( scaleDenominator > 0 )
+    legendModel.setLegendFilterByScale( scaleDenominator );
 
   // find out DPI
   QImage* tmpImage = createImage( 1, 1 );

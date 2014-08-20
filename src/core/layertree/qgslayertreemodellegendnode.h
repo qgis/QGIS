@@ -58,6 +58,8 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     virtual QString userLabel() const { return mUserLabel; }
     virtual void setUserLabel( const QString& userLabel ) { mUserLabel = userLabel; }
 
+    virtual bool isScaleOK( double scale ) const { Q_UNUSED( scale ); return true; }
+
     struct ItemContext
     {
       //! Painter
@@ -132,6 +134,8 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
     virtual void setEmbeddedInParent( bool embedded );
 
     void setUserLabel( const QString& userLabel ) { mUserLabel = userLabel; updateLabel(); }
+
+    virtual bool isScaleOK( double scale ) const { return mItem.isScaleOK( scale ); }
 
   private:
     void updateLabel();

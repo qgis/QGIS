@@ -137,6 +137,12 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Return at what number of symbology nodes the layer node should be collapsed. -1 means no auto-collapse (default).
     int autoCollapseSymbologyNodes() const { return mAutoCollapseSymNodesCount; }
 
+    //! Force only display of legend nodes which are valid for given scale denominator.
+    //! Setting value <= 0 will disable the functionality
+    //! @note added in 2.6
+    void setLegendFilterByScale( double scaleDenominator );
+    double legendFilterByScale() const { return mLegendFilterByScale; }
+
   signals:
 
   protected slots:
@@ -172,13 +178,20 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     static const QIcon& iconGroup();
 
+    //! Filter nodes from QgsMapLayerLegend according to the current filtering rules
+    QList<QgsLayerTreeModelLegendNode*> filterLegendNodes( const QList<QgsLayerTreeModelLegendNode*>& nodes );
+
   protected:
     //! Pointer to the root node of the layer tree. Not owned by the model
     QgsLayerTreeGroup* mRootNode;
     //! Set of flags for the model
     Flags mFlags;
-    //! Data structure for storage of symbology nodes for each layer
+    //! Active symbology nodes for each layer node. May have been filtered.
+    //! Owner of legend nodes is still mOriginalSymbologyNodes !
     QMap<QgsLayerTreeLayer*, QList<QgsLayerTreeModelLegendNode*> > mSymbologyNodes;
+    //! Data structure for storage of symbology nodes for each layer.
+    //! These are nodes as received from QgsMapLayerLegend
+    QMap<QgsLayerTreeLayer*, QList<QgsLayerTreeModelLegendNode*> > mOriginalSymbologyNodes;
     //! Current index - will be underlined
     QPersistentModelIndex mCurrentIndex;
     //! Minimal number of nodes when symbology should be automatically collapsed. -1 = disabled
@@ -186,6 +199,9 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     QFont mFontLayer;
     QFont mFontGroup;
+
+    //! scale denominator for filtering of legend nodes (<= 0 means no filtering)
+    double mLegendFilterByScale;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayerTreeModel::Flags )
