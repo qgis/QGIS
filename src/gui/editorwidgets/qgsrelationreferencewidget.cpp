@@ -111,6 +111,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
   // default mode is combobox, non geometric relation and no embed form
   mLineEdit->hide();
   mMapIdentificationButton->hide();
+  mAttributeEditorFrame->hide();
 }
 
 QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
@@ -236,18 +237,21 @@ void QgsRelationReferenceWidget::setEditorContext( QgsAttributeEditorContext con
 void QgsRelationReferenceWidget::setEmbedForm( bool display )
 {
   mAttributeEditorFrame->setVisible( display );
+  mEmbedForm = display;
 }
 
 void QgsRelationReferenceWidget::setReadOnlySelector( bool readOnly )
 {
   mComboBox->setHidden( readOnly );
   mLineEdit->setVisible( readOnly );
+  mReadOnlySelector = readOnly;
 }
 
 void QgsRelationReferenceWidget::setAllowMapIdentification( bool allowMapIdentification )
 {
   mHighlightFeatureButton->setVisible( allowMapIdentification );
   mMapIdentificationButton->setVisible( allowMapIdentification );
+  mAllowMapIdentification = allowMapIdentification;
 }
 
 void QgsRelationReferenceWidget::highlightActionTriggered( QAction* action )
