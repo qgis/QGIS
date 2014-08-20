@@ -208,6 +208,7 @@ cd ..
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' postinstall-dev.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%.bat
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' preremove-desktop.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%.bat
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' designer-qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\designer-%PACKAGENAME%.bat.tmpl
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' browser.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser.bat.tmpl
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' qgis.reg.tmpl >%OSGEO4W_ROOT%\apps\%PACKAGENAME%\bin\qgis.reg.tmpl
 
@@ -221,6 +222,13 @@ touch exclude
 move %PKGDIR%\bin\qgis.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.exe
 move %PKGDIR%\bin\qbrowser.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-bin.exe
 
+if not exist %OSGEO4W_ROOT%\apps\%PACKAGENAME%\qtplugins\sqldrivers mkdir %OSGEO4W_ROOT%\apps\%PACKAGENAME%\qtplugins\sqldrivers
+move %PKGDIR%\qt4\plugins\sqldrivers\qsqlocispatial.dll %OSGEO4W_ROOT%\apps\%PACKAGENAME%\qtplugins\sqldrivers
+move %PKGDIR%\qt4\plugins\sqldrivers\qsqlspatiallite.dll %OSGEO4W_ROOT%\apps\%PACKAGENAME%\qtplugins\sqldrivers
+
+if not exist %OSGEO4W_ROOT%\apps\%PACKAGENAME%\qtplugins\designer mkdir %OSGEO4W_ROOT%\apps\%PACKAGENAME%\qtplugins\designer
+move %PKGDIR%\qt4\plugins\designer\qgis_customwidgets.dll %OSGEO4W_ROOT%\apps\%PACKAGENAME%\qtplugins\designer
+
 if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAGENAME%
 tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
@@ -229,9 +237,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	bin/%PACKAGENAME%-browser-bin.exe ^
 	bin/%PACKAGENAME%.bat.tmpl ^
 	bin/%PACKAGENAME%-browser.bat.tmpl ^
-	apps/qt4/plugins/sqldrivers/qsqlocispatial.dll ^
-	apps/qt4/plugins/sqldrivers/qsqlspatialite.dll ^
-	apps/qt4/plugins/designer/qgis_customwidgets.dll ^
+	bin/designer-%PACKAGENAME%.bat.tmpl ^
 	etc/postinstall/%PACKAGENAME%.bat ^
 	etc/preremove/%PACKAGENAME%.bat
 if errorlevel 1 (echo tar failed & goto error)
