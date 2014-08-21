@@ -150,7 +150,10 @@
          <property name="text">
           <string>Add saved file to map</string>
          </property>
-        </widget>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+         </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
