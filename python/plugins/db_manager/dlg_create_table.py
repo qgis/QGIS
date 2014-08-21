@@ -284,7 +284,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 			try:
 				geomSrid = int(self.editGeomSrid.text())
 			except ValueError:
-				geomSrid = -1
+				geomSrid = 0
 			useSpatialIndex = self.chkSpatialIndex.isChecked()
 
 		flds = m.getFields()

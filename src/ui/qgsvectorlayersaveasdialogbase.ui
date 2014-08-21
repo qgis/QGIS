@@ -150,6 +150,9 @@
          <property name="text">
           <string>Add saved file to map</string>
          </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item>
