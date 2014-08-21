@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsclipper.h"
+#include "qgsgeometry.h"
 
 // Where has all the code gone?
 
@@ -37,16 +38,13 @@ const double QgsClipper::SMALL_NUM = 1e-12;
 
 const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const QgsRectangle& clipExtent, QPolygonF& line )
 {
-  wkb++; // jump over endian info
-  unsigned int wkbType = *(( int* ) wkb );
-  wkb += sizeof( unsigned int );
-  unsigned int nPoints = *(( int* ) wkb );
-  wkb += sizeof( unsigned int );
+  QgsConstWkbPtr wkbPtr( wkb + 1 );
+
+  unsigned int wkbType, nPoints;
+
+  wkbPtr >> wkbType >> nPoints;
 
   bool hasZValue = ( wkbType == QGis::WKBLineString25D );
-
-  int sizeOfDoubleX = sizeof( double );
-  int sizeOfDoubleY = hasZValue ? 2 * sizeof( double ) : sizeof( double );
 
   double p0x, p0y, p1x = 0.0, p1y = 0.0; //original coordinates
   double p1x_c, p1y_c; //clipped end coordinates
@@ -59,8 +57,9 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
   {
     if ( i == 0 )
     {
-      memcpy( &p1x, wkb, sizeof( double ) ); wkb += sizeOfDoubleX;
-      memcpy( &p1y, wkb, sizeof( double ) ); wkb += sizeOfDoubleY;
+      wkbPtr >> p1x >> p1y;
+      if ( hasZValue )
+        wkbPtr += sizeof( double );
 
       continue;
     }
@@ -69,8 +68,9 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
       p0x = p1x;
       p0y = p1y;
 
-      memcpy( &p1x, wkb, sizeof( double ) ); wkb += sizeOfDoubleX;
-      memcpy( &p1y, wkb, sizeof( double ) ); wkb += sizeOfDoubleY;
+      wkbPtr >> p1x >> p1y;
+      if ( hasZValue )
+        wkbPtr += sizeof( double );
 
       p1x_c = p1x; p1y_c = p1y;
       if ( clipLineSegment( clipExtent.xMinimum(), clipExtent.xMaximum(), clipExtent.yMinimum(), clipExtent.yMaximum(),
@@ -94,7 +94,7 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
       }
     }
   }
-  return wkb;
+  return wkbPtr;
 }
 
 void QgsClipper::connectSeparatedLines( double x0, double y0, double x1, double y1,
