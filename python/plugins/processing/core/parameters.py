@@ -368,11 +368,11 @@ class ParameterNumber(Parameter):
             self.default = float(default)
             self.isInteger = False
         if minValue is not None:
-            self.min = int(minValue) if self.isInteger else float(minValue)
+            self.min = int(float(minValue)) if self.isInteger else float(minValue)
         else:
             self.min = None
         if maxValue is not None:
-            self.max = int(maxValue) if self.isInteger else float(maxValue)
+            self.max = int(float(maxValue)) if self.isInteger else float(maxValue)
         else:
             self.max = None
         self.value = None
