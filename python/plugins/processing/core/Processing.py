@@ -16,7 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.modeler.ModelerUtils import ModelerUtils
+
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -32,6 +32,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 import processing
 from qgis.utils import iface
+from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -138,7 +139,7 @@ class Processing:
         Processing.addProvider(Grass7AlgorithmProvider())
         Processing.addProvider(ScriptAlgorithmProvider())
         Processing.addProvider(TauDEMAlgorithmProvider())
-        Processing.addProvider(ModelerAlgorithmProvider())
+        Processing.addProvider(Processing.modeler)
         Processing.modeler.initializeSettings()
 
         # And initialize
@@ -166,7 +167,8 @@ class Processing:
 
     @staticmethod
     def updateProviders():
-        for provider in Processing.providers:
+        providers = [p for p in Processing.providers if p.getName() != "model"]
+        for provider in providers:
             provider.loadAlgorithms()
 
     @staticmethod
@@ -188,7 +190,8 @@ class Processing:
     def loadAlgorithms():
         Processing.algs = {}
         Processing.updateProviders()
-        for provider in Processing.providers:
+        providers = [p for p in Processing.providers if p.getName() != "model"]
+        for provider in providers:
             providerAlgs = provider.algs
             algs = {}
             for alg in providerAlgs:
@@ -198,8 +201,17 @@ class Processing:
         provs = {}
         for provider in Processing.providers:
             provs[provider.getName()] = provider
+
         ModelerUtils.allAlgs = Processing.algs
         ModelerUtils.providers = provs
+
+        Processing.modeler.loadAlgorithms()
+
+        algs = {}
+        for alg in Processing.modeler.algs:
+            algs[alg.commandLineName()] = alg
+        Processing.algs[Processing.modeler.getName()] = algs
+
 
     @staticmethod
     def loadActions():

@@ -316,16 +316,13 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                            self.tr('Processing models (*.model)')))
         if filename:
             try:
-                alg = ModelerAlgorithm.fromJsonFile(filename)
+                alg = ModelerAlgorithm.fromFile(filename)
                 self.alg = alg
                 self.alg.setModelerView(self)
                 self.textGroup.setText(alg.group)
                 self.textName.setText(alg.name)
                 self.repaintModel()
-                #===============================================================
-                # if self.scene.getLastAlgorithmItem():
-                #     self.view.ensureVisible(self.scene.getLastAlgorithmItem())
-                #===============================================================
+
                 self.view.centerOn(0, 0)
                 self.hasChanged = False
             except WrongModelException, e:

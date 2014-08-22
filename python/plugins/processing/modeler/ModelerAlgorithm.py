@@ -18,6 +18,7 @@
 """
 
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -31,6 +32,8 @@ import sys
 import copy
 import time
 import json
+import codecs
+import traceback
 from PyQt4 import QtCore, QtGui
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -41,6 +44,8 @@ from processing.gui.Help2Html import  getHtmlFromHelpFile
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.parameters import *
 from processing.tools import dataobjects
+from processing.core.parameters import getParameterFromString
+
 
 
 class ModelerParameter():
@@ -523,4 +528,116 @@ class ModelerAlgorithm(GeoAlgorithm):
         alg = ModelerAlgorithm.fromJson(s)
         alg.descriptionFile = filename
         return alg
+
+
+    ############LEGACY METHOD TO SUPPORT OLD FORMAT###########
+
+    LINE_BREAK_STRING = '%%%'
+
+    @staticmethod
+    def fromFile(filename):
+        try:
+            alg = ModelerAlgorithm.fromJsonFile(filename)
+            return alg
+        except WrongModelException, e:
+            alg = ModelerAlgorithm.fromOldFormatFile(filename)
+            return alg
+
+
+    @staticmethod
+    def fromOldFormatFile(filename):
+        hardcodedValues = {}
+        modelParameters = []
+        modelAlgs = []
+        model = ModelerAlgorithm()
+        model.descriptionFile = filename
+        lines = codecs.open(filename, 'r', encoding='utf-8')
+        line = lines.readline().strip('\n').strip('\r')
+        try:
+            while line != '':
+                if line.startswith('PARAMETER:'):
+                    paramLine = line[len('PARAMETER:'):]
+                    param = getParameterFromString(paramLine)
+                    if param:
+                        pass
+                    else:
+                        raise WrongModelException('Error in parameter line: '
+                                + line)
+                    line = lines.readline().strip('\n')
+                    tokens = line.split(',')
+                    model.addParameter(ModelerParameter(param, QtCore.QPointF(
+                                            float(tokens[0]), float(tokens[1]))))
+                    modelParameters.append(param.name)
+                elif line.startswith('VALUE:'):
+                    valueLine = line[len('VALUE:'):]
+                    tokens = valueLine.split('===')
+                    name = tokens[0]
+                    value = tokens[1].replace(ModelerAlgorithm.LINE_BREAK_STRING, '\n')
+                    hardcodedValues[name] = value
+                elif line.startswith('NAME:'):
+                    model.name = line[len('NAME:'):]
+                elif line.startswith('GROUP:'):
+                    model.group = line[len('GROUP:'):]
+                elif line.startswith('ALGORITHM:'):
+                    algLine = line[len('ALGORITHM:'):]
+                    alg = ModelerUtils.getAlgorithm(algLine)
+                    if alg is not None:
+                        modelAlg = Algorithm(alg.commandLineName())
+                        modelAlg.description = alg.name
+                        posline = lines.readline().strip('\n').strip('\r')
+                        tokens = posline.split(',')
+                        modelAlg.pos = QtCore.QPointF(float(tokens[0]), float(tokens[1]))
+                        dependenceline = lines.readline().strip('\n').strip('\r') #unused
+                        for param in alg.parameters:
+                            if not param.hidden:
+                                line = lines.readline().strip('\n').strip('\r')
+                                if line == str(None):
+                                    modelAlg.params[param.name]  = None
+                                else:
+                                    tokens = line.split('|')
+                                    algIdx = int(tokens[0])
+                                    if algIdx == -1:
+                                        if tokens[1] in modelParameters:
+                                            modelAlg.params[param.name] = ValueFromInput(tokens[1])
+                                        else:
+                                            modelAlg.params[param.name] = hardcodedValues[tokens[1]]
+                                    else:
+                                        modelAlg.params[param.name] = ValueFromOutput(algIdx, tokens[1])
+
+                        for out in alg.outputs:
+                            if not out.hidden:
+                                line = lines.readline().strip('\n').strip('\r')
+                                if str(None) != line:
+                                    if '|' in line:
+                                        tokens = line.split('|')
+                                        name = tokens[0]
+                                        tokens = tokens[1].split(',')
+                                        pos = QtCore.QPointF(
+                                                float(tokens[0]), float(tokens[1]))
+                                    else:
+                                        name = line
+                                        pos = None
+                                    modelerOutput = ModelerOutput(name)
+                                    modelerOutput.pos = pos
+                                    modelAlg.outputs[out.name] = modelerOutput
+
+                        model.addAlgorithm(modelAlg)
+                        modelAlgs.append(modelAlg.name)
+                    else:
+                        raise WrongModelException('Error in algorithm name: '
+                                + algLine)
+                line = lines.readline().strip('\n').strip('\r')
+            for modelAlg in model.algs.values():
+                for name, value in modelAlg.params.iteritems():
+                    if isinstance(value, ValueFromOutput):
+                        value.alg = modelAlgs[value.alg]
+            return model
+        except Exception, e:
+            if isinstance(e, WrongModelException):
+                raise e
+            else:
+                raise WrongModelException('Error in model definition line:'
+                        + line.strip() + ' : ' + traceback.format_exc())
+
+
 

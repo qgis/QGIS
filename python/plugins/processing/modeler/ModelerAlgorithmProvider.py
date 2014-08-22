@@ -81,10 +81,9 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
                 if descriptionFile.endswith('model'):
                     try:
                         fullpath = os.path.join(path, descriptionFile)
-                        alg = ModelerAlgorithm.fromJsonFile(fullpath)
-                        if alg:
-                            alg.provider = self
-                            self.algs.append(alg)
+                        alg = ModelerAlgorithm.fromFile(fullpath)
+                        alg.provider = self
+                        self.algs.append(alg)
                     except WrongModelException, e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
 	                            'Could not load model ' + descriptionFile + '\n'
