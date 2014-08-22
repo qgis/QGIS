@@ -2005,6 +2005,11 @@
                     </column>
                     <column>
                      <property name="text">
+                      <string>Geometry precision (decimal places)</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
                       <string>Update</string>
                      </property>
                     </column>

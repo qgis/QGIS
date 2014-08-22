@@ -379,7 +379,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   QSignalMapper *smDelete = new QSignalMapper( this );
   connect( smDelete, SIGNAL( mapped( int ) ), this, SLOT( cbxWFSDeleteStateChanged( int ) ) );
 
-  twWFSLayers->setColumnCount( 5 );
+  twWFSLayers->setColumnCount( 6 );
   twWFSLayers->horizontalHeader()->setVisible( true );
   twWFSLayers->setRowCount( mapLayers.size() );
 
@@ -405,6 +405,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
       smPublied->setMapping( cbp, j );
       connect( cbp, SIGNAL( stateChanged( int ) ), smPublied, SLOT( map() ) );
+      
+      QSpinBox* psb = new QSpinBox();
+      psb->setValue( QgsProject::instance()->readNumEntry( "WFSLayersPrecision", "/"+currentLayer->id(), 8 ) );
+      twWFSLayers->setCellWidget( j, 2, psb );
 
       QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( currentLayer );
       QgsVectorDataProvider* provider = vlayer->dataProvider();
@@ -412,7 +416,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       {
         QCheckBox* cbu = new QCheckBox();
         cbu->setChecked( wfstUpdateLayerIdList.contains( currentLayer->id() ) );
-        twWFSLayers->setCellWidget( j, 2, cbu );
+        twWFSLayers->setCellWidget( j, 3, cbu );
 
         smUpdate->setMapping( cbu, j );
         connect( cbu, SIGNAL( stateChanged( int ) ), smUpdate, SLOT( map() ) );
@@ -421,7 +425,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       {
         QCheckBox* cbi = new QCheckBox();
         cbi->setChecked( wfstInsertLayerIdList.contains( currentLayer->id() ) );
-        twWFSLayers->setCellWidget( j, 3, cbi );
+        twWFSLayers->setCellWidget( j, 4, cbi );
 
         smInsert->setMapping( cbi, j );
         connect( cbi, SIGNAL( stateChanged( int ) ), smInsert, SLOT( map() ) );
@@ -430,7 +434,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       {
         QCheckBox* cbd = new QCheckBox();
         cbd->setChecked( wfstDeleteLayerIdList.contains( currentLayer->id() ) );
-        twWFSLayers->setCellWidget( j, 4, cbd );
+        twWFSLayers->setCellWidget( j, 5, cbd );
 
         smDelete->setMapping( cbd, j );
         connect( cbd, SIGNAL( stateChanged( int ) ), smDelete, SLOT( map() ) );
@@ -866,21 +870,25 @@ void QgsProjectProperties::apply()
     if ( cb && cb->isChecked() )
     {
       wfsLayerList << id;
-    }
-    cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 2 ) );
-    if ( cb && cb->isChecked() )
-    {
-      wfstUpdateLayerList << id;
-    }
-    cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 3 ) );
-    if ( cb && cb->isChecked() )
-    {
-      wfstInsertLayerList << id;
-    }
-    cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 4 ) );
-    if ( cb && cb->isChecked() )
-    {
-      wfstDeleteLayerList << id;
+      
+      QSpinBox* sb = qobject_cast<QSpinBox *>( twWFSLayers->cellWidget( i, 2 ) );
+      QgsProject::instance()->writeEntry( "WFSLayersPrecision", "/"+id, sb->value() );
+      
+      cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 3 ) );
+	  if ( cb && cb->isChecked() )
+	  {
+	    wfstUpdateLayerList << id;
+	  }
+	  cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 4 ) );
+	  if ( cb && cb->isChecked() )
+	  {
+	    wfstInsertLayerList << id;
+	  }
+	  cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 5 ) );
+	  if ( cb && cb->isChecked() )
+	  {
+	    wfstDeleteLayerList << id;
+	  }
     }
   }
   QgsProject::instance()->writeEntry( "WFSLayers", "/", wfsLayerList );

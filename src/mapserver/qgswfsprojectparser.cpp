@@ -457,6 +457,31 @@ QStringList QgsWFSProjectParser::wfsLayers() const
   return mProjectParser.wfsLayers();
 }
 
+int QgsWFSProjectParser::wfsLayerPrecision( const QString& aLayerId ) const
+{
+  QStringList wfsLayersId = mProjectParser.wfsLayers();
+  if ( !wfsLayersId.contains( aLayerId ) )
+  {
+	  return -1;
+  }
+  int prec = 8;
+  QDomElement propertiesElem = mProjectParser.propertiesElem();
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement wfsPrecElem = propertiesElem.firstChildElement( "WFSLayersPrecision" );
+    if ( !wfsPrecElem.isNull() )
+    {
+	  QDomElement wfsLayerPrecElem = wfsPrecElem.firstChildElement( aLayerId );
+      if ( !wfsLayerPrecElem.isNull() )
+      {
+        QString precStr = wfsLayerPrecElem.text();
+        prec = precStr.toInt();
+	  }
+    }
+  }
+  return prec;
+}
+
 QList<QgsMapLayer*> QgsWFSProjectParser::mapLayerFromTypeName( const QString& aTypeName, bool useCache ) const
 {
   Q_UNUSED( useCache );
