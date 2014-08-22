@@ -195,7 +195,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
   QSettings settings;
   if ( settings.value( "/qgis/showLegendClassifiers", false ).toBool() && !r->legendClassificationAttribute().isEmpty() )
   {
-    nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute(), "_class_attribute_" ) );
+    nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute() ) );
   }
 
   foreach ( const QgsLegendSymbolItemV2& i, r->legendSymbolItemsV2() )
@@ -252,7 +252,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultRasterLayerLegend::createLayerTree
     if ( count == max_count )
     {
       QString label = tr( "following %1 items\nnot displayed" ).arg( rasterItemList.size() - max_count );
-      nodes << new QgsSimpleLegendNode( nodeLayer, label, "_more_items_" );
+      nodes << new QgsSimpleLegendNode( nodeLayer, label );
       break;
     }
   }
@@ -279,11 +279,10 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultPluginLayerLegend::createLayerTree
   if ( symbologyList.count() == 0 )
     return nodes;
 
-  int i = 0;
   typedef QPair<QString, QPixmap> XY;
   foreach ( XY item, symbologyList )
   {
-    nodes << new QgsSimpleLegendNode( nodeLayer, item.first, QString::number( i++ ), QIcon( item.second ) );
+    nodes << new QgsSimpleLegendNode( nodeLayer, item.first, QIcon( item.second ) );
   }
 
   return nodes;

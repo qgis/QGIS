@@ -34,9 +34,12 @@ class QgsLegendRenderer;
 
 
 /** \ingroup MapComposer
- * Item model implementation based on layer tree model for composer legend
+ * Item model implementation based on layer tree model for composer legend.
+ * Overrides some functionality of QgsLayerTreeModel to better fit the needs of composer legend.
+ *
+ * @note added in 2.6
  */
-class QgsLegendModelV2 : public QgsLayerTreeModel
+class CORE_EXPORT QgsLegendModelV2 : public QgsLayerTreeModel
 {
   public:
     QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
@@ -71,7 +74,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void adjustBoxSize();
 
     /**Returns pointer to the legend model*/
-    QgsLegendModel* model() {return &mLegendModel;}
+    //! @note deprecated in 2.6 - use modelV2()
+    Q_DECL_DEPRECATED QgsLegendModel* model() {return &mLegendModel;}
 
     //! @note added in 2.6
     QgsLegendModelV2* modelV2() { return mLegendModel2; }
