@@ -61,231 +61,121 @@ void QgsComposerLegendItem::writeXMLChildren( QDomElement& elem, QDomDocument& d
   }
 }
 
-////////////////QgsComposerBaseSymbolItem
-
-QgsComposerBaseSymbolItem::QgsComposerBaseSymbolItem()
-    : QgsComposerLegendItem( QgsComposerLegendStyle::Symbol )
-{
-
-}
-
-
-QgsComposerLayerItem* QgsComposerBaseSymbolItem::parentLayerItem() const
-{
-  return dynamic_cast<QgsComposerLayerItem*>( parent() );
-}
-
-QgsMapLayer* QgsComposerBaseSymbolItem::parentMapLayer() const
-{
-  QgsComposerLayerItem* lItem = parentLayerItem();
-  if ( !lItem ) return 0;
-
-  return QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
-
-}
 
 ////////////////QgsComposerSymbolV2Item
 
 #include "qgssymbolv2.h"
 
-QgsComposerSymbolV2Item::QgsComposerSymbolV2Item()
+QgsComposerSymbolV2Item::QgsComposerSymbolV2Item(): QgsComposerLegendItem( QgsComposerLegendStyle::Symbol ), mSymbolV2( 0 )
 {
 }
 
-QgsComposerSymbolV2Item::QgsComposerSymbolV2Item( const QgsLegendSymbolItemV2& item )
-    : mItem( item )
+QgsComposerSymbolV2Item::QgsComposerSymbolV2Item( const QString& text ): QgsComposerLegendItem( text, QgsComposerLegendStyle::Symbol ), mSymbolV2( 0 )
 {
-  setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 }
 
-QgsComposerSymbolV2Item::QgsComposerSymbolV2Item( const QString& text )
+QgsComposerSymbolV2Item::QgsComposerSymbolV2Item( const QIcon& icon, const QString& text ): QgsComposerLegendItem( icon, text, QgsComposerLegendStyle::Symbol ), mSymbolV2( 0 )
 {
-  setText( text );
-}
-
-QgsComposerSymbolV2Item::QgsComposerSymbolV2Item( const QIcon& icon, const QString& text )
-{
-  setIcon( icon );
-  setText( text );
 }
 
 QgsComposerSymbolV2Item::~QgsComposerSymbolV2Item()
 {
-}
-
-
-
-QVariant QgsComposerSymbolV2Item::data( int role ) const
-{
-  if ( role == Qt::DecorationRole )
-  {
-    if ( mIcon.isNull() )
-      mIcon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mItem.symbol(), QSize( 30, 30 ) );
-    return mIcon;
-  }
-  else if ( role == Qt::DisplayRole || role == Qt::EditRole )
-  {
-    QString lbl = label();
-
-    if ( parentLayerItem()->showFeatureCount() )
-    {
-      // Add counts to multi symbols layers only or labeled single symbols,
-      // so that single symbol layers are still drawn on single line
-      if ( parentLayerItem()->rowCount() > 1 || !lbl.isEmpty() )
-      {
-        lbl += QString( " [%1]" ).arg( parentVectorLayer()->featureCount( mItem.legacyRuleKey() ) );
-      }
-    }
-    return lbl;
-  }
-  else
-    return QgsComposerBaseSymbolItem::data( role );
+  delete mSymbolV2;
 }
 
 QStandardItem* QgsComposerSymbolV2Item::clone() const
 {
-  return new QgsComposerSymbolV2Item( *this );
+  QgsComposerSymbolV2Item* cloneItem = new QgsComposerSymbolV2Item();
+  *cloneItem = *this;
+  if ( mSymbolV2 )
+  {
+    cloneItem->setSymbolV2( mSymbolV2->clone() );
+  }
+  return cloneItem;
 }
 
 void QgsComposerSymbolV2Item::writeXML( QDomElement& elem, QDomDocument& doc ) const
 {
   QDomElement vectorClassElem = doc.createElement( "VectorClassificationItemNg" );
-  if ( mItem.symbol() )
+  if ( mSymbolV2 )
   {
     QgsSymbolV2Map saveSymbolMap;
-    saveSymbolMap.insert( "classificationSymbol", mItem.symbol() );
+    saveSymbolMap.insert( "classificationSymbol", mSymbolV2 );
     QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols( saveSymbolMap, "symbols", doc );
     vectorClassElem.appendChild( symbolsElem );
   }
-  vectorClassElem.setAttribute( "text", mItem.label() );
+  vectorClassElem.setAttribute( "text", text() );
   vectorClassElem.setAttribute( "userText", userText() );
   elem.appendChild( vectorClassElem );
 }
 
 void QgsComposerSymbolV2Item::readXML( const QDomElement& itemElem, bool xServerAvailable )
 {
-  Q_UNUSED( xServerAvailable );
-
   if ( itemElem.isNull() )
   {
     return;
   }
 
+  setText( itemElem.attribute( "text", "" ) );
   setUserText( itemElem.attribute( "userText", "" ) );
   QDomElement symbolsElem = itemElem.firstChildElement( "symbols" );
+  if ( !symbolsElem.isNull() )
+  {
+    QgsSymbolV2Map loadSymbolMap = QgsSymbolLayerV2Utils::loadSymbols( symbolsElem );
+    //we assume there is only one symbol in the map...
+    QgsSymbolV2Map::iterator mapIt = loadSymbolMap.begin();
+    if ( mapIt != loadSymbolMap.end() )
+    {
+      QgsSymbolV2* symbolNg = mapIt.value();
+      if ( symbolNg )
+      {
+        setSymbolV2( symbolNg );
+        if ( xServerAvailable )
+        {
+          setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolNg, QSize( 30, 30 ) ) );
+        }
+      }
+    }
+  }
 }
 
 void QgsComposerSymbolV2Item::setSymbolV2( QgsSymbolV2* s )
 {
-  Q_UNUSED( s );
+  delete mSymbolV2;
+  mSymbolV2 = s;
 }
-
-
-QgsComposerSymbolV2Item* QgsComposerSymbolV2Item::findItemByRuleKey( QgsComposerLayerItem* parentLayerItem, QString ruleKey )
-{
-  for ( int i = 0; i < parentLayerItem->rowCount(); ++i )
-  {
-    if ( QgsComposerSymbolV2Item* sItem = dynamic_cast<QgsComposerSymbolV2Item*>( parentLayerItem->child( 0 ) ) )
-    {
-      if ( sItem->ruleKey() == ruleKey )
-        return sItem;
-    }
-  }
-  return 0;
-}
-
-
-QgsVectorLayer* QgsComposerSymbolV2Item::parentVectorLayer() const
-{
-  return qobject_cast<QgsVectorLayer*>( parentMapLayer() );
-}
-
-QString QgsComposerSymbolV2Item::label() const
-{
-  if ( !mUserText.isEmpty() )
-  {
-    return mUserText;
-  }
-  else
-  {
-    QgsVectorLayer* vLayer = parentVectorLayer();
-
-    if ( vLayer && vLayer->rendererV2() && vLayer->rendererV2()->type() == "singleSymbol" )
-    {
-      if ( !parentLayerItem()->userText().isEmpty() )
-      {
-        return parentLayerItem()->userText();
-      }
-      else if ( !vLayer->title().isEmpty() )
-      {
-        return vLayer->title();
-      }
-      else
-      {
-        return vLayer->name();
-      }
-    }
-    else
-    {
-      return mItem.label();
-    }
-  }
-}
-
 
 ////////////////////QgsComposerRasterSymbolItem
 
-QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem()
+QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem(): QgsComposerLegendItem( QgsComposerLegendStyle::Symbol )
 {
 }
 
-QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem( const QColor& color, const QString& label )
-    : mColor( color )
-    , mLabel( label )
+QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem( const QString& text ): QgsComposerLegendItem( text, QgsComposerLegendStyle::Symbol )
 {
 }
 
-QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem( const QString& text )
+QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem( const QIcon& icon, const QString& text ): QgsComposerLegendItem( icon, text, QgsComposerLegendStyle::Symbol )
 {
-  setText( text );
-}
-
-QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem( const QIcon& icon, const QString& text )
-{
-  setIcon( icon );
-  setText( text );
 }
 
 QgsComposerRasterSymbolItem::~QgsComposerRasterSymbolItem()
 {
 }
 
-QVariant QgsComposerRasterSymbolItem::data( int role ) const
-{
-  if ( role == Qt::DisplayRole || role == Qt::EditRole )
-  {
-    return mUserText.isEmpty() ? mLabel : mUserText;
-  }
-  else if ( role == Qt::DecorationRole )
-  {
-    QPixmap itemPixmap( 20, 20 );
-    itemPixmap.fill( mColor );
-    return QIcon( itemPixmap );
-  }
-  return QgsComposerBaseSymbolItem::data( role );
-}
-
 QStandardItem* QgsComposerRasterSymbolItem::clone() const
 {
   QgsComposerRasterSymbolItem* cloneItem  = new QgsComposerRasterSymbolItem();
   *cloneItem = *this;
+  cloneItem->setLayerID( mLayerID );
   return cloneItem;
 }
 
 void QgsComposerRasterSymbolItem::writeXML( QDomElement& elem, QDomDocument& doc ) const
 {
   QDomElement rasterClassElem = doc.createElement( "RasterClassificationItem" );
-  rasterClassElem.setAttribute( "text", mLabel );
+  rasterClassElem.setAttribute( "layerId", mLayerID );
+  rasterClassElem.setAttribute( "text", text() );
   rasterClassElem.setAttribute( "userText", userText() );
   rasterClassElem.setAttribute( "color", mColor.name() );
   elem.appendChild( rasterClassElem );
@@ -293,51 +183,22 @@ void QgsComposerRasterSymbolItem::writeXML( QDomElement& elem, QDomDocument& doc
 
 void QgsComposerRasterSymbolItem::readXML( const QDomElement& itemElem, bool xServerAvailable )
 {
-  Q_UNUSED( xServerAvailable );
-
   if ( itemElem.isNull() )
   {
     return;
   }
-  mLabel = itemElem.attribute( "text", "" );
+  setText( itemElem.attribute( "text", "" ) );
   setUserText( itemElem.attribute( "userText", "" ) );
+  setLayerID( itemElem.attribute( "layerId", "" ) );
   setColor( QColor( itemElem.attribute( "color" ) ) );
+
+  if ( xServerAvailable )
+  {
+    QPixmap itemPixmap( 20, 20 );
+    itemPixmap.fill( mColor );
+    setIcon( QIcon( itemPixmap ) );
+  }
 }
-
-
-////////////////////QgsComposerRasterImageItem
-
-
-QgsComposerRasterImageItem::QgsComposerRasterImageItem()
-{
-}
-
-QgsComposerRasterImageItem::QgsComposerRasterImageItem( const QImage& image )
-    : mImage( image )
-{
-
-}
-
-QStandardItem* QgsComposerRasterImageItem::clone() const
-{
-  QgsComposerRasterImageItem* cloneItem  = new QgsComposerRasterImageItem( mImage );
-  return cloneItem;
-}
-
-void QgsComposerRasterImageItem::writeXML( QDomElement& elem, QDomDocument& doc ) const
-{
-  QDomElement rasterImageElem = doc.createElement( "RasterImageItem" );
-  // TODO: also save the image???
-  elem.appendChild( rasterImageElem );
-}
-
-void QgsComposerRasterImageItem::readXML( const QDomElement& itemElem, bool xServerAvailable )
-{
-  Q_UNUSED( itemElem );
-  Q_UNUSED( xServerAvailable );
-}
-
-
 
 ////////////////////QgsComposerLayerItem
 
@@ -355,28 +216,6 @@ QgsComposerLayerItem::~QgsComposerLayerItem()
 {
 }
 
-QVariant QgsComposerLayerItem::data( int role ) const
-{
-  if ( role == Qt::DisplayRole || role == Qt::EditRole )
-  {
-    QgsMapLayer* ml = mapLayer();
-    if ( !ml ) return QVariant();
-
-    QString label = mUserText.isEmpty() ? ml->name() : mUserText;
-
-    if ( QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( ml ) )
-    {
-      if ( showFeatureCount() )
-      {
-        label += QString( " [%1]" ).arg( vLayer->featureCount() );
-      }
-    }
-    return label;
-  }
-  else
-    return QgsComposerLegendItem::data( role );
-}
-
 QStandardItem* QgsComposerLayerItem::clone() const
 {
   QgsComposerLayerItem* cloneItem  = new QgsComposerLayerItem();
@@ -389,7 +228,7 @@ void QgsComposerLayerItem::writeXML( QDomElement& elem, QDomDocument& doc ) cons
 {
   QDomElement layerItemElem = doc.createElement( "LayerItem" );
   layerItemElem.setAttribute( "layerId", mLayerID );
-  layerItemElem.setAttribute( "text", data( Qt::DisplayRole ).toString() );
+  layerItemElem.setAttribute( "text", text() );
   layerItemElem.setAttribute( "userText", userText() );
   layerItemElem.setAttribute( "showFeatureCount", showFeatureCount() );
   layerItemElem.setAttribute( "style", QgsComposerLegendStyle::styleName( mStyle ) );
@@ -438,10 +277,6 @@ void QgsComposerLayerItem::readXML( const QDomElement& itemElem, bool xServerAva
     {
       currentChildItem = new QgsComposerRasterSymbolItem();
     }
-    else if ( elemTag == "RasterImageItem" )
-    {
-      currentChildItem = new QgsComposerRasterImageItem();
-    }
     else
     {
       continue; //unsupported child type
@@ -453,15 +288,25 @@ void QgsComposerLayerItem::readXML( const QDomElement& itemElem, bool xServerAva
 
 void QgsComposerLayerItem::setDefaultStyle( double scaleDenominator, QString rule )
 {
-  Q_UNUSED( scaleDenominator );
-  Q_UNUSED( rule );
-}
-
-
-
-QgsMapLayer* QgsComposerLayerItem::mapLayer() const
-{
-  return QgsMapLayerRegistry::instance()->mapLayer( mLayerID );
+  // set default style according to number of symbols
+  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID() ) );
+  if ( vLayer )
+  {
+    QgsFeatureRendererV2* renderer = vLayer->rendererV2();
+    if ( renderer )
+    {
+      QPair<QString, QgsSymbolV2*> symbolItem = renderer->legendSymbolItems( scaleDenominator, rule ).value( 0 );
+      if ( renderer->legendSymbolItems( scaleDenominator, rule ).size() > 1 || !symbolItem.first.isEmpty() )
+      {
+        setStyle( QgsComposerLegendStyle::Subgroup );
+      }
+      else
+      {
+        // Hide title by default for single symbol
+        setStyle( QgsComposerLegendStyle::Hidden );
+      }
+    }
+  }
 }
 
 ////////////////////QgsComposerGroupItem
@@ -489,7 +334,7 @@ void QgsComposerGroupItem::writeXML( QDomElement& elem, QDomDocument& doc ) cons
 {
   QDomElement layerGroupElem = doc.createElement( "GroupItem" );
   // text is always user text, but for forward compatibility for now write both
-  layerGroupElem.setAttribute( "text", data( Qt::DisplayRole ).toString() );
+  layerGroupElem.setAttribute( "text", text() );
   layerGroupElem.setAttribute( "userText", userText() );
   layerGroupElem.setAttribute( "style", QgsComposerLegendStyle::styleName( mStyle ) );
   writeXMLChildren( layerGroupElem, doc );
@@ -550,8 +395,6 @@ void QgsComposerGroupItem::readXML( const QDomElement& itemElem, bool xServerAva
     appendRow( itemsList );
   }
 }
-
-
 
 QgsComposerStyleItem::QgsComposerStyleItem(): QStandardItem()
 {
