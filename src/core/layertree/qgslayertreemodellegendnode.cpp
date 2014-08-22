@@ -24,9 +24,14 @@
 
 
 
-QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL )
-    : mParent( nodeL )
+QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL, QObject* parent )
+    : QObject( parent )
+    , mLayerNode( nodeL )
     , mEmbeddedInParent( false )
+{
+}
+
+QgsLayerTreeModelLegendNode::~QgsLayerTreeModelLegendNode()
 {
 }
 
@@ -159,10 +164,10 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
     if ( !mItem.isCheckable() )
       return QVariant();
 
-    if ( !mParent->isVisible() )
+    if ( !mLayerNode->isVisible() )
       return Qt::PartiallyChecked;
 
-    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mParent->layer() );
+    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayerNode->layer() );
     if ( !vlayer || !vlayer->rendererV2() )
       return QVariant();
 
@@ -180,13 +185,13 @@ bool QgsSymbolV2LegendNode::setData( const QVariant& value, int role )
   if ( !mItem.isCheckable() )
     return false;
 
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mParent->layer() );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayerNode->layer() );
   if ( !vlayer || !vlayer->rendererV2() )
     return false;
 
   vlayer->rendererV2()->checkLegendSymbolItem( mItem.ruleKey(), value == Qt::Checked );
 
-  if ( mParent->isVisible() )
+  if ( mLayerNode->isVisible() )
     vlayer->clearCacheImage();
 
   return true;
@@ -307,12 +312,12 @@ void QgsSymbolV2LegendNode::setEmbeddedInParent( bool embedded )
 
 void QgsSymbolV2LegendNode::updateLabel()
 {
-  bool showFeatureCount = mParent->customProperty( "showFeatureCount", 0 ).toBool();
-  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( mParent->layer() );
+  bool showFeatureCount = mLayerNode->customProperty( "showFeatureCount", 0 ).toBool();
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( mLayerNode->layer() );
 
   if ( mEmbeddedInParent )
   {
-    mLabel = mUserLabel.isEmpty() ? mParent->layerName() : mUserLabel;
+    mLabel = mUserLabel.isEmpty() ? mLayerNode->layerName() : mUserLabel;
     if ( showFeatureCount && vl && vl->pendingFeatureCount() >= 0 )
         mLabel += QString( " [%1]" ).arg( vl->pendingFeatureCount() );
   }
@@ -329,10 +334,9 @@ void QgsSymbolV2LegendNode::updateLabel()
 // -------------------------------------------------------------------------
 
 
-QgsSimpleLegendNode::QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QString& id, const QIcon& icon )
-    : QgsLayerTreeModelLegendNode( nodeLayer )
+QgsSimpleLegendNode::QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon, QObject* parent )
+    : QgsLayerTreeModelLegendNode( nodeLayer, parent )
     , mLabel( label )
-    , mId( id )
     , mIcon( icon )
 {
 }
@@ -350,8 +354,8 @@ QVariant QgsSimpleLegendNode::data( int role ) const
 
 // -------------------------------------------------------------------------
 
-QgsImageLegendNode::QgsImageLegendNode( QgsLayerTreeLayer* nodeLayer, const QImage& img )
-  : QgsLayerTreeModelLegendNode( nodeLayer )
+QgsImageLegendNode::QgsImageLegendNode( QgsLayerTreeLayer* nodeLayer, const QImage& img, QObject* parent )
+  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
   , mImage( img )
 {
 }
@@ -383,8 +387,8 @@ QSizeF QgsImageLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemCo
 
 // -------------------------------------------------------------------------
 
-QgsRasterSymbolLegendNode::QgsRasterSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QColor& color, const QString& label )
-  : QgsLayerTreeModelLegendNode( nodeLayer )
+QgsRasterSymbolLegendNode::QgsRasterSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QColor& color, const QString& label, QObject* parent )
+  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
   , mColor( color )
   , mLabel( label )
 {

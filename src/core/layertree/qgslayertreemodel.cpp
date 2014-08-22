@@ -694,12 +694,15 @@ void QgsLayerTreeModel::addSymbologyToLayer( QgsLayerTreeLayer* nodeL )
 
   QList<QgsLayerTreeModelLegendNode*> lstNew = layerLegend->createLayerTreeModelLegendNodes( nodeL );
 
+  // apply filtering defined in layer node's custom properties (reordering, filtering, custom labels)
+  QgsMapLayerLegendUtils::applyLayerNodeProperties( nodeL, lstNew );
+
   QList<QgsLayerTreeModelLegendNode*> filteredLstNew = filterLegendNodes( lstNew );
 
   beginInsertRows( node2index( nodeL ), 0, filteredLstNew.count() - 1 );
 
   foreach ( QgsLayerTreeModelLegendNode* n, lstNew )
-    n->setParent( nodeL );
+    n->setParent( this );
 
   mOriginalSymbologyNodes[nodeL] = lstNew;
   mSymbologyNodes[nodeL] = filteredLstNew;

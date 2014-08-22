@@ -37,11 +37,10 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 {
     Q_OBJECT
   public:
+    ~QgsLayerTreeModelLegendNode();
 
     /** Return pointer to the parent layer node */
-    QgsLayerTreeLayer* parent() const { return mParent; }
-
-    virtual QString id() const { return QString(); }
+    QgsLayerTreeLayer* parent() const { return mLayerNode; }
 
     /** Return item flags associated with the item. Default implementation returns Qt::ItemIsEnabled. */
     virtual Qt::ItemFlags flags() const;
@@ -99,10 +98,10 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
   protected:
     /** Construct the node with pointer to its parent layer node */
-    explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL );
+    explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL, QObject* parent = 0 );
 
   protected:
-    QgsLayerTreeLayer* mParent;
+    QgsLayerTreeLayer* mLayerNode;
     bool mEmbeddedInParent;
     QString mUserLabel;
 };
@@ -120,8 +119,6 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
   public:
     QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItemV2& item );
     ~QgsSymbolV2LegendNode();
-
-    virtual QString id() const { return mItem.ruleKey(); }
 
     virtual Qt::ItemFlags flags() const;
     virtual QVariant data( int role ) const;
@@ -155,7 +152,7 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
 class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
 {
   public:
-    QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QString& id, const QIcon& icon = QIcon() );
+    QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon = QIcon(), QObject* parent = 0 );
 
     virtual QVariant data( int role ) const;
 
@@ -174,7 +171,7 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
 class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 {
   public:
-    QgsImageLegendNode( QgsLayerTreeLayer* nodeLayer, const QImage& img );
+    QgsImageLegendNode( QgsLayerTreeLayer* nodeLayer, const QImage& img, QObject* parent = 0 );
 
     virtual QVariant data( int role ) const;
 
@@ -192,7 +189,7 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
 {
   public:
-    QgsRasterSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QColor& color, const QString& label );
+    QgsRasterSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QColor& color, const QString& label, QObject* parent = 0 );
 
     virtual QVariant data( int role ) const;
 

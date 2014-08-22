@@ -61,7 +61,7 @@ void QgsMapLayerLegendUtils::setLegendNodeOrder( QgsLayerTreeLayer* nodeLayer, c
 static int _originalLegendNodeCount( QgsLayerTreeLayer* nodeLayer )
 {
   // this is not particularly efficient way of finding out number of legend nodes
-  QList<QgsLayerTreeModelLegendNode*> lst = nodeLayer->layer()->legend()->createLayerTreeModelLegendNodes( nodeLayer, false );
+  QList<QgsLayerTreeModelLegendNode*> lst = nodeLayer->layer()->legend()->createLayerTreeModelLegendNodes( nodeLayer );
   int numNodes = lst.count();
   qDeleteAll( lst );
   return numNodes;
@@ -181,7 +181,7 @@ QgsDefaultVectorLayerLegend::QgsDefaultVectorLayerLegend( QgsVectorLayer* vl )
   connect( mLayer, SIGNAL( rendererChanged() ), this, SIGNAL( itemsChanged() ) );
 }
 
-QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer, bool applyLayerNodeProperties )
+QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer )
 {
   QList<QgsLayerTreeModelLegendNode*> nodes;
 
@@ -206,10 +206,6 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
   if ( nodes.count() == 1 && nodes[0]->data( Qt::EditRole ).toString().isEmpty() )
     nodes[0]->setEmbeddedInParent( true );
 
-  // consider custom order and custom labels
-  if ( applyLayerNodeProperties )
-    QgsMapLayerLegendUtils::applyLayerNodeProperties( nodeLayer, nodes );
-
   return nodes;
 }
 
@@ -224,7 +220,7 @@ QgsDefaultRasterLayerLegend::QgsDefaultRasterLayerLegend( QgsRasterLayer* rl )
   connect( mLayer, SIGNAL( rendererChanged() ), this, SIGNAL( itemsChanged() ) );
 }
 
-QList<QgsLayerTreeModelLegendNode*> QgsDefaultRasterLayerLegend::createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer, bool applyLayerNodeProperties )
+QList<QgsLayerTreeModelLegendNode*> QgsDefaultRasterLayerLegend::createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer )
 {
   QList<QgsLayerTreeModelLegendNode*> nodes;
 
@@ -261,10 +257,6 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultRasterLayerLegend::createLayerTree
     }
   }
 
-  // consider custom order and custom labels
-  if ( applyLayerNodeProperties )
-    QgsMapLayerLegendUtils::applyLayerNodeProperties( nodeLayer, nodes );
-
   return nodes;
 }
 
@@ -277,7 +269,7 @@ QgsDefaultPluginLayerLegend::QgsDefaultPluginLayerLegend( QgsPluginLayer* pl )
 {
 }
 
-QList<QgsLayerTreeModelLegendNode*> QgsDefaultPluginLayerLegend::createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer, bool applyLayerNodeProperties )
+QList<QgsLayerTreeModelLegendNode*> QgsDefaultPluginLayerLegend::createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer )
 {
   QList<QgsLayerTreeModelLegendNode*> nodes;
 
@@ -293,10 +285,6 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultPluginLayerLegend::createLayerTree
   {
     nodes << new QgsSimpleLegendNode( nodeLayer, item.first, QString::number( i++ ), QIcon( item.second ) );
   }
-
-  // consider custom order and custom labels
-  if ( applyLayerNodeProperties )
-    QgsMapLayerLegendUtils::applyLayerNodeProperties( nodeLayer, nodes );
 
   return nodes;
 }

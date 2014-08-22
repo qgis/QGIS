@@ -20,7 +20,7 @@ class QgsMapLayerLegend : QObject
      * Return list of legend nodes to be used for a particular layer tree layer node.
      * Ownership is transferred to the caller.
      */
-    virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer, bool applyLayerNodeProperties = true ) = 0 /Factory/;
+    virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer ) = 0 /Factory/;
 
     // TODO: support for layer tree view delegates
 
@@ -75,7 +75,7 @@ class QgsDefaultVectorLayerLegend : QgsMapLayerLegend
   public:
     explicit QgsDefaultVectorLayerLegend( QgsVectorLayer* vl );
 
-    virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer, bool applyLayerNodeProperties = true ) /Factory/;
+    virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer ) /Factory/;
 
 };
 
@@ -91,7 +91,7 @@ class QgsDefaultRasterLayerLegend : QgsMapLayerLegend
   public:
     explicit QgsDefaultRasterLayerLegend( QgsRasterLayer* rl );
 
-    virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer, bool applyLayerNodeProperties = true ) /Factory/;
+    virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer ) /Factory/;
 
 };
 
@@ -107,7 +107,7 @@ class QgsDefaultPluginLayerLegend : QgsMapLayerLegend
   public:
     explicit QgsDefaultPluginLayerLegend( QgsPluginLayer* pl );
 
-    virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer, bool applyLayerNodeProperties = true ) /Factory/;
+    virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer ) /Factory/;
 
 };
 

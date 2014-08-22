@@ -47,6 +47,8 @@
 %Include qgslabel.sip
 %Include qgslabelattributes.sip
 %Include qgslabelsearchtree.sip
+%Include qgslegendrenderer.sip
+%Include qgslegendsettings.sip
 %Include qgslogger.sip
 %Include qgsmaplayer.sip
 %Include qgsmaplayerlegend.sip

@@ -15,6 +15,7 @@ class QgsLayerTreeModelLegendNode : QObject
 %End
     
   public:
+    ~QgsLayerTreeModelLegendNode();
 
     /** Return pointer to the parent layer node */
     QgsLayerTreeLayer* parent() const;
@@ -28,9 +29,57 @@ class QgsLayerTreeModelLegendNode : QObject
     /** Set some data associated with the item. Default implementation does nothing and returns false. */
     virtual bool setData( const QVariant& value, int role );
 
+    virtual bool isEmbeddedInParent() const;
+    virtual void setEmbeddedInParent( bool embedded );
+
+    virtual QString userLabel() const;
+    virtual void setUserLabel( const QString& userLabel );
+
+    virtual bool isScaleOK( double scale ) const;
+
+    struct ItemContext
+    {
+      //! Painter
+      QPainter* painter;
+      //! Top-left corner of the legend item
+      QPointF point;
+      //! offset from the left side where label should start
+      double labelXOffset;
+    };
+
+    struct ItemMetrics
+    {
+      QSizeF symbolSize;
+      QSizeF labelSize;
+    };
+
+    /** Entry point called from QgsLegendRenderer to do the rendering.
+     *  Default implementation calls drawSymbol() and drawSymbolText() methods.
+     *
+     *  If ctx is null, this is just first stage when preparing layout - without actual rendering.
+     */
+    virtual ItemMetrics draw( const QgsLegendSettings& settings, ItemContext* ctx );
+
+    /**
+     * Draws symbol on the left side of the item
+     * @param itemHeight Minimal height of the legend item - used for correct positioning when rendering
+     * @return Real size of the symbol (may be bigger than "normal" symbol size from settings)
+     */
+    virtual QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+
+    /**
+     * Draws label on the right side of the item
+     * @param symbolSize  Real size of the associated symbol - used for correct positioning when rendering
+     * @return Size of the label (may span multiple lines)
+     */
+    virtual QSizeF drawSymbolText( const QgsLegendSettings& settings, ItemContext* ctx, const QSizeF& symbolSize ) const;
+
   protected:
     /** Construct the node with pointer to its parent layer node */
-    explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL );
+    explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL, QObject* parent /TransferThis/ = 0 );
+
+  private:
+    QgsLayerTreeModelLegendNode(const QgsLayerTreeModelLegendNode &);
 };
 
 
@@ -41,7 +90,6 @@ class QgsLayerTreeModelLegendNode : QObject
  *
  * @note added in 2.6
  */
-/*
 class QgsSymbolV2LegendNode : QgsLayerTreeModelLegendNode
 {
 %TypeHeaderCode
@@ -49,11 +97,22 @@ class QgsSymbolV2LegendNode : QgsLayerTreeModelLegendNode
 %End
   public:
     QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItemV2& item );
+    ~QgsSymbolV2LegendNode();
 
     virtual Qt::ItemFlags flags() const;
     virtual QVariant data( int role ) const;
     virtual bool setData( const QVariant& value, int role );
-};*/
+
+    /** Draws a symbol at the current y position and returns the new x position. Returns real symbol height, because for points,
+     it is possible that it differs from mSymbolHeight */
+    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+
+    virtual void setEmbeddedInParent( bool embedded );
+
+    void setUserLabel( const QString& userLabel );
+
+    virtual bool isScaleOK( double scale ) const;
+};
 
 
 /**
@@ -67,8 +126,47 @@ class QgsSimpleLegendNode : QgsLayerTreeModelLegendNode
 #include <qgslayertreemodellegendnode.h>
 %End
   public:
-    QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QString& id, const QIcon& icon = QIcon() );
+    QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon = QIcon(), QObject* parent /TransferThis/ = 0 );
 
     virtual QVariant data( int role ) const;
+};
+
+
+/**
+ * Implementation of legend node interface for displaying arbitrary raster image
+ *
+ * @note added in 2.6
+ */
+class QgsImageLegendNode : QgsLayerTreeModelLegendNode
+{
+%TypeHeaderCode
+#include <qgslayertreemodellegendnode.h>
+%End
+  public:
+    QgsImageLegendNode( QgsLayerTreeLayer* nodeLayer, const QImage& img, QObject* parent /TransferThis/ = 0 );
+
+    virtual QVariant data( int role ) const;
+
+    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+
+};
+
+/**
+ * Implementation of legend node interface for displaying raster legend entries
+ *
+ * @note added in 2.6
+ */
+class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
+{
+%TypeHeaderCode
+#include <qgslayertreemodellegendnode.h>
+%End
+  public:
+    QgsRasterSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QColor& color, const QString& label, QObject* parent /TransferThis/ = 0 );
+
+    virtual QVariant data( int role ) const;
+
+    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+
 };
 
