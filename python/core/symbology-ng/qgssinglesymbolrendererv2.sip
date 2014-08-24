@@ -66,6 +66,10 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
     //! @note added in 2.6
     virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
 
+    //! convert the renderer to a rule based renderer with equivalent rules
+    //! @note added in 2.5
+    virtual QgsRuleBasedRendererV2* convertToRuleBasedRenderer();
+
   private:
     QgsSingleSymbolRendererV2( const QgsSingleSymbolRendererV2 & );
     QgsSingleSymbolRendererV2 & operator=( const QgsSingleSymbolRendererV2 & );

@@ -173,6 +173,10 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     // @note added in 2.5
     virtual void checkLegendSymbolItem( QString key, bool state = true );
 
+    //! convert the renderer to a rule based renderer with equivalent rules
+    //! @note added in 2.5
+    virtual QgsRuleBasedRendererV2* convertToRuleBasedRenderer();
+
 
 
   protected:

@@ -175,6 +175,10 @@ class QgsFeatureRendererV2
     //! @note added in 1.9
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
 
+    //! convert the renderer to a rule based renderer with equivalent rules, if possible
+    //! @note added in 2.5
+    virtual QgsRuleBasedRendererV2* convertToRuleBasedRenderer();
+
   protected:
     QgsFeatureRendererV2( QString type );
 
