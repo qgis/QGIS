@@ -21,6 +21,8 @@
 #include "qgsexpression.h"
 #include <QScopedPointer>
 
+class QgsRuleBasedRenderedV2;
+
 class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 {
   public:
@@ -82,9 +84,15 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note not available in python bindings
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() );
 
+
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
     //! @note added in 2.6
     virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
+
+    //! convert the renderer to a rule based renderer with equivalent rules
+    //! @note added in 2.5
+    virtual QgsRuleBasedRendererV2* convertToRuleBasedRenderer();
+
 
   protected:
     QScopedPointer<QgsSymbolV2> mSymbol;

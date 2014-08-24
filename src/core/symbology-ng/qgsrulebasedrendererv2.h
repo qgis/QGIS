@@ -293,6 +293,10 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     //! take a rule and create a list of new rules with intervals of scales given by the passed scale denominators
     static void refineRuleScales( Rule* initialRule, QList<int> scales );
 
+    //! convert the renderer to a rule based renderer with equivalent rules, if possible
+    //! @note added in 2.5
+    virtual QgsRuleBasedRendererV2* convertToRuleBasedRenderer();
+
   protected:
     //! the root node with hierarchical list of rules
     Rule* mRootRule;

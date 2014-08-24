@@ -24,6 +24,7 @@
 
 class QgsVectorColorRampV2;
 class QgsVectorLayer;
+class QgsRuleBasedRendererV2;
 
 /* \brief categorized renderer */
 class CORE_EXPORT QgsRendererCategoryV2
@@ -165,6 +166,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 2.0
     QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
 
+
     //! items of symbology items in legend should be checkable
     // @note added in 2.5
     virtual bool legendSymbolItemsCheckable() const;
@@ -180,6 +182,10 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     //! If supported by the renderer, return classification attribute for the use in legend
     //! @note added in 2.6
     virtual QString legendClassificationAttribute() const { return classAttribute(); }
+
+    //! convert the renderer to a rule based renderer with equivalent rules
+    //! @note added in 2.5
+    virtual QgsRuleBasedRendererV2* convertToRuleBasedRenderer();
 
   protected:
     QString mAttrName;

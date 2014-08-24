@@ -1043,3 +1043,8 @@ QgsSymbolV2List QgsRuleBasedRendererV2::symbolsForFeature( QgsFeature& feat )
 {
   return mRootRule->symbolsForFeature( feat );
 }
+
+QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertToRuleBasedRenderer()
+{
+  return this ;
+}

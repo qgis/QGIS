@@ -17,6 +17,7 @@
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
+#include "qgsrulebasedrendererv2.h"
 
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
@@ -1311,3 +1312,85 @@ void QgsGraduatedSymbolRendererV2::sortByLabel( Qt::SortOrder order )
   }
 }
 
+QgsRuleBasedRendererV2* QgsGraduatedSymbolRendererV2::convertToRuleBasedRenderer()
+{
+  QgsRuleBasedRendererV2::Rule* rootrule = new QgsRuleBasedRendererV2::Rule( NULL );
+
+  QString sizeExpression;
+  QString expression;
+  for ( int i = 0; i < mRanges.size();++i )
+  {
+    QgsRuleBasedRendererV2::Rule* rule = new QgsRuleBasedRendererV2::Rule( NULL );
+    rule->setSymbol( mRanges[i].symbol() );
+    rule->setLabel( mRanges[i].label() );
+    if ( i == 0 )//The lower boundary of the first range is included, while it is excluded for the others
+    {
+      expression = classAttribute() + " >= " + QString::number( mRanges[i].lowerValue(), 'f' ) + " AND " + \
+                   classAttribute() + " <= " + QString::number( mRanges[i].upperValue(), 'f' );
+    }
+    else
+    {
+      expression = classAttribute() + " > " + QString::number( mRanges[i].lowerValue(), 'f' ) + " AND " + \
+                   classAttribute() + " <= " + QString::number( mRanges[i].upperValue(), 'f' );
+    }
+    rule->setFilterExpression( expression );
+
+    //Then we construct an equivalent symbol.
+    //Ideally we could simply copy the symbol, but the graduated renderer allows a separate interface to specify
+    //data dependent area and rotation, so we need to convert these to obtain the same rendering
+
+    QgsSymbolV2* origSymbol = mRanges[i].symbol()->clone();
+
+    switch ( origSymbol->type() )
+    {
+      case QgsSymbolV2::Marker:
+        for ( int j = 0; j < origSymbol->symbolLayerCount();++j )
+        {
+          QgsMarkerSymbolLayerV2* msl = static_cast<QgsMarkerSymbolLayerV2*>( origSymbol->symbolLayer( j ) );
+          if ( mSizeScale.data() )
+          {
+            sizeExpression = QString( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField() );
+            msl->setDataDefinedProperty( "size", sizeExpression );
+            if ( mRotation.data() )
+            {
+              msl->setDataDefinedProperty( "angle", rotationField() );
+            }
+          }
+        }
+        break;
+      case QgsSymbolV2::Line:
+        if ( mSizeScale.data() )
+        {
+          for ( int j = 0; j < origSymbol->symbolLayerCount();++j )
+          {
+            if ( origSymbol->symbolLayer( j )->layerType() == "SimpleLine" )
+            {
+              QgsLineSymbolLayerV2* lsl = static_cast<QgsLineSymbolLayerV2*>( origSymbol->symbolLayer( j ) );
+              sizeExpression = QString( "%1*(%2)" ).arg( lsl->width() ).arg( sizeScaleField() );
+              lsl->setDataDefinedProperty( "width", sizeExpression );
+            }
+            if ( origSymbol->symbolLayer( j )->layerType() == "MarkerLine" )
+            {
+              QgsSymbolV2* marker = origSymbol->symbolLayer( j )->subSymbol();
+              for ( int k = 0; k < marker->symbolLayerCount();++k )
+              {
+                QgsMarkerSymbolLayerV2* msl = static_cast<QgsMarkerSymbolLayerV2*>( marker->symbolLayer( k ) );
+                sizeExpression = QString( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField() );
+                msl->setDataDefinedProperty( "size", sizeExpression );
+              }
+            }
+          }
+        }
+        break;
+      default:
+        break;
+    }
+
+    rule->setSymbol( origSymbol );
+
+    rootrule->appendChild( rule );
+  }
+
+  return new QgsRuleBasedRendererV2( rootrule );
+
+}

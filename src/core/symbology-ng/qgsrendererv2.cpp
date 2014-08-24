@@ -16,6 +16,7 @@
 #include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsrulebasedrendererv2.h"
 
 #include "qgssinglesymbolrendererv2.h" // for default renderer
 
@@ -584,4 +585,9 @@ QgsSymbolV2List QgsFeatureRendererV2::symbolsForFeature( QgsFeature& feat )
   QgsSymbolV2* s = symbolForFeature( feat );
   if ( s ) lst.append( s );
   return lst;
+}
+
+QgsRuleBasedRendererV2* QgsFeatureRendererV2::convertToRuleBasedRenderer()
+{
+  return 0;
 }

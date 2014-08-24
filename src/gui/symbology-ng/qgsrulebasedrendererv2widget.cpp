@@ -43,22 +43,19 @@ QgsRendererV2Widget* QgsRuleBasedRendererV2Widget::create( QgsVectorLayer* layer
 QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
 {
-
+  mRenderer = 0;
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
-  if ( !renderer || renderer->type() != "RuleRenderer" )
+  if ( renderer )
   {
-    // we're not going to use it - so let's delete the renderer
-    delete renderer;
-
+    mRenderer = renderer->convertToRuleBasedRenderer();
+  }
+  if ( !mRenderer )
+  {
     // some default options
     QgsSymbolV2* symbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
 
     mRenderer = new QgsRuleBasedRendererV2( symbol );
-  }
-  else
-  {
-    mRenderer = static_cast<QgsRuleBasedRendererV2*>( renderer );
   }
 
   setupUi( this );

@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerv2.h"
 #include "qgsogcutils.h"
+#include "qgsrulebasedrendererv2.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -372,4 +373,61 @@ QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
   QgsLegendSymbolListV2 lst;
   lst << QgsLegendSymbolItemV2( mSymbol.data(), QString(), 0 );
   return lst;
+}
+
+QgsRuleBasedRendererV2* QgsSingleSymbolRendererV2::convertToRuleBasedRenderer()
+{
+  //We construct an equivalent symbol for the rule based renderer.
+  //Ideally we could simply copy the symbol, but the single symbol renderer allows a separate interface to specify
+  //data dependent area and rotation, so we need to convert these to obtain the same rendering
+
+  QString sizeExpression;
+  QgsSymbolV2* origSymbol = symbol()->clone();
+
+  switch ( origSymbol->type() )
+  {
+    case QgsSymbolV2::Marker:
+      for ( int j = 0; j < origSymbol->symbolLayerCount();++j )
+      {
+        QgsMarkerSymbolLayerV2* msl = static_cast<QgsMarkerSymbolLayerV2*>( origSymbol->symbolLayer( j ) );
+        if ( mSizeScale.data() )
+        {
+          sizeExpression = QString( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField() );
+          msl->setDataDefinedProperty( "size", sizeExpression );
+        }
+        if ( mRotation.data() )
+        {
+          msl->setDataDefinedProperty( "angle", rotationField() );
+        }
+      }
+      break;
+    case QgsSymbolV2::Line:
+      if ( mSizeScale.data() )
+      {
+        for ( int j = 0; j < origSymbol->symbolLayerCount();++j )
+        {
+          if ( origSymbol->symbolLayer( j )->layerType() == "SimpleLine" )
+          {
+            QgsLineSymbolLayerV2* lsl = static_cast<QgsLineSymbolLayerV2*>( origSymbol->symbolLayer( j ) );
+            sizeExpression = QString( "%1*(%2)" ).arg( lsl->width() ).arg( sizeScaleField() );
+            lsl->setDataDefinedProperty( "width", sizeExpression );
+          }
+          if ( origSymbol->symbolLayer( j )->layerType() == "MarkerLine" )
+          {
+            QgsSymbolV2* marker = origSymbol->symbolLayer( j )->subSymbol();
+            for ( int k = 0; k < marker->symbolLayerCount();++k )
+            {
+              QgsMarkerSymbolLayerV2* msl = static_cast<QgsMarkerSymbolLayerV2*>( marker->symbolLayer( k ) );
+              sizeExpression = QString( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField() );
+              msl->setDataDefinedProperty( "size", sizeExpression );
+            }
+          }
+        }
+      }
+      break;
+    default:
+      break;
+  }
+
+  return new QgsRuleBasedRendererV2( origSymbol );
 }

@@ -64,6 +64,7 @@ typedef QList<QgsRendererRangeV2> QgsRangeList;
 
 class QgsVectorLayer;
 class QgsVectorColorRampV2;
+class QgsRuleBasedRenderedV2;
 
 class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 {
@@ -201,6 +202,10 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! If supported by the renderer, return classification attribute for the use in legend
     //! @note added in 2.6
     virtual QString legendClassificationAttribute() const { return classAttribute(); }
+
+    //! convert the renderer to a rule based renderer with equivalent rules
+    //! @note added in 2.5
+    virtual QgsRuleBasedRendererV2* convertToRuleBasedRenderer();
 
   protected:
     QString mAttrName;
