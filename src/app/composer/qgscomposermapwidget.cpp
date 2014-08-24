@@ -715,6 +715,10 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mAtlasMarginSpinBox->blockSignals( b );
   mAtlasFixedScaleRadio->blockSignals( b );
   mAtlasMarginRadio->blockSignals( b );
+  mKeepLayerListCheckBox->blockSignals( b );
+  mSetToMapCanvasExtentButton->blockSignals( b );
+  mUpdatePreviewButton->blockSignals( b );
+
   blockGridItemsSignals( b );
   blockOverviewItemsSignals( b );
 }
