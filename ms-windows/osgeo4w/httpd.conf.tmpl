@@ -2,6 +2,7 @@ LoadModule fcgid_module modules/mod_fcgid.so
 
 DefaultInitEnv PATH "@osgeo4w@\bin;@osgeo4w@\apps\@package@\bin;@osgeo4w@\apps\grass\grass-@grassversion@\bin;@osgeo4w@\apps\grass\grass-@grassversion@\lib;@windir@\system32;@windir@;@windir@\System32\Wbem"
 DefaultInitEnv QGIS_PREFIX_PATH "@osgeo4w@\apps\@package@"
+DefaultInitEnv QT_PLUGIN_PATH "@osgeo4w@\apps\@package@\qtplugins;@osgeo4w@\apps\qt4\plugins"
 DefaultInitEnv TEMP "@temp@"
 
 Alias /@package@/ @osgeo4w@/apps/@package@/bin/
