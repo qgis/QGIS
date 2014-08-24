@@ -113,11 +113,45 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::create( const QgsStringMap& props 
   if ( props.contains( "style" ) )
     style = QgsSymbolLayerV2Utils::decodeBrushStyle( props["style"] );
   if ( props.contains( "color_border" ) )
+  {
+    //pre 2.5 projects used "color_border"
     borderColor = QgsSymbolLayerV2Utils::decodeColor( props["color_border"] );
+  }
+  else if ( props.contains( "outline_color" ) )
+  {
+    borderColor = QgsSymbolLayerV2Utils::decodeColor( props["outline_color"] );
+  }
+  else if ( props.contains( "line_color" ) )
+  {
+    borderColor = QgsSymbolLayerV2Utils::decodeColor( props["line_color"] );
+  }
+
   if ( props.contains( "style_border" ) )
+  {
+    //pre 2.5 projects used "style_border"
     borderStyle = QgsSymbolLayerV2Utils::decodePenStyle( props["style_border"] );
+  }
+  else if ( props.contains( "outline_style" ) )
+  {
+    borderStyle = QgsSymbolLayerV2Utils::decodePenStyle( props["outline_style"] );
+  }
+  else if ( props.contains( "line_style" ) )
+  {
+    borderStyle = QgsSymbolLayerV2Utils::decodePenStyle( props["line_style"] );
+  }
   if ( props.contains( "width_border" ) )
+  {
+    //pre 2.5 projects used "width_border"
     borderWidth = props["width_border"].toDouble();
+  }
+  else if ( props.contains( "outline_width" ) )
+  {
+    borderWidth = props["outline_width"].toDouble();
+  }
+  else if ( props.contains( "line_width" ) )
+  {
+    borderWidth = props["line_width"].toDouble();
+  }
   if ( props.contains( "offset" ) )
     offset = QgsSymbolLayerV2Utils::decodePoint( props["offset"] );
   if ( props.contains( "joinstyle" ) )
@@ -126,7 +160,17 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::create( const QgsStringMap& props 
   QgsSimpleFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( color, style, borderColor, borderStyle, borderWidth, penJoinStyle );
   sl->setOffset( offset );
   if ( props.contains( "border_width_unit" ) )
+  {
     sl->setBorderWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["border_width_unit"] ) );
+  }
+  else if ( props.contains( "outline_width_unit" ) )
+  {
+    sl->setBorderWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["outline_width_unit"] ) );
+  }
+  else if ( props.contains( "line_width_unit" ) )
+  {
+    sl->setBorderWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["line_width_unit"] ) );
+  }
   if ( props.contains( "offset_unit" ) )
     sl->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
 
@@ -227,10 +271,10 @@ QgsStringMap QgsSimpleFillSymbolLayerV2::properties() const
   QgsStringMap map;
   map["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
   map["style"] = QgsSymbolLayerV2Utils::encodeBrushStyle( mBrushStyle );
-  map["color_border"] = QgsSymbolLayerV2Utils::encodeColor( mBorderColor );
-  map["style_border"] = QgsSymbolLayerV2Utils::encodePenStyle( mBorderStyle );
-  map["width_border"] = QString::number( mBorderWidth );
-  map["border_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mBorderWidthUnit );
+  map["outline_color"] = QgsSymbolLayerV2Utils::encodeColor( mBorderColor );
+  map["outline_style"] = QgsSymbolLayerV2Utils::encodePenStyle( mBorderStyle );
+  map["outline_width"] = QString::number( mBorderWidth );
+  map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mBorderWidthUnit );
   map["border_width_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mBorderWidthMapUnitScale );
   map["joinstyle"] = QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
@@ -404,9 +448,19 @@ QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::create( const QgsStringMap& prop
   if ( props.contains( "color_type" ) )
     colorType = ( GradientColorType )props["color_type"].toInt();
   if ( props.contains( "gradient_color" ) )
+  {
+    //pre 2.5 projects used "gradient_color"
     color = QgsSymbolLayerV2Utils::decodeColor( props["gradient_color"] );
+  }
+  else if ( props.contains( "color" ) )
+  {
+    color = QgsSymbolLayerV2Utils::decodeColor( props["color"] );
+  }
   if ( props.contains( "gradient_color2" ) )
+  {
     color2 = QgsSymbolLayerV2Utils::decodeColor( props["gradient_color2"] );
+  }
+
   if ( props.contains( "reference_point1" ) )
     referencePoint1 = QgsSymbolLayerV2Utils::decodePoint( props["reference_point1"] );
   if ( props.contains( "reference_point1_iscentroid" ) )
@@ -417,6 +471,7 @@ QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::create( const QgsStringMap& prop
     refPoint2IsCentroid = props["reference_point2_iscentroid"].toInt();
   if ( props.contains( "angle" ) )
     angle = props["angle"].toDouble();
+
   if ( props.contains( "offset" ) )
     offset = QgsSymbolLayerV2Utils::decodePoint( props["offset"] );
 
@@ -764,7 +819,7 @@ void QgsGradientFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList
 QgsStringMap QgsGradientFillSymbolLayerV2::properties() const
 {
   QgsStringMap map;
-  map["gradient_color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
+  map["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
   map["gradient_color2"] = QgsSymbolLayerV2Utils::encodeColor( mColor2 );
   map["color_type"] = QString::number( mGradientColorType );
   map["type"] = QString::number( mGradientType );
@@ -870,11 +925,22 @@ QgsSymbolLayerV2* QgsShapeburstFillSymbolLayerV2::create( const QgsStringMap& pr
   }
   if ( props.contains( "shapeburst_color" ) )
   {
+    //pre 2.5 projects used "shapeburst_color"
     color = QgsSymbolLayerV2Utils::decodeColor( props["shapeburst_color"] );
   }
+  else if ( props.contains( "color" ) )
+  {
+    color = QgsSymbolLayerV2Utils::decodeColor( props["color"] );
+  }
+
   if ( props.contains( "shapeburst_color2" ) )
   {
+    //pre 2.5 projects used "shapeburst_color2"
     color2 = QgsSymbolLayerV2Utils::decodeColor( props["shapeburst_color2"] );
+  }
+  else if ( props.contains( "gradient_color2" ) )
+  {
+    color2 = QgsSymbolLayerV2Utils::decodeColor( props["gradient_color2"] );
   }
   if ( props.contains( "blur_radius" ) )
   {
@@ -1328,8 +1394,8 @@ void QgsShapeburstFillSymbolLayerV2::dtArrayToQImage( double * array, QImage *im
 QgsStringMap QgsShapeburstFillSymbolLayerV2::properties() const
 {
   QgsStringMap map;
-  map["shapeburst_color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
-  map["shapeburst_color2"] = QgsSymbolLayerV2Utils::encodeColor( mColor2 );
+  map["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
+  map["gradient_color2"] = QgsSymbolLayerV2Utils::encodeColor( mColor2 );
   map["color_type"] = QString::number( mColorType );
   map["blur_radius"] = QString::number( mBlurRadius );
   map["use_whole_shape"] = QString::number( mUseWholeShape );
@@ -1677,15 +1743,38 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
   //svg parameters
   if ( properties.contains( "svgFillColor" ) )
   {
+    //pre 2.5 projects used "svgFillColor"
     symbolLayer->setSvgFillColor( QgsSymbolLayerV2Utils::decodeColor( properties["svgFillColor"] ) );
+  }
+  else if ( properties.contains( "color" ) )
+  {
+    symbolLayer->setSvgFillColor( QgsSymbolLayerV2Utils::decodeColor( properties["color"] ) );
   }
   if ( properties.contains( "svgOutlineColor" ) )
   {
+    //pre 2.5 projects used "svgOutlineColor"
     symbolLayer->setSvgOutlineColor( QgsSymbolLayerV2Utils::decodeColor( properties["svgOutlineColor"] ) );
+  }
+  else if ( properties.contains( "outline_color" ) )
+  {
+    symbolLayer->setSvgOutlineColor( QgsSymbolLayerV2Utils::decodeColor( properties["outline_color"] ) );
+  }
+  else if ( properties.contains( "line_color" ) )
+  {
+    symbolLayer->setSvgOutlineColor( QgsSymbolLayerV2Utils::decodeColor( properties["line_color"] ) );
   }
   if ( properties.contains( "svgOutlineWidth" ) )
   {
+    //pre 2.5 projects used "svgOutlineWidth"
     symbolLayer->setSvgOutlineWidth( properties["svgOutlineWidth"].toDouble() );
+  }
+  else if ( properties.contains( "outline_width" ) )
+  {
+    symbolLayer->setSvgOutlineWidth( properties["outline_width"].toDouble() );
+  }
+  else if ( properties.contains( "line_width" ) )
+  {
+    symbolLayer->setSvgOutlineWidth( properties["line_width"].toDouble() );
   }
 
   //units
@@ -1829,9 +1918,9 @@ QgsStringMap QgsSVGFillSymbolLayer::properties() const
   map.insert( "angle", QString::number( mAngle ) );
 
   //svg parameters
-  map.insert( "svgFillColor", QgsSymbolLayerV2Utils::encodeColor( mSvgFillColor ) );
-  map.insert( "svgOutlineColor", QgsSymbolLayerV2Utils::encodeColor( mSvgOutlineColor ) );
-  map.insert( "svgOutlineWidth", QString::number( mSvgOutlineWidth ) );
+  map.insert( "color", QgsSymbolLayerV2Utils::encodeColor( mSvgFillColor ) );
+  map.insert( "outline_color", QgsSymbolLayerV2Utils::encodeColor( mSvgOutlineColor ) );
+  map.insert( "outline_width", QString::number( mSvgOutlineWidth ) );
 
   //units
   map.insert( "pattern_width_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mPatternWidthUnit ) );
@@ -2195,7 +2284,12 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::create( const QgsStringMap& pro
 
   if ( properties.contains( "lineangle" ) )
   {
+    //pre 2.5 projects used "lineangle"
     lineAngle = properties["lineangle"].toDouble();
+  }
+  else if ( properties.contains( "angle" ) )
+  {
+    lineAngle = properties["angle"].toDouble();
   }
   patternLayer->setLineAngle( lineAngle );
 
@@ -2207,13 +2301,30 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::create( const QgsStringMap& pro
 
   if ( properties.contains( "linewidth" ) )
   {
+    //pre 2.5 projects used "linewidth"
     lineWidth = properties["linewidth"].toDouble();
+  }
+  else if ( properties.contains( "outline_width" ) )
+  {
+    lineWidth = properties["outline_width"].toDouble();
+  }
+  else if ( properties.contains( "line_width" ) )
+  {
+    lineWidth = properties["line_width"].toDouble();
   }
   patternLayer->setLineWidth( lineWidth );
 
   if ( properties.contains( "color" ) )
   {
     color = QgsSymbolLayerV2Utils::decodeColor( properties["color"] );
+  }
+  else if ( properties.contains( "outline_color" ) )
+  {
+    color = QgsSymbolLayerV2Utils::decodeColor( properties["outline_color"] );
+  }
+  else if ( properties.contains( "line_color" ) )
+  {
+    color = QgsSymbolLayerV2Utils::decodeColor( properties["line_color"] );
   }
   patternLayer->setColor( color );
 
@@ -2235,6 +2346,10 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::create( const QgsStringMap& pro
   if ( properties.contains( "line_width_unit" ) )
   {
     patternLayer->setLineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["line_width_unit"] ) );
+  }
+  else if ( properties.contains( "outline_width_unit" ) )
+  {
+    patternLayer->setLineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["outline_width_unit"] ) );
   }
   if ( properties.contains( "line_width_map_unit_scale" ) )
   {
@@ -2590,9 +2705,9 @@ void QgsLinePatternFillSymbolLayer::stopRender( QgsSymbolV2RenderContext & )
 QgsStringMap QgsLinePatternFillSymbolLayer::properties() const
 {
   QgsStringMap map;
-  map.insert( "lineangle", QString::number( mLineAngle ) );
+  map.insert( "angle", QString::number( mLineAngle ) );
   map.insert( "distance", QString::number( mDistance ) );
-  map.insert( "linewidth", QString::number( mLineWidth ) );
+  map.insert( "line_width", QString::number( mLineWidth ) );
   map.insert( "color", QgsSymbolLayerV2Utils::encodeColor( mColor ) );
   map.insert( "offset", QString::number( mOffset ) );
   map.insert( "distance_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceUnit ) );

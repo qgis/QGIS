@@ -77,7 +77,18 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   if ( props.contains( "color" ) )
     color = QgsSymbolLayerV2Utils::decodeColor( props["color"] );
   if ( props.contains( "color_border" ) )
+  {
+    //pre 2.5 projects use "color_border"
     borderColor = QgsSymbolLayerV2Utils::decodeColor( props["color_border"] );
+  }
+  else if ( props.contains( "outline_color" ) )
+  {
+    borderColor = QgsSymbolLayerV2Utils::decodeColor( props["outline_color"] );
+  }
+  else if ( props.contains( "line_color" ) )
+  {
+    borderColor = QgsSymbolLayerV2Utils::decodeColor( props["line_color"] );
+  }
   if ( props.contains( "size" ) )
     size = props["size"].toDouble();
   if ( props.contains( "angle" ) )
@@ -101,13 +112,25 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   {
     m->setOutlineStyle( QgsSymbolLayerV2Utils::decodePenStyle( props["outline_style"] ) );
   }
+  else if ( props.contains( "line_style" ) )
+  {
+    m->setOutlineStyle( QgsSymbolLayerV2Utils::decodePenStyle( props["line_style"] ) );
+  }
   if ( props.contains( "outline_width" ) )
   {
     m->setOutlineWidth( props["outline_width"].toDouble() );
   }
+  else if ( props.contains( "line_width" ) )
+  {
+    m->setOutlineWidth( props["line_width"].toDouble() );
+  }
   if ( props.contains( "outline_width_unit" ) )
   {
     m->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["outline_width_unit"] ) );
+  }
+  if ( props.contains( "line_width_unit" ) )
+  {
+    m->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["line_width_unit"] ) );
   }
   if ( props.contains( "outline_width_map_unit_scale" ) )
   {
@@ -588,7 +611,7 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
   QgsStringMap map;
   map["name"] = mName;
   map["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
-  map["color_border"] = QgsSymbolLayerV2Utils::encodeColor( mBorderColor );
+  map["outline_color"] = QgsSymbolLayerV2Utils::encodeColor( mBorderColor );
   map["size"] = QString::number( mSize );
   map["size_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSizeUnit );
   map["size_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mSizeMapUnitScale );
@@ -1009,7 +1032,8 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2( name, size, angle, scaleMethod );
 
   //we only check the svg default parameters if necessary, since it could be expensive
-  if ( !props.contains( "fill" ) && !props.contains( "outline" ) && !props.contains( "outline-width" ) )
+  if ( !props.contains( "fill" ) && !props.contains( "color" ) && !props.contains( "outline" ) &&
+       !props.contains( "outline_color" ) && !props.contains( "outline-width" ) && !props.contains( "outline_width" ) )
   {
     QColor fillColor, outlineColor;
     double outlineWidth;
@@ -1040,13 +1064,50 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   if ( props.contains( "offset_map_unit_scale" ) )
     m->setOffsetMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["offset_map_unit_scale"] ) );
   if ( props.contains( "fill" ) )
+  {
+    //pre 2.5 projects used "fill"
     m->setFillColor( QColor( props["fill"] ) );
+  }
+  else if ( props.contains( "color" ) )
+  {
+    m->setFillColor( QColor( props["color"] ) );
+  }
   if ( props.contains( "outline" ) )
+  {
+    //pre 2.5 projects used "outline"
     m->setOutlineColor( QColor( props["outline"] ) );
+  }
+  else if ( props.contains( "outline_color" ) )
+  {
+    m->setOutlineColor( QColor( props["outline_color"] ) );
+  }
+  else if ( props.contains( "line_color" ) )
+  {
+    m->setOutlineColor( QColor( props["line_color"] ) );
+  }
+
   if ( props.contains( "outline-width" ) )
+  {
+    //pre 2.5 projects used "outline-width"
     m->setOutlineWidth( props["outline-width"].toDouble() );
+  }
+  else if ( props.contains( "outline_width" ) )
+  {
+    m->setOutlineWidth( props["outline_width"].toDouble() );
+  }
+  else if ( props.contains( "line_width" ) )
+  {
+    m->setOutlineWidth( props["line_width"].toDouble() );
+  }
+
   if ( props.contains( "outline_width_unit" ) )
+  {
     m->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["outline_width_unit"] ) );
+  }
+  else if ( props.contains( "line_width_unit" ) )
+  {
+    m->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["line_width_unit"] ) );
+  }
   if ( props.contains( "outline_width_map_unit_scale" ) )
     m->setOutlineWidthMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["outline_width_map_unit_scale"] ) );
 
@@ -1302,9 +1363,9 @@ QgsStringMap QgsSvgMarkerSymbolLayerV2::properties() const
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   map["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
   map["scale_method"] = QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod );
-  map["fill"] = mFillColor.name();
-  map["outline"] = mOutlineColor.name();
-  map["outline-width"] = QString::number( mOutlineWidth );
+  map["color"] = mFillColor.name();
+  map["outline_color"] = mOutlineColor.name();
+  map["outline_width"] = QString::number( mOutlineWidth );
   map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
   map["outline_width_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOutlineWidthMapUnitScale );
   map["horizontal_anchor_point"] = QString::number( mHorizontalAnchorPoint );

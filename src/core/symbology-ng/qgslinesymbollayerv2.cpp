@@ -80,17 +80,59 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::create( const QgsStringMap& props 
   double width = DEFAULT_SIMPLELINE_WIDTH;
   Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE;
 
-  if ( props.contains( "color" ) )
+  if ( props.contains( "line_color" ) )
+  {
+    color = QgsSymbolLayerV2Utils::decodeColor( props["line_color"] );
+  }
+  else if ( props.contains( "outline_color" ) )
+  {
+    color = QgsSymbolLayerV2Utils::decodeColor( props["outline_color"] );
+  }
+  else if ( props.contains( "color" ) )
+  {
+    //pre 2.5 projects used "color"
     color = QgsSymbolLayerV2Utils::decodeColor( props["color"] );
-  if ( props.contains( "width" ) )
+  }
+  if ( props.contains( "line_width" ) )
+  {
+    width = props["line_width"].toDouble();
+  }
+  else if ( props.contains( "outline_width" ) )
+  {
+    width = props["outline_width"].toDouble();
+  }
+  else if ( props.contains( "width" ) )
+  {
+    //pre 2.5 projects used "width"
     width = props["width"].toDouble();
-  if ( props.contains( "penstyle" ) )
+  }
+  if ( props.contains( "line_style" ) )
+  {
+    penStyle = QgsSymbolLayerV2Utils::decodePenStyle( props["line_style"] );
+  }
+  else if ( props.contains( "outline_style" ) )
+  {
+    penStyle = QgsSymbolLayerV2Utils::decodePenStyle( props["outline_style"] );
+  }
+  else if ( props.contains( "penstyle" ) )
+  {
     penStyle = QgsSymbolLayerV2Utils::decodePenStyle( props["penstyle"] );
-
+  }
 
   QgsSimpleLineSymbolLayerV2* l = new QgsSimpleLineSymbolLayerV2( color, width, penStyle );
-  if ( props.contains( "width_unit" ) )
+  if ( props.contains( "line_width_unit" ) )
+  {
+    l->setWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["line_width_unit"] ) );
+  }
+  else if ( props.contains( "outline_width_unit" ) )
+  {
+    l->setWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["outline_width_unit"] ) );
+  }
+  else if ( props.contains( "width_unit" ) )
+  {
+    //pre 2.5 projects used "width_unit"
     l->setWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["width_unit"] ) );
+  }
   if ( props.contains( "offset" ) )
     l->setOffset( props["offset"].toDouble() );
   if ( props.contains( "offset_unit" ) )
@@ -285,11 +327,11 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
 QgsStringMap QgsSimpleLineSymbolLayerV2::properties() const
 {
   QgsStringMap map;
-  map["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
-  map["width"] = QString::number( mWidth );
-  map["width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mWidthUnit );
+  map["line_color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
+  map["line_width"] = QString::number( mWidth );
+  map["line_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mWidthUnit );
   map["width_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mWidthMapUnitScale );
-  map["penstyle"] = QgsSymbolLayerV2Utils::encodePenStyle( mPenStyle );
+  map["line_style"] = QgsSymbolLayerV2Utils::encodePenStyle( mPenStyle );
   map["joinstyle"] = QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle );
   map["capstyle"] = QgsSymbolLayerV2Utils::encodePenCapStyle( mPenCapStyle );
   map["offset"] = QString::number( mOffset );
