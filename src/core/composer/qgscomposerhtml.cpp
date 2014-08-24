@@ -183,7 +183,6 @@ void QgsComposerHtml::loadHtml()
     qApp->processEvents();
   }
 
-  renderCachedImage();
   recalculateFrameSizes();
   //trigger a repaint
   emit contentsChanged();
@@ -214,6 +213,7 @@ void QgsComposerHtml::recalculateFrameSizes()
   mWebPage->setViewportSize( contentsSize );
   mSize.setWidth( contentsSize.width() / mHtmlUnitsToMM );
   mSize.setHeight( contentsSize.height() / mHtmlUnitsToMM );
+  renderCachedImage();
   QgsComposerMultiFrame::recalculateFrameSizes();
   emit changed();
 }
