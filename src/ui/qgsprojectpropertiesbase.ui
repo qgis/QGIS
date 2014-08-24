@@ -1566,7 +1566,7 @@
                  <property name="syncGroup" stdset="0">
                   <string notr="true">projowsserver</string>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_12">
+                 <layout class="QGridLayout" name="gridLayout_13">
                   <item row="2" column="0">
                    <widget class="QgsCollapsibleGroupBox" name="mWMSComposerGroupBox">
                     <property name="title">
