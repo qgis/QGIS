@@ -214,6 +214,8 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see url
      */
     void loadHtml();
+
+    /**Recalculates the frame sizes for the current viewport dimensions*/
     void recalculateFrameSizes();
     void refreshExpressionContext();
 
