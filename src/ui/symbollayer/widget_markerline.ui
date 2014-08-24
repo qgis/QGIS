@@ -56,7 +56,7 @@
            </sizepolicy>
           </property>
           <property name="decimals">
-           <number>2</number>
+           <number>6</number>
           </property>
           <property name="maximum">
            <double>10000000.000000000000000</double>
@@ -120,7 +120,7 @@
            </sizepolicy>
           </property>
           <property name="decimals">
-           <number>2</number>
+           <number>6</number>
           </property>
           <property name="maximum">
            <double>10000000.000000000000000</double>
@@ -183,7 +183,7 @@
         </sizepolicy>
        </property>
        <property name="decimals">
-        <number>5</number>
+        <number>6</number>
        </property>
        <property name="minimum">
         <double>-100000.000000000000000</double>

@@ -69,6 +69,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
        <property name="maximum">
         <double>999999999.000000000000000</double>
        </property>
@@ -100,7 +103,7 @@
         </sizepolicy>
        </property>
        <property name="decimals">
-        <number>5</number>
+        <number>6</number>
        </property>
        <property name="minimum">
         <double>-99.000000000000000</double>

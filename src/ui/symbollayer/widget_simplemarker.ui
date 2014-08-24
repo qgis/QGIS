@@ -114,7 +114,7 @@
         </sizepolicy>
        </property>
        <property name="decimals">
-        <number>5</number>
+        <number>6</number>
        </property>
        <property name="maximum">
         <double>100000.000000000000000</double>
@@ -161,6 +161,9 @@
        </property>
        <property name="singleStep">
         <double>0.200000000000000</double>
+       </property>
+       <property name="decimals">
+        <number>6</number>
        </property>
       </widget>
      </item>
@@ -210,7 +213,7 @@
         </sizepolicy>
        </property>
        <property name="decimals">
-        <number>5</number>
+        <number>6</number>
        </property>
        <property name="minimum">
         <double>-100.000000000000000</double>
@@ -229,7 +232,7 @@
         </sizepolicy>
        </property>
        <property name="decimals">
-        <number>5</number>
+        <number>6</number>
        </property>
        <property name="minimum">
         <double>-100.000000000000000</double>
