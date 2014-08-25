@@ -137,7 +137,7 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>40</width>
+           <width>20</width>
            <height>20</height>
           </size>
          </property>
@@ -147,7 +147,7 @@
         <widget class="QPushButton" name="btnSaveSymbol">
          <property name="maximumSize">
           <size>
-           <width>50</width>
+           <width>70</width>
            <height>16777215</height>
           </size>
          </property>
