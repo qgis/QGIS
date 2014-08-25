@@ -171,6 +171,11 @@ void QgsComposerItem::setSelected( bool s )
 {
   QgsDebugMsg( "entered." );
   QGraphicsRectItem::setSelected( s );
+  //inform model that id data has changed
+  if ( mComposition )
+  {
+    mComposition->itemsModel()->updateItemSelectStatus( this );
+  }
   update(); //to draw selection boxes
 }
 

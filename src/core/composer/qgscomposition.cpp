@@ -228,9 +228,28 @@ void QgsComposition::refreshItems()
 
 void QgsComposition::setSelectedItem( QgsComposerItem *item )
 {
-  clearSelection();
+  setAllUnselected();
   item->setSelected( true );
   emit selectedItemChanged( item );
+}
+
+void QgsComposition::setAllUnselected()
+{
+  //we can't use QGraphicsScene::clearSelection, as that emits no signals
+  //and we don't know which items are being unselected
+  //accordingly, we can't inform the composition model of selection changes
+  //instead, do the clear selection manually...
+  QList<QGraphicsItem *> selectedItemList = selectedItems();
+  QList<QGraphicsItem *>::iterator itemIter = selectedItemList.begin();
+
+  for ( ; itemIter != selectedItemList.end(); ++itemIter )
+  {
+    QgsComposerItem* composerItem = dynamic_cast<QgsComposerItem *>( *itemIter );
+    if ( composerItem )
+    {
+      composerItem->setSelected( false );
+    }
+  }
 }
 
 void QgsComposition::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
@@ -982,7 +1001,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     pasteShiftPos = *pos - minItemPos;
 
     //since we are pasting items, clear the existing selection
-    clearSelection();
+    setAllUnselected();
   }
 
   if ( pasteInPlace )
@@ -1384,7 +1403,7 @@ void QgsComposition::selectNextByZOrder( ZValueDirection direction )
   }
 
   //ok, found a good target item
-  clearSelection();
+  setAllUnselected();
   selectedItem->setSelected( true );
   emit selectedItemChanged( selectedItem );
 }
@@ -1658,7 +1677,7 @@ void QgsComposition::lockSelectedItems()
     subcommand->saveAfterState();
   }
 
-  clearSelection();
+  setAllUnselected();
   mUndoStack->push( parentCommand );
   QgsProject::instance()->dirty( true );
 }
@@ -1670,7 +1689,7 @@ void QgsComposition::unlockAllItems()
   QUndoCommand* parentCommand = new QUndoCommand( tr( "Items unlocked" ) );
 
   //first, clear the selection
-  clearSelection();
+  setAllUnselected();
 
   QList<QGraphicsItem *> itemList = items();
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();

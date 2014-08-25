@@ -175,6 +175,20 @@ QVariant QgsComposerModel::data( const QModelIndex &index, int role ) const
           return QVariant();
       }
 
+    case Qt::FontRole:
+      if ( index.column() == ItemId && item->isSelected() )
+      {
+        //draw name of selected items in bold
+        QFont boldFont;
+        boldFont.setBold( true );
+        return boldFont;
+      }
+      else
+      {
+        return QVariant();
+      }
+      break;
+
     default:
       return QVariant();
   }
@@ -490,6 +504,25 @@ void QgsComposerModel::updateItemVisibility( QgsComposerItem *item )
 
   //need to get QModelIndex of item
   QModelIndex itemIndex = indexForItem( item, Visibility );
+  if ( !itemIndex.isValid() )
+  {
+    return;
+  }
+
+  //emit signal for item visibility change
+  emit dataChanged( itemIndex, itemIndex );
+}
+
+void QgsComposerModel::updateItemSelectStatus( QgsComposerItem *item )
+{
+  if ( !item )
+  {
+    //nothing to do
+    return;
+  }
+
+  //need to get QModelIndex of item
+  QModelIndex itemIndex = indexForItem( item, ItemId );
   if ( !itemIndex.isValid() )
   {
     return;

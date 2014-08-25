@@ -598,6 +598,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @note added in version 2.3*/
     void setSelectedItem( QgsComposerItem* item );
 
+    /**Clears any selected items in the composition. Call this method rather than
+     * QGraphicsScene::clearSelection, as the latter does not correctly emit signals to allow
+     * the composition's model to update.
+     * @note added in version 2.5*/
+    void setAllUnselected();
+
     /**Refreshes a data defined property for the composition by reevaluating the property's value
      * and redrawing the composition with this new value.
      * @param property data defined property to refresh. If property is set to

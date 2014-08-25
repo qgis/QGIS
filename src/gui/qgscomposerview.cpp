@@ -233,7 +233,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       if (( !selectedItem->selected() ) &&        //keep selection if an already selected item pressed
           !( e->modifiers() & Qt::ShiftModifier ) ) //keep selection if shift key pressed
       {
-        composition()->clearSelection();
+        composition()->setAllUnselected();
       }
 
       if (( e->modifiers() & Qt::ShiftModifier ) && ( selectedItem->selected() ) )
@@ -372,7 +372,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         }
         newScaleBar->applyDefaultSize(); //4 segments, 1/5 of composer map width
 
-        composition()->clearSelection();
+        composition()->setAllUnselected();
         newScaleBar->setSelected( true );
         emit selectedItemChanged( newScaleBar );
 
@@ -447,7 +447,7 @@ void QgsComposerView::addShape( Tool currentTool )
     composition()->addComposerShape( composerShape );
     removeRubberBand();
 
-    composition()->clearSelection();
+    composition()->setAllUnselected();
     composerShape->setSelected( true );
     emit selectedItemChanged( composerShape );
 
@@ -511,7 +511,7 @@ void QgsComposerView::endMarqueeSelect( QMouseEvent* e )
   else
   {
     //not adding to or removing from selection, so clear current selection
-    composition()->clearSelection();
+    composition()->setAllUnselected();
   }
 
   if ( !mRubberBandItem || ( mRubberBandItem->rect().width() < 0.1 && mRubberBandItem->rect().height() < 0.1 ) )
@@ -743,7 +743,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         QgsComposerArrow* composerArrow = new QgsComposerArrow( mRubberBandLineItem->line().p1(), mRubberBandLineItem->line().p2(), composition() );
         composition()->addComposerArrow( composerArrow );
 
-        composition()->clearSelection();
+        composition()->setAllUnselected();
         composerArrow->setSelected( true );
         emit selectedItemChanged( composerArrow );
 
@@ -772,7 +772,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         QgsComposerMap* composerMap = new QgsComposerMap( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
         composition()->addComposerMap( composerMap );
 
-        composition()->clearSelection();
+        composition()->setAllUnselected();
         composerMap->setSelected( true );
         emit selectedItemChanged( composerMap );
 
@@ -794,7 +794,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         newPicture->setSceneRect( QRectF( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() ) );
         composition()->addComposerPicture( newPicture );
 
-        composition()->clearSelection();
+        composition()->setAllUnselected();
         newPicture->setSelected( true );
         emit selectedItemChanged( newPicture );
 
@@ -823,7 +823,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 
         composition()->addComposerLabel( newLabelItem );
 
-        composition()->clearSelection();
+        composition()->setAllUnselected();
         newLabelItem->setSelected( true );
         emit selectedItemChanged( newLabelItem );
 
@@ -846,7 +846,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         composition()->addComposerLegend( newLegend );
         newLegend->updateLegend();
 
-        composition()->clearSelection();
+        composition()->setAllUnselected();
         newLegend->setSelected( true );
         emit selectedItemChanged( newLegend );
 
@@ -873,7 +873,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         }
         composition()->addComposerTable( newTable );
 
-        composition()->clearSelection();
+        composition()->setAllUnselected();
         newTable->setSelected( true );
         emit selectedItemChanged( newTable );
 
@@ -902,7 +902,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         composerHtml->addFrame( frame );
         composition()->endMultiFrameCommand();
 
-        composition()->clearSelection();
+        composition()->setAllUnselected();
         frame->setSelected( true );
         emit selectedItemChanged( frame );
 
@@ -1263,7 +1263,7 @@ void QgsComposerView::selectNone()
     return;
   }
 
-  composition()->clearSelection();
+  composition()->setAllUnselected();
 }
 
 void QgsComposerView::selectInvert()

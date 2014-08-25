@@ -192,6 +192,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @param item item to update
      * @see updateItemLockStatus
      * @see updateItemVisibility
+     * @see updateItemSelectStatus
      * @note added in QGIS 2.5
      */
     void updateItemDisplayName( QgsComposerItem *item );
@@ -200,6 +201,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @param item item to update
      * @see updateItemDisplayName
      * @see updateItemVisibility
+     * @see updateItemSelectStatus
      * @note added in QGIS 2.5
      */
     void updateItemLockStatus( QgsComposerItem *item );
@@ -208,9 +210,19 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @param item item to update
      * @see updateItemDisplayName
      * @see updateItemLockStatus
+     * @see updateItemSelectStatus
      * @note added in QGIS 2.5
      */
     void updateItemVisibility( QgsComposerItem *item );
+
+    /**Must be called when an item's selection status changes
+     * @param item item to update
+     * @see updateItemDisplayName
+     * @see updateItemVisibility
+     * @see updateItemLockStatus
+     * @note added in QGIS 2.5
+     */
+    void updateItemSelectStatus( QgsComposerItem *item );
 
   public slots:
 
