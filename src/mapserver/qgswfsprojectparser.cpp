@@ -462,7 +462,7 @@ int QgsWFSProjectParser::wfsLayerPrecision( const QString& aLayerId ) const
   QStringList wfsLayersId = mProjectParser.wfsLayers();
   if ( !wfsLayersId.contains( aLayerId ) )
   {
-	  return -1;
+    return -1;
   }
   int prec = 8;
   QDomElement propertiesElem = mProjectParser.propertiesElem();
@@ -471,12 +471,12 @@ int QgsWFSProjectParser::wfsLayerPrecision( const QString& aLayerId ) const
     QDomElement wfsPrecElem = propertiesElem.firstChildElement( "WFSLayersPrecision" );
     if ( !wfsPrecElem.isNull() )
     {
-	  QDomElement wfsLayerPrecElem = wfsPrecElem.firstChildElement( aLayerId );
+      QDomElement wfsLayerPrecElem = wfsPrecElem.firstChildElement( aLayerId );
       if ( !wfsLayerPrecElem.isNull() )
       {
         QString precStr = wfsLayerPrecElem.text();
         prec = precStr.toInt();
-	  }
+      }
     }
   }
   return prec;

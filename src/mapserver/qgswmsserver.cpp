@@ -2242,7 +2242,7 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
           continue;
         }
 
-        QgsRectangle layerExtent = mMapRenderer->layerToMapCoordinates(mapLayer, mapLayer->extent());
+        QgsRectangle layerExtent = mMapRenderer->layerToMapCoordinates( mapLayer, mapLayer->extent() );
         if ( filterExtent.isEmpty() )
         {
           filterExtent = layerExtent;
@@ -3021,7 +3021,7 @@ int QgsWMSServer::getImageQuality( ) const
   return imageQuality;
 }
 
-int QgsWMSServer::getWMSPrecision( int defaultValue = 8) const
+int QgsWMSServer::getWMSPrecision( int defaultValue = 8 ) const
 {
   // First taken from QGIS project
   int WMSPrecision = mConfigParser->WMSPrecision();
@@ -3037,7 +3037,8 @@ int QgsWMSServer::getWMSPrecision( int defaultValue = 8) const
       WMSPrecision = WMSPrecisionParameter;
     }
   }
-  if ( WMSPrecision == -1 ){
+  if ( WMSPrecision == -1 )
+  {
     WMSPrecision = defaultValue;
   }
   return WMSPrecision;

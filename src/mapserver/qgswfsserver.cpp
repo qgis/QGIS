@@ -437,7 +437,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
         //excluded attributes for this layer
         const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWFS();
-        
+
         //get layer precision
         layerPrec = mConfigParser->wfsLayerPrecision( layer->id() );
 
@@ -778,7 +778,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
       //excluded attributes for this layer
       const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWFS();
-      
+
       //get layer precision
       int layerPrec = mConfigParser->wfsLayerPrecision( layer->id() );
 

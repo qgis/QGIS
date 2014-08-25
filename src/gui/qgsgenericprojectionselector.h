@@ -70,7 +70,7 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
     void setSelectedAuthId( QString authId );
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    
+
     /**
      * \brief filters this dialog by the given CRSs
      *

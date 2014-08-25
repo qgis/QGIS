@@ -260,7 +260,7 @@ class QgsWMSServer: public QgsOWSServer
     int getImageQuality() const;
 
     /** Return precision to use for GetFeatureInfo request */
-    int getWMSPrecision(int defaultValue ) const;
+    int getWMSPrecision( int defaultValue ) const;
 };
 
 #endif

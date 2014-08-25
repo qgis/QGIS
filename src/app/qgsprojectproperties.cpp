@@ -405,9 +405,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
       smPublied->setMapping( cbp, j );
       connect( cbp, SIGNAL( stateChanged( int ) ), smPublied, SLOT( map() ) );
-      
+
       QSpinBox* psb = new QSpinBox();
-      psb->setValue( QgsProject::instance()->readNumEntry( "WFSLayersPrecision", "/"+currentLayer->id(), 8 ) );
+      psb->setValue( QgsProject::instance()->readNumEntry( "WFSLayersPrecision", "/" + currentLayer->id(), 8 ) );
       twWFSLayers->setCellWidget( j, 2, psb );
 
       QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( currentLayer );
@@ -755,7 +755,7 @@ void QgsProjectProperties::apply()
   }
 
   // WMS GetFeatureInfo geometry precision (decimal places)
-  QgsProject::instance()->writeEntry( "WMSPrecision", "/", mWMSPrecisionSpinBox->text());
+  QgsProject::instance()->writeEntry( "WMSPrecision", "/", mWMSPrecisionSpinBox->text() );
 
   if ( grpWMSExt->isChecked() )
   {
@@ -870,25 +870,25 @@ void QgsProjectProperties::apply()
     if ( cb && cb->isChecked() )
     {
       wfsLayerList << id;
-      
+
       QSpinBox* sb = qobject_cast<QSpinBox *>( twWFSLayers->cellWidget( i, 2 ) );
-      QgsProject::instance()->writeEntry( "WFSLayersPrecision", "/"+id, sb->value() );
-      
+      QgsProject::instance()->writeEntry( "WFSLayersPrecision", "/" + id, sb->value() );
+
       cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 3 ) );
-	  if ( cb && cb->isChecked() )
-	  {
-	    wfstUpdateLayerList << id;
-	  }
-	  cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 4 ) );
-	  if ( cb && cb->isChecked() )
-	  {
-	    wfstInsertLayerList << id;
-	  }
-	  cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 5 ) );
-	  if ( cb && cb->isChecked() )
-	  {
-	    wfstDeleteLayerList << id;
-	  }
+      if ( cb && cb->isChecked() )
+      {
+        wfstUpdateLayerList << id;
+      }
+      cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 4 ) );
+      if ( cb && cb->isChecked() )
+      {
+        wfstInsertLayerList << id;
+      }
+      cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 5 ) );
+      if ( cb && cb->isChecked() )
+      {
+        wfstDeleteLayerList << id;
+      }
     }
   }
   QgsProject::instance()->writeEntry( "WFSLayers", "/", wfsLayerList );

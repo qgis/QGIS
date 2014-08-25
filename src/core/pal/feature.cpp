@@ -384,9 +384,9 @@ namespace pal
 
 #if 0
     double distlabel =  unit_convert( this->distlabel,
-                                     pal::PIXEL,
-                                     layer->pal->map_unit,
-                                     dpi, scale, delta_width );
+                                      pal::PIXEL,
+                                      layer->pal->map_unit,
+                                      dpi, scale, delta_width );
 #endif
 
     double lx, ly; /* label pos */
