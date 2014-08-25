@@ -305,19 +305,6 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
-    <widget class="QPushButton" name="mDataDefinedPropertiesButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Data defined properties...</string>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
@@ -388,7 +375,20 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="1" column="0" colspan="2">
+    <widget class="QPushButton" name="mDataDefinedPropertiesButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Data defined properties...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLineEdit" name="mFileLineEdit"/>
@@ -418,8 +418,23 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>spinSize</tabstop>
+  <tabstop>mSizeUnitWidget</tabstop>
+  <tabstop>spinAngle</tabstop>
+  <tabstop>mChangeColorButton</tabstop>
+  <tabstop>mChangeBorderColorButton</tabstop>
+  <tabstop>mBorderWidthSpinBox</tabstop>
+  <tabstop>mBorderWidthUnitWidget</tabstop>
   <tabstop>spinOffsetX</tabstop>
   <tabstop>spinOffsetY</tabstop>
+  <tabstop>mOffsetUnitWidget</tabstop>
+  <tabstop>mHorizontalAnchorComboBox</tabstop>
+  <tabstop>mVerticalAnchorComboBox</tabstop>
+  <tabstop>mDataDefinedPropertiesButton</tabstop>
+  <tabstop>viewGroups</tabstop>
+  <tabstop>viewImages</tabstop>
+  <tabstop>mFileLineEdit</tabstop>
+  <tabstop>mFileToolButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

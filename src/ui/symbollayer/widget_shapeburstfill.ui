@@ -13,16 +13,13 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
+  <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0" colspan="2">
     <widget class="QGroupBox" name="mGradientTypeGroupBox">
      <property name="title">
       <string>Gradient colors</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_2">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-      </property>
+     <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="QRadioButton" name="radioTwoColor">
         <property name="text">
@@ -121,7 +118,7 @@
       <item row="1" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <property name="spacing">
-         <number>0</number>
+         <number>6</number>
         </property>
         <item>
          <widget class="QRadioButton" name="mRadioUseMaxDistance">
@@ -154,14 +151,14 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Blur strength</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="2" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
       <widget class="QSlider" name="mBlurSlider">
@@ -197,14 +194,14 @@
      </item>
     </layout>
    </item>
-   <item row="5" column="0">
+   <item row="3" column="0">
     <widget class="QLabel" name="label_6">
      <property name="text">
       <string>Offset X,Y</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
+   <item row="3" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QDoubleSpinBox" name="spinOffsetX">
@@ -255,7 +252,7 @@
      </item>
     </layout>
    </item>
-   <item row="6" column="0" colspan="2">
+   <item row="4" column="0" colspan="2">
     <widget class="QPushButton" name="mDataDefinedPropertiesButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -267,6 +264,19 @@
       <string>Data defined properties...</string>
      </property>
     </widget>
+   </item>
+   <item row="5" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
@@ -288,6 +298,24 @@
    <header>qgscolorrampcombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>radioTwoColor</tabstop>
+  <tabstop>btnChangeColor</tabstop>
+  <tabstop>btnChangeColor2</tabstop>
+  <tabstop>radioColorRamp</tabstop>
+  <tabstop>cboGradientColorRamp</tabstop>
+  <tabstop>mRadioUseWholeShape</tabstop>
+  <tabstop>mRadioUseMaxDistance</tabstop>
+  <tabstop>mSpinMaxDistance</tabstop>
+  <tabstop>mDistanceUnitWidget</tabstop>
+  <tabstop>mIgnoreRingsCheckBox</tabstop>
+  <tabstop>mBlurSlider</tabstop>
+  <tabstop>mSpinBlurRadius</tabstop>
+  <tabstop>spinOffsetX</tabstop>
+  <tabstop>spinOffsetY</tabstop>
+  <tabstop>mOffsetUnitWidget</tabstop>
+  <tabstop>mDataDefinedPropertiesButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

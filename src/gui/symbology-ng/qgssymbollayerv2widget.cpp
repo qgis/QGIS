@@ -1310,6 +1310,7 @@ void QgsShapeburstFillSymbolLayerV2Widget::on_mRadioUseWholeShape_toggled( bool 
   if ( mLayer )
   {
     mLayer->setUseWholeShape( value );
+    mDistanceUnitWidget->setEnabled( !value );
     emit changed();
   }
 }

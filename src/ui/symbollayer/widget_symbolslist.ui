@@ -341,6 +341,18 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>viewSymbols</tabstop>
+  <tabstop>mSymbolUnitWidget</tabstop>
+  <tabstop>mTransparencySlider</tabstop>
+  <tabstop>btnColor</tabstop>
+  <tabstop>spinSize</tabstop>
+  <tabstop>spinAngle</tabstop>
+  <tabstop>groupsCombo</tabstop>
+  <tabstop>openStyleManagerButton</tabstop>
+  <tabstop>btnAdvanced</tabstop>
+  <tabstop>spinWidth</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

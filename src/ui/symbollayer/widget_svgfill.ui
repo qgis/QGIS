@@ -91,13 +91,7 @@
     </layout>
    </item>
    <item row="0" column="0">
-    <layout class="QFormLayout" name="formLayout">
-     <property name="fieldGrowthPolicy">
-      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-     </property>
-     <property name="labelAlignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-     </property>
+    <layout class="QGridLayout" name="gridLayout">
      <property name="horizontalSpacing">
       <number>28</number>
      </property>
@@ -299,6 +293,20 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mTextureWidthSpinBox</tabstop>
+  <tabstop>mTextureWidthUnitWidget</tabstop>
+  <tabstop>mRotationSpinBox</tabstop>
+  <tabstop>mChangeColorButton</tabstop>
+  <tabstop>mChangeBorderColorButton</tabstop>
+  <tabstop>mBorderWidthSpinBox</tabstop>
+  <tabstop>mSvgOutlineWidthUnitWidget</tabstop>
+  <tabstop>mDataDefinedPropertiesButton</tabstop>
+  <tabstop>mSvgTreeView</tabstop>
+  <tabstop>mSvgListView</tabstop>
+  <tabstop>mSVGLineEdit</tabstop>
+  <tabstop>mBrowseToolButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

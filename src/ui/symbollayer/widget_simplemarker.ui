@@ -140,7 +140,7 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QgsPenStyleComboBox" name="mOutlineStyleComboBox" native="true"/>
+    <widget class="QgsPenStyleComboBox" name="mOutlineStyleComboBox"/>
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="mOutlineWidthLabel">
@@ -368,14 +368,26 @@
   </customwidget>
   <customwidget>
    <class>QgsPenStyleComboBox</class>
-   <extends>QWidget</extends>
+   <extends>QComboBox</extends>
    <header>qgspenstylecombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>lstNames</tabstop>
+  <tabstop>btnChangeColorFill</tabstop>
+  <tabstop>btnChangeColorBorder</tabstop>
+  <tabstop>spinSize</tabstop>
+  <tabstop>mSizeUnitWidget</tabstop>
+  <tabstop>mOutlineStyleComboBox</tabstop>
+  <tabstop>mOutlineWidthSpinBox</tabstop>
+  <tabstop>mOutlineWidthUnitWidget</tabstop>
+  <tabstop>spinAngle</tabstop>
   <tabstop>spinOffsetX</tabstop>
   <tabstop>spinOffsetY</tabstop>
+  <tabstop>mOffsetUnitWidget</tabstop>
+  <tabstop>mHorizontalAnchorComboBox</tabstop>
+  <tabstop>mVerticalAnchorComboBox</tabstop>
+  <tabstop>mDataDefinedPropertiesButton</tabstop>
+  <tabstop>lstNames</tabstop>
  </tabstops>
  <resources/>
  <connections/>
