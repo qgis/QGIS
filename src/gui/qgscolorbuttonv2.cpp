@@ -69,6 +69,16 @@ QgsColorButtonV2::~QgsColorButtonV2()
 {
 }
 
+QSize QgsColorButtonV2::sizeHint() const
+{
+  //make sure height of button looks good under different platforms
+#ifdef Q_WS_WIN
+  return QSize( 120, 22 );
+#else
+  return QSize( 120, 28 );
+#endif
+}
+
 const QPixmap& QgsColorButtonV2::transparentBackground()
 {
   static QPixmap transpBkgrd;
@@ -524,7 +534,12 @@ void QgsColorButtonV2::setButtonBackground( const QColor color )
     initStyleOption( &opt );
     QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
                        this );
-    mIconSize = QSize( buttonSize.width() - 10, buttonSize.height() - 10 );
+    //make sure height of icon looks good under different platforms
+#ifdef Q_WS_WIN
+    mIconSize = QSize( buttonSize.width() - 10, height() - 14 );
+#else
+    mIconSize = QSize( buttonSize.width() - 10, height() - 12 );
+#endif
   }
   //create an icon pixmap
   QPixmap pixmap( mIconSize );
