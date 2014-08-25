@@ -90,7 +90,24 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QgsColorRampComboBox" name="cboGradientColorRamp"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <widget class="QgsColorRampComboBox" name="cboGradientColorRamp"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mButtonEditRamp">
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Edit</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

@@ -26,6 +26,8 @@
 #include "qgssymbolv2selectordialog.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsvectorcolorrampv2.h"
+#include "qgsvectorgradientcolorrampv2dialog.h"
 
 #include "qgsstylev2.h" //for symbol selector dialog
 
@@ -959,6 +961,29 @@ void QgsGradientFillSymbolLayerV2Widget::applyColorRamp()
   emit changed();
 }
 
+void QgsGradientFillSymbolLayerV2Widget::on_mButtonEditRamp_clicked()
+{
+  if ( mLayer->colorRamp()->type() == "gradient" )
+  {
+    QgsVectorColorRampV2* ramp = mLayer->colorRamp()->clone();
+    QgsVectorGradientColorRampV2* gradRamp = static_cast<QgsVectorGradientColorRampV2*>( ramp );
+    QgsVectorGradientColorRampV2Dialog dlg( gradRamp, this );
+
+    if ( dlg.exec() && gradRamp )
+    {
+      mLayer->setColorRamp( gradRamp );
+      cboGradientColorRamp->blockSignals( true );
+      cboGradientColorRamp->setSourceColorRamp( mLayer->colorRamp() );
+      cboGradientColorRamp->blockSignals( false );
+      emit changed();
+    }
+    else
+    {
+      delete ramp;
+    }
+  }
+}
+
 void QgsGradientFillSymbolLayerV2Widget::setGradientType( int index )
 {
   switch ( index )
@@ -1323,6 +1348,29 @@ void QgsShapeburstFillSymbolLayerV2Widget::applyColorRamp()
 
   mLayer->setColorRamp( ramp );
   emit changed();
+}
+
+void QgsShapeburstFillSymbolLayerV2Widget::on_mButtonEditRamp_clicked()
+{
+  if ( mLayer->colorRamp()->type() == "gradient" )
+  {
+    QgsVectorColorRampV2* ramp = mLayer->colorRamp()->clone();
+    QgsVectorGradientColorRampV2* gradRamp = static_cast<QgsVectorGradientColorRampV2*>( ramp );
+    QgsVectorGradientColorRampV2Dialog dlg( gradRamp, this );
+
+    if ( dlg.exec() && gradRamp )
+    {
+      mLayer->setColorRamp( gradRamp );
+      cboGradientColorRamp->blockSignals( true );
+      cboGradientColorRamp->setSourceColorRamp( mLayer->colorRamp() );
+      cboGradientColorRamp->blockSignals( false );
+      emit changed();
+    }
+    else
+    {
+      delete ramp;
+    }
+  }
 }
 
 void QgsShapeburstFillSymbolLayerV2Widget::offsetChanged()

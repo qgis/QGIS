@@ -14,20 +14,11 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="leftMargin">
-    <number>1</number>
-   </property>
-   <property name="topMargin">
-    <number>1</number>
-   </property>
-   <property name="rightMargin">
-    <number>1</number>
-   </property>
-   <property name="bottomMargin">
-    <number>1</number>
-   </property>
    <property name="horizontalSpacing">
     <number>28</number>
+   </property>
+   <property name="margin">
+    <number>1</number>
    </property>
    <item row="0" column="0">
     <widget class="QRadioButton" name="radioTwoColor">
@@ -102,7 +93,24 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QgsColorRampComboBox" name="cboGradientColorRamp"/>
+    <layout class="QHBoxLayout" name="horizontalLayout_8">
+     <item>
+      <widget class="QgsColorRampComboBox" name="cboGradientColorRamp"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mButtonEditRamp">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Edit</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_2">
@@ -408,7 +416,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget"/>
+      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true"/>
      </item>
     </layout>
    </item>
@@ -448,7 +456,7 @@
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
-   <extends>QComboBox</extends>
+   <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
