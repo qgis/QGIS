@@ -99,9 +99,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void setTitle( const QString& title );
 
     //! Load template into current or blank composer
-    //! @param newCompser whether to create a new composer first
+    //! @param newComposer whether to create a new composer first
     //! @note added in 1.9
-    void loadTemplate( bool newCompser );
+    void loadTemplate( const bool newComposer );
 
   protected:
     //! Move event

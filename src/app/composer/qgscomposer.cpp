@@ -2533,7 +2533,7 @@ void QgsComposer::on_mActionLoadFromTemplate_triggered()
   loadTemplate( false );
 }
 
-void QgsComposer::loadTemplate( bool newCompser )
+void QgsComposer::loadTemplate( const bool newComposer )
 {
   QSettings settings;
   QString openFileDir = settings.value( "UI/lastComposerTemplateDir", "" ).toString();
@@ -2557,7 +2557,7 @@ void QgsComposer::loadTemplate( bool newCompser )
   QgsComposer* c = 0;
   QgsComposition* comp = 0;
 
-  if ( newCompser )
+  if ( newComposer )
   {
     QString newTitle = mQgis->uniqueComposerTitle( this, true );
     if ( newTitle.isNull() )
@@ -2588,9 +2588,9 @@ void QgsComposer::loadTemplate( bool newCompser )
       dlg->setStyleSheet( mQgis->styleSheet() );
       dlg->show();
 
-      c->hide();
-      comp->loadFromTemplate( templateDoc, 0, false );
-      c->activate();
+      c->setUpdatesEnabled( false );
+      comp->loadFromTemplate( templateDoc, 0, false, newComposer );
+      c->setUpdatesEnabled( true );
 
       dlg->close();
       delete dlg;

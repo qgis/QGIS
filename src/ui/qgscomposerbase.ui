@@ -482,10 +482,10 @@
   </action>
   <action name="mActionLoadFromTemplate">
    <property name="text">
-    <string>Load from Template</string>
+    <string>Add Items from Template</string>
    </property>
    <property name="toolTip">
-    <string>Load from template</string>
+    <string>Add items from template</string>
    </property>
   </action>
   <action name="mActionSaveAsTemplate">

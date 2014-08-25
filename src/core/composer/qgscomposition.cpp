@@ -838,27 +838,30 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   return true;
 }
 
-bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QString>* substitutionMap, bool addUndoCommands )
+bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QString>* substitutionMap, bool addUndoCommands, const bool clearComposition )
 {
-  deleteAndRemoveMultiFrames();
-
-  //delete all items and emit itemRemoved signal
-  QList<QGraphicsItem *> itemList = items();
-  QList<QGraphicsItem *>::iterator itemIter = itemList.begin();
-  for ( ; itemIter != itemList.end(); ++itemIter )
+  if ( clearComposition )
   {
-    QgsComposerItem* cItem = dynamic_cast<QgsComposerItem*>( *itemIter );
-    if ( cItem )
-    {
-      removeItem( cItem );
-      emit itemRemoved( cItem );
-      delete cItem;
-    }
-  }
-  mItemsModel->clear();
+    deleteAndRemoveMultiFrames();
 
-  mPages.clear();
-  mUndoStack->clear();
+    //delete all items and emit itemRemoved signal
+    QList<QGraphicsItem *> itemList = items();
+    QList<QGraphicsItem *>::iterator itemIter = itemList.begin();
+    for ( ; itemIter != itemList.end(); ++itemIter )
+    {
+      QgsComposerItem* cItem = dynamic_cast<QgsComposerItem*>( *itemIter );
+      if ( cItem )
+      {
+        removeItem( cItem );
+        emit itemRemoved( cItem );
+        delete cItem;
+      }
+    }
+    mItemsModel->clear();
+
+    mPages.clear();
+    mUndoStack->clear();
+  }
 
   QDomDocument importDoc;
   if ( substitutionMap )
@@ -883,21 +886,25 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
   }
 
   //read general settings
-  QDomElement compositionElem = importDoc.documentElement().firstChildElement( "Composition" );
-  if ( compositionElem.isNull() )
+  QDomElement atlasElem;
+  if ( clearComposition )
   {
-    return false;
-  }
+    QDomElement compositionElem = importDoc.documentElement().firstChildElement( "Composition" );
+    if ( compositionElem.isNull() )
+    {
+      return false;
+    }
 
-  bool ok = readXML( compositionElem, importDoc );
-  if ( !ok )
-  {
-    return false;
-  }
+    bool ok = readXML( compositionElem, importDoc );
+    if ( !ok )
+    {
+      return false;
+    }
 
-  // read atlas parameters - must be done before adding items
-  QDomElement atlasElem = importDoc.documentElement().firstChildElement( "Atlas" );
-  atlasComposition().readXML( atlasElem, importDoc );
+    // read atlas parameters - must be done before adding items
+    atlasElem = importDoc.documentElement().firstChildElement( "Atlas" );
+    atlasComposition().readXML( atlasElem, importDoc );
+  }
 
   // remove all uuid attributes since we don't want duplicates UUIDS
   QDomNodeList composerItemsNodes = importDoc.elementsByTagName( "ComposerItem" );
@@ -916,7 +923,10 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
 
   //read atlas map parameters (for pre 2.2 templates)
   //this can only be done after items have been added
-  atlasComposition().readXMLMapSettings( atlasElem, importDoc );
+  if ( clearComposition )
+  {
+    atlasComposition().readXMLMapSettings( atlasElem, importDoc );
+  }
   return true;
 }
 

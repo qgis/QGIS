@@ -353,8 +353,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
         @param doc template document
         @param substitutionMap map with text to replace. Text needs to be enclosed by brackets (e.g. '[text]' )
         @param addUndoCommands whether or not to add undo commands
+        @param clearComposition set to true to clear the existing composition and read all composition and
+        atlas properties from the template. Set to false to only add new items from the template, without
+        overwriting the existing items or composition settings.
       */
-    bool loadFromTemplate( const QDomDocument& doc, QMap<QString, QString>* substitutionMap = 0, bool addUndoCommands = false );
+    bool loadFromTemplate( const QDomDocument& doc, QMap<QString, QString>* substitutionMap = 0,
+                           bool addUndoCommands = false, const bool clearComposition = true );
 
     /**Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
       @param elem items parent element, e.g. \verbatim <Composer> \endverbatim or \verbatim <ComposerItemClipboard> \endverbatim
