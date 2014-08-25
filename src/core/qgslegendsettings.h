@@ -94,6 +94,12 @@ class CORE_EXPORT QgsLegendSettings
     bool useAdvancedEffects() const { return mUseAdvancedEffects; }
     void setUseAdvancedEffects( bool use ) { mUseAdvancedEffects = use; }
 
+    double mapScale() const { return mMapScale; }
+    void setMapScale( double scale ) { mMapScale = scale; }
+
+    int dpi() const { return mDpi; }
+    void setDpi( int dpi ) { mDpi = dpi; }
+
     // utility functions
 
     /** Splits a string using the wrap char taking into account handling empty
@@ -175,6 +181,12 @@ class CORE_EXPORT QgsLegendSettings
 
     /** Whether to use advanced effects like transparency for symbols - may require their rasterization */
     bool mUseAdvancedEffects;
+
+    /** Denominator of map's scale */
+    double mMapScale;
+
+    /** DPI to be used when rendering legend */
+    int mDpi;
 };
 
 

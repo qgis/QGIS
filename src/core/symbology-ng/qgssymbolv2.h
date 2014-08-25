@@ -105,7 +105,10 @@ class CORE_EXPORT QgsSymbolV2
     void setColor( const QColor& color );
     QColor color() const;
 
-    void drawPreviewIcon( QPainter* painter, QSize size );
+    //! Draw icon of the symbol that occupyies area given by size using the painter.
+    //! Optionally custom context may be given in order to get rendering of symbols that use map units right.
+    //! @note customContext parameter added in 2.6
+    void drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext* customContext = 0 );
 
     QImage bigSymbolPreviewImage();
 

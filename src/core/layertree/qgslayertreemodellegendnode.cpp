@@ -207,9 +207,13 @@ QSizeF QgsSymbolV2LegendNode::drawSymbol( const QgsLegendSettings& settings, Ite
     return QSizeF();
   }
 
-  //consider relation to composer map for symbol sizes in mm
-  bool sizeInMapUnits = s->outputUnit() == QgsSymbolV2::MapUnit;
-  QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( s );
+  // setup temporary render context
+  QgsRenderContext context;
+  context.setScaleFactor( settings.dpi() / 25.4 );
+  context.setRendererScale( settings.mapScale() );
+  context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) ); // hope it's ok to leave out other params
+  context.setForceVectorOutput( true );
+  context.setPainter( ctx ? ctx->painter : 0 );
 
   //Consider symbol size for point markers
   double height = settings.symbolSize().height();
@@ -219,17 +223,12 @@ QSizeF QgsSymbolV2LegendNode::drawSymbol( const QgsLegendSettings& settings, Ite
   double widthOffset = 0;
   double heightOffset = 0;
 
-  if ( markerSymbol )
+  if ( QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( s ) )
   {
-    size = markerSymbol->size();
+    // allow marker symbol to occupy bigger area if necessary
+    size = markerSymbol->size() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context, s->outputUnit(), s->mapUnitScale() ) / context.scaleFactor();
     height = size;
     width = size;
-    if ( sizeInMapUnits )
-    {
-      height *= settings.mmPerMapUnit();
-      width *= settings.mmPerMapUnit();
-      markerSymbol->setSize( width );
-    }
     if ( width < settings.symbolSize().width() )
     {
       widthOffset = ( settings.symbolSize().width() - width ) / 2.0;
@@ -247,18 +246,7 @@ QSizeF QgsSymbolV2LegendNode::drawSymbol( const QgsLegendSettings& settings, Ite
     QPainter* p = ctx->painter;
 
     //setup painter scaling to dots so that raster symbology is drawn to scale
-    double dotsPerMM = 1.0;
-    QPaintDevice* paintDevice = p->device();
-    if ( !paintDevice )
-    {
-      return QSizeF();
-    }
-    dotsPerMM = paintDevice->logicalDpiX() / 25.4;
-
-    if ( markerSymbol && sizeInMapUnits )
-    {
-      s->setOutputUnit( QgsSymbolV2::MM );
-    }
+    double dotsPerMM = context.scaleFactor();
 
     int opacity = 255;
     if ( QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( parent()->layer() ) )
@@ -275,7 +263,7 @@ QSizeF QgsSymbolV2LegendNode::drawSymbol( const QgsLegendSettings& settings, Ite
       tempImage.fill( Qt::transparent );
       imagePainter.translate( dotsPerMM * ( currentXPosition + widthOffset ),
                               dotsPerMM * ( currentYCoord + heightOffset ) );
-      s->drawPreviewIcon( &imagePainter, QSize( width * dotsPerMM, height * dotsPerMM ) );
+      s->drawPreviewIcon( &imagePainter, QSize( width * dotsPerMM, height * dotsPerMM ), &context );
       //reduce opacity of image
       imagePainter.setCompositionMode( QPainter::CompositionMode_DestinationIn );
       imagePainter.fillRect( tempImage.rect(), QColor( 0, 0, 0, opacity ) );
@@ -287,15 +275,9 @@ QSizeF QgsSymbolV2LegendNode::drawSymbol( const QgsLegendSettings& settings, Ite
     {
       p->translate( currentXPosition + widthOffset, currentYCoord + heightOffset );
       p->scale( 1.0 / dotsPerMM, 1.0 / dotsPerMM );
-      s->drawPreviewIcon( p, QSize( width * dotsPerMM, height * dotsPerMM ) );
+      s->drawPreviewIcon( p, QSize( width * dotsPerMM, height * dotsPerMM ), &context );
     }
     p->restore();
-
-    if ( markerSymbol && sizeInMapUnits )
-    {
-      s->setOutputUnit( QgsSymbolV2::MapUnit );
-      markerSymbol->setSize( size );
-    }
   }
 
   return QSizeF( qMax( width + 2 * widthOffset, settings.symbolSize().width() ),

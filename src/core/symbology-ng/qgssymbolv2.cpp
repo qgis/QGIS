@@ -283,9 +283,9 @@ QColor QgsSymbolV2::color() const
   return QColor( 0, 0, 0 );
 }
 
-void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size )
+void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext* customContext )
 {
-  QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( painter );
+  QgsRenderContext context = customContext ? *customContext : QgsSymbolLayerV2Utils::createRenderContext( painter );
   context.setForceVectorOutput( true );
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, 0, 0, mapUnitScale() );
 

@@ -65,7 +65,11 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
 
   if ( mComposition )
+  {
     mSettings.setUseAdvancedEffects( mComposition->useAdvancedEffects() );
+    mSettings.setMapScale( mComposition->mapSettings().scale() );
+    mSettings.setDpi( painter->device()->logicalDpiX() );
+  }
   if ( mComposerMap )
     mSettings.setMmPerMapUnit( mComposerMap->mapUnitsToMM() );
 

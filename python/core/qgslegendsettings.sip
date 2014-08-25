@@ -71,6 +71,12 @@ class QgsLegendSettings
     bool useAdvancedEffects() const;
     void setUseAdvancedEffects( bool use );
 
+    double mapScale() const;
+    void setMapScale( double scale );
+
+    int dpi() const;
+    void setDpi( int dpi );
+
     // utility functions
 
     /** Splits a string using the wrap char taking into account handling empty
