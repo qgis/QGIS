@@ -52,8 +52,8 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
 
     //! Defines the relation ID (from project relations)
     //! @note use a widget's property to keep compatibility with using basic widget instead of QgsRelationEditorWidget
-    void setQgisRelation( QString qgisRelationId ) {setProperty( "qgisRelation", qgisRelationId );}
-    QString qgisRelation() {return "test";}  //property( "qgisRelation" ).toString()
+    void setQgisRelation( QString qgisRelationId ) { mRelationId = qgisRelationId; }
+    QString qgisRelation() {return mRelationId; }
 
     void setRelationFeature( const QgsRelation& relation, const QgsFeature& feature, const QgsAttributeEditorContext& context );
 
@@ -74,6 +74,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QgsGenericFeatureSelectionManager* mFeatureSelectionMgr;
     QgsAttributeEditorContext mEditorContext;
     QgsRelation mRelation;
+    QString mRelationId;
     QgsFeature mFeature;
 
     QToolButton* mToggleEditingButton;

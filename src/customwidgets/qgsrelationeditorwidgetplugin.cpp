@@ -83,6 +83,9 @@ QString QgsRelationEditorWidgetPlugin::domXml() const
 {
   return QString( "<ui language=\"c++\">\n"
                   " <widget class=\"%1\" name=\"mRelationEditor\">\n"
+                  "  <property name=\"qgisRelation\" >\n"
+                  "   <string notr=\"true\"></string>\n"
+                  "  </property>\n"
                   "  <property name=\"geometry\">\n"
                   "   <rect>\n"
                   "    <x>0</x>\n"
