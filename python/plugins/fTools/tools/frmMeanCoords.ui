@@ -133,6 +133,9 @@
      <property name="text">
       <string>Add result to canvas</string>
      </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item row="7" column="0">
