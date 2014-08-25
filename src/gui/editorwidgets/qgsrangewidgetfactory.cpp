@@ -60,7 +60,7 @@ void QgsRangeWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QD
   configElement.setAttribute( "Step", config["Step"].toInt() );
 }
 
-bool QgsRangeWidgetFactory::supportsField( QgsVectorLayer* vl, int fieldIdx )
+bool QgsRangeWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fieldIdx )
 {
   switch ( vl->pendingFields()[fieldIdx].type() )
   {

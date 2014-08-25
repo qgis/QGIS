@@ -107,6 +107,8 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * @param vl        The layer
      * @param fieldIdx  The field index
      * @return          True if the type is supported for this field
+     *
+     * @see isFieldSupported( QgsVectorLayer* vl, ind fieldIdx )
      */
     inline bool supportsField( QgsVectorLayer* vl, int fieldIdx ) { return isFieldSupported( vl, fieldIdx ); }
 
@@ -154,6 +156,8 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * @param vl
      * @param fieldIdx
      * @return True if the field is supported.
+     *
+     * @see supportsField( QgsVectorLayer* vl, fieldIdx )
      */
     virtual bool isFieldSupported( QgsVectorLayer* vl, int fieldIdx );
 
