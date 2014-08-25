@@ -609,7 +609,9 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
 
     virtual void hoverMoveEvent( QGraphicsSceneHoverEvent * event );
 
-    /**Draw selection boxes around item*/
+    /**Draws additional graphics on selected items. The base implementation has
+     * no effect.
+    */
     virtual void drawSelectionBoxes( QPainter* p );
 
     /**Draw black frame around item*/
@@ -629,8 +631,10 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     double rectHandlerBorderTolerance() const;
 
     /**Returns the size of the lock symbol depending on the composer zoom level and the item size
-    @note: this function was introduced in version 1.2*/
-    double lockSymbolSize() const;
+    * @note: this function was introduced in version 1.2
+    * @deprecated will be removed in QGIS 3.0
+    */
+    double lockSymbolSize() const /Deprecated/;
 
     /**Returns the zoom factor of the graphics view.
       @return the factor or -1 in case of error (e.g. graphic view does not exist)
@@ -706,5 +710,9 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @note: this function was introduced in version 2.2
     */
     void frameChanged();
+    /**Emitted if the item's lock status changes
+     * @note: this function was introduced in version 2.5
+    */
+    void lockChanged();
 
 };

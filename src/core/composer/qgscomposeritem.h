@@ -613,7 +613,9 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     @note: this member was added in version 2.4*/
     int mCurrentExportLayer;
 
-    /**Draw selection boxes around item*/
+    /**Draws additional graphics on selected items. The base implementation has
+     * no effect.
+    */
     virtual void drawSelectionBoxes( QPainter* p );
 
     /**Draw black frame around item*/
@@ -637,8 +639,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     double rectHandlerBorderTolerance() const;
 
     /**Returns the size of the lock symbol depending on the composer zoom level and the item size
-    @note: this function was introduced in version 1.2*/
-    double lockSymbolSize() const;
+    * @note: this function was introduced in version 1.2
+    * @deprecated will be removed in QGIS 3.0
+    */
+    Q_DECL_DEPRECATED double lockSymbolSize() const;
 
     /**Returns the zoom factor of the graphics view.
       @return the factor or -1 in case of error (e.g. graphic view does not exist)
@@ -714,6 +718,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @note: this function was introduced in version 2.2
     */
     void frameChanged();
+    /**Emitted if the item's lock status changes
+     * @note: this function was introduced in version 2.5
+    */
+    void lockChanged();
 
   private:
     // id (not unique)

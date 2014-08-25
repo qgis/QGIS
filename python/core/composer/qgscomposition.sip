@@ -203,7 +203,11 @@ class QgsComposition : QGraphicsScene
     /** Returns on which page number (0-based) is displayed an item */
     int itemPageNumber( const QgsComposerItem* ) const;
 
-    QList<QgsComposerItem*> selectedComposerItems();
+    /**Returns list of selected composer items
+     * @param includeLockedItems set to true to include locked items in list
+     * @returns list of selected items
+    */
+    QList<QgsComposerItem*> selectedComposerItems( const bool includeLockedItems = true );
 
 %If (QLISTCONSTPTR_CONVERSION)
     /**Returns pointers to all composer maps in the scene

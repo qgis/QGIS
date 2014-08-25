@@ -497,32 +497,35 @@ void QgsComposerItem::cancelCommand()
 
 void QgsComposerItem::drawSelectionBoxes( QPainter* p )
 {
-
-  if ( !mComposition )
+  Q_UNUSED( p );
+  if ( !mComposition || mComposition->plotStyle() != QgsComposition::Preview )
   {
     return;
   }
 
-  if ( mComposition->plotStyle() == QgsComposition::Preview )
+  if ( !isSelected() )
   {
-    double sizeLockSymbol = lockSymbolSize();
-
-    if ( mItemPositionLocked )
-    {
-      //draw lock symbol at upper left edge. Use QImage to be independent of the graphic system
-      QString lockIconPath = QgsApplication::activeThemePath() + "/mIconLock.png";
-      if ( !QFile::exists( lockIconPath ) )
-      {
-        lockIconPath = QgsApplication::defaultThemePath() + "/mIconLock.png";
-      }
-
-      QImage lockImage( lockIconPath );
-      if ( !lockImage.isNull() )
-      {
-        p->drawImage( QRectF( 0, 0, sizeLockSymbol, sizeLockSymbol ), lockImage, QRectF( 0, 0, lockImage.width(), lockImage.height() ) );
-      }
-    }
+    return;
   }
+
+  //logic for drawing additional graphics on selected items here (if required)
+
+  //draw dotted border around locked, selected items
+  if ( positionLock() )
+  {
+    p->save();
+    p->setCompositionMode( QPainter::CompositionMode_Difference );
+
+    // use a grey dashed pen - in difference mode this should always be visible
+    QPen selectedItemPen = QPen( QColor( 144, 144, 144, 255 ) );
+    selectedItemPen.setStyle( Qt::DotLine );
+    selectedItemPen.setWidth( 0 );
+    p->setPen( selectedItemPen );
+    p->setBrush( Qt::NoBrush );
+    p->drawPolygon( rect() );
+    p->restore();
+  }
+
 }
 
 void QgsComposerItem::drawFrame( QPainter* p )
@@ -552,6 +555,8 @@ void QgsComposerItem::setPositionLock( const bool lock )
   {
     mComposition->itemsModel()->updateItemLockStatus( this );
   }
+  update();
+  emit lockChanged();
 }
 
 double QgsComposerItem::itemRotation( const PropertyValueType valueType ) const

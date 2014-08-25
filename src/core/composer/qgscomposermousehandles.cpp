@@ -131,7 +131,7 @@ void QgsComposerMouseHandles::drawHandles( QPainter* painter, double rectHandler
 void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
 {
   //draw dotted border around selected items to give visual feedback which items are selected
-  QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems();
+  QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems( false );
   if ( selectedItems.size() == 0 )
   {
     return;
@@ -206,12 +206,14 @@ void QgsComposerMouseHandles::selectionChanged()
         QObject::connect( item, SIGNAL( sizeChanged() ), this, SLOT( selectedItemSizeChanged() ) );
         QObject::connect( item, SIGNAL( itemRotationChanged( double ) ), this, SLOT( selectedItemRotationChanged() ) );
         QObject::connect( item, SIGNAL( frameChanged( ) ), this, SLOT( selectedItemSizeChanged() ) );
+        QObject::connect( item, SIGNAL( lockChanged( ) ), this, SLOT( selectedItemSizeChanged() ) );
       }
       else
       {
         QObject::disconnect( item, SIGNAL( sizeChanged() ), this, 0 );
         QObject::disconnect( item, SIGNAL( itemRotationChanged( double ) ), this, 0 );
         QObject::disconnect( item, SIGNAL( frameChanged( ) ), this, 0 );
+        QObject::disconnect( item, SIGNAL( lockChanged( ) ), this, 0 );
       }
     }
   }
@@ -243,7 +245,7 @@ void QgsComposerMouseHandles::updateHandles()
   //recalculate size and position of handle item
 
   //first check to see if any items are selected
-  QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems();
+  QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems( false );
   if ( selectedItems.size() > 0 )
   {
     //one or more items are selected, get bounds of all selected items
@@ -282,7 +284,7 @@ void QgsComposerMouseHandles::updateHandles()
 QRectF QgsComposerMouseHandles::selectionBounds() const
 {
   //calculate bounds of all currently selected items in mouse handle coordinate system
-  QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems();
+  QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems( false );
   QList<QgsComposerItem*>::iterator itemIter = selectedItems.begin();
 
   //start with handle bounds of first selected item
@@ -300,7 +302,7 @@ QRectF QgsComposerMouseHandles::selectionBounds() const
 bool QgsComposerMouseHandles::selectionRotation( double & rotation ) const
 {
   //check if all selected items have same rotation
-  QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems();
+  QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems( false );
   QList<QgsComposerItem*>::iterator itemIter = selectedItems.begin();
 
   //start with rotation of first selected item
@@ -598,7 +600,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
     QPointF mEndHandleMovePos = scenePos();
 
     //move all selected items
-    QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems();
+    QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems( false );
     QList<QgsComposerItem*>::iterator itemIter = selectedItems.begin();
     for ( ; itemIter != selectedItems.end(); ++itemIter )
     {
@@ -621,7 +623,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
     QUndoCommand* parentCommand = new QUndoCommand( tr( "Change item size" ) );
 
     //resize all selected items
-    QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems();
+    QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems( false );
     QList<QgsComposerItem*>::iterator itemIter = selectedItems.begin();
     for ( ; itemIter != selectedItems.end(); ++itemIter )
     {
@@ -679,7 +681,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
 
 void QgsComposerMouseHandles::resetStatusBar()
 {
-  QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems();
+  QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems( false );
   int selectedCount = selectedItems.size();
   if ( selectedCount > 1 )
   {
