@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>581</width>
-    <height>259</height>
+    <height>267</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -86,6 +86,15 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mTxtRelationName</tabstop>
+  <tabstop>mCbxReferencingLayer</tabstop>
+  <tabstop>mCbxReferencingField</tabstop>
+  <tabstop>mCbxReferencedLayer</tabstop>
+  <tabstop>mCbxReferencedField</tabstop>
+  <tabstop>mTxtRelationId</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
