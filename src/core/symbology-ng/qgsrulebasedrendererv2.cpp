@@ -1046,5 +1046,5 @@ QgsSymbolV2List QgsRuleBasedRendererV2::symbolsForFeature( QgsFeature& feat )
 
 QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertToRuleBasedRenderer()
 {
-  return this ;
+  return dynamic_cast<QgsRuleBasedRendererV2*>( this->clone() ) ;
 }

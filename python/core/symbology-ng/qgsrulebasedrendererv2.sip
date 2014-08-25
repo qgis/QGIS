@@ -233,7 +233,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     //! convert the renderer to a rule based renderer with equivalent rules, if possible
     //! @note added in 2.5
-    virtual QgsRuleBasedRendererV2* convertToRuleBasedRenderer();
+    virtual QgsRuleBasedRendererV2* convertToRuleBasedRenderer() /Factory/;
 
   private:
     QgsRuleBasedRendererV2( const QgsRuleBasedRendererV2 & );
