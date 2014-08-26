@@ -401,7 +401,6 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
   mCollapseButton->setStyleSheet( ssd );
   if ( offsetLeft != 0 || offsetTopTri != 0 )
     mCollapseButton->move( offsetLeft, offsetTopTri );
-
   setUpdatesEnabled( true );
 }
 
@@ -443,59 +442,30 @@ void QgsCollapsibleGroupBoxBasic::setCollapsed( bool collapse )
 
 void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
 {
-  if ( QApplication::style()->objectName().contains( "macintosh" ) )
+  // handle child widgets so they don't paint while hidden
+  const char* hideKey = "CollGrpBxHide";
+
+  if ( mCollapsed )
   {
-    // handle QPushButtons in form layouts that stay partly visible on collapse (Qt bug?)
-    // hide on collapse for fix, but only show buttons that were specifically hidden when expanding
-    // key hiding off of this group box's object name so it does not affect child group boxes
-    const QByteArray objKey = QString( "CollGrpBxHiddenButton_%1" ).arg( objectName() ).toUtf8();
-    const char* pbHideKey = objKey.constData();
-
-    // handle child group box widgets that don't hide their frames on collapse of parent
-    const char* gbHideKey = "CollGrpBxHideGrpBx";
-
-    if ( mCollapsed )
+    Q_FOREACH( QObject* child, children() )
     {
-      // first hide all child group boxes, regardless of whether they are collapsible
-      foreach ( QGroupBox* gbx, findChildren<QGroupBox *>() )
+      QWidget* w = qobject_cast<QWidget*>( child );
+      if ( w && w != mCollapseButton )
       {
-        if ( gbx->isVisible() && !gbx->property( gbHideKey ).isValid() )
-        {
-          gbx->setProperty( gbHideKey, QVariant( true ) );
-          gbx->hide();
-        }
-      }
-
-      // hide still visible push buttons belonging to this group box
-      foreach ( QPushButton* pBtn, findChildren<QPushButton *>() )
-      {
-        if ( pBtn->isVisible() && !pBtn->property( pbHideKey ).isValid() )
-        {
-          pBtn->setProperty( pbHideKey, QVariant( true ) );
-          pBtn->hide();
-        }
+        w->setProperty( hideKey, true );
+        w->hide();
       }
     }
-    else // on expand
+  }
+  else // on expand
+  {
+    Q_FOREACH( QObject* child, children() )
     {
-      // first show push buttons belonging to this group box
-      foreach ( QPushButton* pBtn, findChildren<QPushButton *>() )
+      QWidget* w = qobject_cast<QWidget*>( child );
+      if ( w && w != mCollapseButton )
       {
-        if ( pBtn->property( pbHideKey ).isValid() ) // don't have to check bool value
-        {
-          pBtn->setProperty( pbHideKey, QVariant() ); // remove property
-          pBtn->show();
-        }
-      }
-
-      // show all hidden child group boxes
-      foreach ( QGroupBox* gbx, findChildren<QGroupBox *>() )
-      {
-        if ( gbx->property( gbHideKey ).isValid() ) // don't have to check bool value
-        {
-          gbx->setProperty( gbHideKey, QVariant() ); // remove property
-          gbx->show();
-        }
+        if ( w->property( hideKey ).toBool() )
+        w->show();
       }
     }
   }
