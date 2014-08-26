@@ -63,18 +63,28 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
 
+  if ( !painter )
+    return;
+
+  int dpi = painter->device()->logicalDpiX();
+  double dotsPerMM = dpi / 25.4;
 
   if ( mComposition )
   {
     mSettings.setUseAdvancedEffects( mComposition->useAdvancedEffects() );
-    mSettings.setMapScale( mComposition->mapSettings().scale() );
-    mSettings.setDpi( painter->device()->logicalDpiX() );
+    mSettings.setDpi( dpi );
   }
   if ( mComposerMap )
+  {
     mSettings.setMmPerMapUnit( mComposerMap->mapUnitsToMM() );
 
-  if ( !painter )
-    return;
+    // use a temporary QgsMapSettings to find out real map scale
+    QgsMapSettings ms = mComposerMap->composition()->mapSettings();
+    ms.setOutputSize( QSizeF( mComposerMap->rect().width() * dotsPerMM, mComposerMap->rect().height() * dotsPerMM ).toSize() );
+    ms.setExtent( *mComposerMap->currentMapExtent() );
+    ms.setOutputDpi( dpi );
+    mSettings.setMapScale( ms.scale() );
+  }
 
   drawBackground( painter );
   painter->save();
