@@ -15,7 +15,7 @@
 
 #include "qgscolorwidgetfactory.h"
 
-#include "qgscolorwidget.h"
+#include "qgscolorwidgetwrapper.h"
 #include "qgsdummyconfigdlg.h"
 
 QgsColorWidgetFactory::QgsColorWidgetFactory( const QString& name )
@@ -26,7 +26,7 @@ QgsColorWidgetFactory::QgsColorWidgetFactory( const QString& name )
 
 QgsEditorWidgetWrapper* QgsColorWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
-  return new QgsColorWidget( vl, fieldIdx, editor, parent );
+  return new QgsColorWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
 QgsEditorConfigWidget* QgsColorWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

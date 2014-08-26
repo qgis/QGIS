@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgstexteditwidget.h
+    qgsclassificationwidgetwrapper.h
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,20 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSTEXTEDITWIDGET_H
-#define QGSTEXTEDITWIDGET_H
+#ifndef QGSCLASSIFICATIONWIDGETWRAPPER_H
+#define QGSCLASSIFICATIONWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
 
-#include <QLineEdit>
-#include <QPlainTextEdit>
-#include <QTextEdit>
+#include <QComboBox>
 
-class GUI_EXPORT QgsTextEditWidget : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsClassificationWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsTextEditWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+    explicit QgsClassificationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -38,12 +36,9 @@ class GUI_EXPORT QgsTextEditWidget : public QgsEditorWidgetWrapper
 
   public slots:
     void setValue( const QVariant& value );
-    void setEnabled( bool enabled );
 
   private:
-    QTextEdit* mTextEdit;
-    QPlainTextEdit* mPlainTextEdit;
-    QLineEdit* mLineEdit;
+    QComboBox* mComboBox;
 };
 
-#endif // QGSTEXTEDITWIDGET_H
+#endif // QGSCLASSIFICATIONWIDGETWRAPPER_H

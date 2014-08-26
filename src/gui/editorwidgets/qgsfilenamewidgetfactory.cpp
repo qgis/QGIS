@@ -15,7 +15,7 @@
 
 #include "qgsfilenamewidgetfactory.h"
 
-#include "qgsfilenamewidget.h"
+#include "qgsfilenamewidgetwrapper.h"
 #include "qgsdummyconfigdlg.h"
 
 QgsFileNameWidgetFactory::QgsFileNameWidgetFactory( const QString& name ) :
@@ -25,7 +25,7 @@ QgsFileNameWidgetFactory::QgsFileNameWidgetFactory( const QString& name ) :
 
 QgsEditorWidgetWrapper* QgsFileNameWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
-  return new QgsFileNameWidget( vl, fieldIdx, editor, parent );
+  return new QgsFileNameWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
 QgsEditorConfigWidget* QgsFileNameWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

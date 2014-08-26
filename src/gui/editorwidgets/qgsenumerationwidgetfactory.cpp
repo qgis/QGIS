@@ -15,7 +15,7 @@
 
 #include "qgsenumerationwidgetfactory.h"
 
-#include "qgsenumerationwidget.h"
+#include "qgsenumerationwidgetwrapper.h"
 #include "qgsdummyconfigdlg.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -27,7 +27,7 @@ QgsEnumerationWidgetFactory::QgsEnumerationWidgetFactory( const QString& name )
 
 QgsEditorWidgetWrapper* QgsEnumerationWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
-  return new QgsEnumerationWidget( vl, fieldIdx, editor, parent );
+  return new QgsEnumerationWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
 QgsEditorConfigWidget* QgsEnumerationWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

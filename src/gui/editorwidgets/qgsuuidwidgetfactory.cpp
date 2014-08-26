@@ -15,7 +15,7 @@
 
 #include "qgsuuidwidgetfactory.h"
 
-#include "qgsuuidwidget.h"
+#include "qgsuuidwidgetwrapper.h"
 #include "qgsdummyconfigdlg.h"
 
 QgsUuidWidgetFactory::QgsUuidWidgetFactory( const QString& name )
@@ -26,7 +26,7 @@ QgsUuidWidgetFactory::QgsUuidWidgetFactory( const QString& name )
 
 QgsEditorWidgetWrapper*QgsUuidWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
-  return new QgsUuidWidget( vl, fieldIdx, editor, parent );
+  return new QgsUuidWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
 QgsEditorConfigWidget*QgsUuidWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

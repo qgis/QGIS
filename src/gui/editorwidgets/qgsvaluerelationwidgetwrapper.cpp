@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsvaluerelationwidget.cpp
+    qgsvaluerelationwidgetwrapper.cpp
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,15 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsvaluerelationwidget.h"
+#include "qgsvaluerelationwidgetwrapper.h"
 
 #include "qgsfield.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvaluerelationwidgetfactory.h"
 #include "qgsvectorlayer.h"
 
-bool orderByKeyLessThan( const QgsValueRelationWidget::ValueRelationItem& p1
-                         , const QgsValueRelationWidget::ValueRelationItem& p2 )
+bool orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
+                         , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
 {
   switch ( p1.first.type() )
   {
@@ -39,19 +39,19 @@ bool orderByKeyLessThan( const QgsValueRelationWidget::ValueRelationItem& p1
   }
 }
 
-bool orderByValueLessThan( const QgsValueRelationWidget::ValueRelationItem& p1
-                           , const QgsValueRelationWidget::ValueRelationItem& p2 )
+bool orderByValueLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
+                           , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
 {
   return p1.second < p2.second;
 }
 
-QgsValueRelationWidget::QgsValueRelationWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
+QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
 {
 }
 
 
-QVariant QgsValueRelationWidget::value()
+QVariant QgsValueRelationWidgetWrapper::value()
 {
   QVariant v;
 
@@ -80,7 +80,7 @@ QVariant QgsValueRelationWidget::value()
   return v;
 }
 
-QWidget* QgsValueRelationWidget::createWidget( QWidget* parent )
+QWidget* QgsValueRelationWidgetWrapper::createWidget( QWidget* parent )
 {
   if ( config( "AllowMulti" ).toBool() )
   {
@@ -92,7 +92,7 @@ QWidget* QgsValueRelationWidget::createWidget( QWidget* parent )
   }
 }
 
-void QgsValueRelationWidget::initWidget( QWidget* editor )
+void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
 {
   mCache = createCache( config() );
 
@@ -127,7 +127,7 @@ void QgsValueRelationWidget::initWidget( QWidget* editor )
   }
 }
 
-void QgsValueRelationWidget::setValue( const QVariant& value )
+void QgsValueRelationWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mListWidget )
   {
@@ -153,7 +153,7 @@ void QgsValueRelationWidget::setValue( const QVariant& value )
 }
 
 
-QgsValueRelationWidget::ValueRelationCache QgsValueRelationWidget::createCache( const QgsEditorWidgetConfig& config )
+QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper::createCache( const QgsEditorWidgetConfig& config )
 {
   ValueRelationCache cache;
 

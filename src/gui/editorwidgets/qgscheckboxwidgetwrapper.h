@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgshiddenwidget.cpp
+    qgscheckboxwidgetwrapper.h
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,34 +13,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshiddenwidget.h"
+#ifndef QGSCHECKBOXWIDGETWRAPPER_H
+#define QGSCHECKBOXWIDGETWRAPPER_H
 
-#include <QWidget>
+#include "qgseditorwidgetwrapper.h"
 
-QgsHiddenWidget::QgsHiddenWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+#include <QCheckBox>
+#include <QGroupBox>
+
+class GUI_EXPORT QgsCheckboxWidgetWrapper : public QgsEditorWidgetWrapper
 {
-}
+    Q_OBJECT
+  public:
+    explicit QgsCheckboxWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
 
+    // QgsEditorWidgetWrapper interface
+  public:
+    QVariant value();
 
-QVariant QgsHiddenWidget::value()
-{
-  return mValue;
-}
+  protected:
+    QWidget*createWidget( QWidget* parent );
+    void initWidget( QWidget* editor );
 
-QWidget* QgsHiddenWidget::createWidget( QWidget* parent )
-{
-  QWidget* wdg = new QWidget( parent );
-  wdg->setVisible( false );
-  return wdg;
-}
+  public slots:
+    void setValue( const QVariant& value );
 
-void QgsHiddenWidget::initWidget( QWidget* editor )
-{
-  editor->setVisible( false );
-}
+  private:
+    QCheckBox* mCheckBox;
+    QGroupBox* mGroupBox;
+};
 
-void QgsHiddenWidget::setValue( const QVariant& value )
-{
-  mValue = value;
-}
+#endif // QGSCHECKBOXWIDGETWRAPPER_H

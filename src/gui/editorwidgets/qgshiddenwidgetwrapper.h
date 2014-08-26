@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgshiddenwidget.h
+    qgshiddenwidgetwrapper.h
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
@@ -13,16 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSHIDDENWIDGET_H
-#define QGSHIDDENWIDGET_H
+#ifndef QGSHIDDENWIDGETWRAPPER_H
+#define QGSHIDDENWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
 
-class GUI_EXPORT QgsHiddenWidget : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsHiddenWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsHiddenWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+    explicit QgsHiddenWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -39,4 +39,4 @@ class GUI_EXPORT QgsHiddenWidget : public QgsEditorWidgetWrapper
     QVariant mValue;
 };
 
-#endif // QGSHIDDENWIDGET_H
+#endif // QGSHIDDENWIDGETWRAPPER_H
