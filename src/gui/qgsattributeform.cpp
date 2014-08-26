@@ -190,7 +190,10 @@ bool QgsAttributeForm::save()
         mLayer->beginEditCommand( mEditCommandMessage );
         bool res = mLayer->addFeature( updatedFeature );
         if ( res )
+        {
+          mFeature.setAttributes( updatedFeature.attributes() );
           mLayer->endEditCommand();
+        }
         else
           mLayer->destroyEditCommand();
       }

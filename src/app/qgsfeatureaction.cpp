@@ -115,7 +115,10 @@ bool QgsFeatureAction::editFeature( bool showModal )
   if ( showModal )
   {
     dialog->setAttribute( Qt::WA_DeleteOnClose );
-    return dialog->exec();
+    int rv = dialog->exec();
+
+    mFeature.setAttributes( dialog->feature()->attributes() );
+    return rv;
   }
   else
   {
