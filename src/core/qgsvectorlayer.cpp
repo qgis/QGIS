@@ -2821,22 +2821,25 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   {
     mDataProvider->uniqueValues( index, uniqueValues, limit );
 
-    QSet<QString> vals;
-    Q_FOREACH( const QVariant& v, uniqueValues )
-      vals << v.toString();
-
-    QMapIterator< QgsFeatureId, QgsAttributeMap > it ( mEditBuffer->changedAttributeValues() );
-    while ( it.hasNext() && ( limit < 0 || uniqueValues.count() < limit ) )
+    if ( mEditBuffer )
     {
-      it.next();
-      QVariant v = it.value().value( index );
-      if ( v.isValid() )
+      QSet<QString> vals;
+      Q_FOREACH( const QVariant& v, uniqueValues )
+        vals << v.toString();
+
+      QMapIterator< QgsFeatureId, QgsAttributeMap > it ( mEditBuffer->changedAttributeValues() );
+      while ( it.hasNext() && ( limit < 0 || uniqueValues.count() < limit ) )
       {
-        QString vs = v.toString();
-        if ( !vals.contains( vs ) )
+        it.next();
+        QVariant v = it.value().value( index );
+        if ( v.isValid() )
         {
-          vals << vs;
-          uniqueValues << v;
+          QString vs = v.toString();
+          if ( !vals.contains( vs ) )
+          {
+            vals << vs;
+            uniqueValues << v;
+          }
         }
       }
     }
