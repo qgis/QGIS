@@ -104,7 +104,7 @@ void QgsActionMenu::triggerMapLayerAction( int index )
 {
   if ( feature() )
   {
-    QgsMapLayerAction* action = QgsMapLayerActionRegistry::instance()->mapLayerActions( mLayer ).at( index );
+    QgsMapLayerAction* action = QgsMapLayerActionRegistry::instance()->mapLayerActions( mLayer, QgsMapLayerAction::Feature ).at( index );
 
     action->triggerForFeature( mLayer, feature() );
   }
@@ -148,7 +148,7 @@ void QgsActionMenu::reloadActions()
     addAction( action );
   }
 
-  QList<QgsMapLayerAction*> mapLayerActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( mLayer );
+  QList<QgsMapLayerAction*> mapLayerActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( mLayer, QgsMapLayerAction::SingleFeature );
 
   if ( mapLayerActions.size() > 0 )
   {
