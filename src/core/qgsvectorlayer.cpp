@@ -2819,7 +2819,29 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
 
   if ( origin == QgsFields::OriginProvider ) //a provider field
   {
-    return mDataProvider->uniqueValues( index, uniqueValues, limit );
+    mDataProvider->uniqueValues( index, uniqueValues, limit );
+
+    QSet<QString> vals;
+    Q_FOREACH( const QVariant& v, uniqueValues )
+      vals << v.toString();
+
+    QMapIterator< QgsFeatureId, QgsAttributeMap > it ( mEditBuffer->changedAttributeValues() );
+    while ( it.hasNext() && ( limit < 0 || uniqueValues.count() < limit ) )
+    {
+      it.next();
+      QVariant v = it.value().value( index );
+      if ( v.isValid() )
+      {
+        QString vs = v.toString();
+        if ( !vals.contains( vs ) )
+        {
+          vals << vs;
+          uniqueValues << v;
+        }
+      }
+    }
+
+    return;
   }
   else if ( origin == QgsFields::OriginJoin )
   {
