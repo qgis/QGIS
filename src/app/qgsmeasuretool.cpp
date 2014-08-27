@@ -46,6 +46,7 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
   mPoints.append( QgsPoint( 0, 0 ) );
 
   mDialog = new QgsMeasureDialog( this, Qt::WindowStaysOnTopHint );
+  mDialog->restorePosition();
   mSnapper.setMapCanvas( canvas );
 
   connect( canvas, SIGNAL( destinationCrsChanged() ),
@@ -68,7 +69,7 @@ const QList<QgsPoint>& QgsMeasureTool::points()
 
 void QgsMeasureTool::activate()
 {
-  mDialog->restorePosition();
+  mDialog->show();
   QgsMapTool::activate();
 
   // ensure that we have correct settings
@@ -95,12 +96,9 @@ void QgsMeasureTool::activate()
 
 void QgsMeasureTool::deactivate()
 {
-  mDialog->close();
-  mRubberBand->reset();
-  mRubberBandPoints->reset();
+  mDialog->hide();
   QgsMapTool::deactivate();
 }
-
 
 void QgsMeasureTool::restart()
 {
