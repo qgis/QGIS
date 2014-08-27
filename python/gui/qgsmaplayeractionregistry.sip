@@ -5,20 +5,21 @@ class QgsMapLayerAction : QAction
 %End
 
   public:
-    enum AvailabityFlag
+    enum Target
     {
-        Layer,
-        Feature,
-        LayerAndFeature
+      Layer ,
+      SingleFeature,
+      MultipleFeatures,
+      AllActions
     };
-    typedef QFlags<QgsMapLayerAction::AvailabityFlag> Availability;
+    typedef QFlags<QgsMapLayerAction::Target> Targets;
 
     /**Creates a map layer action which can run on any layer*/
-    QgsMapLayerAction( QString name, QObject *parent, Availability availability = LayerAndFeature );
+    QgsMapLayerAction( QString name, QObject *parent, Targets targets = AllActions );
     /**Creates a map layer action which can run only on a specific layer*/
-    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer* layer, Availability availability = LayerAndFeature );
+    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer* layer, Targets targets = AllActions );
     /**Creates a map layer action which can run on a specific type of layer*/
-    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer::LayerType layerType, Availability availability = LayerAndFeature );
+    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer::LayerType layerType, Targets targets = AllActions );
     ~QgsMapLayerAction();
 
     /** True if action can run using the specified layer */
@@ -31,9 +32,9 @@ class QgsMapLayerAction : QAction
     /** Triggers the action with the specified layer. This also emits the triggered() slot. */
     void triggerForLayer( QgsMapLayer* layer );
 
-    /** Define the availibility of the action */
-    void setAvailability( Availability availability );
-    Availability availability() const;
+    /** Define the targets of the action */
+    void setTargets( Targets targets );
+    Targets targets() const;
 
   signals:
     /** Triggered when action has been run for a specific feature */
@@ -60,7 +61,7 @@ class QgsMapLayerActionRegistry : QObject
     void addMapLayerAction( QgsMapLayerAction * action );
 
     /**Returns the map layer actions which can run on the specified layer*/
-    QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer* layer );
+    QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer* layer, QgsMapLayerAction::Targets targets = QgsMapLayerAction::AllActions );
 
     /**Removes a map layer action from the registry*/
     bool removeMapLayerAction( QgsMapLayerAction *action );
