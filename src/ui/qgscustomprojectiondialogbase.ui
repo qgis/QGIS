@@ -20,7 +20,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <property name="margin">
-    <number>0</number>
+    <number>3</number>
    </property>
    <item row="1" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
