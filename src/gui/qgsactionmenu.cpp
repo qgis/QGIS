@@ -21,8 +21,6 @@
 QgsActionMenu::QgsActionMenu( QgsVectorLayer* layer, const QgsFeature* feature, QWidget*  parent )
     : QMenu( parent )
     , mLayer( layer )
-    , mAttributeActionSignalMapper( 0 )
-    , mMapLayerActionSignalMapper( 0 )
     , mActions( 0 )
     , mFeature( feature )
     , mFeatureId( feature->id() )
@@ -32,14 +30,12 @@ QgsActionMenu::QgsActionMenu( QgsVectorLayer* layer, const QgsFeature* feature, 
 }
 
 QgsActionMenu::QgsActionMenu( QgsVectorLayer* layer, const QgsFeatureId fid, QWidget*  parent )
-  : QMenu( parent )
-  , mLayer( layer )
-  , mAttributeActionSignalMapper( 0 )
-  , mMapLayerActionSignalMapper( 0 )
-  , mActions( 0 )
-  , mFeature( 0 )
-  , mFeatureId( fid )
-  , mOwnsFeature( false )
+    : QMenu( parent )
+    , mLayer( layer )
+    , mActions( 0 )
+    , mFeature( 0 )
+    , mFeatureId( fid )
+    , mOwnsFeature( false )
 {
   init();
 }
@@ -48,7 +44,7 @@ void QgsActionMenu::init()
 {
   setTitle( tr( "&Actions" ) );
 
-  connect( QgsMapLayerActionRegistry::instance(), SIGNAL(changed()), this, SLOT(reloadActions()) );
+  connect( QgsMapLayerActionRegistry::instance(), SIGNAL( changed() ), this, SLOT( reloadActions() ) );
 
   reloadActions();
 }
@@ -88,42 +84,42 @@ void QgsActionMenu::setFeature( QgsFeature* feature )
   mFeature = feature;
 }
 
-void QgsActionMenu::triggerAttributeAction( int index )
+void QgsActionMenu::triggerAction()
 {
-  if ( feature() )
-  {
-    mActions->doAction( index, *feature() );
-  }
-  else
-  {
-    QgsDebugMsg( QString( "Trying to run an action on a non-existing feature with fid %1" ).arg( mFeatureId ) );
-  }
-}
+  if ( !feature() )
+    return;
 
-void QgsActionMenu::triggerMapLayerAction( int index )
-{
-  if ( feature() )
-  {
-    QgsMapLayerAction* action = QgsMapLayerActionRegistry::instance()->mapLayerActions( mLayer, QgsMapLayerAction::Feature ).at( index );
+  QAction* action = qobject_cast<QAction*>( sender() );
+  if ( !action )
+    return;
 
-    action->triggerForFeature( mLayer, feature() );
+  if ( !action->data().isValid() || !action->data().canConvert<ActionData>() )
+    return;
+
+  ActionData data = action->data().value<ActionData>();
+
+  if ( data.actionType == Invalid )
+    return;
+
+  if ( data.actionType == MapLayerAction )
+  {
+    QgsMapLayerAction* mapLayerAction = data.actionId.action;
+    mapLayerAction->triggerForFeature( data.mapLayer, feature() );
+  }
+  else if ( data.actionType == AttributeAction )
+  {
+    mActions->doAction( data.actionId.id, *feature() );
   }
 }
 
 void QgsActionMenu::reloadActions()
 {
-  delete mAttributeActionSignalMapper;
-  mAttributeActionSignalMapper = new QSignalMapper( this );
-  delete mMapLayerActionSignalMapper;
-  mMapLayerActionSignalMapper = new QSignalMapper( this );
-
-  connect( mAttributeActionSignalMapper, SIGNAL(mapped(int)), this, SLOT(triggerAttributeAction(int)) );
-  connect( mMapLayerActionSignalMapper, SIGNAL(mapped(int)), this, SLOT(triggerMapLayerAction(int)) );
+  clear();
 
   delete mActions;
   mActions = new QgsAttributeAction( *mLayer->actions() );
 
-  for( int idx = 0; idx < mActions->size(); ++idx )
+  for ( int idx = 0; idx < mActions->size(); ++idx )
   {
     const QgsAction& qaction( mActions->at( idx ) );
 
@@ -140,11 +136,7 @@ void QgsActionMenu::reloadActions()
     {
       action->setToolTip( qaction.action() );
     }
-
-    mAttributeActionSignalMapper->setMapping( action, idx );
-
-    connect( action, SIGNAL(triggered()), mAttributeActionSignalMapper, SLOT(map()) );
-
+    connect( action, SIGNAL( triggered() ), this, SLOT( triggerAction() ) );
     addAction( action );
   }
 
@@ -159,10 +151,9 @@ void QgsActionMenu::reloadActions()
     {
       QgsMapLayerAction* qaction = mapLayerActions.at( i );
       QAction* action = new QAction( qaction->text(), this );
-      action->setData( QVariant::fromValue<ActionData>( ActionData( MapLayerAction, mFeatureId, mLayer ) ) );
-      mMapLayerActionSignalMapper->setMapping( action, i );
+      action->setData( QVariant::fromValue<ActionData>( ActionData( qaction, mFeatureId, mLayer ) ) );
       addAction( action );
-      connect( action, SIGNAL(triggered()), mMapLayerActionSignalMapper, SLOT(map()) );
+      connect( action, SIGNAL( triggered() ), this, SLOT( triggerAction() ) );
     }
   }
 
