@@ -20,7 +20,7 @@
   </property>
   <layout class="QGridLayout">
    <item row="0" column="0">
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QgsCollapsibleGroupBox" name="groupBox">
      <property name="title">
       <string>Define</string>
      </property>
@@ -162,9 +162,12 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
      <property name="title">
       <string>Test</string>
+     </property>
+     <property name="collapsed" stdset="0">
+      <bool>true</bool>
      </property>
      <layout class="QGridLayout">
       <item row="3" column="0">
@@ -263,6 +266,14 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>northWGS84</tabstop>
   <tabstop>eastWGS84</tabstop>
