@@ -58,6 +58,9 @@ class CORE_EXPORT QgsLayerTreeUtils
     //! Remove subtree of embedded groups. Useful when saving layer tree
     static void removeChildrenOfEmbeddedGroups( QgsLayerTreeGroup* group );
 
+    //! @note not available in python bindings
+    static void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group );
+
 };
 
 #endif // QGSLAYERTREEUTILS_H
