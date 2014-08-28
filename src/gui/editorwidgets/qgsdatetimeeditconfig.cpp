@@ -108,6 +108,7 @@ QgsEditorWidgetConfig QgsDateTimeEditConfig::config()
   myConfig.insert( "field_format", mFieldFormatEdit->text() );
   myConfig.insert( "display_format", mDisplayFormatEdit->text() );
   myConfig.insert( "calendar_popup", mCalendarPopupCheckBox->isChecked() );
+  myConfig.insert( "allow_null", mAllowNullCheckBox->isChecked() );
 
   return myConfig;
 }
@@ -147,6 +148,11 @@ void QgsDateTimeEditConfig::setConfig( const QgsEditorWidgetConfig &config )
   if ( config.contains( "calendar_popup" ) )
   {
     mCalendarPopupCheckBox->setChecked( config[ "calendar_popup" ].toBool() );
+  }
+
+  if ( config.contains( "allow_null" ) )
+  {
+    mAllowNullCheckBox->setChecked( config[ "allow_null" ].toBool() );
   }
 
 }
