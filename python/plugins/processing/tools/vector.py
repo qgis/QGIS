@@ -361,12 +361,12 @@ TYPE_MAP = {
     int: QVariant.Int
     }
 
-def _fieldName(self, f):
+def _fieldName(f):
     if isinstance(f, basestring):
         return f
     return f.name()
 
-def _toQgsField(self, f):
+def _toQgsField(f):
     if isinstance(f, QgsField):
         return f
     return QgsField(f[0], TYPE_MAP.get(f[1], QVariant.String))
