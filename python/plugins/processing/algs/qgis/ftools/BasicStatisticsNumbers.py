@@ -104,16 +104,17 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         total = 100.0 / float(count)
         current = 0
         for ft in features:
-            value = float(ft.attributes()[index])
-            if isFirst:
-                minValue = value
-                maxValue = value
-                isFirst = False
-            else:
-                if value < minValue:
+            if ft.attributes()[index]:
+                value = float(ft.attributes()[index])
+                if isFirst:
                     minValue = value
-                if value > maxValue:
                     maxValue = value
+                    isFirst = False
+                else:
+                    if value < minValue:
+                        minValue = value
+                    if value > maxValue:
+                        maxValue = value
 
             values.append(value)
             sumValue += value
