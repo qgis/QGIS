@@ -64,6 +64,7 @@ editorwidgets/qgsclassificationwidgetwrapper.cpp
 editorwidgets/qgsclassificationwidgetwrapperfactory.cpp
 editorwidgets/qgscolorwidgetwrapper.cpp
 editorwidgets/qgscolorwidgetfactory.cpp
+editorwidgets/qgsdatetimeedit.cpp
 editorwidgets/qgsdatetimeeditfactory.cpp
 editorwidgets/qgsdatetimeeditconfig.cpp
 editorwidgets/qgsdatetimeeditwrapper.cpp
@@ -288,6 +289,7 @@ editorwidgets/qgscheckboxconfigdlg.h
 editorwidgets/qgscheckboxwidgetwrapper.h
 editorwidgets/qgsclassificationwidgetwrapper.h
 editorwidgets/qgscolorwidgetwrapper.h
+editorwidgets/qgsdatetimeedit.h
 editorwidgets/qgsdatetimeeditconfig.h
 editorwidgets/qgsdatetimeeditwrapper.h
 editorwidgets/qgsdummyconfigdlg.h
@@ -510,6 +512,7 @@ editorwidgets/qgsclassificationwidgetwrapper.h
 editorwidgets/qgsclassificationwidgetwrapperfactory.h
 editorwidgets/qgscolorwidgetwrapper.h
 editorwidgets/qgscolorwidgetfactory.h
+editorwidgets/qgsdatetimeedit.h
 editorwidgets/qgsdatetimeeditfactory.h
 editorwidgets/qgsdatetimeeditconfig.h
 editorwidgets/qgsdatetimeeditwrapper.h

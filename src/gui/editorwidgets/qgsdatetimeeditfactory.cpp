@@ -43,6 +43,7 @@ QgsEditorWidgetConfig QgsDateTimeEditFactory::readConfig( const QDomElement& con
   cfg.insert( "field_format", configElement.attribute( "field_format" ) );
   cfg.insert( "display_format", configElement.attribute( "display_format" ) );
   cfg.insert( "calendar_popup", configElement.attribute( "calendar_popup" ) == "1" );
+  cfg.insert( "allow_null", configElement.attribute( "allow_null" ) == "1" );
 
   return cfg;
 }
@@ -56,6 +57,7 @@ void QgsDateTimeEditFactory::writeConfig( const QgsEditorWidgetConfig& config, Q
   configElement.setAttribute( "field_format", config["field_format"].toString() );
   configElement.setAttribute( "display_format", config["display_format"].toString() );
   configElement.setAttribute( "calendar_popup", config["calendar_popup"].toBool() );
+  configElement.setAttribute( "allow_null", config["allow_null"].toBool() );
 }
 
 QString QgsDateTimeEditFactory::representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
