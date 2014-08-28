@@ -22,6 +22,7 @@
 #include "qgsattributeaction.h"
 #include "qgsmaplayeractionregistry.h"
 
+
 /**
  * This class is a menu that is populated automatically with the actions defined for a given layer.
  */
@@ -40,37 +41,37 @@ class QgsActionMenu : public QMenu
 
     struct ActionData
     {
-        ActionData()
+      ActionData()
           : actionType( Invalid )
           , actionId( 0 )
-        {}
+      {}
 
-        ActionData( int actionId, QgsFeatureId featureId, QgsMapLayer* mapLayer )
+      ActionData( int actionId, QgsFeatureId featureId, QgsMapLayer* mapLayer )
           : actionType( AttributeAction )
           , actionId( actionId )
           , featureId( featureId )
           , mapLayer( mapLayer )
-        {}
+      {}
 
-        ActionData( QgsMapLayerAction* action, QgsFeatureId featureId, QgsMapLayer* mapLayer )
-          : actionType( AttributeAction )
+      ActionData( QgsMapLayerAction* action, QgsFeatureId featureId, QgsMapLayer* mapLayer )
+          : actionType( MapLayerAction )
           , actionId( action )
           , featureId( featureId )
           , mapLayer( mapLayer )
-        {}
+      {}
 
-        ActionType actionType;
+      ActionType actionType;
 
-        union aid
-        {
-          aid( int i ) : id( i ) {}
-          aid( QgsMapLayerAction* a ) : action( a ) {}
-          int id;
-          QgsMapLayerAction* action;
-        } actionId;
+      union aid
+      {
+        aid( int i ) : id( i ) {}
+        aid( QgsMapLayerAction* a ) : action( a ) {}
+        int id;
+        QgsMapLayerAction* action;
+      } actionId;
 
-        QgsFeatureId featureId;
-        QgsMapLayer* mapLayer;
+      QgsFeatureId featureId;
+      QgsMapLayer* mapLayer;
     };
 
 
@@ -114,8 +115,7 @@ class QgsActionMenu : public QMenu
     void setFeature( QgsFeatureId feature );
 
   private slots:
-    void triggerAttributeAction( int index );
-    void triggerMapLayerAction( int index );
+    void triggerAction();
     void reloadActions();
 
   signals:
@@ -126,8 +126,6 @@ class QgsActionMenu : public QMenu
     const QgsFeature* feature();
 
     QgsVectorLayer* mLayer;
-    QSignalMapper* mAttributeActionSignalMapper;
-    QSignalMapper* mMapLayerActionSignalMapper;
     QgsAttributeAction* mActions;
     const QgsFeature* mFeature;
     QgsFeatureId mFeatureId;
