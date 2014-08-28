@@ -191,6 +191,10 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " installed via this same menu. Don't miss out on all QGIS has to offer!"
                         " Check out the plugins and see what they can do for you."
                       ) );
+  // by slarosa
+  myTip.setTitle( tr( "...and sometimes QGIS can make you feel dizzy!" ) );
+  myTip.setContent( tr( "Just try to type the word 'dizzy' into coordinates text box :-)" ) );
+  addGuiTip( myTip );
   addGenericTip( myTip );
 
   /* Template for adding more tips
