@@ -19,7 +19,10 @@
 
 #include "qgsvectorlayer.h"
 
+#include "qgsproject.h"
+
 #include <QDomElement>
+
 
 static void _readOldLegendGroup( const QDomElement& groupElem, QgsLayerTreeGroup* parent );
 static void _readOldLegendLayer( const QDomElement& layerElem, QgsLayerTreeGroup* parent );
@@ -311,6 +314,25 @@ void QgsLayerTreeUtils::removeChildrenOfEmbeddedGroups( QgsLayerTreeGroup* group
         QgsLayerTree::toGroup( child )->removeAllChildren();
       else
         removeChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( child ) );
+    }
+  }
+}
+
+
+void QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group )
+{
+  foreach ( QgsLayerTreeNode* node, group->children() )
+  {
+    if ( !node->customProperty( "embedded_project" ).toString().isEmpty() )
+    {
+      // may change from absolute path to relative path
+      QString newPath = QgsProject::instance()->writePath( node->customProperty( "embedded_project" ).toString() );
+      node->setCustomProperty( "embedded_project", newPath );
+    }
+
+    if ( QgsLayerTree::isGroup( node ) )
+    {
+        updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( node ) );
     }
   }
 }
