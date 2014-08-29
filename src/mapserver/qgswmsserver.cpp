@@ -1731,6 +1731,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   }
   QgsFeatureIterator fit = layer->getFeatures( fReq );
 
+  bool featureBBoxInitialized = false;
   while ( fit.nextFeature( feature ) )
   {
     ++featureCounter;
@@ -1760,9 +1761,10 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       box = mapRender->layerExtentToOutputExtent( layer, feature.geometry()->boundingBox() );
       if ( featureBBox ) //extend feature info bounding box if requested
       {
-        if ( featureBBox->isEmpty() )
+        if ( !featureBBoxInitialized && featureBBox->isEmpty())
         {
           *featureBBox = box;
+          featureBBoxInitialized = true;
         }
         else
         {
