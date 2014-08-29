@@ -11692,6 +11692,10 @@ Response was:
         <source>If defined to YES, extension fields will be written. If the field name not found in the base schema matches the foo_bar pattern, foo will be considered as the namespace of the element, and a &lt;foo:bar&gt; element will be written. Otherwise, elements will be written in the &lt;ogr:&gt; namespace.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>No renderer for drawing.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -14157,6 +14161,13 @@ Please contact the developers.
     </message>
 </context>
 <context>
+    <name>QgisCustomWidgets</name>
+    <message>
+        <source>QGIS custom widgets</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsAbout</name>
     <message>
         <source>About Quantum GIS</source>
@@ -16446,6 +16457,17 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
 </context>
 <context>
+    <name>QgsCollapsibleGroupBoxPlugin</name>
+    <message>
+        <source>A collapsible group box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A collapsible group box with save state capability</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsColorButton</name>
     <message>
         <source>Select Color</source>
@@ -16462,6 +16484,13 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     <message>
         <source>Pick color</source>
         <translation>Nolasīt krāsu</translation>
+    </message>
+</context>
+<context>
+    <name>QgsColorButtonPlugin</name>
+    <message>
+        <source>Select color</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16492,6 +16521,13 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>Choose color...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsColorButtonV2Plugin</name>
+    <message>
+        <source>Select color</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17524,11 +17560,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Load from Template</source>
-        <translation>Ielādēt no veidnes</translation>
+        <translation type="obsolete">Ielādēt no veidnes</translation>
     </message>
     <message>
         <source>Load from template</source>
-        <translation>Ielādē no veidnes</translation>
+        <translation type="obsolete">Ielādē no veidnes</translation>
     </message>
     <message>
         <source>Save as Template</source>
@@ -17934,6 +17970,14 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Export Atlas as PDF</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Add Items from Template</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add items from template</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerColumnAlignmentDelegate</name>
@@ -17970,10 +18014,6 @@ Please try a lower resolution or a smaller papersize</source>
 </context>
 <context>
     <name>QgsComposerHtml</name>
-    <message>
-        <source>HTML fetch %1 failed with error %2</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>&lt;html frame&gt;</source>
         <translation type="unfinished"></translation>
@@ -22417,6 +22457,17 @@ and current file is [%3]</source>
     </message>
 </context>
 <context>
+    <name>QgsDataDefinedButtonPlugin</name>
+    <message>
+        <source>A widget to define the scale range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A widget to define the scale range.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsDataDefinedSymbolDialog</name>
     <message>
         <source>Data defined properties</source>
@@ -24734,6 +24785,14 @@ Parser error:
         <source>Transparent border</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsEmbedLayerDialogBase</name>
@@ -25431,9 +25490,31 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsFieldComboBoxPlugin</name>
+    <message>
+        <source>A combo box to list the fields of a layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A combo box to list the field of a layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsFieldExpressionWidget</name>
     <message>
         <source>Expression dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsFieldExpressionWidgetPlugin</name>
+    <message>
+        <source>An editable combo box to enter an expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An editable combo box to enter an expression. A button allows opening the expression dialog. Expression are evaluated to detect errors.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -25716,6 +25797,17 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
 </context>
 <context>
     <name>QgsFileNameWidget</name>
+    <message>
+        <source>...</source>
+        <translation type="obsolete">...</translation>
+    </message>
+    <message>
+        <source>Select a file</source>
+        <translation type="obsolete">Izvēlies failu</translation>
+    </message>
+</context>
+<context>
+    <name>QgsFileNameWidgetWrapper</name>
     <message>
         <source>...</source>
         <translation type="unfinished">...</translation>
@@ -33146,6 +33238,17 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
 </context>
 <context>
+    <name>QgsMapLayerComboBoxPlugin</name>
+    <message>
+        <source>A combo box to list the layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A combo box to list the layers registered in QGIS. Layers might be filtered according to their type.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsMapRenderer</name>
     <message>
         <source>Transform error caught: %1</source>
@@ -33154,6 +33257,21 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     <message>
         <source>CRS</source>
         <translation>CRS</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapRendererJob</name>
+    <message>
+        <source>Layer not found in registry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was a problem transforming the layer&apos;s extent. Layer skipped.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insufficient memory for image %1x%2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -34990,6 +35108,13 @@ uzlabošana</translation>
     <message>
         <source>Network</source>
         <translation>Tīkls</translation>
+    </message>
+</context>
+<context>
+    <name>QgsNetworkContentFetcher</name>
+    <message>
+        <source>HTTP fetch %1 failed with error %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37062,6 +37187,34 @@ Always network: always load from network and do not check if the cache has a val
         <source>Select color</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Select palette file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error, file does not exist or is not readable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error, no colors found in palette file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Palette file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error exporting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error writing palette file</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -38228,6 +38381,30 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <source>Remove color</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>48</source>
+        <translation type="unfinished">48</translation>
+    </message>
+    <message>
+        <source>64</source>
+        <translation type="unfinished">64</translation>
+    </message>
+    <message>
+        <source>Paste colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export</source>
+        <translation type="unfinished">Eksportēt</translation>
+    </message>
+    <message>
+        <source>Copy colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation type="unfinished">Importēt</translation>
     </message>
 </context>
 <context>
@@ -39872,6 +40049,13 @@ Pārliecinieties, ka jums ir SELECT tiesības tai tabulai, kas satur PostGIS ģe
 </context>
 <context>
     <name>QgsPhotoWidget</name>
+    <message>
+        <source>...</source>
+        <translation type="obsolete">...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPhotoWidgetWrapper</name>
     <message>
         <source>Select a picture</source>
         <translation type="unfinished"></translation>
@@ -42102,6 +42286,34 @@ Proceed?</source>
         <source>Select color</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Select palette file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error, file does not exist or is not readable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error, no colors found in palette file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Palette file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error exporting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error writing palette file</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsProjectPropertiesBase</name>
@@ -42556,6 +42768,30 @@ Proceed?</source>
     </message>
     <message>
         <source>Use layer ids as names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation type="unfinished">Importēt</translation>
+    </message>
+    <message>
+        <source>Export</source>
+        <translation type="unfinished">Eksportēt</translation>
+    </message>
+    <message>
+        <source>GetFeatureInfo geometry precision (decimal places)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry precision (decimal places)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -45445,13 +45681,6 @@ standard deviation ×</source>
     </message>
 </context>
 <context>
-    <name>QgsRelReferenceConfigDlg</name>
-    <message>
-        <source>Preview Expression</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsRelReferenceConfigDlgBase</name>
     <message>
         <source>Dialog</source>
@@ -45474,7 +45703,11 @@ standard deviation ×</source>
         <translation>Relācija</translation>
     </message>
     <message>
-        <source>Expression Builder</source>
+        <source>On map identification (for geometric layers only)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use a read-only line edit instead of a combobox</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -45536,38 +45769,76 @@ standard deviation ×</source>
     </message>
 </context>
 <context>
+    <name>QgsRelationEditorWidget</name>
+    <message>
+        <source>Toggle editing</source>
+        <translation type="unfinished">Pārslēgt rediģēšanu</translation>
+    </message>
+    <message>
+        <source>Add feature</source>
+        <translation type="unfinished">Pievienot objektu</translation>
+    </message>
+    <message>
+        <source>Delete feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Link feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unlink feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Form view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table view</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsRelationEditorWidgetBase</name>
     <message>
         <source>Form</source>
-        <translation>Forma</translation>
+        <translation type="obsolete">Forma</translation>
     </message>
     <message>
         <source>Toggle editing</source>
-        <translation>Pārslēgt rediģēšanu</translation>
+        <translation type="obsolete">Pārslēgt rediģēšanu</translation>
     </message>
     <message>
         <source>New</source>
-        <translation>Jauns</translation>
+        <translation type="obsolete">Jauns</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation>Dzēst</translation>
+        <translation type="obsolete">Dzēst</translation>
     </message>
     <message>
         <source>Link</source>
-        <translation>Sasiet</translation>
+        <translation type="obsolete">Sasiet</translation>
     </message>
     <message>
         <source>Unlink</source>
-        <translation>Atsiet</translation>
+        <translation type="obsolete">Atsiet</translation>
     </message>
     <message>
         <source>Form View</source>
-        <translation>Formas skats</translation>
+        <translation type="obsolete">Formas skats</translation>
     </message>
     <message>
         <source>Table View</source>
-        <translation>Tabulas skats</translation>
+        <translation type="obsolete">Tabulas skats</translation>
+    </message>
+</context>
+<context>
+    <name>QgsRelationEditorWidgetPlugin</name>
+    <message>
+        <source>Relation editor</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45613,7 +45884,7 @@ standard deviation ×</source>
     <name>QgsRelationReferenceWidget</name>
     <message>
         <source>Open Form</source>
-        <translation>Atvērt formu</translation>
+        <translation type="obsolete">Atvērt formu</translation>
     </message>
     <message>
         <source>The relation is not valid. Please make sure your relation definitions are ok.</source>
@@ -45621,7 +45892,38 @@ standard deviation ×</source>
     </message>
     <message>
         <source>(no selection)</source>
-        <translation type="unfinished">(nav izvēles)</translation>
+        <translation type="obsolete">(nav izvēles)</translation>
+    </message>
+    <message>
+        <source>Open related feature form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Highlight feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale and highlight feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pan and highlight feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select on map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsRelationReferenceWidgetPlugin</name>
+    <message>
+        <source>Relation reference</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46523,6 +46825,17 @@ standard deviation ×</source>
     </message>
     <message>
         <source>current</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsScaleRangeWidgetPlugin</name>
+    <message>
+        <source>A widget to define the scale range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A widget to define the scale range.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -50213,6 +50526,13 @@ Kļūda bija %2</translation>
     <name>QgsValueRelationWidget</name>
     <message>
         <source>(no selection)</source>
+        <translation type="obsolete">(nav izvēles)</translation>
+    </message>
+</context>
+<context>
+    <name>QgsValueRelationWidgetWrapper</name>
+    <message>
+        <source>(no selection)</source>
         <translation type="unfinished">(nav izvēles)</translation>
     </message>
 </context>
@@ -53012,11 +53332,11 @@ Response was:
     <name>QgsWebViewWidget</name>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Select a file</source>
-        <translation type="unfinished">Izvēlies failu</translation>
+        <translation type="obsolete">Izvēlies failu</translation>
     </message>
 </context>
 <context>
@@ -53036,6 +53356,17 @@ Response was:
     <message>
         <source>Field contains a filename or URL for a webpage</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsWebViewWidgetWrapper</name>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Select a file</source>
+        <translation type="unfinished">Izvēlies failu</translation>
     </message>
 </context>
 <context>
@@ -55502,6 +55833,10 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
         <source>Offset X,Y</source>
         <translation>Nobīde X, Y</translation>
     </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Rediģēt</translation>
+    </message>
 </context>
 <context>
     <name>WidgetLineDecoration</name>
@@ -55803,6 +56138,10 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     <message>
         <source>Data defined properties...</source>
         <translation type="unfinished">Datu definētas īpašības...</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Rediģēt</translation>
     </message>
 </context>
 <context>
@@ -57574,141 +57913,147 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h1&gt;Python Console for QGIS&lt;/h1&gt;
+        <source>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Python Console for QGIS&lt;/h3&gt;
 &lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
 &lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
 &lt;a href=&quot;#settings&quot;&gt;Settings&lt;/a&gt;&lt;br&gt;&lt;br&gt;
 &lt;table&gt;
-&lt;tr&gt;
-&lt;td&gt;
-The QGIS Python Console is an interactive shell for the python command executions. 
-It also has a python file editor that allows you to edit and save your python scripts. 
-Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
-The console is split in two main panes, top and bottom one 
-resizable by using the horizontal splitter. Output area pane is a widget read-only which 
-shows the commands output. You can drag and drop or copy and paste text into input area and 
-execute code snippets from the output pane by selecting some text and clicking on the 
-&lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
-No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
-python shell for input commands.&lt;br&gt;To access to the python file editor use the 
-&lt;label&gt;Show editor&lt;/label&gt; button 
-from the toolbar. The editor allows editing and saving python files and it offers basic functionality 
-for managing your code (comment and 
-uncomment code, check syntax, share the code via codepad.org and much more).
-&lt;/p&gt;
-&lt;/td&gt;
-&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				The QGIS Python Console is an interactive shell for the python command executions. 
+				It also has a python file editor that allows you to edit and save your python scripts. 
+				Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
+				The console is split in two main panes, top and bottom one 
+				resizable by using the horizontal splitter. Output area pane is a widget read-only which 
+				shows the commands output. You can drag and drop or copy and paste text into input area and 
+				execute code snippets from the output pane by selecting some text and clicking on the 
+				&lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
+				No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
+				python shell for input commands.&lt;br&gt;To access to the python file editor use the 
+				&lt;label&gt;Show editor&lt;/label&gt; button 
+				from the toolbar. The editor allows editing and saving python files and it offers basic functionality 
+				for managing your code (comment and 
+				uncomment code, check syntax, share the code via codepad.org and much more).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;a name=&quot;console&quot;&gt;
 &lt;h4&gt;Console&lt;/h4&gt;
 &lt;/a&gt;
 &lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
 &lt;table&gt;
-&lt;tr&gt;
-&lt;td&gt;
-&lt;ul&gt;
-&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
-&lt;ol&gt;
-&lt;li&gt;Python&lt;/li&gt;
-&lt;li&gt;PyQGIS&lt;/li&gt;
-&lt;li&gt;PyQt4&lt;/li&gt;
-&lt;li&gt;QScintilla2&lt;/li&gt;
-&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
-The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
-&lt;br&gt;
-&lt;/ul&gt;
-&lt;/td&gt;
-&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
+			The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
 &lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
-&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
-&lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
-&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
-&lt;td&gt;Import Processing class&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;/td&gt;
-&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
-&lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;/td&gt;
-&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
-&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
-&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
-&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
-&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
-&lt;/tr&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Import Processing class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
+		&lt;/tr&gt;
 &lt;/table&gt;
 &lt;a name=&quot;editor&quot;&gt;
 &lt;h4&gt;Editor&lt;/h4&gt;
 &lt;/a&gt;
 &lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
 &lt;table&gt;
-&lt;tr&gt;
-&lt;td&gt;
-&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
-&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
-&lt;/td&gt;
-&lt;td&gt;
-&lt;ul&gt;
-&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
-&lt;ol&gt;
-&lt;li&gt;Python&lt;/li&gt;
-&lt;li&gt;PyQGIS&lt;/li&gt;
-&lt;li&gt;PyQt4&lt;/li&gt;
-&lt;li&gt;QScintilla2&lt;/li&gt;
-&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
-&lt;br&gt;
-&lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
-(this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
-&lt;br&gt;
-&lt;/ul&gt;
-&lt;/td&gt;
-&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
+			(this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;a name=&quot;settings&quot;&gt;
 &lt;h4&gt;Settings&lt;/h4&gt;
@@ -57732,8 +58077,8 @@ that will be automatically deleted after running.&lt;/li&gt;
 &lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
-&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
-from the close button. This allows you to save the geometry to be restored to the next start.
+	&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
+	from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
@@ -57749,6 +58094,8 @@ To create a new CRS, click the &lt;label&gt;New&lt;/label&gt; button and enter:
 &lt;li&gt;descriptive name 
 &lt;li&gt;CRS parameters
 &lt;/ul&gt;
+After that you can save your CRS by clicking the button &lt;label&gt;Save&lt;/label&gt;.
+&lt;p&gt;
 Note that the Parameters must begin with a +proj=-block, to represent the new coordinate reference
 system.
 &lt;p&gt;
@@ -57757,7 +58104,7 @@ Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projec
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Copyright Label&lt;/h3&gt;
+        <source>&lt;h3&gt;Copyright Label Plugin&lt;/h3&gt;
 Draws a copyright label with information.&lt;br/&gt;
 You can add any random text to the map not only a copyright label.
 &lt;p&gt;
@@ -57769,7 +58116,7 @@ You can add any random text to the map not only a copyright label.
 &lt;/a&gt;
 &lt;ol&gt;
 &lt;li&gt;Make sure the plugin is loaded.
-&lt;li&gt;Click on &lt;label&gt;View &gt; Decorations &gt; Copyright Label&lt;/label&gt;.
+&lt;li&gt;Click on &lt;label&gt;Plugins &gt; Decorations &gt; Copyright Label&lt;/label&gt; or use the &lt;label&gt;Copyright Label&lt;/label&gt; button from the Toolbar.
 &lt;li&gt;Enter the text you want to place on the map. You can use HTML.
 &lt;li&gt;Choose the placement of the label from the &lt;label&gt;Placement Bottom Right&lt;/label&gt; drop-down box.
 &lt;li&gt;Make sure the &lt;label&gt;Enable Copyright Label check box&lt;/label&gt; is checked.
@@ -57813,14 +58160,13 @@ Width and precision are irrelevant in a SpatiaLite database so you do not have t
 In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
 
 &lt;p&gt;
-Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.
-&lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
+Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.  Clicking &lt;label&gt;Apply&lt;/label&gt; also creates the layer, but keeps the dialog open, thereby allowing you to create more similar layers. &lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Create a New PostGIS Connection&lt;/h3&gt;
-This dialog allows you to define the settings for a connection to a PostgreSQL/PostGIS database.
+        <source>&lt;h3&gt;Create a New PostgreSQL Connection&lt;/h3&gt;
+This dialog allows you to define the settings for a connection to a PostgreSQL database.
 &lt;p&gt;
 &lt;ul&gt;
 &lt;li&gt; &lt;label&gt;Name&lt;/label&gt; A name to identify the connection settings.
@@ -57856,7 +58202,7 @@ This dialog allows you to define the settings for a connection to a PostgreSQL/P
     </message>
     <message>
         <source>&lt;h3&gt;Finding shortest path&lt;/h3&gt;
-&lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Vector &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Plugins &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#howto&quot;&gt;How to&lt;/a&gt;&lt;br/&gt;
 &lt;/p&gt;
@@ -57869,6 +58215,82 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;Create a New SQL Anywhere Connection&lt;/h3&gt;
+This dialog allows you to define the settings for a connection to a
+SQL Anywhere database.
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;label&gt;Name&lt;/label&gt; A name to identify the connection settings.
+
+&lt;li&gt; &lt;label&gt;Host&lt;/label&gt; Name or IP address of the computer hosting the database server (leave blank for local connections).  
+
+&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; IP port used by the database server (leave blank for local connections or to use default port 2638).
+
+&lt;li&gt; &lt;label&gt;Server&lt;/label&gt; Name of the database server (leave blank for default server on host).
+
+&lt;li&gt; &lt;label&gt;Database&lt;/label&gt; Name of the database (leave blank for default database on server).
+
+&lt;li&gt; &lt;label&gt;Connection Parameters&lt;/label&gt; Additional parameters to add to the connection string (semi-colon delimitted list).  See the SQL Anywhere documentation for a list and description of available connection parameters.
+
+&lt;li&gt; &lt;label&gt;Username&lt;/label&gt; Database user name.
+&lt;li&gt; &lt;label&gt;Password&lt;/label&gt; Database password.
+
+&lt;li&gt; &lt;label&gt;Save Username&lt;/label&gt; Indicates whether to save the database user name in the connection configuration.
+
+&lt;li&gt; &lt;label&gt;Save Password&lt;/label&gt; Indicates whether to save the database password in the connection settings.  &lt;em&gt;Passwords are saved in &lt;strong&gt;clear text&lt;/strong&gt; in the system configuration!&lt;/em&gt;
+
+&lt;li&gt; &lt;label&gt;Simple Encryption&lt;/label&gt; Secure the connection to the database using simple encryption.
+
+&lt;li&gt; &lt;label&gt;Estimate table metadata&lt;/label&gt; When initializing layers, various queries may be needed to establish the characteristics of the geometries stored in the database table.  When this option is checked, these queries examine only a sample of the rows, rather than the entire table.  This can significantly speed up layer initialization, but may result in incorrect characterization of layers containing heterogenous types.
+
+&lt;li&gt; &lt;label&gt;Search other users&apos; tables&lt;/label&gt; Indicates that the layer list should be populated from all layers stored in the database.  When unchecked (the default), only layers stored in tables owned by the connected user are displayed.
+
+&lt;/ul&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;Add SQL Anywhere Tables&lt;/h3&gt;
+This dialog allows you to add SQL Anywhere layers (tables with a geometry column) to the QGIS map canvas.
+&lt;p&gt;
+&lt;a href=&quot;#connect&quot;&gt;Connections&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#add&quot;&gt;Adding Layers&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#filter&quot;&gt;Filtering a Layer&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#search&quot;&gt;Search options&lt;/a&gt;&lt;br/&gt;
+
+&lt;a href=&quot;#connect&quot;&gt;
+&lt;h4&gt;Connections&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;Choose the connection to use from the drop-down box and click &lt;label&gt;Connect&lt;/label&gt;.
+&lt;li&gt;If there are no connections, use the &lt;label&gt;New&lt;/label&gt; button to create a connection.
+&lt;li&gt;To modify or delete the selected connection, click the &lt;label&gt;Edit&lt;/label&gt; or &lt;label&gt;Delete&lt;/label&gt; buttons, respectively.
+&lt;/ul&gt;
+&lt;a name=&quot;add&quot;&gt;
+&lt;h4&gt;Adding Layers&lt;/h4&gt;
+&lt;/a&gt;
+To add a layer:
+&lt;ol&gt;
+&lt;li&gt;Choose the desired connection from the drop-down box.
+&lt;li&gt;Click &lt;label&gt;Connect&lt;/label&gt;, which will populate the list of layers from the database.  Options that affect how this list is populated are described in the help for the new connection dialogue box.
+    
+&lt;li&gt;Find the layer you want to add in the list and click on it to select it.
+&lt;li&gt;You can select additional layers by holding down the Ctrl key and clicking.
+&lt;li&gt;Click &lt;label&gt;Add&lt;/label&gt; to add the layer(s) to the map.
+&lt;/ol&gt;
+&lt;a name=&quot;filter&quot;&gt;
+&lt;h4&gt;Filtering a Layer&lt;/h4&gt;
+&lt;/a&gt;
+To filter a layer before adding it to the map, either double click on its name or select it and click the &lt;label&gt;Build query&lt;/label&gt; button. This will open the Query Builder, allowing you to build up a SQL statement to use in filtering the records.
+
+&lt;a name=&quot;search&quot;&gt;
+&lt;h4&gt;Search options&lt;/h4&gt;
+&lt;/a&gt;
+Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -61476,57 +61898,6 @@ None
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;$atlasfeature function&lt;/h3&gt;
-In atlas generation, returns the current feature that is iterated over on the coverage layer. This can be used with the &apos;attribute&apos; function
-to return attribute values from the current atlas feature.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;$atlasfeature&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;attribute( $atlasfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current atlas feature&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;$currentfeature function&lt;/h3&gt;
-Returns the current feature being evaluated. This can be used with the &apos;attribute&apos; function
-to evaluate attribute values from the current feature.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;$currentfeature&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;attribute function&lt;/h3&gt;
-Returns the value of a specified attribute from a feature.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;attribute( feature, attribute_name )&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-feature &amp;rarr; a feature&lt;br /&gt;
-attribute_name &amp;rarr; name of attribute to be returned
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
-
 </source>
         <translation type="unfinished"></translation>
     </message>
