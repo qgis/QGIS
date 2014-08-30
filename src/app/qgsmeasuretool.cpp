@@ -167,10 +167,52 @@ void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
     mDone = false;
   }
 
-  // we allways add the clicked point to the measuring feature
+  // we always add the clicked point to the measuring feature
   addPoint( point );
   mDialog->show();
 
+}
+
+void QgsMeasureTool::undo()
+{
+  if ( mRubberBand )
+  {
+    if ( mPoints.size() < 1 )
+    {
+      return;
+    }
+
+    if ( mPoints.size() == 1 )
+    {
+      //removing first point, so restart everything
+      restart();
+      mDialog->restart();
+    }
+    else
+    {
+      //remove second last point from line band, and last point from points band
+      mRubberBand->removePoint( -2, true );
+      mRubberBandPoints->removePoint( -1, true );
+      mPoints.removeLast();
+
+      mDialog->removeLastPoint();
+    }
+
+  }
+}
+
+void QgsMeasureTool::keyPressEvent( QKeyEvent* e )
+{
+  if (( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
+  {
+    if ( !mDone )
+    {
+      undo();
+    }
+
+    // Override default shortcut management in MapCanvas
+    e->ignore();
+  }
 }
 
 
