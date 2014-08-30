@@ -39,10 +39,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
 
   public:
     /**
-     * @param relation
-     * @param feature
-     * @param context
-     * @param parent
+     * @param parent parent widget
      */
     QgsRelationEditorWidget( QWidget* parent = NULL );
 
