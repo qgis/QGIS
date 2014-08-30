@@ -65,7 +65,7 @@ static void _initRendererWidgetFunctions()
   _initRenderer( "singleSymbol", QgsSingleSymbolRendererV2Widget::create, "rendererSingleSymbol.png" );
   _initRenderer( "categorizedSymbol", QgsCategorizedSymbolRendererV2Widget::create, "rendererCategorizedSymbol.png" );
   _initRenderer( "graduatedSymbol", QgsGraduatedSymbolRendererV2Widget::create, "rendererGraduatedSymbol.png" );
-  _initRenderer( "RuleRenderer", QgsRuleBasedRendererV2Widget::create );
+  _initRenderer( "ruleRenderer", QgsRuleBasedRendererV2Widget::create );
   _initRenderer( "pointDisplacement", QgsPointDisplacementRendererWidget::create );
   _initRenderer( "invertedPolygonRenderer", QgsInvertedPolygonRendererWidget::create );
   initialized = true;
@@ -146,7 +146,7 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
 
   //Retrieve the previous renderer: from the old active widget if possible, otherwise from the layer
   QgsFeatureRendererV2* oldRenderer;
-  if ( mActiveWidget )
+  if ( mActiveWidget  && mActiveWidget->renderer() )
   {
     oldRenderer = mActiveWidget->renderer()->clone();
   }

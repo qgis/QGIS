@@ -7,7 +7,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     QgsPointDisplacementRenderer( const QString& labelAttributeName = "" );
     ~QgsPointDisplacementRenderer();
 
-    QgsFeatureRendererV2* clone() /Factory/;
+    QgsFeatureRendererV2* clone() const /Factory/;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
@@ -68,6 +68,11 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
 
     void setTolerance( double t );
     double tolerance() const;
+
+    //! creates a QgsPointDisplacementRenderer from an existing renderer.
+    //! @note added in 2.5
+    //! @returns a new renderer if the conversion was possible, otherwise 0.
+    static QgsPointDisplacementRenderer* convertFromRenderer(const QgsFeatureRendererV2 *renderer ) /Factory/;
 
   private:
     QgsPointDisplacementRenderer( const QgsPointDisplacementRenderer & );

@@ -55,7 +55,7 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual QString dump() const;
 
-    virtual QgsFeatureRendererV2* clone() /Factory/;
+    virtual QgsFeatureRendererV2* clone() const /Factory/;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
@@ -147,9 +147,10 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     // @note added in 2.5
     virtual void checkLegendSymbolItem( QString key, bool state = true );
 
-    //! convert the renderer to a rule based renderer with equivalent rules
+    //! creates a QgsCategorizedSymbolRendererV2 from an existing renderer.
     //! @note added in 2.5
-    virtual QgsRuleBasedRendererV2* convertToRuleBasedRenderer() /Factory/;
+    //! @returns a new renderer if the conversion was possible, otherwise 0.
+    static QgsCategorizedSymbolRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer ) /Factory/;
 
   protected:
     void rebuildHash();

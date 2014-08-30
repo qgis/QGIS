@@ -34,7 +34,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     QgsPointDisplacementRenderer( const QString& labelAttributeName = "" );
     ~QgsPointDisplacementRenderer();
 
-    QgsFeatureRendererV2* clone();
+    QgsFeatureRendererV2* clone() const;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 
     /**Sets embedded renderer (takes ownership)*/
     void setEmbeddedRenderer( QgsFeatureRendererV2* r );
-    QgsFeatureRendererV2* embeddedRenderer() { return mRenderer;}
+    QgsFeatureRendererV2* embeddedRenderer() const { return mRenderer;}
 
     //! not available in python bindings
     //! @deprecated since 2.4
@@ -95,6 +95,11 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 
     void setTolerance( double t ) { mTolerance = t; }
     double tolerance() const { return mTolerance; }
+
+    //! creates a QgsPointDisplacementRenderer from an existing renderer.
+    //! @note added in 2.5
+    //! @returns a new renderer if the conversion was possible, otherwise 0.
+    static QgsPointDisplacementRenderer* convertFromRenderer(const QgsFeatureRendererV2 *renderer );
 
   private:
 

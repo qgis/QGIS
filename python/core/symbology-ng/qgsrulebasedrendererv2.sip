@@ -164,7 +164,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     virtual QList<QString> usedAttributes();
 
-    virtual QgsFeatureRendererV2* clone() /Factory/;
+    virtual QgsFeatureRendererV2* clone() const /Factory/;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
@@ -231,9 +231,13 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     //! take a rule and create a list of new rules with intervals of scales given by the passed scale denominators
     static void refineRuleScales( QgsRuleBasedRendererV2::Rule* initialRule, QList<int> scales );
 
-    //! convert the renderer to a rule based renderer with equivalent rules, if possible
+    //! creates a QgsRuleBasedRendererV2 from an existing renderer.
     //! @note added in 2.5
-    virtual QgsRuleBasedRendererV2* convertToRuleBasedRenderer() /Factory/;
+    //! @returns a new renderer if the conversion was possible, otherwise 0.
+    static QgsRuleBasedRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer ) /Factory/;
+
+    //! helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology
+    static void convertToDataDefinedSymbology( QgsSymbolV2* symbol, QString sizeScaleField, QString rotationField );
 
   private:
     QgsRuleBasedRendererV2( const QgsRuleBasedRendererV2 & );

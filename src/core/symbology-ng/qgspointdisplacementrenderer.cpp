@@ -22,6 +22,7 @@
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorlayer.h"
+#include "qgssinglesymbolrendererv2.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -49,7 +50,7 @@ QgsPointDisplacementRenderer::~QgsPointDisplacementRenderer()
   delete mRenderer;
 }
 
-QgsFeatureRendererV2* QgsPointDisplacementRenderer::clone()
+QgsFeatureRendererV2* QgsPointDisplacementRenderer::clone() const
 {
   QgsPointDisplacementRenderer* r = new QgsPointDisplacementRenderer( mLabelAttributeName );
   r->setEmbeddedRenderer( mRenderer->clone() );
@@ -517,4 +518,21 @@ QgsSymbolV2* QgsPointDisplacementRenderer::firstSymbolForFeature( QgsFeatureRend
   return symbolList.at( 0 );
 }
 
+QgsPointDisplacementRenderer* QgsPointDisplacementRenderer::convertFromRenderer( const QgsFeatureRendererV2* renderer )
+{
+  if ( renderer->type() == "pointDisplacement" )
+  {
+    return dynamic_cast<QgsPointDisplacementRenderer*>( renderer->clone() );
+  }
 
+  if ( renderer->type() == "singleSymbol" ||
+       renderer->type() == "categorizedSymbol" ||
+       renderer->type() == "graduatedSymbol" ||
+       renderer->type() == "ruleRenderer" )
+  {
+    QgsPointDisplacementRenderer* pointRenderer = new QgsPointDisplacementRenderer();
+    pointRenderer->setEmbeddedRenderer( renderer->clone() );
+    return pointRenderer;
+  }
+  return 0;
+}

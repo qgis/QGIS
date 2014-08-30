@@ -19,7 +19,8 @@
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
-#include "qgsrulebasedrendererv2.h"
+#include "qgspointdisplacementrenderer.h"
+#include "qgsinvertedpolygonrenderer.h"
 
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
@@ -463,7 +464,7 @@ QString QgsCategorizedSymbolRendererV2::dump() const
   return s;
 }
 
-QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone()
+QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone() const
 {
   QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2( mAttrName, mCategories );
   if ( mSourceSymbol.data() )
@@ -760,93 +761,21 @@ void QgsCategorizedSymbolRendererV2::checkLegendSymbolItem( QString key, bool st
 
 QgsMarkerSymbolV2 QgsCategorizedSymbolRendererV2::sSkipRender;
 
-QgsRuleBasedRendererV2* QgsCategorizedSymbolRendererV2::convertToRuleBasedRenderer()
+QgsCategorizedSymbolRendererV2* QgsCategorizedSymbolRendererV2::convertFromRenderer( const QgsFeatureRendererV2 *renderer )
 {
-  QgsRuleBasedRendererV2::Rule* rootrule = new QgsRuleBasedRendererV2::Rule( NULL );
-
-  QString expression;
-  QString sizeExpression;
-  QString value;
-  for ( int i = 0; i < mCategories.size();++i )
+  if ( renderer->type() == "categorizedSymbol" )
   {
-    QgsRuleBasedRendererV2::Rule* rule = new QgsRuleBasedRendererV2::Rule( NULL );
-
-    rule->setLabel( mCategories[i].label() );
-
-    //We first define the rule corresponding to the category
-    //If the value is a number, we can use it directly, otherwise we need to quote it in the rule
-    if ( QVariant( mCategories[i].value() ).convert( QVariant::Double ) )
-    {
-      value = mCategories[i].value().toString();
-    }
-    else
-    {
-      value = "'" + mCategories[i].value().toString() + "'";
-    }
-
-    //An empty category is equivalent to the ELSE keyword
-    if ( value == "''" )
-      expression = "ELSE";
-    else
-      expression = classAttribute() + " = " + value;
-    rule->setFilterExpression( expression );
-
-    //Then we construct an equivalent symbol.
-    //Ideally we could simply copy the symbol, but the categorized renderer allows a separate interface to specify
-    //data dependent area and rotation, so we need to convert these to obtain the same rendering
-
-    QgsSymbolV2* origSymbol = mCategories[i].symbol()->clone();
-
-    switch ( origSymbol->type() )
-    {
-      case QgsSymbolV2::Marker:
-        for ( int j = 0; j < origSymbol->symbolLayerCount();++j )
-        {
-          QgsMarkerSymbolLayerV2* msl = static_cast<QgsMarkerSymbolLayerV2*>( origSymbol->symbolLayer( j ) );
-          if ( mSizeScale.data() )
-          {
-            sizeExpression = QString( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField() );
-            msl->setDataDefinedProperty( "size", sizeExpression );
-          }
-          if ( mRotation.data() )
-          {
-            msl->setDataDefinedProperty( "angle", rotationField() );
-          }
-        }
-        break;
-      case QgsSymbolV2::Line:
-        if ( mSizeScale.data() )
-        {
-          for ( int j = 0; j < origSymbol->symbolLayerCount();++j )
-          {
-            if ( origSymbol->symbolLayer( j )->layerType() == "SimpleLine" )
-            {
-              QgsLineSymbolLayerV2* lsl = static_cast<QgsLineSymbolLayerV2*>( origSymbol->symbolLayer( j ) );
-              sizeExpression = QString( "%1*(%2)" ).arg( lsl->width() ).arg( sizeScaleField() );
-              lsl->setDataDefinedProperty( "width", sizeExpression );
-            }
-            if ( origSymbol->symbolLayer( j )->layerType() == "MarkerLine" )
-            {
-              QgsSymbolV2* marker = origSymbol->symbolLayer( j )->subSymbol();
-              for ( int k = 0; k < marker->symbolLayerCount();++k )
-              {
-                QgsMarkerSymbolLayerV2* msl = static_cast<QgsMarkerSymbolLayerV2*>( marker->symbolLayer( k ) );
-                sizeExpression = QString( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField() );
-                msl->setDataDefinedProperty( "size", sizeExpression );
-              }
-            }
-          }
-        }
-        break;
-      default:
-        break;
-    }
-
-    rule->setSymbol( origSymbol );
-
-    rootrule->appendChild( rule );
+    return dynamic_cast<QgsCategorizedSymbolRendererV2*>( renderer->clone() );
   }
-
-  return new QgsRuleBasedRendererV2( rootrule );
-
+  if ( renderer->type() == "pointDisplacement" )
+  {
+    const QgsPointDisplacementRenderer* pointDisplacementRenderer = dynamic_cast<const QgsPointDisplacementRenderer*>( renderer );
+    return convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
+  }
+  if ( renderer->type() == "invertedPolygonRenderer" )
+  {
+    const QgsInvertedPolygonRenderer* invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer*>( renderer );
+    return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
+  }
+  return 0;
 }

@@ -23,7 +23,8 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerv2.h"
 #include "qgsogcutils.h"
-#include "qgsrulebasedrendererv2.h"
+#include "qgspointdisplacementrenderer.h"
+#include "qgsinvertedpolygonrenderer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -168,7 +169,7 @@ QString QgsSingleSymbolRendererV2::dump() const
   return mSymbol.data() ? QString( "SINGLE: %1" ).arg( mSymbol->dump() ) : "" ;
 }
 
-QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone()
+QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone() const
 {
   QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( mSymbol->clone() );
   r->setUsingSymbolLevels( usingSymbolLevels() );
@@ -375,59 +376,22 @@ QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
   return lst;
 }
 
-QgsRuleBasedRendererV2* QgsSingleSymbolRendererV2::convertToRuleBasedRenderer()
+QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::convertFromRenderer( const QgsFeatureRendererV2 *renderer )
 {
-  //We construct an equivalent symbol for the rule based renderer.
-  //Ideally we could simply copy the symbol, but the single symbol renderer allows a separate interface to specify
-  //data dependent area and rotation, so we need to convert these to obtain the same rendering
-
-  QString sizeExpression;
-  QgsSymbolV2* origSymbol = symbol()->clone();
-
-  switch ( origSymbol->type() )
+  if ( renderer->type() == "singleSymbol" )
   {
-    case QgsSymbolV2::Marker:
-      for ( int j = 0; j < origSymbol->symbolLayerCount();++j )
-      {
-        QgsMarkerSymbolLayerV2* msl = static_cast<QgsMarkerSymbolLayerV2*>( origSymbol->symbolLayer( j ) );
-        if ( mSizeScale.data() )
-        {
-          sizeExpression = QString( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField() );
-          msl->setDataDefinedProperty( "size", sizeExpression );
-        }
-        if ( mRotation.data() )
-        {
-          msl->setDataDefinedProperty( "angle", rotationField() );
-        }
-      }
-      break;
-    case QgsSymbolV2::Line:
-      if ( mSizeScale.data() )
-      {
-        for ( int j = 0; j < origSymbol->symbolLayerCount();++j )
-        {
-          if ( origSymbol->symbolLayer( j )->layerType() == "SimpleLine" )
-          {
-            QgsLineSymbolLayerV2* lsl = static_cast<QgsLineSymbolLayerV2*>( origSymbol->symbolLayer( j ) );
-            sizeExpression = QString( "%1*(%2)" ).arg( lsl->width() ).arg( sizeScaleField() );
-            lsl->setDataDefinedProperty( "width", sizeExpression );
-          }
-          if ( origSymbol->symbolLayer( j )->layerType() == "MarkerLine" )
-          {
-            QgsSymbolV2* marker = origSymbol->symbolLayer( j )->subSymbol();
-            for ( int k = 0; k < marker->symbolLayerCount();++k )
-            {
-              QgsMarkerSymbolLayerV2* msl = static_cast<QgsMarkerSymbolLayerV2*>( marker->symbolLayer( k ) );
-              sizeExpression = QString( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField() );
-              msl->setDataDefinedProperty( "size", sizeExpression );
-            }
-          }
-        }
-      }
-      break;
-    default:
-      break;
+    return dynamic_cast<QgsSingleSymbolRendererV2*>( renderer->clone() );
   }
+  if ( renderer->type() == "pointDisplacement" )
+  {
+    const QgsPointDisplacementRenderer* pointDisplacementRenderer = dynamic_cast<const QgsPointDisplacementRenderer*>( renderer );
+    return convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
+  }
+  if ( renderer->type() == "invertedPolygonRenderer" )
+  {
+    const QgsInvertedPolygonRenderer* invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer*>( renderer );
+    return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
 
-  return new QgsRuleBasedRendererV2( origSymbol );
+  }
+  return 0;
 }

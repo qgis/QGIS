@@ -64,7 +64,6 @@ typedef QList<QgsRendererRangeV2> QgsRangeList;
 
 class QgsVectorLayer;
 class QgsVectorColorRampV2;
-class QgsRuleBasedRenderedV2;
 
 class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 {
@@ -84,7 +83,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual QString dump() const;
 
-    virtual QgsFeatureRendererV2* clone();
+    virtual QgsFeatureRendererV2* clone() const;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
@@ -97,7 +96,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     QString classAttribute() const { return mAttrName; }
     void setClassAttribute( QString attr ) { mAttrName = attr; }
 
-    const QgsRangeList& ranges() { return mRanges; }
+    const QgsRangeList& ranges() const { return mRanges; }
 
     bool updateRangeSymbol( int rangeIndex, QgsSymbolV2* symbol );
     bool updateRangeLabel( int rangeIndex, QString label );
@@ -169,7 +168,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
       */
     void updateColorRamp( QgsVectorColorRampV2* ramp, bool inverted = false );
 
-    /** Update the all symbols but leave breaks and colors. */
+    /** Update all the symbols but leave breaks and colors. */
     void updateSymbols( QgsSymbolV2* sym );
 
     //! @note added in 1.6
@@ -188,7 +187,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
 
     //! items of symbology items in legend should be checkable
-    // @note added in 2.5
+    //! @note added in 2.5
     virtual bool legendSymbolItemsCheckable() const;
 
     //! item in symbology was checked
@@ -203,9 +202,10 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 2.6
     virtual QString legendClassificationAttribute() const { return classAttribute(); }
 
-    //! convert the renderer to a rule based renderer with equivalent rules
+    //! creates a QgsGraduatedSymbolRendererV2 from an existing renderer.
     //! @note added in 2.5
-    virtual QgsRuleBasedRendererV2* convertToRuleBasedRenderer();
+    //! @returns a new renderer if the conversion was possible, otherwise 0.
+    static QgsGraduatedSymbolRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer );
 
   protected:
     QString mAttrName;

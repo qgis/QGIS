@@ -467,7 +467,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis:
   QString rendererType;
   if ( needRuleRenderer )
   {
-    rendererType = "RuleRenderer";
+    rendererType = "ruleRenderer";
   }
   else
   {
@@ -585,9 +585,4 @@ QgsSymbolV2List QgsFeatureRendererV2::symbolsForFeature( QgsFeature& feat )
   QgsSymbolV2* s = symbolForFeature( feat );
   if ( s ) lst.append( s );
   return lst;
-}
-
-QgsRuleBasedRendererV2* QgsFeatureRendererV2::convertToRuleBasedRenderer()
-{
-  return 0;
 }

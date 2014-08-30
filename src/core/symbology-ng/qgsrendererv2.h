@@ -31,7 +31,6 @@ class QgsRenderContext;
 class QgsFeature;
 class QgsFields;
 class QgsVectorLayer;
-class QgsRuleBasedRendererV2;
 
 typedef QMap<QString, QString> QgsStringMap;
 
@@ -97,7 +96,7 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     virtual ~QgsFeatureRendererV2() {}
 
-    virtual QgsFeatureRendererV2* clone() = 0;
+    virtual QgsFeatureRendererV2* clone() const = 0;
 
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
@@ -201,10 +200,6 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! to use symbolForFeature()
     //! @note added in 1.9
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
-
-    //! convert the renderer to a rule based renderer with equivalent rules, if possible
-    //! @note added in 2.5
-    virtual QgsRuleBasedRendererV2* convertToRuleBasedRenderer();
 
   protected:
     QgsFeatureRendererV2( QString type );

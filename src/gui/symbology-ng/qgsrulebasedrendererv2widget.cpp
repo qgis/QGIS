@@ -24,6 +24,7 @@
 #include "qgssymbolv2selectordialog.h"
 #include "qgslogger.h"
 #include "qstring.h"
+#include "qgssinglesymbolrendererv2.h"
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -46,9 +47,11 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   mRenderer = 0;
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
+
+
   if ( renderer )
   {
-    mRenderer = renderer->convertToRuleBasedRenderer();
+    mRenderer = QgsRuleBasedRendererV2::convertFromRenderer(renderer);
   }
   if ( !mRenderer )
   {
