@@ -47,6 +47,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, const QgsRec
   }
 
   mSelectedOnly->setEnabled( layerHasSelectedFeatures );
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
 }
 
 void QgsVectorLayerSaveAsDialog::setup()
@@ -282,6 +283,11 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
       mLayerOptionsGroupBox->setVisible( false );
     }
   }
+}
+
+void QgsVectorLayerSaveAsDialog::on_leFilename_textChanged( const QString& text )
+{
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( QFileInfo( text ).absoluteDir().exists() );
 }
 
 void QgsVectorLayerSaveAsDialog::on_browseFilename_clicked()

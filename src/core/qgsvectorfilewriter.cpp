@@ -77,6 +77,13 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   QStringList layOptions = layerOptions;
   QStringList dsOptions = datasourceOptions;
 
+  if ( theVectorFileName.isEmpty() )
+  {
+    mErrorMessage = QObject::tr( "Empty filename given" );
+    mError = ErrCreateDataSource;
+    return;
+  }
+
   QString ogrDriverName;
   if ( driverName == "MapInfo MIF" )
   {
