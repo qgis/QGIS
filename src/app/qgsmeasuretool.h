@@ -70,6 +70,8 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     //! called when map tool is being deactivated
     virtual void deactivate();
 
+    virtual void keyPressEvent( QKeyEvent* e );
+
   public slots:
     //! updates the projections we're using
     void updateSettings();
@@ -102,6 +104,8 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     //@param p (pixel) coordinate
     QgsPoint snapPoint( const QPoint& p );
 
+    /**Removes the last vertex from mRubberBand*/
+    void undo();
 };
 
 #endif

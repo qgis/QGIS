@@ -47,6 +47,9 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Mose move
     void mouseMove( QgsPoint &point );
 
+    //! Remove last point
+    void removeLastPoint();
+
   public slots:
     //! Reject
     void on_buttonBox_rejected( void );
@@ -96,6 +99,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! pointer to measure tool which owns this dialog
     QgsMeasureTool* mTool;
+
+    QgsPoint mLastMousePoint;
 };
 
 #endif

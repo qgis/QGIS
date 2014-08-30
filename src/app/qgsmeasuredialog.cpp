@@ -89,6 +89,7 @@ void QgsMeasureDialog::restart()
 
 void QgsMeasureDialog::mouseMove( QgsPoint &point )
 {
+  mLastMousePoint = point;
   // show current distance/area while moving the point
   // by creating a temporary copy of point array
   // and adding moving point at the end
@@ -143,6 +144,43 @@ void QgsMeasureDialog::addPoint( QgsPoint &p )
     }
   }
   QgsDebugMsg( "Exiting" );
+}
+
+void QgsMeasureDialog::removeLastPoint()
+{
+  int numPoints = mTool->points().size();
+  if ( mMeasureArea )
+  {
+    if ( numPoints > 1 )
+    {
+      QList<QgsPoint> tmpPoints = mTool->points();
+      tmpPoints.append( mLastMousePoint );
+      double area = mDa.measurePolygon( tmpPoints );
+      editTotal->setText( formatArea( area ) );
+    }
+    else
+    {
+      editTotal->setText( formatArea( 0 ) );
+    }
+  }
+  else if ( !mMeasureArea && numPoints >= 1 )
+  {
+    //remove final row
+    delete mTable->takeTopLevelItem( mTable->topLevelItemCount() - 1 );
+
+    QgsPoint p1( mTool->points().last() );
+    double d = mDa.measureLine( p1, mLastMousePoint );
+
+    mTotal = mDa.measureLine( mTool->points() );
+    editTotal->setText( formatDistance( mTotal + d ) );
+
+    QGis::UnitType displayUnits;
+    // Meters or feet?
+    convertMeasurement( d, displayUnits, false );
+
+    QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
+    item->setText( 0, QLocale::system().toString( d, 'f', mDecimalPlaces ) );
+  }
 }
 
 void QgsMeasureDialog::on_buttonBox_rejected( void )
