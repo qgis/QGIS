@@ -364,22 +364,7 @@ QString QgsGrass::getDefaultMapset( void )
 void QgsGrass::setLocation( QString gisdbase, QString location )
 {
   QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase ).arg( location ) );
-  init();
-
-  // Set principal GRASS variables (in memory)
-#ifdef Q_OS_WIN
-  G__setenv( "GISDBASE", shortPath( gisdbase ).toLocal8Bit().data() );
-#else
-  // This does not work for GISBASE with non ascii chars on Windows XP,
-  // gives error 'LOCATION ... not available':
-  G__setenv( "GISDBASE", gisdbase.toUtf8().constData() );
-#endif
-  G__setenv( "LOCATION_NAME", location.toUtf8().constData() );
-  G__setenv( "MAPSET", "PERMANENT" ); // PERMANENT must always exist
-
-  // Add all available mapsets to search path
-  char **ms = G_available_mapsets();
-  for ( int i = 0; ms[i]; i++ )  G_add_mapset_to_search_path( ms[i] );
+  setMapset( gisdbase, location, "PERMANENT" );
 }
 
 void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
@@ -397,8 +382,20 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
   G__setenv( "MAPSET", mapset.toUtf8().data() );
 
   // Add all available mapsets to search path
-  char **ms = G_available_mapsets();
-  for ( int i = 0; ms[i]; i++ )  G_add_mapset_to_search_path( ms[i] );
+  char **ms = 0;
+  G_TRY
+  {
+    ms = G_available_mapsets();
+  }
+  G_CATCH( QgsGrass::Exception &e )
+  {
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "No available mapsets found: %1" ).arg( e.what() ) );
+    return;
+  }
+
+  for ( int i = 0; ms[i]; i++ )
+    G_add_mapset_to_search_path( ms[i] );
 }
 
 jmp_buf QgsGrass::jumper;
