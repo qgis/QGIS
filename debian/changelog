@@ -5,8 +5,9 @@ qgis (2.5.0) UNRELEASED; urgency=medium
   * add remove sqlanywhere plugin and provider
   * drop support for ubuntu quantal and raring and add utopic
   * merge downstream debian changes
+  * add build dependency to pyqt4.qsci-dev
 
- -- Jürgen E. Fischer <jef@norbit.de>  Wed, 16 Jul 2014 09:09:57 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Sun, 31 Aug 2014 23:00:35 +0200
 
 qgis (2.4.0) unstable; urgency=medium
 

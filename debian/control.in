@@ -36,6 +36,7 @@ Build-Depends:
 #saucy# libpython2.7-dev,
 #sid jessie sid-oracle trusty utopic# python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~),
 #sid jessie wheezy precise saucy sid-oracle trusty utopic# python-qt4 (>= 4.1.0), python-qt4-dev,
+#sid# pyqt4.qsci-dev,
  python-sip (>= 4.5.0),
  python-sip-dev (>= 4.5.0),
  libosgearth-dev,
