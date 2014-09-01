@@ -49,3 +49,5 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 };
 
+QFlags<QgsMapLayerProxyModel::Filter> operator|(QgsMapLayerProxyModel::Filter f1, QFlags<QgsMapLayerProxyModel::Filter> f2);
+
