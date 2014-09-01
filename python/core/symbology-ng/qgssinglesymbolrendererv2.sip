@@ -62,6 +62,10 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
     //! @note not available in python bindings
     // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() );
 
+    //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
+    //! @note added in 2.6
+    virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
+
   private:
     QgsSingleSymbolRendererV2( const QgsSingleSymbolRendererV2 & );
     QgsSingleSymbolRendererV2 & operator=( const QgsSingleSymbolRendererV2 & );

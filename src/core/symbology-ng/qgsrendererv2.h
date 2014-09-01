@@ -172,7 +172,7 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
     //! Default fallback implementation just uses legendSymbolItems() implementation
-    //! @node added in 2.6
+    //! @note added in 2.6
     virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
 
     //! If supported by the renderer, return classification attribute for the use in legend

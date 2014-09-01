@@ -178,10 +178,27 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     //! return a list of symbology items for the legend
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
+    //! items of symbology items in legend should be checkable
+    //! @note added in 2.5
+    virtual bool legendSymbolItemsCheckable() const;
+
+    //! items of symbology items in legend is checked
+    //! @note added in 2.5
+    virtual bool legendSymbolItemChecked( QString key );
+
+    //! item in symbology was checked
+    //! @note added in 2.5
+    virtual void checkLegendSymbolItem( QString key, bool state = true );
+
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
     //! @note not available in python bindings
     // virtual QgsLegendSymbolList legendSymbolItems();
+
+    //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
+    //! Default fallback implementation just uses legendSymbolItems() implementation
+    //! @note added in 2.6
+    virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
 
     //! for debugging
     virtual QString dump() const;

@@ -84,6 +84,8 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
     /**
      * Draws symbol on the left side of the item
+     * @param settings Legend layout configuration
+     * @param ctx Context for rendering - may be null if only doing layout without actual rendering
      * @param itemHeight Minimal height of the legend item - used for correct positioning when rendering
      * @return Real size of the symbol (may be bigger than "normal" symbol size from settings)
      */
@@ -91,6 +93,8 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
     /**
      * Draws label on the right side of the item
+     * @param settings Legend layout configuration
+     * @param ctx Context for rendering - may be null if only doing layout without actual rendering
      * @param symbolSize  Real size of the associated symbol - used for correct positioning when rendering
      * @return Size of the label (may span multiple lines)
      */
@@ -124,8 +128,6 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
     virtual QVariant data( int role ) const;
     virtual bool setData( const QVariant& value, int role );
 
-    /** Draws a symbol at the current y position and returns the new x position. Returns real symbol height, because for points,
-     it is possible that it differs from mSymbolHeight */
     QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
 
     virtual void setEmbeddedInParent( bool embedded );
