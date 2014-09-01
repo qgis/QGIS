@@ -266,7 +266,25 @@ void QgsTextRenderer::drawText( const QRectF rect, const double rotation, const 
 
   if ( settings.shapeDraw )
   {
-    drawPart( rect, rotation, textLines, context, settings, ShapePart, dpiRatio, drawAsOutlines );
+    //calculate size of text
+    double textWidth = getTextWidth( textLines, textSettings );
+    double textHeight = getTextHeight( textLines, textSettings );
+    //calculate shape rectangle
+    QRectF shapeRect;
+    switch ( textSettings.multilineAlign )
+    {
+      case QgsTextRendererSettings::MultiLeft:
+        shapeRect = QRectF( rect.left(), rect.top(), textWidth, textHeight );
+        break;
+      case QgsTextRendererSettings::MultiCenter:
+        shapeRect = QRectF(( rect.left() + rect.right() - textWidth ) / 2.0, rect.top(), textWidth, textHeight );
+        break;
+      case QgsTextRendererSettings::MultiRight:
+        shapeRect = QRectF( rect.right() - textWidth, rect.top(), textWidth, textHeight );
+        break;
+    }
+
+    drawPart( shapeRect, rotation, textLines, context, settings, ShapePart, dpiRatio, drawAsOutlines );
   }
 
   if ( settings.bufferDraw )
@@ -899,7 +917,7 @@ void QgsTextRenderer::drawTextPart( const QgsPoint point, const QSizeF size, con
     double yMultiLineOffset;
     if ( drawFromTop )
     {
-      yMultiLineOffset = labelHeight + i * labelHeight * settings.multilineHeight;
+      yMultiLineOffset = fontMetrics->ascent() + i * labelHeight * settings.multilineHeight;
     }
     else
     {
@@ -977,6 +995,29 @@ void QgsTextRenderer::drawTextPart( const QgsPoint point, const QSizeF size, con
   }
 }
 
+double QgsTextRenderer::getTextWidth( const QStringList &textLines, const QgsTextRendererSettings &textSettings )
+{
+  QStringList::const_iterator textIt = textLines.constBegin();
+
+  //calculate max width of text lines
+  QFontMetricsF fm = QFontMetrics( textSettings.textFont );
+  double maxWidth = 0;
+  for ( ; textIt != textLines.constEnd(); ++textIt )
+  {
+    maxWidth = qMax( maxWidth, fm.width( *textIt ) );
+  }
+  return maxWidth;
+}
+
+double QgsTextRenderer::getTextHeight( const QStringList &textLines, const QgsTextRendererSettings &textSettings )
+{
+  QFontMetricsF fm = QFontMetrics( textSettings.textFont );
+  double labelHeight = fm.ascent() + fm.descent(); // ignore +1 for baseline
+
+  double height = labelHeight + ( textLines.size() - 1 ) * labelHeight * textSettings.multilineHeight;
+
+  return height;
+}
 
 void QgsTextRenderer::drawText( const QRectF rect, const double rotation, const QString text, QgsRenderContext &context, QgsTextRendererSettings &textSettings, const double dpiRatio, const bool drawAsOutlines )
 {

@@ -350,6 +350,26 @@ class CORE_EXPORT QgsTextRenderer
                               const QgsTextRendererSettings& settings, const QFontMetricsF* fontMetrics,
                               QgsRenderContext& context, const bool drawAsOutlines );
 
+    /**Gets the width of text, using the settings from a specified QgsTextRendererSettings.
+     * For multiline text, this will equal the maximum width of a line of text from the
+     * input text lines.
+     * @param textLines text lines for rendering
+     * @param textSettings text renderer settings
+     * @returns width of text
+     * @see getTextHeight
+     * @note added in QGIS 2.5
+     */
+    static double getTextWidth( const QStringList& textLines, const QgsTextRendererSettings &textSettings );
+
+    /**Gets the height of text, using the settings from a specified QgsTextRendererSettings.
+     * @param textLines text lines for rendering
+     * @param textSettings text renderer settings
+     * @returns height of text
+     * @see getTextWidth
+     * @note added in QGIS 2.5
+     */
+    static double getTextHeight( const QStringList& textLines, const QgsTextRendererSettings &textSettings );
+
 };
 
 #endif // QGSTEXTRENDERER_H

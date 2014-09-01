@@ -48,15 +48,42 @@ void QgsTextSettingsPreview::paintEvent( QPaintEvent *e )
     mTextSettings.bufferSize = 1;
   }
 
-  double xtrans = 0;
+  //just assume everything is in mm for now
+  double xtrans = 2;
+  double ytrans = 2;
   if ( mTextSettings.bufferSize != 0 )
   {
-    xtrans = mTextSettings.bufferSize / 4;
+    xtrans += mTextSettings.bufferSize * 96 / 25.4;
+    ytrans += mTextSettings.bufferSize * 96 / 25.4;
+  }
+  if ( mTextSettings.shapeDraw && mTextSettings.shapeSizeType == QgsTextRendererSettings::SizeBuffer )
+  {
+    xtrans += mTextSettings.shapeSize.x() * 96 / 25.4;
+    ytrans += mTextSettings.shapeSize.y() * 96 / 25.4;
+  }
+  if ( mTextSettings.shapeDraw && mTextSettings.shapeBorderWidth > 0 )
+  {
+    xtrans += 0.5 * mTextSettings.shapeBorderWidth * 96 / 25.4;
+    ytrans += 0.5 * mTextSettings.shapeBorderWidth * 96 / 25.4;
+  }
+
+  QRectF textRect;
+  switch ( mTextSettings.multilineAlign )
+  {
+    case QgsTextRendererSettings::MultiLeft:
+      textRect = QRectF( xtrans, ytrans, width() - xtrans, height() );
+      break;
+    case QgsTextRendererSettings::MultiCenter:
+      textRect = QRectF( 0, ytrans, width(), height() );
+      break;
+    case QgsTextRendererSettings::MultiRight:
+      textRect = QRectF( 0, ytrans, width() - xtrans, height() );
+      break;
   }
 
   mContext->setPainter( &p );
 
-  QgsTextRenderer::drawText( QRectF( xtrans, fm.ascent() + 4, width() - xtrans, height() ), 0, text(), *mContext, mTextSettings );
+  QgsTextRenderer::drawText( textRect, 0, text(), *mContext, mTextSettings );
 }
 
 void QgsTextSettingsPreview::setTextRendererSettings( const QgsTextRendererSettings &textSettings )
