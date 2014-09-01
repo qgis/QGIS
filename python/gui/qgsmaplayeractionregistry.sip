@@ -45,6 +45,8 @@ class QgsMapLayerAction : QAction
 
 };
 
+QFlags<QgsMapLayerAction::Target> operator|(QgsMapLayerAction::Target f1, QFlags<QgsMapLayerAction::Target> f2);
+
 class QgsMapLayerActionRegistry : QObject
 {
 %TypeHeaderCode

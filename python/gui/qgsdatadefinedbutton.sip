@@ -6,10 +6,10 @@ class QgsDataDefinedButton :  QToolButton
   public:
     enum DataType
     {
-      AnyType,
       String,
       Int,
       Double,
+      AnyType
     };
     typedef QFlags<QgsDataDefinedButton::DataType> DataTypes;
 
@@ -207,3 +207,5 @@ class QgsDataDefinedButton :  QToolButton
     void setField( QString field );
 
 };
+
+QFlags<QgsDataDefinedButton::DataType> operator|(QgsDataDefinedButton::DataType f1, QFlags<QgsDataDefinedButton::DataType> f2);

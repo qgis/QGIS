@@ -45,3 +45,5 @@ class QgsFieldProxyModel : QSortFilterProxyModel
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 };
 
+QFlags<QgsFieldProxyModel::Filter> operator|(QgsFieldProxyModel::Filter f1, QFlags<QgsFieldProxyModel::Filter> f2);
+

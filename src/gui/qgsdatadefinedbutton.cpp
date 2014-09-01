@@ -131,15 +131,15 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
   mDataTypesString = QString( "" );
 
   QStringList ts;
-  if ( mDataTypes.testFlag( AnyType ) || mDataTypes.testFlag( String ) )
+  if ( mDataTypes.testFlag( String ) )
   {
     ts << tr( "string" );
   }
-  if ( mDataTypes.testFlag( AnyType ) || mDataTypes.testFlag( Int ) )
+  if ( mDataTypes.testFlag( Int ) )
   {
     ts << tr( "int" );
   }
-  if ( mDataTypes.testFlag( AnyType ) || mDataTypes.testFlag( Double ) )
+  if ( mDataTypes.testFlag( Double ) )
   {
     ts << tr( "double" );
   }

@@ -39,10 +39,10 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
   public:
     enum DataType
     {
-      AnyType  = 0,
       String  = 1,
       Int     = 2,
-      Double  = 4
+      Double  = 4,
+      AnyType = String | Int | Double
     };
     Q_DECLARE_FLAGS( DataTypes, DataType )
 
