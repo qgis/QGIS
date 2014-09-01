@@ -94,6 +94,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void deleteClasses();
     /**Removes all classes from the classification*/
     void deleteAllClasses();
+    /**Toggle the link between classes boundaries */
+    void toggleBoundariesLink( bool linked );
 
     void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
@@ -114,6 +116,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
 
     void changeRangeSymbol( int rangeIdx );
     void changeRange( int rangeIdx );
+
+    QString createLabel( double lowerValue, double upperValue );
 
     void changeSelectedSymbols();
 

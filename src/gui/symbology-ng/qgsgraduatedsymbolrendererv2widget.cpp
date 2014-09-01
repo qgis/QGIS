@@ -417,6 +417,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   connect( btnGraduatedDelete, SIGNAL( clicked() ), this, SLOT( deleteClasses() ) );
   connect( btnDeleteAllClasses, SIGNAL( clicked() ), this, SLOT( deleteAllClasses() ) );
   connect( btnGraduatedAdd, SIGNAL( clicked() ), this, SLOT( addClass() ) );
+  connect( cbxLinkBoundaries, SIGNAL( toggled( bool ) ), this, SLOT( toggleBoundariesLink( bool ) ) );
 
   // initialize from previously set renderer
   updateUiFromRenderer();
@@ -702,9 +703,55 @@ void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
   {
     double lowerValue = dialog.lowerValue().toDouble();
     double upperValue = dialog.upperValue().toDouble();
+
+    QString label = createLabel( range.lowerValue(), range.upperValue() );
+    QString newLabel;
+
     mRenderer->updateRangeUpperValue( rangeIdx, upperValue );
     mRenderer->updateRangeLowerValue( rangeIdx, lowerValue );
+
+    //If the label was the label automatically generated, we generate a new one for the new range
+    if ( range.label() == label )
+    {
+      newLabel = createLabel( lowerValue, upperValue );
+      mRenderer->updateRangeLabel( rangeIdx, newLabel );
+    }
+
+    //If the boundaries have to stay linked, we update the ranges above and below, as well as their label if needed
+    if ( cbxLinkBoundaries->isChecked() )
+    {
+      if ( rangeIdx > 0 )
+      {
+        const QgsRendererRangeV2& rangeLower = mRenderer->ranges()[rangeIdx - 1];
+        label = createLabel( rangeLower.lowerValue(), rangeLower.upperValue() );
+        mRenderer->updateRangeUpperValue( rangeIdx - 1, lowerValue );
+
+        if ( label == rangeLower.label() )
+        {
+          newLabel = createLabel( rangeLower.lowerValue(), lowerValue );
+          mRenderer->updateRangeLabel( rangeIdx - 1, newLabel );
+        }
+      }
+
+      if ( rangeIdx < mRenderer->ranges().size() - 1 )
+      {
+        const QgsRendererRangeV2& rangeUpper = mRenderer->ranges()[rangeIdx + 1];
+        label = createLabel( rangeUpper.lowerValue(), rangeUpper.upperValue() );
+        mRenderer->updateRangeLowerValue( rangeIdx + 1, upperValue );
+
+        if ( label == rangeUpper.label() )
+        {
+          newLabel = createLabel( upperValue, rangeUpper.upperValue() );
+          mRenderer->updateRangeLabel( rangeIdx + 1, newLabel );
+        }
+      }
+    }
   }
+}
+
+QString QgsGraduatedSymbolRendererV2Widget::createLabel( double lowerValue, double upperValue )
+{
+  return QString::number( lowerValue , 'f', 4 ) + " - " + QString::number( upperValue, 'f', 4 );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::addClass()
@@ -721,6 +768,20 @@ void QgsGraduatedSymbolRendererV2Widget::deleteClasses()
 void QgsGraduatedSymbolRendererV2Widget::deleteAllClasses()
 {
   mModel->removeAllRows();
+}
+
+void QgsGraduatedSymbolRendererV2Widget::toggleBoundariesLink( bool linked )
+{
+  //If the checkbox controlling the link between boundaries was unchecked and we check it, we have to link the boundaries
+  //This is done by updating all lower ranges to the upper value of the range above
+  if ( linked )
+  {
+    for ( int i = 1;i < mRenderer->ranges().size();++i )
+    {
+      mRenderer->updateRangeLowerValue( i, mRenderer->ranges()[i-1].upperValue() );
+    }
+    refreshSymbolView();
+  }
 }
 
 void QgsGraduatedSymbolRendererV2Widget::changeCurrentValue( QStandardItem * item )
