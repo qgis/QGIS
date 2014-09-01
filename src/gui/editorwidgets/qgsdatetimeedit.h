@@ -34,7 +34,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 
     //! determines if the widget allows setting null date/time.
     void setAllowNull( bool allowNull );
-    bool allowNull() {return mAllowNull;}
+    bool allowNull() const {return mAllowNull;}
 
     /**
      * @brief setDateTime set the date time in the widget and handles null date times.
