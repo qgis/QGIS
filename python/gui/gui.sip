@@ -39,6 +39,7 @@
 %Include qgscolorschemelist.sip
 %Include qgscomposerview.sip
 %Include qgscredentialdialog.sip
+%Include qgsdatetimeedit.sip
 %Include qgsdetaileditemdata.sip
 %Include qgsdetaileditemdelegate.sip
 %Include qgsdialog.sip
