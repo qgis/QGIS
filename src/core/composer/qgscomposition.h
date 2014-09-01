@@ -797,6 +797,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void statusMsgChanged( QString message );
 
     friend class QgsComposerObject; //for accessing dataDefinedEvaluate, readDataDefinedPropertyMap and writeDataDefinedPropertyMap
+    friend class QgsComposerModel; //for accessing updateZValues (should not be public)
 };
 
 template<class T> void QgsComposition::composerItems( QList<T*>& itemList )

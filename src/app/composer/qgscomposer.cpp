@@ -551,6 +551,12 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mItemsTreeView->header()->setResizeMode( 0, QHeaderView::Fixed );
   mItemsTreeView->header()->setResizeMode( 1, QHeaderView::Fixed );
   mItemsTreeView->header()->setMovable( false );
+
+  mItemsTreeView->setDragEnabled( true );
+  mItemsTreeView->setAcceptDrops( true );
+  mItemsTreeView->setDropIndicatorShown( true );
+  mItemsTreeView->setDragDropMode( QAbstractItemView::InternalMove );
+
   mItemsTreeView->setIndentation( 0 );
   mItemsDock->setWidget( mItemsTreeView );
   connect( mItemsTreeView->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), mComposition->itemsModel(), SLOT( setSelected( QModelIndex ) ) );

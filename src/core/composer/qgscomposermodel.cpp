@@ -281,6 +281,170 @@ QVariant QgsComposerModel::headerData( int section, Qt::Orientation orientation,
 
 }
 
+Qt::DropActions QgsComposerModel::supportedDropActions() const
+{
+  return Qt::MoveAction;
+}
+
+QStringList QgsComposerModel::mimeTypes() const
+{
+  QStringList types;
+  types << "application/x-vnd.qgis.qgis.composeritemid";
+  return types;
+}
+
+QMimeData* QgsComposerModel::mimeData( const QModelIndexList &indexes ) const
+{
+  QMimeData *mimeData = new QMimeData();
+  QByteArray encodedData;
+
+  QDataStream stream( &encodedData, QIODevice::WriteOnly );
+
+  foreach ( const QModelIndex &index, indexes )
+  {
+    if ( index.isValid() && index.column() == ItemId )
+    {
+      QgsComposerItem *item = itemFromIndex( index );
+      if ( !item )
+      {
+        continue;
+      }
+      QString text = item->uuid();
+      stream << text;
+    }
+  }
+
+  mimeData->setData( "application/x-vnd.qgis.qgis.composeritemid", encodedData );
+  return mimeData;
+}
+
+bool zOrderDescending( QgsComposerItem* item1 , QgsComposerItem* item2 )
+{
+  return item1->zValue() > item2->zValue();
+}
+
+bool QgsComposerModel::dropMimeData( const QMimeData *data,
+                                     Qt::DropAction action, int row, int column, const QModelIndex &parent )
+{
+  if ( column != ItemId )
+  {
+    return false;
+  }
+
+  if ( action == Qt::IgnoreAction )
+  {
+    return true;
+  }
+
+  if ( !data->hasFormat( "application/x-vnd.qgis.qgis.composeritemid" ) )
+  {
+    return false;
+  }
+
+  if ( parent.isValid() )
+  {
+    return false;
+  }
+
+  int beginRow = row != -1 ? row : rowCount( QModelIndex() );
+
+  QByteArray encodedData = data->data( "application/x-vnd.qgis.qgis.composeritemid" );
+  QDataStream stream( &encodedData, QIODevice::ReadOnly );
+  QList<QgsComposerItem*> droppedItems;
+  int rows = 0;
+
+  while ( !stream.atEnd() )
+  {
+    QString text;
+    stream >> text;
+    const QgsComposerItem* item = mComposition->getComposerItemByUuid( text );
+    if ( item )
+    {
+      droppedItems << const_cast<QgsComposerItem*>( item );
+      ++rows;
+    }
+  }
+
+  if ( droppedItems.length() == 0 )
+  {
+    //no dropped items
+    return false;
+  }
+
+  //move dropped items
+
+  //first sort them by z-order
+  qSort( droppedItems.begin(), droppedItems.end(), zOrderDescending );
+
+  //calculate position in z order list to drop items at
+  int destPos = 0;
+  if ( beginRow < rowCount() )
+  {
+    QgsComposerItem* itemBefore = mItemsInScene.at( beginRow );
+    destPos = mItemZList.indexOf( itemBefore );
+  }
+  else
+  {
+    //place items at end
+    destPos = mItemZList.size();
+  }
+
+  //calculate position to insert moved rows to
+  int insertPos = destPos;
+  QList<QgsComposerItem*>::iterator itemIt = droppedItems.begin();
+  for ( ; itemIt != droppedItems.end(); ++itemIt )
+  {
+    int listPos = mItemZList.indexOf( *itemIt );
+    if ( listPos == -1 )
+    {
+      //should be impossible
+      continue;
+    }
+
+    if ( listPos < destPos )
+    {
+      insertPos--;
+    }
+  }
+
+  //remove rows from list
+  itemIt = droppedItems.begin();
+  for ( ; itemIt != droppedItems.end(); ++itemIt )
+  {
+    mItemZList.removeOne( *itemIt );
+  }
+
+  //insert items
+  itemIt = droppedItems.begin();
+  for ( ; itemIt != droppedItems.end(); ++itemIt )
+  {
+    mItemZList.insert( insertPos, *itemIt );
+    insertPos++;
+  }
+
+  rebuildSceneItemList();
+  mComposition->updateZValues( false );
+
+  return true;
+}
+
+bool QgsComposerModel::removeRows( int row, int count, const QModelIndex &parent )
+{
+  Q_UNUSED( count );
+  if ( parent.isValid() )
+  {
+    return false;
+  }
+
+  if ( row >= rowCount() )
+  {
+    return false;
+  }
+
+  //do nothing - moves are handled by the dropMimeData method
+  return true;
+}
+
 void QgsComposerModel::clear()
 {
   //totally reset model
@@ -727,20 +891,22 @@ QList<QgsComposerItem *>* QgsComposerModel::zOrderList()
 
 Qt::ItemFlags QgsComposerModel::flags( const QModelIndex & index ) const
 {
+  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+
   if ( ! index.isValid() )
   {
-    return 0;
+    return flags | Qt::ItemIsDropEnabled;;
   }
 
   switch ( index.column() )
   {
     case Visibility:
     case LockStatus:
-      return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
+      return flags | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
     case ItemId:
-      return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+      return flags | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
     default:
-      return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+      return flags | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
   }
 }
 
