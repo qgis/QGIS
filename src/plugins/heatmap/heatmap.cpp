@@ -33,6 +33,7 @@
 #include "qgsdistancearea.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
+#include "qgsmessagebar.h"
 
 // Qt4 Related Includes
 #include <QAction>
@@ -111,6 +112,14 @@ void Heatmap::run()
 {
   HeatmapGui d( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags, &mSessionSettings );
 
+  // Start working on the input vector
+  QgsVectorLayer* inputLayer = d.inputVectorLayer();
+  if ( !inputLayer )
+  {
+    mQGisIface->messageBar()->pushMessage( tr( "Layer not found" ), tr( "The heatmap plugin requires at least one point vector layer" ),  QgsMessageBar::INFO, mQGisIface->messageTimeout() );
+    return;
+  }
+
   if ( d.exec() == QDialog::Accepted )
   {
     // everything runs here
@@ -123,9 +132,6 @@ void Heatmap::run()
     mDecay = d.decayRatio();
     int kernelShape = d.kernelShape();
 
-    // Start working on the input vector
-    QgsVectorLayer* inputLayer = d.inputVectorLayer();
-
     // Getting the rasterdataset in place
     GDALAllRegister();
 
@@ -135,7 +141,7 @@ void Heatmap::run()
     myDriver = GetGDALDriverManager()->GetDriverByName( d.outputFormat().toUtf8() );
     if ( myDriver == NULL )
     {
-      QMessageBox::information( 0, tr( "GDAL driver error" ), tr( "Cannot open the driver for the specified format" ) );
+      mQGisIface->messageBar()->pushMessage( tr( "GDAL driver error" ), tr( "Cannot open the driver for the specified format" ), QgsMessageBar::WARNING, mQGisIface->messageTimeout() );
       return;
     }
 
@@ -169,7 +175,7 @@ void Heatmap::run()
     heatmapDS = ( GDALDataset * ) GDALOpen( TO8F( d.outputFilename() ), GA_Update );
     if ( !heatmapDS )
     {
-      QMessageBox::information( 0, tr( "Raster update error" ), tr( "Could not open the created raster for updating. The heatmap was not generated." ) );
+      mQGisIface->messageBar()->pushMessage( tr( "Raster update error" ), tr( "Could not open the created raster for updating. The heatmap was not generated." ), QgsMessageBar::WARNING );
       return;
     }
     poBand = heatmapDS->GetRasterBand( 1 );
@@ -225,7 +231,7 @@ void Heatmap::run()
       QApplication::processEvents();
       if ( p.wasCanceled() )
       {
-        QMessageBox::information( 0, tr( "Heatmap generation aborted" ), tr( "QGIS will now load the partially-computed raster." ) );
+        mQGisIface->messageBar()->pushMessage( tr( "Heatmap generation aborted" ), tr( "QGIS will now load the partially-computed raster" ), QgsMessageBar::INFO, mQGisIface->messageTimeout() );
         break;
       }
 

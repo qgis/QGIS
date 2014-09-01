@@ -633,13 +633,14 @@ QString HeatmapGui::outputFormat()
 QgsVectorLayer* HeatmapGui::inputVectorLayer()
 {
   QString myLayerId = inputLayerCombo->itemData( inputLayerCombo->currentIndex() ).toString();
-
-  QgsVectorLayer* inputLayer = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( myLayerId ) );
-  if ( !inputLayer )
+  if ( !myLayerId.isEmpty() )
   {
-    QMessageBox::information( 0, tr( "Layer not found" ), tr( "Layer %1 not found." ).arg( myLayerId ) );
+    QgsVectorLayer* inputLayer = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( myLayerId ) );
+    return inputLayer;
+  }
+  else
+  {
     return 0;
   }
-  return inputLayer;
 }
 
