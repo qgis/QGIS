@@ -19,6 +19,7 @@
 #include <QDateTimeEdit>
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgsdatetimeedit.h"
 #include "qgsdatetimeeditfactory.h"
 
 
@@ -28,8 +29,12 @@ class GUI_EXPORT QgsDateTimeEditWrapper : public QgsEditorWidgetWrapper
   public:
     explicit QgsDateTimeEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent = 0 );
 
+  private slots:
+    void dateTimeChanged( const QDateTime &dateTime );
+
   private:
-    QDateTimeEdit* mDateTimeWidget;
+    QDateTimeEdit* mQDateTimeEdit;
+    QgsDateTimeEdit* mQgsDateTimeEdit;
 
 
     // QgsEditorWidgetWrapper interface
