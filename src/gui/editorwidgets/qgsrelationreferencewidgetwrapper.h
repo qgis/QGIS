@@ -26,7 +26,6 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     explicit QgsRelationReferenceWidgetWrapper( QgsVectorLayer* vl,
         int fieldIdx,
         QWidget* editor,
-        QgsAttributeEditorContext context,
         QgsMapCanvas* canvas,
         QgsMessageBar* messageBar,
         QWidget* parent = 0 );
@@ -44,7 +43,6 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
 
   private:
     QgsRelationReferenceWidget* mWidget;
-    QgsAttributeEditorContext mEditorContext;
     QgsMapCanvas* mCanvas;
     QgsMessageBar* mMessageBar;
 };

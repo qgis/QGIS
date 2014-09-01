@@ -52,18 +52,20 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void setQgisRelation( QString qgisRelationId ) { mRelationId = qgisRelationId; }
     QString qgisRelation() { return mRelationId; }  //property( "qgisRelation" ).toString()
 
-    void setRelationFeature( const QgsRelation& relation, const QgsFeature& feature, const QgsAttributeEditorContext& context );
+    void setRelationFeature( const QgsRelation& relation, const QgsFeature& feature );
+
+    void setEditorContext( const QgsAttributeEditorContext& context );
 
   private slots:
     void setViewMode( int mode ) {setViewMode( static_cast<QgsDualView::ViewMode>( mode ) );}
-    void onCollapsedStateChanged( bool state );
     void referencingLayerEditingToggled();
 
-    void on_mAddFeatureButton_clicked();
-    void on_mLinkFeatureButton_clicked();
-    void on_mDeleteFeatureButton_clicked();
-    void on_mUnlinkFeatureButton_clicked();
-    void on_mToggleEditingButton_toggled( bool state );
+    void addFeature();
+    void linkFeature();
+    void deleteFeature();
+    void unlinkFeature();
+    void toggleEditing( bool state );
+    void onCollapsedStateChanged( bool collapsed );
 
   private:
     QgsDualView* mDualView;
@@ -83,6 +85,8 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QToolButton* mTableViewButton;
     QGridLayout* mRelationLayout;
     QButtonGroup* mViewModeButtonGroup;
+
+    bool mInitialized;
 };
 
 #endif // QGSRELATIONEDITOR_H

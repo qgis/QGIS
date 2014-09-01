@@ -34,9 +34,10 @@
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
     : QListView( parent )
-    , mCurrentEditSelectionModel( NULL )
-    , mFeatureSelectionModel( NULL )
-    , mItemDelegate( NULL )
+    , mModel( 0 )
+    , mCurrentEditSelectionModel( 0 )
+    , mFeatureSelectionModel( 0 )
+    , mItemDelegate( 0 )
     , mEditSelectionDrag( false )
 {
   setSelectionMode( QAbstractItemView::ExtendedSelection );
@@ -100,7 +101,7 @@ QString QgsFeatureListView::parserErrorString()
 QgsFeatureIds QgsFeatureListView::currentEditSelection()
 {
   QgsFeatureIds selection;
-  Q_FOREACH ( QModelIndex idx, mCurrentEditSelectionModel->selectedIndexes() )
+  Q_FOREACH( QModelIndex idx, mCurrentEditSelectionModel->selectedIndexes() )
   {
     selection << idx.data( QgsAttributeTableModel::FeatureIdRole ).value<QgsFeatureId>();
   }
@@ -115,20 +116,27 @@ void QgsFeatureListView::setCurrentFeatureEdited( bool state )
 
 void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
 {
-  QPoint pos = event->pos();
-
-  QModelIndex index = indexAt( pos );
-
-  if ( QgsFeatureListViewDelegate::EditElement == mItemDelegate->positionToElement( event->pos() ) )
+  if ( mModel )
   {
-    mEditSelectionDrag = true;
-    setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
+    QPoint pos = event->pos();
+
+    QModelIndex index = indexAt( pos );
+
+    if ( QgsFeatureListViewDelegate::EditElement == mItemDelegate->positionToElement( event->pos() ) )
+    {
+      mEditSelectionDrag = true;
+      setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
+    }
+    else
+    {
+      mFeatureSelectionModel->enableSync( false );
+      selectRow( index, true );
+      repaintRequested();
+    }
   }
   else
   {
-    mFeatureSelectionModel->enableSync( false );
-    selectRow( index, true );
-    repaintRequested();
+    QgsDebugMsg( "No model assigned to this view" );
   }
 }
 

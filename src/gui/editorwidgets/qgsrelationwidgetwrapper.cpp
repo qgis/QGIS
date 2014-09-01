@@ -16,6 +16,7 @@
 #include "qgsrelationwidgetwrapper.h"
 
 #include "qgsrelationeditorwidget.h"
+#include "qgsattributeeditorcontext.h"
 
 #include <QWidget>
 
@@ -24,7 +25,6 @@ QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer* vl, const Qg
     , mRelation( relation )
     , mWidget( NULL )
 {
-  initWidget( editor );
 }
 
 QWidget* QgsRelationWidgetWrapper::createWidget( QWidget* parent )
@@ -35,7 +35,7 @@ QWidget* QgsRelationWidgetWrapper::createWidget( QWidget* parent )
 void QgsRelationWidgetWrapper::setFeature( const QgsFeature& feature )
 {
   if ( mWidget )
-    mWidget->setRelationFeature( mRelation, feature, context() );
+    mWidget->setRelationFeature( mRelation, feature );
 }
 
 void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
@@ -47,6 +47,24 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
   {
     w = new QgsRelationEditorWidget( editor );
   }
+
+  QgsAttributeEditorContext myContext( QgsAttributeEditorContext( context(), mRelation, QgsAttributeEditorContext::EmbedMultiple ) );
+
+  w->setEditorContext( myContext );
+
+  // If this widget is already embedded by the same relation, reduce functionality
+  const QgsAttributeEditorContext* ctx = &context();
+  do
+  {
+    if ( ctx->relation().name() == mRelation.name() && ctx->relationMode() == QgsAttributeEditorContext::EmbedMultiple )
+    {
+      w->setSaveCollapsedState( false );
+      w->setCollapsed( true );
+      break;
+    }
+    ctx = ctx->parentContext();
+  }
+  while ( ctx );
 
   mWidget = w;
 }

@@ -25,7 +25,7 @@ class QgsMessageBar;
 class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsRelationReferenceFactory( QString name, QgsAttributeEditorContext context, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
+    QgsRelationReferenceFactory( QString name, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
 
     /**
      * Override this in your implementation.

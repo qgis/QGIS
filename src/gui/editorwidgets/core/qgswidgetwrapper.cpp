@@ -47,7 +47,7 @@ void QgsWidgetWrapper::setConfig( const QgsEditorWidgetConfig& config )
   mConfig = config;
 }
 
-void QgsWidgetWrapper::setContext( const QgsAttributeEditorContext& context )
+void QgsWidgetWrapper::setContext( const QgsAttributeEditorContext context )
 {
   mContext = context;
 }

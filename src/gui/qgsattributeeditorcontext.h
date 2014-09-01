@@ -33,34 +33,63 @@
 class GUI_EXPORT QgsAttributeEditorContext
 {
   public:
-    QgsAttributeEditorContext();
-
-    QWidget* proxyWidget( QgsVectorLayer* vl, int fieldIdx );
-    //! @note not available in python bindings
-    void addProxyWidgets( QgsVectorLayer* vl, QMap<int, QWidget*> proxyWidgets );
-    void addProxyWidget( QgsVectorLayer* vl, int idx, QWidget* widget );
-
-    void setDistanceArea( const QgsDistanceArea& distanceArea ) { mDistanceArea = distanceArea; }
-    inline const QgsDistanceArea& distanceArea() { return mDistanceArea; }
-
-    void setVectorLayerTools( QgsVectorLayerTools* vlTools ) { mVectorLayerTools = vlTools; }
-    QgsVectorLayerTools* vectorLayerTools() { return mVectorLayerTools; }
-
     /**
-     * When copying the context for another layer,  call this.
-     * Will adjast the distance area for this layer
-     *
-     * @param layer The layer to adjust for.
+     * Determines in which direction a relation was resolved.
      */
-    void adjustForLayer( QgsVectorLayer* layer );
+    enum RelationMode
+    {
+      Undefined,       //!< This context is not defined by a relation
+      EmbedMultiple,   //!< When embedding a list of features (e.g. houses as an embedded form in a district form)
+      EmbedSingle,     //!< When embedding a single feature (e.g. district information when looking at the form of a house)
+      StandaloneSingle //!< When showing a new dialog for a single feature (e.g. district information when looking at the form of a house)
+    };
+
+  public:
+    QgsAttributeEditorContext()
+        : mParentContext( 0 )
+        , mLayer( 0 )
+        , mVectorLayerTools( 0 )
+        , mRelationMode( Undefined )
+    {}
+
+    QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, const QgsRelation& relation, RelationMode mode )
+        : mParentContext( &parentContext )
+        , mLayer( 0 )
+        , mVectorLayerTools( parentContext.mVectorLayerTools )
+        , mDistanceArea( parentContext.mDistanceArea )
+        , mRelation( relation )
+        , mRelationMode( mode )
+    {
+      Q_ASSERT( parentContext.vectorLayerTools() );
+    }
+
+    inline void setDistanceArea( const QgsDistanceArea& distanceArea )
+    {
+      if ( mLayer )
+      {
+        mDistanceArea = distanceArea;
+        mDistanceArea.setSourceCrs( mLayer->crs() );
+      }
+    }
+
+    inline const QgsDistanceArea& distanceArea() const { return mDistanceArea; }
+
+    inline void setVectorLayerTools( QgsVectorLayerTools* vlTools ) { mVectorLayerTools = vlTools; }
+    inline const QgsVectorLayerTools* vectorLayerTools() const { return mVectorLayerTools; }
+
+    inline void setRelation( const QgsRelation& relation, RelationMode mode ) { mRelation = relation; mRelationMode = mode; }
+    inline const QgsRelation& relation() const { return mRelation; }
+    inline RelationMode relationMode() const { return mRelationMode; }
+
+    inline const QgsAttributeEditorContext* parentContext() const { return mParentContext; }
 
   private:
+    const QgsAttributeEditorContext* mParentContext;
+    QgsVectorLayer* mLayer;
     QgsVectorLayerTools* mVectorLayerTools;
-
-    //! vectorlayer => ( fieldIdx, proxyWidget )
-    QMap<QgsVectorLayer*, QMap<int, QWidget*> > mProxyWidgets;
-
     QgsDistanceArea mDistanceArea;
+    QgsRelation mRelation;
+    RelationMode mRelationMode;
 };
 
 #endif // QGSATTRIBUTEEDITORCONTEXT_H

@@ -42,9 +42,10 @@ QgsEditorWidgetWrapper* QgsEditorWidgetWrapper::fromWidget( QWidget* widget )
 
 void QgsEditorWidgetWrapper::setEnabled( bool enabled )
 {
-  if ( widget() )
+  QWidget* wdg = widget();
+  if ( wdg )
   {
-    widget()->setEnabled( enabled );
+    wdg->setEnabled( enabled );
   }
 }
 

@@ -116,7 +116,6 @@ qgisinterface.cpp
 qgsannotationitem.cpp
 qgsattributedialog.cpp
 qgsattributeeditor.cpp
-qgsattributeeditorcontext.cpp
 qgsattributeform.cpp
 qgsattributeforminterface.cpp
 qgsattributeformlegacyinterface.cpp

@@ -32,7 +32,7 @@ QgsGuiVectorLayerTools::QgsGuiVectorLayerTools()
     : QObject( NULL )
 {}
 
-bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer* layer, QgsAttributeMap defaultValues, const QgsGeometry& defaultGeometry )
+bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer* layer, QgsAttributeMap defaultValues, const QgsGeometry& defaultGeometry ) const
 {
   QgsFeature f;
   f.setGeometry( defaultGeometry );
@@ -40,7 +40,7 @@ bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer* layer, QgsAttributeMap 
   return a.addFeature( defaultValues );
 }
 
-bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer* layer )
+bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer* layer ) const
 {
   if ( !layer )
   {
@@ -65,7 +65,7 @@ bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer* layer )
   return res;
 }
 
-bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer* layer, bool allowCancel )
+bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer* layer, bool allowCancel ) const
 {
   bool res = true;
 
@@ -127,7 +127,7 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer* layer, bool allowCance
   return res;
 }
 
-void QgsGuiVectorLayerTools::commitError( QgsVectorLayer* vlayer )
+void QgsGuiVectorLayerTools::commitError( QgsVectorLayer* vlayer ) const
 {
   QgsMessageViewer *mv = new QgsMessageViewer();
   mv->setWindowTitle( tr( "Commit errors" ) );

@@ -24,5 +24,5 @@ class QgsAttributeEditorContext
      *
      * @param layer The layer to adjust for.
      */
-    void adjustForLayer( QgsVectorLayer* layer );
+    // void adjustForLayer( QgsVectorLayer* layer );
 };

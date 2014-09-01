@@ -37,7 +37,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools, public QObject
      *
      * @return                True in case of success, False if the operation failed/was aborted
      */
-    bool addFeature( QgsVectorLayer *layer, QgsAttributeMap defaultValues, const QgsGeometry &defaultGeometry );
+    bool addFeature( QgsVectorLayer *layer, QgsAttributeMap defaultValues, const QgsGeometry &defaultGeometry ) const;
 
     /**
      * This should be called, whenever a vector layer should be switched to edit mode. If successful
@@ -47,7 +47,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools, public QObject
      *
      * @return       True, if the editing session was started
      */
-    bool startEditing( QgsVectorLayer* layer );
+    bool startEditing( QgsVectorLayer* layer ) const;
 
     /**
      * Should be called, when an editing session is ended and the features should be commited.
@@ -59,10 +59,10 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools, public QObject
      *
      * @return            True if successful
      */
-    bool stopEditing( QgsVectorLayer* layer , bool allowCancel = true );
+    bool stopEditing( QgsVectorLayer* layer , bool allowCancel = true ) const;
 
   private:
-    void commitError( QgsVectorLayer* vlayer );
+    void commitError( QgsVectorLayer* vlayer ) const;
 };
 
 #endif // QGSGUIVECTORLAYERTOOLS_H

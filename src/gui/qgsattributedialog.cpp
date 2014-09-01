@@ -19,6 +19,7 @@
 
 #include "qgsattributeform.h"
 #include "qgshighlight.h"
+#include "qgsapplication.h"
 
 #include <QSettings>
 #include <QGridLayout>
@@ -30,6 +31,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeat
 {
   QgsAttributeEditorContext context;
   context.setDistanceArea( myDa );
+
   init( vl, thepFeature, context, parent );
 
   if ( !showDialogButtons )

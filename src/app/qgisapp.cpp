@@ -666,8 +666,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   // Init the editor widget types
   QgsEditorWidgetRegistry* editorWidgetRegistry = QgsEditorWidgetRegistry::instance();
-  QgsAttributeEditorContext context;
-  context.setVectorLayerTools( vectorLayerTools() );
   editorWidgetRegistry->registerWidget( "Classification", new QgsClassificationWidgetWrapperFactory( tr( "Classification" ) ) );
   editorWidgetRegistry->registerWidget( "Range", new QgsRangeWidgetFactory( tr( "Range" ) ) );
   editorWidgetRegistry->registerWidget( "UniqueValues", new QgsUniqueValueWidgetFactory( tr( "Unique Values" ) ) );
@@ -682,7 +680,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   editorWidgetRegistry->registerWidget( "Photo", new QgsPhotoWidgetFactory( tr( "Photo" ) ) );
   editorWidgetRegistry->registerWidget( "WebView", new QgsWebViewWidgetFactory( tr( "Web View" ) ) );
   editorWidgetRegistry->registerWidget( "Color", new QgsColorWidgetFactory( tr( "Color" ) ) );
-  editorWidgetRegistry->registerWidget( "RelationReference", new QgsRelationReferenceFactory( tr( "Relation Reference" ), context, mMapCanvas, mInfoBar ) );
+  editorWidgetRegistry->registerWidget( "RelationReference", new QgsRelationReferenceFactory( tr( "Relation Reference" ), mMapCanvas, mInfoBar ) );
   editorWidgetRegistry->registerWidget( "DateTime", new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
 
   mInternalClipboard = new QgsClipboard; // create clipboard
@@ -934,6 +932,8 @@ QgisApp::~QgisApp()
   delete mOverviewMapCursor;
 
   delete mComposerManager;
+
+  delete mVectorLayerTools;
 
   deletePrintComposers();
   removeAnnotationItems();

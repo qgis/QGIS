@@ -63,7 +63,10 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget* editor )
       mComboBox->addItem( v.toString(), v );
     }
 
-    sValues << v.toString();
+    if ( mLineEdit )
+    {
+      sValues << v.toString();
+    }
   }
 
   if ( mLineEdit )

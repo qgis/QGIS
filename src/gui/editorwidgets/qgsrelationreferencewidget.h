@@ -27,7 +27,7 @@
 #include <QLineEdit>
 #include <QVBoxLayout>
 
-class QgsAttributeDialog;
+class QgsAttributeForm;
 class QgsVectorLayerTools;
 
 class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
@@ -67,6 +67,11 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool allowMapIdentification() {return mAllowMapIdentification;}
     void setAllowMapIdentification( bool allowMapIdentification );
 
+  protected:
+    virtual void showEvent( QShowEvent* e );
+
+    void init();
+
   signals:
     void relatedFeatureChanged( QVariant );
 
@@ -95,14 +100,15 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     int mFkeyFieldIdx;
     bool mAllowNull;
     QgsHighlight* mHighlight;
-    bool mInitialValueAssigned;
     QgsMapToolIdentifyFeature* mMapTool;
     QgsMessageBarItem* mMessageBarItem;
     QString mRelationName;
-    QgsAttributeDialog* mReferencedAttributeDialog;
+    QgsAttributeForm* mReferencedAttributeForm;
     QgsVectorLayer* mReferencedLayer;
     QgsVectorLayer* mReferencingLayer;
     QWidget* mWindowWidget;
+    bool mShown;
+    QgsRelation mRelation;
 
     // Q_PROPERTY
     bool mEmbedForm;

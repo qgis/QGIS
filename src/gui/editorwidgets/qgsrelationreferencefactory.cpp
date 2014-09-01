@@ -18,9 +18,8 @@
 #include "qgsrelationreferencewidgetwrapper.h"
 #include "qgsrelreferenceconfigdlg.h"
 
-QgsRelationReferenceFactory::QgsRelationReferenceFactory( QString name, QgsAttributeEditorContext context, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
+QgsRelationReferenceFactory::QgsRelationReferenceFactory( QString name, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
     : QgsEditorWidgetFactory( name )
-    , mEditorContext( context )
     , mCanvas( canvas )
     , mMessageBar( messageBar )
 {
@@ -28,7 +27,7 @@ QgsRelationReferenceFactory::QgsRelationReferenceFactory( QString name, QgsAttri
 
 QgsEditorWidgetWrapper* QgsRelationReferenceFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
-  return new QgsRelationReferenceWidgetWrapper( vl, fieldIdx, editor, mEditorContext, mCanvas, mMessageBar, parent );
+  return new QgsRelationReferenceWidgetWrapper( vl, fieldIdx, editor, mCanvas, mMessageBar, parent );
 }
 
 QgsEditorConfigWidget* QgsRelationReferenceFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
