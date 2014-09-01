@@ -172,8 +172,23 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Sets new scale and changes only mExtent*/
     void setNewScale( double scaleDenominator, bool forceUpdate = true );
 
-    /**Sets new Extent and changes width, height (and implicitely also scale)*/
+    /**Sets new extent for the map. This method may change the width or height of the map
+     * item to ensure that the extent exactly matches the specified extent, with no
+     * overlap or margin. This method implicitly alters the map scale.
+     * @param extent new extent for the map
+     * @see zoomToExtent
+    */
     void setNewExtent( const QgsRectangle& extent );
+
+    /**Zooms the map so that the specified extent is fully visible within the map item.
+     * This method will not change the width or height of the map, and may result in
+     * an overlap or margin from the specified extent. This method implicitly alters the
+     * map scale.
+     * @param extent new extent for the map
+     * @see setNewExtent
+     * @note added in QGIS 2.5
+    */
+    void zoomToExtent( const QgsRectangle& extent );
 
     /**Sets new Extent for the current atlas preview and changes width, height (and implicitely also scale).
       Atlas preview extents are only temporary, and are regenerated whenever the atlas feature changes

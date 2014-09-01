@@ -710,6 +710,46 @@ void QgsComposerMap::setNewExtent( const QgsRectangle& extent )
   updateItem();
 }
 
+void QgsComposerMap::zoomToExtent( const QgsRectangle &extent )
+{
+  QgsRectangle newExtent = extent;
+  //Make sure the width/height ratio is the same as the current composer map extent.
+  //This is to keep the map item frame size fixed
+  double currentWidthHeightRatio = currentMapExtent()->width() / currentMapExtent()->height();
+  double newWidthHeightRatio = newExtent.width() / newExtent.height();
+
+  if ( currentWidthHeightRatio < newWidthHeightRatio )
+  {
+    //enlarge height of new extent, ensuring the map center stays the same
+    double newHeight = newExtent.width() / currentWidthHeightRatio;
+    double deltaHeight = newHeight - newExtent.height();
+    newExtent.setYMinimum( newExtent.yMinimum() - deltaHeight / 2 );
+    newExtent.setYMaximum( newExtent.yMaximum() + deltaHeight / 2 );
+  }
+  else
+  {
+    //enlarge width of new extent, ensuring the map center stays the same
+    double newWidth = currentWidthHeightRatio * newExtent.height();
+    double deltaWidth = newWidth - newExtent.width();
+    newExtent.setXMinimum( newExtent.xMinimum() - deltaWidth / 2 );
+    newExtent.setXMaximum( newExtent.xMaximum() + deltaWidth / 2 );
+  }
+
+  if ( *currentMapExtent() == newExtent )
+  {
+    return;
+  }
+  *currentMapExtent() = newExtent;
+
+  //recalculate data defined scale and extents, since that may override extent
+  refreshMapExtents();
+
+  mCacheUpdated = false;
+  updateItem();
+  emit itemChanged();
+  emit extentChanged();
+}
+
 void QgsComposerMap::setNewAtlasFeatureExtent( const QgsRectangle& extent )
 {
   if ( mAtlasFeatureExtent != extent )
