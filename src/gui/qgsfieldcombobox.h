@@ -47,13 +47,13 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
     void setFilters( QgsFieldProxyModel::Filters filters );
 
     //! currently used filter on list of fields
-    QgsFieldProxyModel::Filters filters() { return mFieldProxyModel->filters(); }
+    QgsFieldProxyModel::Filters filters() const { return mFieldProxyModel->filters(); }
 
     //! return the currently selected field
-    QString currentField();
+    QString currentField() const;
 
     //! Returns the currently used layer
-    QgsVectorLayer* layer();
+    QgsVectorLayer* layer() const;
 
   signals:
     //! the signal is emitted when the currently selected field changes

@@ -62,7 +62,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void setLeftHandButtonStyle( bool isLeft );
 
     //! currently used filter on list of fields
-    QgsFieldProxyModel::Filters filters() { return mFieldProxyModel->filters(); }
+    QgsFieldProxyModel::Filters filters() const { return mFieldProxyModel->filters(); }
 
     //! set the geometry calculator used in the expression dialog
     void setGeomCalculator( const QgsDistanceArea &da );
@@ -72,21 +72,21 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      * @param isExpression determines if the string returned is the name of a field or an expression
      * @param isValid determines if the expression (or field) returned is valid
      */
-    QString currentField( bool *isExpression = 0, bool *isValid = 0 );
+    QString currentField( bool *isExpression = 0, bool *isValid = 0 ) const;
 
     /**
       * Return true if the current expression is valid
       */
-    bool isValidExpression( QString *expressionError = 0 );
+    bool isValidExpression( QString *expressionError = 0 ) const;
 
-    bool isExpression();
+    bool isExpression() const;
     /**
       * Return the current text that is set in the expression area
       */
-    QString currentText();
+    QString currentText() const;
 
     //! Returns the currently used layer
-    QgsVectorLayer* layer();
+    QgsVectorLayer* layer() const;
 
   signals:
     //! the signal is emitted when the currently selected field changes

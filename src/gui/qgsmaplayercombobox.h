@@ -44,7 +44,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     void setFilters( QgsMapLayerProxyModel::Filters filters );
 
     //! currently used filter on list layers
-    QgsMapLayerProxyModel::Filters filters() { return mProxyModel->filters(); }
+    QgsMapLayerProxyModel::Filters filters() const { return mProxyModel->filters(); }
 
     //! currentLayer returns the current layer selected in the combo box
     QgsMapLayer* currentLayer();

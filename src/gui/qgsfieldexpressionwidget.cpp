@@ -83,24 +83,24 @@ void QgsFieldExpressionWidget::setGeomCalculator( const QgsDistanceArea &da )
   mDa = QSharedPointer<const QgsDistanceArea>( new QgsDistanceArea( da ) );
 }
 
-QString QgsFieldExpressionWidget::currentText()
+QString QgsFieldExpressionWidget::currentText() const
 {
   return mCombo->currentText();
 }
 
-bool QgsFieldExpressionWidget::isValidExpression( QString *expressionError )
+bool QgsFieldExpressionWidget::isValidExpression( QString *expressionError ) const
 {
   QString temp;
   QgsVectorLayer* vl = layer();
   return QgsExpression::isValid( currentText(), vl ? vl->pendingFields() : QgsFields(), expressionError ? *expressionError : temp );
 }
 
-bool QgsFieldExpressionWidget::isExpression()
+bool QgsFieldExpressionWidget::isExpression() const
 {
   return !mFieldProxyModel->sourceFieldModel()->isField( currentText() );
 }
 
-QString QgsFieldExpressionWidget::currentField( bool *isExpression , bool *isValid )
+QString QgsFieldExpressionWidget::currentField( bool *isExpression , bool *isValid ) const
 {
   QString text = currentText();
   if ( isValid )
@@ -114,7 +114,7 @@ QString QgsFieldExpressionWidget::currentField( bool *isExpression , bool *isVal
   return text;
 }
 
-QgsVectorLayer *QgsFieldExpressionWidget::layer()
+QgsVectorLayer *QgsFieldExpressionWidget::layer() const
 {
   return mFieldProxyModel->sourceFieldModel()->layer();
 }

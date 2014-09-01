@@ -34,7 +34,7 @@ class QgsMapLayerAction : QAction
 
     /** Define the targets of the action */
     void setTargets( Targets targets );
-    Targets targets() const;
+    const Targets& targets() const;
 
   signals:
     /** Triggered when action has been run for a specific feature */
