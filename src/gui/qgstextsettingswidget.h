@@ -114,6 +114,40 @@ class GUI_EXPORT QgsTextSettingsWidget : public QWidget, private Ui::QgsTextSett
 
 };
 
+/** \ingroup gui
+ * \class QgsTextSettingsDialog
+ * A simple dialog for displaying and setting the properties of a QgsTextRendererSettings
+ * \note Added in version 2.5
+ */
+
+class GUI_EXPORT QgsTextSettingsDialog : public QDialog
+{
+    Q_OBJECT
+
+  public:
+
+    /**Construct a new text settings dialog.
+     * @param parent The parent QWidget for the dialog
+     * @param fl window flags for dialog
+     */
+    QgsTextSettingsDialog( QWidget* parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+
+    virtual ~QgsTextSettingsDialog();
+
+  public slots:
+
+    /**Shows the dialog using the settings from a specified QgsTextRendererSettings. If the
+     * user accepts the dialog the text renderer settings will be updated based on the values
+     * from the GUI.
+     * @param settings QgsTextRendererSettings for the dialog settings
+     * @returns true if dialog is accepted
+     */
+    bool execForSettings( QgsTextRendererSettings* settings );
+
+  private:
+    QgsTextSettingsWidget* mSettingsWidget;
+};
+
 #endif //QGSTEXTSETTINGSWIDGET_H
 
 

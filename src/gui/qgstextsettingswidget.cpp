@@ -1764,4 +1764,61 @@ void QgsTextSettingsWidget::enableDataDefinedAlignment( bool enable )
   mCoordAlignmentFrame->setEnabled( enable );
 }
 
+//
+// QgsTextSettingsDialog
+//
 
+QgsTextSettingsDialog::QgsTextSettingsDialog( QWidget *parent, Qt::WindowFlags fl )
+    : QDialog( parent, fl )
+{
+  setWindowTitle( tr( "Text settings" ) );
+
+  mSettingsWidget = new QgsTextSettingsWidget( this );
+  mSettingsWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
+
+  QVBoxLayout *layout = new QVBoxLayout( this );
+  layout->addWidget( mSettingsWidget );
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
+  layout->addWidget( buttonBox );
+
+  setLayout( layout );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/TextSettings/geometry" ).toByteArray() );
+
+  connect( buttonBox->button( QDialogButtonBox::Ok ), SIGNAL( clicked() ), this, SLOT( accept() ) );
+  connect( buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL( clicked() ), this, SLOT( reject() ) );
+}
+
+
+QgsTextSettingsDialog::~QgsTextSettingsDialog()
+{
+
+}
+
+bool QgsTextSettingsDialog::execForSettings( QgsTextRendererSettings *settings )
+{
+  if ( settings )
+  {
+    //initialise with settings
+    mSettingsWidget->loadSettings( settings );
+  }
+
+  QApplication::setOverrideCursor( Qt::ArrowCursor );
+  int res = exec();
+  QApplication::restoreOverrideCursor();
+
+  if ( res == QDialog::Accepted )
+  {
+    if ( settings )
+    {
+      mSettingsWidget->saveToSettings( settings );
+    }
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
