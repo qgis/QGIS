@@ -101,7 +101,7 @@ void QgsAttributeForm::setIsAddDialog( bool isAddDialog )
 
 void QgsAttributeForm::changeAttribute( const QString& field, const QVariant& value )
 {
-  Q_FOREACH( QgsWidgetWrapper* ww, mWidgets )
+  Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
   {
     QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
     if ( eww && eww->field().name() == field )
@@ -119,7 +119,7 @@ void QgsAttributeForm::setFeature( const QgsFeature& feature )
 
   synchronizeEnabledState();
 
-  Q_FOREACH( QgsAttributeFormInterface* iface, mInterfaces )
+  Q_FOREACH ( QgsAttributeFormInterface* iface, mInterfaces )
   {
     iface->featureChanged();
   }
@@ -154,7 +154,7 @@ bool QgsAttributeForm::save()
     QgsAttributes src = mFeature.attributes();
     QgsAttributes dst = mFeature.attributes();
 
-    Q_FOREACH( QgsWidgetWrapper* ww, mWidgets )
+    Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
     {
       QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
       if ( eww )
@@ -174,7 +174,7 @@ bool QgsAttributeForm::save()
 
     updatedFeature.setAttributes( dst );
 
-    Q_FOREACH( QgsAttributeFormInterface* iface, mInterfaces )
+    Q_FOREACH ( QgsAttributeFormInterface* iface, mInterfaces )
     {
       if ( !iface->acceptChanges( updatedFeature ) )
       {
@@ -242,7 +242,7 @@ bool QgsAttributeForm::save()
 
 void QgsAttributeForm::resetValues()
 {
-  Q_FOREACH( QgsWidgetWrapper* ww, mWidgets )
+  Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
   {
     ww->setFeature( mFeature );
   }
@@ -289,7 +289,7 @@ void QgsAttributeForm::synchronizeEnabledState()
 {
   bool isEditable = ( mFeature.isValid() || mIsAddDialog ) && mLayer->isEditable();
 
-  Q_FOREACH( QgsWidgetWrapper* ww, mWidgets )
+  Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
   {
     bool fieldEditable = true;
     QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
@@ -349,7 +349,7 @@ void QgsAttributeForm::init()
     QTabWidget* tabWidget = new QTabWidget( this );
     layout()->addWidget( tabWidget );
 
-    Q_FOREACH( QgsAttributeEditorElement *widgDef, mLayer->attributeEditorElements() )
+    Q_FOREACH ( QgsAttributeEditorElement *widgDef, mLayer->attributeEditorElements() )
     {
       QWidget* tabPage = new QWidget( tabWidget );
 
@@ -391,7 +391,7 @@ void QgsAttributeForm::init()
     layout()->addWidget( scrollArea );
 
     int row = 0;
-    Q_FOREACH( const QgsField& field, mLayer->pendingFields().toList() )
+    Q_FOREACH ( const QgsField& field, mLayer->pendingFields().toList() )
     {
       int idx = mLayer->fieldNameIndex( field.name() );
       //show attribute alias if available
@@ -428,7 +428,7 @@ void QgsAttributeForm::init()
       }
     }
 
-    Q_FOREACH( const QgsRelation& rel, QgsProject::instance()->relationManager()->referencedRelations( mLayer ) )
+    Q_FOREACH ( const QgsRelation& rel, QgsProject::instance()->relationManager()->referencedRelations( mLayer ) )
     {
       QgsRelationWidgetWrapper* rww = new QgsRelationWidgetWrapper( mLayer, rel, 0, this );
       rww->setContext( mContext );
@@ -454,7 +454,7 @@ void QgsAttributeForm::init()
   connect( mLayer, SIGNAL( editingStarted() ), this, SLOT( synchronizeEnabledState() ) );
   connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( synchronizeEnabledState() ) );
 
-  Q_FOREACH( QgsAttributeFormInterface* iface, mInterfaces )
+  Q_FOREACH ( QgsAttributeFormInterface* iface, mInterfaces )
   {
     iface->initForm();
   }
@@ -598,7 +598,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
 
       QList<QgsAttributeEditorElement*> children = container->children();
 
-      Q_FOREACH( QgsAttributeEditorElement* childDef, children )
+      Q_FOREACH ( QgsAttributeEditorElement* childDef, children )
       {
         QString labelText;
         bool labelOnTop;
@@ -643,7 +643,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
 
 void QgsAttributeForm::addWidgetWrapper( QgsEditorWidgetWrapper* eww )
 {
-  Q_FOREACH( QgsWidgetWrapper* ww, mWidgets )
+  Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
   {
     QgsEditorWidgetWrapper* meww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
     if ( meww )
@@ -665,7 +665,7 @@ void QgsAttributeForm::createWrappers()
   QList<QWidget*> myWidgets = findChildren<QWidget*>();
   const QList<QgsField> fields = mLayer->pendingFields().toList();
 
-  Q_FOREACH( QWidget* myWidget, myWidgets )
+  Q_FOREACH ( QWidget* myWidget, myWidgets )
   {
     // Check the widget's properties for a relation definition
     QVariant vRel = myWidget->property( "qgisRelation" );
@@ -683,7 +683,7 @@ void QgsAttributeForm::createWrappers()
     }
     else
     {
-      Q_FOREACH( const QgsField& field, fields )
+      Q_FOREACH ( const QgsField& field, fields )
       {
         if ( field.name() == myWidget->objectName() )
         {
@@ -703,7 +703,7 @@ void QgsAttributeForm::connectWrappers()
 {
   bool isFirstEww = true;
 
-  Q_FOREACH( QgsWidgetWrapper* ww, mWidgets )
+  Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
   {
     QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
 

@@ -48,7 +48,7 @@ void QgsEnumerationWidgetWrapper::initWidget( QWidget* editor )
     QStringList enumValues;
     layer()->dataProvider()->enumValues( fieldIdx(), enumValues );
 
-    Q_FOREACH( const QString& s, enumValues )
+    Q_FOREACH ( const QString& s, enumValues )
     {
       mComboBox->addItem( s, s );
     }

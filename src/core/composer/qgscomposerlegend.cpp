@@ -44,10 +44,10 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
 }
 
 QgsComposerLegend::QgsComposerLegend()
-  : QgsComposerItem( 0 )
-  , mLegendModel2( 0 )
-  , mCustomLayerTree( 0 )
-  , mComposerMap( 0 )
+    : QgsComposerItem( 0 )
+    , mLegendModel2( 0 )
+    , mCustomLayerTree( 0 )
+    , mComposerMap( 0 )
 {
 
 }
@@ -142,7 +142,7 @@ void QgsComposerLegend::setAutoUpdateModel( bool autoUpdate )
   if ( autoUpdate == autoUpdateModel() )
     return;
 
-  setCustomLayerTree( autoUpdate ? 0 : QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() )  );
+  setCustomLayerTree( autoUpdate ? 0 : QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() ) );
 }
 
 bool QgsComposerLegend::autoUpdateModel() const
@@ -437,7 +437,7 @@ void QgsComposerLegend::invalidateCurrentMap()
 #include "qgsvectorlayer.h"
 
 QgsLegendModelV2::QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject* parent )
-  : QgsLayerTreeModel( rootNode, parent )
+    : QgsLayerTreeModel( rootNode, parent )
 {
   setFlag( QgsLayerTreeModel::AllowSymbologyChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );

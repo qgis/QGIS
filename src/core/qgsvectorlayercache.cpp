@@ -184,7 +184,7 @@ void QgsVectorLayerCache::requestCompleted( QgsFeatureRequest featureRequest, Qg
 
 void QgsVectorLayerCache::featureRemoved( QgsFeatureId fid )
 {
-  Q_FOREACH( QgsAbstractCacheIndex* idx, mCacheIndices )
+  Q_FOREACH ( QgsAbstractCacheIndex* idx, mCacheIndices )
   {
     idx->flushFeature( fid );
   }

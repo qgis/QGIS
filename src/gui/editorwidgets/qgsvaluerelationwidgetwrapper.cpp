@@ -106,7 +106,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
       mComboBox->addItem( tr( "(no selection)" ), QVariant( field().type() ) );
     }
 
-    Q_FOREACH( const ValueRelationItem& element, mCache )
+    Q_FOREACH ( const ValueRelationItem& element, mCache )
     {
       mComboBox->addItem( element.second, element.first );
     }
@@ -115,7 +115,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
   }
   else if ( mListWidget )
   {
-    Q_FOREACH( const ValueRelationItem& element, mCache )
+    Q_FOREACH ( const ValueRelationItem& element, mCache )
     {
       QListWidgetItem *item;
       item = new QListWidgetItem( element.second );
@@ -185,7 +185,7 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
         if ( e->needsGeometry() )
           flags = QgsFeatureRequest::NoFlags;
 
-        Q_FOREACH( const QString& field, e->referencedColumns() )
+        Q_FOREACH ( const QString& field, e->referencedColumns() )
         {
           if ( field == QgsFeatureRequest::AllAttributes )
           {

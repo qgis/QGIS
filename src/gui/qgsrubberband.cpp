@@ -444,10 +444,10 @@ void QgsRubberBand::paint( QPainter* p )
     p->setBrush( mBrush );
     p->setPen( mPen );
 
-    Q_FOREACH( const QList<QgsPoint>& line, mPoints )
+    Q_FOREACH ( const QList<QgsPoint>& line, mPoints )
     {
       QVector<QPointF> pts;
-      Q_FOREACH( const QgsPoint& pt, line )
+      Q_FOREACH ( const QgsPoint& pt, line )
       {
         const QPointF cur = toCanvasCoordinates( QgsPoint( pt.x() + mTranslationOffsetX, pt.y() + mTranslationOffsetY ) ) - pos();
         if ( pts.empty() || std::abs( pts.back().x() - cur.x() ) > 1 ||  std::abs( pts.back().y() - cur.y() ) > 1 )
@@ -464,7 +464,7 @@ void QgsRubberBand::paint( QPainter* p )
 
         case QGis::Point:
         {
-          Q_FOREACH( const QPointF& pt, pts )
+          Q_FOREACH ( const QPointF& pt, pts )
           {
             double x = pt.x();
             double y = pt.y();

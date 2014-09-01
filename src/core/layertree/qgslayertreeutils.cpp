@@ -332,7 +332,7 @@ void QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* grou
 
     if ( QgsLayerTree::isGroup( node ) )
     {
-        updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( node ) );
+      updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( node ) );
     }
   }
 }

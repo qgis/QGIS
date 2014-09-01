@@ -114,7 +114,7 @@ void QgsDualView::columnBoxInit()
       // ... If there are primary key(s) defined
       QStringList pkFields;
 
-      Q_FOREACH( int attr, pkAttrs )
+      Q_FOREACH ( int attr, pkAttrs )
       {
         pkFields.append( "COALESCE(\"" + fields[attr].name() + "\", '<NULL>')" );
       }

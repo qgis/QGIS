@@ -36,7 +36,7 @@ void QgsRelationManagerDialog::setLayers( QList< QgsVectorLayer* > layers )
 
   const QList<QgsRelation>& relations = mRelationManager->relations().values();
 
-  Q_FOREACH( const QgsRelation& rel, relations )
+  Q_FOREACH ( const QgsRelation& rel, relations )
   {
     addRelation( rel );
   }
@@ -96,7 +96,7 @@ void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
     QStringList existingNames;
 
 
-    Q_FOREACH( const QgsRelation& rel, relations() )
+    Q_FOREACH ( const QgsRelation& rel, relations() )
     {
       existingNames << rel.id();
     }

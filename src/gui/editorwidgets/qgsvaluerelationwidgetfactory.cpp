@@ -93,7 +93,7 @@ QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int f
     QStringList keyList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," );
     QStringList valueList;
 
-    Q_FOREACH( const QgsValueRelationWidgetWrapper::ValueRelationItem& item, vrCache )
+    Q_FOREACH ( const QgsValueRelationWidgetWrapper::ValueRelationItem& item, vrCache )
     {
       if ( keyList.contains( item.first.toString() ) )
       {
@@ -111,7 +111,7 @@ QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int f
       return settings.value( "qgis/nullValue", "NULL" ).toString();
     }
 
-    Q_FOREACH( const QgsValueRelationWidgetWrapper::ValueRelationItem& item, vrCache )
+    Q_FOREACH ( const QgsValueRelationWidgetWrapper::ValueRelationItem& item, vrCache )
     {
       if ( item.first == value )
       {

@@ -452,7 +452,7 @@ void QgsMemoryProvider::updateExtent()
   else
   {
     mExtent.setMinimal();
-    Q_FOREACH( const QgsFeature& feat, mFeatures )
+    Q_FOREACH ( const QgsFeature& feat, mFeatures )
     {
       if ( feat.geometry() )
         mExtent.unionRect( feat.geometry()->boundingBox() );

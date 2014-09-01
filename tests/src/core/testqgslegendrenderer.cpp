@@ -29,9 +29,9 @@ static void _setStandardTestFont( QgsLegendSettings& settings )
 {
   QList< QgsComposerLegendStyle::Style> styles;
   styles << QgsComposerLegendStyle::Title
-         << QgsComposerLegendStyle::Group
-         << QgsComposerLegendStyle::Subgroup
-         << QgsComposerLegendStyle::SymbolLabel;
+  << QgsComposerLegendStyle::Group
+  << QgsComposerLegendStyle::Subgroup
+  << QgsComposerLegendStyle::SymbolLabel;
   foreach ( QgsComposerLegendStyle::Style st, styles )
   {
     QFont font( QgsFontUtils::getStandardTestFont() );
@@ -126,7 +126,7 @@ void TestQgsLegendRenderer::init()
   QgsMapLayerRegistry::instance()->addMapLayer( mVL3 );
 
   static char raster_array[] = { 1, 2, 2, 1 };
-  QString rasterUri = QString( "MEM:::DATAPOINTER=%1,PIXELS=2,LINES=2" ).arg( (qulonglong) raster_array );
+  QString rasterUri = QString( "MEM:::DATAPOINTER=%1,PIXELS=2,LINES=2" ).arg(( qulonglong ) raster_array );
   mRL = new QgsRasterLayer( rasterUri, "Raster Layer", "gdal" );
   QgsMapLayerRegistry::instance()->addMapLayer( mRL );
 

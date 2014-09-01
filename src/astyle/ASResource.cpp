@@ -125,6 +125,7 @@ const string ASResource::AS_COMMA = string(",");
 const string ASResource::AS_SEMICOLON = string(";");
 
 const string ASResource::AS_FOREACH = string("foreach");
+const string ASResource::AS_Q_FOREACH = string("Q_FOREACH");
 const string ASResource::AS_LOCK = string("lock");
 const string ASResource::AS_UNSAFE = string("unsafe");
 const string ASResource::AS_FIXED = string("fixed");
@@ -233,7 +234,8 @@ void ASResource::buildHeaders(vector<const string*> &headers, int fileType, bool
 
 	if ( fileType == C_TYPE )
 	{
-		headers.push_back(&AS_FOREACH);  // Qt macro
+		headers.push_back(&AS_FOREACH);   // Qt macro
+		headers.push_back(&AS_Q_FOREACH); // Qt macro
 	}
 }
 

@@ -634,7 +634,7 @@ QImage* QgsWMSServer::getLegendGraphics()
   legendSettings.setTitle( QString() );
   legendSettings.setBoxSpace( boxSpace );
   legendSettings.rstyle( QgsComposerLegendStyle::Subgroup ).setMargin( QgsComposerLegendStyle::Top, layerSpace );
-   // TODO: not available: layer title space
+  // TODO: not available: layer title space
   legendSettings.rstyle( QgsComposerLegendStyle::Symbol ).setMargin( QgsComposerLegendStyle::Top, symbolSpace );
   legendSettings.rstyle( QgsComposerLegendStyle::SymbolLabel ).setMargin( QgsComposerLegendStyle::Left, iconLabelSpace );
   legendSettings.setSymbolSize( QSizeF( symbolWidth, symbolHeight ) );
@@ -1741,7 +1741,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       box = mapRender->layerExtentToOutputExtent( layer, feature.geometry()->boundingBox() );
       if ( featureBBox ) //extend feature info bounding box if requested
       {
-        if ( !featureBBoxInitialized && featureBBox->isEmpty())
+        if ( !featureBBoxInitialized && featureBBox->isEmpty() )
         {
           *featureBBox = box;
           featureBBoxInitialized = true;

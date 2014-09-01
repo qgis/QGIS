@@ -42,7 +42,7 @@ class QgsMapLayerAction;
 class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBase
 {
     Q_OBJECT
-    Q_ENUMS(ViewMode)
+    Q_ENUMS( ViewMode )
 
   public:
 

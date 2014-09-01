@@ -74,7 +74,7 @@ class QgsComposerLegendMenuProvider : public QObject, public QgsLayerTreeViewMen
         QAction* action = menu->addAction( QgsComposerLegendStyle::styleLabel( style ), mWidget, SLOT( setCurrentNodeStyleFromAction() ) );
         action->setCheckable( true );
         action->setChecked( currentStyle == style );
-        action->setData( ( int ) style );
+        action->setData(( int ) style );
       }
 
       return menu;
@@ -570,7 +570,7 @@ void QgsComposerLegendWidget::on_mCheckBoxAutoUpdate_stateChanged( int state )
   // do not allow editing of model if auto update is on - we would modify project's layer tree
   QList<QWidget*> widgets;
   widgets << mMoveDownToolButton << mMoveUpToolButton << mRemoveToolButton << mAddToolButton
-          << mEditPushButton << mCountToolButton << mUpdateAllPushButton << mAddGroupToolButton;
+  << mEditPushButton << mCountToolButton << mUpdateAllPushButton << mAddGroupToolButton;
   foreach ( QWidget* w, widgets )
     w->setEnabled( state != Qt::Checked );
 }
@@ -732,7 +732,7 @@ void QgsComposerLegendWidget::on_mEditPushButton_clicked()
 
   bool ok;
   QString newText = QInputDialog::getText( this, tr( "Legend item properties" ), tr( "Item text" ),
-                                           QLineEdit::Normal, currentText, &ok );
+                    QLineEdit::Normal, currentText, &ok );
   if ( !ok || newText == currentText )
     return;
 

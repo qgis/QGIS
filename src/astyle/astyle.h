@@ -135,7 +135,7 @@ class ASResource
 		static const string AS_NOT, AS_BIT_XOR, AS_BIT_OR, AS_BIT_AND, AS_BIT_NOT;
 		static const string AS_QUESTION, AS_COLON, AS_SEMICOLON, AS_COMMA;
 		static const string AS_ASM;
-		static const string AS_FOREACH, AS_LOCK, AS_UNSAFE, AS_FIXED;
+		static const string AS_FOREACH, AS_LOCK, AS_UNSAFE, AS_FIXED, AS_Q_FOREACH;
 		static const string AS_GET, AS_SET, AS_ADD, AS_REMOVE;
 		static const string AS_CONST_CAST, AS_DYNAMIC_CAST, AS_REINTERPRET_CAST, AS_STATIC_CAST;
 };

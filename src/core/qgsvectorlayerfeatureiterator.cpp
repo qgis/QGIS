@@ -502,7 +502,7 @@ void QgsVectorLayerFeatureIterator::prepareExpressions()
         if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
         {
           QgsAttributeList attrs;
-          Q_FOREACH( const QString& col, exp->referencedColumns() )
+          Q_FOREACH ( const QString& col, exp->referencedColumns() )
           {
             attrs.append( mSource->mFields.fieldNameIndex( col ) );
           }

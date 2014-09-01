@@ -56,7 +56,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget* editor )
 
   layer()->uniqueValues( fieldIdx(), values );
 
-  Q_FOREACH( QVariant v, values )
+  Q_FOREACH ( QVariant v, values )
   {
     if ( mComboBox )
     {

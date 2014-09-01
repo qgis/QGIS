@@ -241,7 +241,7 @@ void QgsRelation::updateRelationStatus()
       mValid = false;
     }
 
-    Q_FOREACH( const FieldPair& fieldPair, mFieldPairs )
+    Q_FOREACH ( const FieldPair& fieldPair, mFieldPairs )
     {
       if ( -1 == mReferencingLayer->fieldNameIndex( fieldPair.first )
            || -1 == mReferencedLayer->fieldNameIndex( fieldPair.second ) )

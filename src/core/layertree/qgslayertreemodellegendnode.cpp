@@ -301,13 +301,13 @@ void QgsSymbolV2LegendNode::updateLabel()
   {
     mLabel = mUserLabel.isEmpty() ? mLayerNode->layerName() : mUserLabel;
     if ( showFeatureCount && vl && vl->pendingFeatureCount() >= 0 )
-        mLabel += QString( " [%1]" ).arg( vl->pendingFeatureCount() );
+      mLabel += QString( " [%1]" ).arg( vl->pendingFeatureCount() );
   }
   else
   {
     mLabel = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
     if ( showFeatureCount && vl && mItem.legacyRuleKey() )
-        mLabel += QString( " [%1]" ).arg( vl->featureCount( mItem.legacyRuleKey() ) );
+      mLabel += QString( " [%1]" ).arg( vl->featureCount( mItem.legacyRuleKey() ) );
   }
 }
 
@@ -337,8 +337,8 @@ QVariant QgsSimpleLegendNode::data( int role ) const
 // -------------------------------------------------------------------------
 
 QgsImageLegendNode::QgsImageLegendNode( QgsLayerTreeLayer* nodeLayer, const QImage& img, QObject* parent )
-  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-  , mImage( img )
+    : QgsLayerTreeModelLegendNode( nodeLayer, parent )
+    , mImage( img )
 {
 }
 
@@ -370,9 +370,9 @@ QSizeF QgsImageLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemCo
 // -------------------------------------------------------------------------
 
 QgsRasterSymbolLegendNode::QgsRasterSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QColor& color, const QString& label, QObject* parent )
-  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-  , mColor( color )
-  , mLabel( label )
+    : QgsLayerTreeModelLegendNode( nodeLayer, parent )
+    , mColor( color )
+    , mLabel( label )
 {
 }
 
