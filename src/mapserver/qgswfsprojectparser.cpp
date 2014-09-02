@@ -69,9 +69,9 @@ void QgsWFSProjectParser::featureTypeList( QDomElement& parentElement, QDomDocum
   }
 
   QStringList wfsLayersId = mProjectParser.wfsLayers();
-  QStringList wfstUpdateLayersId = wfstUpdateLayers();
-  QStringList wfstInsertLayersId = wfstInsertLayers();
-  QStringList wfstDeleteLayersId = wfstDeleteLayers();
+  QSet<QString> wfstUpdateLayersId = wfstUpdateLayers();
+  QSet<QString> wfstInsertLayersId = wfstInsertLayers();
+  QSet<QString> wfstDeleteLayersId = wfstDeleteLayers();
 
   QMap<QString, QgsMapLayer *> layerMap;
 
@@ -199,10 +199,10 @@ void QgsWFSProjectParser::featureTypeList( QDomElement& parentElement, QDomDocum
   return;
 }
 
-QStringList QgsWFSProjectParser::wfstUpdateLayers() const
+QSet<QString> QgsWFSProjectParser::wfstUpdateLayers() const
 {
   QStringList publiedIds = mProjectParser.wfsLayers();
-  QStringList wfsList;
+  QSet<QString> wfsList;
   if ( !mProjectParser.xmlDocument() )
   {
     return wfsList;
@@ -228,15 +228,17 @@ QStringList QgsWFSProjectParser::wfstUpdateLayers() const
   {
     QString id = valueList.at( i ).toElement().text();
     if ( publiedIds.contains( id ) )
-      wfsList << id;
+    {
+      wfsList.insert( id );
+    }
   }
   return wfsList;
 }
 
-QStringList QgsWFSProjectParser::wfstInsertLayers() const
+QSet<QString> QgsWFSProjectParser::wfstInsertLayers() const
 {
-  QStringList updateIds = wfstUpdateLayers();
-  QStringList wfsList;
+  QSet<QString> updateIds = wfstUpdateLayers();
+  QSet<QString> wfsList;
   if ( !mProjectParser.xmlDocument() )
   {
     return wfsList;
@@ -262,15 +264,17 @@ QStringList QgsWFSProjectParser::wfstInsertLayers() const
   {
     QString id = valueList.at( i ).toElement().text();
     if ( updateIds.contains( id ) )
-      wfsList << id;
+    {
+      wfsList.insert( id );
+    }
   }
   return wfsList;
 }
 
-QStringList QgsWFSProjectParser::wfstDeleteLayers() const
+QSet<QString> QgsWFSProjectParser::wfstDeleteLayers() const
 {
-  QStringList insertIds = wfstInsertLayers();
-  QStringList wfsList;
+  QSet<QString> insertIds = wfstInsertLayers();
+  QSet<QString> wfsList;
   if ( !mProjectParser.xmlDocument() )
   {
     return wfsList;
@@ -296,7 +300,9 @@ QStringList QgsWFSProjectParser::wfstDeleteLayers() const
   {
     QString id = valueList.at( i ).toElement().text();
     if ( insertIds.contains( id ) )
-      wfsList << id;
+    {
+      wfsList.insert( id );
+    }
   }
   return wfsList;
 }

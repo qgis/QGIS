@@ -38,12 +38,12 @@ class QgsWFSProjectParser
 
     QList<QgsMapLayer*> mapLayerFromTypeName( const QString& aTypeName, bool useCache = true ) const;
 
+    QSet<QString> wfstUpdateLayers() const;
+    QSet<QString> wfstInsertLayers() const;
+    QSet<QString> wfstDeleteLayers() const;
+
   private:
     QgsServerProjectParser mProjectParser;
-
-    QStringList wfstUpdateLayers() const;
-    QStringList wfstInsertLayers() const;
-    QStringList wfstDeleteLayers() const;
 };
 
 #endif // QGSWFSPROJECTPARSER_H
