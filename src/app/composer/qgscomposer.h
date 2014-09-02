@@ -620,7 +620,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Sets the specified feature as the current atlas feature
     //! @note added in 2.1
-    void setAtlasFeature( QgsMapLayer* layer, QgsFeature * feat );
+    void setAtlasFeature( QgsMapLayer* layer, const QgsFeature *feat );
 
     //! Updates the "set as atlas feature" map layer action when atlas coverage layer changes
     void updateAtlasMapLayerAction( QgsVectorLayer* coverageLayer );

@@ -333,13 +333,19 @@ void QgsAtlasComposition::lastFeature()
   prepareForFeature( mFeatureIds.size() - 1 );
 }
 
-bool QgsAtlasComposition::prepareForFeature( QgsFeature * feat )
+bool QgsAtlasComposition::prepareForFeature( const QgsFeature * feat )
 {
   int featureI = mFeatureIds.indexOf( feat->id() );
+  if ( featureI < 0 )
+  {
+    //feature not found
+    return false;
+  }
+
   return prepareForFeature( featureI );
 }
 
-bool QgsAtlasComposition::prepareForFeature( int featureI )
+bool QgsAtlasComposition::prepareForFeature( const int featureI )
 {
   if ( !mCoverageLayer )
   {
