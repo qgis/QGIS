@@ -28,10 +28,14 @@ class QToolButton;
 class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 {
     Q_OBJECT
+    Q_PROPERTY( QString nullValue READ nullValue WRITE setNullValue )
+
   public:
     QgsFilterLineEdit( QWidget* parent = 0, QString nullValue = QString::null );
 
     void setNullValue( QString nullValue ) { mNullValue = nullValue; }
+
+    QString nullValue() const {return mNullValue;}
 
   signals:
     void cleared();

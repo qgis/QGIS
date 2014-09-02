@@ -22,6 +22,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgsdatadefinedbuttonplugin.cpp
   qgsfieldcomboboxplugin.cpp
   qgsfieldexpressionwidgetplugin.cpp
+  qgsfilterlineeditplugin.cpp
   qgsmaplayercomboboxplugin.cpp
   qgsrelationeditorwidgetplugin.cpp
   qgsrelationreferencewidgetplugin.cpp
@@ -37,6 +38,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgsdatadefinedbuttonplugin.h
   qgsfieldcomboboxplugin.h
   qgsfieldexpressionwidgetplugin.h
+  qgsfilterlineeditplugin.h
   qgsmaplayercomboboxplugin.h
   qgsrelationeditorwidgetplugin.h
   qgsrelationreferencewidgetplugin.h
@@ -60,6 +62,7 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgsdatadefinedbuttonplugin.h
   qgsfieldcomboboxplugin.h
   qgsfieldexpressionwidgetplugin.h
+  qgsfilterlineeditplugin.h
   qgsmaplayercomboboxplugin.h
   qgsrelationeditorwidgetplugin.h
   qgsrelationreferencewidgetplugin.h

@@ -10,6 +10,8 @@ class QgsFilterLineEdit : QLineEdit
     QgsFilterLineEdit( QWidget* parent = 0 );
 
     void setNullValue( QString nullValue );
+    
+    QString nullValue() const;
 
   signals:
     void cleared();
