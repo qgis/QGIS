@@ -70,7 +70,7 @@ QList<QgsMapLayer *> QgsMapLayerModel::layersChecked( Qt::CheckState checkState 
   return layers;
 }
 
-QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer )
+QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
 {
   int r = mLayers.indexOf( layer );
   return index( r, 0 );

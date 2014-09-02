@@ -33,7 +33,7 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
     /**
      * @brief layerModel returns the QgsMapLayerModel used in this QSortFilterProxyModel
      */
-    QgsMapLayerModel* sourceLayerModel();
+    QgsMapLayerModel* sourceLayerModel() const;
 
     /**
      * @brief setFilters set flags that affect how layers are filtered

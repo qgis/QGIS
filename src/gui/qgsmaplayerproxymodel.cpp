@@ -21,9 +21,13 @@
 QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
     : QSortFilterProxyModel( parent )
     , mFilters( All )
-    , mModel( new QgsMapLayerModel( this ) )
+    , mModel( new QgsMapLayerModel( parent ) )
 {
   setSourceModel( mModel );
+  setDynamicSortFilter( true );
+  setSortLocaleAware( true );
+  setFilterCaseSensitivity( Qt::CaseInsensitive );
+  sort( 0 );
 }
 
 QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Filters filters )
@@ -79,7 +83,7 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
 bool QgsMapLayerProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
   // default mode is alphabetical order
-  QString leftId = sourceModel()->data( left ).toString();
-  QString rightId = sourceModel()->data( right ).toString();
-  return QString::localeAwareCompare( leftId, rightId ) < 0;
+  QString leftStr = sourceModel()->data( left ).toString();
+  QString rightStr = sourceModel()->data( right ).toString();
+  return QString::localeAwareCompare( leftStr, rightStr ) < 0;
 }

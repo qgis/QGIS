@@ -52,7 +52,7 @@ class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     /**
      * @brief layerModel returns the QgsMapLayerModel used in this QSortFilterProxyModel
      */
-    QgsMapLayerModel* sourceLayerModel() { return mModel; }
+    QgsMapLayerModel* sourceLayerModel() const { return mModel; }
 
     /**
      * @brief setFilters set flags that affect how layers are filtered

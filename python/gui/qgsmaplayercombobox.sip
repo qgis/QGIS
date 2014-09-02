@@ -23,7 +23,7 @@ class QgsMapLayerComboBox : QComboBox
     QgsMapLayerProxyModel::Filters filters() const;
 
     //! currentLayer returns the current layer selected in the combo box
-    QgsMapLayer* currentLayer();
+    QgsMapLayer* currentLayer() const;
 
   public slots:
     //! setLayer set the current layer selected in the combo

@@ -48,7 +48,7 @@ void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
   emit layerChanged( currentLayer() );
 }
 
-QgsMapLayer* QgsMapLayerComboBox::currentLayer()
+QgsMapLayer* QgsMapLayerComboBox::currentLayer() const
 {
   int i = currentIndex();
 
