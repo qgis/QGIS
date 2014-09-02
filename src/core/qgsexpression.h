@@ -21,11 +21,12 @@
 #include <QVariant>
 #include <QList>
 #include <QDomDocument>
+#include <QCache>
 
+#include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsdistancearea.h"
 
-class QgsFeature;
 class QgsGeometry;
 class QgsOgcUtils;
 class QgsVectorLayer;
@@ -341,7 +342,8 @@ class CORE_EXPORT QgsExpression
       ntFunction,
       ntLiteral,
       ntColumnRef,
-      ntCondition
+      ntCondition,
+      ntJoin
     };
 
     class CORE_EXPORT Node
@@ -590,6 +592,48 @@ class CORE_EXPORT QgsExpression
         Node* mElseExp;
     };
 
+    class CORE_EXPORT NodeJoin : public Node
+    {
+      public:
+        NodeJoin( Node* expression, QString* table, QString* joinCondition, QString* alias = 0 );
+        ~NodeJoin();
+
+        virtual NodeType nodeType() const;
+        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
+        virtual bool prepare( QgsExpression* parent, const QgsFields& fields );
+        virtual QString dump() const;
+        virtual QStringList referencedColumns() const;
+        virtual bool needsGeometry() const;
+
+        // support for visitor pattern
+        virtual void accept( Visitor& v ) const { v.visit( *this ); }
+
+      protected:
+        Node* mExpression;
+        QString mTableId;
+        QString mJoinCondition;
+        QString mTableAlias;
+
+        QgsFields mCombinedFields;
+        int mIndexOffset;
+        QgsVectorLayer* mJoinLayer;
+        int mJoinFieldIndex;
+        QString mJoinFieldName;
+        QString mTargetFieldName;
+
+        QHash< QString, QgsAttributes >* mCachedAttributes;
+
+      private:
+        //assignment and copy constructor forbidden
+        NodeJoin( const NodeJoin& j ) { Q_UNUSED( j ); }
+        void operator=( const NodeJoin& j ) { Q_UNUSED( j ); }
+
+        void addJoinedAttributesFromCache( QgsFeature& f, const QVariant& joinValue ) const;
+        void addJoinedAttributesDirect( QgsVectorLayer* joinLayer, QgsFeature& f, const QVariant& joinValue ) const;
+
+        static QCache< QPair< QString, QString >, QHash< QString, QgsAttributes > > mJoinCache;
+    };
+
     //////
 
     /** support for visitor pattern - algorithms dealing with the expressions
@@ -605,6 +649,7 @@ class CORE_EXPORT QgsExpression
         virtual void visit( const NodeLiteral& n ) = 0;
         virtual void visit( const NodeColumnRef& n ) = 0;
         virtual void visit( const NodeCondition& n ) = 0;
+        virtual void visit( const NodeJoin& n ) { Q_UNUSED( n ); } //Note: added in 2.5
     };
 
     /** entry function for the visitor pattern */
