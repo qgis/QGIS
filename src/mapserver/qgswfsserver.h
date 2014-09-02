@@ -118,6 +118,8 @@ class QgsWFSServer: public QgsOWSServer
 
     //methods to write GML3
     QDomElement createFeatureGML3( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, QgsAttributeList attrIndexes, QSet<QString> excludedAttributes ) /*const*/;
+
+    void addTransactionResult( QDomDocument& responseDoc, QDomElement& responseElem, const QString& status, const QString& locator, const QString& message );
 };
 
 #endif

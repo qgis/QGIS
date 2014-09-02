@@ -23,6 +23,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
+#include "qgsmessagelog.h"
 #include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
@@ -1382,6 +1383,15 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
         QDomNodeList upNodeList = typeNameElem.elementsByTagNameNS( WFS_NAMESPACE, "Update" );
         for ( int j = 0; j < upNodeList.count(); ++j )
         {
+          if ( !mConfigParser->wfstUpdateLayers().contains( layer->id() ) )
+          {
+            //no wfs permissions to do updates
+            QString errorMsg = "No permissions to do WFS updates on layer '" + layer->name() + "'";
+            QgsMessageLog::logMessage( errorMsg, "Server", QgsMessageLog::CRITICAL );
+            addTransactionResult( resp, respElem, "FAILED", "Update", errorMsg );
+            return resp;
+          }
+
           actionElem = upNodeList.at( j ).toElement();
 
           // Get the Feature Ids for this filter on the layer
@@ -1451,22 +1461,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
       // Commit the changes of the update elements
       if ( !layer->commitChanges() )
       {
-        QgsDebugMsg( QString( "update errors:\n  %1" ).arg( layer->commitErrors().join( "\n  " ) ) );
-        QDomElement trElem = doc.createElement( "TransactionResult" );
-        QDomElement stElem = doc.createElement( "Status" );
-        QDomElement successElem = doc.createElement( "PARTIAL" );
-        stElem.appendChild( successElem );
-        trElem.appendChild( stElem );
-        respElem.appendChild( trElem );
-
-        QDomElement locElem = doc.createElement( "Locator" );
-        locElem.appendChild( doc.createTextNode( "Update" ) );
-        trElem.appendChild( locElem );
-
-        QDomElement mesElem = doc.createElement( "Message" );
-        mesElem.appendChild( doc.createTextNode( layer->commitErrors().join( "\n  " ) ) );
-        trElem.appendChild( mesElem );
-
+        addTransactionResult( resp, respElem, "PARTIAL", "Update", layer->commitErrors().join( "\n  " ) );
         return resp;
       }
       // Start the delete transaction
@@ -1477,6 +1472,15 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
         QDomNodeList delNodeList = typeNameElem.elementsByTagNameNS( WFS_NAMESPACE, "Delete" );
         for ( int j = 0; j < delNodeList.count(); ++j )
         {
+          if ( !mConfigParser->wfstDeleteLayers().contains( layer->id() ) )
+          {
+            //no wfs permissions to do updates
+            QString errorMsg = "No permissions to do WFS deletes on layer '" + layer->name() + "'";
+            QgsMessageLog::logMessage( errorMsg, "Server", QgsMessageLog::CRITICAL );
+            addTransactionResult( resp, respElem, "FAILED", "Delete", errorMsg );
+            return resp;
+          }
+
           actionElem = delNodeList.at( j ).toElement();
           QDomElement filterElem = actionElem.firstChild().toElement();
           // Get Feature Ids for the Filter element
@@ -1488,22 +1492,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
       // Commit the changes of the delete elements
       if ( !layer->commitChanges() )
       {
-        QgsDebugMsg( QString( "delete errors:\n  %1" ).arg( layer->commitErrors().join( "\n  " ) ) );
-        QDomElement trElem = doc.createElement( "TransactionResult" );
-        QDomElement stElem = doc.createElement( "Status" );
-        QDomElement successElem = doc.createElement( "PARTIAL" );
-        stElem.appendChild( successElem );
-        trElem.appendChild( stElem );
-        respElem.appendChild( trElem );
-
-        QDomElement locElem = doc.createElement( "Locator" );
-        locElem.appendChild( doc.createTextNode( "Delete" ) );
-        trElem.appendChild( locElem );
-
-        QDomElement mesElem = doc.createElement( "Message" );
-        mesElem.appendChild( doc.createTextNode( layer->commitErrors().join( "\n  " ) ) );
-        trElem.appendChild( mesElem );
-
+        addTransactionResult( resp, respElem, "PARTIAL", "Delete", layer->commitErrors().join( "\n  " ) );
         return resp;
       }
 
@@ -1521,6 +1510,15 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
         QDomNodeList inNodeList = typeNameElem.elementsByTagNameNS( WFS_NAMESPACE, "Insert" );
         for ( int j = 0; j < inNodeList.count(); ++j )
         {
+          if ( !mConfigParser->wfstInsertLayers().contains( layer->id() ) )
+          {
+            //no wfs permissions to do updates
+            QString errorMsg = "No permissions to do WFS inserts on layer '" + layer->name() + "'";
+            QgsMessageLog::logMessage( errorMsg, "Server", QgsMessageLog::CRITICAL );
+            addTransactionResult( resp, respElem, "FAILED", "Insert", errorMsg );
+            return resp;
+          }
+
           actionElem = inNodeList.at( j ).toElement();
           // Loop through the feature element
           QDomNodeList featNodes = actionElem.childNodes();
@@ -1573,33 +1571,11 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
       // add the features
       if ( !provider->addFeatures( inFeatList ) )
       {
-        QDomElement trElem = doc.createElement( "TransactionResult" );
-        QDomElement stElem = doc.createElement( "Status" );
-        QDomElement successElem = doc.createElement( "PARTIAL" );
-        stElem.appendChild( successElem );
-        trElem.appendChild( stElem );
-        respElem.appendChild( trElem );
-
-        QDomElement locElem = doc.createElement( "Locator" );
-        locElem.appendChild( doc.createTextNode( "Insert" ) );
-        trElem.appendChild( locElem );
-
-        QDomElement mesElem = doc.createElement( "Message" );
-        QStringList mesErrors;
-        mesErrors << QString( "ERROR: %1 feature(s) not added." ).arg( inFeatList.size() );
+        addTransactionResult( resp, respElem, "Partial", "Insert", layer->commitErrors().join( "\n  " ) );
         if ( provider->hasErrors() )
         {
-          mesErrors << "\n  Provider errors:" << provider->errors();
           provider->clearErrors();
         }
-        else
-        {
-          mesErrors << "\n  Provider didn't report any errors:";
-        }
-        QgsDebugMsg( QString( "add errors:\n  %1" ).arg( mesErrors.join( "\n  " ) ) );
-        mesElem.appendChild( doc.createTextNode( mesErrors.join( "\n  " ) ) );
-        trElem.appendChild( mesElem );
-
         return resp;
       }
       // Get the Feature Ids of the inserted feature
@@ -1917,4 +1893,22 @@ QString QgsWFSServer::serviceUrl() const
     }
   }
   return mapUrl.toString();
+}
+
+void QgsWFSServer::addTransactionResult( QDomDocument& responseDoc, QDomElement& responseElem, const QString& status, const QString& locator, const QString& message )
+{
+  QDomElement trElem = responseDoc.createElement( "TransactionResult" );
+  QDomElement stElem = responseDoc.createElement( "Status" );
+  QDomElement successElem = responseDoc.createElement( status );
+  stElem.appendChild( successElem );
+  trElem.appendChild( stElem );
+  responseElem.appendChild( trElem );
+
+  QDomElement locElem = responseDoc.createElement( "Locator" );
+  locElem.appendChild( responseDoc.createTextNode( locator ) );
+  trElem.appendChild( locElem );
+
+  QDomElement mesElem = responseDoc.createElement( "Message" );
+  mesElem.appendChild( responseDoc.createTextNode( message ) );
+  trElem.appendChild( mesElem );
 }
