@@ -354,6 +354,11 @@ QMap<int, QString> QgsComposerTableV2::headerLabels() const
   return headers;
 }
 
+QSizeF QgsComposerTableV2::fixedFrameSize() const
+{
+  return QSizeF( mTableSize.width(), 0 );
+}
+
 void QgsComposerTableV2::refreshAttributes()
 {
   mMaxColumnWidthMap.clear();

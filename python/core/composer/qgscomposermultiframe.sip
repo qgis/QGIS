@@ -19,6 +19,15 @@ class QgsComposerMultiFrame: QgsComposerObject
     QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands );
     virtual ~QgsComposerMultiFrame();
     virtual QSizeF totalSize() const = 0;
+    
+    /**Returns a fixed size for the frames, if desired.
+     * @returns fixed size for frames. If the size has a width or height of 0, then
+     * the frame size is not fixed in that direction and frames can have variable width
+     * or height accordingly.
+     * @note added in version 2.5
+    */
+    virtual QSizeF fixedFrameSize() const;
+    
     virtual void render( QPainter* p, const QRectF& renderExtent ) = 0;
 
     virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) = 0;

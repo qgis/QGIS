@@ -231,6 +231,9 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      */
     virtual bool getTableContents( QgsComposerTableContents &contents ) = 0;
 
+    //reimplemented to return fixed table width
+    virtual QSizeF fixedFrameSize() const;
+
   public slots:
 
     /**Refreshes the contents shown in the table by querying for new data.

@@ -26,4 +26,7 @@ class QgsComposerFrame: QgsComposerItem
 
     //Overriden to allow multiframe to set display name
     virtual QString displayName() const;
+    
+    //Overriden to handle fixed frame sizes set by multi frame
+    void setSceneRect( const QRectF& rectangle );
 };

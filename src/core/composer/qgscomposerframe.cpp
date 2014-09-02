@@ -77,6 +77,22 @@ QString QgsComposerFrame::displayName() const
   return tr( "<frame>" );
 }
 
+void QgsComposerFrame::setSceneRect( const QRectF &rectangle )
+{
+  QRectF fixedRect = rectangle;
+  QSizeF fixedSize = mMultiFrame->fixedFrameSize();
+  if ( fixedSize.width() > 0 )
+  {
+    fixedRect.setWidth( fixedSize.width() );
+  }
+  if ( fixedSize.height() > 0 )
+  {
+    fixedRect.setHeight( fixedSize.height() );
+  }
+
+  QgsComposerItem::setSceneRect( fixedRect );
+}
+
 void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
   Q_UNUSED( itemStyle );
