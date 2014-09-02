@@ -124,7 +124,18 @@ class QgsMapRenderer : QObject
       BlendSoftLight,
       BlendHardLight,
       BlendDifference,
-      BlendSubtract
+      BlendSubtract,
+      BlendSource,
+      BlendDestinationOver,
+      BlendClear,
+      BlendDestination,
+      BlendSourceIn,
+      BlendDestinationIn,
+      BlendSourceOut,
+      BlendDestinationOut,
+      BlendSourceAtop,
+      BlendDestinationAtop,
+      BlendXor,
     };
 
     //! constructor

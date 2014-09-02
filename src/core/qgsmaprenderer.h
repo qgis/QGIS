@@ -161,7 +161,18 @@ class CORE_EXPORT QgsMapRenderer : public QObject
       BlendSoftLight,
       BlendHardLight,
       BlendDifference,
-      BlendSubtract
+      BlendSubtract,
+      BlendSource,
+      BlendDestinationOver,
+      BlendClear,
+      BlendDestination,
+      BlendSourceIn,
+      BlendDestinationIn,
+      BlendSourceOut,
+      BlendDestinationOut,
+      BlendSourceAtop,
+      BlendDestinationAtop,
+      BlendXor,
     };
 
     //! constructor
