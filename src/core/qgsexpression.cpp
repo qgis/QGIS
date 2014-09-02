@@ -30,6 +30,7 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsogcutils.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerv2utils.h"
@@ -1505,6 +1506,52 @@ static QVariant fcnSpecialColumn( const QVariantList& values, const QgsFeature* 
   return QgsExpression::specialColumn( varName );
 }
 
+static QVariant fcnGetFeature( const QVariantList& values, const QgsFeature* f, QgsExpression* parent )
+{
+  //arguments: 1. layer id / name, 2. key attribute, 3. eq value
+  QString layerString = getStringValue( values.at( 0 ), parent );
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerString ) ); //search by id first
+  if ( !vl )
+  {
+    QList<QgsMapLayer *> layersByName = QgsMapLayerRegistry::instance()->mapLayersByName( layerString );
+    if ( layersByName.size() > 0 )
+    {
+      vl = qobject_cast<QgsVectorLayer*>( layersByName.at( 0 ) );
+    }
+  }
+
+  //no layer found
+  if ( !vl )
+  {
+    return QVariant();
+  }
+
+  QString attribute = getStringValue( values.at( 1 ), parent );
+  int attributeId = vl->fieldNameIndex( attribute );
+  if ( attributeId == -1 )
+  {
+    return QVariant();
+  }
+
+  const QVariant& attVal = values.at( 2 );
+  QgsFeatureRequest req;
+  if ( !parent->needsGeometry() )
+  {
+    req.setFlags( QgsFeatureRequest::NoGeometry );
+  }
+  QgsFeatureIterator fIt = vl->getFeatures( req );
+
+  QgsFeature fet;
+  while ( fIt.nextFeature( fet ) )
+  {
+    if ( fet.attribute( attributeId ) == attVal )
+    {
+      return QVariant::fromValue( fet );
+    }
+  }
+  return QVariant();
+}
+
 bool QgsExpression::registerFunction( QgsExpression::Function* function )
 {
   int fnIdx = functionIndex( function->name() );
@@ -1683,6 +1730,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "$currentfeature", 0, fcnFeature, "Record" )
     << new StaticFunction( "$scale", 0, fcnScale, "Record" )
     << new StaticFunction( "$uuid", 0, fcnUuid, "Record" )
+    << new StaticFunction( "getFeature", 3, fcnGetFeature, "Record" )
 
     //return all attributes string for referencedColumns - this is caught by
     // QgsFeatureRequest::setSubsetOfAttributes and causes all attributes to be fetched by the
