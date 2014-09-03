@@ -102,7 +102,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
   mGridFrameFill2ColorButton->setShowNoColor( true );
 
   //set initial state of frame style controls
-  toggleFrameControls( false, false );
+  toggleFrameControls( false, false, false );
 
   if ( composerMap )
   {
@@ -695,15 +695,15 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   blockOverviewItemsSignals( b );
 }
 
-void QgsComposerMapWidget::toggleFrameControls( bool frameEnabled, bool frameFillEnabled )
+void QgsComposerMapWidget::toggleFrameControls( bool frameEnabled, bool frameFillEnabled, bool frameSizeEnabled )
 {
   //set status of frame controls
-  mFrameWidthSpinBox->setEnabled( frameEnabled );
+  mFrameWidthSpinBox->setEnabled( frameSizeEnabled );
   mGridFramePenSizeSpinBox->setEnabled( frameEnabled );
   mGridFramePenColorButton->setEnabled( frameEnabled );
   mGridFrameFill1ColorButton->setEnabled( frameFillEnabled );
   mGridFrameFill2ColorButton->setEnabled( frameFillEnabled );
-  mFrameWidthLabel->setEnabled( frameEnabled );
+  mFrameWidthLabel->setEnabled( frameSizeEnabled );
   mFramePenLabel->setEnabled( frameEnabled );
   mFrameFillLabel->setEnabled( frameFillEnabled );
   mCheckGridLeftSide->setEnabled( frameEnabled );
@@ -836,10 +836,11 @@ void QgsComposerMapWidget::handleChangedAnnotationDirection( QgsComposerMap::Bor
   {
     grid->setGridAnnotationDirection( QgsComposerMap::Horizontal, border );
   }
-  else //Vertical
+  else if ( text == tr( "Vertical" ) )
   {
     grid->setGridAnnotationDirection( QgsComposerMap::Vertical, border );
   }
+
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
@@ -877,7 +878,7 @@ void QgsComposerMapWidget::initAnnotationDirectionBox( QComboBox* c, QgsComposer
   {
     c->setCurrentIndex( c->findText( tr( "Vertical" ) ) );
   }
-  else //horizontal
+  else if ( dir == QgsComposerMap::Horizontal )
   {
     c->setCurrentIndex( c->findText( tr( "Horizontal" ) ) );
   }
@@ -1214,23 +1215,27 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
   {
     case QgsComposerMap::Zebra:
       mFrameStyleComboBox->setCurrentIndex( 1 );
-      toggleFrameControls( true, true );
+      toggleFrameControls( true, true, true );
       break;
     case QgsComposerMap::InteriorTicks:
       mFrameStyleComboBox->setCurrentIndex( 2 );
-      toggleFrameControls( true, false );
+      toggleFrameControls( true, false, true );
       break;
     case QgsComposerMap::ExteriorTicks:
       mFrameStyleComboBox->setCurrentIndex( 3 );
-      toggleFrameControls( true, false );
+      toggleFrameControls( true, false, true );
       break;
     case QgsComposerMap::InteriorExteriorTicks:
       mFrameStyleComboBox->setCurrentIndex( 4 );
-      toggleFrameControls( true, false );
+      toggleFrameControls( true, false, true );
+      break;
+    case QgsComposerMap::LineBorder:
+      mFrameStyleComboBox->setCurrentIndex( 5 );
+      toggleFrameControls( true, false, false );
       break;
     default:
       mFrameStyleComboBox->setCurrentIndex( 0 );
-      toggleFrameControls( false, false );
+      toggleFrameControls( false, false, false );
       break;
   }
 
@@ -1571,27 +1576,32 @@ void QgsComposerMapWidget::on_mFrameStyleComboBox_currentIndexChanged( const QSt
   if ( text == tr( "Zebra" ) )
   {
     grid->setGridFrameStyle( QgsComposerMap::Zebra );
-    toggleFrameControls( true, true );
+    toggleFrameControls( true, true, true );
   }
   else if ( text == tr( "Interior ticks" ) )
   {
     grid->setGridFrameStyle( QgsComposerMap::InteriorTicks );
-    toggleFrameControls( true, false );
+    toggleFrameControls( true, false, true );
   }
   else if ( text == tr( "Exterior ticks" ) )
   {
     grid->setGridFrameStyle( QgsComposerMap::ExteriorTicks );
-    toggleFrameControls( true, false );
+    toggleFrameControls( true, false, true );
   }
   else if ( text == tr( "Interior and exterior ticks" ) )
   {
     grid->setGridFrameStyle( QgsComposerMap::InteriorExteriorTicks );
-    toggleFrameControls( true, false );
+    toggleFrameControls( true, false, true );
+  }
+  else if ( text == tr( "Line border" ) )
+  {
+    grid->setGridFrameStyle( QgsComposerMap::LineBorder );
+    toggleFrameControls( true, false, false );
   }
   else //no frame
   {
     grid->setGridFrameStyle( QgsComposerMap::NoGridFrame );
-    toggleFrameControls( false, false );
+    toggleFrameControls( false, false, false );
   }
   mComposerMap->updateBoundingRect();
   mComposerMap->update();

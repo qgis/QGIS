@@ -583,6 +583,10 @@ void QgsComposerMapGrid::drawGridFrameBorder( QPainter* p, const QMap< double, d
       drawGridFrameTicks( p, borderPos, border );
       break;
 
+    case QgsComposerMap::LineBorder:
+      drawGridFrameLineBorder( p, border );
+      break;
+
     case QgsComposerMap::NoGridFrame:
       break;
   }
@@ -728,6 +732,37 @@ void QgsComposerMapGrid::drawGridFrameTicks( QPainter* p, const QMap< double, do
   }
 }
 
+void QgsComposerMapGrid::drawGridFrameLineBorder( QPainter* p, QgsComposerMap::Border border ) const
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  //set pen to current frame pen
+  QPen framePen = QPen( mGridFramePenColor );
+  framePen.setWidthF( mGridFramePenThickness );
+  framePen.setCapStyle( Qt::SquareCap );
+  p->setBrush( Qt::NoBrush );
+  p->setPen( framePen );
+
+  switch ( border )
+  {
+    case QgsComposerMap::Left:
+      p->drawLine( QLineF( 0, 0, 0, mComposerMap->rect().height() ) );
+      break;
+    case QgsComposerMap::Right:
+      p->drawLine( QLineF( mComposerMap->rect().width(), 0, mComposerMap->rect().width(), mComposerMap->rect().height() ) );
+      break;
+    case QgsComposerMap::Top:
+      p->drawLine( QLineF( 0, 0, mComposerMap->rect().width(), 0 ) );
+      break;
+    case QgsComposerMap::Bottom:
+      p->drawLine( QLineF( 0, mComposerMap->rect().height(), mComposerMap->rect().width(), mComposerMap->rect().height() ) );
+      break;
+  }
+}
+
 void QgsComposerMapGrid::drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines ) const
 {
   if ( !p )
@@ -768,11 +803,11 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
   int rotation = 0;
 
   double gridFrameDistance = 0;
-  if ( mGridFrameStyle != QgsComposerMap::NoGridFrame )
+  if ( mGridFrameStyle != QgsComposerMap::NoGridFrame && mGridFrameStyle != QgsComposerMap::LineBorder )
   {
     gridFrameDistance = mGridFrameWidth;
   }
-  if ( mGridFrameStyle == QgsComposerMap::Zebra )
+  if ( mGridFrameStyle == QgsComposerMap::Zebra || mGridFrameStyle == QgsComposerMap::LineBorder )
   {
     gridFrameDistance += ( mGridFramePenThickness / 2.0 );
   }

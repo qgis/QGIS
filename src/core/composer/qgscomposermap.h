@@ -99,7 +99,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       Zebra, // black/white pattern
       InteriorTicks,
       ExteriorTicks,
-      InteriorExteriorTicks
+      InteriorExteriorTicks,
+      LineBorder
     };
 
     /**Enum for different frame borders*/
