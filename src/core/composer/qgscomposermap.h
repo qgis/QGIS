@@ -120,12 +120,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       Top
     };
 
-    enum AnnotationCoordinate
-    {
-      Longitude = 0,
-      Latitude
-    };
-
     /** Scaling modes used for the serial rendering (atlas)
      */
     enum AtlasScalingMode
