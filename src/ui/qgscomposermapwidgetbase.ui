@@ -54,7 +54,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-571</y>
+        <y>-628</y>
         <width>444</width>
         <height>2231</height>
        </rect>
@@ -332,6 +332,9 @@
          <property name="collapsed" stdset="0">
           <bool>true</bool>
          </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="1">
            <widget class="QSpinBox" name="mAtlasMarginSpinBox">
@@ -395,6 +398,9 @@
          </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
@@ -485,7 +491,7 @@
              <bool>true</bool>
             </property>
             <property name="syncGroup" stdset="0">
-             <string notr="true">composeritem</string>
+             <string notr="true">composermapgrid</string>
             </property>
             <property name="collapsed" stdset="0">
              <bool>false</bool>
@@ -679,6 +685,9 @@
                <property name="title">
                 <string>Grid frame</string>
                </property>
+               <property name="syncGroup" stdset="0">
+                <string notr="true">composermapgrid</string>
+               </property>
                <layout class="QGridLayout" name="gridLayout_3">
                 <item row="0" column="0">
                  <widget class="QLabel" name="mFrameStyleLabel_2">
@@ -869,7 +878,7 @@
                 <bool>false</bool>
                </property>
                <property name="syncGroup" stdset="0">
-                <string/>
+                <string notr="true">composermapgrid</string>
                </property>
                <property name="collapsed" stdset="0">
                 <bool>false</bool>
@@ -1169,7 +1178,7 @@
              <bool>true</bool>
             </property>
             <property name="syncGroup" stdset="0">
-             <string notr="true">composeritem</string>
+             <string notr="true">composermapoverview</string>
             </property>
             <property name="collapsed" stdset="0">
              <bool>false</bool>

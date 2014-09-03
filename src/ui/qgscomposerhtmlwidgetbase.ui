@@ -142,6 +142,9 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
          <layout class="QGridLayout" name="gridLayout">
           <item row="0" column="0">
            <widget class="QLabel" name="mResizeModeLabel">
@@ -187,6 +190,9 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
          <layout class="QFormLayout" name="formLayout">
           <item row="0" column="0">
            <widget class="QLabel" name="mLabelMaxDistance">
@@ -227,6 +233,9 @@
          </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
