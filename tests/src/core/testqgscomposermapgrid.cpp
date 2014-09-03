@@ -21,8 +21,6 @@
 #include "qgscomposermap.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
-#include "qgsmultibandcolorrenderer.h"
-#include "qgsrasterlayer.h"
 #include "qgsfontutils.h"
 #include <QObject>
 #include <QtTest>
@@ -45,7 +43,6 @@ class TestQgsComposerMapGrid: public QObject
     QgsComposition* mComposition;
     QgsComposerMap* mComposerMap;
     QgsMapSettings mMapSettings;
-    QgsRasterLayer* mRasterLayer;
     QString mReport;
 };
 
@@ -54,22 +51,14 @@ void TestQgsComposerMapGrid::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  //create maplayers from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "landsat.tif" );
-  mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
-                                     rasterFileInfo.completeBaseName() );
-  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
-  mRasterLayer->setRenderer( rasterRenderer );
-
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
-
-  //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mRasterLayer->id() );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  mMapSettings.setDestinationCrs( crs );
   mMapSettings.setCrsTransformEnabled( false );
   mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
+  mComposerMap->setBackgroundColor( QColor( 150, 100, 100 ) );
   mComposition->addComposerMap( mComposerMap );
 
   mReport = "<h1>Composer Map Grid Tests</h1>\n";
@@ -78,7 +67,6 @@ void TestQgsComposerMapGrid::initTestCase()
 void TestQgsComposerMapGrid::cleanupTestCase()
 {
   delete mComposition;
-  delete mRasterLayer;
 
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
