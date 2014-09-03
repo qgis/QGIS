@@ -133,7 +133,7 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
         with open(self.filename, 'w') as fileobj:
             fileobj.write(prettify_xml(etree.tostring(doc)))
         QMessageBox.information(self, self.tr('Save Connections'),
-                                self.tr('Saved to %s' % self.filename))
+                                self.tr('Saved to %s') % self.filename)
         self.reject()
 
     def load(self, items):
@@ -154,7 +154,7 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
 
             # check for duplicates
             if conn_name in keys:
-                label = self.tr('File %s exists. Overwrite?' % conn_name)
+                label = self.tr('File %s exists. Overwrite?') % conn_name
                 res = QMessageBox.warning(self, self.tr('Loading Connections'),
                                           label,
                                           QMessageBox.Yes | QMessageBox.No)
