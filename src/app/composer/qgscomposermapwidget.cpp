@@ -973,6 +973,7 @@ void QgsComposerMapWidget::on_mAddGridPushButton_clicked()
 
   addGridListItem( grid->id(), grid->name() );
   mGridListWidget->setCurrentRow( 0 );
+  on_mGridListWidget_currentItemChanged( mGridListWidget->currentItem(), 0 );
 }
 
 void QgsComposerMapWidget::on_mRemoveGridPushButton_clicked()

@@ -58,7 +58,7 @@ QgsComposerMapGrid::QgsComposerMapGrid( const QString& name, QgsComposerMap* map
     mGridFrameSides( QgsComposerMapGrid::FrameLeft | QgsComposerMapGrid::FrameRight |
                      QgsComposerMapGrid::FrameTop | QgsComposerMapGrid::FrameBottom ),
     mGridFrameWidth( 2.0 ),
-    mGridFramePenThickness( 0.5 ),
+    mGridFramePenThickness( 0.3 ),
     mGridFramePenColor( QColor( 0, 0, 0 ) ),
     mGridFrameFillColor1( Qt::white ),
     mGridFrameFillColor2( Qt::black ),
@@ -232,7 +232,7 @@ bool QgsComposerMapGrid::readXML( const QDomElement& itemElem, const QDomDocumen
   mGridFrameStyle = ( QgsComposerMap::GridFrameStyle )itemElem.attribute( "gridFrameStyle", "0" ).toInt();
   mGridFrameSides = ( QgsComposerMapGrid::GridFrameSideFlags )itemElem.attribute( "gridFrameSideFlags", "15" ).toInt();
   mGridFrameWidth = itemElem.attribute( "gridFrameWidth", "2.0" ).toDouble();
-  mGridFramePenThickness = itemElem.attribute( "gridFramePenThickness", "0.5" ).toDouble();
+  mGridFramePenThickness = itemElem.attribute( "gridFramePenThickness", "0.3" ).toDouble();
   mGridFramePenColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "gridFramePenColor", "0,0,0" ) );
   mGridFrameFillColor1 = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "frameFillColor1", "255,255,255,255" ) );
   mGridFrameFillColor2 = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "frameFillColor2", "0,0,0,255" ) );
