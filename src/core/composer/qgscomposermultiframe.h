@@ -55,7 +55,9 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     */
     virtual QSizeF fixedFrameSize() const { return QSizeF( 0, 0 ); }
 
-    virtual void render( QPainter* p, const QRectF& renderExtent ) = 0;
+    Q_DECL_DEPRECATED virtual void render( QPainter* p, const QRectF& renderExtent );
+
+    virtual void render( QPainter* p, const QRectF& renderExtent, const int frameIndex );
 
     virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) = 0;
 
@@ -91,7 +93,15 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     @note added in 2.0, replaces nFrames
     **/
     int frameCount() const { return mFrameItems.size(); }
+
     QgsComposerFrame* frame( int i ) const;
+
+    /**Returns the index of a frame within the multiframe
+     * @param frame frame to find index of
+     * @returns index for frame if found, -1 if frame not found in multiframe
+     * @note added in version 2.5
+     */
+    int frameIndex( QgsComposerFrame *frame ) const;
 
     /**Creates a new frame and adds it to the multi frame and composition.
      * @param currentFrame an existing QgsComposerFrame from which to copy the size

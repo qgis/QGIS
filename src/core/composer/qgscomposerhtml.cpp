@@ -252,8 +252,10 @@ QSizeF QgsComposerHtml::totalSize() const
   return mSize;
 }
 
-void QgsComposerHtml::render( QPainter* p, const QRectF& renderExtent )
+void QgsComposerHtml::render( QPainter* p, const QRectF& renderExtent, const int frameIndex )
 {
+  Q_UNUSED( frameIndex );
+
   if ( !mWebPage )
   {
     return;

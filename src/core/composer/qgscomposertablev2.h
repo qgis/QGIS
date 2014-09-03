@@ -21,6 +21,7 @@
 #include "qgscomposermultiframe.h"
 #include <QFont>
 #include <QColor>
+#include <QPair>
 
 class QgsComposerTableColumn;
 
@@ -49,6 +50,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
 {
     Q_OBJECT
 
+
   public:
 
     /*! Controls how headers are horizontally aligned in a table
@@ -71,7 +73,9 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
 
     virtual QSizeF totalSize() const;
-    virtual void render( QPainter* p, const QRectF& renderExtent );
+
+    virtual void render( QPainter* p, const QRectF& renderExtent, const int frameIndex );
+
 
     /**Sets the margin distance between cell borders and their contents.
      * @param margin margin for cell contents
@@ -291,22 +295,34 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
 
     double totalHeight() const;
 
+    /**Calculates a range of rows which should be visible in a given
+     * rectangle.
+     * @param extent visible extent
+     * @param frameIndex index number for frame
+     * @returns row range
+     */
+    QPair<int, int> rowRange( const QRectF extent, const int frameIndex ) const;
+
+
     /**Draws the horizontal grid lines for the table.
      * @param painter destination painter for grid lines
      * @param rows number of rows shown in table
+     * @param drawHeaderLines set to true to include for the table header
      * @see drawVerticalGridLines
      */
-    void drawHorizontalGridLines( QPainter* painter, const int rows ) const;
+    void drawHorizontalGridLines( QPainter* painter, const int rows, const bool drawHeaderLines ) const;
 
     /**Draws the vertical grid lines for the table.
      * @param painter destination painter for grid lines
      * @param maxWidthMap QMap of int to double, where the int contains the column number and the double is the
      * maximum width of text present in the column.
+     * @param numberRows number of rows of content in table frame
+     * @param hasHeader set to true if table frame includes header cells
      * @note not available in python bindings
      * @see drawVerticalGridLines
      * @see calculateMaxColumnWidths
      */
-    void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap ) const;
+    void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap, const int numberRows, const bool hasHeader ) const;
 
     void adjustFrameToSize();
 };

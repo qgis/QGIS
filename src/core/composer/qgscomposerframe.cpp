@@ -106,7 +106,9 @@ void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   drawBackground( painter );
   if ( mMultiFrame )
   {
-    mMultiFrame->render( painter, mSection );
+    //calculate index of frame
+    int frameIndex = mMultiFrame->frameIndex( this );
+    mMultiFrame->render( painter, mSection, frameIndex );
   }
 
   drawFrame( painter );

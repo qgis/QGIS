@@ -118,7 +118,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     void setEvaluateExpressions( bool evaluateExpressions );
 
     QSizeF totalSize() const;
-    void render( QPainter* p, const QRectF& renderExtent );
+    void render( QPainter* p, const QRectF& renderExtent, const int frameIndex );
 
     bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );

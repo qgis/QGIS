@@ -28,7 +28,8 @@ class QgsComposerMultiFrame: QgsComposerObject
     */
     virtual QSizeF fixedFrameSize() const;
     
-    virtual void render( QPainter* p, const QRectF& renderExtent ) = 0;
+    virtual void render( QPainter* p, const QRectF& renderExtent );
+    virtual void render( QPainter* p, const QRectF& renderExtent, const int frameIndex );
 
     virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) = 0;
 

@@ -40,6 +40,22 @@ QgsComposerMultiFrame::~QgsComposerMultiFrame()
   deleteFrames();
 }
 
+void QgsComposerMultiFrame::render( QPainter *p, const QRectF &renderExtent )
+{
+  //base implementation does nothing
+  Q_UNUSED( p );
+  Q_UNUSED( renderExtent );
+}
+
+void QgsComposerMultiFrame::render( QPainter *p, const QRectF &renderExtent, const int frameIndex )
+{
+  Q_UNUSED( frameIndex );
+  //base implementation ignores frameIndex
+  Q_NOWARN_DEPRECATED_PUSH
+  render( p, renderExtent );
+  Q_NOWARN_DEPRECATED_POP
+}
+
 void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
 {
   if ( mode != mResizeMode )
@@ -305,6 +321,11 @@ QgsComposerFrame* QgsComposerMultiFrame::frame( int i ) const
     return 0;
   }
   return mFrameItems.at( i );
+}
+
+int QgsComposerMultiFrame::frameIndex( QgsComposerFrame *frame ) const
+{
+  return mFrameItems.indexOf( frame );
 }
 
 bool QgsComposerMultiFrame::_writeXML( QDomElement& elem, QDomDocument& doc, bool ignoreFrames ) const
