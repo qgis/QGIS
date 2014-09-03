@@ -159,7 +159,7 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
   double mySecondsY = double( myFloatMinutesY - myIntMinutesY ) * 60;
 
   //make sure rounding to specified precision doesn't create seconds >= 60
-  if ( qRound( mySecondsX * pow( 10, thePrecision ) ) >= 60 * pow( 10, thePrecision ) )
+  if ( qRound( mySecondsX * pow( 10.0, thePrecision ) ) >= 60 * pow( 10.0, thePrecision ) )
   {
     mySecondsX = qMax( mySecondsX - 60, 0.0 );
     myIntMinutesX++;
@@ -169,7 +169,7 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
       myDegreesX++;
     }
   }
-  if ( qRound( mySecondsY * pow( 10, thePrecision ) ) >= 60 * pow( 10, thePrecision ) )
+  if ( qRound( mySecondsY * pow( 10.0, thePrecision ) ) >= 60 * pow( 10.0, thePrecision ) )
   {
     mySecondsY = qMax( mySecondsY - 60, 0.0 );
     myIntMinutesY++;
@@ -202,18 +202,18 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
   }
   //check if coordinate is all zeros for the specified precision, and if so,
   //remove the sign and hemisphere strings
-  if ( myDegreesX == 0 && myIntMinutesX == 0 && qRound( mySecondsX * pow( 10, thePrecision ) ) == 0 )
+  if ( myDegreesX == 0 && myIntMinutesX == 0 && qRound( mySecondsX * pow( 10.0, thePrecision ) ) == 0 )
   {
     myXSign = QString();
     myXHemisphere = QString();
   }
-  if ( myDegreesY == 0 && myIntMinutesY == 0 && qRound( mySecondsY * pow( 10, thePrecision ) ) == 0 )
+  if ( myDegreesY == 0 && myIntMinutesY == 0 && qRound( mySecondsY * pow( 10.0, thePrecision ) ) == 0 )
   {
     myYSign = QString();
     myYHemisphere = QString();
   }
   //also remove directional prefix from 180 degree longitudes
-  if ( myDegreesX == 180 && myIntMinutesX == 0 && qRound( mySecondsX * pow( 10, thePrecision ) ) == 0 )
+  if ( myDegreesX == 180 && myIntMinutesX == 0 && qRound( mySecondsX * pow( 10.0, thePrecision ) ) == 0 )
   {
     myXHemisphere = QString();
   }
@@ -257,12 +257,12 @@ QString QgsPoint::toDegreesMinutes( int thePrecision, const bool useSuffix, cons
   double myFloatMinutesY = double(( qAbs( m_y ) - myDegreesY ) * 60 );
 
   //make sure rounding to specified precision doesn't create minutes >= 60
-  if ( qRound( myFloatMinutesX * pow( 10, thePrecision ) ) >= 60 * pow( 10, thePrecision ) )
+  if ( qRound( myFloatMinutesX * pow( 10.0, thePrecision ) ) >= 60 * pow( 10.0, thePrecision ) )
   {
     myFloatMinutesX = qMax( myFloatMinutesX - 60, 0.0 );
     myDegreesX++;
   }
-  if ( qRound( myFloatMinutesY * pow( 10, thePrecision ) ) >= 60 * pow( 10, thePrecision ) )
+  if ( qRound( myFloatMinutesY * pow( 10.0, thePrecision ) ) >= 60 * pow( 10.0, thePrecision ) )
   {
     myFloatMinutesY = qMax( myFloatMinutesY - 60, 0.0 );
     myDegreesY++;
@@ -290,18 +290,18 @@ QString QgsPoint::toDegreesMinutes( int thePrecision, const bool useSuffix, cons
   }
   //check if coordinate is all zeros for the specified precision, and if so,
   //remove the sign and hemisphere strings
-  if ( myDegreesX == 0 && qRound( myFloatMinutesX * pow( 10, thePrecision ) ) == 0 )
+  if ( myDegreesX == 0 && qRound( myFloatMinutesX * pow( 10.0, thePrecision ) ) == 0 )
   {
     myXSign = QString();
     myXHemisphere = QString();
   }
-  if ( myDegreesY == 0 && qRound( myFloatMinutesY * pow( 10, thePrecision ) ) == 0 )
+  if ( myDegreesY == 0 && qRound( myFloatMinutesY * pow( 10.0, thePrecision ) ) == 0 )
   {
     myYSign = QString();
     myYHemisphere = QString();
   }
   //also remove directional prefix from 180 degree longitudes
-  if ( myDegreesX == 180 && qRound( myFloatMinutesX * pow( 10, thePrecision ) ) == 0 )
+  if ( myDegreesX == 180 && qRound( myFloatMinutesX * pow( 10.0, thePrecision ) ) == 0 )
   {
     myXHemisphere = QString();
   }
