@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-1023</y>
+        <y>-1047</y>
         <width>444</width>
-        <height>2173</height>
+        <height>2231</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -679,7 +679,17 @@
                <property name="title">
                 <string>Grid frame</string>
                </property>
-               <layout class="QGridLayout" name="gridLayout_4">
+               <layout class="QGridLayout" name="gridLayout_3">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="mFrameStyleLabel_2">
+                  <property name="text">
+                   <string>Frame style</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
                 <item row="1" column="0">
                  <widget class="QLabel" name="mFrameWidthLabel">
                   <property name="text">
@@ -690,15 +700,22 @@
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1" colspan="2">
-                 <widget class="QDoubleSpinBox" name="mFrameWidthSpinBox">
+                <item row="2" column="0">
+                 <widget class="QLabel" name="mFramePenLabel">
+                  <property name="text">
+                   <string>Frame line thickness</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QDoubleSpinBox" name="mGridFramePenSizeSpinBox">
                   <property name="suffix">
                    <string> mm</string>
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="1">
-                 <widget class="QgsColorButtonV2" name="mGridFrameFill1ColorButton">
+                <item row="2" column="2">
+                 <widget class="QgsColorButtonV2" name="mGridFramePenColorButton">
                   <property name="minimumSize">
                    <size>
                     <width>100</width>
@@ -716,37 +733,6 @@
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="mFrameStyleLabel_2">
-                  <property name="text">
-                   <string>Frame style</string>
-                  </property>
-                  <property name="wordWrap">
-                   <bool>false</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="mFramePenLabel">
-                  <property name="text">
-                   <string>Frame line thickness</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1" colspan="2">
-                 <widget class="QComboBox" name="mFrameStyleComboBox">
-                  <item>
-                   <property name="text">
-                    <string>No frame</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Zebra</string>
-                   </property>
-                  </item>
-                 </widget>
-                </item>
                 <item row="3" column="0">
                  <widget class="QLabel" name="mFrameFillLabel">
                   <property name="text">
@@ -754,15 +740,8 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="1">
-                 <widget class="QDoubleSpinBox" name="mGridFramePenSizeSpinBox">
-                  <property name="suffix">
-                   <string> mm</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="2">
-                 <widget class="QgsColorButtonV2" name="mGridFramePenColorButton">
+                <item row="3" column="1">
+                 <widget class="QgsColorButtonV2" name="mGridFrameFill1ColorButton">
                   <property name="minimumSize">
                    <size>
                     <width>100</width>
@@ -796,6 +775,59 @@
                   </property>
                   <property name="text">
                    <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0" colspan="3">
+                 <layout class="QGridLayout" name="gridLayout_4">
+                  <item row="0" column="0">
+                   <widget class="QCheckBox" name="mCheckGridLeftSide">
+                    <property name="text">
+                     <string>Left side</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QCheckBox" name="mCheckGridRightSide">
+                    <property name="text">
+                     <string>Right side</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QCheckBox" name="mCheckGridTopSide">
+                    <property name="text">
+                     <string>Top side</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QCheckBox" name="mCheckGridBottomSide">
+                    <property name="text">
+                     <string>Bottom side</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="0" column="1" colspan="2">
+                 <widget class="QComboBox" name="mFrameStyleComboBox">
+                  <item>
+                   <property name="text">
+                    <string>No frame</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Zebra</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="1" column="1" colspan="2">
+                 <widget class="QDoubleSpinBox" name="mFrameWidthSpinBox">
+                  <property name="suffix">
+                   <string> mm</string>
                   </property>
                  </widget>
                 </item>

@@ -706,6 +706,10 @@ void QgsComposerMapWidget::toggleFrameControls( bool frameEnabled )
   mFrameWidthLabel->setEnabled( frameEnabled );
   mFramePenLabel->setEnabled( frameEnabled );
   mFrameFillLabel->setEnabled( frameEnabled );
+  mCheckGridLeftSide->setEnabled( frameEnabled );
+  mCheckGridRightSide->setEnabled( frameEnabled );
+  mCheckGridTopSide->setEnabled( frameEnabled );
+  mCheckGridBottomSide->setEnabled( frameEnabled );
 }
 
 void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
@@ -1109,6 +1113,10 @@ void QgsComposerMapWidget::blockGridItemsSignals( bool block )
   mGridFrameFill1ColorButton->blockSignals( block );
   mGridFrameFill2ColorButton->blockSignals( block );
   mGridBlendComboBox->blockSignals( block );
+  mCheckGridLeftSide->blockSignals( block );
+  mCheckGridRightSide->blockSignals( block );
+  mCheckGridTopSide->blockSignals( block );
+  mCheckGridBottomSide->blockSignals( block );
 
   //grid annotation
   mDrawAnnotationGroupBox->blockSignals( block );
@@ -1211,6 +1219,11 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
     mFrameStyleComboBox->setCurrentIndex( 0 );
     toggleFrameControls( false );
   }
+
+  mCheckGridLeftSide->setChecked( grid->testGridFrameSideFlag( QgsComposerMapGrid::FrameLeft ) );
+  mCheckGridRightSide->setChecked( grid->testGridFrameSideFlag( QgsComposerMapGrid::FrameRight ) );
+  mCheckGridTopSide->setChecked( grid->testGridFrameSideFlag( QgsComposerMapGrid::FrameTop ) );
+  mCheckGridBottomSide->setChecked( grid->testGridFrameSideFlag( QgsComposerMapGrid::FrameBottom ) );
 
   //line style
   updateGridLineSymbolMarker( grid );
@@ -1415,6 +1428,62 @@ void QgsComposerMapWidget::on_mFrameWidthSpinBox_valueChanged( double val )
 
   mComposerMap->beginCommand( tr( "Frame width changed" ) );
   grid->setGridFrameWidth( val );
+  mComposerMap->update();
+  mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mCheckGridLeftSide_toggled( bool checked )
+{
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( !grid )
+  {
+    return;
+  }
+
+  mComposerMap->beginCommand( tr( "Frame left side changed" ) );
+  grid->setGridFrameSideFlag( QgsComposerMapGrid::FrameLeft, checked );
+  mComposerMap->update();
+  mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mCheckGridRightSide_toggled( bool checked )
+{
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( !grid )
+  {
+    return;
+  }
+
+  mComposerMap->beginCommand( tr( "Frame right side changed" ) );
+  grid->setGridFrameSideFlag( QgsComposerMapGrid::FrameRight, checked );
+  mComposerMap->update();
+  mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mCheckGridTopSide_toggled( bool checked )
+{
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( !grid )
+  {
+    return;
+  }
+
+  mComposerMap->beginCommand( tr( "Frame top side changed" ) );
+  grid->setGridFrameSideFlag( QgsComposerMapGrid::FrameTop, checked );
+  mComposerMap->update();
+  mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mCheckGridBottomSide_toggled( bool checked )
+{
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( !grid )
+  {
+    return;
+  }
+
+  mComposerMap->beginCommand( tr( "Frame bottom side changed" ) );
+  grid->setGridFrameSideFlag( QgsComposerMapGrid::FrameBottom, checked );
   mComposerMap->update();
   mComposerMap->endCommand();
 }

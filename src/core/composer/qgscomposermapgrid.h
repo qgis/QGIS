@@ -152,6 +152,21 @@ class CORE_EXPORT QgsComposerMapGrid
     void setGridFrameStyle( QgsComposerMap::GridFrameStyle style ) { mGridFrameStyle = style; }
     QgsComposerMap::GridFrameStyle gridFrameStyle() const { return mGridFrameStyle; }
 
+    //! Enumeration of flags that adjust which side of the map the frame is drawn on
+    enum GridFrameSideFlag
+    {
+      FrameLeft = 0x01,
+      FrameRight = 0x02,
+      FrameTop = 0x04,
+      FrameBottom = 0x08
+    };
+    Q_DECLARE_FLAGS( GridFrameSideFlags, GridFrameSideFlag )
+
+    void setGridFrameSideFlags( GridFrameSideFlags flags );
+    void setGridFrameSideFlag( GridFrameSideFlag flag, bool on = true );
+    GridFrameSideFlags gridFrameSideFlags() const;
+    bool testGridFrameSideFlag( GridFrameSideFlag flag ) const;
+
     /**Set grid frame width
         @note: this function was added in version 1.9*/
     void setGridFrameWidth( double w ) { mGridFrameWidth = w; }
@@ -257,6 +272,7 @@ class CORE_EXPORT QgsComposerMapGrid
     QgsComposerMap::GridAnnotationDirection mBottomGridAnnotationDirection;
     QgsComposerMap::GridAnnotationFormat mGridAnnotationFormat;
     QgsComposerMap::GridFrameStyle mGridFrameStyle;
+    GridFrameSideFlags mGridFrameSides;
     double mGridFrameWidth;
     double mGridFramePenThickness;
     QColor mGridFramePenColor;
