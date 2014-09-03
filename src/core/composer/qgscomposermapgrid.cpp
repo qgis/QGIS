@@ -321,18 +321,24 @@ void QgsComposerMapGrid::drawGridCRSTransform( QgsRenderContext &context, double
   QList< QPair< double, QPolygonF > > xGridLines;
   xGridLinesCRSTransform( crsBoundingRect, inverseTr, xGridLines );
   QList< QPair< double, QPolygonF > >::const_iterator xGridIt = xGridLines.constBegin();
-  for ( ; xGridIt != xGridLines.constEnd(); ++xGridIt )
+  if ( mGridStyle != QgsComposerMap::FrameAnnotationsOnly )
   {
-    drawGridLine( scalePolygon( xGridIt->second, dotsPerMM ), context );
+    for ( ; xGridIt != xGridLines.constEnd(); ++xGridIt )
+    {
+      drawGridLine( scalePolygon( xGridIt->second, dotsPerMM ), context );
+    }
   }
 
   //y grid lines
   QList< QPair< double, QPolygonF > > yGridLines;
   yGridLinesCRSTransform( crsBoundingRect, inverseTr, yGridLines );
   QList< QPair< double, QPolygonF > >::const_iterator yGridIt = yGridLines.constBegin();
-  for ( ; yGridIt != yGridLines.constEnd(); ++yGridIt )
+  if ( mGridStyle != QgsComposerMap::FrameAnnotationsOnly )
   {
-    drawGridLine( scalePolygon( yGridIt->second, dotsPerMM ), context );
+    for ( ; yGridIt != yGridLines.constEnd(); ++yGridIt )
+    {
+      drawGridLine( scalePolygon( yGridIt->second, dotsPerMM ), context );
+    }
   }
 
   //convert QPolygonF to QLineF to draw grid frames and annotations
@@ -436,7 +442,7 @@ void QgsComposerMapGrid::drawGridNoTransform( QgsRenderContext &context, double 
       drawGridLine( line, context );
     }
   }
-  else //cross or markers
+  else if ( mGridStyle != QgsComposerMap::FrameAnnotationsOnly ) //cross or markers
   {
     QPointF intersectionPoint, crossEnd1, crossEnd2;
     for ( ; vIt != verticalLines.constEnd(); ++vIt )

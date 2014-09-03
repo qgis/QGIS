@@ -38,6 +38,7 @@ class TestQgsComposerMapGrid: public QObject
     void grid(); //test if grid and grid annotation works
     void crossGrid(); //test if grid "cross" mode works
     void markerGrid(); //test if grid "marker" mode works
+    void frameOnly(); //test if grid "frame/annotation" mode works
     void zebraStyle(); //test zebra map border style
 
   private:
@@ -162,6 +163,27 @@ void TestQgsComposerMapGrid::markerGrid()
   mComposerMap->setGridStyle( QgsComposerMap::Solid );
   mComposerMap->setGridEnabled( false );
   mComposerMap->setShowGridAnnotation( false );
+  QVERIFY( testResult );
+}
+
+void TestQgsComposerMapGrid::frameOnly()
+{
+  mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+  mComposerMap->setGridEnabled( true );
+  mComposerMap->setGridStyle( QgsComposerMap::FrameAnnotationsOnly );
+  mComposerMap->setGridIntervalX( 2000 );
+  mComposerMap->setGridIntervalY( 2000 );
+  mComposerMap->setShowGridAnnotation( false );
+  //set a frame for testing
+  mComposerMap->setGridFrameStyle( QgsComposerMap::Zebra );
+  mComposerMap->setGridBlendMode( QPainter::CompositionMode_SourceOver );
+  QgsCompositionChecker checker( "composermap_gridframeonly", mComposition );
+
+  bool testResult = checker.testComposition( mReport, 0, 100 );
+  mComposerMap->setGridStyle( QgsComposerMap::Solid );
+  mComposerMap->setGridEnabled( false );
+  mComposerMap->setShowGridAnnotation( false );
+  mComposerMap->setGridFrameStyle( QgsComposerMap::NoGridFrame );
   QVERIFY( testResult );
 }
 

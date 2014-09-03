@@ -63,6 +63,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
   mGridTypeComboBox->insertItem( 0, tr( "Solid" ) );
   mGridTypeComboBox->insertItem( 1, tr( "Cross" ) );
   mGridTypeComboBox->insertItem( 2, tr( "Markers" ) );
+  mGridTypeComboBox->insertItem( 3, tr( "Frame and annotations only" ) );
 
   mAnnotationFormatComboBox->insertItem( 0, tr( "Decimal" ) );
   mAnnotationFormatComboBox->insertItem( 1, tr( "DegreeMinute" ) );
@@ -1159,6 +1160,8 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
       mLineStyleLabel->setVisible( true );
       mGridMarkerStyleButton->setVisible( false );
       mMarkerStyleLabel->setVisible( false );
+      mGridBlendComboBox->setVisible( true );
+      mGridBlendLabel->setVisible( true );
       break;
     case QgsComposerMap::Markers:
       mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Markers" ) ) );
@@ -1168,6 +1171,8 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
       mLineStyleLabel->setVisible( false );
       mGridMarkerStyleButton->setVisible( true );
       mMarkerStyleLabel->setVisible( true );
+      mGridBlendComboBox->setVisible( true );
+      mGridBlendLabel->setVisible( true );
       break;
     case QgsComposerMap::Solid:
       mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Solid" ) ) );
@@ -1177,6 +1182,19 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
       mLineStyleLabel->setVisible( true );
       mGridMarkerStyleButton->setVisible( false );
       mMarkerStyleLabel->setVisible( false );
+      mGridBlendComboBox->setVisible( true );
+      mGridBlendLabel->setVisible( true );
+      break;
+    case QgsComposerMap::FrameAnnotationsOnly:
+      mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Frame and annotations only" ) ) );
+      mCrossWidthSpinBox->setVisible( false );
+      mCrossWidthLabel->setVisible( false );
+      mGridLineStyleButton->setVisible( false );
+      mLineStyleLabel->setVisible( false );
+      mGridMarkerStyleButton->setVisible( false );
+      mMarkerStyleLabel->setVisible( false );
+      mGridBlendComboBox->setVisible( false );
+      mGridBlendLabel->setVisible( false );
       break;
   }
 
@@ -1540,6 +1558,8 @@ void QgsComposerMapWidget::on_mGridTypeComboBox_currentIndexChanged( const QStri
     mLineStyleLabel->setVisible( true );
     mGridMarkerStyleButton->setVisible( false );
     mMarkerStyleLabel->setVisible( false );
+    mGridBlendComboBox->setVisible( true );
+    mGridBlendLabel->setVisible( true );
   }
   else if ( text == tr( "Markers" ) )
   {
@@ -1550,8 +1570,10 @@ void QgsComposerMapWidget::on_mGridTypeComboBox_currentIndexChanged( const QStri
     mLineStyleLabel->setVisible( false );
     mGridMarkerStyleButton->setVisible( true );
     mMarkerStyleLabel->setVisible( true );
+    mGridBlendComboBox->setVisible( true );
+    mGridBlendLabel->setVisible( true );
   }
-  else
+  else if ( text == tr( "Solid" ) )
   {
     grid->setGridStyle( QgsComposerMap::Solid );
     mCrossWidthSpinBox->setVisible( false );
@@ -1560,7 +1582,22 @@ void QgsComposerMapWidget::on_mGridTypeComboBox_currentIndexChanged( const QStri
     mLineStyleLabel->setVisible( true );
     mGridMarkerStyleButton->setVisible( false );
     mMarkerStyleLabel->setVisible( false );
+    mGridBlendComboBox->setVisible( true );
+    mGridBlendLabel->setVisible( true );
   }
+  else
+  {
+    grid->setGridStyle( QgsComposerMap::FrameAnnotationsOnly );
+    mCrossWidthSpinBox->setVisible( false );
+    mCrossWidthLabel->setVisible( false );
+    mGridLineStyleButton->setVisible( false );
+    mLineStyleLabel->setVisible( false );
+    mGridMarkerStyleButton->setVisible( false );
+    mMarkerStyleLabel->setVisible( false );
+    mGridBlendComboBox->setVisible( false );
+    mGridBlendLabel->setVisible( false );
+  }
+
   mComposerMap->update();
   mComposerMap->endCommand();
 }
