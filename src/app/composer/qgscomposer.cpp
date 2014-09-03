@@ -3304,14 +3304,6 @@ bool QgsComposer::containsAdvancedEffects() const
           return true;
         }
       }
-      if ( currentMap->gridEnabled() )
-      {
-        // map contains an grid, check its blend mode
-        if ( currentMap->gridBlendMode() != QPainter::CompositionMode_SourceOver )
-        {
-          return true;
-        }
-      }
     }
   }
   return false;

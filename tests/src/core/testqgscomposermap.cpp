@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include "qgscompositionchecker.h"
 #include "qgscomposermap.h"
+#include "qgscomposermapgrid.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsmultibandcolorrenderer.h"
@@ -227,7 +228,7 @@ void TestQgsComposerMap::overviewMapCenter()
   overviewMapCenter->setFrameEnabled( true );
   mComposition->addComposerMap( overviewMapCenter );
   mComposerMap->setNewExtent( QgsRectangle( 785462.375 + 5000, 3341423.125, 789262.375 + 5000, 3343323.125 ) ); //zoom in
-  mComposerMap->setGridEnabled( false );
+  mComposerMap->grid()->setEnabled( false );
   overviewMapCenter->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3350923.125 ) );
   overviewMapCenter->setOverviewFrameMap( mComposerMap->id() );
   overviewMapCenter->setOverviewCentered( true );

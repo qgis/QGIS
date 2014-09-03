@@ -1280,7 +1280,7 @@ void QgsComposerItem::deleteAlignItems()
 
 void QgsComposerItem::repaint()
 {
-  update();
+  updateItem();
 }
 
 void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )

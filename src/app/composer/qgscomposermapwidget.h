@@ -20,6 +20,7 @@
 
 #include "ui_qgscomposermapwidgetbase.h"
 #include "qgscomposermap.h"
+#include "qgscomposermapgrid.h"
 #include "qgscomposeritemwidget.h"
 
 class QgsMapLayer;
@@ -163,14 +164,14 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     /**Blocks / unblocks the signals of all GUI elements*/
     void blockAllSignals( bool b );
 
-    void handleChangedAnnotationPosition( QgsComposerMap::Border border, const QString& text );
-    void handleChangedAnnotationDirection( QgsComposerMap::Border border, const QString& text );
+    void handleChangedAnnotationPosition( QgsComposerMapGrid::BorderSide border, const QString& text );
+    void handleChangedAnnotationDirection( QgsComposerMapGrid::BorderSide border, const QString& text );
 
     void insertAnnotationPositionEntries( QComboBox* c );
     void insertAnnotationDirectionEntries( QComboBox* c );
 
-    void initAnnotationPositionBox( QComboBox* c, QgsComposerMap::GridAnnotationPosition pos );
-    void initAnnotationDirectionBox( QComboBox* c, QgsComposerMap::GridAnnotationDirection dir );
+    void initAnnotationPositionBox( QComboBox* c, QgsComposerMapGrid::AnnotationPosition pos );
+    void initAnnotationDirectionBox( QComboBox* c, QgsComposerMapGrid::AnnotationDirection dir );
 
     void updateGridLineSymbolMarker( const QgsComposerMapGrid* grid );
     void updateGridMarkerSymbolMarker( const QgsComposerMapGrid* grid );
