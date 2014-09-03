@@ -67,6 +67,7 @@ pytz/zoneinfo/iso3166.tab
 pytz/zoneinfo/localtime
 pytz/zoneinfo/posixrules
 pytz/zoneinfo/zone.tab
+pytz/zoneinfo/zone1970.tab
 pytz/zoneinfo/Africa/Abidjan
 pytz/zoneinfo/Africa/Accra
 pytz/zoneinfo/Africa/Addis_Ababa
@@ -295,6 +296,7 @@ pytz/zoneinfo/Antarctica/Palmer
 pytz/zoneinfo/Antarctica/Rothera
 pytz/zoneinfo/Antarctica/South_Pole
 pytz/zoneinfo/Antarctica/Syowa
+pytz/zoneinfo/Antarctica/Troll
 pytz/zoneinfo/Antarctica/Vostok
 pytz/zoneinfo/Arctic/Longyearbyen
 pytz/zoneinfo/Asia/Aden
@@ -313,6 +315,7 @@ pytz/zoneinfo/Asia/Beirut
 pytz/zoneinfo/Asia/Bishkek
 pytz/zoneinfo/Asia/Brunei
 pytz/zoneinfo/Asia/Calcutta
+pytz/zoneinfo/Asia/Chita
 pytz/zoneinfo/Asia/Choibalsan
 pytz/zoneinfo/Asia/Chongqing
 pytz/zoneinfo/Asia/Chungking
@@ -370,6 +373,7 @@ pytz/zoneinfo/Asia/Samarkand
 pytz/zoneinfo/Asia/Seoul
 pytz/zoneinfo/Asia/Shanghai
 pytz/zoneinfo/Asia/Singapore
+pytz/zoneinfo/Asia/Srednekolymsk
 pytz/zoneinfo/Asia/Taipei
 pytz/zoneinfo/Asia/Tashkent
 pytz/zoneinfo/Asia/Tbilisi

@@ -258,7 +258,7 @@ class BinaryComparisonOpType(OgcExpression):
         self.matchcase = matchcase
     def toXML(self):
         node0 = etree.Element(util.nspath_eval(self.propertyoperator, namespaces))
-        if self.matchcase is False:
+        if not self.matchcase:
             node0.set('matchCase', 'false')
         etree.SubElement(node0, util.nspath_eval('ogc:PropertyName', namespaces)).text = self.propertyname
         etree.SubElement(node0, util.nspath_eval('ogc:Literal', namespaces)).text = self.literal
@@ -296,17 +296,20 @@ class PropertyIsGreaterThanOrEqualTo(BinaryComparisonOpType):
 
 class PropertyIsLike(OgcExpression):
     """PropertyIsLike class"""
-    def __init__(self, propertyname, literal, escapeChar='\\', singleChar='_', wildCard='%'):
+    def __init__(self, propertyname, literal, escapeChar='\\', singleChar='_', wildCard='%', matchCase=True):
         self.propertyname = propertyname
         self.literal = literal
         self.escapeChar = escapeChar
         self.singleChar = singleChar
         self.wildCard = wildCard
+        self.matchCase = matchCase
     def toXML(self):
         node0 = etree.Element(util.nspath_eval('ogc:PropertyIsLike', namespaces))
         node0.set('wildCard', self.wildCard)
         node0.set('singleChar', self.singleChar)
         node0.set('escapeChar', self.escapeChar)
+        if not self.matchCase:
+            node0.set('matchCase', 'false')
         etree.SubElement(node0, util.nspath_eval('ogc:PropertyName', namespaces)).text = self.propertyname
         etree.SubElement(node0, util.nspath_eval('ogc:Literal', namespaces)).text = self.literal
         return node0

@@ -145,18 +145,34 @@ class ServiceContact(object):
         val = self._root.find(util.nspath('ServiceContact/ContactInfo/ContactInstructions', namespace))
         self.instructions = util.testXMLValue(val)
    
+
+class Constraint(object):
+    def __init__(self, elem, namespace=DEFAULT_OWS_NAMESPACE):
+        self.name    = elem.attrib.get('name')
+        self.values  = [i.text for i in elem.findall(util.nspath('Value', namespace))]
+        self.values += [i.text for i in elem.findall(util.nspath('AllowedValues/Value', namespace))]
+
+    def __repr__(self):
+        if self.values:
+            return "Constraint: %s - %s" % (self.name, self.values)
+        else:
+            return "Constraint: %s" % self.name
+
+
 class OperationsMetadata(object):
     """Initialize an OWS OperationMetadata construct"""
-    def __init__(self,elem,namespace=DEFAULT_OWS_NAMESPACE):
+    def __init__(self, elem, namespace=DEFAULT_OWS_NAMESPACE):
         self.name = elem.attrib['name']
         self.formatOptions = ['text/xml']
-        methods = []
         parameters = []
-        constraints = []
+        self.methods = []
+        self.constraints = []
 
         for verb in elem.findall(util.nspath('DCP/HTTP/*', namespace)):
-            methods.append((util.xmltag_split(verb.tag), {'url': verb.attrib[util.nspath('href', XLINK_NAMESPACE)]}))
-        self.methods = dict(methods)
+            url = util.testXMLAttribute(verb, util.nspath('href', XLINK_NAMESPACE))
+            if url is not None:
+                verb_constraints = [Constraint(conts, namespace) for conts in verb.findall(util.nspath('Constraint', namespace))]
+                self.methods.append({'constraints' : verb_constraints, 'type' : util.xmltag_split(verb.tag), 'url': url})
 
         for parameter in elem.findall(util.nspath('Parameter', namespace)):
             if namespace == OWS_NAMESPACE_1_1_0:
@@ -166,8 +182,8 @@ class OperationsMetadata(object):
         self.parameters = dict(parameters)
 
         for constraint in elem.findall(util.nspath('Constraint', namespace)):
-            constraints.append((constraint.attrib['name'], {'values': [i.text for i in constraint.findall(util.nspath('Value', namespace))]}))
-        self.constraints = dict(constraints)
+            self.constraints.append(Constraint(constraint, namespace))
+
 
 class BoundingBox(object):
     """Initialize an OWS BoundingBox construct"""

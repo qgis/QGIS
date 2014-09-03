@@ -1812,3 +1812,12 @@ class Crs(object):
                                     (self.authority or ""),
                                     (self.version or ""),
                                     (self.code or ""))
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.getcodeurn() == other.getcodeurn()
+        else:
+            return False
+
+    def __repr__(self):
+        return self.getcodeurn()

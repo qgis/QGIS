@@ -106,7 +106,7 @@ msgid "Modified"
 msgstr "Modifié"
 
 msgid "Language"
-msgstr "Langue"
+msgstr "Langage"
 
 msgid "Format"
 msgstr "Format"

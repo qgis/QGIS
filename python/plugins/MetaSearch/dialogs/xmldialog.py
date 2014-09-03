@@ -25,10 +25,12 @@
 
 from PyQt4.QtGui import QDialog
 
-from MetaSearch.ui.xmldialog import Ui_XMLDialog
+from MetaSearch.util import get_ui_class
+
+BASE_CLASS = get_ui_class('xmldialog.ui')
 
 
-class XMLDialog(QDialog, Ui_XMLDialog):
+class XMLDialog(QDialog, BASE_CLASS):
     """Raw XML Dialogue"""
     def __init__(self):
         """init"""

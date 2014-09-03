@@ -45,12 +45,14 @@ class PropertyGroup(object):
         self.capabilities = {}
         for cap in element.findall(nsp('sml:capabilities')):
             name = testXMLAttribute(cap, "name")
-            self.capabilities[name] = cap[0]
+            if name is not None:
+                self.capabilities[name] = cap[0]
 
         self.characteristics = {}
         for cha in element.findall(nsp('sml:characteristics')):
             name = testXMLAttribute(cha, "name")
-            self.characteristics[name] = cha[0]
+            if name is not None:
+                self.characteristics[name] = cha[0]
 
     def get_capabilities_by_name(self, name):
         """

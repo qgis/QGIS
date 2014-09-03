@@ -30,10 +30,12 @@
 from PyQt4.QtCore import QSettings
 from PyQt4.QtGui import QDialog, QMessageBox
 
-from MetaSearch.ui.newconnectiondialog import Ui_NewConnectionDialog
+from MetaSearch.util import get_ui_class
+
+BASE_CLASS = get_ui_class('newconnectiondialog.ui')
 
 
-class NewConnectionDialog(QDialog, Ui_NewConnectionDialog):
+class NewConnectionDialog(QDialog, BASE_CLASS):
     """Dialogue to add a new CSW entry"""
     def __init__(self, conn_name=None):
         """init"""
@@ -64,7 +66,7 @@ class NewConnectionDialog(QDialog, Ui_NewConnectionDialog):
             if all([self.conn_name_orig != conn_name,
                     self.settings.contains(keyurl)]):
                 res = QMessageBox.warning(self, self.tr('Save connection'),
-                                          self.tr('Overwrite %s?') % conn_name,
+                                          self.tr('Overwrite %s?' % conn_name),
                                           QMessageBox.Ok | QMessageBox.Cancel)
                 if res == QMessageBox.Cancel:
                     return

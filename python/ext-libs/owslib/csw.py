@@ -14,6 +14,9 @@ import StringIO
 import random
 from urllib import urlencode
 from urllib2 import urlopen
+
+from owslib.util import OrderedDict
+
 from owslib.etree import etree
 from owslib import fes
 from owslib import util
@@ -22,7 +25,7 @@ from owslib.iso import MD_Metadata
 from owslib.fgdc import Metadata
 from owslib.dif import DIF
 from owslib.namespaces import Namespaces
-from owslib.util import cleanup_namespaces, bind_url
+from owslib.util import cleanup_namespaces, bind_url, add_namespaces
 
 # default variables
 outputformat = 'application/xml'
@@ -234,7 +237,7 @@ class CatalogueServiceWeb:
             self.results['nextrecord'] = int(util.testXMLValue(val, True))
     
             # process list of matching records
-            self.records = {}
+            self.records = OrderedDict()
 
             self._parserecords(outputschema, esn)
 
@@ -253,7 +256,7 @@ class CatalogueServiceWeb:
 
         """
 
-        # construct request 
+        # construct request
         data = {
             'service': self.service,
             'version': self.version,
@@ -261,16 +264,16 @@ class CatalogueServiceWeb:
             'outputFormat': format,
             'outputSchema': outputschema,
             'elementsetname': esn,
-            'id': '',
+            'id': ','.join(id),
         }
 
-        self.request = '%s%s%s' % (bind_url(self.url), urlencode(data), ','.join(id))
+        self.request = '%s%s' % (bind_url(self.url), urlencode(data))
 
         self._invoke()
- 
+
         if self.exceptionreport is None:
             self.results = {}
-            self.records = {}
+            self.records = OrderedDict()
             self._parserecords(outputschema, esn)
 
     def getrecords2(self, constraints=[], sortby=None, typenames='csw:Record', esn='summary', outputschema=namespaces['csw'], format=outputformat, startposition=0, maxrecords=10, cql=None, xml=None, resulttype='results'):
@@ -359,7 +362,7 @@ class CatalogueServiceWeb:
                 self.results['nextrecord'] = None
 
             # process list of matching records
-            self.records = {}
+            self.records = OrderedDict()
 
             self._parserecords(outputschema, esn)
 
@@ -472,6 +475,13 @@ class CatalogueServiceWeb:
                 self._parsetransactionsummary()
                 self._parseinsertresult()
 
+    def get_operation_by_name(self, name):
+        """Return a named operation"""
+        for item in self.operations:
+            if item.name.lower() == name.lower():
+                return item
+        raise KeyError, "No operation named %s" % name
+
     def getService_urls(self, service_string=None):
         """
 
@@ -576,10 +586,37 @@ class CatalogueServiceWeb:
         if isinstance(self.request, basestring):  # GET KVP
             self.response = urlopen(self.request, timeout=self.timeout).read()
         else:
-            self.request = cleanup_namespaces(self.request)
-            self.request = util.xml2string(etree.tostring(self.request))
+            xml_post_url = self.url
+            # Get correct POST URL based on Operation list.
+            # If skip_caps=True, then self.operations has not been set, so use
+            # default URL.
+            if hasattr(self, 'operations'):
+                for op in self.operations:
+                    post_verbs = filter(lambda x: x.get('type').lower() == 'post', op.methods)
+                    if len(post_verbs) > 1:
+                        # Filter by constraints.  We must match a PostEncoding of "XML"
+                        try:
+                            xml_post_url = next(x for x in filter(list, ([pv.get('url') for const in pv.get('constraints') if const.name.lower() == "postencoding" and 'xml' in map(lambda x: x.lower(), const.values)] for pv in post_verbs)))[0]
+                        except StopIteration:
+                            # Well, just use the first one.
+                            xml_post_url = post_verbs[0].get('url')
+                    elif len(post_verbs) == 1:
+                        xml_post_url = post_verbs[0].get('url')
 
-            self.response = util.http_post(self.url, self.request, self.lang, self.timeout)
+            self.request = cleanup_namespaces(self.request)
+            # Add any namespaces used in the "typeNames" attribute of the
+            # csw:Query element to the query's xml namespaces.
+            for query in self.request.findall(util.nspath_eval('csw:Query', namespaces)):
+                ns = query.get("typeNames", None)
+                if ns is not None:
+                    # Pull out "gmd" from something like "gmd:MD_Metadata" from the list
+                    # of typenames
+                    ns_keys = [x.split(':')[0] for x in ns.split(' ')]
+                    self.request = add_namespaces(self.request, ns_keys)
+
+            self.request = util.element_to_string(self.request, encoding='utf-8')
+
+            self.response = util.http_post(xml_post_url, self.request, self.lang, self.timeout)
 
         # parse result see if it's XML
         self._exml = etree.parse(StringIO.StringIO(self.response))
@@ -664,7 +701,7 @@ class CswRecord(object):
         val = record.find(util.nspath_eval('dc:relation', namespaces))
         self.relation = util.testXMLValue(val)
 
-        val = record.find(util.nspath_eval('dc:temporal', namespaces))
+        val = record.find(util.nspath_eval('dct:temporal', namespaces))
         self.temporal = util.testXMLValue(val)
 
         self.uris = []  # list of dicts

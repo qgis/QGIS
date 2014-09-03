@@ -62,6 +62,13 @@ class SensorObservationService_2_0_0(object):
         # build metadata objects
         self._build_metadata()
 
+    def getOperationByName(self, name):
+        """Return a named content item."""
+        for item in self.operations:
+            if item.name == name:
+                return item
+        raise KeyError("No operation named %s" % name)
+
     def _build_metadata(self):
         """ 
             Set up capabilities metadata objects
@@ -100,8 +107,8 @@ class SensorObservationService_2_0_0(object):
                               **kwargs):
 
         try:
-            base_url = self.get_operation_by_name('DescribeSensor').methods[method]['url']        
-        except:
+            base_url = next((m.get('url') for m in self.getOperationByName('DescribeSensor').methods if m.get('type').lower() == method.lower()))
+        except StopIteration:
             base_url = self.url
         request = {'service': 'SOS', 'version': self.version, 'request': 'DescribeSensor'}
 

@@ -10,13 +10,13 @@ import cgi
 from cStringIO import StringIO
 from urllib import urlencode
 from urllib2 import urlopen
-import logging
-from owslib.util import openURL, testXMLValue, extract_xml_list
+from owslib.util import openURL, testXMLValue, extract_xml_list, ServiceException, xmltag_split
 from owslib.etree import etree
 from owslib.fgdc import Metadata
 from owslib.iso import MD_Metadata
 from owslib.crs import Crs
 from owslib.namespaces import Namespaces
+from owslib.util import log
 
 n = Namespaces()
 WFS_NAMESPACE = n.get_namespace("wfs")
@@ -44,10 +44,6 @@ def nspath(path, ns=WFS_NAMESPACE):
     return "/".join(components)
 
 
-class ServiceException(Exception):
-    pass
-
-
 class WebFeatureService_1_0_0(object):
     """Abstraction for OGC Web Feature Service (WFS).
 
@@ -66,9 +62,6 @@ class WebFeatureService_1_0_0(object):
         """
         obj=object.__new__(self)
         obj.__init__(url, version, xml, parse_remote_metadata)
-        self.log = logging.getLogger()
-        consoleh  = logging.StreamHandler()
-        self.log.addHandler(consoleh)    
         return obj
     
     def __getitem__(self,name):
@@ -120,12 +113,12 @@ class WebFeatureService_1_0_0(object):
         self.exceptions = [f.text for f \
                 in self._capabilities.findall('Capability/Exception/Format')]
       
-    def getcapabilities(self):
+    def getcapabilities(self, timeout=30):
         """Request and return capabilities document from the WFS as a 
         file-like object.
         NOTE: this is effectively redundant now"""
         reader = WFSCapabilitiesReader(self.version)
-        return urlopen(reader.capabilities_url(self.url))
+        return urlopen(reader.capabilities_url(self.url), timeout=timeout)
     
     def items(self):
         '''supports dict-like items() access'''
@@ -136,7 +129,7 @@ class WebFeatureService_1_0_0(object):
     
     def getfeature(self, typename=None, filter=None, bbox=None, featureid=None,
                    featureversion=None, propertyname=['*'], maxfeatures=None,
-                   srsname=None, method='{http://www.opengis.net/wfs}Get'):
+                   srsname=None, outputFormat=None, method='{http://www.opengis.net/wfs}Get'):
         """Request and return feature data as a file-like object.
         
         Parameters
@@ -159,6 +152,9 @@ class WebFeatureService_1_0_0(object):
             Qualified name of the HTTP DCP method to use.
         srsname: string
             EPSG code to request the data in
+        outputFormat: string (optional)
+            Requested response format of the request.
+
             
         There are 3 different modes of use
 
@@ -166,9 +162,12 @@ class WebFeatureService_1_0_0(object):
         2) typename and filter (more expressive)
         3) featureid (direct access to known features)
         """
-        base_url = self.getOperationByName('{http://www.opengis.net/wfs}GetFeature').methods[method]['url']
+        try:
+            base_url = next((m.get('url') for m in self.getOperationByName('GetFeature').methods if m.get('type').lower() == method.lower()))
+        except StopIteration:
+            base_url = self.url
         request = {'service': 'WFS', 'version': self.version, 'request': 'GetFeature'}
-        
+
         # check featureid
         if featureid:
             request['featureid'] = ','.join(featureid)
@@ -188,13 +187,18 @@ class WebFeatureService_1_0_0(object):
         if featureversion: request['featureversion'] = str(featureversion)
         if maxfeatures: request['maxfeatures'] = str(maxfeatures)
 
+        if outputFormat is not None:
+            request["outputFormat"] = outputFormat
+
         data = urlencode(request)
+        log.debug("Making request: %s?%s" % (base_url, data))
         u = openURL(base_url, data, method)
         
         
         # check for service exceptions, rewrap, and return
         # We're going to assume that anything with a content-length > 32k
         # is data. We'll check anything smaller.
+
         try:
             length = int(u.info()['Content-Length'])
             have_read = False
@@ -206,12 +210,18 @@ class WebFeatureService_1_0_0(object):
         if length < 32000:
             if not have_read:
                 data = u.read()
-            tree = etree.fromstring(data)
-            if tree.tag == "{%s}ServiceExceptionReport" % OGC_NAMESPACE:
-                se = tree.find(nspath('ServiceException', OGC_NAMESPACE))
-                raise ServiceException, str(se.text).strip()
 
-            return StringIO(data)
+            try:
+                tree = etree.fromstring(data)
+            except BaseException:
+                # Not XML
+                return StringIO(data)
+            else:
+                if tree.tag == "{%s}ServiceExceptionReport" % OGC_NAMESPACE:
+                    se = tree.find(nspath('ServiceException', OGC_NAMESPACE))
+                    raise ServiceException(str(se.text).strip())
+                else:
+                    return StringIO(data)
         else:
             if have_read:
                 return StringIO(data)
@@ -251,7 +261,7 @@ class ContentMetadata:
     Implements IMetadata.
     """
 
-    def __init__(self, elem, parent, parse_remote_metadata=False):
+    def __init__(self, elem, parent, parse_remote_metadata=False, timeout=30):
         """."""
         self.id = testXMLValue(elem.find(nspath('Name')))
         self.title = testXMLValue(elem.find(nspath('Title')))
@@ -298,7 +308,7 @@ class ContentMetadata:
 
             if metadataUrl['url'] is not None and parse_remote_metadata:  # download URL
                 try:
-                    content = urlopen(metadataUrl['url'])
+                    content = urlopen(metadataUrl['url'], timeout=timeout)
                     doc = etree.parse(content)
                     if metadataUrl['type'] is not None:
                         if metadataUrl['type'] == 'FGDC':
@@ -310,6 +320,7 @@ class ContentMetadata:
 
             self.metadataUrls.append(metadataUrl)
 
+
 class OperationMetadata:
     """Abstraction for WFS metadata.
     
@@ -317,14 +328,13 @@ class OperationMetadata:
     """
     def __init__(self, elem):
         """."""
-        self.name = elem.tag
+        self.name = xmltag_split(elem.tag)
         # formatOptions
         self.formatOptions = [f.tag for f in elem.findall(nspath('ResultFormat/*'))]
-        methods = []
+        self.methods = []
         for verb in elem.findall(nspath('DCPType/HTTP/*')):
             url = verb.attrib['onlineResource']
-            methods.append((verb.tag, {'url': url}))
-        self.methods = dict(methods)
+            self.methods.append({'type' : xmltag_split(verb.tag), 'url': url})
 
 
 class WFSCapabilitiesReader(object):
@@ -355,7 +365,7 @@ class WFSCapabilitiesReader(object):
         urlqs = urlencode(tuple(qs))
         return service_url.split('?')[0] + '?' + urlqs
 
-    def read(self, url):
+    def read(self, url, timeout=30):
         """Get and parse a WFS capabilities document, returning an
         instance of WFSCapabilitiesInfoset
 
@@ -363,9 +373,11 @@ class WFSCapabilitiesReader(object):
         ----------
         url : string
             The URL to the WFS capabilities document.
+        timeout : number
+            A timeout value (in seconds) for the request.
         """
         request = self.capabilities_url(url)
-        u = urlopen(request)
+        u = urlopen(request, timeout=timeout)
         return etree.fromstring(u.read())
 
     def readString(self, st):

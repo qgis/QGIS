@@ -9,8 +9,8 @@ on how to use these modules.
 '''
 
 # The Olson database is updated several times a year.
-OLSON_VERSION = '2013i'
-VERSION = '2013.9'  # Switching to pip compatible version numbering.
+OLSON_VERSION = '2014g'
+VERSION = '2014.7'  # Switching to pip compatible version numbering.
 __version__ = VERSION
 
 OLSEN_VERSION = OLSON_VERSION # Old releases had this misspelling
@@ -716,6 +716,7 @@ all_timezones = \
  'Antarctica/Rothera',
  'Antarctica/South_Pole',
  'Antarctica/Syowa',
+ 'Antarctica/Troll',
  'Antarctica/Vostok',
  'Arctic/Longyearbyen',
  'Asia/Aden',
@@ -734,6 +735,7 @@ all_timezones = \
  'Asia/Bishkek',
  'Asia/Brunei',
  'Asia/Calcutta',
+ 'Asia/Chita',
  'Asia/Choibalsan',
  'Asia/Chongqing',
  'Asia/Chungking',
@@ -791,6 +793,7 @@ all_timezones = \
  'Asia/Seoul',
  'Asia/Shanghai',
  'Asia/Singapore',
+ 'Asia/Srednekolymsk',
  'Asia/Taipei',
  'Asia/Tashkent',
  'Asia/Tbilisi',
@@ -1279,6 +1282,7 @@ common_timezones = \
  'Antarctica/Palmer',
  'Antarctica/Rothera',
  'Antarctica/Syowa',
+ 'Antarctica/Troll',
  'Antarctica/Vostok',
  'Arctic/Longyearbyen',
  'Asia/Aden',
@@ -1295,8 +1299,8 @@ common_timezones = \
  'Asia/Beirut',
  'Asia/Bishkek',
  'Asia/Brunei',
+ 'Asia/Chita',
  'Asia/Choibalsan',
- 'Asia/Chongqing',
  'Asia/Colombo',
  'Asia/Damascus',
  'Asia/Dhaka',
@@ -1304,7 +1308,6 @@ common_timezones = \
  'Asia/Dubai',
  'Asia/Dushanbe',
  'Asia/Gaza',
- 'Asia/Harbin',
  'Asia/Hebron',
  'Asia/Ho_Chi_Minh',
  'Asia/Hong_Kong',
@@ -1316,7 +1319,6 @@ common_timezones = \
  'Asia/Kabul',
  'Asia/Kamchatka',
  'Asia/Karachi',
- 'Asia/Kashgar',
  'Asia/Kathmandu',
  'Asia/Khandyga',
  'Asia/Kolkata',
@@ -1346,6 +1348,7 @@ common_timezones = \
  'Asia/Seoul',
  'Asia/Shanghai',
  'Asia/Singapore',
+ 'Asia/Srednekolymsk',
  'Asia/Taipei',
  'Asia/Tashkent',
  'Asia/Tbilisi',

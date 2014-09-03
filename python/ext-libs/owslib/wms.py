@@ -20,7 +20,7 @@ import urllib2
 from urllib import urlencode
 import warnings
 from etree import etree
-from .util import openURL, testXMLValue, extract_xml_list
+from .util import openURL, testXMLValue, extract_xml_list, xmltag_split
 from fgdc import Metadata
 from iso import MD_Metadata
 
@@ -189,20 +189,23 @@ class WebMapService(object):
         
         Example
         -------
-            >>> img = wms.getmap(layers=['global_mosaic'],
-            ...                  styles=['visual'],
-            ...                  srs='EPSG:4326', 
-            ...                  bbox=(-112,36,-106,41),
-            ...                  format='image/jpeg',
-            ...                  size=(300,250),
-            ...                  transparent=True,
-            ...                  )
-            >>> out = open('example.jpg', 'wb')
+            >>> wms = WebMapService('http://giswebservices.massgis.state.ma.us/geoserver/wms', version='1.1.1')
+            >>> img = wms.getmap(layers=['massgis:GISDATA.SHORELINES_ARC'],\
+                                 styles=[''],\
+                                 srs='EPSG:4326',\
+                                 bbox=(-70.8, 42, -70, 42.8),\
+                                 size=(300, 300),\
+                                 format='image/jpeg',\
+                                 transparent=True)
+            >>> out = open('example.jpg.jpg', 'wb')
             >>> out.write(img.read())
             >>> out.close()
 
         """        
-        base_url = self.getOperationByName('GetMap').methods[method]['url']
+        try:
+            base_url = next((m.get('url') for m in self.getOperationByName('GetMap').methods if m.get('type').lower() == method.lower()))
+        except StopIteration:
+            base_url = self.url
         request = {'version': self.version, 'request': 'GetMap'}
         
         # check layers and styles
@@ -312,7 +315,7 @@ class ContentMetadata:
 
     Implements IContentMetadata.
     """
-    def __init__(self, elem, parent=None, index=0, parse_remote_metadata=False):
+    def __init__(self, elem, parent=None, index=0, parse_remote_metadata=False, timeout=30):
         if elem.tag != 'Layer':
             raise ValueError('%s should be a Layer' % (elem,))
         
@@ -474,7 +477,7 @@ class ContentMetadata:
 
             if metadataUrl['url'] is not None and parse_remote_metadata:  # download URL
                 try:
-                    content = urllib2.urlopen(metadataUrl['url'])
+                    content = urllib2.urlopen(metadataUrl['url'], timeout=timeout)
                     doc = etree.parse(content)
                     if metadataUrl['type'] is not None:
                         if metadataUrl['type'] == 'FGDC':
@@ -510,14 +513,14 @@ class OperationMetadata:
     """
     def __init__(self, elem):
         """."""
-        self.name = elem.tag
+        self.name = xmltag_split(elem.tag)
         # formatOptions
         self.formatOptions = [f.text for f in elem.findall('Format')]
-        methods = []
+        self.methods = []
         for verb in elem.findall('DCPType/HTTP/*'):
             url = verb.find('OnlineResource').attrib['{http://www.w3.org/1999/xlink}href']
-            methods.append((verb.tag, {'url': url}))
-        self.methods = dict(methods)
+            self.methods.append({'type' : xmltag_split(verb.tag), 'url': url})
+
 
 class ContactMetadata:
     """Abstraction for contact details advertised in GetCapabilities.

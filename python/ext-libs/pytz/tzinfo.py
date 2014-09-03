@@ -142,14 +142,14 @@ class StaticTzInfo(BaseTzInfo):
 
     def __reduce__(self):
         # Special pickle to zone remains a singleton and to cope with
-        # database changes.
+        # database changes. 
         return pytz._p, (self.zone,)
 
 
 class DstTzInfo(BaseTzInfo):
     '''A timezone that has a variable offset from UTC
 
-    The offset might change if daylight savings time comes into effect,
+    The offset might change if daylight saving time comes into effect,
     or at a point in history when the region decides to change their
     timezone definition.
     '''
@@ -248,7 +248,7 @@ class DstTzInfo(BaseTzInfo):
         than passing a tzinfo argument to a datetime constructor.
 
         is_dst is used to determine the correct timezone in the ambigous
-        period at the end of daylight savings time.
+        period at the end of daylight saving time.
 
         >>> from pytz import timezone
         >>> fmt = '%Y-%m-%d %H:%M:%S %Z (%z)'
@@ -264,7 +264,7 @@ class DstTzInfo(BaseTzInfo):
         '1:00:00'
 
         Use is_dst=None to raise an AmbiguousTimeError for ambiguous
-        times at the end of daylight savings
+        times at the end of daylight saving time
 
         >>> try:
         ...     loc_dt1 = amdam.localize(dt, is_dst=None)
@@ -278,7 +278,7 @@ class DstTzInfo(BaseTzInfo):
         True
 
         is_dst is also used to determine the correct timezone in the
-        wallclock times jumped over at the start of daylight savings time.
+        wallclock times jumped over at the start of daylight saving time.
 
         >>> pacific = timezone('US/Pacific')
         >>> dt = datetime(2008, 3, 9, 2, 0, 0)
@@ -362,7 +362,7 @@ class DstTzInfo(BaseTzInfo):
         if len(filtered_possible_loc_dt) == 0:
             filtered_possible_loc_dt = list(possible_loc_dt)
 
-        # If we get this far, we have in a weird timezone transition
+        # If we get this far, we have in a wierd timezone transition
         # where the clocks have been wound back but is_dst is the same
         # in both (eg. Europe/Warsaw 1915 when they switched to CET).
         # At this point, we just have to guess unless we allow more

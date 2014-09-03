@@ -8,7 +8,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="61"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="62"/>
         <source>Save to file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18,52 +18,52 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="58"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="59"/>
         <source>Load from file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="59"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="60"/>
         <source>Load</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="62"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="63"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="70"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="71"/>
         <source>eXtensible Markup Language (*.xml *.XML)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="73"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="74"/>
         <source>Save connections</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="77"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="78"/>
         <source>Load connections</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="134"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="135"/>
         <source>Save Connections</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="134"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="135"/>
         <source>Saved to %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="156"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="157"/>
         <source>File %s exists. Overwrite?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="157"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="158"/>
         <source>Loading Connections</source>
         <translation type="unfinished"></translation>
     </message>
@@ -71,22 +71,22 @@
 <context>
     <name>MetaSearch</name>
     <message>
-        <location filename="../../../plugin.py" line="84"/>
+        <location filename="../../../plugin.py" line="83"/>
         <source>MetaSearch plugin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../plugin.py" line="86"/>
+        <location filename="../../../plugin.py" line="85"/>
         <source>Search Metadata Catalogues</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../plugin.py" line="97"/>
+        <location filename="../../../plugin.py" line="96"/>
         <source>MetaSearch plugin help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../plugin.py" line="99"/>
+        <location filename="../../../plugin.py" line="98"/>
         <source>Get Help on MetaSearch</source>
         <translation type="unfinished"></translation>
     </message>
@@ -99,327 +99,322 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="80"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="66"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="30"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="36"/>
         <source>Find</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="36"/>
-        <source>Set global</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="46"/>
-        <source>Map extent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="53"/>
-        <source>-180</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="60"/>
-        <source>90</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="70"/>
-        <source>Records</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="87"/>
-        <source>-90</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="94"/>
-        <source>180</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="104"/>
-        <source>        From</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="111"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="52"/>
         <source>Keywords</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="121"/>
-        <source>Results</source>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="59"/>
+        <source>Map extent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="127"/>
-        <source>&gt;</source>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="73"/>
+        <source>Set global</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="134"/>
-        <source>&lt;&lt;</source>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="92"/>
+        <source>Xmax</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="141"/>
-        <source>Add WCS</source>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="108"/>
+        <source>180</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="115"/>
+        <source>Ymax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="128"/>
+        <source>90</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="135"/>
+        <source>Xmin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="plugin/MetaSearch/ui/maindialog.ui" line="148"/>
-        <source>Add WMS/WMTS</source>
+        <source>-180</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="158"/>
-        <source>&lt;</source>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="155"/>
+        <source>Ymin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="165"/>
-        <source>Add WFS</source>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="168"/>
+        <source>-90</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="172"/>
-        <source>Abstract</source>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="177"/>
+        <source>        From</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="186"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="193"/>
+        <source>Results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="206"/>
         <source>Double click to see full record information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="211"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="231"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="216"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="236"/>
         <source>Title</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="224"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="250"/>
+        <source>&lt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="257"/>
         <source>View search results as XML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="231"/>
-        <source>&gt;&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="254"/>
-        <source>Services</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="263"/>
-        <source>Service info</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="270"/>
-        <source>GetCapabilities response</source>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="264"/>
+        <source>&lt;&lt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="plugin/MetaSearch/ui/maindialog.ui" line="277"/>
+        <source>Add WMS/WMTS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="296"/>
+        <source>Add WFS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="309"/>
+        <source>&gt;&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="322"/>
+        <source>Add WCS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="335"/>
+        <source>&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="356"/>
+        <source>Services</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="365"/>
+        <source>Service info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="372"/>
+        <source>GetCapabilities response</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="379"/>
         <source>New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="284"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="386"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="291"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="393"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="298"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="400"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="312"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="414"/>
         <source>Add default services</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="319"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="421"/>
         <source>Load</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="327"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="429"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="339"/>
-        <source>Connection naming</source>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="441"/>
+        <source>Results paging</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="345"/>
-        <source>When saving the connection of an OWS service</source>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="453"/>
+        <source>Show</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="352"/>
-        <source>Use the OWS Service Title and ask before overwriting</source>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="476"/>
+        <source>results at a time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="362"/>
-        <source>Use the OWS Service Title and always overwrite if already available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="369"/>
-        <source>Use a temporary name, which you can change later</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="181"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="169"/>
         <source>No services/connections defined. To get started with MetaSearch, create a new connection by clicking &apos;New&apos; or click &apos;Add default services&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="278"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="266"/>
         <source>New Catalogue service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="291"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="279"/>
         <source>Edit Catalogue service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="304"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="292"/>
         <source>Remove service %s?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="306"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="294"/>
         <source>Confirm delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="338"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="326"/>
         <source>%s exists.  Overwrite?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="339"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="327"/>
         <source>Loading connections</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="465"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="452"/>
         <source>Search error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="465"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="452"/>
         <source>Search error: %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="691"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="457"/>
         <source>Connection error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="470"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="457"/>
         <source>Connection error: %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="476"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="463"/>
         <source>0 results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="489"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="476"/>
         <source>Showing %d - %d of %d result%s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="539"/>
-        <source>No abstract</source>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="536"/>
+        <source>Coordinate Transformation Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="617"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="596"/>
         <source>End of results. Go to start?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="630"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="609"/>
         <source>Navigation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="629"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="608"/>
         <source>Start of results. Go to end?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="690"/>
-        <source>Error connecting to %s: %s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="713"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="664"/>
         <source>Connection %s exists. Overwrite?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="714"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="665"/>
         <source>Saving server</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="781"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="735"/>
         <source>GetRecords error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="781"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="735"/>
         <source>Error getting response: %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="851"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="805"/>
         <source>Error connecting to service: %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="853"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="807"/>
         <source>Value Error: %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="855"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="809"/>
         <source>Unknown Error: %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="857"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="811"/>
         <source>CSW Connection error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -442,17 +437,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/newconnectiondialog.py" line="67"/>
+        <location filename="plugin/MetaSearch/dialogs/newconnectiondialog.py" line="68"/>
         <source>Save connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/newconnectiondialog.py" line="55"/>
+        <location filename="plugin/MetaSearch/dialogs/newconnectiondialog.py" line="56"/>
         <source>Both Name and URL must be provided</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/newconnectiondialog.py" line="67"/>
+        <location filename="plugin/MetaSearch/dialogs/newconnectiondialog.py" line="68"/>
         <source>Overwrite %s?</source>
         <translation type="unfinished"></translation>
     </message>
