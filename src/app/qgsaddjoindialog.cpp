@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QMessageBox>
+
 #include "qgsaddjoindialog.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
@@ -31,7 +33,6 @@ QgsAddJoinDialog::QgsAddJoinDialog( QgsVectorLayer* layer, QWidget * parent, Qt:
   }
 
   //insert possible vector layers into mJoinLayerComboBox
-
   mJoinLayerComboBox->blockSignals( true );
   const QMap<QString, QgsMapLayer*>& layerList = QgsMapLayerRegistry::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::const_iterator layerIt = layerList.constBegin();
@@ -89,6 +90,11 @@ bool QgsAddJoinDialog::cacheInMemory() const
   return mCacheInMemoryCheckBox->isChecked();
 }
 
+bool QgsAddJoinDialog::useOriginalNames() const
+{
+  return mUseOriginalNamesCheckBox->isChecked();
+}
+
 bool QgsAddJoinDialog::createAttributeIndex() const
 {
   return mCreateIndexCheckBox->isChecked();
@@ -125,5 +131,27 @@ void QgsAddJoinDialog::on_mJoinLayerComboBox_currentIndexChanged( int index )
   {
     mCreateIndexCheckBox->setEnabled( false );
     mCreateIndexCheckBox->setChecked( false );
+  }
+}
+
+void QgsAddJoinDialog::on_mUseOriginalNamesCheckBox_stateChanged( int state )
+{
+  bool duplicateNames = false;
+  if ( state == Qt::Checked )
+  {
+    for ( int i = 0; i < mTargetFieldComboBox->count(); ++i )
+    {
+      if ( mJoinFieldComboBox->findText( mTargetFieldComboBox->itemText( i ) ) != -1 )
+      {
+        duplicateNames = true;
+        break;
+      }
+    }
+
+    if ( duplicateNames )
+    {
+      QMessageBox::warning( this, tr( "Duplicate field names" ),
+                            tr( "Some fields in target and join layer have duplicate names. Only fields from target layer will be visible." ) );
+    }
   }
 }
