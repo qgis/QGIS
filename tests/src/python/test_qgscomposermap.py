@@ -68,42 +68,6 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.setFrameEnabled(True)
         self.mComposition.addComposerMap(self.mComposerMap)
 
-    def testGrid(self):
-        """Test that we can create a grid for a map."""
-        myRectangle = QgsRectangle(781662.375, 3339523.125,
-                                   793062.375, 3345223.125)
-        self.mComposerMap.setNewExtent(myRectangle)
-        self.mComposerMap.setGridEnabled(True)
-        self.mComposerMap.setGridIntervalX(2000)
-        self.mComposerMap.setGridIntervalY(2000)
-        self.mComposerMap.setShowGridAnnotation(True)
-        self.mComposerMap.setGridPenWidth(0.5)
-        self.mComposerMap.setGridPenColor(QColor(0,255,0))
-        self.mComposerMap.setGridAnnotationFont( QgsFontUtils.getStandardTestFont() )
-        self.mComposerMap.setGridAnnotationPrecision(0)
-        self.mComposerMap.setGridAnnotationPosition(QgsComposerMap.Disabled,
-                                                    QgsComposerMap.Left)
-        self.mComposerMap.setGridAnnotationPosition(
-            QgsComposerMap.OutsideMapFrame,
-            QgsComposerMap.Right)
-        self.mComposerMap.setGridAnnotationPosition(QgsComposerMap.Disabled,
-                                                    QgsComposerMap.Top)
-        self.mComposerMap.setGridAnnotationPosition(
-            QgsComposerMap.OutsideMapFrame,
-            QgsComposerMap.Bottom)
-        self.mComposerMap.setGridAnnotationDirection(QgsComposerMap.Horizontal,
-                                                     QgsComposerMap.Right)
-        self.mComposerMap.setGridAnnotationDirection(QgsComposerMap.Horizontal,
-                                                     QgsComposerMap.Bottom)
-        self.mComposerMap.setAnnotationFontColor(QColor(255,0,0,150))
-        self.mComposerMap.setGridBlendMode(QPainter.CompositionMode_Overlay)
-        checker = QgsCompositionChecker('composermap_grid', self.mComposition)
-        myTestResult, myMessage = checker.testComposition()
-        self.mComposerMap.setGridEnabled(False)
-        self.mComposerMap.setShowGridAnnotation(False)
-
-        assert myTestResult == True, myMessage
-
     def testOverviewMap(self):
         overviewMap = QgsComposerMap(self.mComposition, 20, 130, 70, 70)
         overviewMap.setFrameEnabled(True)
@@ -199,25 +163,6 @@ class TestQgsComposerMap(TestCase):
         self.mComposition.removeComposerItem(newMap)
         myMessage = 'old: %s new: %s'  % (oldId, newId)
         assert oldId != newId, myMessage
-
-    def testZebraStyle(self):
-        self.mComposerMap.setGridFrameStyle(QgsComposerMap.Zebra)
-        myRectangle = QgsRectangle(785462.375, 3341423.125,
-                                   789262.375, 3343323.125)
-        self.mComposerMap.setNewExtent( myRectangle )
-        self.mComposerMap.setGridEnabled(True)
-        self.mComposerMap.setGridIntervalX(2000)
-        self.mComposerMap.setGridIntervalY(2000)
-        self.mComposerMap.setGridFrameWidth( 10 )
-        self.mComposerMap.setGridFramePenSize( 1 )
-        self.mComposerMap.setGridPenWidth( 0.5 )
-        self.mComposerMap.setGridFramePenColor( QColor( 255, 100, 0, 200 ) )
-        self.mComposerMap.setGridFrameFillColor1( QColor( 50, 90, 50, 100 ) )
-        self.mComposerMap.setGridFrameFillColor2( QColor( 200, 220, 100, 60 ) )
-
-        checker = QgsCompositionChecker('composermap_zebrastyle', self.mComposition)
-        myTestResult, myMessage = checker.testComposition()
-        assert myTestResult == True, myMessage
 
     def testWorldFileGeneration( self ):
         myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
