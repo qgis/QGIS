@@ -138,6 +138,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.grid().setIntervalY( 2000 )
         self.mComposerMap.grid().setAnnotationEnabled( False )
         self.mComposerMap.grid().setFrameStyle( QgsComposerMapGrid.Zebra )
+        self.mComposerMap.grid().setFramePenSize( 0.5 )
         self.mComposerMap.grid().setBlendMode( QPainter.CompositionMode_SourceOver )
 
         checker = QgsCompositionChecker('composermap_gridframeonly', self.mComposition)

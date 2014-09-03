@@ -174,6 +174,7 @@ void TestQgsComposerMapGrid::frameOnly()
   mComposerMap->grid()->setAnnotationEnabled( false );
   //set a frame for testing
   mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::Zebra );
+  mComposerMap->grid()->setFramePenSize( 0.5 );
   mComposerMap->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   QgsCompositionChecker checker( "composermap_gridframeonly", mComposition );
 
