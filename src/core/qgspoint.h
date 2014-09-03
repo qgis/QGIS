@@ -129,16 +129,26 @@ class CORE_EXPORT QgsPoint
     /** Return a string representation as degrees minutes seconds.
      *  Its up to the calling function to ensure that this point can
      *  be meaningfully represented in this form.
+     *  @param thePrecision number of decimal points to use for seconds
+     *  @param useSuffix set to true to include a direction suffix (eg 'N'),
+     *  set to false to use a "-" prefix for west and south coordinates
+     *  @param padded set to true to force minutes and seconds to use two decimals,
+     *  eg, '05' instead of '5'.
      *  @note added in QGIS 1.4
      */
-    QString toDegreesMinutesSeconds( int thePrecision ) const;
+    QString toDegreesMinutesSeconds( int thePrecision, const bool useSuffix = true, const bool padded = false ) const;
 
     /** Return a string representation as degrees minutes.
      *  Its up to the calling function to ensure that this point can
      *  be meaningfully represented in this form.
+     *  @param thePrecision number of decimal points to use for minutes
+     *  @param useSuffix set to true to include a direction suffix (eg 'N'),
+     *  set to false to use a "-" prefix for west and south coordinates
+     *  @param padded set to true to force minutes to use two decimals,
+     *  eg, '05' instead of '5'.
      *  @note added in QGIS 1.9
      */
-    QString toDegreesMinutes( int thePrecision ) const;
+    QString toDegreesMinutes( int thePrecision, const bool useSuffix = true, const bool padded = false ) const;
 
 
     /*! Return the well known text representation for the point.

@@ -1029,6 +1029,19 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMap::
   {
     return QString::number( value, 'f', mGridAnnotationPrecision );
   }
+  else if ( mGridAnnotationFormat == QgsComposerMap::DecimalWithSuffix )
+  {
+    QString hemisphere;
+    if ( coord == QgsComposerMap::Longitude )
+    {
+      hemisphere = value < 0 ? QObject::tr( "W" ) : QObject::tr( "E" );
+    }
+    else
+    {
+      hemisphere = value < 0 ? QObject::tr( "S" ) : QObject::tr( "N" );
+    }
+    return QString::number( qAbs( value ), 'f', mGridAnnotationPrecision ) + hemisphere;
+  }
 
   QgsPoint p;
   p.setX( coord == QgsComposerMap::Longitude ? value : 0 );
@@ -1039,9 +1052,25 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMap::
   {
     annotationString = p.toDegreesMinutes( mGridAnnotationPrecision );
   }
-  else //DegreeMinuteSecond
+  else if ( mGridAnnotationFormat == QgsComposerMap::DegreeMinuteNoSuffix )
+  {
+    annotationString = p.toDegreesMinutes( mGridAnnotationPrecision, false );
+  }
+  else if ( mGridAnnotationFormat == QgsComposerMap::DegreeMinutePadded )
+  {
+    annotationString = p.toDegreesMinutes( mGridAnnotationPrecision, true, true );
+  }
+  else if ( mGridAnnotationFormat == QgsComposerMap::DegreeMinuteSecond )
   {
     annotationString = p.toDegreesMinutesSeconds( mGridAnnotationPrecision );
+  }
+  else if ( mGridAnnotationFormat == QgsComposerMap::DegreeMinuteSecondNoSuffix )
+  {
+    annotationString = p.toDegreesMinutesSeconds( mGridAnnotationPrecision, false );
+  }
+  else if ( mGridAnnotationFormat == QgsComposerMap::DegreeMinuteSecondPadded )
+  {
+    annotationString = p.toDegreesMinutesSeconds( mGridAnnotationPrecision, true, true );
   }
 
   QStringList split = annotationString.split( "," );

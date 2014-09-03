@@ -90,7 +90,12 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     {
       Decimal = 0,
       DegreeMinute,
-      DegreeMinuteSecond
+      DegreeMinuteSecond,
+      DecimalWithSuffix,
+      DegreeMinuteNoSuffix,
+      DegreeMinutePadded,
+      DegreeMinuteSecondNoSuffix,
+      DegreeMinuteSecondPadded
     };
 
     enum GridFrameStyle

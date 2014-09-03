@@ -38,6 +38,11 @@ class TestQgsPoint: public QObject
     void cleanup();// will be called after every testfunction.
     void toString();
     void toDegreesMinutesSeconds();
+    void toDegreesMinutesSecondsNoSuffix();
+    void toDegreesMinutesSecondsPadded();
+    void toDegreesMinutes();
+    void toDegreesMinutesNoSuffix();
+    void toDegreesMinutesPadded();
     void wellKnownText();
     void sqrDist();
     void multiply();
@@ -102,15 +107,17 @@ void TestQgsPoint::toString()
   mReport += "<p>" + mPoint2.toString( 2 )  +  "</p>";
   mReport += "<p>" + mPoint3.toString( 2 )  +  "</p>";
   mReport += "<p>" + mPoint4.toString( 2 )  +  "</p>";
-  QVERIFY( mPoint1.toString( 2 ) == QString( "20.00,-20.00" ) );
-};
+  QCOMPARE( mPoint1.toString( 2 ), QString( "20.00,-20.00" ) );
+}
+
 void TestQgsPoint::toDegreesMinutesSeconds()
 {
-  mReport += "<p>Testing toDegreesMinutesSecods()</p>";
+  mReport += "<p>Testing toDegreesMinutesSeconds()</p>";
   mReport += "<p>" + mPoint1.toDegreesMinutesSeconds( 2 )  +  "</p>";
   mReport += "<p>" + mPoint2.toDegreesMinutesSeconds( 2 )  +  "</p>";
   mReport += "<p>" + mPoint3.toDegreesMinutesSeconds( 2 )  +  "</p>";
   mReport += "<p>" + mPoint4.toDegreesMinutesSeconds( 2 )  +  "</p>";
+
   qDebug() << mPoint4.toDegreesMinutesSeconds( 2 );
   QString myControlString = QString( "80" ) + QChar( 176 ) +
                             QString( "0'0.00" ) +
@@ -119,26 +126,412 @@ void TestQgsPoint::toDegreesMinutesSeconds()
                             QString( "0'0.00" ) + QString( '"' ) +
                             QString( "N" );
   qDebug() << myControlString;
-  QVERIFY( mPoint4.toDegreesMinutesSeconds( 2 ) == myControlString );
+  QCOMPARE( mPoint4.toDegreesMinutesSeconds( 2 ), myControlString );
 
-};
+  //check if longitudes > 180 or <-180 wrap around
+  myControlString = QString( "10" ) + QChar( 176 ) +
+                    QString( "0'0.00\"E" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00\"" );
+  QCOMPARE( QgsPoint( 370, 0 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  myControlString = QString( "10" ) + QChar( 176 ) +
+                    QString( "0'0.00\"W" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00\"" );
+  QCOMPARE( QgsPoint( -370, 0 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  myControlString = QString( "179" ) + QChar( 176 ) +
+                    QString( "0'0.00\"W" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00\"" );
+  QCOMPARE( QgsPoint( 181, 0 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  myControlString = QString( "179" ) + QChar( 176 ) +
+                    QString( "0'0.00\"E" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00\"" );
+  QCOMPARE( QgsPoint( -181, 0 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  myControlString = QString( "1" ) + QChar( 176 ) +
+                    QString( "0'0.00\"W" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00\"" );
+  QCOMPARE( QgsPoint( 359, 0 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  myControlString = QString( "1" ) + QChar( 176 ) +
+                    QString( "0'0.00\"E" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00\"" );
+  QCOMPARE( QgsPoint( -359, 0 ).toDegreesMinutesSeconds( 2 ), myControlString );
+
+  //should be no directional suffixes for 0 degree coordinates
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0'0.00" ) +
+                    QString( '"' ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00" ) + QString( '"' );
+  QCOMPARE( QgsPoint( 0, 0 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  //should also be no directional suffix for 0 degree coordinates within specified precision
+  QCOMPARE( QgsPoint( 0, 0.000001 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  QCOMPARE( QgsPoint( 0, -0.000001 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  QCOMPARE( QgsPoint( -0.000001, 0 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  QCOMPARE( QgsPoint( 0.000001, 0 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0'0.00000" ) +
+                    QString( '"' ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00360\"N" );
+  QCOMPARE( QgsPoint( 0, 0.000001 ).toDegreesMinutesSeconds( 5 ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0'0.00000" ) +
+                    QString( '"' ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00360\"S" );
+  QCOMPARE( QgsPoint( 0, -0.000001 ).toDegreesMinutesSeconds( 5 ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0'0.00360\"E" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00000" ) + QString( '"' );
+  QCOMPARE( QgsPoint( 0.000001, 0 ).toDegreesMinutesSeconds( 5 ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0'0.00360\"W" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00000" ) + QString( '"' );
+  QCOMPARE( QgsPoint( -0.000001, 0 ).toDegreesMinutesSeconds( 5 ), myControlString );
+
+  //test rounding does not create seconds >= 60
+  myControlString = QString( "100" ) + QChar( 176 ) +
+                    QString( "0'0.00\"E" ) +
+                    QString( ",100" ) + QChar( 176 ) +
+                    QString( "0'0.00\"N" );
+  QCOMPARE( QgsPoint( 99.999999, 99.999999 ).toDegreesMinutesSeconds( 2 ), myControlString );
+
+  //should be no directional suffixes for 180 degree longitudes
+  myControlString = QString( "180" ) + QChar( 176 ) +
+                    QString( "0'0.00" ) +
+                    QString( '"' ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00" ) + QString( '"' );
+  QCOMPARE( QgsPoint( 180, 0 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  //should also be no directional suffix for 180 degree longitudes within specified precision
+  QCOMPARE( QgsPoint( 180.000001, 0 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  QCOMPARE( QgsPoint( 179.999999, 0 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  myControlString = QString( "179" ) + QChar( 176 ) +
+                    QString( "59'59.99640\"W" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00000" ) + QString( '"' );
+  QCOMPARE( QgsPoint( 180.000001, 0 ).toDegreesMinutesSeconds( 5 ), myControlString );
+  myControlString = QString( "179" ) + QChar( 176 ) +
+                    QString( "59'59.99640\"E" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00000" ) + QString( '"' );
+  QCOMPARE( QgsPoint( 179.999999, 0 ).toDegreesMinutesSeconds( 5 ), myControlString );
+}
+
+void TestQgsPoint::toDegreesMinutesSecondsNoSuffix()
+{
+  QString myControlString = QString( "80" ) + QChar( 176 ) +
+                            QString( "0'0.00" ) +
+                            QString( '"' ) +
+                            QString( ",20" ) + QChar( 176 ) +
+                            QString( "0'0.00" ) + QString( '"' );
+  QCOMPARE( mPoint4.toDegreesMinutesSeconds( 2, false ), myControlString );
+
+  //test 0 lat/long
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0'0.00" ) +
+                    QString( '"' ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00" ) + QString( '"' );
+  QVERIFY( QgsPoint( 0, 0 ).toDegreesMinutesSeconds( 2, false ) == myControlString );
+  //test near zero lat/long
+  QCOMPARE( QgsPoint( 0, 0.000001 ).toDegreesMinutesSeconds( 2, false ), myControlString );
+  QCOMPARE( QgsPoint( 0.000001, 0 ).toDegreesMinutesSeconds( 2, false ), myControlString );
+  //should be no "-" prefix for near-zero lat/long when rounding to 2 decimal places
+  QCOMPARE( QgsPoint( 0, -0.000001 ).toDegreesMinutesSeconds( 2, false ), myControlString );
+  QCOMPARE( QgsPoint( -0.000001, 0 ).toDegreesMinutesSeconds( 2, false ), myControlString );
+
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0'0.00000" ) +
+                    QString( '"' ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00360" ) + QString( '"' );
+  QCOMPARE( QgsPoint( 0, 0.000001 ).toDegreesMinutesSeconds( 5, false ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0'0.00000" ) +
+                    QString( '"' ) +
+                    QString( ",-0" ) + QChar( 176 ) +
+                    QString( "0'0.00360" ) + QString( '"' );
+  QCOMPARE( QgsPoint( 0, -0.000001 ).toDegreesMinutesSeconds( 5, false ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0'0.00360" ) +
+                    QString( '"' ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00000" ) + QString( '"' );
+  QCOMPARE( QgsPoint( 0.000001, 0 ).toDegreesMinutesSeconds( 5, false ), myControlString );
+  myControlString = QString( "-0" ) + QChar( 176 ) +
+                    QString( "0'0.00360" ) +
+                    QString( '"' ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0'0.00000" ) + QString( '"' );
+  QCOMPARE( QgsPoint( -0.000001, 0 ).toDegreesMinutesSeconds( 5, false ), myControlString );
+}
+
+void TestQgsPoint::toDegreesMinutesSecondsPadded()
+{
+  QString myControlString = QString( "80" ) + QChar( 176 ) +
+                            QString( "00'00.00" ) +
+                            QString( '"' ) +
+                            QString( "E,20" ) + QChar( 176 ) +
+                            QString( "00'00.00" ) + QString( '"' ) +
+                            QString( "N" );
+  qDebug() << myControlString;
+  QCOMPARE( mPoint4.toDegreesMinutesSeconds( 2, true, true ), myControlString );
+
+  //should be no directional suffixes for 0 degree coordinates
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "00'00.00" ) +
+                    QString( '"' ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "00'00.00" ) + QString( '"' );
+  QVERIFY( QgsPoint( 0, 0 ).toDegreesMinutesSeconds( 2, true, true ) == myControlString );
+  //should also be no directional suffix for 0 degree coordinates within specified precision
+  QCOMPARE( QgsPoint( 0, 0.000001 ).toDegreesMinutesSeconds( 2, true, true ), myControlString );
+  QCOMPARE( QgsPoint( 0, -0.000001 ).toDegreesMinutesSeconds( 2, true, true ), myControlString );
+  QCOMPARE( QgsPoint( -0.000001, 0 ).toDegreesMinutesSeconds( 2, true, true ), myControlString );
+  QCOMPARE( QgsPoint( 0.000001, 0 ).toDegreesMinutesSeconds( 2, true, true ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "00'00.00000" ) +
+                    QString( '"' ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "00'00.00360\"N" );
+  QCOMPARE( QgsPoint( 0, 0.000001 ).toDegreesMinutesSeconds( 5, true, true ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "00'00.00000" ) +
+                    QString( '"' ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "00'00.00360\"S" );
+  QCOMPARE( QgsPoint( 0, -0.000001 ).toDegreesMinutesSeconds( 5, true, true ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "00'00.00360\"E" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "00'00.00000" ) + QString( '"' );
+  QCOMPARE( QgsPoint( 0.000001, 0 ).toDegreesMinutesSeconds( 5, true, true ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "00'00.00360\"W" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "00'00.00000" ) + QString( '"' );
+  QCOMPARE( QgsPoint( -0.000001, 0 ).toDegreesMinutesSeconds( 5, true, true ), myControlString );
+}
+
+void TestQgsPoint::toDegreesMinutes()
+{
+  mReport += "<p>Testing toDegreesMinutes()</p>";
+  mReport += "<p>" + mPoint1.toDegreesMinutes( 2 )  +  "</p>";
+  mReport += "<p>" + mPoint2.toDegreesMinutes( 2 )  +  "</p>";
+  mReport += "<p>" + mPoint3.toDegreesMinutes( 2 )  +  "</p>";
+  mReport += "<p>" + mPoint4.toDegreesMinutes( 2 )  +  "</p>";
+
+  qDebug() << mPoint4.toDegreesMinutes( 2 );
+  QString myControlString = QString( "80" ) + QChar( 176 ) +
+                            QString( "0.00'" ) +
+                            QString( "E,20" ) + QChar( 176 ) +
+                            QString( "0.00'N" );
+  qDebug() << myControlString;
+  QCOMPARE( mPoint4.toDegreesMinutes( 2 ), myControlString );
+
+  //check if longitudes > 180 or <-180 wrap around
+  myControlString = QString( "10" ) + QChar( 176 ) +
+                    QString( "0.00'E" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00'" );
+  QCOMPARE( QgsPoint( 370, 0 ).toDegreesMinutes( 2 ), myControlString );
+  myControlString = QString( "10" ) + QChar( 176 ) +
+                    QString( "0.00'W" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00'" );
+  QCOMPARE( QgsPoint( -370, 0 ).toDegreesMinutes( 2 ), myControlString );
+  myControlString = QString( "179" ) + QChar( 176 ) +
+                    QString( "0.00'W" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00'" );
+  QCOMPARE( QgsPoint( 181, 0 ).toDegreesMinutes( 2 ), myControlString );
+  myControlString = QString( "179" ) + QChar( 176 ) +
+                    QString( "0.00'E" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00'" );
+  QCOMPARE( QgsPoint( -181, 0 ).toDegreesMinutes( 2 ), myControlString );
+  myControlString = QString( "1" ) + QChar( 176 ) +
+                    QString( "0.00'W" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00'" );
+  QCOMPARE( QgsPoint( 359, 0 ).toDegreesMinutes( 2 ), myControlString );
+  myControlString = QString( "1" ) + QChar( 176 ) +
+                    QString( "0.00'E" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00'" );
+  QCOMPARE( QgsPoint( -359, 0 ).toDegreesMinutes( 2 ), myControlString );
+
+  //should be no directional suffixes for 0 degree coordinates
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0.00'" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00'" );
+  QVERIFY( QgsPoint( 0, 0 ).toDegreesMinutes( 2 ) == myControlString );
+  //should also be no directional suffix for 0 degree coordinates within specified precision
+  QCOMPARE( QgsPoint( 0, 0.000001 ).toDegreesMinutes( 2 ), myControlString );
+  QCOMPARE( QgsPoint( 0, -0.000001 ).toDegreesMinutes( 2 ), myControlString );
+  QCOMPARE( QgsPoint( -0.000001, 0 ).toDegreesMinutes( 2 ), myControlString );
+  QCOMPARE( QgsPoint( 0.000001, 0 ).toDegreesMinutes( 2 ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0.00000'" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00006'N" );
+  QCOMPARE( QgsPoint( 0, 0.000001 ).toDegreesMinutes( 5 ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0.00000'" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00006'S" );
+  QCOMPARE( QgsPoint( 0, -0.000001 ).toDegreesMinutes( 5 ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0.00006'E" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00000'" );
+  QCOMPARE( QgsPoint( 0.000001, 0 ).toDegreesMinutes( 5 ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0.00006'W" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00000'" );
+  QCOMPARE( QgsPoint( -0.000001, 0 ).toDegreesMinutes( 5 ), myControlString );
+
+  //test rounding does not create minutes >= 60
+  myControlString = QString( "100" ) + QChar( 176 ) +
+                    QString( "0.00'E" ) +
+                    QString( ",100" ) + QChar( 176 ) +
+                    QString( "0.00'N" );
+  QCOMPARE( QgsPoint( 99.999999, 99.999999 ).toDegreesMinutes( 2 ), myControlString );
+
+  //should be no directional suffixes for 180 degree longitudes
+  myControlString = QString( "180" ) + QChar( 176 ) +
+                    QString( "0.00'" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00'" );
+  QCOMPARE( QgsPoint( 180, 0 ).toDegreesMinutes( 2 ), myControlString );
+  //should also be no directional suffix for 180 degree longitudes within specified precision
+  QCOMPARE( QgsPoint( 180.000001, 0 ).toDegreesMinutes( 2 ), myControlString );
+  QCOMPARE( QgsPoint( 179.999999, 0 ).toDegreesMinutes( 2 ), myControlString );
+  myControlString = QString( "179" ) + QChar( 176 ) +
+                    QString( "59.99994'W" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00000'" );
+  QCOMPARE( QgsPoint( 180.000001, 0 ).toDegreesMinutes( 5 ), myControlString );
+  myControlString = QString( "179" ) + QChar( 176 ) +
+                    QString( "59.99994'E" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00000'" );
+  QCOMPARE( QgsPoint( 179.999999, 0 ).toDegreesMinutes( 5 ), myControlString );
+}
+
+void TestQgsPoint::toDegreesMinutesNoSuffix()
+{
+  QString myControlString = QString( "80" ) + QChar( 176 ) +
+                            QString( "0.00'" ) +
+                            QString( ",20" ) + QChar( 176 ) +
+                            QString( "0.00'" );
+  QCOMPARE( mPoint4.toDegreesMinutes( 2, false ), myControlString );
+
+  //test 0 lat/long
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0.00'" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00'" );
+  QVERIFY( QgsPoint( 0, 0 ).toDegreesMinutes( 2, false ) == myControlString );
+  //test near zero lat/long
+  QCOMPARE( QgsPoint( 0, 0.000001 ).toDegreesMinutes( 2, false ), myControlString );
+  QCOMPARE( QgsPoint( 0.000001, 0 ).toDegreesMinutes( 2, false ), myControlString );
+  //should be no "-" prefix for near-zero lat/long when rounding to 2 decimal places
+  QCOMPARE( QgsPoint( 0, -0.000001 ).toDegreesMinutes( 2, false ), myControlString );
+  QCOMPARE( QgsPoint( -0.000001, 0 ).toDegreesMinutes( 2, false ), myControlString );
+
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0.00000'" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00006'" );
+  QCOMPARE( QgsPoint( 0, 0.000001 ).toDegreesMinutes( 5, false ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0.00000'" ) +
+                    QString( ",-0" ) + QChar( 176 ) +
+                    QString( "0.00006'" );
+  QCOMPARE( QgsPoint( 0, -0.000001 ).toDegreesMinutes( 5, false ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0.00006'" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00000'" );
+  QCOMPARE( QgsPoint( 0.000001, 0 ).toDegreesMinutes( 5, false ), myControlString );
+  myControlString = QString( "-0" ) + QChar( 176 ) +
+                    QString( "0.00006'" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "0.00000'" );
+  QCOMPARE( QgsPoint( -0.000001, 0 ).toDegreesMinutes( 5, false ), myControlString );
+}
+
+void TestQgsPoint::toDegreesMinutesPadded()
+{
+  QString myControlString = QString( "80" ) + QChar( 176 ) +
+                            QString( "00.00'" ) +
+                            QString( "E,20" ) + QChar( 176 ) +
+                            QString( "00.00'N" );
+  qDebug() << myControlString;
+  QCOMPARE( mPoint4.toDegreesMinutes( 2, true, true ), myControlString );
+
+  //should be no directional suffixes for 0 degree coordinates
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "00.00'" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "00.00'" );
+  QVERIFY( QgsPoint( 0, 0 ).toDegreesMinutes( 2, true, true ) == myControlString );
+  //should also be no directional suffix for 0 degree coordinates within specified precision
+  QCOMPARE( QgsPoint( 0, 0.000001 ).toDegreesMinutes( 2, true, true ), myControlString );
+  QCOMPARE( QgsPoint( 0, -0.000001 ).toDegreesMinutes( 2, true, true ), myControlString );
+  QCOMPARE( QgsPoint( -0.000001, 0 ).toDegreesMinutes( 2, true, true ), myControlString );
+  QCOMPARE( QgsPoint( 0.000001, 0 ).toDegreesMinutes( 2, true, true ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "00.00000'" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "00.00006'N" );
+  QCOMPARE( QgsPoint( 0, 0.000001 ).toDegreesMinutes( 5, true, true ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "00.00000'" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "00.00006'S" );
+  QCOMPARE( QgsPoint( 0, -0.000001 ).toDegreesMinutes( 5, true, true ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "00.00006'E" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "00.00000'" );
+  QCOMPARE( QgsPoint( 0.000001, 0 ).toDegreesMinutes( 5, true, true ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "00.00006'W" ) +
+                    QString( ",0" ) + QChar( 176 ) +
+                    QString( "00.00000'" );
+  QCOMPARE( QgsPoint( -0.000001, 0 ).toDegreesMinutes( 5, true, true ), myControlString );
+}
+
 void TestQgsPoint::wellKnownText()
 {
 
-};
+}
+
 void TestQgsPoint::sqrDist()
 {
 
-};
+}
+
 void TestQgsPoint::multiply()
 {
 
-};
+}
+
 void TestQgsPoint::onSegment()
 {
 
-};
-
+}
 
 QTEST_MAIN( TestQgsPoint )
 #include "moc_testqgspoint.cxx"
