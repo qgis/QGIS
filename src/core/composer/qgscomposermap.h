@@ -565,7 +565,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void moveGridDown( const QString& name );
     const QgsComposerMapGrid* constMapGrid( const QString& id ) const;
     QgsComposerMapGrid* mapGrid( const QString& id ) const;
-    QList< const QgsComposerMapGrid* > mapGrids() const;
+    QList< QgsComposerMapGrid* > mapGrids() const;
 
     int gridCount() const { return mGrids.size(); }
 

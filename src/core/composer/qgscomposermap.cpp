@@ -2090,9 +2090,9 @@ QgsComposerMapGrid* QgsComposerMap::mapGrid( const QString& id ) const
   return 0;
 }
 
-QList< const QgsComposerMapGrid* > QgsComposerMap::mapGrids() const
+QList<QgsComposerMapGrid *> QgsComposerMap::mapGrids() const
 {
-  QList< const QgsComposerMapGrid* > list;
+  QList< QgsComposerMapGrid* > list;
   QList< QgsComposerMapGrid* >::const_iterator it = mGrids.begin();
   for ( ; it != mGrids.end(); ++it )
   {

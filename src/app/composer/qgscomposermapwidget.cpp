@@ -1861,8 +1861,8 @@ void QgsComposerMapWidget::loadGridEntries()
   }
 
   //load all composer grids into list widget
-  QList< const QgsComposerMapGrid* > grids = mComposerMap->mapGrids();
-  QList< const QgsComposerMapGrid* >::const_iterator gridIt = grids.constBegin();
+  QList< QgsComposerMapGrid* > grids = mComposerMap->mapGrids();
+  QList< QgsComposerMapGrid* >::const_iterator gridIt = grids.constBegin();
   for ( ; gridIt != grids.constEnd(); ++gridIt )
   {
     QListWidgetItem* item = addGridListItem(( *gridIt )->id(), ( *gridIt )->name() );

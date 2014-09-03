@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include "qgscompositionchecker.h"
 #include "qgscomposermap.h"
+#include "qgscomposermapgrid.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsfontutils.h"
@@ -38,6 +39,7 @@ class TestQgsComposerMapGrid: public QObject
     void markerGrid(); //test if grid "marker" mode works
     void frameOnly(); //test if grid "frame/annotation" mode works
     void zebraStyle(); //test zebra map border style
+    void zebraStyleSides(); //test zebra border on certain sides
 
   private:
     QgsComposition* mComposition;
@@ -194,6 +196,44 @@ void TestQgsComposerMapGrid::zebraStyle()
 
   bool testResult = checker.testComposition( mReport, 0, 100 );
   QVERIFY( testResult );
+}
+
+void TestQgsComposerMapGrid::zebraStyleSides()
+{
+  mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+  mComposerMap->setGridPenColor( QColor( 0, 0, 0 ) );
+  mComposerMap->setAnnotationFontColor( QColor( 0, 0, 0, 0 ) );
+  mComposerMap->setGridBlendMode( QPainter::CompositionMode_SourceOver );
+
+  mComposerMap->setGridFrameStyle( QgsComposerMap::Zebra );
+  mComposerMap->setGridFrameWidth( 10 );
+  mComposerMap->setGridFramePenSize( 1 );
+  mComposerMap->setGridFramePenColor( Qt::black );
+  mComposerMap->setGridFrameFillColor1( Qt::black );
+  mComposerMap->setGridFrameFillColor2( Qt::white );
+  mComposerMap->setGridEnabled( true );
+
+  mComposerMap->mapGrids()[0]->setGridFrameSideFlag( QgsComposerMapGrid::FrameLeft, true );
+  mComposerMap->mapGrids()[0]->setGridFrameSideFlag( QgsComposerMapGrid::FrameRight, false );
+  mComposerMap->mapGrids()[0]->setGridFrameSideFlag( QgsComposerMapGrid::FrameTop, false );
+  mComposerMap->mapGrids()[0]->setGridFrameSideFlag( QgsComposerMapGrid::FrameBottom, false );
+
+  QgsCompositionChecker checker( "composermap_zebrastyle_left", mComposition );
+  bool testResult = checker.testComposition( mReport, 0, 100 );
+  QVERIFY( testResult );
+
+  mComposerMap->mapGrids()[0]->setGridFrameSideFlag( QgsComposerMapGrid::FrameTop, true );
+  QgsCompositionChecker checker2( "composermap_zebrastyle_lefttop", mComposition );
+  bool testResult2 = checker2.testComposition( mReport, 0, 100 );
+  QVERIFY( testResult2 );
+
+  mComposerMap->mapGrids()[0]->setGridFrameSideFlag( QgsComposerMapGrid::FrameRight, true );
+  QgsCompositionChecker checker3( "composermap_zebrastyle_lefttopright", mComposition );
+  bool testResult3 = checker3.testComposition( mReport, 0, 100 );
+  QVERIFY( testResult3 );
+
+  mComposerMap->mapGrids()[0]->setGridFrameSideFlag( QgsComposerMapGrid::FrameBottom, true );
+  mComposerMap->setGridFrameStyle( QgsComposerMap::NoGridFrame );
 }
 
 QTEST_MAIN( TestQgsComposerMapGrid )
