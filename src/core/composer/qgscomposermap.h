@@ -96,7 +96,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     enum GridFrameStyle
     {
       NoGridFrame = 0,
-      Zebra // black/white pattern
+      Zebra, // black/white pattern
+      InteriorTicks,
+      ExteriorTicks,
+      InteriorExteriorTicks
     };
 
     /**Enum for different frame borders*/

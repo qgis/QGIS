@@ -54,7 +54,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-1047</y>
+        <y>-571</y>
         <width>444</width>
         <height>2231</height>
        </rect>
@@ -820,6 +820,21 @@
                   <item>
                    <property name="text">
                     <string>Zebra</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Interior ticks</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Exterior ticks</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Interior and exterior ticks</string>
                    </property>
                   </item>
                  </widget>

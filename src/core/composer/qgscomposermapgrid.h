@@ -332,6 +332,8 @@ class CORE_EXPORT QgsComposerMapGrid
     void createDefaultGridLineSymbol();
     void createDefaultGridMarkerSymbol();
     void drawGridMarker( const QPointF &point, QgsRenderContext &context ) const;
+    void drawGridFrameZebraBorder( QPainter *p, const QMap<double, double> &borderPos, QgsComposerMap::Border border ) const;
+    void drawGridFrameTicks( QPainter *p, const QMap<double, double> &borderPos, QgsComposerMap::Border border ) const;
 };
 
 #endif // QGSCOMPOSERMAPGRID_H

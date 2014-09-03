@@ -179,7 +179,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void refreshMapComboBox();
 
     /**Enables/disables grid frame related controls*/
-    void toggleFrameControls( bool frameEnabled );
+    void toggleFrameControls( bool frameEnabled , bool frameFillEnabled );
 
     /**Enables or disables the atlas margin and predefined scales radio depending on the atlas coverage layer type*/
     void toggleAtlasScalingOptionsByLayerType();

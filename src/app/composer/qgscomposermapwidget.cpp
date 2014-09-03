@@ -102,7 +102,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
   mGridFrameFill2ColorButton->setShowNoColor( true );
 
   //set initial state of frame style controls
-  toggleFrameControls( false );
+  toggleFrameControls( false, false );
 
   if ( composerMap )
   {
@@ -695,17 +695,17 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   blockOverviewItemsSignals( b );
 }
 
-void QgsComposerMapWidget::toggleFrameControls( bool frameEnabled )
+void QgsComposerMapWidget::toggleFrameControls( bool frameEnabled, bool frameFillEnabled )
 {
   //set status of frame controls
   mFrameWidthSpinBox->setEnabled( frameEnabled );
   mGridFramePenSizeSpinBox->setEnabled( frameEnabled );
   mGridFramePenColorButton->setEnabled( frameEnabled );
-  mGridFrameFill1ColorButton->setEnabled( frameEnabled );
-  mGridFrameFill2ColorButton->setEnabled( frameEnabled );
+  mGridFrameFill1ColorButton->setEnabled( frameFillEnabled );
+  mGridFrameFill2ColorButton->setEnabled( frameFillEnabled );
   mFrameWidthLabel->setEnabled( frameEnabled );
   mFramePenLabel->setEnabled( frameEnabled );
-  mFrameFillLabel->setEnabled( frameEnabled );
+  mFrameFillLabel->setEnabled( frameFillEnabled );
   mCheckGridLeftSide->setEnabled( frameEnabled );
   mCheckGridRightSide->setEnabled( frameEnabled );
   mCheckGridTopSide->setEnabled( frameEnabled );
@@ -1209,15 +1209,28 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
   //grid frame
   mFrameWidthSpinBox->setValue( grid->gridFrameWidth() );
   QgsComposerMap::GridFrameStyle gridFrameStyle = grid->gridFrameStyle();
-  if ( gridFrameStyle == QgsComposerMap::Zebra )
+  switch ( gridFrameStyle )
   {
-    mFrameStyleComboBox->setCurrentIndex( 1 );
-    toggleFrameControls( true );
-  }
-  else //NoGridFrame
-  {
-    mFrameStyleComboBox->setCurrentIndex( 0 );
-    toggleFrameControls( false );
+    case QgsComposerMap::Zebra:
+      mFrameStyleComboBox->setCurrentIndex( 1 );
+      toggleFrameControls( true, true );
+      break;
+    case QgsComposerMap::InteriorTicks:
+      mFrameStyleComboBox->setCurrentIndex( 2 );
+      toggleFrameControls( true, false );
+      break;
+    case QgsComposerMap::ExteriorTicks:
+      mFrameStyleComboBox->setCurrentIndex( 3 );
+      toggleFrameControls( true, false );
+      break;
+    case QgsComposerMap::InteriorExteriorTicks:
+      mFrameStyleComboBox->setCurrentIndex( 4 );
+      toggleFrameControls( true, false );
+      break;
+    default:
+      mFrameStyleComboBox->setCurrentIndex( 0 );
+      toggleFrameControls( false, false );
+      break;
   }
 
   mCheckGridLeftSide->setChecked( grid->testGridFrameSideFlag( QgsComposerMapGrid::FrameLeft ) );
@@ -1557,12 +1570,27 @@ void QgsComposerMapWidget::on_mFrameStyleComboBox_currentIndexChanged( const QSt
   if ( text == tr( "Zebra" ) )
   {
     grid->setGridFrameStyle( QgsComposerMap::Zebra );
-    toggleFrameControls( true );
+    toggleFrameControls( true, true );
+  }
+  else if ( text == tr( "Interior ticks" ) )
+  {
+    grid->setGridFrameStyle( QgsComposerMap::InteriorTicks );
+    toggleFrameControls( true, false );
+  }
+  else if ( text == tr( "Exterior ticks" ) )
+  {
+    grid->setGridFrameStyle( QgsComposerMap::ExteriorTicks );
+    toggleFrameControls( true, false );
+  }
+  else if ( text == tr( "Interior and exterior ticks" ) )
+  {
+    grid->setGridFrameStyle( QgsComposerMap::InteriorExteriorTicks );
+    toggleFrameControls( true, false );
   }
   else //no frame
   {
     grid->setGridFrameStyle( QgsComposerMap::NoGridFrame );
-    toggleFrameControls( false );
+    toggleFrameControls( false, false );
   }
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
