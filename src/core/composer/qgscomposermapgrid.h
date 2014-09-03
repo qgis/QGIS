@@ -69,42 +69,42 @@ class CORE_EXPORT QgsComposerMapGrid
 
     /**Enables a coordinate grid that is shown on top of this composermap.
         @note this function was added in version 1.4*/
-    void setGridEnabled( bool enabled ) {mGridEnabled = enabled;}
-    bool gridEnabled() const { return mGridEnabled; }
+    void setEnabled( bool enabled ) {mGridEnabled = enabled;}
+    bool enabled() const { return mGridEnabled; }
 
     /**Sets coordinate grid style to solid or cross
         @note this function was added in version 1.4*/
-    void setGridStyle( QgsComposerMap::GridStyle style ) {mGridStyle = style;}
-    QgsComposerMap::GridStyle gridStyle() const { return mGridStyle; }
+    void setStyle( QgsComposerMap::GridStyle style ) {mGridStyle = style;}
+    QgsComposerMap::GridStyle style() const { return mGridStyle; }
 
     /**Sets coordinate interval in x-direction for composergrid.
         @note this function was added in version 1.4*/
-    void setGridIntervalX( double interval ) { mGridIntervalX = interval;}
-    double gridIntervalX() const { return mGridIntervalX; }
+    void setIntervalX( double interval ) { mGridIntervalX = interval;}
+    double intervalX() const { return mGridIntervalX; }
 
     /**Sets coordinate interval in y-direction for composergrid.
     @note this function was added in version 1.4*/
-    void setGridIntervalY( double interval ) { mGridIntervalY = interval;}
-    double gridIntervalY() const { return mGridIntervalY; }
+    void setIntervalY( double interval ) { mGridIntervalY = interval;}
+    double intervalY() const { return mGridIntervalY; }
 
     /**Sets x-coordinate offset for composer grid
     @note this function was added in version 1.4*/
-    void setGridOffsetX( double offset ) { mGridOffsetX = offset; }
-    double gridOffsetX() const { return mGridOffsetX; }
+    void setOffsetX( double offset ) { mGridOffsetX = offset; }
+    double offsetX() const { return mGridOffsetX; }
 
     /**Sets y-coordinate offset for composer grid
     @note this function was added in version 1.4*/
-    void setGridOffsetY( double offset ) { mGridOffsetY = offset; }
-    double gridOffsetY() const { return mGridOffsetY; }
+    void setOffsetY( double offset ) { mGridOffsetY = offset; }
+    double offsetY() const { return mGridOffsetY; }
 
     /**Sets the pen to draw composer grid
     @note this function was added in version 1.4*/
-    void setGridPen( const QPen& p );
-    QPen gridPen() const;
+    void setPen( const QPen& p );
+    QPen pen() const;
 
     /**Sets with of grid pen
     @note this function was added in version 1.4*/
-    void setGridPenWidth( double w );
+    void setPenWidth( double w );
 
     /**Sets the color of the grid pen
     @note this function was added in version 1.4*/
@@ -112,40 +112,40 @@ class CORE_EXPORT QgsComposerMapGrid
 
     /**Sets font for grid annotations
     @note this function was added in version 1.4*/
-    void setGridAnnotationFont( const QFont& f ) { mGridAnnotationFont = f; }
-    QFont gridAnnotationFont() const { return mGridAnnotationFont; }
+    void setAnnotationFont( const QFont& f ) { mGridAnnotationFont = f; }
+    QFont annotationFont() const { return mGridAnnotationFont; }
 
-    void setGridAnnotationFontColor( const QColor& c ) { mGridAnnotationFontColor = c; }
-    QColor gridAnnotationFontColor() const { return mGridAnnotationFontColor; }
+    void setAnnotationFontColor( const QColor& c ) { mGridAnnotationFontColor = c; }
+    QColor annotationFontColor() const { return mGridAnnotationFontColor; }
 
     /**Sets coordinate precision for grid annotations
     @note this function was added in version 1.4*/
-    void setGridAnnotationPrecision( int p ) {mGridAnnotationPrecision = p;}
-    int gridAnnotationPrecision() const {return mGridAnnotationPrecision;}
+    void setAnnotationPrecision( int p ) {mGridAnnotationPrecision = p;}
+    int annotationPrecision() const {return mGridAnnotationPrecision;}
 
     /**Sets flag if grid annotation should be shown
     @note this function was added in version 1.4*/
-    void setShowGridAnnotation( bool show ) {mShowGridAnnotation = show;}
-    bool showGridAnnotation() const {return mShowGridAnnotation;}
+    void setAnnotationEnabled( bool show ) {mShowGridAnnotation = show;}
+    bool annotationEnabled() const {return mShowGridAnnotation;}
 
-    void setGridAnnotationPosition( QgsComposerMap::GridAnnotationPosition p, QgsComposerMap::Border border );
-    QgsComposerMap::GridAnnotationPosition gridAnnotationPosition( QgsComposerMap::Border border ) const;
+    void setAnnotationPosition( QgsComposerMap::GridAnnotationPosition p, QgsComposerMap::Border border );
+    QgsComposerMap::GridAnnotationPosition annotationPosition( QgsComposerMap::Border border ) const;
 
     /**Sets distance between map frame and annotations
     @note this function was added in version 1.4*/
     void setAnnotationFrameDistance( double d ) {mAnnotationFrameDistance = d;}
     double annotationFrameDistance() const {return mAnnotationFrameDistance;}
 
-    void setGridAnnotationDirection( QgsComposerMap::GridAnnotationDirection d, QgsComposerMap::Border border );
-    QgsComposerMap::GridAnnotationDirection gridAnnotationDirection( QgsComposerMap::Border border ) const;
+    void setAnnotationDirection( QgsComposerMap::GridAnnotationDirection d, QgsComposerMap::Border border );
+    QgsComposerMap::GridAnnotationDirection annotationDirection( QgsComposerMap::Border border ) const;
 
     /**Sets grid annotation direction. Can be horizontal, vertical, direction of axis and horizontal and vertical
         @note provides compatibility with 1.8 version*/
-    void setGridAnnotationDirection( QgsComposerMap::GridAnnotationDirection d );
-    QgsComposerMap::GridAnnotationDirection gridAnnotationDirection() const;
+    void setAnnotationDirection( QgsComposerMap::GridAnnotationDirection d );
+    QgsComposerMap::GridAnnotationDirection annotationDirection() const;
 
-    void setGridAnnotationFormat( QgsComposerMap::GridAnnotationFormat f ) { mGridAnnotationFormat = f; }
-    QgsComposerMap::GridAnnotationFormat gridAnnotationFormat() const { return mGridAnnotationFormat; }
+    void setAnnotationFormat( QgsComposerMap::GridAnnotationFormat f ) { mGridAnnotationFormat = f; }
+    QgsComposerMap::GridAnnotationFormat annotationFormat() const { return mGridAnnotationFormat; }
 
     /**Set grid frame style (NoGridFrame or Zebra)
         @note: this function was added in version 1.9*/

@@ -115,7 +115,7 @@ void QgsComposerMapGrid::setComposerMap( QgsComposerMap* map )
   mComposerMap = map;
 }
 
-void QgsComposerMapGrid::setGridPenWidth( double w )
+void QgsComposerMapGrid::setPenWidth( double w )
 {
   if ( mGridLineSymbol )
   {
@@ -131,13 +131,13 @@ void QgsComposerMapGrid::setGridPenColor( const QColor& c )
   }
 }
 
-void QgsComposerMapGrid::setGridPen( const QPen& p )
+void QgsComposerMapGrid::setPen( const QPen& p )
 {
-  setGridPenWidth( p.widthF() );
+  setPenWidth( p.widthF() );
   setGridPenColor( p.color() );
 }
 
-QPen QgsComposerMapGrid::gridPen() const
+QPen QgsComposerMapGrid::pen() const
 {
   QPen p;
   if ( mGridLineSymbol )
@@ -1507,7 +1507,7 @@ double QgsComposerMapGrid::maxExtension() const
   return maxExtension + mAnnotationFrameDistance + gridFrameDist;
 }
 
-void QgsComposerMapGrid::setGridAnnotationDirection( QgsComposerMap::GridAnnotationDirection d, QgsComposerMap::Border border )
+void QgsComposerMapGrid::setAnnotationDirection( QgsComposerMap::GridAnnotationDirection d, QgsComposerMap::Border border )
 {
   switch ( border )
   {
@@ -1535,7 +1535,7 @@ void QgsComposerMapGrid::setGridAnnotationDirection( QgsComposerMap::GridAnnotat
   }
 }
 
-QgsComposerMap::GridAnnotationDirection QgsComposerMapGrid::gridAnnotationDirection() const
+QgsComposerMap::GridAnnotationDirection QgsComposerMapGrid::annotationDirection() const
 {
   return mLeftGridAnnotationDirection;
 }
@@ -1563,7 +1563,7 @@ bool QgsComposerMapGrid::testGridFrameSideFlag( QgsComposerMapGrid::GridFrameSid
   return mGridFrameSides.testFlag( flag );
 }
 
-void QgsComposerMapGrid::setGridAnnotationDirection( QgsComposerMap::GridAnnotationDirection d )
+void QgsComposerMapGrid::setAnnotationDirection( QgsComposerMap::GridAnnotationDirection d )
 {
   mLeftGridAnnotationDirection = d;
   mRightGridAnnotationDirection = d;
@@ -1571,7 +1571,7 @@ void QgsComposerMapGrid::setGridAnnotationDirection( QgsComposerMap::GridAnnotat
   mBottomGridAnnotationDirection = d;
 }
 
-void QgsComposerMapGrid::setGridAnnotationPosition( QgsComposerMap::GridAnnotationPosition p, QgsComposerMap::Border border )
+void QgsComposerMapGrid::setAnnotationPosition( QgsComposerMap::GridAnnotationPosition p, QgsComposerMap::Border border )
 {
   switch ( border )
   {
@@ -1598,7 +1598,7 @@ void QgsComposerMapGrid::setGridAnnotationPosition( QgsComposerMap::GridAnnotati
   }
 }
 
-QgsComposerMap::GridAnnotationPosition QgsComposerMapGrid::gridAnnotationPosition( QgsComposerMap::Border border ) const
+QgsComposerMap::GridAnnotationPosition QgsComposerMapGrid::annotationPosition( QgsComposerMap::Border border ) const
 {
   switch ( border )
   {
@@ -1618,7 +1618,7 @@ QgsComposerMap::GridAnnotationPosition QgsComposerMapGrid::gridAnnotationPositio
   }
 }
 
-QgsComposerMap::GridAnnotationDirection QgsComposerMapGrid::gridAnnotationDirection( QgsComposerMap::Border border ) const
+QgsComposerMap::GridAnnotationDirection QgsComposerMapGrid::annotationDirection( QgsComposerMap::Border border ) const
 {
   if ( !mComposerMap )
   {
