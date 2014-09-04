@@ -702,7 +702,7 @@ bool QgsPostgresProvider::loadFields()
       {
         fieldType = QVariant::Double;
 
-        if ( formattedFieldType == "numeric" )
+        if ( formattedFieldType == "numeric" || formattedFieldType == "" )
         {
           fieldSize = -1;
           fieldPrec = -1;
