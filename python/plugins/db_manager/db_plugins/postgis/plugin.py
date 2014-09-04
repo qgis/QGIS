@@ -283,8 +283,17 @@ class PGRasterTable(PGTable, RasterTable):
 		user = ( u'user=%s' % uri.username() ) if uri.username() else ''
 		passw = ( u'password=%s' % uri.password() ) if uri.password() else ''
 		port = ( u'port=%s' % uri.port() ) if uri.port() else ''
-		gdalUri = u'PG: %s %s %s %s %s mode=2 %s table=%s' % \
-		  (dbname, host, user, passw, port, schema, self.name)
+
+		# Find first raster field
+		col = ''
+		for fld in self.fields():
+		  if fld.dataType == "raster":
+			  col = u'column=%s' % fld.name
+			  break
+
+		gdalUri = u'PG: %s %s %s %s %s mode=2 %s %s table=%s' % \
+		  (dbname, host, user, passw, port, schema, col, self.name)
+
 		return gdalUri
 
 	def mimeUri(self):
