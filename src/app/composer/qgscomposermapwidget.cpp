@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgscomposermapgrid.h"
 #include "qgscomposermapoverview.h"
@@ -36,6 +37,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsproject.h"
+#include "qgsvisibilitygroups.h"
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QMessageBox>
@@ -109,6 +111,14 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
 
   //set initial state of frame style controls
   toggleFrameControls( false, false, false );
+
+  QMenu* m = new QMenu( this );
+  m->addAction( "No groups" )->setEnabled( false );
+  mLayerListFromGroupButton->setMenu( m );
+  mLayerListFromGroupButton->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
+  mLayerListFromGroupButton->setToolTip( tr( "Set layer list from a visibility group" ) );
+
+  connect( m, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowVisibilityGroupsMenu() ) );
 
   if ( composerMap )
   {
@@ -246,6 +256,38 @@ void QgsComposerMapWidget::compositionAtlasToggled( bool atlasEnabled )
   {
     mAtlasCheckBox->setEnabled( false );
     mAtlasCheckBox->setChecked( false );
+  }
+}
+
+void QgsComposerMapWidget::aboutToShowVisibilityGroupsMenu()
+{
+  QMenu* menu = qobject_cast<QMenu*>( sender() );
+  if ( !menu )
+    return;
+
+  menu->clear();
+  foreach ( QString groupName, QgsVisibilityGroups::instance()->groups() )
+  {
+    menu->addAction( groupName, this, SLOT( visibilityGroupSelected() ) );
+  }
+
+  if ( menu->actions().isEmpty() )
+    menu->addAction( tr( "No groups defined" ) )->setEnabled( false );
+}
+
+void QgsComposerMapWidget::visibilityGroupSelected()
+{
+  QAction* action = qobject_cast<QAction*>( sender() );
+  if ( !action )
+    return;
+
+  QStringList lst = QgsVisibilityGroups::instance()->groupVisibleLayers( action->text() );
+  if ( mComposerMap )
+  {
+    mKeepLayerListCheckBox->setChecked( true );
+    mComposerMap->setLayerSet( lst );
+    mComposerMap->cache();
+    mComposerMap->update();
   }
 }
 

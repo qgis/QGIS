@@ -16,6 +16,7 @@
 #include "qgsvisibilitygroups.h"
 
 #include "qgslayertree.h"
+#include "qgslayertreemapcanvasbridge.h"
 #include "qgsproject.h"
 #include "qgisapp.h"
 
@@ -123,6 +124,23 @@ QStringList QgsVisibilityGroups::groups() const
   return mGroups.keys();
 }
 
+QStringList QgsVisibilityGroups::groupVisibleLayers( const QString& name ) const
+{
+  QSet<QString> visibleIds = mGroups.value( name ).mVisibleLayerIDs;
+
+  // also make sure to order the layers according to map canvas order
+  QgsLayerTreeMapCanvasBridge* bridge = QgisApp::instance()->layerTreeCanvasBridge();
+  QStringList order = bridge->hasCustomLayerOrder() ? bridge->customLayerOrder() : bridge->defaultLayerOrder();
+  QStringList order2;
+  foreach ( QString layerID, order )
+  {
+    if ( visibleIds.contains( layerID ) )
+      order2 << layerID;
+  }
+
+  return order2;
+}
+
 QMenu* QgsVisibilityGroups::menu()
 {
   return mMenu;
@@ -171,7 +189,7 @@ void QgsVisibilityGroups::applyState( const QString& groupName )
     return;
 
   const GroupRecord& rec = mGroups[groupName];
-  applyStateToLayerTreeGroup( QgsProject::instance()->layerTreeRoot(), QSet<QString>::fromList( rec.mVisibleLayerIDs ) );
+  applyStateToLayerTreeGroup( QgsProject::instance()->layerTreeRoot(), rec.mVisibleLayerIDs );
 
   mMenuDirty = true;
 }

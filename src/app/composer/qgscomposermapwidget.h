@@ -155,6 +155,10 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     /**Enables or disables the atlas controls when composer atlas is toggled on/off*/
     void compositionAtlasToggled( bool atlasEnabled );
 
+    void aboutToShowVisibilityGroupsMenu();
+
+    void visibilityGroupSelected();
+
   private:
     QgsComposerMap* mComposerMap;
 

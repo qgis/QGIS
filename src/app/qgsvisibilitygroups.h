@@ -18,7 +18,7 @@
 
 #include <QMap>
 #include <QObject>
-#include <QStringList>
+#include <QSet>
 
 class QAction;
 class QDomDocument;
@@ -27,6 +27,10 @@ class QMenu;
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
 
+/**
+ * Controller class that allows creation of visibility groups consisting of currently visible
+ * map layers in map canvas.
+ */
 class QgsVisibilityGroups : public QObject
 {
     Q_OBJECT
@@ -34,14 +38,23 @@ class QgsVisibilityGroups : public QObject
 
     static QgsVisibilityGroups* instance();
 
+    //! Add a new group using the current state of project's layer tree
     void addGroup( const QString& name );
+    //! Update existing group using the current state of project's layer tree
     void updateGroup( const QString& name );
+    //! Remove existing group
     void removeGroup( const QString& name );
 
+    //! Remove all groups
     void clear();
 
+    //! Return list of existing group names
     QStringList groups() const;
 
+    //! Return list of layer IDs that should be visible for particular group
+    QStringList groupVisibleLayers( const QString& name ) const;
+
+    //! Convenience menu that lists available groups and actions for management
     QMenu* menu();
 
   signals:
@@ -70,7 +83,7 @@ class QgsVisibilityGroups : public QObject
       }
 
       //! List of layers that are visible
-      QStringList mVisibleLayerIDs;
+      QSet<QString> mVisibleLayerIDs;
       //! For layers that have checkable legend symbols and not all symbols are checked - list which ones are
       //QMap<QString, QStringList> mPerLayerCheckedLegendSymbols;
     } GroupRecord;

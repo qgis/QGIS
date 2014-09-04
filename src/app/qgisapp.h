@@ -435,6 +435,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! returns pointer to map legend
     QgsLayerTreeView* layerTreeView();
 
+    QgsLayerTreeMapCanvasBridge* layerTreeCanvasBridge() { return mLayerTreeCanvasBridge; }
+
     //! returns pointer to plugin manager
     QgsPluginManager *pluginManager();
 
