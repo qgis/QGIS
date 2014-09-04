@@ -195,6 +195,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
+#include "qgsvisibilitygroups.h"
 #include "qgsmessagelogviewer.h"
 #include "qgsdataitem.h"
 #include "qgsmaplayeractionregistry.h"
@@ -1653,6 +1654,14 @@ void QgisApp::createToolBars()
   QAction* newLayerAction = mLayerToolBar->insertWidget( mActionRemoveLayer, bt );
   newLayerAction->setObjectName( "ActionNewLayer" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+
+  // visibility groups tool button
+
+  bt = new QToolButton();
+  bt->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
+  bt->setPopupMode( QToolButton::InstantPopup );
+  bt->setMenu( QgsVisibilityGroups::instance()->menu() );
+  mMapNavToolBar->addWidget( bt );
 
   // Help Toolbar
 
@@ -3446,6 +3455,8 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   {
     fileNewFromDefaultTemplate();
   }
+
+  QgsVisibilityGroups::instance()->clear();
 
   // set the initial map tool
 #ifndef HAVE_TOUCH
