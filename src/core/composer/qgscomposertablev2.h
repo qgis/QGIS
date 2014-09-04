@@ -236,7 +236,10 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     virtual bool getTableContents( QgsComposerTableContents &contents ) = 0;
 
     //reimplemented to return fixed table width
-    virtual QSizeF fixedFrameSize() const;
+    virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
+
+    //reimplemented to return min frame height
+    virtual QSizeF minFrameSize( const int frameIndex = -1 ) const;
 
   public slots:
 

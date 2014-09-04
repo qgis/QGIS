@@ -31,7 +31,14 @@ QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool create
     , mGridStrokeWidth( 0.5 )
     , mGridColor( Qt::black )
 {
-
+  //get default composer font from settings
+  QSettings settings;
+  QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
+  if ( !defaultFontString.isEmpty() )
+  {
+    mHeaderFont.setFamily( defaultFontString );
+    mContentFont.setFamily( defaultFontString );
+  }
 }
 
 QgsComposerTableV2::QgsComposerTableV2()
@@ -42,7 +49,8 @@ QgsComposerTableV2::QgsComposerTableV2()
 
 QgsComposerTableV2::~QgsComposerTableV2()
 {
-
+  qDeleteAll( mColumns );
+  mColumns.clear();
 }
 
 bool QgsComposerTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
@@ -398,9 +406,22 @@ QMap<int, QString> QgsComposerTableV2::headerLabels() const
   return headers;
 }
 
-QSizeF QgsComposerTableV2::fixedFrameSize() const
+QSizeF QgsComposerTableV2::fixedFrameSize( const int frameIndex ) const
 {
+  Q_UNUSED( frameIndex );
   return QSizeF( mTableSize.width(), 0 );
+}
+
+QSizeF QgsComposerTableV2::minFrameSize( const int frameIndex ) const
+{
+  double height = 0;
+  if ( frameIndex == 0 )
+  {
+    //force first frame to be high enough for header
+    //TODO - handle different header modes
+    height = 2 * mGridStrokeWidth + 2 * mCellMargin +  QgsComposerUtils::fontAscentMM( mHeaderFont );
+  }
+  return QSizeF( 0, height );
 }
 
 void QgsComposerTableV2::refreshAttributes()
@@ -542,4 +563,9 @@ void QgsComposerTableV2::drawVerticalGridLines( QPainter *painter, const QMap<in
 void QgsComposerTableV2::adjustFrameToSize()
 {
   mTableSize = QSizeF( totalWidth(), totalHeight() );
+  //force recalculation of frame rects, so that they are set to the correct
+  //fixed and minimum frame sizes
+  recalculateFrameRects();
+
+  recalculateFrameSizes();
 }

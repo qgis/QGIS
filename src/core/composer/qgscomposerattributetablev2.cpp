@@ -128,6 +128,7 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* compos
     //connect to atlas feature changes to update table rows
     connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshAttributes() ) );
   }
+  refreshAttributes();
 }
 
 QgsComposerAttributeTableV2::~QgsComposerAttributeTableV2()

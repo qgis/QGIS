@@ -47,13 +47,29 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     virtual ~QgsComposerMultiFrame();
     virtual QSizeF totalSize() const = 0;
 
-    /**Returns a fixed size for the frames, if desired.
+    /**Returns a fixed size for the frames, if desired. If the fixed frame size changes,
+     * the sizes of all frames can be recalculated by calling recalculateFrameRects().
+     * @param frameIndex frame number
      * @returns fixed size for frames. If the size has a width or height of 0, then
      * the frame size is not fixed in that direction and frames can have variable width
      * or height accordingly.
      * @note added in version 2.5
+     * @see minFrameSize
+     * @see recalculateFrameRects
     */
-    virtual QSizeF fixedFrameSize() const { return QSizeF( 0, 0 ); }
+    virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const { Q_UNUSED( frameIndex ); return QSizeF( 0, 0 ); }
+
+    /**Returns the minimum size size for the frames, if desired. If the minimum
+     * size changes, the sizes of all frames can be recalculated by calling
+     * recalculateFrameRects().
+     * @param frameIndex frame number
+     * @returns minimum size for frames. If the size has a width or height of 0, then
+     * the frame size has no minimum in that direction.
+     * @note added in version 2.5
+     * @see fixedFrameSize
+     * @see recalculateFrameRects
+    */
+    virtual QSizeF minFrameSize( const int frameIndex = -1 ) const { Q_UNUSED( frameIndex ); return QSizeF( 0, 0 ); }
 
     Q_DECL_DEPRECATED virtual void render( QPainter* p, const QRectF& renderExtent );
 
@@ -127,6 +143,15 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * the current size of the multiframe's content.
      */
     void recalculateFrameSizes();
+
+    /**Forces a recalculation of all the associated frame's scene rectangles. This
+     * method is useful for multiframes which implement a minFrameSize() or
+     * fixedFrameSize() method.
+     * @note added in version 2.5
+     * @see minFrameSize()
+     * @see fixedFrameSize()
+     */
+    void recalculateFrameRects();
 
   protected:
     QList<QgsComposerFrame*> mFrameItems;

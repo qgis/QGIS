@@ -176,6 +176,22 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
   }
 }
 
+void QgsComposerMultiFrame::recalculateFrameRects()
+{
+  if ( mFrameItems.size() < 1 )
+  {
+    //no frames, nothing to do
+    return;
+  }
+
+  QList<QgsComposerFrame*>::iterator frameIt = mFrameItems.begin();
+  for ( ; frameIt != mFrameItems.end(); ++frameIt )
+  {
+    ( *frameIt )->setSceneRect( QRectF(( *frameIt )->scenePos().x(), ( *frameIt )->scenePos().y(),
+                                       ( *frameIt )->rect().width(), ( *frameIt )->rect().height() ) );
+  }
+}
+
 QgsComposerFrame* QgsComposerMultiFrame::createNewFrame( QgsComposerFrame* currentFrame, QPointF pos, QSizeF size )
 {
   if ( !currentFrame )
