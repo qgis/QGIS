@@ -278,7 +278,13 @@ class PGRasterTable(PGTable, RasterTable):
 	def gdalUri(self):
 		uri = self.database().uri()
 		schema = ( u'schema=%s' % self.schemaName() ) if self.schemaName() else ''
-		gdalUri = u'PG: dbname=%s host=%s user=%s password=%s port=%s mode=2 %s table=%s' % (uri.database(), uri.host(), uri.username(), uri.password(), uri.port(), schema, self.name)
+		dbname = ( u'dbname=%s' % uri.database() ) if uri.database() else ''
+		host = ( u'host=%s' % uri.host() ) if uri.host() else ''
+		user = ( u'user=%s' % uri.username() ) if uri.username() else ''
+		passw = ( u'password=%s' % uri.password() ) if uri.password() else ''
+		port = ( u'port=%s' % uri.port() ) if uri.port() else ''
+		gdalUri = u'PG: %s %s %s %s %s mode=2 %s table=%s' % \
+		  (dbname, host, user, passw, port, schema, self.name)
 		return gdalUri
 
 	def mimeUri(self):
