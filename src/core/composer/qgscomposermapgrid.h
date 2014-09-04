@@ -280,7 +280,7 @@ class CORE_EXPORT QgsComposerMapGrid
 
     /**Constructor for QgsComposerMapGrid.
      * @param name friendly display name for grid
-     * @parm map QgsComposerMap the grid stack is attached to
+     * @param map QgsComposerMap the grid stack is attached to
     */
     QgsComposerMapGrid( const QString& name, QgsComposerMap* map );
 

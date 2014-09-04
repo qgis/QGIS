@@ -1506,7 +1506,7 @@ static QVariant fcnSpecialColumn( const QVariantList& values, const QgsFeature* 
   return QgsExpression::specialColumn( varName );
 }
 
-static QVariant fcnGetFeature( const QVariantList& values, const QgsFeature* f, QgsExpression* parent )
+static QVariant fcnGetFeature( const QVariantList& values, const QgsFeature *, QgsExpression* parent )
 {
   //arguments: 1. layer id / name, 2. key attribute, 3. eq value
   QString layerString = getStringValue( values.at( 0 ), parent );
