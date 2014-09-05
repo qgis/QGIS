@@ -2353,7 +2353,6 @@ void QgisApp::initLayerTreeView()
 
   QVBoxLayout* vboxLayout = new QVBoxLayout;
   vboxLayout->setMargin( 0 );
-  vboxLayout->setSpacing( 0 );
   vboxLayout->addLayout( toolbarLayout );
   vboxLayout->addWidget( mLayerTreeView );
 
