@@ -218,8 +218,12 @@ void QgsVectorGradientColorRampV2Dialog::updatePreview()
   QSize size( 300, 40 );
   lblPreview->setPixmap( QgsSymbolLayerV2Utils::colorRampPreviewPixmap( mRamp, size ) );
 
+  btnColor1->blockSignals( true );
   btnColor1->setColor( mRamp->color1() );
+  btnColor1->blockSignals( false );
+  btnColor2->blockSignals( true );
   btnColor2->setColor( mRamp->color2() );
+  btnColor2->blockSignals( false );
 }
 
 void QgsVectorGradientColorRampV2Dialog::setColor1( const QColor& color )
