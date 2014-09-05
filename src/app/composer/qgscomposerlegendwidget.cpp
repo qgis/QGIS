@@ -516,14 +516,24 @@ void QgsComposerLegendWidget::on_mMoveDownToolButton_clicked()
   if ( !index.isValid() || index.row() == mItemTreeView->model()->rowCount( parentIndex ) - 1 )
     return;
 
+  QgsLayerTreeNode* node = mItemTreeView->layerTreeModel()->index2node( index );
   QgsLayerTreeModelLegendNode* legendNode = mItemTreeView->layerTreeModel()->index2symnode( index );
-  if ( !legendNode )
+  if ( !node && !legendNode )
     return;
 
   mLegend->beginCommand( "Moved legend item down" );
 
-  _moveLegendNode( legendNode->parent(), index.row(), 1 );
-  mItemTreeView->layerTreeModel()->refreshLayerSymbology( legendNode->parent() );
+  if ( node )
+  {
+    QgsLayerTreeGroup* parentGroup = QgsLayerTree::toGroup( node->parent() );
+    parentGroup->insertChildNode( index.row() + 2, node->clone() );
+    parentGroup->removeChildNode( node );
+  }
+  else // legend node
+  {
+    _moveLegendNode( legendNode->parent(), index.row(), 1 );
+    mItemTreeView->layerTreeModel()->refreshLayerSymbology( legendNode->parent() );
+  }
 
   mItemTreeView->setCurrentIndex( mItemTreeView->layerTreeModel()->index( index.row() + 1, 0, parentIndex ) );
 
@@ -543,14 +553,24 @@ void QgsComposerLegendWidget::on_mMoveUpToolButton_clicked()
   if ( !index.isValid() || index.row() == 0 )
     return;
 
+  QgsLayerTreeNode* node = mItemTreeView->layerTreeModel()->index2node( index );
   QgsLayerTreeModelLegendNode* legendNode = mItemTreeView->layerTreeModel()->index2symnode( index );
-  if ( !legendNode )
+  if ( !node && !legendNode )
     return;
 
   mLegend->beginCommand( "Moved legend item up" );
 
-  _moveLegendNode( legendNode->parent(), index.row(), -1 );
-  mItemTreeView->layerTreeModel()->refreshLayerSymbology( legendNode->parent() );
+  if ( node )
+  {
+    QgsLayerTreeGroup* parentGroup = QgsLayerTree::toGroup( node->parent() );
+    parentGroup->insertChildNode( index.row() - 1, node->clone() );
+    parentGroup->removeChildNode( node );
+  }
+  else // legend node
+  {
+    _moveLegendNode( legendNode->parent(), index.row(), -1 );
+    mItemTreeView->layerTreeModel()->refreshLayerSymbology( legendNode->parent() );
+  }
 
   mItemTreeView->setCurrentIndex( mItemTreeView->layerTreeModel()->index( index.row() - 1, 0, parentIndex ) );
 
