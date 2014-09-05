@@ -1655,14 +1655,6 @@ void QgisApp::createToolBars()
   newLayerAction->setObjectName( "ActionNewLayer" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
-  // visibility groups tool button
-
-  bt = new QToolButton();
-  bt->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
-  bt->setPopupMode( QToolButton::InstantPopup );
-  bt->setMenu( QgsVisibilityGroups::instance()->menu() );
-  mMapNavToolBar->addWidget( bt );
-
   // Help Toolbar
 
   QAction* actionWhatsThis = QWhatsThis::createAction( this );
@@ -2325,7 +2317,49 @@ void QgisApp::initLayerTreeView()
   connect( mLayerTreeView, SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( activeLayerChanged( QgsMapLayer* ) ) );
   connect( mLayerTreeView->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( updateNewLayerInsertionPoint() ) );
 
-  mLayerTreeDock->setWidget( mLayerTreeView );
+  // add group tool button
+  QToolButton* btnAddGroup = new QToolButton;
+  btnAddGroup->setAutoRaise( true );
+  btnAddGroup->setIcon( QgsApplication::getThemeIcon( "/mActionFolder.png" ) );
+  btnAddGroup->setToolTip( tr( "Add Group" ) );
+  connect( btnAddGroup, SIGNAL( clicked() ), mLayerTreeView->defaultActions(), SLOT( addGroup() ) );
+
+  // visibility groups tool button
+  QToolButton* btnVisibilityGroups = new QToolButton;
+  btnVisibilityGroups->setAutoRaise( true );
+  btnVisibilityGroups->setToolTip( tr( "Manage Layer Visibility") );
+  btnVisibilityGroups->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
+  btnVisibilityGroups->setPopupMode( QToolButton::InstantPopup );
+  btnVisibilityGroups->setMenu( QgsVisibilityGroups::instance()->menu() );
+
+  // expand / collapse tool buttons
+  QToolButton* btnExpandAll = new QToolButton;
+  btnExpandAll->setAutoRaise( true );
+  btnExpandAll->setIcon( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ) );
+  btnExpandAll->setToolTip( tr( "Expand All" ) );
+  connect( btnExpandAll, SIGNAL( clicked() ), mLayerTreeView, SLOT( expandAll() ) );
+  QToolButton* btnCollapseAll = new QToolButton;
+  btnCollapseAll->setAutoRaise( true );
+  btnCollapseAll->setIcon( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ) );
+  btnCollapseAll->setToolTip( tr( "Collapse All" ) );
+  connect( btnCollapseAll, SIGNAL( clicked() ), mLayerTreeView, SLOT( collapseAll() ) );
+
+  QHBoxLayout* toolbarLayout = new QHBoxLayout;
+  toolbarLayout->addWidget( btnAddGroup );
+  toolbarLayout->addWidget( btnVisibilityGroups );
+  toolbarLayout->addWidget( btnExpandAll );
+  toolbarLayout->addWidget( btnCollapseAll );
+  toolbarLayout->addStretch();
+
+  QVBoxLayout* vboxLayout = new QVBoxLayout;
+  vboxLayout->setMargin( 0 );
+  vboxLayout->setSpacing( 0 );
+  vboxLayout->addLayout( toolbarLayout );
+  vboxLayout->addWidget( mLayerTreeView );
+
+  QWidget* w = new QWidget;
+  w->setLayout( vboxLayout );
+  mLayerTreeDock->setWidget( w );
   addDockWidget( Qt::LeftDockWidgetArea, mLayerTreeDock );
 
   mLayerTreeCanvasBridge = new QgsLayerTreeMapCanvasBridge( QgsProject::instance()->layerTreeRoot(), mMapCanvas, this );
