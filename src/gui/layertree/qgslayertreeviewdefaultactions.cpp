@@ -113,6 +113,8 @@ QAction* QgsLayerTreeViewDefaultActions::actionGroupSelected( QObject* parent )
 void QgsLayerTreeViewDefaultActions::addGroup()
 {
   QgsLayerTreeGroup* group = mView->currentGroupNode();
+  if ( !group )
+    group = mView->layerTreeModel()->rootGroup();
 
   QgsLayerTreeGroup* newGroup = group->addGroup( uniqueGroupName( group ) );
   mView->edit( mView->layerTreeModel()->node2index( newGroup ) );
@@ -165,8 +167,12 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer( QgsMapCanvas* canvas )
 
 void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas* canvas )
 {
+  QgsLayerTreeGroup* groupNode = mView->currentGroupNode();
+  if ( !groupNode )
+    return;
+
   QList<QgsMapLayer*> layers;
-  foreach ( QString layerId, mView->currentGroupNode()->findLayerIds() )
+  foreach ( QString layerId, groupNode->findLayerIds() )
     layers << QgsMapLayerRegistry::instance()->mapLayer( layerId );
 
   zoomToLayers( canvas, layers );

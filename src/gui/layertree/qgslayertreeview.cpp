@@ -224,7 +224,13 @@ QgsLayerTreeGroup* QgsLayerTreeView::currentGroupNode() const
     if ( QgsLayerTree::isGroup( parent ) )
       return QgsLayerTree::toGroup( node );
   }
-  // TODO: also handle if symbology is selected?
+
+  if ( QgsLayerTreeModelLegendNode* legendNode = layerTreeModel()->index2legendNode( selectionModel()->currentIndex() ) )
+  {
+    QgsLayerTreeLayer* parent = legendNode->parent();
+    if ( QgsLayerTree::isGroup( parent->parent() ) )
+      return QgsLayerTree::toGroup( parent->parent() );
+  }
 
   return 0;
 }
