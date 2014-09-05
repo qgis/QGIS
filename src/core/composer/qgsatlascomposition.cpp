@@ -506,7 +506,7 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
       // choose one of the predefined scales
       double newWidth = mOrigExtent.width();
       double newHeight = mOrigExtent.height();
-      const QVector<double>& scales = mPredefinedScales;
+      const QVector<qreal>& scales = mPredefinedScales;
       for ( int i = 0; i < scales.size(); i++ )
       {
         double ratio = scales[i] / originalScale;
@@ -768,7 +768,7 @@ bool QgsAtlasComposition::evalFeatureFilename()
   return true;
 }
 
-void QgsAtlasComposition::setPredefinedScales( const QVector<double>& scales )
+void QgsAtlasComposition::setPredefinedScales( const QVector<qreal>& scales )
 {
   mPredefinedScales = scales;
   // make sure the list is sorted

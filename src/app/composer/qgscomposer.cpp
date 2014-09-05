@@ -3629,7 +3629,7 @@ void QgsComposer::loadAtlasPredefinedScalesFromProject()
     return;
   }
   QgsAtlasComposition& atlasMap = mComposition->atlasComposition();
-  QVector<double> pScales;
+  QVector<qreal> pScales;
   // first look at project's scales
   QStringList scales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
   bool hasProjectScales( QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" ) );

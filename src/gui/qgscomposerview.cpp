@@ -865,7 +865,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       else
       {
         QgsComposerAttributeTable* newTable = new QgsComposerAttributeTable( composition() );
-        newTable->setSceneRect( QRectF( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), qMax( mRubberBandItem->rect().height(), 15.0 ) ) );
+        newTable->setSceneRect( QRectF( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), qMax( mRubberBandItem->rect().height(), (qreal)15.0 ) ) );
         QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
         if ( mapItemList.size() > 0 )
         {

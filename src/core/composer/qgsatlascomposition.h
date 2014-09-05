@@ -183,7 +183,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @see setPredefinedScales
      * @see QgsComposerMap::atlasScalingMode
     */
-    const QVector<double>& predefinedScales() const { return mPredefinedScales; }
+    const QVector<qreal>& predefinedScales() const { return mPredefinedScales; }
 
     /**Sets the list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @see predefinedScales
      * @see QgsComposerMap::atlasScalingMode
      */
-    void setPredefinedScales( const QVector<double>& scales );
+    void setPredefinedScales( const QVector<qreal>& scales );
 
     /** Begins the rendering. Returns true if successful, false if no matching atlas
       features found.*/
@@ -336,7 +336,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void computeExtent( QgsComposerMap *map );
 
     //list of predefined scales
-    QVector<double> mPredefinedScales;
+    QVector<qreal> mPredefinedScales;
 };
 
 #endif
