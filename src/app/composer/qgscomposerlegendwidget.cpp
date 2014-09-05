@@ -745,6 +745,11 @@ void QgsComposerLegendWidget::on_mEditPushButton_clicked()
   else if ( QgsLayerTree::isLayer( currentNode ) )
   {
     currentNode->setCustomProperty( "legend/title-label", newText );
+
+    // force update of label of the legend node with embedded icon (a bit clumsy i know)
+    QList<QgsLayerTreeModelLegendNode*> nodes = model->layerLegendNodes( QgsLayerTree::toLayer( currentNode ) );
+    if ( nodes.count() == 1 && nodes[0]->isEmbeddedInParent() )
+      nodes[0]->setUserLabel( QString() );
   }
   else if ( legendNode )
   {

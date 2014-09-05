@@ -305,7 +305,11 @@ void QgsSymbolV2LegendNode::updateLabel()
 
   if ( mEmbeddedInParent )
   {
-    mLabel = mUserLabel.isEmpty() ? mLayerNode->layerName() : mUserLabel;
+    QString layerName = mLayerNode->layerName();
+    if ( !mLayerNode->customProperty( "legend/title-label" ).isNull() )
+      layerName = mLayerNode->customProperty( "legend/title-label" ).toString();
+
+    mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
     if ( showFeatureCount && vl && vl->pendingFeatureCount() >= 0 )
       mLabel += QString( " [%1]" ).arg( vl->pendingFeatureCount() );
   }
