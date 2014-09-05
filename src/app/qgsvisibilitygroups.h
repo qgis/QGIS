@@ -19,6 +19,7 @@
 #include <QMap>
 #include <QObject>
 #include <QSet>
+#include <QStringList>
 
 class QAction;
 class QDomDocument;
@@ -71,6 +72,8 @@ class QgsVisibilityGroups : public QObject
 
     void readProject( const QDomDocument& doc );
     void writeProject( QDomDocument& doc );
+
+    void registryLayersRemoved( QStringList layerIDs );
 
   protected:
     QgsVisibilityGroups(); // singleton

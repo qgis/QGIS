@@ -47,6 +47,9 @@ QgsVisibilityGroups::QgsVisibilityGroups()
 
   connect( mMenu, SIGNAL( aboutToShow() ), this, SLOT( menuAboutToShow() ) );
 
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ),
+           this, SLOT( registryLayersRemoved( QStringList ) ) );
+
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
            this, SLOT( readProject( const QDomDocument & ) ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
@@ -226,8 +229,8 @@ void QgsVisibilityGroups::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent,
           foreach ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer ) )
           {
             Qt::CheckState shouldHaveState = checkedNodes.contains( legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() ) ? Qt::Checked : Qt::Unchecked;
-            if ( ( legendNode->flags() & Qt::ItemIsUserCheckable ) &&
-                 legendNode->data( Qt::CheckStateRole ).toInt() != shouldHaveState )
+            if (( legendNode->flags() & Qt::ItemIsUserCheckable ) &&
+                legendNode->data( Qt::CheckStateRole ).toInt() != shouldHaveState )
               legendNode->setData( shouldHaveState, Qt::CheckStateRole );
           }
         }
@@ -236,8 +239,8 @@ void QgsVisibilityGroups::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent,
           // all nodes should be checked
           foreach ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer ) )
           {
-            if ( ( legendNode->flags() & Qt::ItemIsUserCheckable ) &&
-                 legendNode->data( Qt::CheckStateRole ).toInt() != Qt::Checked )
+            if (( legendNode->flags() & Qt::ItemIsUserCheckable ) &&
+                legendNode->data( Qt::CheckStateRole ).toInt() != Qt::Checked )
               legendNode->setData( Qt::Checked, Qt::CheckStateRole );
           }
         }
@@ -369,4 +372,17 @@ void QgsVisibilityGroups::writeProject( QDomDocument& doc )
   }
 
   doc.firstChildElement( "qgis" ).appendChild( visGroupsElem );
+}
+
+void QgsVisibilityGroups::registryLayersRemoved( QStringList layerIDs )
+{
+  foreach ( QString layerID, layerIDs )
+  {
+    foreach ( QString groupName, mGroups.keys() )
+    {
+      GroupRecord& rec = mGroups[groupName];
+      rec.mVisibleLayerIDs.remove( layerID );
+      rec.mPerLayerCheckedLegendSymbols.remove( layerID );
+    }
+  }
 }
