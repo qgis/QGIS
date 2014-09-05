@@ -233,7 +233,17 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
   {
     QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( tempSymbol );
     if ( mRotation.data() ) markerSymbol->setAngle( rotation );
-    markerSymbol->setSize( sizeScale * static_cast<QgsMarkerSymbolV2*>( symbol )->size() );
+    switch ( mScaleMethod )
+    {
+      case QgsSymbolV2::ScaleDiameter:
+        markerSymbol->setSize( sizeScale * static_cast<QgsMarkerSymbolV2*>( symbol )->size() );
+        break;
+      case QgsSymbolV2::ScaleArea:
+        markerSymbol->setSize( sqrt( sizeScale ) * static_cast<QgsMarkerSymbolV2*>( symbol )->size() );
+        break;
+      default:
+        break;
+    }
     markerSymbol->setScaleMethod( mScaleMethod );
   }
   else if ( tempSymbol->type() == QgsSymbolV2::Line )
