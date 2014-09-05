@@ -197,13 +197,11 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     {
       QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
 
-      // if there's just on legend entry that should be embedded in layer - do that!
-      if ( testFlag( ShowSymbology ) && mSymbologyNodes[nodeLayer].count() == 1 && mSymbologyNodes[nodeLayer][0]->isEmbeddedInParent() )
-        return mSymbologyNodes[nodeLayer][0]->data( Qt::DecorationRole );
-
-      QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
+      QgsMapLayer* layer = nodeLayer->layer();
       if ( !layer )
         return QVariant();
+
+      // icons possibly overriding default icon
       if ( layer->type() == QgsMapLayer::RasterLayer )
       {
         if ( testFlag( ShowRasterPreviewIcon ) )
@@ -211,8 +209,6 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
           QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( layer );
           return QIcon( rlayer->previewAsPixmap( QSize( 32, 32 ) ) );
         }
-        else
-          return QgsLayerItem::iconRaster();
       }
       else if ( layer->type() == QgsMapLayer::VectorLayer )
       {
@@ -224,7 +220,19 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
           else
             return QIcon( QgsApplication::getThemePixmap( "/mIconEditable.png" ) );
         }
+      }
 
+      // if there's just on legend entry that should be embedded in layer - do that!
+      if ( testFlag( ShowSymbology ) && mSymbologyNodes[nodeLayer].count() == 1 && mSymbologyNodes[nodeLayer][0]->isEmbeddedInParent() )
+        return mSymbologyNodes[nodeLayer][0]->data( Qt::DecorationRole );
+
+      if ( layer->type() == QgsMapLayer::RasterLayer )
+      {
+        return QgsLayerItem::iconRaster();
+      }
+      else if ( layer->type() == QgsMapLayer::VectorLayer )
+      {
+        QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( layer );
         if ( vlayer->geometryType() == QGis::Point )
           return QgsLayerItem::iconPoint();
         else if ( vlayer->geometryType() == QGis::Line )
