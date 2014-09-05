@@ -18,7 +18,7 @@ import urllib2
 import etree
 from coverage import wcs100, wcs110, wcsBase
 
-def WebCoverageService(url, version=None, xml=None, cookies=None):
+def WebCoverageService(url, version=None, xml=None, cookies=None, timeout=30):
     ''' wcs factory function, returns a version specific WebCoverageService object '''
     
     if version is None:
@@ -26,11 +26,11 @@ def WebCoverageService(url, version=None, xml=None, cookies=None):
             reader = wcsBase.WCSCapabilitiesReader()
             request = reader.capabilities_url(url)
             if cookies is None:
-                xml = urllib2.urlopen(request).read()
+                xml = urllib2.urlopen(request, timeout=timeout).read()
             else:
                 req = urllib2.Request(request)
                 req.add_header('Cookie', cookies)   
-                xml=urllib2.urlopen(req)
+                xml=urllib2.urlopen(req, timeout=timeout)
         capabilities = etree.etree.fromstring(xml)
         version = capabilities.get('version')
         del capabilities

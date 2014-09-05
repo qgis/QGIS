@@ -83,7 +83,7 @@ class AbstractSWE(object):
         self.id             = testXMLAttribute(element,"id")   # string, optional
 
         # Elements
-        self.extension      = []                            # anyType, min=0, max=X
+        self.extention      = []                            # anyType, min=0, max=X
 
 class AbstractSWEIdentifiable(AbstractSWE):
     def __init__(self, element):

@@ -8,7 +8,7 @@
         <translation>Beheer verbindingen</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="61"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="62"/>
         <source>Save to file</source>
         <translation>Opslaan naar bestand</translation>
     </message>
@@ -18,52 +18,52 @@
         <translation>Openen</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="58"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="59"/>
         <source>Load from file</source>
         <translation>Bestand laden</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="59"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="60"/>
         <source>Load</source>
         <translation>Laden</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="62"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="63"/>
         <source>Save</source>
         <translation>Opslaan</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="70"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="71"/>
         <source>eXtensible Markup Language (*.xml *.XML)</source>
         <translation>eXtensible Markup Language (*.xml *.XML)</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="73"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="74"/>
         <source>Save connections</source>
         <translation>Verbindingen opslaan</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="77"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="78"/>
         <source>Load connections</source>
         <translation>Verbindingen laden</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="134"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="135"/>
         <source>Save Connections</source>
         <translation>Verbindingen opslaan</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="134"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="135"/>
         <source>Saved to %s</source>
         <translation>Opgeslagen als %s</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="156"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="157"/>
         <source>File %s exists. Overwrite?</source>
         <translation>Bestand %s bestaat al. Overschijven?</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="157"/>
+        <location filename="plugin/MetaSearch/dialogs/manageconnectionsdialog.py" line="158"/>
         <source>Loading Connections</source>
         <translation>Verbindingen worden geladen</translation>
     </message>
@@ -71,22 +71,22 @@
 <context>
     <name>MetaSearch</name>
     <message>
-        <location filename="../../../plugin.py" line="84"/>
+        <location filename="../../../plugin.py" line="83"/>
         <source>MetaSearch plugin</source>
         <translation>MetaSearch plugin</translation>
     </message>
     <message>
-        <location filename="../../../plugin.py" line="86"/>
+        <location filename="../../../plugin.py" line="85"/>
         <source>Search Metadata Catalogues</source>
         <translation>Zoek Metadata Catalogi</translation>
     </message>
     <message>
-        <location filename="../../../plugin.py" line="97"/>
+        <location filename="../../../plugin.py" line="96"/>
         <source>MetaSearch plugin help</source>
         <translation>MetaSearch plugin help</translation>
     </message>
     <message>
-        <location filename="../../../plugin.py" line="99"/>
+        <location filename="../../../plugin.py" line="98"/>
         <source>Get Help on MetaSearch</source>
         <translation>Hulp zoeken voor MetaSearch</translation>
     </message>
@@ -99,329 +99,324 @@
         <translation>MetaSearch</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="80"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="66"/>
         <source>Search</source>
         <translation>Zoeken</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="30"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="36"/>
         <source>Find</source>
         <translation>Vind</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="36"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="73"/>
         <source>Set global</source>
         <translation>Wereldbox</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="46"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="59"/>
         <source>Map extent</source>
         <translation>Kaart extent</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="53"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="148"/>
         <source>-180</source>
         <translation>-180</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="60"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="128"/>
         <source>90</source>
         <translation>90</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="70"/>
-        <source>Records</source>
-        <translation>Resultaten</translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="87"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="168"/>
         <source>-90</source>
         <translation>-90</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="94"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="108"/>
         <source>180</source>
         <translation>180</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="104"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="177"/>
         <source>        From</source>
         <translation>Van</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="111"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="52"/>
         <source>Keywords</source>
         <translation>Zoekwoorden</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="121"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="193"/>
         <source>Results</source>
         <translation>Resultaten</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="127"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="335"/>
         <source>&gt;</source>
         <translation>&gt;</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="134"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="264"/>
         <source>&lt;&lt;</source>
         <translation>&lt;&lt;</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="141"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="322"/>
         <source>Add WCS</source>
         <translation>WCS Toevoegen</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="148"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="277"/>
         <source>Add WMS/WMTS</source>
         <translation>WMS/WMTS Toevoegen</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="158"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="250"/>
         <source>&lt;</source>
         <translation>&lt;</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="165"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="296"/>
         <source>Add WFS</source>
         <translation>WFS Toevoegen</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="172"/>
-        <source>Abstract</source>
-        <translation>Samenvatting</translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="186"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="206"/>
         <source>Double click to see full record information</source>
         <translation>Dubbelklikken om de volledige record info te zien</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="211"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="231"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="216"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="236"/>
         <source>Title</source>
         <translation>Titel</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="224"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="257"/>
         <source>View search results as XML</source>
         <translation>Resultaten tonen als XML</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="231"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="309"/>
         <source>&gt;&gt;</source>
         <translation>&gt;&gt;</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="254"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="356"/>
         <source>Services</source>
         <translation>Services</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="263"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="365"/>
         <source>Service info</source>
         <translation>Service info</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="270"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="372"/>
         <source>GetCapabilities response</source>
         <translation>GetCapabilities antwoord</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="277"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="379"/>
         <source>New</source>
         <translation>Nieuw</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="284"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="386"/>
         <source>Edit</source>
         <translation>Aanpassen</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="291"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="393"/>
         <source>Delete</source>
         <translation>Verwijderen</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="298"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="400"/>
         <source>Save</source>
         <translation>Opslaan</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="312"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="414"/>
         <source>Add default services</source>
         <translation>Standaard services toevoegen</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="319"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="421"/>
         <source>Load</source>
         <translation>Laden</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="327"/>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="429"/>
         <source>Settings</source>
         <translation>Instellingen</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="339"/>
-        <source>Connection naming</source>
-        <translation>Namen voor verbindingen</translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="345"/>
-        <source>When saving the connection of an OWS service</source>
-        <translation>Bij het opslaan van een OWS service</translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="352"/>
-        <source>Use the OWS Service Title and ask before overwriting</source>
-        <translation>De OWS Service Title gebruiken en vragen om te overschrijven</translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="362"/>
-        <source>Use the OWS Service Title and always overwrite if already available</source>
-        <translation>De OWS Service Title gebruiken en altijd overschrijven</translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="369"/>
-        <source>Use a temporary name, which you can change later</source>
-        <translation>Een tijdelijke naam gebruiken welke u later kunt aanpassen</translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="181"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="169"/>
         <source>No services/connections defined. To get started with MetaSearch, create a new connection by clicking &apos;New&apos; or click &apos;Add default services&apos;.</source>
         <translation>Er zijn geen service/CSW verbindinen beschikbaar. Om te beginnen met MetaSearch, maak een nieuwe verbinding aan, of klik op &apos;Standaard services toevoegen&apos;.</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="278"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="266"/>
         <source>New Catalogue service</source>
         <translation>Nieuwe Catalogus service</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="291"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="279"/>
         <source>Edit Catalogue service</source>
         <translation>Catalogus service aanpassen</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="304"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="292"/>
         <source>Remove service %s?</source>
         <translation>Service %s verwijderen?</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="306"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="294"/>
         <source>Confirm delete</source>
         <translation>Verwijdering bevestigen</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="338"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="326"/>
         <source>%s exists.  Overwrite?</source>
         <translation>%s bestaat al. Overschrijven?</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="339"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="327"/>
         <source>Loading connections</source>
         <translation>Verbindingen laden</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="465"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="452"/>
         <source>Search error</source>
         <translation>Fout opgetreden tijdens zoekactie</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="465"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="452"/>
         <source>Search error: %s</source>
         <translation>Foutmeldinge: %s</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="691"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="457"/>
         <source>Connection error</source>
         <translation>Verbindingsfout</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="470"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="457"/>
         <source>Connection error: %s</source>
         <translation>Verbindingsfout: %s</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="476"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="463"/>
         <source>0 results</source>
         <translation>0 resultaten</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="489"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="476"/>
         <source>Showing %d - %d of %d result%s</source>
         <translation>%d - %d van de %d resultaten tonen</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="539"/>
-        <source>No abstract</source>
-        <translation>Geen samenvatting</translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="617"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="596"/>
         <source>End of results. Go to start?</source>
         <translation>Einde van resulaten. Terug naar start?</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="630"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="609"/>
         <source>Navigation</source>
         <translation>Navigeren</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="629"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="608"/>
         <source>Start of results. Go to end?</source>
         <translation>Start van de resultaten. Naar laatste?</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="690"/>
-        <source>Error connecting to %s: %s</source>
-        <translation>Fout bij verbinden met %s: %s</translation>
-    </message>
-    <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="713"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="664"/>
         <source>Connection %s exists. Overwrite?</source>
         <translation>Verbinding %s bestaat al. Overschrijven?</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="714"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="665"/>
         <source>Saving server</source>
         <translation>Server opslaan</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="781"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="735"/>
         <source>GetRecords error</source>
         <translation>GetRecords fout</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="781"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="735"/>
         <source>Error getting response: %s</source>
         <translation>Fout in de response: %s</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="851"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="805"/>
         <source>Error connecting to service: %s</source>
         <translation>Verbindingsfout bij service: %s</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="853"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="807"/>
         <source>Value Error: %s</source>
         <translation>Datawaarde Fout: %s</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="855"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="809"/>
         <source>Unknown Error: %s</source>
         <translation>Onbekende fout: %s</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="857"/>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="811"/>
         <source>CSW Connection error</source>
         <translation>CSW Verbindings fout</translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="92"/>
+        <source>Xmax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="115"/>
+        <source>Ymax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="135"/>
+        <source>Xmin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="155"/>
+        <source>Ymin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="441"/>
+        <source>Results paging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="453"/>
+        <source>Show</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/ui/maindialog.ui" line="476"/>
+        <source>results at a time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugin/MetaSearch/dialogs/maindialog.py" line="536"/>
+        <source>Coordinate Transformation Error</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -442,17 +437,17 @@
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/newconnectiondialog.py" line="67"/>
+        <location filename="plugin/MetaSearch/dialogs/newconnectiondialog.py" line="68"/>
         <source>Save connection</source>
         <translation>Verbinding opslaan</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/newconnectiondialog.py" line="55"/>
+        <location filename="plugin/MetaSearch/dialogs/newconnectiondialog.py" line="56"/>
         <source>Both Name and URL must be provided</source>
         <translation>Zowel Naam als URL zijn verplichte velden</translation>
     </message>
     <message>
-        <location filename="plugin/MetaSearch/dialogs/newconnectiondialog.py" line="67"/>
+        <location filename="plugin/MetaSearch/dialogs/newconnectiondialog.py" line="68"/>
         <source>Overwrite %s?</source>
         <translation>%s overschrijven?</translation>
     </message>

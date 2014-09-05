@@ -87,7 +87,7 @@ class MetaSearchPlugin(object):
 
         self.action_run.triggered.connect(self.run)
 
-        self.iface.addToolBarIcon(self.action_run)
+        self.iface.addWebToolBarIcon(self.action_run)
         self.iface.addPluginToWebMenu(self.web_menu, self.action_run)
 
         # help
@@ -110,8 +110,7 @@ class MetaSearchPlugin(object):
         # remove the plugin menu item and icon
         self.iface.removePluginWebMenu(self.web_menu, self.action_run)
         self.iface.removePluginWebMenu(self.web_menu, self.action_help)
-        self.iface.removeToolBarIcon(self.action_run)
-        self.iface.removeToolBarIcon(self.action_help)
+        self.iface.removeWebToolBarIcon(self.action_run)
 
     def run(self):
         """open MetaSearch"""

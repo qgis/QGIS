@@ -53,12 +53,18 @@ class SensorObservationService_1_0_0(object):
             self._capabilities = reader.read(self.url)
 
         # Avoid building metadata if the response is an Exception
-        se = self._capabilities.find(nspath_eval('ows:ExceptionReport', namespaces))
-        if se is not None: 
-            raise ows.ExceptionReport(se) 
+        if self._capabilities.tag == nspath_eval("ows:ExceptionReport", namespaces):
+            raise ows.ExceptionReport(self._capabilities)
 
         # build metadata objects
         self._build_metadata()
+
+    def getOperationByName(self, name):
+        """Return a named content item."""
+        for item in self.operations:
+            if item.name == name:
+                return item
+        raise KeyError("No operation named %s" % name)
 
     def _build_metadata(self):
         """ 
@@ -97,7 +103,10 @@ class SensorObservationService_1_0_0(object):
                                 method='Get',
                                 **kwargs):
 
-        base_url = self.get_operation_by_name('DescribeSensor').methods[method]['url']        
+        try:
+            base_url = next((m.get('url') for m in self.getOperationByName('DescribeSensor').methods if m.get('type').lower() == method.lower()))
+        except StopIteration:
+            base_url = self.url
         request = {'service': 'SOS', 'version': self.version, 'request': 'DescribeSensor'}
 
         # Required Fields
@@ -138,8 +147,11 @@ class SensorObservationService_1_0_0(object):
         **kwargs : extra arguments
             anything else e.g. vendor specific parameters
         """
+        try:
+            base_url = next((m.get('url') for m in self.getOperationByName('GetObservation').methods if m.get('type').lower() == method.lower()))
+        except StopIteration:
+            base_url = self.url
 
-        base_url = self.get_operation_by_name('GetObservation').methods[method]['url']        
         request = {'service': 'SOS', 'version': self.version, 'request': 'GetObservation'}
 
         # Required Fields

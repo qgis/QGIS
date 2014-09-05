@@ -11,7 +11,6 @@ import cgi
 from cStringIO import StringIO
 from urllib import urlencode
 from urllib2 import urlopen
-import logging
 from owslib.util import openURL, testXMLValue, nspath_eval, ServiceException
 from owslib.etree import etree
 from owslib.fgdc import Metadata
@@ -21,6 +20,7 @@ from owslib.fes import *
 from owslib.crs import Crs
 from owslib.feature import WebFeatureService_
 from owslib.namespaces import Namespaces
+from owslib.util import log
 
 def get_namespaces():
     n = Namespaces()
@@ -33,8 +33,8 @@ class WebFeatureService_1_1_0(WebFeatureService_):
     Implements IWebFeatureService.
     """
     def __new__(self,url, version, xml, parse_remote_metadata=False):
-        """ overridden __new__ method 
-        
+        """ overridden __new__ method
+
         @type url: string
         @param url: url of WFS capabilities document
         @type xml: string
@@ -45,19 +45,16 @@ class WebFeatureService_1_1_0(WebFeatureService_):
         """
         obj=object.__new__(self)
         obj.__init__(url, version, xml, parse_remote_metadata)
-        self.log = logging.getLogger()
-        consoleh  = logging.StreamHandler()
-        self.log.addHandler(consoleh)
         return obj
-    
+
     def __getitem__(self,name):
         ''' check contents dictionary to allow dict like access to service layers'''
         if name in self.__getattribute__('contents').keys():
             return self.__getattribute__('contents')[name]
         else:
             raise KeyError, "No content named %s" % name
-    
-    
+
+
     def __init__(self, url, version, xml=None, parse_remote_metadata=False):
         """Initialize."""
         self.url = url
@@ -70,7 +67,7 @@ class WebFeatureService_1_1_0(WebFeatureService_):
         else:
             self._capabilities = reader.read(self.url)
         self._buildMetadata(parse_remote_metadata)
-    
+
     def _buildMetadata(self, parse_remote_metadata=False):
         '''set up capabilities metadata objects: '''
 
@@ -89,43 +86,43 @@ class WebFeatureService_1_1_0(WebFeatureService_):
         val = self._capabilities.find(util.nspath_eval('ogc:Filter_Capabilities', namespaces))
         self.filters=FilterCapabilities(val)
 
-        #serviceContents metadata: our assumption is that services use a top-level 
-        #layer as a metadata organizer, nothing more. 
-        
-        self.contents={} 
+        #serviceContents metadata: our assumption is that services use a top-level
+        #layer as a metadata organizer, nothing more.
+
+        self.contents={}
         features = self._capabilities.findall(nspath_eval('wfs:FeatureTypeList/wfs:FeatureType', namespaces))
         for feature in features:
             cm=ContentMetadata(feature, parse_remote_metadata)
-            self.contents[cm.id]=cm       
-        
+            self.contents[cm.id]=cm
+
         #exceptions
         self.exceptions = [f.text for f \
                 in self._capabilities.findall('Capability/Exception/Format')]
-      
-    def getcapabilities(self):
-        """Request and return capabilities document from the WFS as a 
+
+    def getcapabilities(self, timeout=30):
+        """Request and return capabilities document from the WFS as a
         file-like object.
         NOTE: this is effectively redundant now"""
         reader = WFSCapabilitiesReader(self.version)
-        return urlopen(reader.capabilities_url(self.url))
-    
+        return urlopen(reader.capabilities_url(self.url), timeout=timeout)
+
     def items(self):
         '''supports dict-like items() access'''
         items=[]
         for item in self.contents:
             items.append((item,self.contents[item]))
         return items
-    
+
     def getfeature(self, typename=None, filter=None, bbox=None, featureid=None,
                    featureversion=None, propertyname=['*'], maxfeatures=None,
-                   srsname=None, method='Get'):
+                   srsname=None, outputFormat=None, method='Get'):
         """Request and return feature data as a file-like object.
-        
+
         Parameters
         ----------
         typename : list
             List of typenames (string)
-        filter : string 
+        filter : string
             XML-encoded OGC filter expression.
         bbox : tuple
             (left, bottom, right, top) in the feature type's coordinates.
@@ -141,7 +138,9 @@ class WebFeatureService_1_1_0(WebFeatureService_):
             Qualified name of the HTTP DCP method to use.
         srsname: string
             EPSG code to request the data in
-            
+        outputFormat: string (optional)
+            Requested response format of the request.
+
         There are 3 different modes of use
 
         1) typename and bbox (simple spatial query). It is assumed, that
@@ -149,27 +148,25 @@ class WebFeatureService_1_1_0(WebFeatureService_):
         2) typename and filter (more expressive)
         3) featureid (direct access to known features)
         """
-        base_url = self.getOperationByName('GetFeature').methods[method]['url']
+        try:
+            base_url = next((m.get('url') for m in self.getOperationByName('GetFeature').methods if m.get('type').lower() == method.lower()))
+        except StopIteration:
+            base_url = self.url
         request = {'service': 'WFS', 'version': self.version, 'request': 'GetFeature'}
-        srs_func = None
 
-        if type(typename) == type(""):
-            typename=[typename]
-        
-        if srsname:
-            # check, if desired SRS is supported by the service
-            if typename:
+        if not isinstance(typename, list):
+            typename = [typename]
 
-                # convert srsname string to Crs object
-                srsnameobj = self.getSRS(srsname,typename[0])
-
-                if srsname:
-                    # set the srsname string with propper function
-                    # (getcode or getcodeurn)
-                    request['srsname'] = srsnameobj.encoding == "urn" and\
-                                        srsnameobj.getcodeurn() or srsnameobj.getcode()
+        if srsname is not None:
+            # check, if desired SRS is supported by the service for this typename
+            if typename is not None:
+                # convert srsname string to Crs object found in GetCaps
+                srsnameobj = self.getSRS(srsname, typename[0])
+                if srsnameobj is not None:
+                    request['srsname'] = srsnameobj.id
                 else:
-                    raise util.ServiceException, "SRSNAME %s not supported" % srsname
+                    options = ", ".join(map(lambda x: x.id, self.contents[typename[0]].crsOptions))
+                    raise ServiceException("SRSNAME %s not supported.  Options: %s" % (srsname, options))
             else:
                 request['srsname'] = str(srsname)
 
@@ -179,25 +176,31 @@ class WebFeatureService_1_1_0(WebFeatureService_):
 
         # bbox
         elif bbox and typename:
-
-            request["bbox"] = self.getBBOXKVP(bbox,typename)
+            request["bbox"] = self.getBBOXKVP(bbox, typename)
 
         # or filter
         elif filter and typename:
             request['filter'] = str(filter)
-        
-            
+
         assert len(typename) > 0
         request['typename'] = ','.join(typename)
-        
-        if propertyname:
+
+        if propertyname is not None:
+            if not isinstance(propertyname, list):
+                propertyname = [propertyname]
             request['propertyname'] = ','.join(propertyname)
-        if featureversion: request['featureversion'] = str(featureversion)
-        if maxfeatures: request['maxfeatures'] = str(maxfeatures)
+
+        if featureversion is not None:
+            request['featureversion'] = str(featureversion)
+        if maxfeatures is not None:
+            request['maxfeatures'] = str(maxfeatures)
+        if outputFormat is not None:
+            request["outputFormat"] = outputFormat
 
         data = urlencode(request)
+        log.debug("Making request: %s?%s" % (base_url, data))
         u = openURL(base_url, data, method)
-        
+
         # check for service exceptions, rewrap, and return
         # We're going to assume that anything with a content-length > 32k
         # is data. We'll check anything smaller.
@@ -208,16 +211,22 @@ class WebFeatureService_1_1_0(WebFeatureService_):
             data = u.read()
             have_read = True
             length = len(data)
-     
+
         if length < 32000:
             if not have_read:
                 data = u.read()
-            tree = etree.fromstring(data)
-            if tree.tag == "{%s}ServiceExceptionReport" % namespaces["ogc"]:
-                se = tree.find(nspath_eval('ServiceException', namespaces["ogc"]))
-                raise util.ServiceException, str(se.text).strip()
 
-            return StringIO(data)
+            try:
+                tree = etree.fromstring(data)
+            except BaseException:
+                # Not XML
+                return StringIO(data)
+            else:
+                if tree.tag == "{%s}ServiceExceptionReport" % namespaces["ogc"]:
+                    se = tree.find(nspath_eval('ServiceException', namespaces["ogc"]))
+                    raise ServiceException(str(se.text).strip())
+                else:
+                    return StringIO(data)
         else:
             if have_read:
                 return StringIO(data)
@@ -234,11 +243,11 @@ class WebFeatureService_1_1_0(WebFeatureService_):
 
 class ContentMetadata:
     """Abstraction for WFS metadata.
-    
+
     Implements IMetadata.
     """
 
-    def __init__(self, elem, parse_remote_metadata=False):
+    def __init__(self, elem, parse_remote_metadata=False, timeout=30):
         """."""
         self.id = testXMLValue(elem.find(nspath_eval('wfs:Name', namespaces)))
         self.title = testXMLValue(elem.find(nspath_eval('wfs:Title', namespaces)))
@@ -263,7 +272,7 @@ class ContentMetadata:
         self.verbOptions = [op.text for op in elem.findall(nspath_eval('wfs:Operations/wfs:Operation', namespaces))]
 
         # output formats
-        self.verbOptions = [op.text for op in elem.findall(nspath_eval('wfs:OutputFormats/wfs:Format', namespaces))]
+        self.outputFormats = [op.text for op in elem.findall(nspath_eval('wfs:OutputFormats/wfs:Format', namespaces))]
 
         # MetadataURLs
         self.metadataUrls = []
@@ -276,7 +285,7 @@ class ContentMetadata:
 
             if metadataUrl['url'] is not None and parse_remote_metadata:  # download URL
                 try:
-                    content = urlopen(metadataUrl['url'])
+                    content = urlopen(metadataUrl['url'], timeout=timeout)
                     doc = etree.parse(content)
                     if metadataUrl['type'] is not None:
                         if metadataUrl['type'] == 'FGDC':
@@ -321,7 +330,7 @@ class WFSCapabilitiesReader(object):
         urlqs = urlencode(tuple(qs))
         return service_url.split('?')[0] + '?' + urlqs
 
-    def read(self, url):
+    def read(self, url, timeout=30):
         """Get and parse a WFS capabilities document, returning an
         instance of WFSCapabilitiesInfoset
 
@@ -329,9 +338,11 @@ class WFSCapabilitiesReader(object):
         ----------
         url : string
             The URL to the WFS capabilities document.
+        timeout : number
+            A timeout value (in seconds) for the request.
         """
         request = self.capabilities_url(url)
-        u = urlopen(request)
+        u = urlopen(request, timeout=timeout)
         return etree.fromstring(u.read())
 
     def readString(self, st):
@@ -343,4 +354,4 @@ class WFSCapabilitiesReader(object):
         if not isinstance(st, str):
             raise ValueError("String must be of type string, not %s" % type(st))
         return etree.fromstring(st)
-    
+

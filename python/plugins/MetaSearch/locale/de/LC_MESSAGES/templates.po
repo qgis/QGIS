@@ -1,13 +1,13 @@
 # 
 # Translators:
-# macho <werner.macho@gmail.com>, 2014
+# Werner Macho <werner.macho@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: MetaSearch\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-25 12:58-0500\n"
 "PO-Revision-Date: 2014-03-08 12:25+0000\n"
-"Last-Translator: macho <werner.macho@gmail.com>\n"
+"Last-Translator: Werner Macho <werner.macho@gmail.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/MetaSearch/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"

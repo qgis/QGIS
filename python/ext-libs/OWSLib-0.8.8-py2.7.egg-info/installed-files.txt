@@ -1,5 +1,3 @@
-../tests/utils.py
-../tests/__init__.py
 ../owslib/sos.py
 ../owslib/etree.py
 ../owslib/wms.py
@@ -40,8 +38,6 @@
 ../owslib/swe/observation/sos200.py
 ../owslib/swe/observation/sos100.py
 ../owslib/swe/observation/__init__.py
-../tests/utils.pyc
-../tests/__init__.pyc
 ../owslib/sos.pyc
 ../owslib/etree.pyc
 ../owslib/wms.pyc

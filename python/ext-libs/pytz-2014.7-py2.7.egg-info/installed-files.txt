@@ -51,6 +51,7 @@
 ../pytz/zoneinfo/Egypt
 ../pytz/zoneinfo/zone.tab
 ../pytz/zoneinfo/MET
+../pytz/zoneinfo/zone1970.tab
 ../pytz/zoneinfo/MST
 ../pytz/zoneinfo/NZ-CHAT
 ../pytz/zoneinfo/Europe/Gibraltar
@@ -156,6 +157,7 @@
 ../pytz/zoneinfo/Asia/Kathmandu
 ../pytz/zoneinfo/Asia/Damascus
 ../pytz/zoneinfo/Asia/Baku
+../pytz/zoneinfo/Asia/Srednekolymsk
 ../pytz/zoneinfo/Asia/Anadyr
 ../pytz/zoneinfo/Asia/Baghdad
 ../pytz/zoneinfo/Asia/Kuala_Lumpur
@@ -173,6 +175,7 @@
 ../pytz/zoneinfo/Asia/Hebron
 ../pytz/zoneinfo/Asia/Tokyo
 ../pytz/zoneinfo/Asia/Novokuznetsk
+../pytz/zoneinfo/Asia/Chita
 ../pytz/zoneinfo/Asia/Dushanbe
 ../pytz/zoneinfo/Asia/Aqtobe
 ../pytz/zoneinfo/Asia/Tel_Aviv
@@ -277,6 +280,7 @@
 ../pytz/zoneinfo/Antarctica/South_Pole
 ../pytz/zoneinfo/Antarctica/Davis
 ../pytz/zoneinfo/Antarctica/Palmer
+../pytz/zoneinfo/Antarctica/Troll
 ../pytz/zoneinfo/Antarctica/Rothera
 ../pytz/zoneinfo/Antarctica/DumontDUrville
 ../pytz/zoneinfo/Antarctica/McMurdo

@@ -114,10 +114,12 @@ class Namespaces(object):
             Example:
             --------
             >>> ns = Namespaces()
-            >>> ns.get_namespaces(['csw','gmd'])
-            { 'csw' : http://www.opengis.net/cat/csw/2.0.2', 'gmd' : 'http://www.isotc211.org/2005/gmd' }
-            >>> ns.get_namespaces('csw')
-            { 'csw' : http://www.opengis.net/cat/csw/2.0.2' }
+            >>> x = ns.get_namespaces(['csw','gmd'])
+            >>> x == {'csw': 'http://www.opengis.net/cat/csw/2.0.2', 'gmd': 'http://www.isotc211.org/2005/gmd'}
+            True
+            >>> x = ns.get_namespaces('csw')
+            >>> x == {'csw': 'http://www.opengis.net/cat/csw/2.0.2'}
+            True
             >>> ns.get_namespaces()
             {...}
         """
@@ -130,7 +132,12 @@ class Namespaces(object):
 
         retval = {}
         for key in keys:
-            if key in self.namespace_dict.keys():
-                retval[key] = self.namespace_dict[key]
+            retval[key] = self.get_namespace(key)
 
         return retval
+
+    def get_namespace_from_url(self, url):
+        for k, v in self.namespace_dict.items():
+            if v == url:
+                return k
+        return None

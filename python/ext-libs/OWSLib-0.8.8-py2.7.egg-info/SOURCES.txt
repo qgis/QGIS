@@ -8,6 +8,7 @@ LICENSE.txt
 MANIFEST.in
 README.txt
 VERSION.txt
+requirements-2.6.txt
 requirements-dev.txt
 requirements.txt
 setup.cfg
@@ -57,5 +58,3 @@ owslib/waterml/__init__.py
 owslib/waterml/wml.py
 owslib/waterml/wml10.py
 owslib/waterml/wml11.py
-tests/__init__.py
-tests/utils.py

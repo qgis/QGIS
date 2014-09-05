@@ -20,6 +20,9 @@ import os, errno
 from owslib.coverage import wcsdecoder
 from owslib.crs import Crs
 
+import logging
+from owslib.util import log
+
 def ns(tag):
     return '{http://www.opengis.net/wcs/1.1}'+tag
 
@@ -132,12 +135,15 @@ class WebCoverageService_1_1_0(WCSBase):
         if store = true, returns a coverages XML file
         if store = false, returns a multipart mime
         """
-        self.log.debug('WCS 1.1.0 DEBUG: Parameters passed to GetCoverage: identifier=%s, bbox=%s, time=%s, format=%s,        rangesubset=%s, gridbaseCRS=%s, gridtype=%s, gridCS=%s, gridorigin=%s, gridoffsets=%s, method=%s, other_arguments=%s'%(identifier, bbox, time, format, rangesubset, gridbaseCRS, gridtype, gridCS, gridorigin, gridoffsets, method, str(kwargs)))
-        
+        if log.isEnabledFor(logging.DEBUG):
+            log.debug('WCS 1.1.0 DEBUG: Parameters passed to GetCoverage: identifier=%s, bbox=%s, time=%s, format=%s, rangesubset=%s, gridbaseCRS=%s, gridtype=%s, gridCS=%s, gridorigin=%s, gridoffsets=%s, method=%s, other_arguments=%s'%(identifier, bbox, time, format, rangesubset, gridbaseCRS, gridtype, gridCS, gridorigin, gridoffsets, method, str(kwargs)))
         
         if method == 'Get':
             method='{http://www.opengis.net/wcs/1.1/ows}Get'
-        base_url = self.getOperationByName('GetCoverage').methods[method]['url']
+        try:
+            base_url = next((m.get('url') for m in self.getOperationByName('GetCoverage').methods if m.get('type').lower() == method.lower()))
+        except StopIteration:
+            base_url = self.url
 
 
         #process kwargs

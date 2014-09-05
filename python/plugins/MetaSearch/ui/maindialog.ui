@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>598</width>
-    <height>650</height>
+    <width>653</width>
+    <height>550</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,82 +26,23 @@
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QGroupBox" name="groupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>Find</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="2" column="6">
-           <widget class="QPushButton" name="btnGlobalBbox">
-            <property name="text">
-             <string>Set global</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="5" colspan="2">
-           <widget class="QComboBox" name="cmbConnectionsSearch"/>
-          </item>
-          <item row="2" column="5">
-           <widget class="QPushButton" name="btnCanvasBbox">
-            <property name="text">
-             <string>Map extent</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QLineEdit" name="leWest">
-            <property name="text">
-             <string>-180</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="4">
-           <widget class="QLineEdit" name="leNorth">
-            <property name="text">
-             <string>90</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="5">
-           <widget class="QSpinBox" name="spnRecords"/>
-          </item>
-          <item row="3" column="6">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Records</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" colspan="5">
-           <widget class="QPushButton" name="btnSearch">
-            <property name="text">
-             <string>Search</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QLineEdit" name="leSouth">
-            <property name="text">
-             <string>-90</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="3">
-           <widget class="QLineEdit" name="leEast">
-            <property name="text">
-             <string>180</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2" colspan="2">
-           <widget class="QLineEdit" name="leKeywords"/>
-          </item>
-          <item row="0" column="4">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>        From</string>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="leKeywords">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
            </widget>
           </item>
@@ -112,67 +53,146 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="3" colspan="2">
+           <widget class="QPushButton" name="btnCanvasBbox">
+            <property name="text">
+             <string>Map extent</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="5">
+           <widget class="QPushButton" name="btnSearch">
+            <property name="text">
+             <string>Search</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3" colspan="2">
+           <widget class="QPushButton" name="btnGlobalBbox">
+            <property name="text">
+             <string>Set global</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3" colspan="3">
+           <widget class="QComboBox" name="cmbConnectionsSearch">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" rowspan="2" colspan="3">
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Xmax</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="leEast">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>85</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>180</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>Ymax</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3" colspan="2">
+             <widget class="QLineEdit" name="leNorth">
+              <property name="minimumSize">
+               <size>
+                <width>85</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>90</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>Xmin</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="leWest">
+              <property name="minimumSize">
+               <size>
+                <width>85</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>-180</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Ymin</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3" colspan="2">
+             <widget class="QLineEdit" name="leSouth">
+              <property name="minimumSize">
+               <size>
+                <width>85</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>-90</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>        From</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
        <item>
         <widget class="QGroupBox" name="groupBox_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>Results</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
-          <item row="2" column="2">
-           <widget class="QPushButton" name="btnNext">
-            <property name="text">
-             <string>&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="btnFirst">
-            <property name="text">
-             <string>&lt;&lt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="2">
-           <widget class="QPushButton" name="btnAddToWcs">
-            <property name="text">
-             <string>Add WCS</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QPushButton" name="btnAddToWms">
-            <property name="text">
-             <string>Add WMS/WMTS</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0" colspan="5">
-           <widget class="QTextEdit" name="textAbstract"/>
-          </item>
-          <item row="2" column="1">
-           <widget class="QPushButton" name="btnPrev">
-            <property name="text">
-             <string>&lt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QPushButton" name="btnAddToWfs">
-            <property name="text">
-             <string>Add WFS</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Abstract</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0" colspan="3">
            <widget class="QLabel" name="lblResults">
             <property name="text">
@@ -218,6 +238,19 @@
             </column>
            </widget>
           </item>
+          <item row="2" column="1">
+           <widget class="QPushButton" name="btnPrev">
+            <property name="minimumSize">
+             <size>
+              <width>145</width>
+              <height>27</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>&lt;</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="3" colspan="2">
            <widget class="QPushButton" name="btnShowXml">
             <property name="text">
@@ -225,10 +258,81 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="3">
+          <item row="2" column="0">
+           <widget class="QPushButton" name="btnFirst">
+            <property name="text">
+             <string>&lt;&lt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QPushButton" name="btnAddToWms">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Add WMS/WMTS</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QPushButton" name="btnAddToWfs">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>145</width>
+              <height>27</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Add WFS</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="4">
            <widget class="QPushButton" name="btnLast">
+            <property name="minimumSize">
+             <size>
+              <width>140</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>&gt;&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="3">
+           <widget class="QPushButton" name="btnAddToWcs">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Add WCS</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3">
+           <widget class="QPushButton" name="btnNext">
+            <property name="minimumSize">
+             <size>
+              <width>140</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>&gt;</string>
             </property>
            </widget>
           </item>
@@ -237,14 +341,12 @@
          <zorder>lblResults</zorder>
          <zorder>btnPrev</zorder>
          <zorder>btnFirst</zorder>
-         <zorder>btnNext</zorder>
-         <zorder>label_4</zorder>
-         <zorder>textAbstract</zorder>
-         <zorder>btnAddToWms</zorder>
          <zorder>btnShowXml</zorder>
-         <zorder>btnLast</zorder>
+         <zorder>btnAddToWms</zorder>
          <zorder>btnAddToWfs</zorder>
+         <zorder>btnLast</zorder>
          <zorder>btnAddToWcs</zorder>
+         <zorder>btnNext</zorder>
         </widget>
        </item>
       </layout>
@@ -326,64 +428,57 @@
       <attribute name="title">
        <string>Settings</string>
       </attribute>
-      <widget class="QGroupBox" name="saveStrategyGroup">
+      <widget class="QGroupBox" name="groupBox_3">
        <property name="geometry">
         <rect>
          <x>10</x>
          <y>10</y>
-         <width>558</width>
-         <height>548</height>
+         <width>571</width>
+         <height>71</height>
         </rect>
        </property>
        <property name="title">
-        <string>Connection naming</string>
+        <string>Results paging</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="QLabel" name="lblSaveStrategy">
-          <property name="text">
-           <string>When saving the connection of an OWS service</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="radioTitleAsk">
-          <property name="text">
-           <string>Use the OWS Service Title and ask before overwriting</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="radioTitleNoAsk">
-          <property name="text">
-           <string>Use the OWS Service Title and always overwrite if already available</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="radioTempName">
-          <property name="text">
-           <string>Use a temporary name, which you can change later</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
+       <widget class="QLabel" name="label_5">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>30</y>
+          <width>41</width>
+          <height>26</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Show</string>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="spnRecords">
+        <property name="geometry">
+         <rect>
+          <x>60</x>
+          <y>30</y>
+          <width>104</width>
+          <height>26</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_2">
+        <property name="geometry">
+         <rect>
+          <x>170</x>
+          <y>30</y>
+          <width>229</width>
+          <height>26</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>results at a time</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </widget>
      </widget>
     </widget>
