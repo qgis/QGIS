@@ -439,7 +439,7 @@ void QgsComposerLegend::invalidateCurrentMap()
 QgsLegendModelV2::QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject* parent )
     : QgsLayerTreeModel( rootNode, parent )
 {
-  setFlag( QgsLayerTreeModel::AllowSymbologyChangeState, false );
+  setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
 }
 
@@ -468,7 +468,7 @@ QVariant QgsLegendModelV2::data( const QModelIndex& index, int role ) const
 Qt::ItemFlags QgsLegendModelV2::flags( const QModelIndex& index ) const
 {
   // make the legend nodes selectable even if they are not by default
-  if ( index2symnode( index ) )
+  if ( index2legendNode( index ) )
     return QgsLayerTreeModel::flags( index ) | Qt::ItemIsSelectable;
 
   return QgsLayerTreeModel::flags( index );

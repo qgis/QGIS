@@ -397,7 +397,7 @@ void QgisApp::emitCustomSrsValidation( QgsCoordinateReferenceSystem &srs )
 void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
 {
   // temporary solution for WMS legend
-  if ( mLayerTreeView->layerTreeModel()->isIndexSymbologyNode( index ) )
+  if ( mLayerTreeView->layerTreeModel()->index2legendNode( index ) )
   {
     QModelIndex parent = mLayerTreeView->layerTreeModel()->parent( index );
     QgsLayerTreeNode* node = mLayerTreeView->layerTreeModel()->index2node( parent );
@@ -2306,7 +2306,7 @@ void QgisApp::initLayerTreeView()
   model->setFlag( QgsLayerTreeModel::AllowNodeReorder );
   model->setFlag( QgsLayerTreeModel::AllowNodeRename );
   model->setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
-  model->setAutoCollapseSymbologyNodes( 10 );
+  model->setAutoCollapseLegendNodes( 10 );
 
   mLayerTreeView->setModel( model );
   mLayerTreeView->setMenuProvider( new QgsAppLayerTreeViewMenuProvider( mLayerTreeView, mMapCanvas ) );

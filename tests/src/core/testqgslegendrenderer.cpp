@@ -180,7 +180,7 @@ void TestQgsLegendRenderer::testModel()
   // set user text
   QgsMapLayerLegendUtils::setLegendNodeUserLabel( nodeVL1, 0, "Hurray" );
 
-  legendModel.refreshLayerSymbology( nodeVL1 );
+  legendModel.refreshLayerLegend( nodeVL1 );
 
   QList<QgsLayerTreeModelLegendNode*> lstNodes2 = legendModel.layerLegendNodes( nodeVL1 );
   QCOMPARE( lstNodes2[0]->data( Qt::DisplayRole ).toString(), QString( "Hurray" ) );

@@ -33,8 +33,8 @@
 QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent )
     : QAbstractItemModel( parent )
     , mRootNode( rootNode )
-    , mFlags( ShowSymbology | AllowSymbologyChangeState )
-    , mAutoCollapseSymNodesCount( -1 )
+    , mFlags( ShowLegend | AllowLegendChangeState )
+    , mAutoCollapseLegendNodesCount( -1 )
 {
   connectToRootNode();
 
@@ -43,10 +43,10 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *pare
 
 QgsLayerTreeModel::~QgsLayerTreeModel()
 {
-  foreach ( QList<QgsLayerTreeModelLegendNode*> nodeL, mOriginalSymbologyNodes )
+  foreach ( QList<QgsLayerTreeModelLegendNode*> nodeL, mOriginalLegendNodes )
     qDeleteAll( nodeL );
-  mOriginalSymbologyNodes.clear();
-  mSymbologyNodes.clear(); // does not own the nodes
+  mOriginalLegendNodes.clear();
+  mLegendNodes.clear(); // does not own the nodes
 }
 
 QgsLayerTreeNode* QgsLayerTreeModel::index2node( const QModelIndex& index ) const
@@ -58,16 +58,16 @@ QgsLayerTreeNode* QgsLayerTreeModel::index2node( const QModelIndex& index ) cons
   return qobject_cast<QgsLayerTreeNode*>( obj );
 }
 
-QgsLayerTreeModelLegendNode* QgsLayerTreeModel::index2symnode( const QModelIndex& index )
+QgsLayerTreeModelLegendNode* QgsLayerTreeModel::index2legendNode( const QModelIndex& index )
 {
   return qobject_cast<QgsLayerTreeModelLegendNode*>( reinterpret_cast<QObject*>( index.internalPointer() ) );
 }
 
-QModelIndex QgsLayerTreeModel::symnode2index( QgsLayerTreeModelLegendNode* legendNode )
+QModelIndex QgsLayerTreeModel::legendNode2index( QgsLayerTreeModelLegendNode* legendNode )
 {
   QModelIndex parentIndex = node2index( legendNode->parent() );
   Q_ASSERT( parentIndex.isValid() );
-  int row = mSymbologyNodes[legendNode->parent()].indexOf( legendNode );
+  int row = mLegendNodes[legendNode->parent()].indexOf( legendNode );
   Q_ASSERT( row >= 0 );
   return index( row, 0, parentIndex );
 }
@@ -75,7 +75,7 @@ QModelIndex QgsLayerTreeModel::symnode2index( QgsLayerTreeModelLegendNode* legen
 
 int QgsLayerTreeModel::rowCount( const QModelIndex &parent ) const
 {
-  if ( index2symnode( parent ) )
+  if ( index2legendNode( parent ) )
   {
     return 0; // they are leaves
   }
@@ -89,10 +89,10 @@ int QgsLayerTreeModel::rowCount( const QModelIndex &parent ) const
   {
     QgsLayerTreeLayer* nL = QgsLayerTree::toLayer( n );
 
-    if ( mSymbologyNodes[nL].count() == 1 && mSymbologyNodes[nL][0]->isEmbeddedInParent() )
+    if ( mLegendNodes[nL].count() == 1 && mLegendNodes[nL][0]->isEmbeddedInParent() )
       return 0;
 
-    return mSymbologyNodes[nL].count();
+    return mLegendNodes[nL].count();
   }
 
   return n->children().count();
@@ -113,7 +113,7 @@ QModelIndex QgsLayerTreeModel::index( int row, int column, const QModelIndex &pa
 
   if ( !n )
   {
-    QgsLayerTreeModelLegendNode* sym = index2symnode( parent );
+    QgsLayerTreeModelLegendNode* sym = index2legendNode( parent );
     Q_ASSERT( sym );
     return QModelIndex(); // have no children
   }
@@ -121,11 +121,11 @@ QModelIndex QgsLayerTreeModel::index( int row, int column, const QModelIndex &pa
   if ( !n || column != 0 || row >= rowCount( parent ) )
     return QModelIndex();
 
-  if ( testFlag( ShowSymbology ) && QgsLayerTree::isLayer( n ) )
+  if ( testFlag( ShowLegend ) && QgsLayerTree::isLayer( n ) )
   {
     QgsLayerTreeLayer* nL = QgsLayerTree::toLayer( n );
-    Q_ASSERT( mSymbologyNodes.contains( nL ) );
-    return createIndex( row, column, static_cast<QObject*>( mSymbologyNodes[nL].at( row ) ) );
+    Q_ASSERT( mLegendNodes.contains( nL ) );
+    return createIndex( row, column, static_cast<QObject*>( mLegendNodes[nL].at( row ) ) );
   }
 
   return createIndex( row, column, static_cast<QObject*>( n->children().at( row ) ) );
@@ -142,7 +142,7 @@ QModelIndex QgsLayerTreeModel::parent( const QModelIndex &child ) const
 
   if ( !n )
   {
-    QgsLayerTreeModelLegendNode* sym = index2symnode( child );
+    QgsLayerTreeModelLegendNode* sym = index2legendNode( child );
     Q_ASSERT( sym );
     parentNode = sym->parent();
   }
@@ -164,9 +164,9 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
   if ( !index.isValid() )
     return QVariant();
 
-  if ( QgsLayerTreeModelLegendNode* sym = index2symnode( index ) )
+  if ( QgsLayerTreeModelLegendNode* sym = index2legendNode( index ) )
   {
-    if ( role == Qt::CheckStateRole && !testFlag( AllowSymbologyChangeState ) )
+    if ( role == Qt::CheckStateRole && !testFlag( AllowLegendChangeState ) )
       return QVariant();
     return sym->data( role );
   }
@@ -223,8 +223,8 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       }
 
       // if there's just on legend entry that should be embedded in layer - do that!
-      if ( testFlag( ShowSymbology ) && mSymbologyNodes[nodeLayer].count() == 1 && mSymbologyNodes[nodeLayer][0]->isEmbeddedInParent() )
-        return mSymbologyNodes[nodeLayer][0]->data( Qt::DecorationRole );
+      if ( testFlag( ShowLegend ) && mLegendNodes[nodeLayer].count() == 1 && mLegendNodes[nodeLayer][0]->isEmbeddedInParent() )
+        return mLegendNodes[nodeLayer][0]->data( Qt::DecorationRole );
 
       if ( layer->type() == QgsMapLayer::RasterLayer )
       {
@@ -297,10 +297,10 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
     return rootFlags;
   }
 
-  if ( QgsLayerTreeModelLegendNode* symn = index2symnode( index ) )
+  if ( QgsLayerTreeModelLegendNode* symn = index2legendNode( index ) )
   {
     Qt::ItemFlags f = symn->flags();
-    if ( !testFlag( AllowSymbologyChangeState ) )
+    if ( !testFlag( AllowLegendChangeState ) )
       f &= ~Qt::ItemIsUserCheckable;
     return f;
   }
@@ -331,10 +331,10 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
 
 bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value, int role )
 {
-  QgsLayerTreeModelLegendNode *sym = index2symnode( index );
+  QgsLayerTreeModelLegendNode *sym = index2legendNode( index );
   if ( sym )
   {
-    if ( role == Qt::CheckStateRole && !testFlag( AllowSymbologyChangeState ) )
+    if ( role == Qt::CheckStateRole && !testFlag( AllowLegendChangeState ) )
       return false;
     bool res = sym->setData( value, role );
     if ( res )
@@ -450,18 +450,18 @@ QList<QgsLayerTreeNode*> QgsLayerTreeModel::indexes2nodes( const QModelIndexList
 
 bool QgsLayerTreeModel::isIndexSymbologyNode( const QModelIndex& index ) const
 {
-  return index2symnode( index ) != 0;
+  return index2legendNode( index ) != 0;
 }
 
 QgsLayerTreeLayer* QgsLayerTreeModel::layerNodeForSymbologyNode( const QModelIndex& index ) const
 {
-  QgsLayerTreeModelLegendNode* symNode = index2symnode( index );
+  QgsLayerTreeModelLegendNode* symNode = index2legendNode( index );
   return symNode ? symNode->parent() : 0;
 }
 
 QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::layerLegendNodes( QgsLayerTreeLayer* nodeLayer )
 {
-  return mSymbologyNodes.value( nodeLayer );
+  return mLegendNodes.value( nodeLayer );
 }
 
 QgsLayerTreeGroup*QgsLayerTreeModel::rootGroup()
@@ -475,8 +475,8 @@ void QgsLayerTreeModel::setRootGroup( QgsLayerTreeGroup* newRootGroup )
 
   disconnectFromRootNode();
 
-  Q_ASSERT( mSymbologyNodes.isEmpty() );
-  Q_ASSERT( mOriginalSymbologyNodes.isEmpty() );
+  Q_ASSERT( mLegendNodes.isEmpty() );
+  Q_ASSERT( mOriginalLegendNodes.isEmpty() );
 
   mRootNode = newRootGroup;
 
@@ -485,7 +485,7 @@ void QgsLayerTreeModel::setRootGroup( QgsLayerTreeGroup* newRootGroup )
   connectToRootNode();
 }
 
-void QgsLayerTreeModel::refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer )
+void QgsLayerTreeModel::refreshLayerLegend( QgsLayerTreeLayer* nodeLayer )
 {
   // update title
   QModelIndex idx = node2index( nodeLayer );
@@ -494,14 +494,14 @@ void QgsLayerTreeModel::refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer )
   // update children
   int oldNodeCount = rowCount( idx );
   beginRemoveRows( idx, 0, oldNodeCount - 1 );
-  removeSymbologyFromLayer( nodeLayer );
+  removeLegendFromLayer( nodeLayer );
   endRemoveRows();
 
-  addSymbologyToLayer( nodeLayer );
+  addLegendToLayer( nodeLayer );
   int newNodeCount = rowCount( idx );
 
-  // automatic collapse of symbology nodes - useful if a layer has many symbology nodes
-  if ( mAutoCollapseSymNodesCount != -1 && oldNodeCount != newNodeCount && newNodeCount >= mAutoCollapseSymNodesCount )
+  // automatic collapse of legend nodes - useful if a layer has many legend nodes
+  if ( mAutoCollapseLegendNodesCount != -1 && oldNodeCount != newNodeCount && newNodeCount >= mAutoCollapseLegendNodesCount )
     nodeLayer->setExpanded( false );
 }
 
@@ -567,7 +567,7 @@ void QgsLayerTreeModel::setLegendFilterByScale( double scaleDenominator )
   // this could be later done in more efficient way
   // by just updating active legend nodes, without refreshing original legend nodes
   foreach ( QgsLayerTreeLayer* nodeLayer, mRootNode->findLayers() )
-    refreshLayerSymbology( nodeLayer );
+    refreshLayerLegend( nodeLayer );
 }
 
 void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo )
@@ -607,7 +607,7 @@ void QgsLayerTreeModel::nodeWillRemoveChildren( QgsLayerTreeNode* node, int inde
 
   beginRemoveRows( node2index( node ), indexFrom, indexTo );
 
-  // disconnect from layers and remove their symbology
+  // disconnect from layers and remove their legend
   foreach ( QgsLayerTreeLayer* nodeLayer, _layerNodesInSubtree( node, indexFrom, indexTo ) )
     disconnectFromLayer( nodeLayer );
 }
@@ -629,7 +629,7 @@ void QgsLayerTreeModel::nodeVisibilityChanged( QgsLayerTreeNode* node )
 void QgsLayerTreeModel::nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key )
 {
   if ( QgsLayerTree::isLayer( node ) && key == "showFeatureCount" )
-    refreshLayerSymbology( QgsLayerTree::toLayer( node ) );
+    refreshLayerLegend( QgsLayerTree::toLayer( node ) );
 }
 
 
@@ -657,7 +657,7 @@ void QgsLayerTreeModel::nodeLayerWillBeUnloaded()
 
 void QgsLayerTreeModel::layerLegendChanged()
 {
-  if ( !testFlag( ShowSymbology ) )
+  if ( !testFlag( ShowLegend ) )
     return;
 
   QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( sender() );
@@ -668,7 +668,7 @@ void QgsLayerTreeModel::layerLegendChanged()
   if ( !nodeLayer )
     return;
 
-  refreshLayerSymbology( nodeLayer );
+  refreshLayerLegend( nodeLayer );
 }
 
 void QgsLayerTreeModel::layerNeedsUpdate()
@@ -685,7 +685,7 @@ void QgsLayerTreeModel::layerNeedsUpdate()
   emit dataChanged( index, index );
 
   if ( nodeLayer->customProperty( "showFeatureCount" ).toInt() )
-    refreshLayerSymbology( nodeLayer );
+    refreshLayerLegend( nodeLayer );
 }
 
 
@@ -695,23 +695,23 @@ void QgsLayerTreeModel::legendNodeDataChanged()
   if ( !legendNode )
     return;
 
-  QModelIndex index = symnode2index( legendNode );
+  QModelIndex index = legendNode2index( legendNode );
   emit dataChanged( index, index );
 }
 
 
-void QgsLayerTreeModel::removeSymbologyFromLayer( QgsLayerTreeLayer* nodeLayer )
+void QgsLayerTreeModel::removeLegendFromLayer( QgsLayerTreeLayer* nodeLayer )
 {
-  if ( mSymbologyNodes.contains( nodeLayer ) )
+  if ( mLegendNodes.contains( nodeLayer ) )
   {
-    qDeleteAll( mOriginalSymbologyNodes[nodeLayer] );
-    mOriginalSymbologyNodes.remove( nodeLayer );
-    mSymbologyNodes.remove( nodeLayer );
+    qDeleteAll( mOriginalLegendNodes[nodeLayer] );
+    mOriginalLegendNodes.remove( nodeLayer );
+    mLegendNodes.remove( nodeLayer );
   }
 }
 
 
-void QgsLayerTreeModel::addSymbologyToLayer( QgsLayerTreeLayer* nodeL )
+void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer* nodeL )
 {
   if ( !nodeL->layer() )
     return;
@@ -735,8 +735,8 @@ void QgsLayerTreeModel::addSymbologyToLayer( QgsLayerTreeLayer* nodeL )
     connect( n, SIGNAL( dataChanged() ), this, SLOT( legendNodeDataChanged() ) );
   }
 
-  mOriginalSymbologyNodes[nodeL] = lstNew;
-  mSymbologyNodes[nodeL] = filteredLstNew;
+  mOriginalLegendNodes[nodeL] = lstNew;
+  mLegendNodes[nodeL] = filteredLstNew;
 
   endInsertRows();
 }
@@ -755,14 +755,14 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer* nodeLayer )
   // watch if the layer is getting removed
   connect( nodeLayer, SIGNAL( layerWillBeUnloaded() ), this, SLOT( nodeLayerWillBeUnloaded() ) );
 
-  if ( testFlag( ShowSymbology ) )
+  if ( testFlag( ShowLegend ) )
   {
-    addSymbologyToLayer( nodeLayer );
+    addLegendToLayer( nodeLayer );
 
-    // automatic collapse of symbology nodes - useful if a layer has many symbology nodes
+    // automatic collapse of legend nodes - useful if a layer has many legend nodes
     if ( !mRootNode->customProperty( "loading" ).toBool() )
     {
-      if ( mAutoCollapseSymNodesCount != -1 && rowCount( node2index( nodeLayer ) )  >= mAutoCollapseSymNodesCount )
+      if ( mAutoCollapseLegendNodesCount != -1 && rowCount( node2index( nodeLayer ) )  >= mAutoCollapseLegendNodesCount )
         nodeLayer->setExpanded( false );
     }
   }
@@ -808,9 +808,9 @@ void QgsLayerTreeModel::disconnectFromLayer( QgsLayerTreeLayer* nodeLayer )
   if ( !nodeLayer->layer() )
     return; // we were never connected
 
-  if ( testFlag( ShowSymbology ) )
+  if ( testFlag( ShowLegend ) )
   {
-    removeSymbologyFromLayer( nodeLayer );
+    removeLegendFromLayer( nodeLayer );
   }
 
   if ( _numLayerCount( mRootNode, nodeLayer->layerId() ) == 1 )

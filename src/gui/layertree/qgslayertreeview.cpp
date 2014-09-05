@@ -17,6 +17,7 @@
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreemodellegendnode.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayer.h"
 
@@ -198,9 +199,10 @@ QgsMapLayer* QgsLayerTreeView::layerForIndex( const QModelIndex& index ) const
   }
   else
   {
-    // possibly a symbology node
-    if ( layerTreeModel()->isIndexSymbologyNode( index ) )
-      return layerTreeModel()->layerNodeForSymbologyNode( index )->layer();
+    // possibly a legend node
+    QgsLayerTreeModelLegendNode* legendNode = layerTreeModel()->index2legendNode( index );
+    if ( legendNode )
+      return legendNode->parent()->layer();
   }
 
   return 0;
@@ -259,5 +261,5 @@ void QgsLayerTreeView::refreshLayerSymbology( const QString& layerId )
 {
   QgsLayerTreeLayer* nodeLayer = layerTreeModel()->rootGroup()->findLayer( layerId );
   if ( nodeLayer )
-    layerTreeModel()->refreshLayerSymbology( nodeLayer );
+    layerTreeModel()->refreshLayerLegend( nodeLayer );
 }
