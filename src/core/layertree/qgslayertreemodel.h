@@ -108,6 +108,9 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! @note added in 2.6
     static QgsLayerTreeModelLegendNode* index2symnode( const QModelIndex& index );
 
+    //! @note added in 2.6
+    QModelIndex symnode2index( QgsLayerTreeModelLegendNode* legendNode );
+
     //! Return list of legend nodes attached to a particular layer node
     //! @note added in 2.6
     QList<QgsLayerTreeModelLegendNode*> layerLegendNodes( QgsLayerTreeLayer* nodeLayer );
@@ -160,6 +163,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void layerLegendChanged();
 
     void layerNeedsUpdate();
+
+    void legendNodeDataChanged();
 
   protected:
     void removeSymbologyFromLayer( QgsLayerTreeLayer* nodeLayer );

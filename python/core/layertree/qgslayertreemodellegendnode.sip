@@ -17,6 +17,11 @@ class QgsLayerTreeModelLegendNode : QObject
   public:
     ~QgsLayerTreeModelLegendNode();
 
+    enum LegendNodeRoles
+    {
+      RuleKeyRole
+    };
+
     /** Return pointer to the parent layer node */
     QgsLayerTreeLayer* parent() const;
 
@@ -77,6 +82,10 @@ class QgsLayerTreeModelLegendNode : QObject
      * @return Size of the label (may span multiple lines)
      */
     virtual QSizeF drawSymbolText( const QgsLegendSettings& settings, ItemContext* ctx, const QSizeF& symbolSize ) const;
+
+  signals:
+    //! Emitted on internal data change so the layer tree model can forward the signal to views
+    void dataChanged();
 
   protected:
     /** Construct the node with pointer to its parent layer node */

@@ -173,6 +173,10 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
 
     return vlayer->rendererV2()->legendSymbolItemChecked( mItem.ruleKey() ) ? Qt::Checked : Qt::Unchecked;
   }
+  else if ( role == RuleKeyRole )
+  {
+    return mItem.ruleKey();
+  }
 
   return QVariant();
 }
@@ -190,6 +194,8 @@ bool QgsSymbolV2LegendNode::setData( const QVariant& value, int role )
     return false;
 
   vlayer->rendererV2()->checkLegendSymbolItem( mItem.ruleKey(), value == Qt::Checked );
+
+  emit dataChanged();
 
   if ( mLayerNode->isVisible() )
     vlayer->clearCacheImage();

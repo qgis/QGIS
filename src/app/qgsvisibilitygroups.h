@@ -54,6 +54,9 @@ class QgsVisibilityGroups : public QObject
     //! Return list of layer IDs that should be visible for particular group
     QStringList groupVisibleLayers( const QString& name ) const;
 
+    //! Apply check states of legend nodes of a given layer as defined in the group
+    void applyGroupCheckedLegendNodesToLayer( const QString& name, const QString& layerID );
+
     //! Convenience menu that lists available groups and actions for management
     QMenu* menu();
 
@@ -65,9 +68,6 @@ class QgsVisibilityGroups : public QObject
     void groupTriggerred();
     void removeCurrentGroup();
     void menuAboutToShow();
-    void layerTreeVisibilityChanged( QgsLayerTreeNode* node, Qt::CheckState state );
-    void layerTreeAddedChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
-    void layerTreeWillRemoveChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
 
     void readProject( const QDomDocument& doc );
     void writeProject( QDomDocument& doc );
@@ -79,19 +79,19 @@ class QgsVisibilityGroups : public QObject
     {
       bool operator==( const GroupRecord& other ) const
       {
-        return mVisibleLayerIDs == other.mVisibleLayerIDs;
+        return mVisibleLayerIDs == other.mVisibleLayerIDs && mPerLayerCheckedLegendSymbols == other.mPerLayerCheckedLegendSymbols;
       }
 
       //! List of layers that are visible
       QSet<QString> mVisibleLayerIDs;
       //! For layers that have checkable legend symbols and not all symbols are checked - list which ones are
-      //QMap<QString, QStringList> mPerLayerCheckedLegendSymbols;
+      QMap<QString, QSet<QString> > mPerLayerCheckedLegendSymbols;
     } GroupRecord;
 
     typedef QMap<QString, GroupRecord> GroupRecordMap;
 
     void addVisibleLayersToGroup( QgsLayerTreeGroup* parent, GroupRecord& rec );
-    void applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const QSet<QString>& visibleLayerIDs );
+    void applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const GroupRecord& rec );
 
     GroupRecord currentState();
     void applyState( const QString& groupName );
@@ -101,7 +101,6 @@ class QgsVisibilityGroups : public QObject
     GroupRecordMap mGroups;
 
     QMenu* mMenu;
-    bool mMenuDirty;
     QAction* mMenuSeparator;
     QAction* mActionRemoveCurrentGroup;
     QList<QAction*> mMenuGroupActions;

@@ -63,6 +63,15 @@ QgsLayerTreeModelLegendNode* QgsLayerTreeModel::index2symnode( const QModelIndex
   return qobject_cast<QgsLayerTreeModelLegendNode*>( reinterpret_cast<QObject*>( index.internalPointer() ) );
 }
 
+QModelIndex QgsLayerTreeModel::symnode2index( QgsLayerTreeModelLegendNode* legendNode )
+{
+  QModelIndex parentIndex = node2index( legendNode->parent() );
+  Q_ASSERT( parentIndex.isValid() );
+  int row = mSymbologyNodes[legendNode->parent()].indexOf( legendNode );
+  Q_ASSERT( row >= 0 );
+  return index( row, 0, parentIndex );
+}
+
 
 int QgsLayerTreeModel::rowCount( const QModelIndex &parent ) const
 {
@@ -672,6 +681,17 @@ void QgsLayerTreeModel::layerNeedsUpdate()
 }
 
 
+void QgsLayerTreeModel::legendNodeDataChanged()
+{
+  QgsLayerTreeModelLegendNode* legendNode = qobject_cast<QgsLayerTreeModelLegendNode*>( sender() );
+  if ( !legendNode )
+    return;
+
+  QModelIndex index = symnode2index( legendNode );
+  emit dataChanged( index, index );
+}
+
+
 void QgsLayerTreeModel::removeSymbologyFromLayer( QgsLayerTreeLayer* nodeLayer )
 {
   if ( mSymbologyNodes.contains( nodeLayer ) )
@@ -702,7 +722,10 @@ void QgsLayerTreeModel::addSymbologyToLayer( QgsLayerTreeLayer* nodeL )
   beginInsertRows( node2index( nodeL ), 0, filteredLstNew.count() - 1 );
 
   foreach ( QgsLayerTreeModelLegendNode* n, lstNew )
+  {
     n->setParent( this );
+    connect( n, SIGNAL( dataChanged() ), this, SLOT( legendNodeDataChanged() ) );
+  }
 
   mOriginalSymbologyNodes[nodeL] = lstNew;
   mSymbologyNodes[nodeL] = filteredLstNew;

@@ -286,6 +286,11 @@ void QgsComposerMapWidget::visibilityGroupSelected()
   {
     mKeepLayerListCheckBox->setChecked( true );
     mComposerMap->setLayerSet( lst );
+
+    // also apply legend node check states
+    foreach ( QString layerID, lst )
+      QgsVisibilityGroups::instance()->applyGroupCheckedLegendNodesToLayer( action->text(), layerID );
+
     mComposerMap->cache();
     mComposerMap->update();
   }
