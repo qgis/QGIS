@@ -298,6 +298,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QMenu *layerMenu();
     //! @note added in 2.0
     virtual QMenu *newLayerMenu();
+    //! @note added in 2.5
+    virtual QMenu *addLayerMenu();
     virtual QMenu *settingsMenu();
     virtual QMenu *pluginMenu();
     virtual QMenu *rasterMenu();
