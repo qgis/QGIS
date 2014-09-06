@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>216</width>
-    <height>115</height>
+    <height>121</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,22 +21,6 @@
     <property name="margin">
      <number>0</number>
     </property>
-    <item>
-     <spacer name="mTopSpacer">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeType">
-       <enum>QSizePolicy::Fixed</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>1</width>
-        <height>5</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
     <item>
      <layout class="QHBoxLayout" name="mLayoutHeader">
       <property name="spacing">
