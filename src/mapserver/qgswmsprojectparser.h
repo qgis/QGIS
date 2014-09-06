@@ -20,6 +20,7 @@
 
 #include "qgswmsconfigparser.h"
 #include "qgsserverprojectparser.h"
+#include "qgslayertreegroup.h"
 
 class QTextDocument;
 class QSvgRenderer;
@@ -59,7 +60,7 @@ class QgsWMSProjectParser : public QgsWMSConfigParser
     int WMSPrecision() const;
 
     //printing
-    QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const;
+    QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const;
 
     void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
@@ -147,6 +148,7 @@ class QgsWMSProjectParser : public QgsWMSConfigParser
     void addLayersFromGroup( const QDomElement& legendGroupElem, QMap< int, QgsMapLayer*>& layers, bool useCache = true ) const;
 
     QDomElement composerByName( const QString& composerName ) const;
+    QgsLayerTreeGroup* projectLayerTreeGroup() const;
 
     static bool annotationPosition( const QDomElement& elem, double scaleFactor, double& xPos, double& yPos );
     static void drawAnnotationRectangle( QPainter* p, const QDomElement& elem, double scaleFactor, double xPos, double yPos, int itemWidth, int itemHeight );
