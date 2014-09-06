@@ -64,7 +64,7 @@ void QgsOraclePlugin::initGui()
   // Add the icon to the new layers toolbar
   mQGisIface->layerToolBar()->insertAction( mQGisIface->actionAddWmsLayer(), mQActionPointer );
   // Also add to Layer menu
-  mQGisIface->layerMenu()->insertAction( mQGisIface->actionAddWmsLayer(), mQActionPointer );
+  mQGisIface->insertAddLayerAction( mQActionPointer );
 }
 //method defined in interface
 
