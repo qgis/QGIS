@@ -289,7 +289,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         key = '/MetaSearch/%s' % current_text
 
-        msg = self.tr('Remove service %s?)' % current_text
+        msg = self.tr('Remove service %s?)') % current_text
 
         result = QMessageBox.information(self, self.tr('Confirm delete'), msg,
                                          QMessageBox.Ok | QMessageBox.Cancel)
