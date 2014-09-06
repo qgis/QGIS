@@ -222,7 +222,7 @@ QgsLayerTreeGroup* QgsLayerTreeView::currentGroupNode() const
   {
     QgsLayerTreeNode* parent = node->parent();
     if ( QgsLayerTree::isGroup( parent ) )
-      return QgsLayerTree::toGroup( node );
+      return QgsLayerTree::toGroup( parent );
   }
 
   if ( QgsLayerTreeModelLegendNode* legendNode = layerTreeModel()->index2legendNode( selectionModel()->currentIndex() ) )
