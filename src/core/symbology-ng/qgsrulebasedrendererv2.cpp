@@ -281,6 +281,8 @@ QDomElement QgsRuleBasedRendererV2::Rule::save( QDomDocument& doc, QgsSymbolV2Ma
     ruleElem.setAttribute( "label", mLabel );
   if ( !mDescription.isEmpty() )
     ruleElem.setAttribute( "description", mDescription );
+  if ( !mCheckState )
+    ruleElem.setAttribute( "checkstate", 0 );
 
   for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
   {
@@ -588,6 +590,8 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::create( QDomElement&
   int scaleMinDenom = ruleElem.attribute( "scalemindenom", "0" ).toInt();
   int scaleMaxDenom = ruleElem.attribute( "scalemaxdenom", "0" ).toInt();
   Rule* rule = new Rule( symbol, scaleMinDenom, scaleMaxDenom, filterExp, label, description );
+
+  rule->setCheckState( ruleElem.attribute( "checkstate", "1" ).toInt() );
 
   QDomElement childRuleElem = ruleElem.firstChildElement( "rule" );
   while ( !childRuleElem.isNull() )
