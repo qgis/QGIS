@@ -528,12 +528,12 @@ void QgsComposerMapGrid::drawGridCRSTransform( QgsRenderContext &context, double
   QList< QPair< double, QPolygonF > >::const_iterator yGridLineIt = yGridLines.constBegin();
   for ( ; yGridLineIt != yGridLines.constEnd(); ++yGridLineIt )
   {
-    horizontalLines.push_back( qMakePair( yGridLineIt->first, QLineF( yGridLineIt->second.first(), yGridLineIt->second.last() ) ) );
+    verticalLines.push_back( qMakePair( yGridLineIt->first, QLineF( yGridLineIt->second.first(), yGridLineIt->second.last() ) ) );
   }
   QList< QPair< double, QPolygonF > >::const_iterator xGridLineIt = xGridLines.constBegin();
   for ( ; xGridLineIt != xGridLines.constEnd(); ++xGridLineIt )
   {
-    verticalLines.push_back( qMakePair( xGridLineIt->first, QLineF( xGridLineIt->second.first(), xGridLineIt->second.last() ) ) );
+    horizontalLines.push_back( qMakePair( xGridLineIt->first, QLineF( xGridLineIt->second.first(), xGridLineIt->second.last() ) ) );
   }
 
 }
