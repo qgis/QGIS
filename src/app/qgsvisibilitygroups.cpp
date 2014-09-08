@@ -314,7 +314,9 @@ void QgsVisibilityGroups::readProject( const QDomDocument& doc )
     QDomElement visGroupLayerElem = visGroupElem.firstChildElement( "layer" );
     while ( !visGroupLayerElem.isNull() )
     {
-      rec.mVisibleLayerIDs << visGroupLayerElem.attribute( "id" );
+      QString layerID = visGroupLayerElem.attribute( "id" );
+      if ( QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
+        rec.mVisibleLayerIDs << layerID; // only use valid layer IDs
       visGroupLayerElem = visGroupLayerElem.nextSiblingElement( "layer" );
     }
 
@@ -330,7 +332,9 @@ void QgsVisibilityGroups::readProject( const QDomDocument& doc )
         checkedLegendNodeElem = checkedLegendNodeElem.nextSiblingElement( "checked-legend-node" );
       }
 
-      rec.mPerLayerCheckedLegendSymbols.insert( checkedLegendNodesElem.attribute( "id" ), checkedLegendNodes );
+      QString layerID = checkedLegendNodesElem.attribute( "id" );
+      if ( QgsMapLayerRegistry::instance()->mapLayer( layerID ) ) // only use valid IDs
+        rec.mPerLayerCheckedLegendSymbols.insert( layerID, checkedLegendNodes );
       checkedLegendNodesElem = checkedLegendNodesElem.nextSiblingElement( "checked-legend-nodes" );
     }
 
