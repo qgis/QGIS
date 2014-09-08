@@ -226,12 +226,12 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
   QString myStrSecondsY = padded ? QString( "%1" ).arg( mySecondsY, digits, 'f', thePrecision, QChar( '0' ) ) : QString::number( mySecondsY, 'f', thePrecision );
 
   QString rep = myXSign + QString::number( myDegreesX ) + QChar( 176 ) +
-                myMinutesX + QString( "'" ) +
-                myStrSecondsX + QString( "\"" ) +
+                myMinutesX + QChar( 0x2032 ) +
+                myStrSecondsX + QChar( 0x2033 ) +
                 myXHemisphere + QString( "," ) +
                 myYSign + QString::number( myDegreesY ) + QChar( 176 ) +
-                myMinutesY + QString( "'" ) +
-                myStrSecondsY + QString( "\"" ) +
+                myMinutesY + QChar( 0x2032 ) +
+                myStrSecondsY + QChar( 0x2033 ) +
                 myYHemisphere;
   return rep;
 }
@@ -312,10 +312,10 @@ QString QgsPoint::toDegreesMinutes( int thePrecision, const bool useSuffix, cons
   QString myStrMinutesY = padded ? QString( "%1" ).arg( myFloatMinutesY, digits, 'f', thePrecision, QChar( '0' ) ) : QString::number( myFloatMinutesY, 'f', thePrecision );
 
   QString rep = myXSign + QString::number( myDegreesX ) + QChar( 176 ) +
-                myStrMinutesX + QString( "'" ) +
+                myStrMinutesX + QChar( 0x2032 ) +
                 myXHemisphere + QString( "," ) +
                 myYSign + QString::number( myDegreesY ) + QChar( 176 ) +
-                myStrMinutesY + QString( "'" ) +
+                myStrMinutesY + QChar( 0x2032 ) +
                 myYHemisphere;
   return rep;
 }
