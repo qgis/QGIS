@@ -35,6 +35,7 @@
 #include "qgsrubberband.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
 
 
 // QWT Charting widget
@@ -235,6 +236,9 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
            this, SLOT( updateCloseFeatureButton( QgsMapLayer* ) ) );
 
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
+           this, SLOT( updateOldLayer( QStringList ) ) );
+
   mStackedWidget->setCurrentIndex( 3 ); // force to Options
   mBtnPosition->setFocus( Qt::TabFocusReason );
 }
@@ -300,6 +304,12 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
   {
     delete mpRubberBand;
   }
+  
+  disconnect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
+           this, SLOT( updateCloseFeatureButton( QgsMapLayer* ) ) );
+
+  disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
+           this, SLOT( updateOldLayer( QStringList ) ) );
 }
 
 void QgsGPSInformationWidget::on_mSpinTrackWidth_valueChanged( int theValue )
@@ -1169,4 +1179,9 @@ void QgsGPSInformationWidget::setStatusIndicator( const FixStatus statusValue )
 void QgsGPSInformationWidget::showStatusBarMessage( const QString& msg )
 {
   QgisApp::instance()->statusBar()->showMessage( msg );
+}
+
+void QgsGPSInformationWidget::updateOldLayer( QStringList lst )
+{
+  mpLastLayer=0; // FIXME: if lst.contains(mpLastLayer.id()) crashes
 }
