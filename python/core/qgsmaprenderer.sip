@@ -57,7 +57,7 @@ class QgsLabelingEngineInterface
     //! adds a diagram layer to the labeling engine
     virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings* s );
     //! called for every feature
-    virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() ) = 0;
+    virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext(), QString dxfLayer = QString::null ) = 0;
     //! called for every diagram feature
     virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
     //! called when the map is drawn and labels should be placed

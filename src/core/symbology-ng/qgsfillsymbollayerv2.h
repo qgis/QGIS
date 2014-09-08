@@ -119,6 +119,8 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
     QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
     Qt::PenStyle dxfPenStyle() const;
+    QColor dxfBrushColor( const QgsSymbolV2RenderContext& context ) const;
+    Qt::BrushStyle dxfBrushStyle() const;
 
   protected:
     QBrush mBrush;

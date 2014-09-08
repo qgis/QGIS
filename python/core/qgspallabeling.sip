@@ -449,7 +449,7 @@ class QgsPalLayerSettings
     void calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f = 0 );
 
     // implementation of register feature hook
-    void registerFeature( QgsFeature& f, const QgsRenderContext& context );
+    void registerFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer );
 
     void readFromLayer( QgsVectorLayer* layer );
     void writeToLayer( QgsVectorLayer* layer );
@@ -696,7 +696,7 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     //! adds a diagram layer to the labeling engine
     virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings *s );
     //! hook called when drawing for every feature in a layer
-    virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
+    virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext(), QString dxfLayer = QString::null );
     virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context );

@@ -140,7 +140,7 @@ void QgsLayerTreeGroup::removeAllChildren()
   removeChildren( 0, mChildren.count() );
 }
 
-QgsLayerTreeLayer *QgsLayerTreeGroup::findLayer( const QString& layerId )
+QgsLayerTreeLayer *QgsLayerTreeGroup::findLayer( const QString& layerId ) const
 {
   foreach ( QgsLayerTreeNode* child, mChildren )
   {

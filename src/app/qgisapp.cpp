@@ -4013,8 +4013,7 @@ void QgisApp::dxfExport()
   if ( d.exec() == QDialog::Accepted )
   {
     QgsDxfExport dxfExport;
-    QList<QgsMapLayer*> layerList = d.layers();
-    dxfExport.addLayers( layerList );
+    dxfExport.addLayers( d.layers() );
     dxfExport.setSymbologyScaleDenominator( d.symbologyScale() );
     dxfExport.setSymbologyExport( d.symbologyMode() );
     if ( mapCanvas() )

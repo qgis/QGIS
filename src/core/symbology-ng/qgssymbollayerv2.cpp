@@ -118,6 +118,17 @@ Qt::PenStyle QgsSymbolLayerV2::dxfPenStyle() const
   return Qt::SolidLine;
 }
 
+QColor QgsSymbolLayerV2::dxfBrushColor( const QgsSymbolV2RenderContext& context ) const
+{
+  Q_UNUSED( context );
+  return color();
+}
+
+Qt::BrushStyle QgsSymbolLayerV2::dxfBrushStyle() const
+{
+  return Qt::NoBrush;
+}
+
 void QgsSymbolLayerV2::prepareExpressions( const QgsFields* fields, double scale )
 {
   if ( !fields )

@@ -206,14 +206,18 @@ class QgsConnectionPool
     //! @return initialized connection or null on error
     T acquireConnection( const QString& connInfo )
     {
+      QgsDebugMsg( QString( "Lock mutex 0x%1" ).arg( (qint64) &mMutex, 0, 16 ) );
       mMutex.lock();
+      QgsDebugMsg( QString( "Unlock mutex 0x%1" ).arg( (qint64) &mMutex, 0, 16 ) );
       typename T_Groups::iterator it = mGroups.find( connInfo );
       if ( it == mGroups.end() )
       {
         it = mGroups.insert( connInfo, new T_Group( connInfo ) );
       }
       T_Group* group = *it;
+      QgsDebugMsg( QString( "Unlock mutex 0x%1" ).arg( (qint64) &mMutex, 0, 16 ) );
       mMutex.unlock();
+      QgsDebugMsg( QString( "Unlocked mutex 0x%1" ).arg( (qint64) &mMutex, 0, 16 ) );
 
       return group->acquire();
     }
@@ -232,8 +236,9 @@ class QgsConnectionPool
 
   protected:
     T_Groups mGroups;
-    QMutex mMutex;
 
+  private:
+    QMutex mMutex;
 };
 
 

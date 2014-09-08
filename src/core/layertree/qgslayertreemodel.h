@@ -117,7 +117,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QList<QgsLayerTreeModelLegendNode*> layerLegendNodes( QgsLayerTreeLayer* nodeLayer );
 
     //! Return pointer to the root node of the layer tree. Always a non-null pointer.
-    QgsLayerTreeGroup* rootGroup();
+    QgsLayerTreeGroup* rootGroup() const;
     //! Reset the model and use a new root group node
     //! @note added in 2.6
     void setRootGroup( QgsLayerTreeGroup* newRootGroup );

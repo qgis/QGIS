@@ -1355,6 +1355,66 @@ template<double, TYPE2>
 %End
 };
 
+%MappedType QList < QPair< QgsVectorLayer *, int > >
+{
+%TypeHeaderCode
+#include <QPair>
+#include <QList>
+%End
+
+%ConvertFromTypeCode
+//convert map to a python dictionary
+    PyObject *d;
+
+    if ((d = PyList_New( sipCpp->size() )) == NULL)
+      return NULL;
+
+    for ( int i = 0; i<sipCpp->size(); i++ )
+    {
+      PyObject *p;
+      if ((p = PyList_New(2) ) == NULL)
+      {
+	Py_DECREF(d);
+	return NULL;
+      }
+
+      PyObject *t1obj = sipConvertFromNewType(sipCpp->at(i).first, sipType_QgsVectorLayer, sipTransferObj);
+      PyObject *t2obj = PyInt_FromLong( (long) sipCpp->at(i).second );
+      PyList_SetItem( p, 0, t1obj );
+      PyList_SetItem( p, 1, t2obj );
+
+      PyList_SetItem( d, i, p );
+    }
+
+    return d;
+%End
+%ConvertToTypeCode
+#if PY_VERSION_HEX >= 0x02050000
+    Py_ssize_t i = 0;
+#else
+    int i = 0;
+#endif
+    QList < QPair< QgsVectorLayer *, int > > *qm = new QList< QPair< QgsVectorLayer *, int > >;
+
+    for ( i = 0; i < PyList_GET_SIZE(sipPy); i++ )
+    {
+	  int state;
+
+      PyObject *sipPair = PyList_GetItem( sipPy, i );
+      PyObject *sipLayer = PyList_GetItem( sipPair, 0 );
+      PyObject *sipIdx = PyList_GetItem( sipPair, 1 );
+
+      QgsVectorLayer *t1 = reinterpret_cast<QgsVectorLayer *>(sipConvertToType(sipLayer, sipType_QgsVectorLayer, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+      int idx = PyLong_AsLongLong(sipIdx);
+      qm->append( qMakePair<QgsVectorLayer *, int>( t1, idx ) );
+      sipReleaseType(t1, sipType_QgsVectorLayer, state);
+    }
+
+    *sipCppPtr = qm;
+
+    return sipGetState(sipTransferObj);
+%End
+};
 
 
 template <TYPE>

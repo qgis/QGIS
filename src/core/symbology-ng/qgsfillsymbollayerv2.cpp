@@ -32,14 +32,14 @@
 #include <QDomElement>
 
 QgsSimpleFillSymbolLayerV2::QgsSimpleFillSymbolLayerV2( QColor color, Qt::BrushStyle style, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth,
-    Qt::PenJoinStyle penJoinStyle ) :
-    mBrushStyle( style ),
-    mBorderColor( borderColor ),
-    mBorderStyle( borderStyle ),
-    mBorderWidth( borderWidth ),
-    mBorderWidthUnit( QgsSymbolV2::MM ),
-    mPenJoinStyle( penJoinStyle ),
-    mOffsetUnit( QgsSymbolV2::MM )
+    Qt::PenJoinStyle penJoinStyle )
+    : mBrushStyle( style )
+    , mBorderColor( borderColor )
+    , mBorderStyle( borderStyle )
+    , mBorderWidth( borderWidth )
+    , mBorderWidthUnit( QgsSymbolV2::MM )
+    , mPenJoinStyle( penJoinStyle )
+    , mOffsetUnit( QgsSymbolV2::MM )
 {
   mColor = color;
 }
@@ -383,10 +383,10 @@ double QgsSimpleFillSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSym
 
 QColor QgsSimpleFillSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& context ) const
 {
-  QgsExpression* colorBorderExpression = expression( "color_border" );
-  if ( colorBorderExpression )
+  QgsExpression* colorExpression = expression( "border_color" );
+  if ( colorExpression )
   {
-    return QgsSymbolLayerV2Utils::decodeColor( colorBorderExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+    return QgsSymbolLayerV2Utils::decodeColor( colorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
   }
   return mBorderColor;
 }
@@ -396,22 +396,37 @@ Qt::PenStyle QgsSimpleFillSymbolLayerV2::dxfPenStyle() const
   return mBorderStyle;
 }
 
+QColor QgsSimpleFillSymbolLayerV2::dxfBrushColor( const QgsSymbolV2RenderContext& context ) const
+{
+  QgsExpression* colorExpression = expression( "color" );
+  if ( colorExpression )
+  {
+    return QgsSymbolLayerV2Utils::decodeColor( colorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+  }
+  return mColor;
+}
+
+Qt::BrushStyle QgsSimpleFillSymbolLayerV2::dxfBrushStyle() const
+{
+  return mBrushStyle;
+}
+
 //QgsGradientFillSymbolLayer
 
 QgsGradientFillSymbolLayerV2::QgsGradientFillSymbolLayerV2( QColor color, QColor color2,
     GradientColorType colorType, GradientType gradientType,
     GradientCoordinateMode coordinateMode, GradientSpread spread )
-    : mGradientColorType( colorType ),
-    mGradientRamp( NULL ),
-    mGradientType( gradientType ),
-    mCoordinateMode( coordinateMode ),
-    mGradientSpread( spread ),
-    mReferencePoint1( QPointF( 0.5, 0 ) ),
-    mReferencePoint1IsCentroid( false ),
-    mReferencePoint2( QPointF( 0.5, 1 ) ),
-    mReferencePoint2IsCentroid( false ),
-    mAngle( 0 ),
-    mOffsetUnit( QgsSymbolV2::MM )
+    : mGradientColorType( colorType )
+    , mGradientRamp( NULL )
+    , mGradientType( gradientType )
+    , mCoordinateMode( coordinateMode )
+    , mGradientSpread( spread )
+    , mReferencePoint1( QPointF( 0.5, 0 ) )
+    , mReferencePoint1IsCentroid( false )
+    , mReferencePoint2( QPointF( 0.5, 1 ) )
+    , mReferencePoint2IsCentroid( false )
+    , mAngle( 0 )
+    , mOffsetUnit( QgsSymbolV2::MM )
 {
   mColor = color;
   mColor2 = color2;

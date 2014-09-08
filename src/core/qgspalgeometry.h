@@ -129,6 +129,9 @@ class QgsPalGeometry : public PalGeometry
       feature.setValid( true );
     }
 
+    void setDxfLayer( QString dxfLayer ) { mDxfLayer = dxfLayer; }
+    QString dxfLayer() const { return mDxfLayer; }
+
   protected:
     GEOSGeometry* mG;
     QString mText;
@@ -147,6 +150,8 @@ class QgsPalGeometry : public PalGeometry
 
     /**Stores attribute values for diagram rendering*/
     QgsAttributes mDiagramAttributes;
+
+    QString mDxfLayer;
 };
 
 #endif //QGSPALGEOMETRY_H

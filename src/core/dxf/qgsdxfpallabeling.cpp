@@ -17,7 +17,6 @@
 
 #include "qgsdxfpallabeling.h"
 #include "qgsdxfexport.h"
-#include "qgsmaplayerregistry.h"
 #include "qgspalgeometry.h"
 #include "qgsmapsettings.h"
 
@@ -75,44 +74,31 @@ void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& 
   //debug: print label infos
   if ( mDxfExport )
   {
-    //label text
-    QString text = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->text();
+    QgsPalGeometry *g = dynamic_cast< QgsPalGeometry* >( label->getFeaturePart()->getUserGeometry() );
 
-    //layer name
-    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( QString( label->getLayerName() ) );
-    if ( !layer )
-    {
-      return;
-    }
-    QString layerName = mDxfExport->dxfLayerName( layer->name() );
+    //label text
+    QString text = g->text();
 
     //angle
     double angle = label->getAlpha() * 180 / M_PI;
 
     //debug: show label rectangle
-    /*QgsPolyline line;
-    for( int i = 0; i < 4; ++i )
+#if 0
+    QgsPolyline line;
+    for ( int i = 0; i < 4; ++i )
     {
-        line.append( QgsPoint( label->getX( i ), label->getY( i ) ) );
+      line.append( QgsPoint( label->getX( i ), label->getY( i ) ) );
     }
-    mDxfExport->writePolyline( line, layerName, "CONTINUOUS", 1, 0.01, true );*/
+    mDxfExport->writePolyline( line, mLayerName, "CONTINUOUS", 1, 0.01, true );
+#endif
+    text = text.replace( tmpLyr.wrapChar.isEmpty() ? "\n" : tmpLyr.wrapChar, "\\P" );
 
-    QStringList textList;
-    if ( !tmpLyr.wrapChar.isEmpty() )
-    {
-      textList = text.split( tmpLyr.wrapChar );
-    }
-    else
-    {
-      textList = text.split( "\n" );
-    }
-    double textHeight = label->getHeight() / textList.size();
-    QFontMetricsF fm( tmpLyr.textFont );
-    double textAscent = textHeight * fm.ascent() / fm.height();
+    text.prepend( QString( "\\f%1|i%2|b%3;\\H%4;" )
+                  .arg( tmpLyr.textFont.family() )
+                  .arg( tmpLyr.textFont.italic() ? 1 : 0 )
+                  .arg( tmpLyr.textFont.bold() ? 1 : 0 )
+                  .arg( label->getHeight() / ( 1 + text.count( "\\P" ) ) ) );
 
-    for ( int i = 0; i < textList.size(); ++i )
-    {
-      mDxfExport->writeText( layerName, textList.at( i ), QgsPoint( label->getX(), label->getY() + ( textList.size() - 1 - i ) * textHeight ), textAscent, angle, mDxfExport->closestColorMatch( tmpLyr.textColor.rgb() ) );
-    }
+    mDxfExport->writeMText( g->dxfLayer(), text, QgsPoint( label->getX(), label->getY() ), label->getWidth(), angle, tmpLyr.textColor );
   }
 }

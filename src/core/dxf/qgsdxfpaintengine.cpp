@@ -221,11 +221,11 @@ QgsPoint QgsDxfPaintEngine::toDxfCoordinates( const QPointF& pt ) const
   return QgsPoint( dxfPt.x(), dxfPt.y() );
 }
 
-int QgsDxfPaintEngine::currentColor() const
+QColor QgsDxfPaintEngine::currentColor() const
 {
   if ( !mDxf )
   {
-    return 0;
+    return QColor();
   }
 
   QColor c = mPen.color();
@@ -233,7 +233,7 @@ int QgsDxfPaintEngine::currentColor() const
   {
     c = mBrush.color();
   }
-  return mDxf->closestColorMatch( c.rgb() );
+  return c;
 }
 
 double QgsDxfPaintEngine::currentWidth() const

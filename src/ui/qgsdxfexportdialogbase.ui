@@ -26,21 +26,21 @@
    </item>
    <item row="0" column="0" colspan="3">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="mFileLineEdit"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="mSymbologyModeLabel">
+     <item row="0" column="2">
+      <widget class="QToolButton" name="mFileSelectionButton">
        <property name="text">
-        <string>Symbology mode</string>
+        <string>...</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="mSymbologyScaleLabel">
-       <property name="text">
-        <string>Symbology scale</string>
+     <item row="3" column="0" colspan="3">
+      <widget class="QgsLayerTreeView" name="mTreeView">
+       <property name="selectionMode">
+        <enum>QAbstractItemView::ExtendedSelection</enum>
        </property>
+       <attribute name="headerDefaultSectionSize">
+        <number>0</number>
+       </attribute>
       </widget>
      </item>
      <item row="0" column="0">
@@ -50,12 +50,15 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2">
-      <widget class="QToolButton" name="mFileSelectionButton">
+     <item row="1" column="0">
+      <widget class="QLabel" name="mSymbologyModeLabel">
        <property name="text">
-        <string>...</string>
+        <string>Symbology mode</string>
        </property>
       </widget>
+     </item>
+     <item row="2" column="1" colspan="2">
+      <widget class="QLineEdit" name="mSymbologyScaleLineEdit"/>
      </item>
      <item row="1" column="1" colspan="2">
       <widget class="QComboBox" name="mSymbologyModeComboBox">
@@ -76,13 +79,33 @@
        </item>
       </widget>
      </item>
-     <item row="2" column="1" colspan="2">
-      <widget class="QLineEdit" name="mSymbologyScaleLineEdit"/>
+     <item row="2" column="0">
+      <widget class="QLabel" name="mSymbologyScaleLabel">
+       <property name="text">
+        <string>Symbology scale</string>
+       </property>
+      </widget>
      </item>
-     <item row="3" column="0" colspan="3">
-      <widget class="QListView" name="mLayersListView">
-       <property name="selectionMode">
-        <enum>QAbstractItemView::NoSelection</enum>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="mFileLineEdit"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Layerattribute</string>
+       </property>
+       <property name="buddy">
+        <cstring>mLayerAttributeComboBox</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" colspan="2">
+      <widget class="QgsFieldComboBox" name="mLayerAttributeComboBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="editable">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -90,13 +113,6 @@
    </item>
    <item row="2" column="0" colspan="2">
     <layout class="QGridLayout" name="gridLayout_3">
-     <item row="0" column="0">
-      <widget class="QPushButton" name="mSelectAllButton">
-       <property name="text">
-        <string>Select all</string>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="1">
       <widget class="QPushButton" name="mUnSelectAllButton">
        <property name="text">
@@ -117,6 +133,13 @@
        </property>
       </spacer>
      </item>
+     <item row="0" column="0">
+      <widget class="QPushButton" name="mSelectAllButton">
+       <property name="text">
+        <string>Select all</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item row="3" column="1">
@@ -128,6 +151,18 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsLayerTreeView</class>
+   <extends>QTreeView</extends>
+   <header>qgslayertreeview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

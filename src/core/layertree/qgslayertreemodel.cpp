@@ -41,6 +41,7 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *pare
     , mLegendMapViewDpi( 0 )
     , mLegendMapViewScale( 0 )
 {
+  QgsDebugCall;
   connectToRootNode();
 
   mFontLayer.setBold( true );
@@ -87,14 +88,18 @@ int QgsLayerTreeModel::rowCount( const QModelIndex &parent ) const
   }
 
   QgsLayerTreeNode* n = index2node( parent );
+  if ( !n )
+    return 0;
 
   if ( parent.isValid() && parent.column() != 0 )
     return 0;
 
   if ( QgsLayerTree::isLayer( n ) )
   {
-    QgsLayerTreeLayer* nL = QgsLayerTree::toLayer( n );
+    if( !testFlag( ShowLegend ) )
+      return 0;
 
+    QgsLayerTreeLayer* nL = QgsLayerTree::toLayer( n );
     if ( mLegendNodes[nL].count() == 1 && mLegendNodes[nL][0]->isEmbeddedInParent() )
       return 0;
 
@@ -106,6 +111,7 @@ int QgsLayerTreeModel::rowCount( const QModelIndex &parent ) const
 
 int QgsLayerTreeModel::columnCount( const QModelIndex &parent ) const
 {
+  QgsDebugCall;
   Q_UNUSED( parent );
   return 1;
 }
@@ -116,16 +122,10 @@ QModelIndex QgsLayerTreeModel::index( int row, int column, const QModelIndex &pa
     return QModelIndex();
 
   QgsLayerTreeNode* n = index2node( parent );
-
   if ( !n )
   {
-    QgsLayerTreeModelLegendNode* sym = index2legendNode( parent );
-    Q_ASSERT( sym );
     return QModelIndex(); // have no children
   }
-
-  if ( !n || column != 0 || row >= rowCount( parent ) )
-    return QModelIndex();
 
   if ( testFlag( ShowLegend ) && QgsLayerTree::isLayer( n ) )
   {
@@ -142,10 +142,8 @@ QModelIndex QgsLayerTreeModel::parent( const QModelIndex &child ) const
   if ( !child.isValid() )
     return QModelIndex();
 
-  QgsLayerTreeNode* n = index2node( child );
-
   QgsLayerTreeNode* parentNode = 0;
-
+  QgsLayerTreeNode* n = index2node( child );
   if ( !n )
   {
     QgsLayerTreeModelLegendNode* sym = index2legendNode( child );
@@ -154,6 +152,7 @@ QModelIndex QgsLayerTreeModel::parent( const QModelIndex &child ) const
   }
   else
     parentNode = n->parent(); // must not be null
+
   Q_ASSERT( parentNode );
 
   QgsLayerTreeNode* grandParentNode = parentNode->parent();
@@ -162,6 +161,7 @@ QModelIndex QgsLayerTreeModel::parent( const QModelIndex &child ) const
 
   int row = grandParentNode->children().indexOf( parentNode );
   Q_ASSERT( row >= 0 );
+
   return createIndex( row, 0, static_cast<QObject*>( parentNode ) );
 }
 
@@ -182,7 +182,8 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
   {
     if ( QgsLayerTree::isGroup( node ) )
       return QgsLayerTree::toGroup( node )->name();
-    else if ( QgsLayerTree::isLayer( node ) )
+
+    if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
       QString name = nodeLayer->layerName();
@@ -199,7 +200,8 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
   {
     if ( QgsLayerTree::isGroup( node ) )
       return iconGroup();
-    else if ( QgsLayerTree::isLayer( node ) )
+
+    if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
 
@@ -337,6 +339,9 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
 
 bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value, int role )
 {
+  QgsDebugCall;
+  QgsDebugMsg( QString( "setData( r=%1 c=%2 value=%3 role=%4 )" ).arg( index.row() ).arg( index.column() ).arg( value.toString() ).arg( role ) );
+
   QgsLayerTreeModelLegendNode *sym = index2legendNode( index );
   if ( sym )
   {
@@ -430,6 +435,7 @@ static bool _isChildOfNodes( QgsLayerTreeNode* child, QList<QgsLayerTreeNode*> n
 
 QList<QgsLayerTreeNode*> QgsLayerTreeModel::indexes2nodes( const QModelIndexList& list, bool skipInternal ) const
 {
+  QgsDebugCall;
   QList<QgsLayerTreeNode*> nodes;
   foreach ( QModelIndex index, list )
   {
@@ -470,13 +476,14 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::layerLegendNodes( QgsLaye
   return mLegendNodes.value( nodeLayer );
 }
 
-QgsLayerTreeGroup*QgsLayerTreeModel::rootGroup()
+QgsLayerTreeGroup*QgsLayerTreeModel::rootGroup() const
 {
   return mRootNode;
 }
 
 void QgsLayerTreeModel::setRootGroup( QgsLayerTreeGroup* newRootGroup )
 {
+  QgsDebugCall;
   beginResetModel();
 
   disconnectFromRootNode();
@@ -493,6 +500,7 @@ void QgsLayerTreeModel::setRootGroup( QgsLayerTreeGroup* newRootGroup )
 
 void QgsLayerTreeModel::refreshLayerLegend( QgsLayerTreeLayer* nodeLayer )
 {
+  QgsDebugCall;
   // update title
   QModelIndex idx = node2index( nodeLayer );
   emit dataChanged( idx, idx );
@@ -513,11 +521,13 @@ void QgsLayerTreeModel::refreshLayerLegend( QgsLayerTreeLayer* nodeLayer )
 
 QModelIndex QgsLayerTreeModel::currentIndex() const
 {
+  QgsDebugCall;
   return mCurrentIndex;
 }
 
 void QgsLayerTreeModel::setCurrentIndex( const QModelIndex& currentIndex )
 {
+  QgsDebugCall;
   QModelIndex oldIndex = mCurrentIndex;
   mCurrentIndex = currentIndex;
 
@@ -530,6 +540,7 @@ void QgsLayerTreeModel::setCurrentIndex( const QModelIndex& currentIndex )
 
 void QgsLayerTreeModel::setLayerTreeNodeFont( int nodeType, const QFont& font )
 {
+  QgsDebugCall;
   if ( nodeType == QgsLayerTreeNode::NodeGroup )
   {
     if ( mFontGroup != font )
@@ -555,6 +566,7 @@ void QgsLayerTreeModel::setLayerTreeNodeFont( int nodeType, const QFont& font )
 
 QFont QgsLayerTreeModel::layerTreeNodeFont( int nodeType ) const
 {
+  QgsDebugCall;
   if ( nodeType == QgsLayerTreeNode::NodeGroup )
     return mFontGroup;
   else if ( nodeType == QgsLayerTreeNode::NodeLayer )
@@ -568,6 +580,7 @@ QFont QgsLayerTreeModel::layerTreeNodeFont( int nodeType ) const
 
 void QgsLayerTreeModel::setLegendFilterByScale( double scaleDenominator )
 {
+  QgsDebugCall;
   mLegendFilterByScale = scaleDenominator;
 
   // this could be later done in more efficient way

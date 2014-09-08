@@ -128,6 +128,8 @@ class CORE_EXPORT QgsSymbolLayerV2
 
     virtual QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
     virtual Qt::PenStyle dxfPenStyle() const;
+    virtual QColor dxfBrushColor( const QgsSymbolV2RenderContext& context ) const;
+    virtual Qt::BrushStyle dxfBrushStyle() const;
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false )

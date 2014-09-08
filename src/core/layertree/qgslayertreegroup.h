@@ -68,7 +68,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     void removeAllChildren();
 
     //! Find layer node representing the map layer specified by its ID. Searches recursively the whole sub-tree.
-    QgsLayerTreeLayer* findLayer( const QString& layerId );
+    QgsLayerTreeLayer* findLayer( const QString& layerId ) const;
     //! Find all layer nodes. Searches recursively the whole sub-tree.
     QList<QgsLayerTreeLayer*> findLayers() const;
     //! Find layer IDs used in all layer nodes. Searches recursively the whole sub-tree.
