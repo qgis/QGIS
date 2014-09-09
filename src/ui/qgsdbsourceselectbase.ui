@@ -131,7 +131,7 @@
      <item>
       <widget class="QCheckBox" name="mHoldDialogOpen">
        <property name="text">
-        <string>Hold dialog open</string>
+        <string>Keep dialog open</string>
        </property>
       </widget>
      </item>
