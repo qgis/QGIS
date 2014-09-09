@@ -477,9 +477,9 @@ QList<QPair<int, bool> > QgsComposerAttributeTableV2::sortAttributes() const
   return attributesBySortRank;
 }
 
-bool QgsComposerAttributeTableV2::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerAttributeTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
-  QDomElement composerTableElem = doc.createElement( "ComposerAttributeTable" );
+  QDomElement composerTableElem = doc.createElement( "ComposerAttributeTableV2" );
   composerTableElem.setAttribute( "showOnlyVisibleFeatures", mShowOnlyVisibleFeatures );
   composerTableElem.setAttribute( "maxFeatures", mMaximumNumberOfFeatures );
   composerTableElem.setAttribute( "filterFeatures", mFilterFeatures ? "true" : "false" );
@@ -498,30 +498,30 @@ bool QgsComposerAttributeTableV2::writeXML( QDomElement& elem, QDomDocument & do
     composerTableElem.setAttribute( "vectorLayer", mVectorLayer->id() );
   }
 
+  bool ok = QgsComposerTableV2::writeXML( composerTableElem, doc, ignoreFrames );
+
   elem.appendChild( composerTableElem );
-  //todo
-  //bool ok = tableWriteXML( composerTableElem, doc );
-  bool ok = true;
+
   return ok;
 }
 
-bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
 {
   if ( itemElem.isNull() )
   {
     return false;
   }
 
-  //TODO
   //read general table properties
-  //if ( !tableReadXML( itemElem, doc ) )
-  //{
-  //  return false;
-// }
+  if ( !QgsComposerTableV2::readXML( itemElem, doc, ignoreFrames ) )
+  {
+    return false;
+  }
 
   mShowOnlyVisibleFeatures = itemElem.attribute( "showOnlyVisibleFeatures", "1" ).toInt();
   mFilterFeatures = itemElem.attribute( "filterFeatures", "false" ) == "true" ? true : false;
   mFeatureFilter = itemElem.attribute( "featureFilter", "" );
+  mMaximumNumberOfFeatures = itemElem.attribute( "maxFeatures", "5" ).toInt();
 
   //composer map
   int composerMapId = itemElem.attribute( "composerMap", "-1" ).toInt();
@@ -565,74 +565,9 @@ bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QD
     }
   }
 
-  //restore display attribute map. This is required to upgrade pre 2.4 projects.
-  QSet<int> displayAttributes;
-  QDomNodeList displayAttributeList = itemElem.elementsByTagName( "displayAttributes" );
-  if ( displayAttributeList.size() > 0 )
-  {
-    QDomElement displayAttributesElem =  displayAttributeList.at( 0 ).toElement();
-    QDomNodeList attributeEntryList = displayAttributesElem.elementsByTagName( "attributeEntry" );
-    for ( int i = 0; i < attributeEntryList.size(); ++i )
-    {
-      QDomElement attributeEntryElem = attributeEntryList.at( i ).toElement();
-      int index = attributeEntryElem.attribute( "index", "-1" ).toInt();
-      if ( index != -1 )
-      {
-        displayAttributes.insert( index );
-      }
-    }
-    setDisplayAttributes( displayAttributes, false );
-  }
-
-  //restore alias map. This is required to upgrade pre 2.4 projects.
-  QMap<int, QString> fieldAliasMap;
-  QDomNodeList aliasMapNodeList = itemElem.elementsByTagName( "attributeAliasMap" );
-  if ( aliasMapNodeList.size() > 0 )
-  {
-    QDomElement attributeAliasMapElem = aliasMapNodeList.at( 0 ).toElement();
-    QDomNodeList aliasMepEntryList = attributeAliasMapElem.elementsByTagName( "aliasEntry" );
-    for ( int i = 0; i < aliasMepEntryList.size(); ++i )
-    {
-      QDomElement aliasEntryElem = aliasMepEntryList.at( i ).toElement();
-      int key = aliasEntryElem.attribute( "key", "-1" ).toInt();
-      QString value = aliasEntryElem.attribute( "value", "" );
-      fieldAliasMap.insert( key, value );
-    }
-    restoreFieldAliasMap( fieldAliasMap );
-  }
-
-  //restore sort columns. This is required to upgrade pre 2.4 projects.
-  QDomElement sortColumnsElem = itemElem.firstChildElement( "sortColumns" );
-  if ( !sortColumnsElem.isNull() && mVectorLayer )
-  {
-    QDomNodeList columns = sortColumnsElem.elementsByTagName( "column" );
-    const QgsFields& fields = mVectorLayer->pendingFields();
-
-    for ( int i = 0; i < columns.size(); ++i )
-    {
-      QDomElement columnElem = columns.at( i ).toElement();
-      int attribute = columnElem.attribute( "index" ).toInt();
-      Qt::SortOrder order = columnElem.attribute( "ascending" ) == "true" ? Qt::AscendingOrder : Qt::DescendingOrder;
-      //find corresponding column
-      QList<QgsComposerTableColumn*>::iterator columnIt = mColumns.begin();
-      for ( ; columnIt != mColumns.end(); ++columnIt )
-      {
-        if (( *columnIt )->attribute() == fields[attribute].name() )
-        {
-          ( *columnIt )->setSortByRank( i + 1 );
-          ( *columnIt )->setSortOrder( order );
-          break;
-        }
-      }
-    }
-  }
-
-  //must be done here because tableReadXML->setSceneRect changes mMaximumNumberOfFeatures
-  mMaximumNumberOfFeatures = itemElem.attribute( "maxFeatures", "5" ).toInt();
-
   refreshAttributes();
 
-  emit itemChanged();
+  emit changed();
   return true;
 }
 

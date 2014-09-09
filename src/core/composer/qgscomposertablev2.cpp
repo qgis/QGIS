@@ -56,7 +56,6 @@ QgsComposerTableV2::~QgsComposerTableV2()
 
 bool QgsComposerTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
-  QDomElement tableElem = doc.createElement( "ComposerTableV2" );
   elem.setAttribute( "cellMargin", QString::number( mCellMargin ) );
   elem.setAttribute( "headerFont", mHeaderFont.toString() );
   elem.setAttribute( "headerFontColor", QgsSymbolLayerV2Utils::encodeColor( mHeaderFontColor ) );
@@ -77,10 +76,9 @@ bool QgsComposerTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool i
     ( *columnIt )->writeXML( columnElem, doc );
     displayColumnsElem.appendChild( columnElem );
   }
-  tableElem.appendChild( displayColumnsElem );
+  elem.appendChild( displayColumnsElem );
 
-  bool state = _writeXML( tableElem, doc, ignoreFrames );
-  elem.appendChild( tableElem );
+  bool state = _writeXML( elem, doc, ignoreFrames );
   return state;
 }
 
