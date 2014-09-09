@@ -89,7 +89,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 
   bool filterAdded = false;
   // set spatial filter
-  if ( request.filterType() & QgsFeatureRequest::FilterRect && mSource->isSpatial() )
+  if ( request.filterType() == QgsFeatureRequest::FilterRect && mSource->isSpatial() )
   {
     // polygons should be CCW for SqlGeography
     QString r;
@@ -109,7 +109,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   }
 
   // set fid filter
-  if (( request.filterType() & QgsFeatureRequest::FilterFid ) && !mSource->mFidColName.isEmpty() )
+  if ( request.filterType() == QgsFeatureRequest::FilterFid && !mSource->mFidColName.isEmpty() )
   {
     QString fidfilter = QString( " [%1] = %2" ).arg( mSource->mFidColName, QString::number( request.filterFid() ) );
     // set attribute filter
@@ -131,11 +131,13 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   }
 
   QgsDebugMsg( mStatement );
-//  if ( fieldCount == 0 )
-//  {
-//    QgsDebugMsg( "QgsMssqlProvider::select no fields have been requested" );
-//    mStatement.clear();
-//  }
+#if 0
+  if ( fieldCount == 0 )
+  {
+    QgsDebugMsg( "QgsMssqlProvider::select no fields have been requested" );
+    mStatement.clear();
+  }
+#endif
 }
 
 
