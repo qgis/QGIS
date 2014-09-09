@@ -130,6 +130,7 @@ qgscolorbuttonv2.cpp
 qgscolordialog.cpp
 qgscolorswatchgrid.cpp
 qgscolorschemelist.cpp
+qgscolorwidgets.cpp
 qgscodeeditor.cpp
 qgscodeeditorpython.cpp
 qgscodeeditorsql.cpp
@@ -336,6 +337,7 @@ qgscodeeditorsql.h
 qgscodeeditorhtml.h
 qgscodeeditorcss.h
 qgscolordialog.h
+qgscolorwidgets.h
 qgsprevieweffect.h
 qgscomposerruler.h
 qgscomposerview.h
@@ -427,6 +429,7 @@ qgsbusyindicatordialog.h
 qgscharacterselectdialog.h
 qgscollapsiblegroupbox.h
 qgscolordialog.h
+qgscolorwidgets.h
 qgscredentialdialog.h
 qgscursors.h
 qgsdatadefinedbutton.h

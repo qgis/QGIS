@@ -37,6 +37,7 @@
 %Include qgscolordialog.sip
 %Include qgscolorswatchgrid.sip
 %Include qgscolorschemelist.sip
+%Include qgscolorwidgets.sip
 %Include qgscomposerview.sip
 %Include qgscredentialdialog.sip
 %Include qgsdatetimeedit.sip
