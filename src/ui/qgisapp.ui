@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>25</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="mProjectMenu">
@@ -132,20 +132,26 @@
      <addaction name="mActionNewVectorLayer"/>
      <addaction name="mActionNewSpatiaLiteLayer"/>
     </widget>
+    <widget class="QMenu" name="mAddLayerMenu">
+     <property name="title">
+      <string>Add</string>
+     </property>
+     <addaction name="mActionAddOgrLayer"/>
+     <addaction name="mActionAddRasterLayer"/>
+     <addaction name="mActionAddPgLayer"/>
+     <addaction name="mActionAddSpatiaLiteLayer"/>
+     <addaction name="mActionAddMssqlLayer"/>
+     <addaction name="mActionAddOracleLayer"/>
+     <addaction name="mActionAddWmsLayer"/>
+     <addaction name="mActionAddLayerSeparator"/>
+     <addaction name="mActionAddWcsLayer"/>
+     <addaction name="mActionAddWfsLayer"/>
+     <addaction name="mActionAddDelimitedText"/>
+    </widget>
     <addaction name="mNewLayerMenu"/>
+    <addaction name="mAddLayerMenu"/>
     <addaction name="mActionEmbedLayers"/>
     <addaction name="mActionAddLayerDefinition"/>
-    <addaction name="mActionAddOgrLayer"/>
-    <addaction name="mActionAddRasterLayer"/>
-    <addaction name="mActionAddPgLayer"/>
-    <addaction name="mActionAddSpatiaLiteLayer"/>
-    <addaction name="mActionAddMssqlLayer"/>
-    <addaction name="mActionAddOracleLayer"/>
-    <addaction name="mActionAddWmsLayer"/>
-    <addaction name="mActionAddLayerSeparator"/>
-    <addaction name="mActionAddWcsLayer"/>
-    <addaction name="mActionAddWfsLayer"/>
-    <addaction name="mActionAddDelimitedText"/>
     <addaction name="separator"/>
     <addaction name="mActionCopyStyle"/>
     <addaction name="mActionPasteStyle"/>

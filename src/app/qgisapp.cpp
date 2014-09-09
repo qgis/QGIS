@@ -8145,12 +8145,12 @@ QMenu* QgisApp::getWebMenu( QString menuName )
 
 void QgisApp::insertAddLayerAction( QAction *action )
 {
-  mLayerMenu->insertAction( mActionAddLayerSeparator, action );
+  mAddLayerMenu->insertAction( mActionAddLayerSeparator, action );
 }
 
 void QgisApp::removeAddLayerAction( QAction *action )
 {
-  mLayerMenu->removeAction( action );
+  mAddLayerMenu->removeAction( action );
 }
 
 void QgisApp::addPluginToDatabaseMenu( QString name, QAction* action )

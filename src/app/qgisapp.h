@@ -394,6 +394,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *layerMenu() { return mLayerMenu; }
     //! @note added in 2.0
     QMenu *newLayerMenu() { return mNewLayerMenu; }
+    //! @note added in 2.5
+    QMenu *addLayerMenu() { return mAddLayerMenu; }
     QMenu *settingsMenu() { return mSettingsMenu; }
     QMenu *pluginMenu() { return mPluginMenu; }
     QMenu *databaseMenu() { return mDatabaseMenu; }

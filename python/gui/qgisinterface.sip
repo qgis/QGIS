@@ -337,6 +337,9 @@ class QgisInterface : QObject
     /** \note added in 2.0
     */
     virtual QMenu *newLayerMenu() = 0;
+    /** \note added in 2.5
+    */
+    virtual QMenu *addLayerMenu() = 0;
     virtual QMenu *settingsMenu() = 0;
     virtual QMenu *pluginMenu() = 0;
     virtual QMenu *rasterMenu() = 0;
