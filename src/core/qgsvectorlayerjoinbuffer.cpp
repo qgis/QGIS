@@ -39,7 +39,17 @@ void QgsVectorLayerJoinBuffer::addJoin( const QgsVectorJoinInfo& joinInfo )
   {
     cacheJoinLayer( mVectorJoins.last() );
   }
+
+  // Wait for notifications about changed fields in joined layer to propagate them.
+  // During project load the joined layers possibly do not exist yet so the connection will not be created,
+  // but then QgsProject makes sure to call createJoinCaches() which will do the connection.
+  // Unique connection makes sure we do not respond to one layer's update more times (in case of multiple join)
+  if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinInfo.joinLayerId ) ) )
+    connect( vl, SIGNAL( updatedFields() ), this, SLOT( joinedLayerUpdatedFields() ), Qt::UniqueConnection );
+
+  emit joinedFieldsChanged();
 }
+
 
 void QgsVectorLayerJoinBuffer::removeJoin( const QString& joinLayerId )
 {
@@ -50,6 +60,11 @@ void QgsVectorLayerJoinBuffer::removeJoin( const QString& joinLayerId )
       mVectorJoins.removeAt( i );
     }
   }
+
+  if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinLayerId ) ) )
+    disconnect( vl, SIGNAL( updatedFields() ), this, SLOT( joinedLayerUpdatedFields() ) );
+
+  emit joinedFieldsChanged();
 }
 
 void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
@@ -121,6 +136,10 @@ void QgsVectorLayerJoinBuffer::createJoinCaches()
   for ( ; joinIt != mVectorJoins.end(); ++joinIt )
   {
     cacheJoinLayer( *joinIt );
+
+    // make sure we are connected to the joined layer
+    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinIt->joinLayerId ) ) )
+      connect( vl, SIGNAL( updatedFields() ), this, SLOT( joinedLayerUpdatedFields() ), Qt::UniqueConnection );
   }
 }
 
@@ -187,4 +206,29 @@ const QgsVectorJoinInfo* QgsVectorLayerJoinBuffer::joinForFieldIndex( int index,
     return 0;
 
   return &( mVectorJoins[sourceJoinIndex] );
+}
+
+QgsVectorLayerJoinBuffer* QgsVectorLayerJoinBuffer::clone() const
+{
+  QgsVectorLayerJoinBuffer* cloned = new QgsVectorLayerJoinBuffer;
+  cloned->mVectorJoins = mVectorJoins;
+  return cloned;
+}
+
+void QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields()
+{
+  QgsVectorLayer* joinedLayer = qobject_cast<QgsVectorLayer*>( sender() );
+  Q_ASSERT( joinedLayer );
+
+  // recache the joined layer
+  for ( QgsVectorJoinList::iterator it = mVectorJoins.begin(); it != mVectorJoins.end(); ++it )
+  {
+    if ( joinedLayer->id() == it->joinLayerId )
+    {
+      it->cachedAttributes.clear();
+      cacheJoinLayer( *it );
+    }
+  }
+
+  emit joinedFieldsChanged();
 }

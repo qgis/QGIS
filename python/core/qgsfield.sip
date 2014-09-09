@@ -193,6 +193,11 @@ class QgsFields
     //! Utility function to return a list of QgsField instances
     QList<QgsField> toList() const;
 
+    //! @note added in 2.6
+    bool operator==( const QgsFields& other ) const;
+    //! @note added in 2.6
+    bool operator!=( const QgsFields& other ) const;
+
 /*  SIP_PYOBJECT __getitem__(int key);
 %MethodCode
   if (a0 = sipConvertFromSequenceIndex(a0, sipCpp->count()) < 0)

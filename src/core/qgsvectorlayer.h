@@ -1641,6 +1641,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
   private slots:
     void onRelationsLoaded();
+    void onJoinedFieldsChanged();
 
   protected:
     /** Set the extent */

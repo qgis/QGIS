@@ -178,6 +178,11 @@ class CORE_EXPORT QgsFields
       Field(): origin( OriginUnknown ), originIndex( -1 ) {}
       Field( const QgsField& f, FieldOrigin o, int oi ): field( f ), origin( o ), originIndex( oi ) {}
 
+      //! @note added in 2.6
+      bool operator==( const Field& other ) const { return field == other.field && origin == other.origin && originIndex == other.originIndex; }
+      //! @note added in 2.6
+      bool operator!=( const Field& other ) const { return !( *this == other ); }
+
       QgsField field;      //!< field
       FieldOrigin origin;  //!< origin of the field
       int originIndex;     //!< index specific to the origin
@@ -237,6 +242,11 @@ class CORE_EXPORT QgsFields
 
     //! Utility function to return a list of QgsField instances
     QList<QgsField> toList() const;
+
+    //! @note added in 2.6
+    bool operator==( const QgsFields& other ) const { return mFields == other.mFields; }
+    //! @note added in 2.6
+    bool operator!=( const QgsFields& other ) const { return ! ( *this == other ); }
 
   protected:
     //! internal storage of the container

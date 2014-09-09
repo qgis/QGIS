@@ -27,7 +27,7 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( QgsVectorLayer *layer 
 {
   mProviderFeatureSource = layer->dataProvider()->featureSource();
   mFields = layer->pendingFields();
-  mJoinBuffer = new QgsVectorLayerJoinBuffer( *layer->mJoinBuffer );
+  mJoinBuffer = layer->mJoinBuffer->clone();
   mExpressionFieldBuffer = new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer );
 
   mCanBeSimplified = layer->hasGeometryType() && layer->geometryType() != QGis::Point;

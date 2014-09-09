@@ -1,4 +1,4 @@
-class QgsVectorLayerJoinBuffer
+class QgsVectorLayerJoinBuffer : QObject
 {
 %TypeHeaderCode
 #include <qgsvectorlayerjoinbuffer.h>
@@ -39,4 +39,12 @@ class QgsVectorLayerJoinBuffer
       @param sourceFieldIndex Output: field's index in source layer */
     const QgsVectorJoinInfo* joinForFieldIndex( int index, const QgsFields& fields, int& sourceFieldIndex /Out/ ) const;
 
+    //! Create a copy of the join buffer
+    //! @note added in 2.6
+    QgsVectorLayerJoinBuffer* clone() const /Factory/;
+
+  signals:
+    //! Emitted whenever the list of joined fields changes (e.g. added join or joined layer's fields change)
+    //! @note added in 2.6
+    void joinedFieldsChanged();
 };

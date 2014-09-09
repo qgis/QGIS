@@ -369,6 +369,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsnetworkaccessmanager.h
   qgsvectordataprovider.h
   qgsvectorlayercache.h
+  qgsvectorlayerjoinbuffer.h
   qgsgeometryvalidator.h
 
   composer/qgsaddremoveitemcommand.h

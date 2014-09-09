@@ -1304,6 +1304,7 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   if ( !mJoinBuffer )
   {
     mJoinBuffer = new QgsVectorLayerJoinBuffer();
+    connect( mJoinBuffer, SIGNAL( joinedFieldsChanged() ), this, SLOT( onJoinedFieldsChanged() ) );
   }
   mJoinBuffer->readXml( layer_node );
 
@@ -1366,6 +1367,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       mWkbType = mDataProvider->geometryType();
 
       mJoinBuffer = new QgsVectorLayerJoinBuffer();
+      connect( mJoinBuffer, SIGNAL( joinedFieldsChanged() ), this, SLOT( onJoinedFieldsChanged() ) );
       mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
       updateFields();
 
@@ -2782,6 +2784,8 @@ void QgsVectorLayer::updateFields()
   if ( !mDataProvider )
     return;
 
+  QgsFields oldFields = mUpdatedFields;
+
   mUpdatedFields = mDataProvider->fields();
 
   // added / removed fields
@@ -2795,7 +2799,8 @@ void QgsVectorLayer::updateFields()
   if ( mExpressionFieldBuffer )
     mExpressionFieldBuffer->updateFields( mUpdatedFields );
 
-  emit updatedFields();
+  if ( oldFields != mUpdatedFields )
+    emit updatedFields();
 }
 
 
@@ -3561,6 +3566,12 @@ void QgsVectorLayer::onRelationsLoaded()
       }
     }
   }
+}
+
+void QgsVectorLayer::onJoinedFieldsChanged()
+{
+  // some of the fields of joined layers have changed -> we need to update this layer's fields too
+  updateFields();
 }
 
 QgsVectorLayer::ValueRelationData QgsVectorLayer::valueRelation( int idx )

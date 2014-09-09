@@ -25,11 +25,13 @@
 #include <QString>
 
 
+typedef QList< QgsVectorJoinInfo > QgsVectorJoinList;
 
 
 /**Manages joined fields for a vector layer*/
-class CORE_EXPORT QgsVectorLayerJoinBuffer
+class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
 {
+    Q_OBJECT
   public:
     QgsVectorLayerJoinBuffer();
     ~QgsVectorLayerJoinBuffer();
@@ -58,7 +60,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer
     /**Quick way to test if there is any join at all*/
     bool containsJoins() const { return !mVectorJoins.isEmpty(); }
 
-    const QList< QgsVectorJoinInfo >& vectorJoins() const { return mVectorJoins; }
+    const QgsVectorJoinList& vectorJoins() const { return mVectorJoins; }
 
     /**Finds the vector join for a layer field index.
       @param index this layers attribute index
@@ -66,10 +68,22 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer
       @param sourceFieldIndex Output: field's index in source layer */
     const QgsVectorJoinInfo* joinForFieldIndex( int index, const QgsFields& fields, int& sourceFieldIndex ) const;
 
+    //! Create a copy of the join buffer
+    //! @note added in 2.6
+    QgsVectorLayerJoinBuffer* clone() const;
+
+  signals:
+    //! Emitted whenever the list of joined fields changes (e.g. added join or joined layer's fields change)
+    //! @note added in 2.6
+    void joinedFieldsChanged();
+
+  private slots:
+    void joinedLayerUpdatedFields();
+
   private:
 
     /**Joined vector layers*/
-    QList< QgsVectorJoinInfo > mVectorJoins;
+    QgsVectorJoinList mVectorJoins;
 
     /**Caches attributes of join layer in memory if QgsVectorJoinInfo.memoryCache is true (and the cache is not already there)*/
     void cacheJoinLayer( QgsVectorJoinInfo& joinInfo );
