@@ -467,6 +467,7 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
   mFeatureFilterButton->setEnabled( mComposerTable->filterFeatures() );
 
   mHeaderHAlignmentComboBox->setCurrentIndex(( int )mComposerTable->headerHAlignment() );
+  mHeaderModeComboBox->setCurrentIndex(( int )mComposerTable->headerMode() );
 
   blockAllSignals( false );
 }
@@ -484,6 +485,7 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
   mFeatureFilterEdit->blockSignals( b );
   mFeatureFilterCheckBox->blockSignals( b );
   mHeaderHAlignmentComboBox->blockSignals( b );
+  mHeaderModeComboBox->blockSignals( b );
   mHeaderFontColorButton->blockSignals( b );
   mContentFontColorButton->blockSignals( b );
 }
@@ -614,6 +616,25 @@ void QgsComposerAttributeTableWidget::on_mHeaderHAlignmentComboBox_currentIndexC
     composition->beginMultiFrameCommand( mComposerTable, tr( "Table header alignment changed" ) );
   }
   mComposerTable->setHeaderHAlignment(( QgsComposerTableV2::HeaderHAlignment )index );
+  if ( composition )
+  {
+    composition->endMultiFrameCommand();
+  }
+}
+
+void QgsComposerAttributeTableWidget::on_mHeaderModeComboBox_currentIndexChanged( int index )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mComposerTable->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table header mode changed" ) );
+  }
+  mComposerTable->setHeaderMode(( QgsComposerTableV2::HeaderMode )index );
   if ( composition )
   {
     composition->endMultiFrameCommand();

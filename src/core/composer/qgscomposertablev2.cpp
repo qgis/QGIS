@@ -26,6 +26,7 @@ QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool create
     , mCellMargin( 1.0 )
     , mHeaderFontColor( Qt::black )
     , mHeaderHAlignment( FollowColumn )
+    , mHeaderMode( FirstFrame )
     , mContentFontColor( Qt::black )
     , mShowGrid( true )
     , mGridStrokeWidth( 0.5 )
@@ -100,6 +101,7 @@ bool QgsComposerTableV2::readXML( const QDomElement &itemElem, const QDomDocumen
   mHeaderFont.fromString( itemElem.attribute( "headerFont", "" ) );
   mHeaderFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "headerFontColor", "0,0,0,255" ) );
   mHeaderHAlignment = QgsComposerTableV2::HeaderHAlignment( itemElem.attribute( "headerHAlignment", "0" ).toInt() );
+  mHeaderMode = QgsComposerTableV2::HeaderMode( itemElem.attribute( "headerMode", "0" ).toInt() );
   mContentFont.fromString( itemElem.attribute( "contentFont", "" ) );
   mContentFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "contentFontColor", "0,0,0,255" ) );
   mCellMargin = itemElem.attribute( "cellMargin", "1.0" ).toDouble();
@@ -139,16 +141,15 @@ QSizeF QgsComposerTableV2::totalSize() const
 QPair< int, int > QgsComposerTableV2::rowRange( const QRectF extent, const int frameIndex ) const
 {
   //calculate row height
-  //TODO - handle different header modes
   //TODO - need to traverse all previous frames to calculate what is visible in each
   //as the entire height of a frame may not be used for content
   double headerHeight = 0;
   double firstHeaderHeight = 2 * mGridStrokeWidth + 2 * mCellMargin +  QgsComposerUtils::fontAscentMM( mHeaderFont );
 
-  //int frameNumber = mFrameItems.indexOf( this );
-  if ( frameIndex < 1 )
+  if (( mHeaderMode == QgsComposerTableV2::FirstFrame && frameIndex < 1 )
+      || ( mHeaderMode == QgsComposerTableV2::AllFrames ) )
   {
-    //currently only header on first
+    //frame has a header
     headerHeight = firstHeaderHeight;
   }
   else
@@ -204,9 +205,9 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
   double cellBodyHeight = QgsComposerUtils::fontAscentMM( mContentFont ) + 2 * mCellMargin;
   QRectF cell;
 
-  //TODO - should be controlled via a property, eg an enum with values
-  //always/never/first frame
-  bool drawHeader = frameIndex < 1;
+  //calculate whether a header is required
+  bool drawHeader = (( mHeaderMode == QgsComposerTableV2::FirstFrame && frameIndex < 1 )
+                     || ( mHeaderMode == QgsComposerTableV2::AllFrames ) );
 
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
@@ -325,6 +326,18 @@ void QgsComposerTableV2::setHeaderHAlignment( const QgsComposerTableV2::HeaderHA
   repaint();
 }
 
+void QgsComposerTableV2::setHeaderMode( const QgsComposerTableV2::HeaderMode mode )
+{
+  if ( mode == mHeaderMode )
+  {
+    return;
+  }
+
+  mHeaderMode = mode;
+  adjustFrameToSize();
+
+}
+
 void QgsComposerTableV2::setContentFont( const QFont &font )
 {
   if ( font == mContentFont )
@@ -415,10 +428,10 @@ QSizeF QgsComposerTableV2::fixedFrameSize( const int frameIndex ) const
 QSizeF QgsComposerTableV2::minFrameSize( const int frameIndex ) const
 {
   double height = 0;
-  if ( frameIndex == 0 )
+  if (( mHeaderMode == QgsComposerTableV2::FirstFrame && frameIndex < 1 )
+      || ( mHeaderMode == QgsComposerTableV2::AllFrames ) )
   {
-    //force first frame to be high enough for header
-    //TODO - handle different header modes
+    //header required, force frame to be high enough for header
     height = 2 * mGridStrokeWidth + 2 * mCellMargin +  QgsComposerUtils::fontAscentMM( mHeaderFont );
   }
   return QSizeF( 0, height );
@@ -449,7 +462,12 @@ bool QgsComposerTableV2::calculateMaxColumnWidths()
   int col = 0;
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
-    mMaxColumnWidthMap.insert( col, QgsComposerUtils::textWidthMM( mHeaderFont, ( *columnIt )->heading() ) );
+    double width = 0;
+    if ( mHeaderMode != QgsComposerTableV2::NoHeaders )
+    {
+      width = QgsComposerUtils::textWidthMM( mHeaderFont, ( *columnIt )->heading() );
+    }
+    mMaxColumnWidthMap.insert( col, width );
     col++;
   }
 

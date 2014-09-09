@@ -63,6 +63,15 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
       HeaderRight /*!< align headers right */
     };
 
+    /*! Controls where headers are shown in the table
+     */
+    enum HeaderMode
+    {
+      FirstFrame = 0, /*!< header shown on first frame only */
+      AllFrames, /*!< headers shown on all frames */
+      NoHeaders /*!< no headers shown for table */
+    };
+
     QgsComposerTableV2( QgsComposition* composition, bool createUndoCommands );
     QgsComposerTableV2();
 
@@ -130,6 +139,20 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see setHeaderHAlignment
      */
     HeaderHAlignment headerHAlignment() const { return mHeaderHAlignment; }
+
+    /**Sets the display mode for headers in the table. This property controls
+     * if and where headers are shown in the table.
+     * @param mode display mode for headers
+     * @see headerMode
+     */
+    void setHeaderMode( const HeaderMode mode );
+
+    /**Returns the display mode for headers in the table. This property controls
+     * if and where headers are shown in the table.
+     * @returns display mode for headers
+     * @see setHeaderMode
+     */
+    HeaderMode headerMode() const { return mHeaderMode; }
 
     /**Sets the font used to draw text in table body cells.
      * @param font font for table cells
@@ -262,6 +285,9 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
 
     /**Alignment for table headers*/
     HeaderHAlignment mHeaderHAlignment;
+
+    /**Header display mode*/
+    HeaderMode mHeaderMode;
 
     /**Table contents font*/
     QFont mContentFont;

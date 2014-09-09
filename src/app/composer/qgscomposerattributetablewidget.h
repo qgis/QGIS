@@ -60,6 +60,7 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
     void on_mFeatureFilterEdit_editingFinished();
     void on_mFeatureFilterButton_clicked();
     void on_mHeaderHAlignmentComboBox_currentIndexChanged( int index );
+    void on_mHeaderModeComboBox_currentIndexChanged( int index );
     void changeLayer( QgsMapLayer* layer );
     void on_mAddFramePushButton_clicked();
 
