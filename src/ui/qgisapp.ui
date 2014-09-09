@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>24</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="mProjectMenu">
@@ -127,14 +127,14 @@
     </property>
     <widget class="QMenu" name="mNewLayerMenu">
      <property name="title">
-      <string>New</string>
+      <string>Create Layer</string>
      </property>
      <addaction name="mActionNewVectorLayer"/>
      <addaction name="mActionNewSpatiaLiteLayer"/>
     </widget>
     <widget class="QMenu" name="mAddLayerMenu">
      <property name="title">
-      <string>Add</string>
+      <string>Add Layer</string>
      </property>
      <addaction name="mActionAddOgrLayer"/>
      <addaction name="mActionAddRasterLayer"/>
