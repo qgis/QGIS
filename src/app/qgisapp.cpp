@@ -2327,7 +2327,7 @@ void QgisApp::initLayerTreeView()
   // visibility groups tool button
   QToolButton* btnVisibilityGroups = new QToolButton;
   btnVisibilityGroups->setAutoRaise( true );
-  btnVisibilityGroups->setToolTip( tr( "Manage Layer Visibility") );
+  btnVisibilityGroups->setToolTip( tr( "Manage Layer Visibility" ) );
   btnVisibilityGroups->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
   btnVisibilityGroups->setPopupMode( QToolButton::InstantPopup );
   btnVisibilityGroups->setMenu( QgsVisibilityGroups::instance()->menu() );
@@ -7848,6 +7848,9 @@ void QgisApp::closeProject()
   removeAnnotationItems();
   // clear out any stuff from project
   mMapCanvas->freeze( true );
+  QList<QgsMapCanvasLayer> emptyList;
+  mMapCanvas->setLayerSet( emptyList );
+  mMapCanvas->clearCache();
   removeAllLayers();
 }
 
