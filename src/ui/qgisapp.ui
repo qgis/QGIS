@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>18</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="mProjectMenu">
@@ -320,7 +320,6 @@
    <addaction name="mActionAddWcsLayer"/>
    <addaction name="mActionAddWfsLayer"/>
    <addaction name="mActionAddDelimitedText"/>
-   <addaction name="mActionRemoveLayer"/>
   </widget>
   <widget class="QToolBar" name="mDigitizeToolBar">
    <property name="windowTitle">
@@ -1322,7 +1321,10 @@
      <normaloff>:/images/themes/default/mActionRemoveLayer.svg</normaloff>:/images/themes/default/mActionRemoveLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Remove Layer(s)</string>
+    <string>Remove Layer/Group</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove Layer/Group</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>

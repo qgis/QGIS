@@ -1651,7 +1651,7 @@ void QgisApp::createToolBars()
     case 1: defNewLayerAction = mActionNewVectorLayer; break;
   }
   bt->setDefaultAction( defNewLayerAction );
-  QAction* newLayerAction = mLayerToolBar->insertWidget( mActionRemoveLayer, bt );
+  QAction* newLayerAction = mLayerToolBar->insertWidget( mActionAddDelimitedText, bt );
   newLayerAction->setObjectName( "ActionNewLayer" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
@@ -2344,12 +2344,17 @@ void QgisApp::initLayerTreeView()
   btnCollapseAll->setToolTip( tr( "Collapse All" ) );
   connect( btnCollapseAll, SIGNAL( clicked() ), mLayerTreeView, SLOT( collapseAll() ) );
 
+  QToolButton* btnRemoveItem = new QToolButton;
+  btnRemoveItem->setDefaultAction( this->mActionRemoveLayer );
+  btnRemoveItem->setAutoRaise( true );
+
   QHBoxLayout* toolbarLayout = new QHBoxLayout;
   toolbarLayout->setContentsMargins( QMargins( 5, 0, 5, 0 ) );
   toolbarLayout->addWidget( btnAddGroup );
   toolbarLayout->addWidget( btnVisibilityGroups );
   toolbarLayout->addWidget( btnExpandAll );
   toolbarLayout->addWidget( btnCollapseAll );
+  toolbarLayout->addWidget( btnRemoveItem );
   toolbarLayout->addStretch();
 
   QVBoxLayout* vboxLayout = new QVBoxLayout;
@@ -8768,7 +8773,6 @@ void QgisApp::legendLayerSelectionChanged( void )
 {
   QList<QgsLayerTreeLayer*> selectedLayers = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer*>();
 
-  mActionRemoveLayer->setEnabled( selectedLayers.count() > 0 );
   mActionDuplicateLayer->setEnabled( selectedLayers.count() > 0 );
   mActionSetLayerScaleVisibility->setEnabled( selectedLayers.count() > 0 );
   mActionSetLayerCRS->setEnabled( selectedLayers.count() > 0 );
