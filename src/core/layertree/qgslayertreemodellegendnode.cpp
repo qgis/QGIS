@@ -164,9 +164,6 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
     if ( !mItem.isCheckable() )
       return QVariant();
 
-    if ( !mLayerNode->isVisible() )
-      return Qt::PartiallyChecked;
-
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayerNode->layer() );
     if ( !vlayer || !vlayer->rendererV2() )
       return QVariant();
