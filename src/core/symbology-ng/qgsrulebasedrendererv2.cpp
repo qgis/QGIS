@@ -1125,7 +1125,6 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
     {
       range = graduatedRenderer->ranges().value( i );
       QgsRuleBasedRendererV2::Rule* rule = new QgsRuleBasedRendererV2::Rule( NULL );
-      rule->setSymbol( range.symbol() );
       rule->setLabel( range.label() );
       if ( i == 0 )//The lower boundary of the first range is included, while it is excluded for the others
       {
