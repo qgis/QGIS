@@ -87,11 +87,6 @@ QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas )
   }
 
   mLayerTreeWidget->setHeaderLabels( QStringList() << "" );
-  mLayerTreeWidget->resizeColumnToContents( 0 );
-  mLayerTreeWidget->setColumnWidth( 1, 200 );  //hardcoded for now
-  mLayerTreeWidget->setColumnWidth( 2, 200 );  //hardcoded for now
-  mLayerTreeWidget->resizeColumnToContents( 3 );
-  mLayerTreeWidget->resizeColumnToContents( 4 );
   mLayerTreeWidget->setSortingEnabled( true );
 
   connect( QgsProject::instance(), SIGNAL( snapSettingsChanged() ), this, SLOT( reload() ) );
@@ -211,6 +206,12 @@ void QgsSnappingDialog::show()
     mDock->setVisible( true );
   else
     QDialog::show();
+
+  mLayerTreeWidget->resizeColumnToContents( 0 );
+  mLayerTreeWidget->resizeColumnToContents( 1 );
+  mLayerTreeWidget->resizeColumnToContents( 2 );
+  mLayerTreeWidget->resizeColumnToContents( 3 );
+  mLayerTreeWidget->resizeColumnToContents( 4 );
 }
 
 void QgsSnappingDialog::addLayers( QList<QgsMapLayer *> layers )
