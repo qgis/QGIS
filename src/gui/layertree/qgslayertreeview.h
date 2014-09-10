@@ -112,8 +112,8 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeViewDefaultActions* mDefaultActions;
     //! Context menu provider. Owned by the view.
     QgsLayerTreeViewMenuProvider* mMenuProvider;
-    //! Keeps track of current index (to check when to emit signal about change of current layer)
-    QPersistentModelIndex mCurrentIndex;
+    //! Keeps track of current layer ID (to check when to emit signal about change of current layer)
+    QString mCurrentLayerID;
 };
 
 

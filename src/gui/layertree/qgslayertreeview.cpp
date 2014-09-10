@@ -158,13 +158,20 @@ void QgsLayerTreeView::updateExpandedStateToNode( QModelIndex index )
 void QgsLayerTreeView::onCurrentChanged()
 {
   QgsMapLayer* layerCurrent = layerForIndex( currentIndex() );
-  QModelIndex layerCurrentIndex = layerCurrent ? layerTreeModel()->node2index( layerTreeModel()->rootGroup()->findLayer( layerCurrent->id() ) ) : QModelIndex();
-  if ( mCurrentIndex == layerCurrentIndex )
+  QString layerCurrentID = layerCurrent ? layerCurrent->id() : QString();
+  if ( mCurrentLayerID == layerCurrentID )
     return;
 
-  layerTreeModel()->setCurrentIndex( layerCurrentIndex );
+  // update the current index in model (the item will be underlined)
+  QModelIndex nodeLayerIndex;
+  if ( layerCurrent )
+  {
+    QgsLayerTreeLayer* nodeLayer = layerTreeModel()->rootGroup()->findLayer( layerCurrentID );
+    nodeLayerIndex = layerTreeModel()->node2index( nodeLayer );
+  }
+  layerTreeModel()->setCurrentIndex( nodeLayerIndex );
 
-  mCurrentIndex = layerCurrentIndex;
+  mCurrentLayerID = layerCurrentID;
   emit currentLayerChanged( layerCurrent );
 }
 
