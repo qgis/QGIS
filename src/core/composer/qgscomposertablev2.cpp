@@ -136,20 +136,60 @@ QSizeF QgsComposerTableV2::totalSize() const
   return mTableSize;
 }
 
-
-QPair< int, int > QgsComposerTableV2::rowRange( const QRectF extent, const int frameIndex ) const
+int QgsComposerTableV2::rowsVisible( const int frameIndex ) const
 {
-  //calculate row height
-  //TODO - need to traverse all previous frames to calculate what is visible in each
-  //as the entire height of a frame may not be used for content
-  double headerHeight = 0;
-  double firstHeaderHeight = 2 * ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin +  QgsComposerUtils::fontAscentMM( mHeaderFont );
+  //get frame extent
+  if ( frameIndex >= frameCount() )
+  {
+    return 0;
+  }
+  QRectF frameExtent = frame( frameIndex )->extent();
 
+  //calculate header height
+  double headerHeight = 0;
   if (( mHeaderMode == QgsComposerTableV2::FirstFrame && frameIndex < 1 )
       || ( mHeaderMode == QgsComposerTableV2::AllFrames ) )
   {
     //frame has a header
-    headerHeight = firstHeaderHeight;
+    headerHeight = 2 * ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin +  QgsComposerUtils::fontAscentMM( mHeaderFont );
+  }
+  else
+  {
+    //frame has no header text, just the stroke
+    headerHeight = ( mShowGrid ? mGridStrokeWidth : 0 );
+  }
+
+  //remaining height available for content rows
+  double contentHeight = frameExtent.height() - headerHeight;
+
+  //calculate number of visible rows
+  double rowHeight = ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin + QgsComposerUtils::fontAscentMM( mContentFont );
+  return qMax( floor( contentHeight / rowHeight ), 0.0 );
+}
+
+QPair< int, int > QgsComposerTableV2::rowRange( const QRectF extent, const int frameIndex ) const
+{
+  //calculate row height
+  if ( frameIndex >= frameCount() )
+  {
+    //bad frame index
+    return qMakePair( 0 , 0 );
+  }
+
+  //loop through all previous frames to calculate how many rows are visible in each
+  //as the entire height of a frame may not be utilised for content rows
+  int rowsAlreadyShown = 0;
+  for ( int idx = 0; idx < frameIndex; ++idx )
+  {
+    rowsAlreadyShown += rowsVisible( idx );
+  }
+
+  double headerHeight = 0;
+  if (( mHeaderMode == QgsComposerTableV2::FirstFrame && frameIndex < 1 )
+      || ( mHeaderMode == QgsComposerTableV2::AllFrames ) )
+  {
+    //frame has a header
+    headerHeight = 2 * ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin +  QgsComposerUtils::fontAscentMM( mHeaderFont );
   }
   else
   {
@@ -161,7 +201,7 @@ QPair< int, int > QgsComposerTableV2::rowRange( const QRectF extent, const int f
   double rowHeight = ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin + QgsComposerUtils::fontAscentMM( mContentFont );
 
   //using zero based indexes
-  int firstVisible = qMax( floor(( extent.top() - firstHeaderHeight )  / rowHeight ), 0.0 );
+  int firstVisible = qMin( rowsAlreadyShown, mTableContents.length() );
   int rowsVisible = qMax( floor( contentHeight / rowHeight ), 0.0 );
   int lastVisible = qMin( firstVisible + rowsVisible, mTableContents.length() );
 

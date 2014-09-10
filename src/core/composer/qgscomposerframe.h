@@ -49,6 +49,13 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
     //Overriden to handle fixed frame sizes set by multi frame
     void setSceneRect( const QRectF& rectangle );
 
+    /**Returns the visible portion of the multi frame's content which
+     * is shown in this frame.
+     * @returns extent of visible portion
+     * @note added in QGIS 2.5
+     */
+    QRectF extent() const { return mSection; }
+
   private:
     QgsComposerFrame(); //forbidden
     QgsComposerMultiFrame* mMultiFrame;

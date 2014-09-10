@@ -50,7 +50,6 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
 {
     Q_OBJECT
 
-
   public:
 
     /*! Controls how headers are horizontally aligned in a table
@@ -323,6 +322,12 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     double totalWidth();
 
     double totalHeight() const;
+
+    /**Calculates how many content rows are visible within a given frame
+     * @param frameIndex index number for frame
+     * @returns number of visible content rows (excludes header rows)
+     */
+    int rowsVisible( const int frameIndex ) const;
 
     /**Calculates a range of rows which should be visible in a given
      * rectangle.
