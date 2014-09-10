@@ -227,7 +227,7 @@ def fillRasterOutputFormat(aFilter = None, filename = None):
 
   if aFilter != None:
     supportedRasters = GdalConfig.getSupportedRasters()
-    filterName = re.sub('^.*\] ', '', FileFilter.getFilterName( aFilter[0] ))
+    filterName = re.sub('^.*\] ', '', FileFilter.getFilterName( aFilter ))
     if supportedRasters.has_key( filterName ):
       return supportedRasters[ filterName ][ "SHORTNAME" ]
 
@@ -246,7 +246,7 @@ def fillVectorOutputFormat(aFilter = None, filename = None):
 
   if aFilter != None:
     supportedVectors = GdalConfig.getSupportedVectors()
-    filterName = re.sub('^.*\] ', '', FileFilter.getFilterName( aFilter[0] ))
+    filterName = re.sub('^.*\] ', '', FileFilter.getFilterName( aFilter ))
     if supportedVectors.has_key( filterName ):
       return supportedVectors[ filterName ][ "SHORTNAME" ]
 
