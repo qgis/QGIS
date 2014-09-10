@@ -9393,7 +9393,7 @@ Por favor, cambie esta situación primero, porque el complemento de OSM no sabe 
     </message>
     <message>
         <source>%s due an error when calling its initGui() method</source>
-        <translation>%1 debido a un error al llamar a su método initGui()</translation>
+        <translation>%s debido a un error al llamar a su método initGui()</translation>
     </message>
     <message>
         <source>Error while unloading plugin %s</source>
