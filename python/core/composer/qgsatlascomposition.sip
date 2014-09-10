@@ -155,7 +155,7 @@ public:
      * @see setPredefinedScales
      * @see QgsComposerMap::atlasScalingMode
     */
-    const QVector<double>& predefinedScales() const;
+    const QVector<qreal>& predefinedScales() const;
 
     /**Sets the list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
@@ -163,7 +163,7 @@ public:
      * @see predefinedScales
      * @see QgsComposerMap::atlasScalingMode
      */
-    void setPredefinedScales( const QVector<double>& scales );
+    void setPredefinedScales( const QVector<qreal>& scales );
 
     /** Begins the rendering. Returns true if successful, false if no matching atlas
       features found.*/
