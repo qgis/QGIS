@@ -259,13 +259,13 @@ Description: collection of data providers to QGIS - architecture-independent fil
 
 Package: qgis-server
 Architecture: any
-Replaces: qgis-mapserver
 Provides: qgis-mapserver
+Replaces: qgis-mapserver
 Depends:
  qgis-providers (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
-Description: QGIS server
+Description: QGIS server providing various OGC services
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .

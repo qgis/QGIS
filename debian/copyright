@@ -41,7 +41,7 @@ Copyright: Gary E.Sherman <sherman@mrcc dot com>
  2008 Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
 License: GPL-2+
 
-Files: python/pyspatialite/*
+Files: python/ext-libs/pyspatialite/*
 Copyright: 2004-2007 Gerhard Häring <gh@ghaering.de>
 License: Zlib
 
@@ -641,7 +641,7 @@ Copyright: 2004, 2010, Paul Wessel, SOEST
  2004, 2010, Walter Smith, NOAA
 License: GPL-2+
 
-Files: images/themes/gis/*
+Files: images/themes/default/*
 Copyright: 2011, Robert Szczepanek
  Anita Graser
 Comment: GIS icons by Robert Szczepanek is licensed under a Creative Commons
@@ -650,11 +650,11 @@ Comment: GIS icons by Robert Szczepanek is licensed under a Creative Commons
  to include licence.txt file in your work.
 License: CC-BY-SA-3.0
 
-Files: python/plugins/GdalTools
+Files: python/plugins/GdalTools/*
 Copyright: 2009 Faunalia
 License: MIT
 
-Files: python/plugins/fTools
+Files: python/plugins/fTools/*
 Copyright: 2009 Carson J.Q. Farmer
 License: MIT
 
@@ -663,7 +663,8 @@ Copyright: 2007 Matthew T. Perry
  2008-2009 Borys Jurgiel
 License: MIT
 
-Files: src/app/gps/qwtpolar/*
+Files: src/app/gps/qwtpolar-0.1/*
+ src/app/gps/qwtpolor-1.0/*
 Copyright:  2008 Uwe Rathmann
 Comment: This library is free software; you can redistribute it and/or
  modify it under the terms of the Qwt License, Version 1.0
