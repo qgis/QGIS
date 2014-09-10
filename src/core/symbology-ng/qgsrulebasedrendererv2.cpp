@@ -254,6 +254,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::clone() const
 {
   QgsSymbolV2* sym = mSymbol ? mSymbol->clone() : NULL;
   Rule* newrule = new Rule( sym, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mLabel, mDescription );
+  newrule->mRuleKey = mRuleKey;
   newrule->setCheckState( mCheckState );
   // clone children
   foreach ( Rule* rule, mChildren )
@@ -283,6 +284,7 @@ QDomElement QgsRuleBasedRendererV2::Rule::save( QDomDocument& doc, QgsSymbolV2Ma
     ruleElem.setAttribute( "description", mDescription );
   if ( !mCheckState )
     ruleElem.setAttribute( "checkstate", 0 );
+  ruleElem.setAttribute( "key", mRuleKey );
 
   for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
   {
@@ -589,7 +591,11 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::create( QDomElement&
   QString description = ruleElem.attribute( "description" );
   int scaleMinDenom = ruleElem.attribute( "scalemindenom", "0" ).toInt();
   int scaleMaxDenom = ruleElem.attribute( "scalemaxdenom", "0" ).toInt();
+  QString ruleKey = ruleElem.attribute( "key" );
   Rule* rule = new Rule( symbol, scaleMinDenom, scaleMaxDenom, filterExp, label, description );
+
+  if ( !ruleKey.isEmpty() )
+    rule->mRuleKey = ruleKey;
 
   rule->setCheckState( ruleElem.attribute( "checkstate", "1" ).toInt() );
 
