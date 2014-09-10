@@ -84,6 +84,10 @@ class QgsVisibilityGroups : public QObject
       {
         return mVisibleLayerIDs == other.mVisibleLayerIDs && mPerLayerCheckedLegendSymbols == other.mPerLayerCheckedLegendSymbols;
       }
+      bool operator!=( const GroupRecord& other ) const
+      {
+        return !( *this == other );
+      }
 
       //! List of layers that are visible
       QSet<QString> mVisibleLayerIDs;

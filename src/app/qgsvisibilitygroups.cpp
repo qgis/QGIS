@@ -256,6 +256,30 @@ void QgsVisibilityGroups::applyState( const QString& groupName )
     return;
 
   applyStateToLayerTreeGroup( QgsProject::instance()->layerTreeRoot(), mGroups[groupName] );
+
+  // also make sure that the group is up-to-date (not containing any non-existant legend items)
+  if ( mGroups[groupName] == currentState() )
+    return; // no need for update
+
+  GroupRecord& rec = mGroups[groupName];
+  foreach ( QString layerID, rec.mPerLayerCheckedLegendSymbols.keys() )
+  {
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) );
+    if ( !vl || !vl->rendererV2() )
+      continue;
+
+    QSet<QString> validRuleKeys;
+    foreach ( const QgsLegendSymbolItemV2& item, vl->rendererV2()->legendSymbolItemsV2() )
+      validRuleKeys << item.ruleKey();
+
+    QSet<QString> invalidRuleKeys;
+    foreach ( QString ruleKey, rec.mPerLayerCheckedLegendSymbols[layerID] )
+      if ( !validRuleKeys.contains( ruleKey ) )
+        invalidRuleKeys << ruleKey;
+
+    foreach ( QString invalidRuleKey, invalidRuleKeys )
+      rec.mPerLayerCheckedLegendSymbols[layerID].remove( invalidRuleKey );
+  }
 }
 
 
