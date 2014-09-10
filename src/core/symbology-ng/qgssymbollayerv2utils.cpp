@@ -3070,6 +3070,23 @@ QColor QgsSymbolLayerV2Utils::parseColorWithAlpha( const QString colorStr, bool 
     }
   }
 
+  //color in hex format, with alpha
+  QRegExp hexColorAlphaRx( "^\\s*#?([0-9a-fA-F]{6})([0-9a-fA-F]{2})\\s*$" );
+  if ( hexColorAlphaRx.indexIn( colorStr ) != -1 )
+  {
+    QString hexColor = hexColorAlphaRx.cap( 1 );
+    parsedColor.setNamedColor( QString( "#" ) + hexColor );
+    bool alphaOk;
+    int alphaHex = hexColorAlphaRx.cap( 2 ).toInt( &alphaOk, 16 );
+
+    if ( parsedColor.isValid() && alphaOk )
+    {
+      parsedColor.setAlpha( alphaHex );
+      containsAlpha = true;
+      return parsedColor;
+    }
+  }
+
   if ( !strictEval )
   {
     //color in hex format, without #

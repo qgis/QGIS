@@ -230,6 +230,16 @@ void TestStyleV2::testParseColor()
   colorTests.insert( "00ff000", qMakePair( QColor(), false ) );
   colorTests.insert( "fff", qMakePair( QColor( 255, 255, 255 ), false ) );
   colorTests.insert( "fff0", qMakePair( QColor(), false ) );
+
+  // hex rrggbbaa colors
+  colorTests.insert( "#ff00ffaa", qMakePair( QColor( 255, 0, 255, 170 ), true ) );
+  colorTests.insert( "#99AA0099", qMakePair( QColor( 153, 170, 0, 153 ), true ) );
+  colorTests.insert( "#GG0000aa", qMakePair( QColor(), false ) );
+  colorTests.insert( "00000000", qMakePair( QColor( 0, 0, 0, 0 ), true ) );
+  colorTests.insert( "00ff0011", qMakePair( QColor( 0, 255, 0, 17 ), true ) );
+  colorTests.insert( "00gg0011", qMakePair( QColor( ), false ) );
+  colorTests.insert( "00ff00000", qMakePair( QColor(), false ) );
+
   colorTests.insert( "0,0,0", qMakePair( QColor( 0, 0, 0 ), false ) );
   colorTests.insert( "127,60,0", qMakePair( QColor( 127, 60, 0 ), false ) );
   colorTests.insert( "255,255,255", qMakePair( QColor( 255, 255, 255 ), false ) );
@@ -301,6 +311,16 @@ void TestStyleV2::testParseColorList()
   colorTests.insert( "00ff000", QColor() );
   //colorTests.insert( "fff", QColor( 255, 255, 255 ) );
   colorTests.insert( "fff0", QColor() );
+
+  // hex rrggbbaa colors
+  colorTests.insert( "#ff00ffaa", QColor( 255, 0, 255, 170 ) );
+  colorTests.insert( "#99AA0099", QColor( 153, 170, 0, 153 ) );
+  colorTests.insert( "#GG0000aa", QColor() );
+  colorTests.insert( "00000000", QColor( 0, 0, 0, 0 ) );
+  colorTests.insert( "00ff0011", QColor( 0, 255, 0, 17 ) );
+  colorTests.insert( "00gg0011", QColor( ) );
+  colorTests.insert( "00ff00000",  QColor() );
+
   colorTests.insert( "0,0,0", QColor( 0, 0, 0 ) );
   colorTests.insert( "127,60,0", QColor( 127, 60, 0 ) );
   colorTests.insert( "255,255,255", QColor( 255, 255, 255 ) );
