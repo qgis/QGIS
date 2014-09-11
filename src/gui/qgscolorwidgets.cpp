@@ -51,6 +51,25 @@ int QgsColorWidget::componentValue() const
   return componentValue( mComponent );
 }
 
+QPixmap QgsColorWidget::createDragIcon( const QColor color )
+{
+  //craft a pixmap for the drag icon
+  QPixmap pixmap( 50, 50 );
+  pixmap.fill( Qt::transparent );
+  QPainter painter;
+  painter.begin( &pixmap );
+  //start with a light gray background
+  painter.fillRect( QRect( 0, 0, 50, 50 ), QBrush( QColor( 200, 200, 200 ) ) );
+  //draw rect with white border, filled with current color
+  QColor pixmapColor = color;
+  pixmapColor.setAlpha( 255 );
+  painter.setBrush( QBrush( pixmapColor ) );
+  painter.setPen( QPen( Qt::white ) );
+  painter.drawRect( QRect( 1, 1, 47, 47 ) );
+  painter.end();
+  return pixmap;
+}
+
 int QgsColorWidget::componentValue( const QgsColorWidget::ColorComponent component ) const
 {
   if ( !mCurrentColor.isValid() )
@@ -1553,4 +1572,51 @@ void QgsColorPreviewWidget::setColor2( const QColor &color )
   }
   mColor2 = color;
   update();
+}
+
+void QgsColorPreviewWidget::mousePressEvent( QMouseEvent *e )
+{
+  if ( e->button() == Qt::LeftButton )
+  {
+    mDragStartPosition = e->pos();
+  }
+  QWidget::mousePressEvent( e );
+}
+
+void QgsColorPreviewWidget::mouseMoveEvent( QMouseEvent *e )
+{
+  //handle dragging colors from button
+
+  if ( !( e->buttons() & Qt::LeftButton ) )
+  {
+    //left button not depressed, so not a drag
+    QWidget::mouseMoveEvent( e );
+    return;
+  }
+
+  if (( e->pos() - mDragStartPosition ).manhattanLength() < QApplication::startDragDistance() )
+  {
+    //mouse not moved, so not a drag
+    QWidget::mouseMoveEvent( e );
+    return;
+  }
+
+  //user is dragging color
+
+  //work out which color is being dragged
+  QColor dragColor = mCurrentColor;
+  if ( mColor2.isValid() )
+  {
+    //two color sections, check if dragged color was the second color
+    int verticalSplit = qRound( height() / 2.0 );
+    if ( mDragStartPosition.y() >= verticalSplit )
+    {
+      dragColor = mColor2;
+    }
+  }
+
+  QDrag *drag = new QDrag( this );
+  drag->setMimeData( QgsSymbolLayerV2Utils::colorToMimeData( dragColor ) );
+  drag->setPixmap( createDragIcon( dragColor ) );
+  drag->exec( Qt::CopyAction );
 }

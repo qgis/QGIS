@@ -80,6 +80,11 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      */
     int componentValue() const;
 
+    /**Create an icon for dragging colors
+     * @param color for icon
+     */
+    static QPixmap createDragIcon( const QColor color );
+
   public slots:
 
     /**Sets the color for the widget
@@ -621,10 +626,20 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
      */
     virtual void setColor2( const QColor& color );
 
+  protected:
+
+    //reimplemented to allow dragging colors
+    void mousePressEvent( QMouseEvent* e );
+
+    //reimplemented to allow dragging colors
+    void mouseMoveEvent( QMouseEvent *e );
+
   private:
 
     /*Secondary color for widget*/
     QColor mColor2;
+
+    QPoint mDragStartPosition;
 
     /*Draws a color preview within the specified rect.
      * @param color color to draw

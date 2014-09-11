@@ -201,6 +201,15 @@ class QgsSymbolLayerV2Utils
     static QList< QColor > parseColorList( const QString colorStr );
 
     /**
+     * Creates mime data from a color. Sets both the mime data's color data, and the
+     * mime data's text with the color's hex code.
+     * @param color color to encode as mime data
+     * @see colorFromMimeData
+     * @note added in 2.5
+     */
+    static QMimeData * colorToMimeData( const QColor color );
+
+    /**
      * Attempts to parse mime data as a color
      * @param data mime data to parse
      * @param hasAlpha will be set to true if mime data was interpreted as a color containing

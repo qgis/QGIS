@@ -304,12 +304,6 @@ class GUI_EXPORT QgsColorButtonV2: public QToolButton
 
     QSize mIconSize;
 
-    /**Creates mime data from the current color. Sets both the mime data's color data, and the
-     * mime data's text with the color's hex code.
-     * @see colorFromMimeData
-     */
-    QMimeData* createColorMimeData() const;
-
     /**Attempts to parse mimeData as a color, either via the mime data's color data or by
      * parsing a textual representation of a color.
      * @returns true if mime data could be intrepreted as a color
@@ -330,11 +324,6 @@ class GUI_EXPORT QgsColorButtonV2: public QToolButton
      * @param color to add to recent colors list
      */
     void addRecentColor( const QColor color );
-
-    /**Create an icon for dragging colors
-     * @param color for icon
-     */
-    QPixmap createDragIcon( const QColor color );
 
     /**Create a color icon for display in the drop down menu
      * @param color for icon

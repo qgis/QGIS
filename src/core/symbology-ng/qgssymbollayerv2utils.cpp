@@ -2799,6 +2799,16 @@ QList<QColor> QgsSymbolLayerV2Utils::parseColorList( const QString colorStr )
   return colors;
 }
 
+QMimeData * QgsSymbolLayerV2Utils::colorToMimeData( const QColor color )
+{
+  //set both the mime color data (which includes alpha channel), and the text (which is the color's hex
+  //value, and can be used when pasting colors outside of QGIS).
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setColorData( QVariant( color ) );
+  mimeData->setText( color.name() );
+  return mimeData;
+}
+
 QColor QgsSymbolLayerV2Utils::colorFromMimeData( const QMimeData * mimeData, bool& hasAlpha )
 {
   //attempt to read color data directly from mime
