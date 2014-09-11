@@ -1377,7 +1377,8 @@ void QgsColorTextWidget::updateText()
 void QgsColorTextWidget::textChanged()
 {
   QString testString = mLineEdit->text();
-  QColor color = QgsSymbolLayerV2Utils::parseColor( testString );
+  bool containsAlpha;
+  QColor color = QgsSymbolLayerV2Utils::parseColorWithAlpha( testString, containsAlpha );
   if ( !color.isValid() )
   {
     //bad color string
@@ -1388,6 +1389,11 @@ void QgsColorTextWidget::textChanged()
   //good color string
   if ( color != mCurrentColor )
   {
+    //retain alpha if no explicit alpha set
+    if ( !containsAlpha )
+    {
+      color.setAlpha( mCurrentColor.alpha() );
+    }
     //color has changed
     mCurrentColor = color;
     emit colorChanged( mCurrentColor );
