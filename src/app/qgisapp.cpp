@@ -1651,7 +1651,8 @@ void QgisApp::createToolBars()
     case 1: defNewLayerAction = mActionNewVectorLayer; break;
   }
   bt->setDefaultAction( defNewLayerAction );
-  QAction* newLayerAction = mLayerToolBar->insertWidget( mActionAddDelimitedText, bt );
+  QAction* newLayerAction = mLayerToolBar->addWidget( bt );
+
   newLayerAction->setObjectName( "ActionNewLayer" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
