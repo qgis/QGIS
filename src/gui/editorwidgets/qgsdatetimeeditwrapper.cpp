@@ -82,7 +82,7 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
 
   if ( mQgsDateTimeEdit )
   {
-    connect( mQgsDateTimeEdit, SIGNAL( dateTimeChanged( QVariant ) ), this, SLOT( dateTimeChanged( QDateTime ) ) );
+    connect( mQgsDateTimeEdit, SIGNAL( dateTimeChanged( QDateTime ) ), this, SLOT( dateTimeChanged( QDateTime ) ) );
   }
   else
   {
