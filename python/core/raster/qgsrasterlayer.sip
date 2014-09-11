@@ -191,9 +191,6 @@ class QgsRasterLayer : QgsMapLayer
     QImage previewAsImage( QSize size, QColor bgColor = QColor( 255, 255, 255 ),
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 
-    /** \brief Emit a signal asking for a repaint. (inherited from maplayer) */
-    void triggerRepaint();
-
     /**
      * Reorders the *previously selected* sublayers of this layer from bottom to top
      *

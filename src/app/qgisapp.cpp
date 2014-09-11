@@ -6984,7 +6984,7 @@ void QgisApp::setLayerCRS()
         if ( child->layer() )
         {
           child->layer()->setCrs( crs );
-          child->layer()->clearCacheImage();
+          child->layer()->triggerRepaint();
         }
       }
     }
@@ -6994,7 +6994,7 @@ void QgisApp::setLayerCRS()
       if ( nodeLayer->layer() )
       {
         nodeLayer->layer()->setCrs( crs );
-        nodeLayer->layer()->clearCacheImage();
+        nodeLayer->layer()->triggerRepaint();
       }
     }
   }
@@ -7111,7 +7111,7 @@ void QgisApp::legendGroupSetCRS()
     if ( nodeLayer->layer() )
     {
       nodeLayer->layer()->setCrs( crs );
-      nodeLayer->layer()->clearCacheImage();
+      nodeLayer->layer()->triggerRepaint();
     }
   }
 }
@@ -8587,7 +8587,7 @@ void QgisApp::layersWereAdded( QList<QgsMapLayer *> theLayers )
 
     if ( provider )
     {
-      connect( provider, SIGNAL( dataChanged() ), layer, SLOT( clearCacheImage() ) );
+      connect( provider, SIGNAL( dataChanged() ), layer, SLOT( triggerRepaint() ) );
       connect( provider, SIGNAL( dataChanged() ), mMapCanvas, SLOT( refresh() ) );
     }
   }

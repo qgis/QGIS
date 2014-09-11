@@ -395,8 +395,16 @@ class QgsMapLayer : QObject
     bool hasScaleBasedVisibility() const;
 
     /** Clear cached image
-     *  @deprecated in 2.4 - caches listen to repaintRequested() signal to invalidate the cached image */
+     *  @deprecated in 2.4 - use triggerRepaint() - caches automatically listen to repaintRequested() signal to invalidate the cached image */
     void clearCacheImage() /Deprecated/;
+
+    /**
+     * Will advice the map canvas (and any other interested party) that this layer requires to be repainted.
+     * Will emit a repaintRequested() signal.
+     *
+     * @note in 2.6 function moved from vector/raster subclasses to QgsMapLayer
+     */
+    void triggerRepaint();
 
     /** \brief Obtain Metadata for this layer */
     virtual QString metadata();

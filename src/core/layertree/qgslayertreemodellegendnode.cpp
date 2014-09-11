@@ -195,7 +195,7 @@ bool QgsSymbolV2LegendNode::setData( const QVariant& value, int role )
   emit dataChanged();
 
   if ( mLayerNode->isVisible() )
-    vlayer->clearCacheImage();
+    vlayer->triggerRepaint();
 
   return true;
 }

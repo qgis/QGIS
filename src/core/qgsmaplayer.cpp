@@ -1403,6 +1403,11 @@ void QgsMapLayer::clearCacheImage()
   emit repaintRequested();
 }
 
+void QgsMapLayer::triggerRepaint()
+{
+  emit repaintRequested();
+}
+
 QString QgsMapLayer::metadata()
 {
   return QString();

@@ -566,11 +566,6 @@ void QgsVectorLayer::removeSelection()
   setSelectedFeatures( QgsFeatureIds() );
 }
 
-void QgsVectorLayer::triggerRepaint()
-{
-  emit repaintRequested();
-}
-
 QgsVectorDataProvider* QgsVectorLayer::dataProvider()
 {
   return mDataProvider;

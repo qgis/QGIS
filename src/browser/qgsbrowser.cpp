@@ -466,7 +466,7 @@ void QgsBrowser::updateCurrentTab()
       QgsRasterLayer *rlayer = qobject_cast< QgsRasterLayer * >( mLayer );
       if ( rlayer )
       {
-        connect( rlayer->dataProvider(), SIGNAL( dataChanged() ), rlayer, SLOT( clearCacheImage() ) );
+        connect( rlayer->dataProvider(), SIGNAL( dataChanged() ), rlayer, SLOT( triggerRepaint() ) );
         connect( rlayer->dataProvider(), SIGNAL( dataChanged() ), mapCanvas, SLOT( refresh() ) );
       }
     }

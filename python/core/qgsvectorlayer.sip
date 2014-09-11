@@ -1157,8 +1157,6 @@ class QgsVectorLayer : QgsMapLayer
      */
     void removeSelection();
 
-    void triggerRepaint();
-
     /** Update the extents for the layer. This is necessary if features are
      *  added/deleted or the layer has been subsetted.
      */

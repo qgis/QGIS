@@ -1189,11 +1189,6 @@ QImage QgsRasterLayer::previewAsImage( QSize size, QColor bgColor, QImage::Forma
   return myQImage;
 }
 
-void QgsRasterLayer::triggerRepaint()
-{
-  emit repaintRequested();
-}
-
 void QgsRasterLayer::updateProgress( int theProgress, int theMax )
 {
   Q_UNUSED( theProgress );

@@ -351,9 +351,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QImage previewAsImage( QSize size, QColor bgColor = Qt::white,
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 
-    /** \brief Emit a signal asking for a repaint. (inherited from maplayer) */
-    void triggerRepaint();
-
     /**
      * Reorders the *previously selected* sublayers of this layer from bottom to top
      *
