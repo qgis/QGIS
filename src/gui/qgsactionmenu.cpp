@@ -51,7 +51,7 @@ void QgsActionMenu::init()
 
 const QgsFeature* QgsActionMenu::feature()
 {
-  if ( !mFeature )
+  if ( !mFeature || !mFeature->isValid() )
   {
     QgsFeature* feat = new QgsFeature();
     if ( mActions->layer()->getFeatures( QgsFeatureRequest( mFeatureId ) ).nextFeature( *feat ) )
