@@ -54,7 +54,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( "Relation" ).toString() );
   mWidget->setRelation( relation, config( "AllowNULL" ).toBool() );
 
-  connect( mWidget, SIGNAL( relatedFeatureChanged( QVariant ) ), this, SIGNAL( valueChanged( QVariant ) ) );
+  connect( mWidget, SIGNAL( relatedFeatureChanged( QVariant ) ), this,  SLOT( relatedFeatureChanged( QVariant ) ) );
 }
 
 QVariant QgsRelationReferenceWidgetWrapper::value()
@@ -62,7 +62,7 @@ QVariant QgsRelationReferenceWidgetWrapper::value()
   if ( !mWidget )
     return QVariant( field().type() );
 
-  QVariant v = mWidget->relatedFeature();
+  QVariant v = mWidget->foreignKey();
 
   if ( v.isNull() )
   {
@@ -88,4 +88,13 @@ void QgsRelationReferenceWidgetWrapper::setEnabled( bool enabled )
     return;
 
   mWidget->setRelationEditable( enabled );
+}
+
+void QgsRelationReferenceWidgetWrapper::relatedFeatureChanged( QVariant value )
+{
+  if ( !value.isValid() || value.isNull() )
+  {
+    value = QVariant( field().type() );
+  }
+  emit valueChanged( value );
 }

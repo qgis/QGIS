@@ -33,9 +33,6 @@ class QgsVectorLayerTools;
 class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY( bool embedForm READ embedForm WRITE setEmbedForm )
-    Q_PROPERTY( bool readOnlySelector READ readOnlySelector WRITE setReadOnlySelector )
-    Q_PROPERTY( bool allowMapIdentification READ allowMapIdentification WRITE setAllowMapIdentification )
 
   public:
     enum CanvasExtent
@@ -53,9 +50,11 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     void setRelationEditable( bool editable );
 
+    //! this sets the related feature using from the foreign key
     void setRelatedFeature( const QVariant &value );
 
-    QVariant relatedFeature();
+    //! returns the related feature foreign key
+    QVariant foreignKey();
 
     void setEditorContext( QgsAttributeEditorContext context, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
 
@@ -75,20 +74,26 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void highlightActionTriggered( QAction* action );
     void deleteHighlight();
     void openForm();
-    void mapIdentification();
-    void referenceChanged( int index );
-    void setRelatedFeature( const QgsFeatureId& fid );
-    void featureIdentified( const QgsFeatureId& fid );
+    void mapIdentificationTriggered( QAction* action );
+    void comboReferenceChanged( int index );
+    void removeRelatedFeature();
+    void featureIdentified( const QgsFeature& feature );
     void mapToolDeactivated();
 
 
   private:
-    void highlightFeature( CanvasExtent canvasExtent = Fixed );
+    QgsFeature relatedFeature();
+    void highlightFeature( QgsFeature f = QgsFeature(), CanvasExtent canvasExtent = Fixed );
+    void updateAttributeEditorFrame( const QgsFeature feature );
 
     // initialized
     QgsAttributeEditorContext mEditorContext;
     QgsMapCanvas* mCanvas;
     QgsMessageBar* mMessageBar;
+    QVariant mForeignKey;
+    QgsFeatureId mFeatureId;
+    int mFkeyFieldIdx;
+    bool mAllowNull;
     QgsHighlight* mHighlight;
     bool mInitialValueAssigned;
     QgsMapToolIdentifyFeature* mMapTool;
@@ -115,6 +120,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QAction* mPanHighlightFeatureAction;
     QAction* mOpenFormAction;
     QAction* mMapIdentificationAction;
+    QAction* mRemoveFeatureAction;
     QComboBox* mComboBox;
     QgsCollapsibleGroupBox* mAttributeEditorFrame;
     QVBoxLayout* mAttributeEditorLayout;
