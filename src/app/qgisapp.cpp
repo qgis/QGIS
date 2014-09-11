@@ -6975,9 +6975,6 @@ void QgisApp::setLayerCRS()
 
   QgsCoordinateReferenceSystem crs( mySelector.selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
 
-  // Turn off rendering to improve speed.
-  mMapCanvas->freeze();
-
   foreach ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
   {
     if ( QgsLayerTree::isGroup( node ) )
@@ -6985,19 +6982,22 @@ void QgisApp::setLayerCRS()
       foreach ( QgsLayerTreeLayer* child, QgsLayerTree::toGroup( node )->findLayers() )
       {
         if ( child->layer() )
+        {
           child->layer()->setCrs( crs );
+          child->layer()->clearCacheImage();
+        }
       }
     }
     else if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
       if ( nodeLayer->layer() )
+      {
         nodeLayer->layer()->setCrs( crs );
+        nodeLayer->layer()->clearCacheImage();
+      }
     }
   }
-
-  // Turn on rendering (if it was on previously)
-  mMapCanvas->freeze( false );
 
   mMapCanvas->refresh();
 }
@@ -7109,7 +7109,10 @@ void QgisApp::legendGroupSetCRS()
   foreach ( QgsLayerTreeLayer* nodeLayer, currentGroup->findLayers() )
   {
     if ( nodeLayer->layer() )
+    {
       nodeLayer->layer()->setCrs( crs );
+      nodeLayer->layer()->clearCacheImage();
+    }
   }
 }
 
