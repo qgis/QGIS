@@ -63,6 +63,7 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
     void on_mHeaderModeComboBox_currentIndexChanged( int index );
     void changeLayer( QgsMapLayer* layer );
     void on_mAddFramePushButton_clicked();
+    void on_mResizeModeComboBox_currentIndexChanged( int index );
 
     /**Inserts a new maximum number of features into the spin box (without the spinbox emitting a signal)*/
     void setMaximumNumberOfFeatures( int n );

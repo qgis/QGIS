@@ -40,6 +40,12 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
   mainLayout->addWidget( itemPropertiesWidget );
 
   blockAllSignals( true );
+
+  mResizeModeComboBox->addItem( tr( "Use existing frames" ), QgsComposerMultiFrame::UseExistingFrames );
+  mResizeModeComboBox->addItem( tr( "Extend to next page" ), QgsComposerMultiFrame::ExtendToNextPage );
+  mResizeModeComboBox->addItem( tr( "Repeat on every page" ), QgsComposerMultiFrame::RepeatOnEveryPage );
+  mResizeModeComboBox->addItem( tr( "Repeat until finished" ), QgsComposerMultiFrame::RepeatUntilFinished );
+
   mLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   connect( mLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( changeLayer( QgsMapLayer* ) ) );
 
@@ -468,6 +474,9 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
   mHeaderHAlignmentComboBox->setCurrentIndex(( int )mComposerTable->headerHAlignment() );
   mHeaderModeComboBox->setCurrentIndex(( int )mComposerTable->headerMode() );
 
+  mResizeModeComboBox->setCurrentIndex( mResizeModeComboBox->findData( mComposerTable->resizeMode() ) );
+  mAddFramePushButton->setEnabled( mComposerTable->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
+
   blockAllSignals( false );
 }
 
@@ -487,6 +496,7 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
   mHeaderModeComboBox->blockSignals( b );
   mHeaderFontColorButton->blockSignals( b );
   mContentFontColorButton->blockSignals( b );
+  mResizeModeComboBox->blockSignals( b );
 }
 
 void QgsComposerAttributeTableWidget::setMaximumNumberOfFeatures( int n )
@@ -698,4 +708,22 @@ void QgsComposerAttributeTableWidget::on_mAddFramePushButton_clicked()
   {
     composition->setSelectedItem( newFrame );
   }
+}
+
+void QgsComposerAttributeTableWidget::on_mResizeModeComboBox_currentIndexChanged( int index )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mComposerTable->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Change resize mode" ) );
+    mComposerTable->setResizeMode(( QgsComposerMultiFrame::ResizeMode )mResizeModeComboBox->itemData( index ).toInt() );
+    composition->endMultiFrameCommand();
+  }
+
+  mAddFramePushButton->setEnabled( mComposerTable->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
 }

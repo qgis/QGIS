@@ -133,6 +133,10 @@ QSizeF QgsComposerTableV2::totalSize() const
   //TODO - handle multiple cell headers
   //also check height calculation function
 
+
+
+  //calculate total size
+
   return mTableSize;
 }
 
@@ -571,13 +575,48 @@ double QgsComposerTableV2::totalWidth()
 
 double QgsComposerTableV2::totalHeight() const
 {
-  //calculate height
-  int n = mTableContents.size();
-  double totalHeight = QgsComposerUtils::fontAscentMM( mHeaderFont )
-                       + n * QgsComposerUtils::fontAscentMM( mContentFont )
-                       + ( n + 1 ) * mCellMargin * 2
-                       + ( n + 2 ) * ( mShowGrid ? mGridStrokeWidth : 0 );
-  return totalHeight;
+  double height = 0;
+
+  //loop through all existing frames to calculate how many rows are visible in each
+  //as the entire height of a frame may not be utilised for content rows
+  int rowsAlreadyShown = 0;
+  int numberExistingFrames = frameCount();
+  int rowsVisibleInLastFrame = 0;
+  double heightOfLastFrame = 0;
+  for ( int idx = 0; idx < numberExistingFrames; ++idx )
+  {
+    rowsVisibleInLastFrame = rowsVisible( idx );
+    heightOfLastFrame = frame( idx )->rect().height();
+    rowsAlreadyShown += rowsVisibleInLastFrame;
+    height += heightOfLastFrame;
+    if ( rowsAlreadyShown >= mTableContents.length() )
+    {
+      //shown entire contents of table, nothing remaining
+      return height;
+    }
+  }
+
+  //calculate how many rows left to show
+  int remainingRows = mTableContents.length() - rowsAlreadyShown;
+
+  if ( remainingRows <= 0 )
+  {
+    //no remaining rows
+    return height;
+  }
+
+  if ( rowsVisibleInLastFrame < 1 )
+  {
+    //if no rows are visible in the last frame, calculation of missing frames
+    //is impossible. So just return total height of existing frames
+    return height;
+  }
+
+  //rows remain unshown -- how many extra frames would we need to complete the table?
+  //assume all added frames are same size as final frame
+  int numberFramesMissing = ceil(( double )remainingRows / ( double )rowsVisibleInLastFrame );
+  height += heightOfLastFrame * numberFramesMissing;
+  return height;
 }
 
 void QgsComposerTableV2::drawHorizontalGridLines( QPainter *painter, const int rows, const bool drawHeaderLines ) const
