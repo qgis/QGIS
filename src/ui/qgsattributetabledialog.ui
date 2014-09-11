@@ -61,6 +61,9 @@
        <property name="checkable">
         <bool>false</bool>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -90,6 +93,9 @@
        <property name="checkable">
         <bool>false</bool>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -116,6 +122,9 @@
          <height>18</height>
         </size>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -135,6 +144,9 @@
          <width>18</width>
          <height>18</height>
         </size>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -163,6 +175,9 @@
          <height>18</height>
         </size>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -185,6 +200,9 @@
        </property>
        <property name="shortcut">
         <string>Ctrl+U</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -212,6 +230,9 @@
        <property name="checkable">
         <bool>true</bool>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -234,6 +255,9 @@
        </property>
        <property name="shortcut">
         <string>Ctrl+S</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -261,6 +285,9 @@
        <property name="shortcut">
         <string>Ctrl+P</string>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -287,6 +314,9 @@
        <property name="shortcut">
         <string>Ctrl+J</string>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -312,6 +342,9 @@
        </property>
        <property name="shortcut">
         <string>Ctrl+C</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -343,6 +376,9 @@
        <property name="shortcut">
         <string>Ctrl+L</string>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -366,6 +402,9 @@
        <property name="shortcut">
         <string>Ctrl+W</string>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -388,6 +427,9 @@
        </property>
        <property name="shortcut">
         <string>Ctrl+I</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -420,6 +462,9 @@
        </property>
        <property name="text">
         <string>?</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
