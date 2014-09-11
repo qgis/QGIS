@@ -133,6 +133,12 @@ class QgsMapTool : QObject
     //! emit signal to clear previous message
     void messageDiscarded();
 
+    //! signal emitted once the map tool is activated
+    void activated();
+
+    //! signal emitted once the map tool is deactivated
+    void deactivated();
+
   protected:
 
     //! constructor takes map canvas as a parameter
