@@ -155,8 +155,9 @@ QMimeData * QgsColorButtonV2::createColorMimeData() const
 
 bool QgsColorButtonV2::colorFromMimeData( const QMimeData * mimeData, QColor& resultColor )
 {
-  //attempt to read color data directly from mime
-  QColor mimeColor = mimeData->colorData().value<QColor>();
+  bool hasAlpha = false;
+  QColor mimeColor = QgsSymbolLayerV2Utils::colorFromMimeData( mimeData, hasAlpha );
+
   if ( mimeColor.isValid() )
   {
     if ( !( mColorDialogOptions & QColorDialog::ShowAlphaChannel ) )
@@ -164,26 +165,12 @@ bool QgsColorButtonV2::colorFromMimeData( const QMimeData * mimeData, QColor& re
       //remove alpha channel
       mimeColor.setAlpha( 255 );
     }
-    resultColor = mimeColor;
-    return true;
-  }
-
-  //attempt to intrepret a color from mime text data
-  bool hasAlpha = false;
-  QColor textColor = QgsSymbolLayerV2Utils::parseColorWithAlpha( mimeData->text(), hasAlpha );
-  if ( textColor.isValid() )
-  {
-    if ( !( mColorDialogOptions & QColorDialog::ShowAlphaChannel ) )
-    {
-      //remove alpha channel
-      textColor.setAlpha( 255 );
-    }
     else if ( !hasAlpha )
     {
       //mime color has no explicit alpha component, so keep existing alpha
-      textColor.setAlpha( mColor.alpha() );
+      mimeColor.setAlpha( mColor.alpha() );
     }
-    resultColor = textColor;
+    resultColor = mimeColor;
     return true;
   }
 

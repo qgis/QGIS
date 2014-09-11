@@ -201,6 +201,17 @@ class QgsSymbolLayerV2Utils
     static QList< QColor > parseColorList( const QString colorStr );
 
     /**
+     * Attempts to parse mime data as a color
+     * @param data mime data to parse
+     * @param hasAlpha will be set to true if mime data was interpreted as a color containing
+     * an explicit alpha value
+     * @returns valid color if mimedata could be interpreted as a color, otherwise an
+     * invalid color
+     * @note added in 2.5
+     */
+    static QColor colorFromMimeData( const QMimeData * mimeData, bool& hasAlpha );
+    
+    /**
      * Attempts to parse mime data as a list of named colors
      * @param data mime data to parse
      * @returns list of parsed colors

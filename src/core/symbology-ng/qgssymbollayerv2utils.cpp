@@ -2799,6 +2799,28 @@ QList<QColor> QgsSymbolLayerV2Utils::parseColorList( const QString colorStr )
   return colors;
 }
 
+QColor QgsSymbolLayerV2Utils::colorFromMimeData( const QMimeData * mimeData, bool& hasAlpha )
+{
+  //attempt to read color data directly from mime
+  QColor mimeColor = mimeData->colorData().value<QColor>();
+  if ( mimeColor.isValid() )
+  {
+    hasAlpha = true;
+    return mimeColor;
+  }
+
+  //attempt to intrepret a color from mime text data
+  hasAlpha = false;
+  QColor textColor = QgsSymbolLayerV2Utils::parseColorWithAlpha( mimeData->text(), hasAlpha );
+  if ( textColor.isValid() )
+  {
+    return textColor;
+  }
+
+  //could not get color from mime data
+  return QColor();
+}
+
 QgsNamedColorList QgsSymbolLayerV2Utils::colorListFromMimeData( const QMimeData *data )
 {
   QgsNamedColorList mimeColors;

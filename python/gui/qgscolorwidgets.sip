@@ -127,6 +127,12 @@ class QgsColorWidget : QWidget
      */
     static const QPixmap& transparentBackground();
 
+    //Reimplemented to accept dragged colors
+    void dragEnterEvent( QDragEnterEvent * e ) ;
+
+    //Reimplemented to accept dropped colors
+    void dropEvent( QDropEvent *e );
+
 };
 
 

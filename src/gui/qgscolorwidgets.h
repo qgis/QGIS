@@ -158,6 +158,12 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * @returns checkerboard pixmap
      */
     static const QPixmap& transparentBackground();
+
+    //Reimplemented to accept dragged colors
+    void dragEnterEvent( QDragEnterEvent * e ) ;
+
+    //Reimplemented to accept dropped colors
+    void dropEvent( QDropEvent *e );
 };
 
 

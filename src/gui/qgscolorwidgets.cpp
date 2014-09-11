@@ -38,7 +38,7 @@ QgsColorWidget::QgsColorWidget( QWidget* parent, const ColorComponent component 
     , mCurrentColor( Qt::red )
     , mComponent( component )
 {
-
+  setAcceptDrops( true );
 }
 
 QgsColorWidget::~QgsColorWidget()
@@ -161,6 +161,43 @@ const QPixmap &QgsColorWidget::transparentBackground()
     transpBkgrd = QgsApplication::getThemePixmap( "/transp-background_8x8.png" );
 
   return transpBkgrd;
+}
+
+void QgsColorWidget::dragEnterEvent( QDragEnterEvent *e )
+{
+  //is dragged data valid color data?
+  bool hasAlpha;
+  QColor mimeColor = QgsSymbolLayerV2Utils::colorFromMimeData( e->mimeData(), hasAlpha );
+
+  if ( mimeColor.isValid() )
+  {
+    //if so, we accept the drag
+    e->acceptProposedAction();
+  }
+}
+
+void QgsColorWidget::dropEvent( QDropEvent *e )
+{
+  //is dropped data valid color data?
+  bool hasAlpha = false;
+  QColor mimeColor = QgsSymbolLayerV2Utils::colorFromMimeData( e->mimeData(), hasAlpha );
+
+  if ( mimeColor.isValid() )
+  {
+    //accept drop and set new color
+    e->acceptProposedAction();
+
+    if ( !hasAlpha )
+    {
+      //mime color has no explicit alpha component, so keep existing alpha
+      mimeColor.setAlpha( mCurrentColor.alpha() );
+    }
+
+    setColor( mimeColor );
+    emit colorChanged( mCurrentColor );
+  }
+
+  //could not get color from mime data
 }
 
 QColor QgsColorWidget::color() const
