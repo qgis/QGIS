@@ -42,12 +42,12 @@ QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QgsCo
   mainLayout->addWidget( itemPropertiesWidget );
 
   mArrowHeadOutlineColorButton->setColorDialogTitle( tr( "Select arrow head outline color" ) );
-  mArrowHeadOutlineColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mArrowHeadOutlineColorButton->setAllowAlpha( true );
   mArrowHeadOutlineColorButton->setContext( "composer" );
   mArrowHeadOutlineColorButton->setNoColorString( tr( "Transparent outline" ) );
   mArrowHeadOutlineColorButton->setShowNoColor( true );
   mArrowHeadFillColorButton->setColorDialogTitle( tr( "Select arrow head fill color" ) );
-  mArrowHeadFillColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mArrowHeadFillColorButton->setAllowAlpha( true );
   mArrowHeadFillColorButton->setContext( "composer" );
   mArrowHeadFillColorButton->setNoColorString( tr( "Transparent fill" ) );
   mArrowHeadFillColorButton->setShowNoColor( true );

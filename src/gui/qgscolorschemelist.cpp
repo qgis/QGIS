@@ -17,6 +17,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgscolordialog.h"
 #include <QPainter>
 #include <QColorDialog>
 #include <QMimeData>
@@ -586,6 +587,17 @@ void QgsColorSchemeModel::addColor( const QColor color, const QString label )
     return;
   }
 
+  //matches existing color? if so, remove it first
+  QPair< QColor, QString > newColor = qMakePair( color, !label.isEmpty() ? label : QgsSymbolLayerV2Utils::colorToName( color ) );
+  //if color already exists, remove it
+  int existingIndex = mColors.indexOf( newColor );
+  if ( existingIndex >= 0 )
+  {
+    beginRemoveRows( QModelIndex(), existingIndex, existingIndex );
+    mColors.removeAt( existingIndex );
+    endRemoveRows();
+  }
+
   int row = rowCount();
   insertRow( row );
   QModelIndex colorIdx = index( row, 0, QModelIndex() );
@@ -680,7 +692,7 @@ bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *mod
       return false;
     }
     QColor color = index.model()->data( index, Qt::DisplayRole ).value<QColor>();
-    QColor newColor = QColorDialog::getColor( color, mParent, tr( "Select color" ), QColorDialog::ShowAlphaChannel );
+    QColor newColor = QgsColorDialogV2::getColor( color, mParent, tr( "Select color" ), true );
     if ( !newColor.isValid() )
     {
       return false;

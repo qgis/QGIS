@@ -37,6 +37,7 @@ QgsColorWidget::QgsColorWidget( QWidget* parent, const ColorComponent component 
     : QWidget( parent )
     , mCurrentColor( Qt::red )
     , mComponent( component )
+    , mExplicitHue( 0 )
 {
   setAcceptDrops( true );
 }
@@ -317,7 +318,7 @@ void QgsColorWidget::setComponentValue( const int value )
   update();
 }
 
-void QgsColorWidget::setColor( const QColor color )
+void QgsColorWidget::setColor( const QColor color, const bool emitSignals )
 {
   if ( color == mCurrentColor )
   {
@@ -330,6 +331,11 @@ void QgsColorWidget::setColor( const QColor color )
   if ( color.hue() >= 0 )
   {
     mExplicitHue = color.hue();
+  }
+
+  if ( emitSignals )
+  {
+    emit colorChanged( mCurrentColor );
   }
 
   update();
@@ -456,7 +462,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   painter.end();
 }
 
-void QgsColorWheel::setColor( const QColor color )
+void QgsColorWheel::setColor( const QColor color, const bool emitSignals )
 {
   if ( color.hue() >= 0 && color.hue() != hue() )
   {
@@ -464,7 +470,7 @@ void QgsColorWheel::setColor( const QColor color )
     mTriangleDirty = true;
   }
 
-  QgsColorWidget::setColor( color );
+  QgsColorWidget::setColor( color, emitSignals );
 }
 
 void QgsColorWheel::createImages( const QSizeF size )
@@ -782,7 +788,7 @@ void QgsColorBox::setComponent( const QgsColorWidget::ColorComponent component )
   QgsColorWidget::setComponent( component );
 }
 
-void QgsColorBox::setColor( const QColor color )
+void QgsColorBox::setColor( const QColor color, const bool emitSignals )
 {
   //check if we need to redraw the box image
   if ( mComponent == QgsColorWidget::Red && mCurrentColor.red() != color.red() )
@@ -809,7 +815,7 @@ void QgsColorBox::setColor( const QColor color )
   {
     mDirty = true;
   }
-  QgsColorWidget::setColor( color );
+  QgsColorWidget::setColor( color, emitSignals );
 }
 
 void QgsColorBox::resizeEvent( QResizeEvent *event )
@@ -1299,9 +1305,9 @@ void QgsColorSliderWidget::setComponentValue( const int value )
   mSpinBox->blockSignals( false );
 }
 
-void QgsColorSliderWidget::setColor( const QColor color )
+void QgsColorSliderWidget::setColor( const QColor color, const bool emitSignals )
 {
-  QgsColorWidget::setColor( color );
+  QgsColorWidget::setColor( color, emitSignals );
   mRampWidget->setColor( color );
   mSpinBox->blockSignals( true );
   mSpinBox->setValue( convertRealToDisplay( componentValue() ) );
@@ -1398,9 +1404,9 @@ QgsColorTextWidget::~QgsColorTextWidget()
 
 }
 
-void QgsColorTextWidget::setColor( const QColor color )
+void QgsColorTextWidget::setColor( const QColor color, const bool emitSignals )
 {
-  QgsColorWidget::setColor( color );
+  QgsColorWidget::setColor( color, emitSignals );
   updateText();
 }
 
@@ -1558,7 +1564,7 @@ void QgsColorPreviewWidget::paintEvent( QPaintEvent *event )
     drawColor( mCurrentColor, QRect( 0, 0, width(), verticalSplit ), painter );
     drawColor( mColor2, QRect( 0, verticalSplit, width(), height() - verticalSplit ), painter );
   }
-  else
+  else if ( mCurrentColor.isValid() )
   {
     drawColor( mCurrentColor, QRect( 0, 0, width(), height() ), painter );
   }

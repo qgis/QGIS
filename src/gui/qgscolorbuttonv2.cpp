@@ -38,13 +38,13 @@
 #include <QGridLayout>
 #include <QPushButton>
 
-QgsColorButtonV2::QgsColorButtonV2( QWidget *parent, QString cdt, QColorDialog::ColorDialogOptions cdo, QgsColorSchemeRegistry* registry )
+QgsColorButtonV2::QgsColorButtonV2( QWidget *parent, QString cdt, QgsColorSchemeRegistry* registry )
     : QToolButton( parent )
     , mBehaviour( QgsColorButtonV2::ShowDialog )
     , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )
     , mColor( QColor() )
     , mDefaultColor( QColor() ) //default to invalid color
-    , mColorDialogOptions( cdo )
+    , mAllowAlpha( false )
     , mAcceptLiveUpdates( true )
     , mColorSet( false )
     , mShowNoColorOption( false )
@@ -95,17 +95,51 @@ void QgsColorButtonV2::showColorDialog()
 {
   QColor newColor;
   QSettings settings;
-  if ( mAcceptLiveUpdates && settings.value( "/qgis/live_color_dialogs", false ).toBool() )
+
+  //using native color dialogs?
+  bool useNative = settings.value( "/qgis/native_color_dialogs", false ).toBool();
+
+  if ( useNative )
   {
-    newColor = QgsColorDialog::getLiveColor(
-                 color(), this, SLOT( setValidColor( const QColor& ) ),
-                 this->parentWidget(), mColorDialogTitle, mColorDialogOptions );
+    // use native o/s dialogs
+    if ( mAcceptLiveUpdates && settings.value( "/qgis/live_color_dialogs", false ).toBool() )
+    {
+      newColor = QgsColorDialog::getLiveColor(
+                   color(), this, SLOT( setValidColor( const QColor& ) ),
+                   this->parentWidget(), mColorDialogTitle, mAllowAlpha ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
+    }
+    else
+    {
+      newColor = QColorDialog::getColor( color(), this->parentWidget(), mColorDialogTitle, mAllowAlpha ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
+    }
   }
   else
   {
-    newColor = QColorDialog::getColor( color(), this->parentWidget(), mColorDialogTitle, mColorDialogOptions );
+    //use QGIS style color dialogs
+    if ( mAcceptLiveUpdates && settings.value( "/qgis/live_color_dialogs", false ).toBool() )
+    {
+      newColor = QgsColorDialogV2::getLiveColor(
+                   color(), this, SLOT( setValidColor( const QColor& ) ),
+                   this->parentWidget(), mColorDialogTitle, mAllowAlpha );
+    }
+    else
+    {
+      QgsColorDialogV2 dialog( this, 0, color() );
+      dialog.setTitle( mColorDialogTitle );
+      dialog.setAllowAlpha( mAllowAlpha );
+
+      if ( dialog.exec() )
+      {
+        newColor = dialog.color();
+      }
+    }
   }
-  setValidColor( newColor );
+
+  if ( newColor.isValid() )
+  {
+    setValidColor( newColor );
+    addRecentColor( newColor );
+  }
 
   // reactivate button's window
   activateWindow();
@@ -123,7 +157,7 @@ void QgsColorButtonV2::setToDefaultColor()
 
 void QgsColorButtonV2::setToNoColor()
 {
-  if ( mColorDialogOptions & QColorDialog::ShowAlphaChannel )
+  if ( mAllowAlpha )
   {
     setColor( QColor( 0, 0, 0, 0 ) );
   }
@@ -152,7 +186,7 @@ bool QgsColorButtonV2::colorFromMimeData( const QMimeData * mimeData, QColor& re
 
   if ( mimeColor.isValid() )
   {
-    if ( !( mColorDialogOptions & QColorDialog::ShowAlphaChannel ) )
+    if ( !mAllowAlpha )
     {
       //remove alpha channel
       mimeColor.setAlpha( 255 );
@@ -361,7 +395,7 @@ void QgsColorButtonV2::prepareMenu()
     connect( defaultColorAction, SIGNAL( triggered() ), this, SLOT( setToDefaultColor() ) );
   }
 
-  if ( mShowNoColorOption && mColorDialogOptions & QColorDialog::ShowAlphaChannel )
+  if ( mShowNoColorOption && mAllowAlpha )
   {
     QAction* noColorAction = new QAction( mNoColorString, this );
     noColorAction->setIcon( createMenuIcon( Qt::transparent, false ) );
@@ -378,7 +412,8 @@ void QgsColorButtonV2::prepareMenu()
       QgsColorSwatchGridAction* colorAction = new QgsColorSwatchGridAction( *it, mMenu, mContext, this );
       colorAction->setBaseColor( mColor );
       mMenu->addAction( colorAction );
-      connect( colorAction, SIGNAL( colorChanged( QColor ) ), this, SLOT( setValidColor( QColor ) ) );
+      connect( colorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setValidColor( const QColor& ) ) );
+      connect( colorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( addRecentColor( const QColor& ) ) );
     }
   }
 
@@ -470,7 +505,7 @@ void QgsColorButtonV2::setColor( const QColor &color )
   mColorSet = true;
 }
 
-void QgsColorButtonV2::addRecentColor( const QColor color )
+void QgsColorButtonV2::addRecentColor( const QColor& color )
 {
   if ( !color.isValid() )
   {
@@ -504,8 +539,6 @@ void QgsColorButtonV2::setButtonBackground( const QColor color )
   {
     backgroundColor = mColor;
   }
-
-  bool useAlpha = ( mColorDialogOptions & QColorDialog::ShowAlphaChannel );
 
   QSize currentIconSize;
   //icon size is button size with a small margin
@@ -548,7 +581,7 @@ void QgsColorButtonV2::setButtonBackground( const QColor color )
     p.begin( &pixmap );
     p.setRenderHint( QPainter::Antialiasing );
     p.setPen( Qt::NoPen );
-    if ( useAlpha && backgroundColor.alpha() < 255 )
+    if ( mAllowAlpha && backgroundColor.alpha() < 255 )
     {
       //start with checkboard pattern
       QBrush checkBrush = QBrush( transparentBackground() );
@@ -598,14 +631,9 @@ QColor QgsColorButtonV2::color() const
   return mColor;
 }
 
-void QgsColorButtonV2::setColorDialogOptions( const QColorDialog::ColorDialogOptions cdo )
+void QgsColorButtonV2::setAllowAlpha( const bool allowAlpha )
 {
-  mColorDialogOptions = cdo;
-}
-
-QColorDialog::ColorDialogOptions QgsColorButtonV2::colorDialogOptions() const
-{
-  return mColorDialogOptions;
+  mAllowAlpha = allowAlpha;
 }
 
 void QgsColorButtonV2::setColorDialogTitle( const QString title )

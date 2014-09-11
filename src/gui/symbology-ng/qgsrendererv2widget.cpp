@@ -15,7 +15,7 @@
 #include "qgsrendererv2widget.h"
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
-#include <QColorDialog>
+#include "qgscolordialog.h"
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QMenu>
@@ -62,7 +62,7 @@ void QgsRendererV2Widget::changeSymbolColor()
     return;
   }
 
-  QColor color = QColorDialog::getColor( symbolList.at( 0 )->color(), this, "Change Symbol Color", QColorDialog::ShowAlphaChannel );
+  QColor color = QgsColorDialogV2::getColor( symbolList.at( 0 )->color(), this, "Change Symbol Color", true );
   if ( color.isValid() )
   {
     QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();

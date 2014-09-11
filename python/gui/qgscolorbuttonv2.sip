@@ -26,11 +26,10 @@ class QgsColorButtonV2: QToolButton
     /**Construct a new color button.
      * @param parent The parent QWidget for the dialog
      * @param cdt The title to show in the color chooser dialog
-     * @param cdo Options for the color chooser dialog
      * @param registry a color scheme registry for color swatch grids to show in the drop down menu. If not
      * specified, the button will use the global color scheme registry
      */
-    QgsColorButtonV2( QWidget *parent /TransferThis/ = 0, QString cdt = "", QColorDialog::ColorDialogOptions cdo = 0, QgsColorSchemeRegistry* registry = 0 );
+    QgsColorButtonV2( QWidget *parent /TransferThis/ = 0, QString cdt = "", QgsColorSchemeRegistry* registry = 0 );
 
     virtual ~QgsColorButtonV2();
 
@@ -39,19 +38,20 @@ class QgsColorButtonV2: QToolButton
      * @see setColor
      */
     QColor color() const;
-
-    /**Set options for the color chooser dialog (e.g. whether alpha channel is shown).
-     * @param cdo Options for the color chooser dialog. For instance, to allow the user to choose an alpha
-     * value in the dialog, call setColorDialogOptions( QColorDialog::ShowAlphaChannel )
-     * @see colorDialogOptions
+	
+    /**Sets whether alpha modification (transparency) is permitted
+     * for the color. Defaults to false.
+     * @param allowAlpha set to true to allow alpha modification
+     * @see allowAlpha
      */
-    void setColorDialogOptions( const QColorDialog::ColorDialogOptions cdo );
+    void setAllowAlpha( const bool allowAlpha );
 
-    /**Returns the options for the color chooser dialog.
-     * @returns Options for the color chooser dialog
-     * @see setColorDialogOptions
+    /**Returns whether alpha modification (transparency) is permitted
+     * for the color.
+     * @returns true if alpha modification is allowed
+     * @see setAllowAlpha
      */
-    QColorDialog::ColorDialogOptions colorDialogOptions() const;
+    bool allowAlpha() const;
 
     /**Set the title for the color chooser dialog window.
      * @param title Title for the color chooser dialog

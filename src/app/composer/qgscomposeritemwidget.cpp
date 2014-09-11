@@ -622,10 +622,10 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   }
 
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
-  mBackgroundColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mBackgroundColorButton->setAllowAlpha( true );
   mBackgroundColorButton->setContext( "composer" );
   mFrameColorButton->setColorDialogTitle( tr( "Select frame color" ) );
-  mFrameColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mFrameColorButton->setAllowAlpha( true );
   mFrameColorButton->setContext( "composer" );
 
   setValuesForGuiPositionElements();

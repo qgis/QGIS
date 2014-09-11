@@ -159,13 +159,6 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
 
     virtual ~QgsColorSchemeList();
 
-    /**Sets the color scheme to show in the list
-     * @param scheme QgsColorScheme for colors to show in the list
-     * @param context context string provided to color scheme
-     * @param baseColor base color for color scheme
-     */
-    void setScheme( QgsColorScheme* scheme, const QString context = QString(), const QColor baseColor = QColor() );
-
     /**Saves the current colors shown in the list back to a color scheme, if supported
      * by the color scheme.
      * @note this method is only effective if the color scheme is editable
@@ -190,6 +183,13 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
     bool isDirty() const;
 
   public slots:
+
+    /**Sets the color scheme to show in the list
+     * @param scheme QgsColorScheme for colors to show in the list
+     * @param context context string provided to color scheme
+     * @param baseColor base color for color scheme
+     */
+    void setScheme( QgsColorScheme* scheme, const QString context = QString(), const QColor baseColor = QColor() );
 
     /**Removes any selected colors from the list
      */

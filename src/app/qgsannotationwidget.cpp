@@ -43,13 +43,13 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * par
     mFrameWidthSpinBox->setValue( mItem->frameBorderWidth() );
     mFrameColorButton->setColor( mItem->frameColor() );
     mFrameColorButton->setColorDialogTitle( tr( "Select frame color" ) );
-    mFrameColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+    mFrameColorButton->setAllowAlpha( true );
     mFrameColorButton->setContext( "symbology" );
     mFrameColorButton->setNoColorString( tr( "Transparent frame" ) );
     mFrameColorButton->setShowNoColor( true );
     mBackgroundColorButton->setColor( mItem->frameBackgroundColor() );
     mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
-    mBackgroundColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+    mBackgroundColorButton->setAllowAlpha( true );
     mBackgroundColorButton->setContext( "symbology" );
     mBackgroundColorButton->setNoColorString( tr( "Transparent" ) );
     mBackgroundColorButton->setShowNoColor( true );

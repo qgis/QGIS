@@ -48,9 +48,9 @@
 #include "qgisapp.h"
 #include "qgscolorschemeregistry.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgscolordialog.h"
 
 //qt includes
-#include <QColorDialog>
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QHeaderView>  // Qt 4.4
@@ -160,7 +160,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   pbnSelectionColor->setColor( myColor );
   pbnSelectionColor->setDefaultColor( defaultSelectionColor );
   pbnSelectionColor->setColorDialogTitle( tr( "Selection color" ) );
-  pbnSelectionColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  pbnSelectionColor->setAllowAlpha( true );
 
   //get the color for map canvas background and set button color accordingly (default white)
   myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
@@ -1697,7 +1697,7 @@ void QgsProjectProperties::projectionSelectorInitialized()
 
 void QgsProjectProperties::on_mButtonAddColor_clicked()
 {
-  QColor newColor = QColorDialog::getColor( QColor(), this->parentWidget(), tr( "Select color" ), QColorDialog::ShowAlphaChannel );
+  QColor newColor = QgsColorDialogV2::getColor( QColor(), this->parentWidget(), tr( "Select Color" ), true );
   if ( !newColor.isValid() )
   {
     return;

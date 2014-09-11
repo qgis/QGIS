@@ -89,9 +89,10 @@ class GUI_EXPORT QgsColorWidget : public QWidget
 
     /**Sets the color for the widget
      * @param color widget color
+     * @param emitSignals set to true to emit the colorChanged signal after setting color
      * @see color
      */
-    virtual void setColor( const QColor color );
+    virtual void setColor( const QColor color, const bool emitSignals = false );
 
     /**Sets the color component which the widget controls
      * @param component color component for widget
@@ -196,7 +197,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
 
   public slots:
 
-    virtual void setColor( const QColor color );
+    virtual void setColor( const QColor color, const bool emitSignals = false );
 
   protected:
 
@@ -291,7 +292,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
 
   public slots:
 
-    virtual void setColor( const QColor color );
+    virtual void setColor( const QColor color, const bool emitSignals = false );
 
   protected:
 
@@ -484,7 +485,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
 
     virtual void setComponent( const ColorComponent component );
     virtual void setComponentValue( const int value );
-    virtual void setColor( const QColor color );
+    virtual void setColor( const QColor color, const bool emitSignals = false );
 
   private:
 
@@ -546,7 +547,7 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
 
     virtual ~QgsColorTextWidget();
 
-    virtual void setColor( const QColor color );
+    virtual void setColor( const QColor color, const bool emitSignals = false );
 
   protected:
     void resizeEvent( QResizeEvent * event );

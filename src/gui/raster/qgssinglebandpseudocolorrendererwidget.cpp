@@ -22,8 +22,8 @@
 // for color ramps - todo add rasterStyle and refactor raster vs. vector ramps
 #include "qgsstylev2.h"
 #include "qgsvectorcolorrampv2.h"
+#include "qgscolordialog.h"
 
-#include <QColorDialog>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSettings>
@@ -544,7 +544,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemDoubleCl
   if ( column == 1 ) //change item color
   {
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    QColor newColor = QColorDialog::getColor( item->background( column ).color(), this, "Change color", QColorDialog::ShowAlphaChannel );
+    QColor newColor = QgsColorDialogV2::getColor( item->background( column ).color(), this, "Change color", true );
     if ( newColor.isValid() )
     {
       item->setBackground( 1, QBrush( newColor ) );

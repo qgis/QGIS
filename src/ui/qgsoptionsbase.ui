@@ -284,7 +284,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>610</width>
-                <height>640</height>
+                <height>670</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -624,25 +624,23 @@
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_31">
                     <item>
+                     <widget class="QCheckBox" name="mNativeColorDialogsChkBx">
+                      <property name="text">
+                       <string>Use native color chooser dialogs</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <widget class="QCheckBox" name="mLiveColorDialogsChkBx">
                       <property name="text">
                        <string>Use live-updating color chooser dialogs</string>
                       </property>
                      </widget>
                     </item>
-                    <item>
-                     <widget class="Line" name="line_5">
-                      <property name="minimumSize">
-                       <size>
-                        <width>12</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                     </widget>
-                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_32">
                     <item>
                      <widget class="QCheckBox" name="mCustomSideBarSide">
                       <property name="text">
@@ -2280,8 +2278,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>626</width>
-                <height>549</height>
+                <width>239</width>
+                <height>258</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -4752,7 +4750,6 @@
   <tabstop>mBoldGroupBoxTitleChkBx</tabstop>
   <tabstop>mCustomGroupBoxChkBx</tabstop>
   <tabstop>mLiveColorDialogsChkBx</tabstop>
-  <tabstop>mCustomSideBarSide</tabstop>
   <tabstop>mProjectOnLaunchCmbBx</tabstop>
   <tabstop>mProjectOnLaunchPushBtn</tabstop>
   <tabstop>mProjectOnLaunchLineEdit</tabstop>

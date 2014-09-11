@@ -96,20 +96,51 @@ const QPixmap& QgsColorButton::transpBkgrd()
 
 void QgsColorButton::onButtonClicked()
 {
-  //QgsDebugMsg( "entered" );
   QColor newColor;
   QSettings settings;
-  if ( mAcceptLiveUpdates && settings.value( "/qgis/live_color_dialogs", false ).toBool() )
+
+  //using native color dialogs?
+  bool useNative = settings.value( "/qgis/native_color_dialogs", false ).toBool();
+
+  if ( useNative )
   {
-    newColor = QgsColorDialog::getLiveColor(
-                 color(), this, SLOT( setValidColor( const QColor& ) ),
-                 this->parentWidget(), mColorDialogTitle, mColorDialogOptions );
+    if ( mAcceptLiveUpdates && settings.value( "/qgis/live_color_dialogs", false ).toBool() )
+    {
+      newColor = QgsColorDialog::getLiveColor(
+                   color(), this, SLOT( setValidColor( const QColor& ) ),
+                   this->parentWidget(), mColorDialogTitle, mColorDialogOptions );
+    }
+    else
+    {
+      newColor = QColorDialog::getColor( color(), this->parentWidget(), mColorDialogTitle, mColorDialogOptions );
+    }
   }
   else
   {
-    newColor = QColorDialog::getColor( color(), this->parentWidget(), mColorDialogTitle, mColorDialogOptions );
+    //use QGIS style color dialogs
+    if ( mAcceptLiveUpdates && settings.value( "/qgis/live_color_dialogs", false ).toBool() )
+    {
+      newColor = QgsColorDialogV2::getLiveColor(
+                   color(), this, SLOT( setValidColor( const QColor& ) ),
+                   this->parentWidget(), mColorDialogTitle, mColorDialogOptions & QColorDialog::ShowAlphaChannel );
+    }
+    else
+    {
+      QgsColorDialogV2 dialog( this, 0, color() );
+      dialog.setTitle( mColorDialogTitle );
+      dialog.setAllowAlpha( mColorDialogOptions & QColorDialog::ShowAlphaChannel );
+
+      if ( dialog.exec() )
+      {
+        newColor = dialog.color();
+      }
+    }
   }
-  setValidColor( newColor );
+
+  if ( newColor.isValid() )
+  {
+    setValidColor( newColor );
+  }
 
   // reactivate button's window
   activateWindow();
