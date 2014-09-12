@@ -69,7 +69,7 @@ QgsNamedColorList QgsRecentColorScheme::fetchColors( const QString context,
   QgsNamedColorList colorList;
   foreach ( QVariant color, recentColorVariants )
   {
-    colorList.append( qMakePair( color.value<QColor>(), QString() ) );
+    colorList.append( qMakePair( color.value<QColor>(), QgsSymbolLayerV2Utils::colorToName( color.value<QColor>() ) ) );
   }
   return colorList;
 }

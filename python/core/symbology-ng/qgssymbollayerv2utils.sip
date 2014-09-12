@@ -192,6 +192,14 @@ class QgsSymbolLayerV2Utils
     static QDomElement saveColorRamp( QString name, QgsVectorColorRampV2* ramp, QDomDocument& doc );
 
     /**
+     * Returns a friendly display name for a color
+     * @param color source color
+     * @returns display name for color
+     * @note added in 2.5
+     */
+    static QString colorToName( const QColor& color );
+    
+    /**
      * Attempts to parse a string as a list of colors using a variety of common formats, including hex
      * codes, rgb and rgba strings.
      * @param colorStr string representing the color list

@@ -2732,6 +2732,18 @@ QDomElement QgsSymbolLayerV2Utils::saveColorRamp( QString name, QgsVectorColorRa
   return rampEl;
 }
 
+QString QgsSymbolLayerV2Utils::colorToName( const QColor &color )
+{
+  if ( !color.isValid() )
+  {
+    return QString();
+  }
+
+  //TODO - utilise a color names database (such as X11) to return nicer names
+  //for now, just return hex codes
+  return color.name();
+}
+
 QList<QColor> QgsSymbolLayerV2Utils::parseColorList( const QString colorStr )
 {
   QList<QColor> colors;

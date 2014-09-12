@@ -106,7 +106,7 @@ void QgsColorSchemeList::pasteColors()
   QgsNamedColorList::const_iterator colorIt = pastedColors.constBegin();
   for ( ; colorIt != pastedColors.constEnd(); ++colorIt )
   {
-    mModel->addColor(( *colorIt ).first, ( *colorIt ).second );
+    mModel->addColor(( *colorIt ).first, !( *colorIt ).second.isEmpty() ? ( *colorIt ).second : QgsSymbolLayerV2Utils::colorToName(( *colorIt ).first ) );
   }
 }
 
@@ -151,7 +151,7 @@ bool QgsColorSchemeList::importColorsFromGpl( QFile &file )
   QgsNamedColorList::const_iterator colorIt = importedColors.constBegin();
   for ( ; colorIt != importedColors.constEnd(); ++colorIt )
   {
-    mModel->addColor(( *colorIt ).first, ( *colorIt ).second );
+    mModel->addColor(( *colorIt ).first, !( *colorIt ).second.isEmpty() ? ( *colorIt ).second : QgsSymbolLayerV2Utils::colorToName(( *colorIt ).first ) );
   }
 
   return true;
@@ -422,7 +422,7 @@ bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction ac
     QModelIndex colorIdx = index( beginRow, 0, QModelIndex() );
     setData( colorIdx, QVariant(( *colorIt ).first ) );
     QModelIndex labelIdx = index( beginRow, 1, QModelIndex() );
-    setData( labelIdx, QVariant(( *colorIt ).second ) );
+    setData( labelIdx, !( *colorIt ).second.isEmpty() ? ( *colorIt ).second : QgsSymbolLayerV2Utils::colorToName(( *colorIt ).first ) );
     beginRow++;
   }
 

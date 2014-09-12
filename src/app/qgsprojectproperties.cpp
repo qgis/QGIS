@@ -47,6 +47,7 @@
 #include "qgsrelationmanager.h"
 #include "qgisapp.h"
 #include "qgscolorschemeregistry.h"
+#include "qgssymbollayerv2utils.h"
 
 //qt includes
 #include <QColorDialog>
@@ -1700,7 +1701,7 @@ void QgsProjectProperties::on_mButtonAddColor_clicked()
   }
   activateWindow();
 
-  mTreeProjectColors->addColor( newColor );
+  mTreeProjectColors->addColor( newColor, QgsSymbolLayerV2Utils::colorToName( newColor ) );
 }
 
 void QgsProjectProperties::on_mButtonImportColors_clicked()

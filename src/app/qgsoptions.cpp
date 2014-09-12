@@ -37,6 +37,7 @@
 #include "qgsdialog.h"
 #include "qgscomposer.h"
 #include "qgscolorschemeregistry.h"
+#include "qgssymbollayerv2utils.h"
 
 #include <QInputDialog>
 #include <QFileDialog>
@@ -2087,7 +2088,7 @@ void QgsOptions::on_mButtonAddColor_clicked()
   }
   activateWindow();
 
-  mTreeCustomColors->addColor( newColor );
+  mTreeCustomColors->addColor( newColor, QgsSymbolLayerV2Utils::colorToName( newColor ) );
 }
 
 void QgsOptions::on_mButtonImportColors_clicked()
