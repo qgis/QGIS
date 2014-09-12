@@ -25,7 +25,13 @@
 QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
     , mSelectRectGeom( 0 )
+    , mSubsetExpression( 0 )
 {
+  if ( !mSource->mSubsetString.isEmpty() )
+  {
+    mSubsetExpression = new QgsExpression( mSource->mSubsetString );
+    mSubsetExpression->prepare( mSource->mFields );
+  }
 
   if ( mRequest.filterType() == QgsFeatureRequest::FilterRect && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
@@ -58,6 +64,8 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource* sour
 QgsMemoryFeatureIterator::~QgsMemoryFeatureIterator()
 {
   close();
+
+  delete mSubsetExpression;
 }
 
 
@@ -90,6 +98,9 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
     }
     else
       hasFeature = true;
+
+    if ( mSubsetExpression && !mSubsetExpression->evaluate( mSource->mFeatures[*mFeatureIdListIterator] ).toBool() )
+        hasFeature = false;
 
     if ( hasFeature )
       break;
@@ -140,6 +151,9 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature& feature )
           hasFeature = true;
       }
     }
+
+    if ( mSubsetExpression && !mSubsetExpression->evaluate( *mSelectIterator ).toBool() )
+        hasFeature = false;
 
     if ( hasFeature )
       break;
@@ -194,6 +208,7 @@ QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider* p )
     : mFields( p->mFields )
     , mFeatures( p->mFeatures )
     , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : 0 )  // just shallow copy
+    , mSubsetString( p->mSubsetString )
 {
 }
 

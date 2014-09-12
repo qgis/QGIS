@@ -420,6 +420,26 @@ bool QgsMemoryProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
   return true;
 }
 
+QString QgsMemoryProvider::subsetString()
+{
+  return mSubsetString;
+}
+
+bool QgsMemoryProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
+{
+  Q_UNUSED( updateFeatureCount );
+
+  if ( !theSQL.isEmpty() )
+  {
+    QgsExpression tempExpression( theSQL );
+    if ( tempExpression.hasParserError() )
+      return false;
+  }
+
+  mSubsetString = theSQL;
+  return true;
+}
+
 bool QgsMemoryProvider::createSpatialIndex()
 {
   if ( !mSpatialIndex )

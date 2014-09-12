@@ -111,6 +111,14 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      */
     virtual bool changeGeometryValues( QgsGeometryMap & geometry_map );
 
+    /** Accessor for sql where clause used to limit dataset */
+    QString subsetString();
+
+    /** mutator for sql where clause used to limit dataset size */
+    bool setSubsetString( QString theSQL, bool updateFeatureCount = true );
+
+    virtual bool supportsSubsetString() { return true; }
+
     /**
      * Creates a spatial index
      * @return true in case of success
@@ -169,6 +177,8 @@ class QgsMemoryProvider : public QgsVectorDataProvider
 
     // indexing
     QgsSpatialIndex* mSpatialIndex;
+
+    QString mSubsetString;
 
     friend class QgsMemoryFeatureSource;
 };
