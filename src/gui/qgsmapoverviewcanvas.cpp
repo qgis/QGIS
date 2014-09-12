@@ -75,8 +75,6 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapC
   setObjectName( "theOverviewCanvas" );
   mPanningWidget = new QgsPanningWidget( this );
 
-  setBackgroundColor( palette().window().color() );
-
   mSettings.setFlag( QgsMapSettings::DrawLabeling, false );
 
   connect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( drawExtentRect() ) );
@@ -280,6 +278,8 @@ void QgsMapOverviewCanvas::refresh()
   mJob = new QgsMapRendererSequentialJob( mSettings );
   connect( mJob, SIGNAL( finished() ), this, SLOT( mapRenderingFinished() ) );
   mJob->start();
+
+  setBackgroundColor( mMapCanvas->mapSettings().backgroundColor() );
 
   // schedule repaint
   update();
