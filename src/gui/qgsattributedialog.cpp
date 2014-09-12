@@ -19,9 +19,9 @@
 
 #include "qgsattributeform.h"
 #include "qgshighlight.h"
+#include "qgsactionmenu.h"
 
 #include <QSettings>
-#include <QGridLayout>
 
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, QgsDistanceArea myDa, QWidget* parent, bool showDialogButtons )
@@ -107,6 +107,12 @@ void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, QgsAt
   QDialogButtonBox* buttonBox = mAttributeForm->findChild<QDialogButtonBox*>();
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+
+  mMenuBar = new QMenuBar( this );
+  QgsActionMenu* menu = new QgsActionMenu( layer, feature, this );
+  mMenuBar->addMenu( menu );
+  layout()->setMenuBar( mMenuBar );
+
   restoreGeometry();
   focusNextChild();
 }

@@ -19,6 +19,7 @@
 #include <QSet>
 #include <QSettings>
 
+#include "qgsactionmenu.h"
 #include "qgsattributetabledelegate.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
@@ -287,6 +288,19 @@ void QgsFeatureListView::keyPressEvent( QKeyEvent *event )
   else
   {
     QListView::keyPressEvent( event );
+  }
+}
+
+void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
+{
+  QModelIndex index = indexAt( event->pos() );
+
+  if ( index.isValid() )
+  {
+    QgsFeature feature = mModel->data( index, QgsFeatureListModel::FeatureRole ).value<QgsFeature>();
+
+    QgsActionMenu menu( mModel->layerCache()->layer(), &feature, this );
+    menu.exec( event->globalPos() );
   }
 }
 

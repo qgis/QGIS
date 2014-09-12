@@ -59,10 +59,7 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
 
 QgsAttributeTableView::~QgsAttributeTableView()
 {
-  if ( mActionPopup )
-  {
-    delete mActionPopup;
-  }
+  delete mActionPopup;
 }
 #if 0
 void QgsAttributeTableView::setCanvasAndLayerCache( QgsMapCanvas *canvas, QgsVectorLayerCache *layerCache )
@@ -222,11 +219,8 @@ void QgsAttributeTableView::selectAll()
 
 void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent* event )
 {
-  if ( mActionPopup )
-  {
-    delete mActionPopup;
-    mActionPopup = 0;
-  }
+  delete mActionPopup;
+  mActionPopup = 0;
 
   QModelIndex idx = indexAt( event->pos() );
   if ( !idx.isValid() )

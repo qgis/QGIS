@@ -114,6 +114,7 @@ layertree/qgslayertreeviewdefaultactions.cpp
 qgisgui.cpp
 qgisinterface.cpp
 qgsannotationitem.cpp
+qgsactionmenu.cpp
 qgsattributedialog.cpp
 qgsattributeeditor.cpp
 qgsattributeeditorcontext.cpp
@@ -166,6 +167,7 @@ qgsfilterlineedit.cpp
 qgsformannotationitem.cpp
 qgsgenericprojectionselector.cpp
 qgshighlight.cpp
+qgsidentifymenu.cpp
 qgshtmlannotationitem.cpp
 qgslegendinterface.cpp
 qgsludialog.cpp
@@ -323,6 +325,7 @@ layertree/qgslayertreeview.h
 layertree/qgslayertreeviewdefaultactions.h
 
 qgisinterface.h
+qgsactionmenu.h
 qgsattributedialog.h
 qgsattributeeditor.h
 qgsattributeform.h
@@ -364,6 +367,7 @@ qgsfilterlineedit.h
 qgsformannotationitem.h
 qgsgenericprojectionselector.h
 qgshtmlannotationitem.h
+qgsidentifymenu.h
 qgslegendinterface.h
 qgslonglongvalidator.h
 qgsludialog.h
@@ -418,6 +422,7 @@ ENDIF(MSVC)
 SET(QGIS_GUI_HDRS
 qgisgui.h
 qgisinterface.h
+qgsactionmenu.h
 qgsattributeeditor.h
 qgsattributedialog.h
 qgsattributeeditorcontext.h
@@ -449,6 +454,7 @@ qgsfiledropedit.h
 qgsfilterlineedit.h
 qgsgenericprojectionselector.h
 qgshighlight.h
+qgsidentifymenu.h
 qgsmapcanvas.h
 qgsmapcanvasitem.h
 qgsmapcanvasmap.h

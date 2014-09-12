@@ -131,6 +131,8 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
     //! protected constructor
     QgsMapLayerActionRegistry( QObject * parent = 0 );
 
+    QList< QgsMapLayerAction* > mMapLayerActionList;
+
   signals:
     /** Triggered when an action is added or removed from the registry */
     void changed();
@@ -138,8 +140,6 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
   private:
 
     static QgsMapLayerActionRegistry *mInstance;
-
-    QList< QgsMapLayerAction* > mMapLayerActionList;
 
     QMap< QgsMapLayer*, QgsMapLayerAction* > mDefaultLayerActionMap;
 
