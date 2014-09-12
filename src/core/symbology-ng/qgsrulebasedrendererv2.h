@@ -95,7 +95,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! @note not available in python bindings
         QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" );
         //! @note added in 2.6
-        QgsLegendSymbolListV2 legendSymbolItemsV2() const;
+        QgsLegendSymbolListV2 legendSymbolItemsV2( int currentLevel = -1 ) const;
         bool isFilterOK( QgsFeature& f ) const;
         bool isScaleOK( double scale ) const;
 

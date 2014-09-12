@@ -32,7 +32,7 @@ class CORE_EXPORT QgsLegendSymbolItemV2
   public:
     QgsLegendSymbolItemV2();
     //! Construct item. Does not take ownership of symbol (makes internal clone)
-    QgsLegendSymbolItemV2( QgsSymbolV2* symbol, const QString& label, const QString& ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1 );
+    QgsLegendSymbolItemV2( QgsSymbolV2* symbol, const QString& label, const QString& ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0 );
     ~QgsLegendSymbolItemV2();
     QgsLegendSymbolItemV2( const QgsLegendSymbolItemV2& other );
     QgsLegendSymbolItemV2& operator=( const QgsLegendSymbolItemV2& other );
@@ -58,6 +58,9 @@ class CORE_EXPORT QgsLegendSymbolItemV2
     //! Value <= 0 means the range is unbounded on this side
     int scaleMaxDenom() const { return mScaleMaxDenom; }
 
+    //! Identation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
+    int level() const { return mLevel; }
+
   protected:
     //! Set symbol of the item. Takes ownership of symbol.
     void setSymbol( QgsSymbolV2* s );
@@ -78,6 +81,9 @@ class CORE_EXPORT QgsLegendSymbolItemV2
 
     int mScaleMinDenom;
     int mScaleMaxDenom;
+
+    //! Identation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
+    int mLevel;
 };
 
 

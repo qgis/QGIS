@@ -15,7 +15,7 @@ class QgsLegendSymbolItemV2
   public:
     QgsLegendSymbolItemV2();
     //! Construct item. Does not take ownership of symbol (makes internal clone)
-    QgsLegendSymbolItemV2( QgsSymbolV2* symbol, const QString& label, const QString& ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1 );
+    QgsLegendSymbolItemV2( QgsSymbolV2* symbol, const QString& label, const QString& ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0 );
     ~QgsLegendSymbolItemV2();
     QgsLegendSymbolItemV2( const QgsLegendSymbolItemV2& other );
     //QgsLegendSymbolItemV2& operator=( const QgsLegendSymbolItemV2& other );
@@ -40,6 +40,9 @@ class QgsLegendSymbolItemV2
     //! Max scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 2000.
     //! Value <= 0 means the range is unbounded on this side
     int scaleMaxDenom() const;
+
+    //! Identation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
+    int level() const;
 
 };
 

@@ -150,7 +150,7 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
 
   private:
     QgsLegendSymbolItemV2 mItem;
-    mutable QIcon mIcon; // cached symbol preview
+    mutable QPixmap mPixmap; // cached symbol preview
     QString mLabel;
 };
 

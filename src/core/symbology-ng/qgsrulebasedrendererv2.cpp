@@ -211,18 +211,18 @@ QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems( double scal
   return lst;
 }
 
-QgsLegendSymbolListV2 QgsRuleBasedRendererV2::Rule::legendSymbolItemsV2() const
+QgsLegendSymbolListV2 QgsRuleBasedRendererV2::Rule::legendSymbolItemsV2( int currentLevel ) const
 {
   QgsLegendSymbolListV2 lst;
-  if ( mSymbol )
+  if ( currentLevel != -1 ) // root rule should not be shown
   {
-    lst << QgsLegendSymbolItemV2( mSymbol, mLabel, mRuleKey, true, mScaleMinDenom, mScaleMaxDenom );
+    lst << QgsLegendSymbolItemV2( mSymbol, mLabel, mRuleKey, true, mScaleMinDenom, mScaleMaxDenom, currentLevel );
   }
 
   for ( RuleList::const_iterator it = mChildren.constBegin(); it != mChildren.constEnd(); ++it )
   {
     Rule* rule = *it;
-    lst << rule->legendSymbolItemsV2();
+    lst << rule->legendSymbolItemsV2( currentLevel + 1 );
   }
   return lst;
 }

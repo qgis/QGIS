@@ -155,9 +155,32 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
   else if ( role == Qt::DecorationRole )
   {
     QSize iconSize( 16, 16 ); // TODO: configurable
-    if ( mIcon.isNull() && mItem.symbol() )
-      mIcon = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), iconSize );
-    return mIcon;
+    const int indentSize = 20;
+    if ( mPixmap.isNull() )
+    {
+      QPixmap pix;
+      if ( mItem.symbol() )
+        pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), iconSize );
+      else
+      {
+        pix = QPixmap( iconSize );
+        pix.fill( Qt::transparent );
+      }
+
+      if ( mItem.level() == 0 )
+        mPixmap = pix;
+      else
+      {
+        // ident the symbol icon to make it look like a tree structure
+        QPixmap pix2( pix.width() + mItem.level() * indentSize, pix.height() );
+        pix2.fill( Qt::transparent );
+        QPainter p( &pix2 );
+        p.drawPixmap( mItem.level() * indentSize, 0, pix );
+        p.end();
+        mPixmap = pix2;
+      }
+    }
+    return mPixmap;
   }
   else if ( role == Qt::CheckStateRole )
   {

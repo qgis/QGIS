@@ -63,6 +63,8 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         QgsSymbolV2List symbols();
         //! @note not available in python bindings
         // QgsLegendSymbolList legendSymbolItems();
+        //! @note added in 2.6
+        QgsLegendSymbolListV2 legendSymbolItemsV2( int currentLevel = -1 ) const;
         bool isFilterOK( QgsFeature& f ) const;
         bool isScaleOK( double scale ) const;
 

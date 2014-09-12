@@ -35,6 +35,7 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *pare
     , mRootNode( rootNode )
     , mFlags( ShowLegend | AllowLegendChangeState )
     , mAutoCollapseLegendNodesCount( -1 )
+    , mLegendFilterByScale( 0 )
 {
   connectToRootNode();
 
