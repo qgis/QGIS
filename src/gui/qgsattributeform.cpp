@@ -308,6 +308,7 @@ void QgsAttributeForm::synchronizeEnabledState()
 
 void QgsAttributeForm::init()
 {
+  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
   QWidget* formWidget = 0;
 
   qDeleteAll( mWidgets );
@@ -458,6 +459,7 @@ void QgsAttributeForm::init()
   {
     iface->initForm();
   }
+  QApplication::restoreOverrideCursor();
 }
 
 void QgsAttributeForm::cleanPython()

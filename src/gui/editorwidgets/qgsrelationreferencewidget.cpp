@@ -362,6 +362,7 @@ void QgsRelationReferenceWidget::init()
 {
   if ( !mReadOnlySelector && mComboBox->count() == 0 && mReferencedLayer )
   {
+    QApplication::setOverrideCursor( Qt::WaitCursor );
     if ( mAllowNull )
     {
       const QString nullValue = QSettings().value( "qgis/nullValue", "NULL" ).toString();
@@ -393,6 +394,7 @@ void QgsRelationReferenceWidget::init()
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
     connect( mComboBox, SIGNAL( activated( int ) ), this, SLOT( comboReferenceChanged( int ) ) );
+    QApplication::restoreOverrideCursor();
   }
 }
 
