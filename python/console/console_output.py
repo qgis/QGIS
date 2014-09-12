@@ -140,9 +140,9 @@ class ShellOutputScintilla(QsciScintilla):
 
     def insertInitText(self):
         txtInit = QCoreApplication.translate("PythonConsole",
-                                             "Python {0} on {1}\n"
-                                             "## Type help(iface) for more info and list of methods.\n").format(sys.version,
-                                                                                                                socket.gethostname())
+                                             "Python Console \n"
+                                             "Use iface to access QGIS API interface or Type help(iface) for more info")
+
         ## some translation string for the console header ends without '\n'
         ## and the first command in console will be appended at the header text.
         ## The following code add a '\n' at the end of the string if not present.
