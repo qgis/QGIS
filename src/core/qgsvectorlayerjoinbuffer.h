@@ -68,6 +68,14 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
       @param sourceFieldIndex Output: field's index in source layer */
     const QgsVectorJoinInfo* joinForFieldIndex( int index, const QgsFields& fields, int& sourceFieldIndex ) const;
 
+    //! Find out what is the first index of the join within fields. Returns -1 if join is not present
+    //! @note added in 2.6
+    int joinedFieldsOffset( const QgsVectorJoinInfo* info, const QgsFields& fields );
+
+    //! Return a vector of indices for use in join based on field names from the layer
+    //! @note added in 2.6
+    static QVector<int> joinSubsetIndices( QgsVectorLayer* joinLayer, const QStringList& joinFieldsSubset );
+
     //! Create a copy of the join buffer
     //! @note added in 2.6
     QgsVectorLayerJoinBuffer* clone() const;

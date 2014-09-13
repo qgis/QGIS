@@ -89,14 +89,63 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
 
     joinInfo.cachedAttributes.clear();
 
-    QgsFeatureIterator fit = cacheLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
+    QgsFeatureRequest request;
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+
+    // maybe user requested just a subset of layer's attributes
+    // so we do not have to cache everything
+    bool hasSubset = joinInfo.joinFieldNamesSubset();
+    QVector<int> subsetIndices;
+    if ( hasSubset )
+    {
+      subsetIndices = joinSubsetIndices( cacheLayer, *joinInfo.joinFieldNamesSubset() );
+
+      // we need just subset of attributes - but make sure to include join field name
+      QgsAttributeList cacheLayerAttrs = subsetIndices.toList();
+      if ( !cacheLayerAttrs.contains( joinFieldIndex ) )
+        cacheLayerAttrs.append( joinFieldIndex );
+      request.setSubsetOfAttributes( cacheLayerAttrs );
+    }
+
+    QgsFeatureIterator fit = cacheLayer->getFeatures( request );
     QgsFeature f;
     while ( fit.nextFeature( f ) )
     {
       const QgsAttributes& attrs = f.attributes();
-      joinInfo.cachedAttributes.insert( attrs[joinFieldIndex].toString(), attrs );
+      QString key = attrs[joinFieldIndex].toString();
+      if ( hasSubset )
+      {
+        QgsAttributes subsetAttrs( subsetIndices.count() );
+        for ( int i = 0; i < subsetIndices.count(); ++i )
+          subsetAttrs[i] = attrs[ subsetIndices[i] ];
+        joinInfo.cachedAttributes.insert( key, subsetAttrs );
+      }
+      else
+      {
+        QgsAttributes attrs2 = attrs;
+        attrs2.remove( joinFieldIndex );  // skip the join field to avoid double field names (fields often have the same name)
+        joinInfo.cachedAttributes.insert( key, attrs2 );
+      }
     }
   }
+}
+
+
+QVector<int> QgsVectorLayerJoinBuffer::joinSubsetIndices( QgsVectorLayer* joinLayer, const QStringList& joinFieldsSubset )
+{
+  QVector<int> subsetIndices;
+  const QgsFields& fields = joinLayer->pendingFields();
+  for ( int i = 0; i < joinFieldsSubset.count(); ++i )
+  {
+    QString joinedFieldName = joinFieldsSubset.at( i );
+    int index = fields.fieldNameIndex( joinedFieldName );
+    if ( index != -1 )
+      subsetIndices.append( index );
+    else
+      QgsDebugMsg( "Join layer subset field not found: " + joinedFieldName );
+  }
+
+  return subsetIndices;
 }
 
 void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
@@ -117,8 +166,20 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
     else
       joinFieldName = joinIt->joinFieldName;
 
+    QSet<QString> subset;
+    bool hasSubset = false;
+    if ( joinIt->joinFieldNamesSubset() )
+    {
+      hasSubset = true;
+      subset = QSet<QString>::fromList( *joinIt->joinFieldNamesSubset() );
+    }
+
     for ( int idx = 0; idx < joinFields.count(); ++idx )
     {
+      // if using just a subset of fields, filter some of them out
+      if ( hasSubset && !subset.contains( joinFields[idx].name() ) )
+        continue;
+
       //skip the join field to avoid double field names (fields often have the same name)
       if ( joinFields[idx].name() != joinFieldName )
       {
@@ -165,6 +226,20 @@ void QgsVectorLayerJoinBuffer::writeXml( QDomNode& layer_node, QDomDocument& doc
       joinElem.setAttribute( "joinFieldName", joinIt->joinFieldName );
 
     joinElem.setAttribute( "memoryCache", !joinIt->cachedAttributes.isEmpty() );
+
+    if ( joinIt->joinFieldNamesSubset() )
+    {
+      QDomElement subsetElem = document.createElement( "joinFieldsSubset" );
+      foreach ( QString fieldName, *joinIt->joinFieldNamesSubset() )
+      {
+        QDomElement fieldElem = document.createElement( "field" );
+        fieldElem.setAttribute( "name", fieldName );
+        subsetElem.appendChild( fieldElem );
+      }
+
+      joinElem.appendChild( subsetElem );
+    }
+
     vectorJoinsElem.appendChild( joinElem );
   }
 }
@@ -188,9 +263,39 @@ void QgsVectorLayerJoinBuffer::readXml( const QDomNode& layer_node )
       info.joinFieldIndex = infoElem.attribute( "joinField" ).toInt();   //for compatibility with 1.x
       info.targetFieldIndex = infoElem.attribute( "targetField" ).toInt();   //for compatibility with 1.x
 
+      QDomElement subsetElem = infoElem.firstChildElement( "joinFieldsSubset" );
+      if ( !subsetElem.isNull() )
+      {
+        QStringList* fieldNames = new QStringList;
+        QDomNodeList fieldNodes = infoElem.elementsByTagName( "field" );
+        for ( int i = 0; i < fieldNodes.count(); ++i )
+          *fieldNames << fieldNodes.at( i ).toElement().attribute( "name" );
+        info.setJoinFieldNamesSubset( fieldNames );
+      }
+
       addJoin( info );
     }
   }
+}
+
+int QgsVectorLayerJoinBuffer::joinedFieldsOffset( const QgsVectorJoinInfo* info, const QgsFields& fields )
+{
+  if ( !info )
+    return -1;
+
+  int joinIndex = mVectorJoins.indexOf( *info );
+  if ( joinIndex == -1 )
+    return -1;
+
+  for ( int i = 0; i < fields.count(); ++i )
+  {
+    if ( fields.fieldOrigin( i ) != QgsFields::OriginJoin )
+      continue;
+
+    if ( fields.fieldOriginIndex( i ) / 1000 == joinIndex )
+      return i;
+  }
+  return -1;
 }
 
 const QgsVectorJoinInfo* QgsVectorLayerJoinBuffer::joinForFieldIndex( int index, const QgsFields& fields, int& sourceFieldIndex ) const

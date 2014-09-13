@@ -39,8 +39,11 @@ class TestVectorLayerJoinBuffer: public QObject
     void init();              // will be called before each testfunction is executed.
     void cleanup();           // will be called after every testfunction.
 
-    void testCacheBasic();
-    void testCacheTransitive();
+    void testJoinBasic_data();
+    void testJoinBasic();
+    void testJoinTransitive();
+    void testJoinSubset_data();
+    void testJoinSubset();
 
   private:
     QgsVectorLayer* mLayerA;
@@ -112,16 +115,25 @@ void TestVectorLayerJoinBuffer::cleanupTestCase()
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
 }
 
-void TestVectorLayerJoinBuffer::testCacheBasic()
+void TestVectorLayerJoinBuffer::testJoinBasic_data()
 {
+  QTest::addColumn<bool>( "memoryCache" );
+
+  QTest::newRow( "with cache" ) << true;
+  QTest::newRow( "without cache" ) << false;
+}
+
+void TestVectorLayerJoinBuffer::testJoinBasic()
+{
+  QFETCH( bool, memoryCache );
+
   QVERIFY( mLayerA->pendingFields().count() == 1 );
 
   QgsVectorJoinInfo joinInfo;
   joinInfo.targetFieldName = "id_a";
   joinInfo.joinLayerId = mLayerB->id();
   joinInfo.joinFieldName = "id_b";
-  // memory provider does not implement setSubsetString() so direct join does not work!
-  joinInfo.memoryCache = true;
+  joinInfo.memoryCache = memoryCache;
   mLayerA->addJoin( joinInfo );
 
   QVERIFY( mLayerA->pendingFields().count() == 2 );
@@ -140,7 +152,7 @@ void TestVectorLayerJoinBuffer::testCacheBasic()
   QVERIFY( mLayerA->pendingFields().count() == 1 );
 }
 
-void TestVectorLayerJoinBuffer::testCacheTransitive()
+void TestVectorLayerJoinBuffer::testJoinTransitive()
 {
   // test join A -> B -> C
   // first we join A -> B and after that B -> C
@@ -154,7 +166,6 @@ void TestVectorLayerJoinBuffer::testCacheTransitive()
   joinInfo1.targetFieldName = "id_a";
   joinInfo1.joinLayerId = mLayerB->id();
   joinInfo1.joinFieldName = "id_b";
-  // memory provider does not implement setSubsetString() so direct join does not work!
   joinInfo1.memoryCache = true;
   mLayerA->addJoin( joinInfo1 );
   QVERIFY( mLayerA->pendingFields().count() == 2 ); // id_a, B_value_b
@@ -165,7 +176,6 @@ void TestVectorLayerJoinBuffer::testCacheTransitive()
   joinInfo2.targetFieldName = "id_b";
   joinInfo2.joinLayerId = mLayerC->id();
   joinInfo2.joinFieldName = "id_c";
-  // memory provider does not implement setSubsetString() so direct join does not work!
   joinInfo2.memoryCache = true;
   mLayerB->addJoin( joinInfo2 );
   QVERIFY( mLayerB->pendingFields().count() == 3 ); // id_b, value_b, C_value_c
@@ -188,6 +198,71 @@ void TestVectorLayerJoinBuffer::testCacheTransitive()
   // cleanup
   mLayerA->removeJoin( mLayerB->id() );
   mLayerB->removeJoin( mLayerC->id() );
+}
+
+
+void TestVectorLayerJoinBuffer::testJoinSubset_data()
+{
+  QTest::addColumn<bool>( "memoryCache" );
+
+  QTest::newRow( "with cache" ) << true;
+  QTest::newRow( "without cache" ) << false;
+}
+
+
+void TestVectorLayerJoinBuffer::testJoinSubset()
+{
+  QFETCH( bool, memoryCache );
+
+  QgsVectorLayer* layerX = new QgsVectorLayer( "Point?field=id_x:integer&field=value_x1:integer&field=value_x2", "X", "memory" );
+  QVERIFY( layerX->isValid() );
+  QVERIFY( layerX->pendingFields().count() == 3 );
+
+  QgsFeature fX1( layerX->dataProvider()->fields(), 1 );
+  fX1.setAttribute( "id_x", 1 );
+  fX1.setAttribute( "value_x1", 111 );
+  fX1.setAttribute( "value_x2", 222 );
+  layerX->dataProvider()->addFeatures( QgsFeatureList() << fX1 );
+  QVERIFY( layerX->pendingFeatureCount() == 1 );
+
+  QgsMapLayerRegistry::instance()->addMapLayer( layerX );
+
+  // case 1: join without subset
+
+  QgsVectorJoinInfo joinInfo;
+  joinInfo.targetFieldName = "id_a";
+  joinInfo.joinLayerId = layerX->id();
+  joinInfo.joinFieldName = "id_x";
+  joinInfo.memoryCache = memoryCache;
+  mLayerA->addJoin( joinInfo );
+
+  QCOMPARE( mLayerA->pendingFields().count(), 3 ); // id_a, X_value_x1, X_value_x2
+  QgsFeatureIterator fi = mLayerA->getFeatures();
+  QgsFeature fAX;
+  fi.nextFeature( fAX );
+  QCOMPARE( fAX.attribute( "id_a" ).toInt(), 1 );
+  QCOMPARE( fAX.attribute( "X_value_x1" ).toInt(), 111 );
+  QCOMPARE( fAX.attribute( "X_value_x2" ).toInt(), 222 );
+
+  mLayerA->removeJoin( layerX->id() );
+
+  // case 2: join with subset
+
+  QStringList* subset = new QStringList;
+  *subset << "value_x2";
+  joinInfo.setJoinFieldNamesSubset( subset );
+  mLayerA->addJoin( joinInfo );
+
+  QCOMPARE( mLayerA->pendingFields().count(), 2 ); // id_a, X_value_x2
+
+  fi = mLayerA->getFeatures();
+  fi.nextFeature( fAX );
+  QCOMPARE( fAX.attribute( "id_a" ).toInt(), 1 );
+  QCOMPARE( fAX.attribute( "X_value_x2" ).toInt(), 222 );
+
+  mLayerA->removeJoin( layerX->id() );
+
+  QgsMapLayerRegistry::instance()->removeMapLayer( layerX->id() );
 }
 
 

@@ -451,6 +451,7 @@ void QgsVectorLayerFeatureIterator::prepareJoins()
       FetchJoinInfo info;
       info.joinInfo = joinInfo;
       info.joinLayer = joinLayer;
+      info.indexOffset = mSource->mJoinBuffer->joinedFieldsOffset( joinInfo, mSource->mFields );
 
       if ( joinInfo->targetFieldName.isEmpty() )
         info.targetField = joinInfo->targetFieldIndex;    //for compatibility with 1.x
@@ -461,10 +462,6 @@ void QgsVectorLayerFeatureIterator::prepareJoins()
         info.joinField = joinInfo->joinFieldIndex;      //for compatibility with 1.x
       else
         info.joinField = joinLayer->pendingFields().indexFromName( joinInfo->joinFieldName );
-
-      info.indexOffset = *attIt - sourceLayerIndex;
-      if ( info.joinField < sourceLayerIndex )
-        info.indexOffset++;
 
       // for joined fields, we always need to request the targetField from the provider too
       if ( !fetchAttributes.contains( info.targetField ) )
@@ -610,10 +607,6 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesCached( Qg
   const QgsAttributes& featureAttributes = it.value();
   for ( int i = 0; i < featureAttributes.count(); ++i )
   {
-    // skip the join field to avoid double field names (fields often have the same name)
-    if ( i == joinField )
-      continue;
-
     f.setAttribute( index++, featureAttributes[i] );
   }
 }
@@ -663,6 +656,13 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
   joinLayer->dataProvider()->setSubsetString( subsetString, false );
 
+  // maybe user requested just a subset of layer's attributes
+  // so we do not have to cache everything
+  bool hasSubset = joinInfo->joinFieldNamesSubset();
+  QVector<int> subsetIndices;
+  if ( hasSubset )
+    subsetIndices = QgsVectorLayerJoinBuffer::joinSubsetIndices( joinLayer, *joinInfo->joinFieldNamesSubset() );
+
   // select (no geometry)
   QgsFeatureRequest request;
   request.setFlags( QgsFeatureRequest::NoGeometry );
@@ -675,12 +675,21 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   {
     int index = indexOffset;
     const QgsAttributes& attr = fet.attributes();
-    for ( int i = 0; i < attr.count(); ++i )
+    if ( hasSubset )
     {
-      if ( i == joinField )
-        continue;
+      for ( int i = 0; i < subsetIndices.count(); ++i )
+        f.setAttribute( index++, attr[ subsetIndices[i] ] );
+    }
+    else
+    {
+      // use all fields except for the one used for join (has same value as exiting field in target layer)
+      for ( int i = 0; i < attr.count(); ++i )
+      {
+        if ( i == joinField )
+          continue;
 
-      f.setAttribute( index++, attr[i] );
+        f.setAttribute( index++, attr[i] );
+      }
     }
   }
   else
