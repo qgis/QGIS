@@ -21,6 +21,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+#include <QStandardItemModel>
+
 QgsAddJoinDialog::QgsAddJoinDialog( QgsVectorLayer* layer, QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f ), mLayer( layer )
 {
   setupUi( this );
@@ -94,6 +96,27 @@ bool QgsAddJoinDialog::createAttributeIndex() const
   return mCreateIndexCheckBox->isChecked();
 }
 
+bool QgsAddJoinDialog::hasJoinFieldsSubset() const
+{
+  return mUseJoinFieldsSubset->isChecked();
+}
+
+QStringList QgsAddJoinDialog::joinFieldsSubset() const
+{
+  QStringList lst;
+  QAbstractItemModel* model = mJoinFieldsSubsetView->model();
+  if ( !model )
+    return lst;
+
+  for ( int i = 0; i < model->rowCount(); ++i )
+  {
+    QModelIndex index = model->index( i, 0 );
+    if ( model->data( index, Qt::CheckStateRole ).toInt() == Qt::Checked )
+      lst << model->data( index ).toString();
+  }
+  return lst;
+}
+
 void QgsAddJoinDialog::on_mJoinLayerComboBox_currentIndexChanged( int index )
 {
   mJoinFieldComboBox->clear();
@@ -109,10 +132,16 @@ void QgsAddJoinDialog::on_mJoinLayerComboBox_currentIndexChanged( int index )
     return;
   }
 
+  QStandardItemModel* subsetModel = new QStandardItemModel( this );
+
   const QgsFields& layerFields = vLayer->pendingFields();
   for ( int idx = 0; idx < layerFields.count(); ++idx )
   {
     mJoinFieldComboBox->addItem( layerFields[idx].name(), idx );
+    QStandardItem* subsetItem = new QStandardItem( layerFields[idx].name() );
+    subsetItem->setCheckable( true );
+    //subsetItem->setFlags( subsetItem->flags() | Qt::ItemIsUserCheckable );
+    subsetModel->appendRow( subsetItem );
   }
 
   //does provider support creation of attribute indices?
@@ -126,4 +155,11 @@ void QgsAddJoinDialog::on_mJoinLayerComboBox_currentIndexChanged( int index )
     mCreateIndexCheckBox->setEnabled( false );
     mCreateIndexCheckBox->setChecked( false );
   }
+
+  mJoinFieldsSubsetView->setModel( subsetModel );
+}
+
+void QgsAddJoinDialog::on_mUseJoinFieldsSubset_clicked()
+{
+  mJoinFieldsSubsetView->setEnabled( mUseJoinFieldsSubset->isChecked() );
 }

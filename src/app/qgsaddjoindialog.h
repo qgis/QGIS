@@ -40,9 +40,14 @@ class APP_EXPORT QgsAddJoinDialog: public QDialog, private Ui::QgsAddJoinDialogB
     bool cacheInMemory() const;
     /**Returns true if user wants to create an attribute index on the join field*/
     bool createAttributeIndex() const;
+    /**True if onle a subset of fields of joined layer should be used*/
+    bool hasJoinFieldsSubset() const;
+    /**Return list of checked fields from joined layer to be used in join*/
+    QStringList joinFieldsSubset() const;
 
   private slots:
     void on_mJoinLayerComboBox_currentIndexChanged( int index );
+    void on_mUseJoinFieldsSubset_clicked();
 
   private:
     /**Target layer*/
