@@ -281,7 +281,8 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, QgsGeometry*
     return;
   }
 
-  const GEOSPreparedGeometry* polyGeosPrepared = GEOSPrepare( poly->asGeos() );
+  GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
+  const GEOSPreparedGeometry* polyGeosPrepared = GEOSPrepare_r( geosctxt, poly->asGeos() );
   if ( !polyGeosPrepared )
   {
     return;
@@ -300,15 +301,15 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, QgsGeometry*
     cellCenterX = rasterBBox.xMinimum() + pixelOffsetX * cellSizeX + cellSizeX / 2;
     for ( int j = 0; j < nCellsX; ++j )
     {
-      GEOSGeom_destroy( currentCellCenter );
-      cellCenterCoords = GEOSCoordSeq_create( 1, 2 );
-      GEOSCoordSeq_setX( cellCenterCoords, 0, cellCenterX );
-      GEOSCoordSeq_setY( cellCenterCoords, 0, cellCenterY );
-      currentCellCenter = GEOSGeom_createPoint( cellCenterCoords );
+      GEOSGeom_destroy_r( geosctxt, currentCellCenter );
+      cellCenterCoords = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
+      GEOSCoordSeq_setX_r( geosctxt, cellCenterCoords, 0, cellCenterX );
+      GEOSCoordSeq_setY_r( geosctxt, cellCenterCoords, 0, cellCenterY );
+      currentCellCenter = GEOSGeom_createPoint_r( geosctxt, cellCenterCoords );
 
       if ( scanLine[j] != mInputNodataValue ) //don't consider nodata values
       {
-        if ( GEOSPreparedContains( polyGeosPrepared, currentCellCenter ) )
+        if ( GEOSPreparedContains_r( geosctxt, polyGeosPrepared, currentCellCenter ) )
         {
           if ( !qIsNaN( scanLine[j] ) )
           {
@@ -322,7 +323,7 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, QgsGeometry*
     cellCenterY -= cellSizeY;
   }
   CPLFree( scanLine );
-  GEOSPreparedGeom_destroy( polyGeosPrepared );
+  GEOSPreparedGeom_destroy_r( geosctxt, polyGeosPrepared );
 }
 
 void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, QgsGeometry* poly, int pixelOffsetX,

@@ -1971,13 +1971,13 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   }
 
   GEOSGeometry* geos_geom_clone;
-  if ( GEOSGeomTypeId( geos_geom ) == GEOS_POLYGON && repeatDistance > 0 && placement == Line )
+  if ( GEOSGeomTypeId_r( QgsGeometry::getGEOSHandler(), geos_geom ) == GEOS_POLYGON && repeatDistance > 0 && placement == Line )
   {
-    geos_geom_clone = GEOSBoundary( geos_geom );
+    geos_geom_clone = GEOSBoundary_r( QgsGeometry::getGEOSHandler(), geos_geom );
   }
   else
   {
-    geos_geom_clone = GEOSGeom_clone( geos_geom );
+    geos_geom_clone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom );
   }
 
   //data defined position / alignment / rotation?
@@ -3532,7 +3532,7 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
   }
 
   //create PALGeometry with diagram = true
-  QgsPalGeometry* lbl = new QgsPalGeometry( feat.id(), "", GEOSGeom_clone( geos_geom ) );
+  QgsPalGeometry* lbl = new QgsPalGeometry( feat.id(), "", GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom ) );
   lbl->setIsDiagram( true );
 
   // record the created geometry - it will be deleted at the end.

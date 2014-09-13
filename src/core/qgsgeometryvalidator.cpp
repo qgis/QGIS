@@ -201,6 +201,7 @@ void QgsGeometryValidator::run()
   {
     char *r = 0;
     const GEOSGeometry *g0 = mG.asGeos();
+    GEOSContextHandle_t handle = QgsGeometry::getGEOSHandler();
     if ( !g0 )
     {
       emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error:could not produce geometry for GEOS (check log window)" ) ) );
@@ -208,23 +209,23 @@ void QgsGeometryValidator::run()
     else
     {
       GEOSGeometry *g1 = 0;
-      if ( GEOSisValidDetail( g0, GEOSVALID_ALLOW_SELFTOUCHING_RING_FORMING_HOLE, &r, &g1 ) != 1 )
+      if ( GEOSisValidDetail_r( handle, g0, GEOSVALID_ALLOW_SELFTOUCHING_RING_FORMING_HOLE, &r, &g1 ) != 1 )
       {
         if ( g1 )
         {
-          const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq( g1 );
+          const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( handle, g1 );
 
           unsigned int n;
-          if ( GEOSCoordSeq_getSize( cs, &n ) && n == 1 )
+          if ( GEOSCoordSeq_getSize_r( handle, cs, &n ) && n == 1 )
           {
             double x, y;
-            GEOSCoordSeq_getX( cs, 0, &x );
-            GEOSCoordSeq_getY( cs, 0, &y );
+            GEOSCoordSeq_getX_r( handle, cs, 0, &x );
+            GEOSCoordSeq_getY_r( handle, cs, 0, &y );
             emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error:%1" ).arg( r ), QgsPoint( x, y ) ) );
             mErrorCount++;
           }
 
-          GEOSGeom_destroy( g1 );
+          GEOSGeom_destroy_r( handle, g1 );
         }
         else
         {
@@ -232,7 +233,7 @@ void QgsGeometryValidator::run()
           mErrorCount++;
         }
 
-        GEOSFree( r );
+        GEOSFree_r( handle, r );
       }
     }
 

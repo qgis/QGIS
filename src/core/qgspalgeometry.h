@@ -1,6 +1,7 @@
 #ifndef QGSPALGEOMETRY_H
 #define QGSPALGEOMETRY_H
 
+#include "qgsgeometry.h"
 #include <pal/feature.h>
 #include <pal/palgeometry.h>
 
@@ -29,7 +30,7 @@ class QgsPalGeometry : public PalGeometry
     ~QgsPalGeometry()
     {
       if ( mG )
-        GEOSGeom_destroy( mG );
+        GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), mG );
       delete mInfo;
       delete mFontMetrics;
     }

@@ -24,11 +24,6 @@ email                : morb at ozemail dot com dot au
 
 #include <geos_c.h>
 
-#if defined(GEOS_VERSION_MAJOR) && (GEOS_VERSION_MAJOR<3)
-#define GEOSGeometry struct GEOSGeom_t
-#define GEOSCoordSequence struct GEOSCoordSeq_t
-#endif
-
 #include "qgspoint.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfeature.h"
@@ -87,6 +82,9 @@ class CORE_EXPORT QgsGeometry
 
     //! Destructor
     ~QgsGeometry();
+
+    /** return GEOS context handle */
+    static GEOSContextHandle_t getGEOSHandler();
 
     /** static method that creates geometry from Wkt */
     static QgsGeometry* fromWkt( QString wkt );
@@ -643,7 +641,7 @@ class CORE_EXPORT QgsGeometry
     /** return polygon from wkb */
     QgsPolygon asPolygon( QgsConstWkbPtr &wkbPtr, bool hasZValue ) const;
 
-    static bool geosRelOp( char( *op )( const GEOSGeometry*, const GEOSGeometry * ),
+    static bool geosRelOp( char( *op )( GEOSContextHandle_t handle, const GEOSGeometry*, const GEOSGeometry * ),
                            const QgsGeometry* a, const QgsGeometry* b );
 
     /**Returns < 0 if point(x/y) is left of the line x1,y1 -> x1,y2*/
