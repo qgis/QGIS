@@ -44,7 +44,6 @@ class GUI_EXPORT QgsAttributeEditorContext
       StandaloneSingle //!< When showing a new dialog for a single feature (e.g. district information when looking at the form of a house)
     };
 
-  public:
     QgsAttributeEditorContext()
         : mParentContext( 0 )
         , mLayer( 0 )
