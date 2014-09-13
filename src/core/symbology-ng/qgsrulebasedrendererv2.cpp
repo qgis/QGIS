@@ -21,6 +21,9 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsogcutils.h"
+#include "qgssinglesymbolrendererv2.h"
+#include "qgspointdisplacementrenderer.h"
+#include "qgsinvertedpolygonrenderer.h"
 
 #include <QSet>
 
@@ -736,12 +739,12 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
 /////////////////////
 
 QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsRuleBasedRendererV2::Rule* root )
-    : QgsFeatureRendererV2( "RuleRenderer" ), mRootRule( root )
+    : QgsFeatureRendererV2( "ruleRenderer" ), mRootRule( root )
 {
 }
 
 QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol )
-    : QgsFeatureRendererV2( "RuleRenderer" )
+    : QgsFeatureRendererV2( "ruleRenderer" )
 {
   mRootRule = new Rule( NULL ); // root has no symbol, no filter etc - just a container
   mRootRule->appendChild( new Rule( defaultSymbol ) );
@@ -845,12 +848,11 @@ QList<QString> QgsRuleBasedRendererV2::usedAttributes()
   return attrs.values();
 }
 
-QgsFeatureRendererV2* QgsRuleBasedRendererV2::clone()
+QgsFeatureRendererV2* QgsRuleBasedRendererV2::clone() const
 {
   QgsRuleBasedRendererV2* r = new QgsRuleBasedRendererV2( mRootRule->clone() );
 
   r->setUsingSymbolLevels( usingSymbolLevels() );
-  setUsingSymbolLevels( usingSymbolLevels() );
   return r;
 }
 
@@ -1052,4 +1054,174 @@ bool QgsRuleBasedRendererV2::willRenderFeature( QgsFeature& feat )
 QgsSymbolV2List QgsRuleBasedRendererV2::symbolsForFeature( QgsFeature& feat )
 {
   return mRootRule->symbolsForFeature( feat );
+}
+
+QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFeatureRendererV2* renderer )
+{
+  if ( renderer->type() == "ruleRenderer" )
+  {
+    return dynamic_cast<QgsRuleBasedRendererV2*>( renderer->clone() );
+  }
+
+  if ( renderer->type() == "singleSymbol" )
+  {
+    const QgsSingleSymbolRendererV2* singleSymbolRenderer = dynamic_cast<const QgsSingleSymbolRendererV2*>( renderer );
+    QgsSymbolV2* origSymbol = singleSymbolRenderer->symbol()->clone();
+    convertToDataDefinedSymbology( origSymbol, singleSymbolRenderer->sizeScaleField(), singleSymbolRenderer->rotationField() );
+    return new QgsRuleBasedRendererV2( origSymbol );
+  }
+
+  if ( renderer->type() == "categorizedSymbol" )
+  {
+    const QgsCategorizedSymbolRendererV2* categorizedRenderer = dynamic_cast<const QgsCategorizedSymbolRendererV2*>( renderer );
+    QgsRuleBasedRendererV2::Rule* rootrule = new QgsRuleBasedRendererV2::Rule( NULL );
+
+    QString expression;
+    QString value;
+    QgsRendererCategoryV2 category;
+    for ( int i = 0; i < categorizedRenderer->categories().size(); ++i )
+    {
+      category = categorizedRenderer->categories().value( i );
+      QgsRuleBasedRendererV2::Rule* rule = new QgsRuleBasedRendererV2::Rule( NULL );
+
+      rule->setLabel( category.label() );
+
+      //We first define the rule corresponding to the category
+      //If the value is a number, we can use it directly, otherwise we need to quote it in the rule
+      if ( QVariant( category.value() ).convert( QVariant::Double ) )
+      {
+        value = category.value().toString();
+      }
+      else
+      {
+        value = "'" + category.value().toString() + "'";
+      }
+
+      //An empty category is equivalent to the ELSE keyword
+      if ( value == "''" )
+      {
+        expression = "ELSE";
+      }
+      else
+      {
+        expression = categorizedRenderer->classAttribute() + " = " + value;
+      }
+      rule->setFilterExpression( expression );
+
+      //Then we construct an equivalent symbol.
+      //Ideally we could simply copy the symbol, but the categorized renderer allows a separate interface to specify
+      //data dependent area and rotation, so we need to convert these to obtain the same rendering
+
+      QgsSymbolV2* origSymbol = category.symbol()->clone();
+      convertToDataDefinedSymbology( origSymbol, categorizedRenderer->sizeScaleField(), categorizedRenderer->rotationField() );
+      rule->setSymbol( origSymbol );
+
+      rootrule->appendChild( rule );
+    }
+
+    return new QgsRuleBasedRendererV2( rootrule );
+  }
+
+  if ( renderer->type() == "graduatedSymbol" )
+  {
+
+    const QgsGraduatedSymbolRendererV2* graduatedRenderer = dynamic_cast<const QgsGraduatedSymbolRendererV2*>( renderer );
+
+    QgsRuleBasedRendererV2::Rule* rootrule = new QgsRuleBasedRendererV2::Rule( NULL );
+
+    QString expression;
+    QgsRendererRangeV2 range;
+    for ( int i = 0; i < graduatedRenderer->ranges().size();++i )
+    {
+      range = graduatedRenderer->ranges().value( i );
+      QgsRuleBasedRendererV2::Rule* rule = new QgsRuleBasedRendererV2::Rule( NULL );
+      rule->setLabel( range.label() );
+      if ( i == 0 )//The lower boundary of the first range is included, while it is excluded for the others
+      {
+        expression = graduatedRenderer->classAttribute() + " >= " + QString::number( range.lowerValue(), 'f' ) + " AND " + \
+                     graduatedRenderer->classAttribute() + " <= " + QString::number( range.upperValue(), 'f' );
+      }
+      else
+      {
+        expression = graduatedRenderer->classAttribute() + " > " + QString::number( range.lowerValue(), 'f' ) + " AND " + \
+                     graduatedRenderer->classAttribute() + " <= " + QString::number( range.upperValue(), 'f' );
+      }
+      rule->setFilterExpression( expression );
+
+      //Then we construct an equivalent symbol.
+      //Ideally we could simply copy the symbol, but the graduated renderer allows a separate interface to specify
+      //data dependent area and rotation, so we need to convert these to obtain the same rendering
+
+      QgsSymbolV2* symbol = range.symbol()->clone();
+      convertToDataDefinedSymbology( symbol, graduatedRenderer->sizeScaleField(), graduatedRenderer->rotationField() );
+
+      rule->setSymbol( symbol );
+
+      rootrule->appendChild( rule );
+    }
+
+    return new QgsRuleBasedRendererV2( rootrule );
+  }
+
+  if ( renderer->type() == "pointDisplacement" )
+  {
+    const QgsPointDisplacementRenderer* pointDisplacementRenderer = dynamic_cast<const QgsPointDisplacementRenderer*>( renderer );
+    return convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
+  }
+  if ( renderer->type() == "invertedPolygonRenderer" )
+  {
+    const QgsInvertedPolygonRenderer* invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer*>( renderer );
+    return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
+  }
+
+  return NULL;
+}
+
+void QgsRuleBasedRendererV2::convertToDataDefinedSymbology( QgsSymbolV2* symbol, QString sizeScaleField, QString rotationField )
+{
+  QString sizeExpression;
+  switch ( symbol->type() )
+  {
+    case QgsSymbolV2::Marker:
+      for ( int j = 0; j < symbol->symbolLayerCount();++j )
+      {
+        QgsMarkerSymbolLayerV2* msl = static_cast<QgsMarkerSymbolLayerV2*>( symbol->symbolLayer( j ) );
+        if ( ! sizeScaleField.isNull() )
+        {
+          sizeExpression = QString( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField );
+          msl->setDataDefinedProperty( "size", sizeExpression );
+        }
+        if ( ! rotationField.isNull() )
+        {
+          msl->setDataDefinedProperty( "angle", rotationField );
+        }
+      }
+      break;
+    case QgsSymbolV2::Line:
+      if ( ! sizeScaleField.isNull() )
+      {
+        for ( int j = 0; j < symbol->symbolLayerCount();++j )
+        {
+          if ( symbol->symbolLayer( j )->layerType() == "SimpleLine" )
+          {
+            QgsLineSymbolLayerV2* lsl = static_cast<QgsLineSymbolLayerV2*>( symbol->symbolLayer( j ) );
+            sizeExpression = QString( "%1*(%2)" ).arg( lsl->width() ).arg( sizeScaleField );
+            lsl->setDataDefinedProperty( "width", sizeExpression );
+          }
+          if ( symbol->symbolLayer( j )->layerType() == "MarkerLine" )
+          {
+            QgsSymbolV2* marker = symbol->symbolLayer( j )->subSymbol();
+            for ( int k = 0; k < marker->symbolLayerCount();++k )
+            {
+              QgsMarkerSymbolLayerV2* msl = static_cast<QgsMarkerSymbolLayerV2*>( marker->symbolLayer( k ) );
+              sizeExpression = QString( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField );
+              msl->setDataDefinedProperty( "size", sizeExpression );
+            }
+          }
+        }
+      }
+      break;
+    default:
+      break;
+  }
 }

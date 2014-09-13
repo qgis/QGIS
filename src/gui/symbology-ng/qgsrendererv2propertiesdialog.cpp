@@ -65,7 +65,7 @@ static void _initRendererWidgetFunctions()
   _initRenderer( "singleSymbol", QgsSingleSymbolRendererV2Widget::create, "rendererSingleSymbol.png" );
   _initRenderer( "categorizedSymbol", QgsCategorizedSymbolRendererV2Widget::create, "rendererCategorizedSymbol.png" );
   _initRenderer( "graduatedSymbol", QgsGraduatedSymbolRendererV2Widget::create, "rendererGraduatedSymbol.png" );
-  _initRenderer( "RuleRenderer", QgsRuleBasedRendererV2Widget::create );
+  _initRenderer( "ruleRenderer", QgsRuleBasedRendererV2Widget::create );
   _initRenderer( "pointDisplacement", QgsPointDisplacementRendererWidget::create );
   _initRenderer( "invertedPolygonRenderer", QgsInvertedPolygonRendererWidget::create );
   initialized = true;
@@ -144,6 +144,17 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
 
   QString rendererName = cboRenderers->itemData( cboRenderers->currentIndex() ).toString();
 
+  //Retrieve the previous renderer: from the old active widget if possible, otherwise from the layer
+  QgsFeatureRendererV2* oldRenderer;
+  if ( mActiveWidget  && mActiveWidget->renderer() )
+  {
+    oldRenderer = mActiveWidget->renderer()->clone();
+  }
+  else
+  {
+    oldRenderer = mLayer->rendererV2()->clone();
+  }
+
   // get rid of old active widget (if any)
   if ( mActiveWidget )
   {
@@ -156,7 +167,7 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
   QgsRendererV2Widget* w = NULL;
   QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererName );
   if ( m != NULL )
-    w = m->createRendererWidget( mLayer, mStyle, mLayer->rendererV2()->clone() );
+    w = m->createRendererWidget( mLayer, mStyle, oldRenderer );
 
   if ( w != NULL )
   {

@@ -365,16 +365,13 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
 
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
-  if ( !renderer || renderer->type() != "graduatedSymbol" )
+  if ( renderer )
   {
-    // we're not going to use it - so let's delete the renderer
-    delete renderer;
-
-    mRenderer = new QgsGraduatedSymbolRendererV2( "", QgsRangeList() );
+    mRenderer = QgsGraduatedSymbolRendererV2::convertFromRenderer( renderer );
   }
-  else
+  if ( !mRenderer )
   {
-    mRenderer = static_cast<QgsGraduatedSymbolRendererV2*>( renderer );
+    mRenderer = new QgsGraduatedSymbolRendererV2( "", QgsRangeList() );
   }
 
   // setup user interface

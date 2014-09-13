@@ -19,6 +19,8 @@
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
+#include "qgspointdisplacementrenderer.h"
+#include "qgsinvertedpolygonrenderer.h"
 
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
@@ -462,7 +464,7 @@ QString QgsCategorizedSymbolRendererV2::dump() const
   return s;
 }
 
-QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone()
+QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone() const
 {
   QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2( mAttrName, mCategories );
   if ( mSourceSymbol.data() )
@@ -758,3 +760,22 @@ void QgsCategorizedSymbolRendererV2::checkLegendSymbolItem( QString key, bool st
 }
 
 QgsMarkerSymbolV2 QgsCategorizedSymbolRendererV2::sSkipRender;
+
+QgsCategorizedSymbolRendererV2* QgsCategorizedSymbolRendererV2::convertFromRenderer( const QgsFeatureRendererV2 *renderer )
+{
+  if ( renderer->type() == "categorizedSymbol" )
+  {
+    return dynamic_cast<QgsCategorizedSymbolRendererV2*>( renderer->clone() );
+  }
+  if ( renderer->type() == "pointDisplacement" )
+  {
+    const QgsPointDisplacementRenderer* pointDisplacementRenderer = dynamic_cast<const QgsPointDisplacementRenderer*>( renderer );
+    return convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
+  }
+  if ( renderer->type() == "invertedPolygonRenderer" )
+  {
+    const QgsInvertedPolygonRenderer* invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer*>( renderer );
+    return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
+  }
+  return 0;
+}

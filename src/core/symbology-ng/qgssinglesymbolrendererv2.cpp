@@ -23,6 +23,8 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerv2.h"
 #include "qgsogcutils.h"
+#include "qgspointdisplacementrenderer.h"
+#include "qgsinvertedpolygonrenderer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -167,7 +169,7 @@ QString QgsSingleSymbolRendererV2::dump() const
   return mSymbol.data() ? QString( "SINGLE: %1" ).arg( mSymbol->dump() ) : "" ;
 }
 
-QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone()
+QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone() const
 {
   QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( mSymbol->clone() );
   r->setUsingSymbolLevels( usingSymbolLevels() );
@@ -372,4 +374,24 @@ QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
   QgsLegendSymbolListV2 lst;
   lst << QgsLegendSymbolItemV2( mSymbol.data(), QString(), 0 );
   return lst;
+}
+
+QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::convertFromRenderer( const QgsFeatureRendererV2 *renderer )
+{
+  if ( renderer->type() == "singleSymbol" )
+  {
+    return dynamic_cast<QgsSingleSymbolRendererV2*>( renderer->clone() );
+  }
+  if ( renderer->type() == "pointDisplacement" )
+  {
+    const QgsPointDisplacementRenderer* pointDisplacementRenderer = dynamic_cast<const QgsPointDisplacementRenderer*>( renderer );
+    return convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
+  }
+  if ( renderer->type() == "invertedPolygonRenderer" )
+  {
+    const QgsInvertedPolygonRenderer* invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer*>( renderer );
+    return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
+
+  }
+  return 0;
 }

@@ -59,7 +59,7 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual QString dump() const;
 
-    virtual QgsFeatureRendererV2* clone() /Factory/;
+    virtual QgsFeatureRendererV2* clone() const /Factory/;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
@@ -173,7 +173,10 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     // @note added in 2.5
     virtual void checkLegendSymbolItem( QString key, bool state = true );
 
-
+    //! creates a QgsGraduatedSymbolRendererV2 from an existing renderer.
+    //! @note added in 2.5
+    //! @returns a new renderer if the conversion was possible, otherwise 0.
+    static QgsGraduatedSymbolRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer ) /Factory/;
 
   protected:
     QgsSymbolV2* symbolForValue( double value );

@@ -37,7 +37,7 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual QString dump() const;
 
-    virtual QgsFeatureRendererV2* clone() /Factory/;
+    virtual QgsFeatureRendererV2* clone() const /Factory/;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
     static QgsFeatureRendererV2* createFromSld( QDomElement& element, QGis::GeometryType geomType );
@@ -65,6 +65,11 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
     //! @note added in 2.6
     virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
+
+    //! creates a QgsSingleSymbolRendererV2 from an existing renderer.
+    //! @note added in 2.5
+    //! @returns a new renderer if the conversion was possible, otherwise 0.
+    static QgsSingleSymbolRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer ) /Factory/;
 
   private:
     QgsSingleSymbolRendererV2( const QgsSingleSymbolRendererV2 & );

@@ -17,6 +17,8 @@
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
+#include "qgspointdisplacementrenderer.h"
+#include "qgsinvertedpolygonrenderer.h"
 
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
@@ -357,7 +359,7 @@ QString QgsGraduatedSymbolRendererV2::dump() const
   return s;
 }
 
-QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone()
+QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone() const
 {
   QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( mAttrName, mRanges );
   r->setMode( mMode );
@@ -1311,3 +1313,21 @@ void QgsGraduatedSymbolRendererV2::sortByLabel( Qt::SortOrder order )
   }
 }
 
+QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::convertFromRenderer( const QgsFeatureRendererV2 *renderer )
+{
+  if ( renderer->type() == "graduatedSymbol" )
+  {
+    return dynamic_cast<QgsGraduatedSymbolRendererV2*>( renderer->clone() );
+  }
+  if ( renderer->type() == "pointDisplacement" )
+  {
+    const QgsPointDisplacementRenderer* pointDisplacementRenderer = dynamic_cast<const QgsPointDisplacementRenderer*>( renderer );
+    return convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
+  }
+  if ( renderer->type() == "invertedPolygonRenderer" )
+  {
+    const QgsInvertedPolygonRenderer* invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer*>( renderer );
+    return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
+  }
+  return 0;
+}

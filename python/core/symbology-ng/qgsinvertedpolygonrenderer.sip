@@ -12,7 +12,7 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
     virtual ~QgsInvertedPolygonRenderer();
 
     /** Used to clone this feature renderer.*/
-    virtual QgsFeatureRendererV2* clone() /Factory/;
+    virtual QgsFeatureRendererV2* clone() const /Factory/;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
@@ -81,4 +81,10 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
         This will involve some CPU-demanding computations and is thus disabled by default.
     */
     void setPreprocessingEnabled( bool enabled );
+
+    /** creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
+        @note added in 2.5
+        @returns a new renderer if the conversion was possible, otherwise 0.
+        */
+    static QgsInvertedPolygonRenderer* convertFromRenderer( const QgsFeatureRendererV2* renderer ) /Factory/;
 };

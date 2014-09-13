@@ -49,11 +49,12 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   }
   setupUi( this );
 
-  if ( renderer && renderer->type() == "pointDisplacement" )
+
+  if ( renderer )
   {
-    mRenderer = dynamic_cast<QgsPointDisplacementRenderer*>( renderer->clone() );
+    mRenderer = QgsPointDisplacementRenderer::convertFromRenderer(renderer);
   }
-  else
+  if ( !mRenderer )
   {
     mRenderer = new QgsPointDisplacementRenderer();
   }

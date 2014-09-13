@@ -372,16 +372,13 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
 
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
-  if ( !renderer || renderer->type() != "categorizedSymbol" )
+  if ( renderer )
   {
-    // we're not going to use it - so let's delete the renderer
-    delete renderer;
-
-    mRenderer = new QgsCategorizedSymbolRendererV2( "", QgsCategoryList() );
+    mRenderer = QgsCategorizedSymbolRendererV2::convertFromRenderer( renderer );
   }
-  else
+  if ( !mRenderer )
   {
-    mRenderer = static_cast<QgsCategorizedSymbolRendererV2*>( renderer );
+    mRenderer = new QgsCategorizedSymbolRendererV2( "", QgsCategoryList() );
   }
 
   QString attrName = mRenderer->classAttribute();

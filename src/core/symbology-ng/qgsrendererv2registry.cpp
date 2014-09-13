@@ -33,11 +33,12 @@ QgsRendererV2Registry::QgsRendererV2Registry()
   addRenderer( new QgsRendererV2Metadata( "categorizedSymbol",
                                           QObject::tr( "Categorized" ),
                                           QgsCategorizedSymbolRendererV2::create ) );
+
   addRenderer( new QgsRendererV2Metadata( "graduatedSymbol",
                                           QObject::tr( "Graduated" ),
                                           QgsGraduatedSymbolRendererV2::create ) );
 
-  addRenderer( new QgsRendererV2Metadata( "RuleRenderer",
+  addRenderer( new QgsRendererV2Metadata( "ruleRenderer",
                                           QObject::tr( "Rule-based" ),
                                           QgsRuleBasedRendererV2::create,
                                           QgsRuleBasedRendererV2::createFromSld ) );

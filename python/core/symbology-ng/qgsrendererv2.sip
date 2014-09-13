@@ -71,7 +71,7 @@ class QgsFeatureRendererV2
 
     virtual ~QgsFeatureRendererV2();
 
-    virtual QgsFeatureRendererV2* clone() = 0 /Factory/;
+    virtual QgsFeatureRendererV2* clone() const = 0 /Factory/;
 
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 

@@ -16,6 +16,7 @@
 #include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsrulebasedrendererv2.h"
 
 #include "qgssinglesymbolrendererv2.h" // for default renderer
 
@@ -466,7 +467,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis:
   QString rendererType;
   if ( needRuleRenderer )
   {
-    rendererType = "RuleRenderer";
+    rendererType = "ruleRenderer";
   }
   else
   {

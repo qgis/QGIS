@@ -53,25 +53,18 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
 
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
-  if ( !renderer )
+
+  if ( renderer )
   {
-    // a new renderer
+    mRenderer.reset( QgsInvertedPolygonRenderer::convertFromRenderer( renderer ) );
+  }
+  if ( ! mRenderer )
+  {
     mRenderer.reset( new QgsInvertedPolygonRenderer() );
   }
-  else if ( renderer && renderer->type() != "invertedPolygonRenderer" )
-  {
-    // an existing renderer, but not an inverted renderer
-    // create an inverted renderer, with the existing renderer embedded
-    mRenderer.reset( new QgsInvertedPolygonRenderer( renderer ) );
-  }
-  else
-  {
-    // an existing inverted renderer
-    mRenderer.reset( static_cast<QgsInvertedPolygonRenderer*>( renderer ) );
-    mMergePolygonsCheckBox->blockSignals( true );
-    mMergePolygonsCheckBox->setCheckState( mRenderer->preprocessingEnabled() ? Qt::Checked : Qt::Unchecked );
-    mMergePolygonsCheckBox->blockSignals( false );
-  }
+  mMergePolygonsCheckBox->blockSignals( true );
+  mMergePolygonsCheckBox->setCheckState( mRenderer->preprocessingEnabled() ? Qt::Checked : Qt::Unchecked );
+  mMergePolygonsCheckBox->blockSignals( false );
 
   int currentEmbeddedIdx = 0;
   //insert possible renderer types
