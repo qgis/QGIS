@@ -264,7 +264,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
      * invalid color
      * @note added in 2.5
      */
-    static QColor colorFromMimeData( const QMimeData * mimeData, bool& hasAlpha );
+    static QColor colorFromMimeData( const QMimeData *data, bool& hasAlpha );
 
     /**
      * Attempts to parse mime data as a list of named colors
