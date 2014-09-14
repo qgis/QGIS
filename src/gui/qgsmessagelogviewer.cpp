@@ -145,9 +145,10 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
     tabWidget->setCurrentIndex( tabWidget->count() - 1 );
   }
 
-  QString date = QDateTime::currentDateTime().toString( Qt::ISODate );
-  message = message.replace( "\n", "<br>" );
-  w->appendHtml( QString("<i>%1</i> | <i>%2</i> | %3").arg( date ).arg( QString::number( level ) ).arg( message ) );
+  QString prefix = QString( "%1\t%2\t")
+                       .arg( QDateTime::currentDateTime().toString( Qt::ISODate ) )
+                       .arg( level );
+  w->appendPlainText( message.prepend( prefix ).replace( "\n", "\n\t\t\t" ) );
   w->verticalScrollBar()->setValue( w->verticalScrollBar()->maximum() );
 }
 
