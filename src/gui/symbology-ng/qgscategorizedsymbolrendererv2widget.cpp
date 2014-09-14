@@ -594,6 +594,10 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
 
   bool hasNull = false;
 
+  //assume we need an extra color for nulls
+  int totalColors = num + 1;
+  ramp->setTotalColorCount( totalColors );
+
   for ( int i = 0; i < num; i++ )
   {
     QVariant value = values[i];

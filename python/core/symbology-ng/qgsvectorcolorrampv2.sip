@@ -14,6 +14,9 @@ class QgsVectorColorRampV2
 %End
 
   public:
+  
+    QgsVectorColorRampV2();
+  
     virtual ~QgsVectorColorRampV2();
 
     // Number of defined colors
@@ -23,6 +26,12 @@ class QgsVectorColorRampV2
     virtual double value( int index ) const = 0;
 
     virtual QColor color( double value ) const = 0;
+    
+    /*Sets the desired total number of unique colors for the resultant ramp
+     * @param colorCount number of unique colors
+     * @note added in QGIS 2.5
+     */
+    virtual void setTotalColorCount( const int colorCount );
 
     virtual QString type() const = 0;
 
@@ -139,6 +148,8 @@ class QgsRandomColorsV2 : QgsVectorColorRampV2
     double value( int index ) const;
 
     QColor color( double value ) const;
+    
+    void setTotalColorCount( const int colorCount );
 
     QString type() const;
 

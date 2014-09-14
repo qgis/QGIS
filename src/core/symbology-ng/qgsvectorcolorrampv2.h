@@ -25,6 +25,9 @@
 class CORE_EXPORT QgsVectorColorRampV2
 {
   public:
+
+    QgsVectorColorRampV2();
+
     virtual ~QgsVectorColorRampV2() {}
 
     // Number of defined colors
@@ -35,12 +38,21 @@ class CORE_EXPORT QgsVectorColorRampV2
 
     virtual QColor color( double value ) const = 0;
 
+    /*Sets the desired total number of unique colors for the resultant ramp
+     * @param colorCount number of unique colors
+     * @note added in QGIS 2.5
+     */
+    virtual void setTotalColorCount( const int colorCount ) { mTotalColorCount = colorCount; }
+
     virtual QString type() const = 0;
 
     virtual QgsVectorColorRampV2* clone() const = 0;
 
     virtual QgsStringMap properties() const = 0;
 
+  protected:
+
+    int mTotalColorCount;
 };
 
 struct QgsGradientStop
@@ -173,11 +185,18 @@ class CORE_EXPORT QgsRandomColorsV2: public QgsVectorColorRampV2
 
     QColor color( double value ) const;
 
+    void setTotalColorCount( const int colorCount );
+
     QString type() const;
 
     QgsVectorColorRampV2* clone() const;
 
     QgsStringMap properties() const;
+
+  protected:
+
+    QList<QColor> mPrecalculatedColors;
+
 };
 
 
