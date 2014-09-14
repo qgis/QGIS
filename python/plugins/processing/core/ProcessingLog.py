@@ -134,6 +134,14 @@ class ProcessingLog:
         os.unlink(ProcessingLog.logFilename())
         ProcessingLog.startLogging()
 
+    @staticmethod
+    def saveLog(fileName):
+        entries = ProcessingLog.getLogEntries()
+        with codecs.open(fileName, 'w', encoding='utf-8') as f:
+            for k, v in entries.iteritems():
+                for entry in v:
+                    f.write('%s|%s|%s\n' % (k, entry.date, entry.text))
+
 
 class LogEntry:
 

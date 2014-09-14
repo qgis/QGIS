@@ -51,9 +51,14 @@ class HistoryDialog(QDialog, Ui_DlgHistory):
         self.clearButton.setToolTip(self.tr('Clear history and log'))
         self.buttonBox.addButton(self.clearButton, QDialogButtonBox.ActionRole)
 
+        self.saveButton = QPushButton(self.tr('Save As...'))
+        self.saveButton.setToolTip(self.tr('Save history and log'))
+        self.buttonBox.addButton(self.saveButton, QDialogButtonBox.ActionRole)
+
         self.tree.doubleClicked.connect(self.executeAlgorithm)
         self.tree.currentItemChanged.connect(self.changeText)
         self.clearButton.clicked.connect(self.clearLog)
+        self.saveButton.clicked.connect(self.saveLog)
 
         self.tree.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tree.customContextMenuRequested.connect(self.showPopupMenu)
@@ -69,6 +74,18 @@ class HistoryDialog(QDialog, Ui_DlgHistory):
         if reply == QMessageBox.Yes:
             ProcessingLog.clearLog()
             self.fillTree()
+
+    def saveLog(self):
+        fileName = QFileDialog.getSaveFileName(self,
+            self.tr('Save file'), '.', 'Log files (*.log *.LOG)')
+
+        if fileName == '':
+            return
+
+        if not fileName.lower().endswith('.log'):
+            fileName += '.log'
+
+        ProcessingLog.saveLog(fileName)
 
     def fillTree(self):
         self.tree.clear()
