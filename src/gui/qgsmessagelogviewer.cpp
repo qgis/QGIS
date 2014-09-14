@@ -63,7 +63,6 @@ QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent
     mButton->setToolTip( tr( "No messages." ) );
 #endif
     mButton->setCheckable( true );
-    mButton->hide();
     connect( mButton, SIGNAL( toggled( bool ) ), this, SLOT( buttonToggled( bool ) ) );
     connect( mButton, SIGNAL( destroyed() ), this, SLOT( buttonDestroyed() ) );
     statusBar->addPermanentWidget( mButton, 0 );
@@ -89,7 +88,6 @@ void QgsMessageLogViewer::showEvent( QShowEvent * )
   if ( mButton )
   {
     mButton->setChecked( true );
-    mButton->hide();
   }
 }
 
