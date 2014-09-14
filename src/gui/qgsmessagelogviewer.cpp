@@ -153,6 +153,5 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
 
 void QgsMessageLogViewer::closeTab( int index )
 {
-  QPlainTextEdit *w = qobject_cast<QPlainTextEdit *>( tabWidget->widget( index ) );
   tabWidget->removeTab( index );
 }
