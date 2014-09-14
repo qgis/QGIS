@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>505</width>
+    <width>615</width>
     <height>339</height>
    </rect>
   </property>
@@ -237,6 +237,16 @@
       <widget class="QPushButton" name="btnDeleteAllClasses">
        <property name="text">
         <string>Delete all</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="cbxLinkBoundaries">
+       <property name="text">
+        <string>Link classes boundaries</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
