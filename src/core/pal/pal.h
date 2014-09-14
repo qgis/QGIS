@@ -38,6 +38,7 @@
 #include <QList>
 #include <iostream>
 #include <ctime>
+#include <geos_c.h>
 
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 
@@ -51,6 +52,8 @@
 
 namespace pal
 {
+  /** Get GEOS context handle to be used in all GEOS library calls with reentrant API */
+  GEOSContextHandle_t geosContext();
 
   template <class Type> class LinkedList;
 

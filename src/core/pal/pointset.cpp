@@ -39,7 +39,6 @@
 #endif
 
 #include <qglobal.h>
-#include <qgsgeometry.h>
 
 #include "pointset.h"
 #include "util.h"
@@ -989,7 +988,7 @@ namespace pal
     // check if centroid inside in polygon
     if ( forceInside && !isPointInPolygon( nbPoints, x, y, px, py ) )
     {
-      GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
+      GEOSContextHandle_t geosctxt = geosContext();
       GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, nbPoints, 2 );
 
       for ( int i = 0; i < nbPoints; ++i )

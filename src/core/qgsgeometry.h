@@ -83,7 +83,10 @@ class CORE_EXPORT QgsGeometry
     //! Destructor
     ~QgsGeometry();
 
-    /** return GEOS context handle */
+    /** return GEOS context handle
+     * @note added in 2.6
+     * @note not available in Python
+     */
     static GEOSContextHandle_t getGEOSHandler();
 
     /** static method that creates geometry from Wkt */

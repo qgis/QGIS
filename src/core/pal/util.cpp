@@ -42,8 +42,6 @@
 #include <cstdarg>
 #include <ctime>
 
-#include "qgsgeometry.h"
-
 #include <pal/layer.h>
 
 #include "internalexception.h"
@@ -213,7 +211,7 @@ namespace pal
     while ( queue->size() > 0 )
     {
       geom = queue->pop_front();
-      GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
+      GEOSContextHandle_t geosctxt = geosContext();
       switch ( GEOSGeomTypeId_r( geosctxt, geom ) )
       {
           //case geos::geom::GEOS_MULTIPOINT:

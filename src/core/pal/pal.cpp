@@ -63,6 +63,8 @@
 #include "simplemutex.h"
 #include "util.h"
 
+#include <qgsgeometry.h> // for GEOS context
+
 namespace pal
 {
 
@@ -78,6 +80,11 @@ namespace pal
     va_list list;
     va_start( list, fmt );
     vfprintf( stdout, fmt, list );
+  }
+
+  GEOSContextHandle_t geosContext()
+  {
+    return QgsGeometry::getGEOSHandler();
   }
 
   Pal::Pal()

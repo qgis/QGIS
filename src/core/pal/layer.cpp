@@ -41,8 +41,6 @@
 #include <cmath>
 #include <vector>
 
-#include <qgsgeometry.h>
-
 #include <pal/pal.h>
 #include <pal/layer.h>
 #include <pal/palexception.h>
@@ -287,7 +285,7 @@ namespace pal
       throw InternalException::UnknownGeometry();
     }
 
-    GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
+    GEOSContextHandle_t geosctxt = geosContext();
 
     while ( simpleGeometries->size() > 0 )
     {
@@ -496,7 +494,7 @@ namespace pal
 
   void Layer::chopFeaturesAtRepeatDistance( )
   {
-    GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
+    GEOSContextHandle_t geosctxt = geosContext();
     LinkedList<FeaturePart*> * newFeatureParts = new LinkedList<FeaturePart*>( ptrFeaturePartCompare );
     while ( FeaturePart* fpart = featureParts->pop_front() )
     {

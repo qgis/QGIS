@@ -39,7 +39,6 @@
 #endif
 
 #include <qglobal.h>
-#include <qgsgeometry.h>
 
 #include <cmath>
 #include <cstring>
@@ -110,7 +109,7 @@ namespace pal
 
     if ( ownsGeom )
     {
-      GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), the_geom );
+      GEOSGeom_destroy_r( geosContext(), the_geom );
       the_geom = NULL;
     }
   }
@@ -124,7 +123,7 @@ namespace pal
     int i, j;
 
     const GEOSCoordSequence *coordSeq;
-    GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
+    GEOSContextHandle_t geosctxt = geosContext();
 
     type = GEOSGeomTypeId_r( geosctxt, geom );
 
@@ -1399,7 +1398,7 @@ namespace pal
 
   void FeaturePart::addSizePenalty( int nbp, LabelPosition** lPos, double bbx[4], double bby[4] )
   {
-    GEOSContextHandle_t ctxt = QgsGeometry::getGEOSHandler();
+    GEOSContextHandle_t ctxt = geosContext();
     int geomType = GEOSGeomTypeId_r( ctxt, the_geom );
 
     double sizeCost = 0;
@@ -1439,12 +1438,12 @@ namespace pal
 
   bool FeaturePart::isConnected( FeaturePart* p2 )
   {
-    return ( GEOSTouches_r( QgsGeometry::getGEOSHandler(), the_geom, p2->the_geom ) == 1 );
+    return ( GEOSTouches_r( geosContext(), the_geom, p2->the_geom ) == 1 );
   }
 
   bool FeaturePart::mergeWithFeaturePart( FeaturePart* other )
   {
-    GEOSContextHandle_t ctxt = QgsGeometry::getGEOSHandler();
+    GEOSContextHandle_t ctxt = geosContext();
     GEOSGeometry* g1 = GEOSGeom_clone_r( ctxt, the_geom );
     GEOSGeometry* g2 = GEOSGeom_clone_r( ctxt, other->the_geom );
     GEOSGeometry* geoms[2] = { g1, g2 };
