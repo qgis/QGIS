@@ -65,6 +65,9 @@
             <iconset>
              <normaloff>../../images/themes/default/mActionExpandTree.png</normaloff>../../images/themes/default/mActionExpandTree.png</iconset>
            </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
@@ -78,6 +81,9 @@
            <property name="icon">
             <iconset>
              <normaloff>../../images/themes/default/mActionCollapseTree.png</normaloff>../../images/themes/default/mActionCollapseTree.png</iconset>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -96,6 +102,9 @@
            <property name="checkable">
             <bool>true</bool>
            </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
@@ -106,6 +115,9 @@
            <property name="icon">
             <iconset resource="../../images/images.qrc">
              <normaloff>:/images/themes/default/mActionPropertyItem.png</normaloff>:/images/themes/default/mActionPropertyItem.png</iconset>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -124,6 +136,9 @@
            <property name="checkable">
             <bool>false</bool>
            </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
@@ -140,6 +155,9 @@
            </property>
            <property name="checkable">
             <bool>false</bool>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -160,6 +178,9 @@
            </property>
            <property name="checkable">
             <bool>false</bool>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
