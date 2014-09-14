@@ -74,6 +74,7 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 
   protected slots:
     void mapRenderingFinished();
+    void layerRepaintRequested();
 
   protected:
 
