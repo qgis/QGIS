@@ -26,6 +26,8 @@
 #include <QStatusBar>
 #include <QToolTip>
 #include <QDockWidget>
+#include <QPlainTextEdit>
+#include <QScrollBar>
 
 static QIcon icon( QString icon )
 {
@@ -114,7 +116,7 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
 #ifdef ANDROID
   mCount++;
 #else
-  mButton->setToolTip( tr( "%1 message(s) logged." ).arg( mCount++ ) );
+  mButton->setToolTip( tr( "Message(s) logged." ) );
 #endif
 
   if ( !isVisible() && level > QgsMessageLog::INFO )
@@ -131,52 +133,28 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
   for ( i = 0; i < tabWidget->count() && tabWidget->tabText( i ) != tag; i++ )
     ;
 
-  QTableWidget *w;
+  QPlainTextEdit *w;
   if ( i < tabWidget->count() )
   {
-    w = qobject_cast<QTableWidget *>( tabWidget->widget( i ) );
+    w = qobject_cast<QPlainTextEdit *>( tabWidget->widget( i ) );
     tabWidget->setCurrentIndex( i );
   }
   else
   {
-    w = new QTableWidget( 0, 3, this );
-    w->verticalHeader()->setDefaultSectionSize( 16 );
-    w->verticalHeader()->setResizeMode( QHeaderView::ResizeToContents );
-    w->verticalHeader()->setVisible( false );
-    w->setGridStyle( Qt::DotLine );
-    w->setEditTriggers( QAbstractItemView::NoEditTriggers );
-    w->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
-    w->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-    w->setHorizontalHeaderLabels( QStringList() << tr( "Timestamp" ) << tr( "Message" ) << tr( "Level" ) );
+    w = new QPlainTextEdit( this );
+    w->setReadOnly( true );
     tabWidget->addTab( w, tag );
-
     tabWidget->setCurrentIndex( tabWidget->count() - 1 );
   }
 
-  int n = w->rowCount();
-
-  w->setRowCount( n + 1 );
-  QTableWidgetItem *item = new QTableWidgetItem( QDateTime::currentDateTime().toString( Qt::ISODate ) );
-  w->setItem( n, 0, item );
-  w->setItem( n, 1, new QTableWidgetItem( message ) );
-  w->setItem( n, 2, new QTableWidgetItem( QString::number( level ) ) );
-  w->scrollToBottom();
-
-  w->horizontalHeader()->resizeSections( QHeaderView::ResizeToContents );
+  QString date = QDateTime::currentDateTime().toString( Qt::ISODate );
+  message = message.replace( "\n", "<br>" );
+  w->appendHtml( QString("<i>%1</i> | <i>%2</i> | %3").arg( date ).arg( QString::number( level ) ).arg( message ) );
+  w->verticalScrollBar()->setValue( w->verticalScrollBar()->maximum() );
 }
 
 void QgsMessageLogViewer::closeTab( int index )
 {
-  QTableWidget *w = qobject_cast<QTableWidget *>( tabWidget->widget( index ) );
-  if ( w )
-  {
-    mCount -= w->rowCount();
-    if ( mButton )
-#ifdef ANDROID
-      mCount++;
-#else
-      mButton->setToolTip( tr( "%1 message(s) logged." ).arg( mCount++ ) );
-#endif
-  }
+  QPlainTextEdit *w = qobject_cast<QPlainTextEdit *>( tabWidget->widget( index ) );
   tabWidget->removeTab( index );
 }
