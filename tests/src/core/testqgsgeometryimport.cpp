@@ -114,10 +114,12 @@ void TestQgsGeometryImport::pointGeos()
   QFETCH( double, x );
   QFETCH( double, y );
 
-  GEOSCoordSequence *coord = GEOSCoordSeq_create( 1, 2 );
-  GEOSCoordSeq_setX( coord, 0, x );
-  GEOSCoordSeq_setY( coord, 0, y );
-  GEOSGeometry* geosPt = GEOSGeom_createPoint( coord );
+  GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
+
+  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
+  GEOSCoordSeq_setX_r( geosctxt, coord, 0, x );
+  GEOSCoordSeq_setY_r( geosctxt, coord, 0, y );
+  GEOSGeometry* geosPt = GEOSGeom_createPoint_r( geosctxt, coord );
 
   QgsGeometry geom;
   geom.fromGeos( geosPt );
@@ -197,15 +199,17 @@ void TestQgsGeometryImport::linestringGeos()
 {
   QFETCH( QVariantList, line );
 
+  GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
+
   //create geos coord sequence first
-  GEOSCoordSequence *coord = GEOSCoordSeq_create( line.count(), 2 );
+  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, line.count(), 2 );
   for ( int i = 0; i < line.count(); i++ )
   {
     QPointF pt = line.at( i ).toPointF();
-    GEOSCoordSeq_setX( coord, i, pt.x() );
-    GEOSCoordSeq_setY( coord, i, pt.y() );
+    GEOSCoordSeq_setX_r( geosctxt, coord, i, pt.x() );
+    GEOSCoordSeq_setY_r( geosctxt, coord, i, pt.y() );
   }
-  GEOSGeometry* geosLine = GEOSGeom_createLineString( coord );
+  GEOSGeometry* geosLine = GEOSGeom_createLineString_r( geosctxt, coord );
   QgsGeometry geom;
   geom.fromGeos( geosLine );
   QVERIFY( geom.wkbType() == QGis::WKBLineString );
