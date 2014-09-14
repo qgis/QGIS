@@ -594,6 +594,17 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
 
   bool hasNull = false;
 
+  QgsRandomColorsV2* randomRamp = dynamic_cast<QgsRandomColorsV2*>( ramp );
+  if ( randomRamp )
+  {
+    //ramp is a random colors ramp, so inform it of the total number of required colors
+    //this allows the ramp to pregenerate a set of visually distinctive colors
+
+    //assume we need an extra color for nulls
+    int totalColors = num + 1;
+    randomRamp->setTotalColorCount( totalColors );
+  }
+
   for ( int i = 0; i < num; i++ )
   {
     QVariant value = values[i];
