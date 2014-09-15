@@ -244,11 +244,31 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
       if c:
         c.close()
         del c
+        
+    # get sensible default columns. do this before sorting in case there's hints in the column order (eg, id is more likely to be first)
+    try:
+      defaultGeomCol = next(col for col in cols if col in ['geom','geometry','the_geom'])
+    except:
+      defaultGeomCol = None
+    try:
+      defaultUniqueCol = [col for col in cols if 'id' in col][0]
+    except:
+      defaultUniqueCol = None
 
     cols.sort()
     self.uniqueCombo.addItems( cols )
     self.geomCombo.addItems( cols )
 
+    # set sensible default columns
+    try:
+      self.geomCombo.setCurrentIndex( cols.index(defaultGeomCol) )  
+    except:
+      pass
+    try:
+      self.uniqueCombo.setCurrentIndex( cols.index(defaultUniqueCol) )  
+    except:
+      pass
+      
     QApplication.restoreOverrideCursor()
 
   def copySelectedResults(self):
