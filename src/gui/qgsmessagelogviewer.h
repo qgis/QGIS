@@ -53,7 +53,6 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogV
 
   private:
     QToolButton *mButton;
-    int mCount;
     bool mShowToolTips;
 
   private slots:

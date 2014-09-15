@@ -44,7 +44,6 @@ static QIcon icon( QString icon )
 QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mButton( 0 )
-    , mCount( 0 )
     , mShowToolTips( true )
 {
   setupUi( this );
@@ -112,8 +111,6 @@ void QgsMessageLogViewer::buttonDestroyed()
 void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
 {
 #ifdef ANDROID
-  mCount++;
-#else
   mButton->setToolTip( tr( "Message(s) logged." ) );
 #endif
 
