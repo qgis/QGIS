@@ -6156,7 +6156,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>QGIS will now load the partially-computed raster.</source>
-        <translation>Ahora QGIS cargará el ráster parcialmente procesado.</translation>
+        <translation type="obsolete">Ahora QGIS cargará el ráster parcialmente procesado.</translation>
     </message>
     <message>
         <source>Creating heatmap</source>
@@ -6166,16 +6166,28 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
         <source>Abort</source>
         <translation>Abortar</translation>
     </message>
+    <message>
+        <source>Layer not found</source>
+        <translation type="unfinished">No se ha encontrado la capa</translation>
+    </message>
+    <message>
+        <source>The heatmap plugin requires at least one point vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS will now load the partially-computed raster</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>HeatmapGui</name>
     <message>
         <source>Layer not found</source>
-        <translation>No se ha encontrado la capa</translation>
+        <translation type="obsolete">No se ha encontrado la capa</translation>
     </message>
     <message>
         <source>Layer %1 not found.</source>
-        <translation>No se ha encontrado la capa %1.</translation>
+        <translation type="obsolete">No se ha encontrado la capa %1.</translation>
     </message>
     <message>
         <source>Invalid buffer value</source>
@@ -6475,7 +6487,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>New</source>
-        <translation>Nueva</translation>
+        <translation type="obsolete">Nueva</translation>
     </message>
     <message>
         <source>&amp;Settings</source>
@@ -6955,7 +6967,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Remove Layer(s)</source>
-        <translation>Eliminar capa(s)</translation>
+        <translation type="obsolete">Eliminar capa(s)</translation>
     </message>
     <message>
         <source>Ctrl+D</source>
@@ -7659,6 +7671,18 @@ Actúa sobre la capa actual en edición</translation>
         <source>Select Features by area or single click</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Create Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Layer</source>
+        <translation type="unfinished">Añadir capa</translation>
+    </message>
+    <message>
+        <source>Remove Layer/Group</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -7766,7 +7790,7 @@ Actúa sobre la capa actual en edición</translation>
     </message>
     <message>
         <source>Records</source>
-        <translation>Registros</translation>
+        <translation type="obsolete">Registros</translation>
     </message>
     <message>
         <source>-90</source>
@@ -7814,7 +7838,7 @@ Actúa sobre la capa actual en edición</translation>
     </message>
     <message>
         <source>Abstract</source>
-        <translation>Resumen</translation>
+        <translation type="obsolete">Resumen</translation>
     </message>
     <message>
         <source>Double click to see full record information</source>
@@ -7878,23 +7902,23 @@ Actúa sobre la capa actual en edición</translation>
     </message>
     <message>
         <source>Connection naming</source>
-        <translation>Denominación de la conexión</translation>
+        <translation type="obsolete">Denominación de la conexión</translation>
     </message>
     <message>
         <source>When saving the connection of an OWS service</source>
-        <translation>Al guardar la conexión de un servicio OWS</translation>
+        <translation type="obsolete">Al guardar la conexión de un servicio OWS</translation>
     </message>
     <message>
         <source>Use the OWS Service Title and ask before overwriting</source>
-        <translation>Usar el título del servicio OWS y preguntar antes de sobreescribir</translation>
+        <translation type="obsolete">Usar el título del servicio OWS y preguntar antes de sobreescribir</translation>
     </message>
     <message>
         <source>Use the OWS Service Title and always overwrite if already available</source>
-        <translation>Usar el título del servicio OWS y sobreescribir siempre si ya está disponible</translation>
+        <translation type="obsolete">Usar el título del servicio OWS y sobreescribir siempre si ya está disponible</translation>
     </message>
     <message>
         <source>Use a temporary name, which you can change later</source>
-        <translation>Usar un nombre temporal, que podrá cambiar más tarde</translation>
+        <translation type="obsolete">Usar un nombre temporal, que podrá cambiar más tarde</translation>
     </message>
     <message>
         <source>No services/connections defined. To get started with MetaSearch, create a new connection by clicking &apos;New&apos; or click &apos;Add default services&apos;.</source>
@@ -7950,7 +7974,7 @@ Actúa sobre la capa actual en edición</translation>
     </message>
     <message>
         <source>No abstract</source>
-        <translation>Ningún resumen</translation>
+        <translation type="obsolete">Ningún resumen</translation>
     </message>
     <message>
         <source>End of results. Go to start?</source>
@@ -7966,7 +7990,7 @@ Actúa sobre la capa actual en edición</translation>
     </message>
     <message>
         <source>Error connecting to %s: %s</source>
-        <translation>Error al conectarse a %s: %s</translation>
+        <translation type="obsolete">Error al conectarse a %s: %s</translation>
     </message>
     <message>
         <source>Connection %s exists. Overwrite?</source>
@@ -7999,6 +8023,38 @@ Actúa sobre la capa actual en edición</translation>
     <message>
         <source>CSW Connection error</source>
         <translation>Error de conexión CSW</translation>
+    </message>
+    <message>
+        <source>Xmax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ymax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Xmin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ymin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Results paging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation type="unfinished">Mostrar</translation>
+    </message>
+    <message>
+        <source>results at a time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate Transformation Error</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9779,7 +9835,7 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
         <source>Python {0} on {1}
 ## Type help(iface) for more info and list of methods.
 </source>
-        <translation>Python {0} en {1}
+        <translation type="obsolete">Python {0} en {1}
 ## Teclee help(iface) para más información y lista de métodos.
 </translation>
     </message>
@@ -9806,6 +9862,11 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
     <message>
         <source>Save As</source>
         <translation>Guardar como</translation>
+    </message>
+    <message>
+        <source>Python Console 
+Use iface to access QGIS API interface or Type help(iface) for more info</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12808,6 +12869,14 @@ La respuesta fue:
     </message>
     <message>
         <source>No renderer for drawing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished">-</translation>
+    </message>
+    <message>
+        <source>Empty filename given</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16226,6 +16295,22 @@ Por favor, contacte con los desarrolladores.</translation>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to Layer-&gt;Toggle editing</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Add Group</source>
+        <translation type="unfinished">Añadir grupo</translation>
+    </message>
+    <message>
+        <source>Manage Layer Visibility</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expand All</source>
+        <translation type="unfinished">Expandir todo</translation>
+    </message>
+    <message>
+        <source>Collapse All</source>
+        <translation type="unfinished">Comprimir todo</translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -16495,6 +16580,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Cache join layer in virtual memory</source>
         <translation>Cachear capa de unión en memoria virtual</translation>
+    </message>
+    <message>
+        <source>Choose which fields are joined</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18951,6 +19040,13 @@ Should the existing classes be deleted before classification?</source>
     </message>
 </context>
 <context>
+    <name>QgsColorSliderWidget</name>
+    <message>
+        <source>%</source>
+        <translation type="unfinished">%</translation>
+    </message>
+</context>
+<context>
     <name>QgsColorSwatchDelegate</name>
     <message>
         <source>Select color</source>
@@ -18961,6 +19057,33 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsColorSwatchGrid</name>
     <message>
         <source>rgb(%1, %2, %3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsColorTextWidget</name>
+    <message>
+        <source>rgb( %1, %2, %3 )</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>rgba( %1, %2, %3, %4 )</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>#RRGGBB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>#RRGGBBAA</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>rgb( r, g, b )</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>rgba( r, g, b, a )</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -21062,6 +21185,13 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
 </context>
 <context>
+    <name>QgsComposerLegendMenuProvider</name>
+    <message>
+        <source>Reset to defaults</source>
+        <translation type="unfinished">Restablecer valores predeterminados</translation>
+    </message>
+</context>
+<context>
     <name>QgsComposerLegendWidget</name>
     <message>
         <source>Item Options</source>
@@ -21149,11 +21279,11 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Item</source>
-        <translation>Elemento</translation>
+        <translation type="obsolete">Elemento</translation>
     </message>
     <message>
         <source>Title style</source>
-        <translation>Estilo del título</translation>
+        <translation type="obsolete">Estilo del título</translation>
     </message>
     <message>
         <source>Legend column count</source>
@@ -21190,6 +21320,18 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Select font color</source>
         <translation type="unfinished">Seleccionar color de letra</translation>
+    </message>
+    <message>
+        <source>Legend item properties</source>
+        <translation type="unfinished">Propiedades del elemento de la leyenda</translation>
+    </message>
+    <message>
+        <source>Item text</source>
+        <translation type="unfinished">Texto del elemento</translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -21404,11 +21546,11 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Update legend. User defined labels are preserved.</source>
-        <translation>Actualizar leyenda. Las etiquetas definidas por el usuario se conservan.</translation>
+        <translation type="obsolete">Actualizar leyenda. Las etiquetas definidas por el usuario se conservan.</translation>
     </message>
     <message>
         <source>Update item</source>
-        <translation>Actualizar elemento</translation>
+        <translation type="obsolete">Actualizar elemento</translation>
     </message>
     <message>
         <source>Update whole legend. Layers are added/removed according to main application legend. User defined labels will be deleted.</source>
@@ -21768,11 +21910,11 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>DegreeMinute</source>
-        <translation>GradoMinuto</translation>
+        <translation type="obsolete">GradoMinuto</translation>
     </message>
     <message>
         <source>DegreeMinuteSecond</source>
-        <translation>GradoMinutoSegundo</translation>
+        <translation type="obsolete">GradoMinutoSegundo</translation>
     </message>
     <message>
         <source>No frame</source>
@@ -21949,6 +22091,78 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Transparent fill</source>
         <translation type="unfinished">Relleno transparente</translation>
+    </message>
+    <message>
+        <source>Frame and annotations only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decimal with suffix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Degree, minute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Degree, minute with suffix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Degree, minute aligned</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Degree, minute, second</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Degree, minute, second with suffix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Degree, minute, second aligned</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set layer list from a visibility preset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No presets defined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Frame left side changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Frame right side changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Frame top side changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Frame bottom side changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interior ticks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exterior ticks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interior and exterior ticks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line border</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22380,6 +22594,38 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Blending mode</source>
         <translation type="unfinished">Modo de mezcla</translation>
+    </message>
+    <message>
+        <source>Left side</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right side</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Top side</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bottom side</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interior ticks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exterior ticks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interior and exterior ticks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line border</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -25154,6 +25400,24 @@ y el archivo actual es [%3]</translation>
         <source>preview</source>
         <translation>vista previa</translation>
     </message>
+    <message>
+        <source>allow NULL values</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsDateTimeEditPlugin</name>
+    <message>
+        <source>Define date</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsDateTimeEditWrapper</name>
+    <message>
+        <source>The usual date/time widget QDateTimeEdit cannot be configured to allow NULL values. For that the QGIS custom widget QgsDateTimeEdit is used.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDatumTransformDialog</name>
@@ -25270,7 +25534,11 @@ y el archivo actual es [%3]</translation>
     </message>
     <message>
         <source>Hold dialog open</source>
-        <translation>Mantener diálogo abierto</translation>
+        <translation type="obsolete">Mantener diálogo abierto</translation>
+    </message>
+    <message>
+        <source>Keep dialog open</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -25804,7 +26072,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsDefaultRasterLayerLegend</name>
     <message>
         <source>Double-click to view legend</source>
-        <translation type="unfinished">Doble clic para ver la leyenda</translation>
+        <translation type="obsolete">Doble clic para ver la leyenda</translation>
     </message>
     <message>
         <source>following %1 items
@@ -30897,6 +31165,10 @@ p, li { white-space: pre-wrap; }
 Press cancel to abort breaks calculation or OK to continue.</source>
         <translation>La clasificación de ruptura natural (Jenks) es complejidad 0(n2), su clasificación puede llevar bastante tiempo.
 Presione Cancelar para abortar el cálculo de ruptura u OK para continuar.</translation>
+    </message>
+    <message>
+        <source>Link classes boundaries</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37662,15 +37934,15 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>Timestamp</source>
-        <translation>Marca de tiempo</translation>
+        <translation type="obsolete">Marca de tiempo</translation>
     </message>
     <message>
         <source>Message</source>
-        <translation>Mensaje</translation>
+        <translation type="obsolete">Mensaje</translation>
     </message>
     <message>
         <source>Level</source>
-        <translation>Nivel</translation>
+        <translation type="obsolete">Nivel</translation>
     </message>
     <message>
         <source>No messages.</source>
@@ -37678,7 +37950,11 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>%1 message(s) logged.</source>
-        <translation>%1 mensaje(s) registrado(s).</translation>
+        <translation type="obsolete">%1 mensaje(s) registrado(s).</translation>
+    </message>
+    <message>
+        <source>Message(s) logged.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49932,6 +50208,14 @@ desviación estándar ×</translation>
         <source>identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>No selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 (no selection)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRelationReferenceWidgetPlugin</name>
@@ -51780,7 +52064,7 @@ contraste</translation>
     </message>
     <message>
         <source>Avoid Int.</source>
-        <translation>Evitar int.</translation>
+        <translation type="obsolete">Evitar int.</translation>
     </message>
     <message>
         <source>Avoid intersections of new polygons</source>
@@ -51789,6 +52073,10 @@ contraste</translation>
     <message>
         <source>Enable snapping on intersection</source>
         <translation>Habilitar autoensamblado en la intersección</translation>
+    </message>
+    <message>
+        <source>Avoid intersections</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -56730,6 +57018,25 @@ El error fue: %2</translation>
     <message>
         <source>Preview</source>
         <translation>Previsualizar</translation>
+    </message>
+</context>
+<context>
+    <name>QgsVisibilityPresets</name>
+    <message>
+        <source>Add Preset...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Current Preset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Visibility Presets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of the new preset</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -62259,7 +62566,7 @@ This dialog allows you to define the settings for a connection to a PostgreSQL d
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Crear una nueva conexión a PostgreSQL&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Crear una nueva conexión a PostgreSQL&lt;/h3&gt;
 Este diálogo le permite definir la configuración para una conexión a una base de datos PostgreSQL.
 &lt;p&gt;
 &lt;ul&gt;
@@ -62537,7 +62844,7 @@ In this section you can see the list of attributes. To delete one of them, click
 &lt;p&gt;
 Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.  Clicking &lt;label&gt;Apply&lt;/label&gt; also creates the layer, but keeps the dialog open, thereby allowing you to create more similar layers. &lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Crear una nueva capa SpatiaLite&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Crear una nueva capa SpatiaLite&lt;/h3&gt;
 Puede usar este cuadro de diálogo para crear una nueva base de datos SpatiaLite y/o una capa vacía SpatiaLite para edición. Vea más adelante una explicación de las entradas del diálogo.
 &lt;h4&gt;Base de datos&lt;/h4&gt;
 Elija la base de datos de la lista desplegable. Esta lista se crea desde sus conexiones de SpatiaLite guardadas. Si no tiene ninguna conexión guardada o si quiere crear una nueva base de datos, haga clic en el botón (&lt;label&gt;...&lt;/label&gt;) a la derecha de la lista desplegable.
@@ -62759,7 +63066,7 @@ To filter a layer before adding it to the map, either double click on its name o
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Añadir tablas de SQL Anywhere&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Añadir tablas de SQL Anywhere&lt;/h3&gt;
 Este diálogo le permite añadir capas de SQL Anywhere (tablas con una columna de geometría) a la vista del mapa de QGIS.
 &lt;p&gt;
 &lt;a href=&quot;#connect&quot;&gt;Conexiones&lt;/a&gt;&lt;br/&gt;
@@ -62923,7 +63230,7 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Complemento etiqueta de copyright&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Complemento etiqueta de copyright&lt;/h3&gt;
 Dibuja una etiqueta de copyright con información.&lt;br/&gt;
 Es posible agregar cualquier texto al mapa, no solo una etiqueta de copyright.
 &lt;p&gt;
@@ -63421,7 +63728,7 @@ system.
 &lt;p&gt;
 Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Definición de sistemas de referencia de coordenadas personalizados&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Definición de sistemas de referencia de coordenadas personalizados&lt;/h3&gt;
 Si QGIS no ofrece el sistema de referencia de coordenadas que necesita, puede definir un SRC personalizado. &lt;p&gt;
 Para definir un SRC, seleccione &lt;label&gt;SRC personalizado&lt;/label&gt; del menú &lt;label&gt;Edición&lt;/label&gt; (Gnome, OSX) o del menú &lt;label&gt;Configuración&lt;/label&gt; (KDE, Windows). Los SRC personalizados se almacenan en la base de datos de su usuario de QGIS. Además de sus SRC personalizados, esta base de datos también contiene los marcadores geoespaciales y otros datos personalizados.
 
@@ -63621,7 +63928,7 @@ SQL Anywhere database.
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Crear una conexión SQL Anywhere nueva&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Crear una conexión SQL Anywhere nueva&lt;/h3&gt;
 Este diálogo permite definir la configuración para la conexión a una base de datos
 SQL Anywhere.
 &lt;p&gt;
@@ -64187,7 +64494,7 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Encontrar ruta más corta&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Encontrar ruta más corta&lt;/h3&gt;
 &lt;p&gt;Grafo de ruta es un complemento en C++ para QGIS, que calcula la ruta más corta entre dos puntos de cualquier capa de líneas y dibuja esta ruta sobre la red de carreteras. Antes de usar el complemento configúrelo. Ésto se puede hacer en el menú &lt;label&gt;Complementos &amp;rarr; Grafo de ruta &amp;rarr; Configuración&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#howto&quot;&gt;Cómo&lt;/a&gt;&lt;br/&gt;
@@ -65440,7 +65747,7 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation>&lt;h1&gt;Ayuda del complemento Mapa de calor&lt;/h1&gt;
+        <translation type="obsolete">&lt;h1&gt;Ayuda del complemento Mapa de calor&lt;/h1&gt;
 &lt;p&gt;El complemento Mapa de calor utiliza Estimación de Densidad de Núcleo para crear un ráster de densidad (mapa de calor)
 de una capa vectorial de puntos de entrada. La densidad se calcula en base al número de puntos en cada localización, de
 forma que números más grandes de puntos agrupados dan como resultado valores mas grandes.
@@ -65662,7 +65969,7 @@ that will be automatically deleted after running.&lt;/li&gt;
 	from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;style&gt;
+        <translation type="obsolete">&lt;style&gt;
 	#toolbarConsole td{
 		background: #f6f6f6;
 	}
@@ -65830,6 +66137,413 @@ que se borrará automáticamente después de ejecutar.&lt;/li&gt;
 	desde el botón cerrar. Esto le permite guardar la geometría para restaurarla en el próximo inicio.
 &lt;/p&gt;
 </translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;Heatmap Plugin Help&lt;/h3&gt;
+&lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
+raster of an input point vector layer.  The density is calculated based on the
+number of points in a location, with larger numbers of clustered points resulting
+in larger values. Heatmaps allow easy identification of &quot;hotspots&quot; and
+clustering of points.&lt;/p&gt;
+
+&lt;h2&gt;Dialog Parameters&lt;/h2&gt;
+
+&lt;h3&gt;Input point layer&lt;/h3&gt;
+&lt;p&gt;The input is always a vector layer of point type. All the point vector layers that are currently loaded in the canvas are shown in the drop-down list. Click the dropdown button and select the desired layer.&lt;/p&gt;
+
+&lt;h3&gt;Output raster&lt;/h3&gt;
+&lt;p&gt;The output raster location and filename can be set by clicking the &lt;label&gt;...&lt;/label&gt; button next to the output raster textbox.&lt;br/&gt;
+&lt;b&gt;Note:&lt;/b&gt; The file format is automatically added depending upon the output format selected, if not explicitly given.&lt;/p&gt;
+
+&lt;h3&gt;Output format&lt;/h3&gt;
+&lt;p&gt;All the file creation supporting GDAL formats are available in the drop down list. Click and select the required output format for your file.&lt;br/&gt;
+&lt;b&gt;Note:&lt;/b&gt; GeoTiff and ERDAS Imagine .img formats are recommended. Some formats make the application crash. Kindly stick to the recommended formats until the crash issue is resolved or use other formats if you know GDAL supports it completely.&lt;/p&gt;
+
+&lt;h3&gt;Radius (bandwidth)&lt;/h3&gt;
+&lt;p&gt;Used to specify the heatmap search radius (or kernel bandwidth) in meters or map units. The radius specifies the distance around a point at which the influence
+  of the point will be felt. Larger values result in greater smoothing, but smaller values may show finer details and variation in point density.&lt;/p&gt;
+
+&lt;h3&gt;Advanced Options&lt;/h3&gt;
+
+&lt;h4&gt;Rows and Columns&lt;/h4&gt;
+&lt;p&gt;Used to change the dimensions of the output raster file. These values are also linked to the &lt;b&gt;Cell size X&lt;/b&gt; and &lt;b&gt;Cell size Y&lt;/b&gt; values. 
+Increasing the number of rows or colums will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
+are also linked, so doubling the number of rows will automatically double the number of columns and the cell sizes will also be halved. The geographical area of the output raster will remain the same!&lt;/p&gt;
+
+&lt;h4&gt;Cell size X and Y&lt;/h4&gt;
+&lt;p&gt;Control the geographic size of each pixel in the output raster. Changing these values will also change the number of Rows and Columns in the output
+  raster.&lt;/p&gt;
+  
+&lt;h4&gt;Kernel shape&lt;/h4&gt;
+&lt;p&gt;The kernel shape controls the rate at which the influence of a point decreases as the distance from the point increases. Different kernels decay at
+different rates, so a triweight kernel gives features greater weight for distances closer to the point than the Epanechnikov kernel does. Consequently,
+triweight results in &quot;sharper&quot; hotspots, and Epanechnikov results in &quot;smoother&quot; hotspots. A number of standard kernel functions are available in QGIS,
+which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4&gt;Decay ratio&lt;/h4&gt;
+&lt;p&gt;For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.&lt;/p&gt;
+
+&lt;h4&gt;Use radius from field&lt;/h4&gt;
+&lt;p&gt;Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.&lt;/p&gt;
+
+&lt;h4&gt;Use weight from field&lt;/h4&gt;
+&lt;p&gt;Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.&lt;/p&gt;
+
+&lt;h2&gt;Further Details&lt;/h2&gt;
+&lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
+
+</source>
+        <translation type="unfinished">&lt;h1&gt;Ayuda del complemento Mapa de calor&lt;/h1&gt;
+&lt;p&gt;El complemento Mapa de calor utiliza Estimación de Densidad de Núcleo para crear un ráster de densidad (mapa de calor)
+de una capa vectorial de puntos de entrada. La densidad se calcula en base al número de puntos en cada localización, de
+forma que números más grandes de puntos agrupados dan como resultado valores mas grandes.
+Los mapas de calor permiten una fácil identificación de «puntos calientes» y agrupamiento de puntos.&lt;/p&gt;
+
+&lt;h2&gt;Parámetros del diálogo&lt;/h2&gt;
+
+&lt;h3&gt;Capa de puntos de entrada&lt;/h3&gt;
+&lt;p&gt;La entrada siempre es una capa vectorial de tipo puntos. Todas las capas vectoriales de puntos que estén actualmente cargadas en la vista del mapa se muestran en la lista desplegable. Pulse el botón desplegable y seleccione la capa que desee.&lt;/p&gt;
+
+&lt;h3&gt;Ráster de salida&lt;/h3&gt;
+&lt;p&gt;Se puede establecer la ubicación del ráster de salida y su nombre de archivo haciendo clic en el botón &lt;label&gt;...&lt;/label&gt; que hay junto al cuadro de texto Ráster de salida.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt; El formato de archivo se añade automáticamente según el formato de salida seleccionado, si no se indica explícitamente.&lt;/p&gt;
+
+&lt;h3&gt;Formato de salida&lt;/h3&gt;
+&lt;p&gt;En la lista desplegable están todos los formatos admitidos para escritura por GDAL. Pulse y seleccione el formato de salida requerido para su archivo.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt;Se recomiendan los formatos GeoTiff y ERDAS Imagine .img. Algunos formatos pueden hacer que pete la aplicación. Limítese en lo posible a los formatos recomendados hasta que se solucione el problema o use otros formatos que sepa que GDAL soporta por completo.&lt;/p&gt;
+
+&lt;h3&gt;Radios (ancho de banda)&lt;/h3&gt;
+&lt;p&gt;Se usa para especificar el radio de búsqueda del mapa de calor (o ancho de banda del núcleo) en metros o unidades de mapa. El radio especifica la distancia alrededor de un punto a la que se sentirá la influencia
+ del punto. Valores mayores dan como resultado una mayor suavidad, pero valores más pequeños pueden mostrar detalles más finos y la variación en la densidad de puntos.&lt;/p&gt;
+
+&lt;h3&gt;Opciones avanzadas&lt;/h3&gt;
+
+&lt;h4&gt;Filas y columnas&lt;/h4&gt;
+&lt;p&gt;Se usa para cambiar las dimensiones del archivo ráster de salida. Estos valores también están enlazados con los valores &lt;b&gt;tamaño X de celda&lt;/b&gt; y el &lt;b&gt;tamaño Y de celda&lt;/b&gt;. 
+Aumentar el número de filas y columnas disminuirá el tamaño de celda y aumentará el tamaño del archivo de salida. Los valores en Filas y Columnas también están enlazados, 
+por lo que duplicar el número de filas duplicará automáticamente el número de columnas y reducirá a la mitad el tamaño de celda. El área geográfica del ráster de salida permanecerá igual.&lt;/p&gt;
+
+&lt;h4&gt;Tamaño X e Y de celda&lt;/h4&gt;
+&lt;p&gt;Controla el tamaño geográfico de cada píxel en el ráster de salida. Cambiar estos valores también cambiará el número de filas y columnas del ráster de salida.&lt;/p&gt;
+  
+&lt;h4&gt;Forma del kernel&lt;/h4&gt;
+&lt;p&gt;La forma del kernel controla la tasa a la que la influencia de un punto disminuye a medida que la distancia desde el punto aumenta. Diferentes kernel decaen a 
+diferentes tasas; así, un kernel triponderado da a los objetos espaciales más peso para distancias más próximas al punto que el kernel Epanechnikov. En consecuencia,
+el triponderado da zonas calientes más &quot;afiladas&quot; y el Epanechnikov da zonas calientes más &quot;suaves&quot;.En QGIS hay disponible diversas funciones de kernel estándar,
+las cuales están descritas e ilustradas en la &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4&gt;Relación de decadencia&lt;/h4&gt;
+&lt;p&gt;Para kernel triangulares, la relación de decadencia define la cantidad de influencia que se aplica a los píxeles más externos en el radio de buffer. Un valor de 0 refleja un kernel triangular estándar, en el que la influencia cae a cero cuando la distancia desde el píxel al punto se aproxima al radio especificado. En contraste, un valor de 1 indica que no hay caída cuando aumenta la distancia desde el punto.&lt;/p&gt;
+
+&lt;h4&gt;Usar radio a partir de campo&lt;/h4&gt;
+&lt;p&gt;De forma opcional, el valor de un campo especificado se puede usar para controlar el radio del kernel para cada punto de la capa de entrada.&lt;/p&gt;
+
+&lt;h4&gt;Usar peso a partir de campo&lt;/h4&gt;
+&lt;p&gt;De forma opcional, se puede usar un atributo que contenga los pesos para puntos para dar más peso a unos puntos de la capa de entrada que a otros.&lt;/p&gt;
+
+&lt;h2&gt;Más detalles&lt;/h2&gt;
+&lt;p&gt;Contacte con el autor en aruntheguy arroba gmail punto com&lt;/p&gt;
+
+ {3&gt;?} {3&gt;?} {2&gt;?} {2&gt;?} {3&gt;?} {3&gt;?} {3&gt;?} {3&gt;?} {3&gt;?} {3&gt;?} {3&gt;?} {3&gt;?} {3&gt;?} {3&gt;?} {4&gt;?} {4&gt;?} {4&gt;?} {4&gt;?} {4&gt;?} {4&gt;?} {4&gt;?} {4&gt;?} {0 ?} {1 ?} {4&gt;?} {4&gt;?} {4&gt;?} {4&gt;?} {2&gt;?} {2&gt;?}</translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;Python Console for QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Settings&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td&gt;
+The QGIS Python Console is an interactive shell for the python command executions. 
+It also has a python file editor that allows you to edit and save your python scripts. 
+Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
+The console is split in two main panes, top and bottom one 
+resizable by using the horizontal splitter. Output area pane is a widget read-only which 
+shows the commands output. You can drag and drop or copy and paste text into input area and 
+execute code snippets from the output pane by selecting some text and clicking on the 
+&lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
+No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
+python shell for input commands.&lt;br&gt;To access to the python file editor use the 
+&lt;label&gt;Show editor&lt;/label&gt; button 
+from the toolbar. The editor allows editing and saving python files and it offers basic functionality 
+for managing your code (comment and 
+uncomment code, check syntax, share the code via codepad.org and much more).
+&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Console&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;ul&gt;
+&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+&lt;ol&gt;
+&lt;li&gt;Python&lt;/li&gt;
+&lt;li&gt;PyQGIS&lt;/li&gt;
+&lt;li&gt;PyQt4&lt;/li&gt;
+&lt;li&gt;QScintilla2&lt;/li&gt;
+&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
+The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
+&lt;br&gt;
+&lt;/ul&gt;
+&lt;/td&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;table&gt;
+&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
+&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td&gt;Import Processing class&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;ul&gt;
+&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+&lt;ol&gt;
+&lt;li&gt;Python&lt;/li&gt;
+&lt;li&gt;PyQGIS&lt;/li&gt;
+&lt;li&gt;PyQt4&lt;/li&gt;
+&lt;li&gt;QScintilla2&lt;/li&gt;
+&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
+&lt;br&gt;
+&lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
+(this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
+&lt;br&gt;
+&lt;/ul&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Settings&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Further settings for python console:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion:&lt;/label&gt; If checked the code completion is enabled. You can get autocompletion
+from current document, from installed APIs and both from APIs and current document&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion threshold:&lt;/label&gt; Sets the threshold to display the autocompletion list (in chars typed)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Automatic parentheses insertion:&lt;/label&gt; If checked enables the autoclosing for bracket&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto-save script before running:&lt;/label&gt; Allows you to save automatically the
+script to be executed in order to avoid to save it after any modification.
+This action will store a temporary file into the temporary system directory 
+that will be automatically deleted after running.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using preloaded APIs file:&lt;/label&gt; You can choose whether use the preload APIs file or load some APIs files saved on your system.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
+from the close button. This allows you to save the geometry to be restored to the next start.
+&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;Custom Coordinate Reference System Definition&lt;/h3&gt;
+If QGIS does not provide the coordinate reference system you need, you can define a custom CRS. &lt;p&gt;
+To define a CRS, select &lt;label&gt;Custom CRS&lt;/label&gt; from the &lt;label&gt;Edit&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; (KDE, Windows) menu. Custom CRS are stored in your QGIS user database. In addition to your custom CRS, this database also contains your spatial bookmarks and other custom data.
+
+&lt;h4&gt;Define&lt;/h4&gt;
+To create a new CRS, click the &lt;label&gt;New&lt;/label&gt; button and enter:
+&lt;ul&gt;
+&lt;li&gt;descriptive name 
+&lt;li&gt;CRS parameters
+&lt;/ul&gt;
+Note that the Parameters must begin with a +proj=-block, to represent the new coordinate reference
+system.
+&lt;p&gt;
+Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;Copyright Label&lt;/h3&gt;
+Draws a copyright label with information.&lt;br/&gt;
+You can add any random text to the map not only a copyright label.
+&lt;p&gt;
+&lt;a href=&quot;#howto&quot;&gt;How to&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#text&quot;&gt;Text formatting&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;howto&quot;&gt;
+&lt;h4&gt;How to&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ol&gt;
+&lt;li&gt;Make sure the plugin is loaded.
+&lt;li&gt;Click on &lt;label&gt;View &gt; Decorations &gt; Copyright Label&lt;/label&gt;.
+&lt;li&gt;Enter the text you want to place on the map. You can use HTML.
+&lt;li&gt;Choose the placement of the label from the &lt;label&gt;Placement Bottom Right&lt;/label&gt; drop-down box.
+&lt;li&gt;Make sure the &lt;label&gt;Enable Copyright Label check box&lt;/label&gt; is checked.
+&lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.
+&lt;/ol&gt;
+&lt;a name=&quot;text&quot;&gt;
+&lt;h4&gt; Text formatting &lt;/h4&gt;
+&lt;/a&gt;
+This plugin supports basic HTML markup tags for formatting text. For example:
+
+&lt;ul&gt;
+&lt;li&gt;&amp;lt;B&amp;gt;&lt;b&gt; Bold text &lt;/b&gt;&amp;lt;/B&amp;gt;
+&lt;/li&gt;
+&lt;li&gt;&amp;lt;I&amp;gt;&lt;i&gt; Italics &lt;/i&gt;&amp;lt;/I&amp;gt;
+&lt;/li&gt;
+&lt;li&gt;&amp;lt;U&amp;gt;&lt;u&gt; Underlined text &lt;/u&gt;&amp;lt;/U&amp;gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
+You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
+&lt;h4&gt;Database&lt;/h4&gt;
+Choose the database from the drop-down list. This list is created from your saved SpatiaLite connections. If you don&apos;t have a saved connection or want to create a new database, click on the button (&lt;label&gt;...&lt;/label&gt;) to the right of the drop-down.
+&lt;h4&gt;Layer name&lt;/h4&gt;
+Enter a name for the layer you want to create. The name should be one word. You can use underscores in the name if you like.
+&lt;h4&gt;Geometry column&lt;/h4&gt;
+Enter a name for the geometry column or accept the default.
+&lt;h4&gt;Type&lt;/h4&gt;
+Choose the type of layer you want to create. 
+&lt;h4&gt;EPSG SRID&lt;/h4&gt;
+Enter the EPSG number for the spatial reference id (SRID). By default the SRID for WGS 84 is filled in for you. Click on &lt;label&gt;Find SRID&lt;/label&gt; button to change the coordinate reference system of the layer if needed. The SRID must exist within the spatial_ref_sys in your SpatiaLite database. You can search for the SRID using partial matches on both name and SRID.
+&lt;h4&gt;Create an auto-incrementing Primary Key&lt;/h4&gt;
+Clicking this check box will add a primary key to the new layer. This key field will be auto-incrementing, meaning you don&apos;t have to enter a value for it when adding features to the attribute table of the layer.
+&lt;h4&gt;New attribute&lt;/h4&gt;
+Add the desired attributes by clicking on the &lt;label&gt;Add to attributes list&lt;/label&gt; button after you have specified a name and type for the attribute. Only real, integer, and string attributes are supported.&lt;br/&gt;
+Width and precision are irrelevant in a SpatiaLite database so you do not have to specify these.
+&lt;h4&gt;Attributes list&lt;/h4&gt;
+In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
+
+&lt;p&gt;
+Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.
+&lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;Create a New PostGIS Connection&lt;/h3&gt;
+This dialog allows you to define the settings for a connection to a PostgreSQL/PostGIS database.
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;label&gt;Name&lt;/label&gt; A name to identify the connection settings.
+
+&lt;li&gt; &lt;label&gt;Service&lt;/label&gt; A name of a service listed in the &lt;a href=&quot;http://www.postgresql.org/docs/current/static/libpq-pgservice.html&quot;&gt;Connection Service File&lt;/a&gt;.
+
+&lt;li&gt; &lt;label&gt;Host&lt;/label&gt; Name or IP address of the computer hosting the database server (leave blank for local connections or services).
+
+&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; IP port used by the database server (leave blank for local connections or to use default port 5432).
+
+&lt;li&gt; &lt;label&gt;Database&lt;/label&gt; Name of the database (leave blank for default database).
+
+&lt;li&gt; &lt;label&gt;SSL mode&lt;/label&gt; &lt;a href=&quot;http://www.postgresql.org/docs/9.0/static/libpq-ssl.html#LIBPQ-SSL-SSLMODE-STATEMENTS&quot;&gt;SSL mode&lt;/a&gt; of the connection
+
+&lt;li&gt; &lt;label&gt;Username&lt;/label&gt; Database user name.
+&lt;li&gt; &lt;label&gt;Password&lt;/label&gt; Database password.
+
+&lt;li&gt; &lt;label&gt;Save Username&lt;/label&gt; Indicates whether to save the database user name in the connection configuration.
+
+&lt;li&gt; &lt;label&gt;Save Password&lt;/label&gt; Indicates whether to save the database password in the connection settings.  &lt;font color=&quot;red&quot;&gt;Passwords are saved in &lt;strong&gt;clear text&lt;/strong&gt; in the system configuration and in the project files!&lt;/font&gt;
+
+&lt;li&gt; &lt;label&gt;Only look in the geometry_columns table&lt;/label&gt; Indicates that only &quot;listed&quot; geometry columns should be used - opposed to scanning all tables for geometry columns.
+
+&lt;li&gt; &lt;label&gt;Only look in the &apos;public&apos; schema&lt;/label&gt; Indicates that only tables in the &apos;public&apos; schema should be considers - opposed to all accessible tables.
+
+&lt;li&gt; &lt;label&gt;Also list tables with no geometry&lt;/label&gt;  Indicates that tables without geometry should also be listed by default.
+
+&lt;li&gt; &lt;label&gt;Use estimated table metadata&lt;/label&gt; When initializing layers, various queries may be needed to establish the characteristics of the geometries stored in the database table.  When this option is checked, these queries examine only a sample of the rows and use the table statistics, rather than the entire table.  This can drastically speed up operations on large datasets, but may result in incorrect characterization of layers (eg. the &lt;font color=&quot;red&quot;&gt;feature count&lt;/font&gt; of filtered layers will not be accurately determined).
+
+&lt;/ul&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;Finding shortest path&lt;/h3&gt;
+&lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Vector &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#howto&quot;&gt;How to&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;a name=&quot;howto&quot;&gt;
+&lt;h4&gt;How to&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;You can select start and end points with the select buttons next to the fields.
+Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest path calculation using the optimization criterion selected in the &lt;label&gt;Criterion&lt;/label&gt; combobox. The &lt;label&gt;Export&lt;/label&gt; button allow you to export a calculated path to a new vector layer, and the button &lt;label&gt;Clear&lt;/label&gt; will erase all fields and remove the points and calculated path from map canvas.&lt;/p&gt;
+
+&lt;h5&gt;Note&lt;/h5&gt;
+&lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -71667,6 +72381,67 @@ None
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;$atlasfeature function&lt;/h3&gt;
+In atlas generation, returns the current feature that is iterated over on the coverage layer. This can be used with the &apos;attribute&apos; function
+to return attribute values from the current atlas feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasfeature&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;attribute( $atlasfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current atlas feature&lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;$currentfeature function&lt;/h3&gt;
+Returns the current feature being evaluated. This can be used with the &apos;attribute&apos; function
+to evaluate attribute values from the current feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$currentfeature&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;attribute function&lt;/h3&gt;
+Returns the value of a specified attribute from a feature.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;attribute( feature, attribute_name )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+feature &amp;rarr; a feature&lt;br /&gt;
+attribute_name &amp;rarr; name of attribute to be returned
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;getFeature function&lt;/h3&gt;
+Returns the first feature of a layer matching a given attribute value
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;getFeature( layer, attributeField, value )&lt;/pre&gt;
+
 </source>
         <translation type="unfinished"></translation>
     </message>

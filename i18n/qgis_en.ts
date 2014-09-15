@@ -45507,37 +45507,37 @@ standard deviation ×</source>
 <context>
     <name>QgsRelReferenceConfigDlgBase</name>
     <message>
-        <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="14"/>
+        <location filename="../src/ui/editorwidgets/qgsrelationreferenceconfigdlgbase.ui" line="14"/>
         <source>Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="23"/>
+        <location filename="../src/ui/editorwidgets/qgsrelationreferenceconfigdlgbase.ui" line="23"/>
         <source>Display expression</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="57"/>
+        <location filename="../src/ui/editorwidgets/qgsrelationreferenceconfigdlgbase.ui" line="57"/>
         <source>On map identification (for geometric layers only)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="64"/>
+        <location filename="../src/ui/editorwidgets/qgsrelationreferenceconfigdlgbase.ui" line="64"/>
         <source>Use a read-only line edit instead of a combobox</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="43"/>
+        <location filename="../src/ui/editorwidgets/qgsrelationreferenceconfigdlgbase.ui" line="43"/>
         <source>Allow NULL value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="50"/>
+        <location filename="../src/ui/editorwidgets/qgsrelationreferenceconfigdlgbase.ui" line="50"/>
         <source>Show embedded form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="33"/>
+        <location filename="../src/ui/editorwidgets/qgsrelationreferenceconfigdlgbase.ui" line="33"/>
         <source>Relation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -45705,22 +45705,22 @@ standard deviation ×</source>
 <context>
     <name>QgsRelationReferenceWidget</name>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="78"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="79"/>
         <source>Open related feature form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="87"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="88"/>
         <source>Highlight feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="88"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="89"/>
         <source>Scale and highlight feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="89"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="90"/>
         <source>Pan and highlight feature</source>
         <translation type="unfinished"></translation>
     </message>
@@ -45730,23 +45730,23 @@ standard deviation ×</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="102"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="108"/>
         <source>No selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="168"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="166"/>
         <source>The relation is not valid. Please make sure your relation definitions are ok.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="250"/>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="370"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="371"/>
         <source>%1 (no selection)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="528"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="522"/>
         <source>identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel.</source>
         <translation type="unfinished"></translation>
     </message>
