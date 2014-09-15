@@ -45,7 +45,7 @@ QgsColorSchemeList::QgsColorSchemeList( QWidget *parent , QgsColorScheme *scheme
   setAcceptDrops( true );
   setDragDropMode( QTreeView::DragDrop );
   setDropIndicatorShown( true );
-  setDefaultDropAction( Qt::MoveAction );
+  setDefaultDropAction( Qt::CopyAction );
 }
 
 QgsColorSchemeList::~QgsColorSchemeList()
@@ -414,7 +414,7 @@ Qt::DropActions QgsColorSchemeModel::supportedDropActions() const
 {
   if ( mScheme->isEditable() )
   {
-    return Qt::MoveAction | Qt::CopyAction;
+    return Qt::CopyAction | Qt::MoveAction;
   }
   else
   {
@@ -450,7 +450,7 @@ QMimeData* QgsColorSchemeModel::mimeData( const QModelIndexList &indexes ) const
     colorList << qMakePair( mColors[( *indexIt ).row()].first, mColors[( *indexIt ).row()].second );
   }
 
-  QMimeData* mimeData = QgsSymbolLayerV2Utils::colorListToMimeData( colorList, false );
+  QMimeData* mimeData = QgsSymbolLayerV2Utils::colorListToMimeData( colorList );
   return mimeData;
 }
 
@@ -482,9 +482,31 @@ bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction ac
     return false;
   }
 
+  //any existing colors? if so, remove them first
+  QgsNamedColorList::const_iterator colorIt = droppedColors.constBegin();
+  for ( ; colorIt != droppedColors.constEnd(); ++colorIt )
+  {
+    //dest color
+    QPair< QColor, QString > color = qMakePair(( *colorIt ).first, !( *colorIt ).second.isEmpty() ? ( *colorIt ).second : QgsSymbolLayerV2Utils::colorToName(( *colorIt ).first ) );
+    //if color already exists, remove it
+    int existingIndex = mColors.indexOf( color );
+    if ( existingIndex >= 0 )
+    {
+      if ( existingIndex < beginRow )
+      {
+        //color is before destination row, so decrease destination row to account for removal
+        beginRow--;
+      }
+
+      beginRemoveRows( parent, existingIndex, existingIndex );
+      mColors.removeAt( existingIndex );
+      endRemoveRows();
+    }
+  }
+
   //insert dropped colors
   insertRows( beginRow, droppedColors.length(), QModelIndex() );
-  QgsNamedColorList::const_iterator colorIt = droppedColors.constBegin();
+  colorIt = droppedColors.constBegin();
   for ( ; colorIt != droppedColors.constEnd(); ++colorIt )
   {
     QModelIndex colorIdx = index( beginRow, 0, QModelIndex() );
