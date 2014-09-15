@@ -33,6 +33,7 @@ class QgsVectorLayerTools;
 class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY( bool openFormButtonVisible READ openFormButtonVisible WRITE setOpenFormButtonVisible )
 
   public:
     enum CanvasExtent
@@ -66,6 +67,9 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     bool allowMapIdentification() {return mAllowMapIdentification;}
     void setAllowMapIdentification( bool allowMapIdentification );
+
+    bool openFormButtonVisible() {return mOpenFormButtonVisible;}
+    void setOpenFormButtonVisible( bool openFormButtonVisible );
 
   protected:
     virtual void showEvent( QShowEvent* e );
@@ -114,6 +118,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool mEmbedForm;
     bool mReadOnlySelector;
     bool mAllowMapIdentification;
+    bool mOpenFormButtonVisible;
 
     // UI
     QVBoxLayout* mTopLayout;

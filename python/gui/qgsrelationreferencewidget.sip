@@ -29,14 +29,17 @@ class QgsRelationReferenceWidget : QWidget
 
     void setEditorContext( QgsAttributeEditorContext context, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
 
-    bool embedForm() {return mEmbedForm;}
+    bool embedForm();
     void setEmbedForm( bool display );
 
-    bool readOnlySelector() {return mReadOnlySelector;}
+    bool readOnlySelector();
     void setReadOnlySelector( bool readOnly );
 
-    bool allowMapIdentification() {return mAllowMapIdentification;}
+    bool allowMapIdentification();
     void setAllowMapIdentification( bool allowMapIdentification );
+
+    bool openFormButtonVisible();
+    void setOpenFormButtonVisible( bool openFormButtonVisible );
 
   protected:
     virtual void showEvent( QShowEvent* e );

@@ -55,6 +55,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
     , mEmbedForm( false )
     , mReadOnlySelector( false )
     , mAllowMapIdentification( false )
+    , mOpenFormButtonVisible( true )
 {
   mTopLayout = new QVBoxLayout( this );
   mTopLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -348,6 +349,12 @@ void QgsRelationReferenceWidget::setAllowMapIdentification( bool allowMapIdentif
   mHighlightFeatureButton->setVisible( allowMapIdentification );
   mMapIdentificationButton->setVisible( allowMapIdentification );
   mAllowMapIdentification = allowMapIdentification;
+}
+
+void QgsRelationReferenceWidget::setOpenFormButtonVisible(bool openFormButtonVisible)
+{
+  mOpenFormButton->setVisible(openFormButtonVisible);
+  mOpenFormButtonVisible = openFormButtonVisible;
 }
 
 void QgsRelationReferenceWidget::showEvent( QShowEvent* e )
