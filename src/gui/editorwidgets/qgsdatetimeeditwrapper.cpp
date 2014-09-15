@@ -58,7 +58,7 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
   if ( !mQDateTimeEdit )
   {
     QgsDebugMsg( "Date/time edit widget could not be initialized because provided widget is not a QDateTimeEdit." );
-    QgsMessageLog::logMessage( "Date/time edit widget could not be initialized because provided widget is not a QDateTimeEdit." , "UI forms", QgsMessageLog::WARNING );
+    QgsMessageLog::logMessage( "Date/time edit widget could not be initialized because provided widget is not a QDateTimeEdit.", "UI forms", QgsMessageLog::WARNING );
     return;
   }
 
@@ -76,7 +76,7 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
   else
   {
     QgsMessageLog::instance()->logMessage( tr( "The usual date/time widget QDateTimeEdit cannot be configured to allow NULL values. "
-                                           "For that the QGIS custom widget QgsDateTimeEdit is used." ),
+                                           "For that the QGIS custom widget QgsDateTimeEdit needs to be used." ),
                                            "field widgets" );
   }
 

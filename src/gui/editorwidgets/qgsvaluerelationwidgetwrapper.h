@@ -23,6 +23,26 @@
 
 class QgsValueRelationWidgetFactory;
 
+/**
+ * Wraps a value relation widget. This widget will offer a combobox with values from another layer
+ * referenced by a foreign key (a constraint may be set but is not required on data level).
+ * This is useful for having value lists on a separate layer containing codes and their
+ * translation to human readable names.
+ *
+ * Options:
+ *
+ * <ul>
+ * <li><b>Layer</b> <i>The id of the referenced layer.</i></li>
+ * <li><b>Key</b> <i>The key field on the referenced layer (code).</i></li>
+ * <li><b>Value</b> <i>The value field on the referenced layer (human readable name).</i></li>
+ * <li><b>AllowMulti</b> <i>If set to True, will allow multiple selections. This requires the data type to be a string. This does NOT work with normalized database structures.</i></li>
+ * <li><b>AllowNull</b> <i>Will offer NULL as a possible value.</i></li>
+ * <li><b>FilterExpression</b> <i>If not empty, will be used as expression. Only if this evaluates to True, the value will be shown.</i></li>
+ * <li><b>OrderByValue</b> <i>Will order by value instead of key.</i></li>
+ * </ul>
+ *
+ */
+
 class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT

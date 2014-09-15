@@ -20,6 +20,19 @@
 
 #include <QComboBox>
 
+
+/**
+ * Wraps a value map widget.
+ *
+ * Options:
+ * <ul>
+ * <li><b>[Key]</b> <i>Value</i></li>
+ * </ul>
+ *
+ * Any option will be treated as entry in the value map.
+ *
+ */
+
 class GUI_EXPORT QgsValueMapWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT

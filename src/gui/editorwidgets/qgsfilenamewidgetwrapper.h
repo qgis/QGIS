@@ -22,6 +22,12 @@
 #include <QPushButton>
 #include <QLabel>
 
+
+/**
+ * Wraps a file name widget. Will offer a file browser to choose files.
+ *
+ */
+
 class GUI_EXPORT QgsFileNameWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT

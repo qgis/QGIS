@@ -20,6 +20,12 @@
 
 #include "qgscolorbutton.h"
 
+
+/**
+ * Wraps a color widget. Users will be able to choose a color.
+ *
+ */
+
 class GUI_EXPORT  QgsColorWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT

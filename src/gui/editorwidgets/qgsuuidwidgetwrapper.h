@@ -21,6 +21,13 @@
 #include <QLineEdit>
 #include <QLabel>
 
+
+/**
+ * Wraps a uuid widget. Will create a new UUID if empty or represent the current value if not empty.
+ *
+ */
+
+
 class GUI_EXPORT QgsUuidWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT

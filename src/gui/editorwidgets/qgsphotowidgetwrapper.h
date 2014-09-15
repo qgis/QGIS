@@ -22,6 +22,19 @@
 #include <QPushButton>
 #include <QLineEdit>
 
+
+/**
+ * Wraps a photo widget. Will show a picture and a file chooser to change the picture.
+ *
+ * Options:
+ *
+ * <ul>
+ * <li><b>Width</b> <i>The width of the picture widget. If 0 and "Height" &gt; 0 will be determined automatically.</i></li>
+ * <li><b>Height</b> <i>The height of the picture widget. If 0 and "Width" &gt; 0 will be determined automatically.</i></li>
+ * </ul>
+ *
+ */
+
 class GUI_EXPORT QgsPhotoWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT

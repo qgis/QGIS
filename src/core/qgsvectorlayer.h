@@ -1284,6 +1284,28 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**
      * Set the editor widget type for a field
      *
+     * QGIS ships the following widget types, additional types may be available depending
+     * on plugins.
+     *
+     * <ul>
+     * <li>CheckBox (QgsCheckboxWidgetWrapper)</li>
+     * <li>Classification (QgsClassificationWidgetWrapper)</li>
+     * <li>Color (QgsColorWidgetWrapper)</li>
+     * <li>DateTime (QgsDateTimeEditWrapper)</li>
+     * <li>Enumeration (QgsEnumerationWidgetWrapper)</li>
+     * <li>FileName (QgsFileNameWidgetWrapper)</li>
+     * <li>Hidden (QgsHiddenWidgetWrapper)</li>
+     * <li>Photo (QgsPhotoWidgetWrapper)</li>
+     * <li>Range (QgsRangeWidgetWrapper)</li>
+     * <li>RelationReference (QgsRelationReferenceWidgetWrapper)</li>
+     * <li>TextEdit (QgsTextEditWidgetWrapper)</li>
+     * <li>UniqueValues (QgsUniqueValueWidgetWrapper)</li>
+     * <li>UuidGenerator (QgsUuidWidgetWrapper)</li>
+     * <li>ValueMap (QgsValueMapWidgetWrapper)</li>
+     * <li>ValueRelation (QgsValueRelationWidget)</li>
+     * <li>WebView (QgsWebViewWidgetWrapper)</li>
+     * </ul>
+     *
      * @param attrIdx     Index of the field
      * @param widgetType  Type id of the editor widget to use
      */

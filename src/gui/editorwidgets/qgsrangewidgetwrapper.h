@@ -24,6 +24,19 @@
 #include "qgsdial.h"
 #include "qgsslider.h"
 
+/**
+ * Wraps a range widget.
+ *
+ * Options:
+ * <ul>
+ * <li><b>Style</b> <i>Can be "Dial" or "Slider"</i></li>
+ * <li><b>Min</b> <i>The minimal allowed value</i></li>
+ * <li><b>Max</b> <i>The maximal allowed value</i></li>
+ * <li><b>Step</b> <i>The step size when incrementing/decrementing the value</i></li>
+ * </ul>
+ *
+ */
+
 class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT

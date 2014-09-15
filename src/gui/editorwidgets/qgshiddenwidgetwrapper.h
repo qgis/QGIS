@@ -18,6 +18,11 @@
 
 #include "qgseditorwidgetwrapper.h"
 
+/**
+ * Wraps a hidden widget. Fields with this widget type will not be visible.
+ *
+ */
+
 class GUI_EXPORT QgsHiddenWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT

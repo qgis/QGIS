@@ -21,6 +21,17 @@
 #include <QCheckBox>
 #include <QGroupBox>
 
+/**
+ * Wraps a checkbox widget. This will offer a checkbox to represent boolean values.
+ *
+ * Options:
+ * <ul>
+ * <li><b>CheckedState</b> <i>The value used to represent "True" in the data.</i></li>
+ * <li><b>UncheckedState</b> <i>The value used to represent "False" in the data.</i></li>
+ * </ul>
+ *
+ */
+
 class GUI_EXPORT QgsCheckboxWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
@@ -32,7 +43,7 @@ class GUI_EXPORT QgsCheckboxWidgetWrapper : public QgsEditorWidgetWrapper
     QVariant value();
 
   protected:
-    QWidget*createWidget( QWidget* parent );
+    QWidget* createWidget( QWidget* parent );
     void initWidget( QWidget* editor );
 
   public slots:

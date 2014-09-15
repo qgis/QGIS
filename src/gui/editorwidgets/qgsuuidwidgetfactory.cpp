@@ -24,12 +24,12 @@ QgsUuidWidgetFactory::QgsUuidWidgetFactory( const QString& name )
 }
 
 
-QgsEditorWidgetWrapper*QgsUuidWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
+QgsEditorWidgetWrapper* QgsUuidWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
   return new QgsUuidWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
-QgsEditorConfigWidget*QgsUuidWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+QgsEditorConfigWidget* QgsUuidWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
   return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "Read-only field that generates a UUID if empty." ) );
 }

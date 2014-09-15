@@ -22,6 +22,17 @@
 #include <QPlainTextEdit>
 #include <QTextEdit>
 
+/**
+ * Wraps a text widget. Users will be able to modify text with this widget type.
+ *
+ * Options:
+ * <ul>
+ * <li><b>IsMultiline</b> <i>If set to True, a multiline widget will be used.</i></li>
+ * <li><b>UseHtml</b> <i>Will represent the content as HTML. Only available for multiline widgets.</i></li>
+ * </ul>
+ *
+ */
+
 class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
