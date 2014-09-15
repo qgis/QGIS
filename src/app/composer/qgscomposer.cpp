@@ -3261,7 +3261,7 @@ void QgsComposer::deleteItem( QgsComposerItem* item )
   }
 
   //the item itself is not deleted here (usually, this is done in the destructor of QgsAddRemoveItemCommand)
-  delete( it.value() );
+  it.value()->deleteLater();
   mItemWidgetMap.remove( it.key() );
 
   QgsComposerMap* map = dynamic_cast<QgsComposerMap*>( item );

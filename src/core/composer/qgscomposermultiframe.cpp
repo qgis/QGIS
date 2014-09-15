@@ -233,6 +233,7 @@ void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
   {
     return;
   }
+
   mFrameItems.removeAt( index );
   if ( mFrameItems.size() > 0 )
   {

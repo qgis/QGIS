@@ -46,6 +46,8 @@ class TestQgsComposerTableV2: public QObject
     void attributeTableVisibleOnly(); //test displaying only visible attributes
     void attributeTableRender(); //test rendering attribute table
 
+    void attributeTableExtend();
+
   private:
     QgsComposition* mComposition;
     QgsComposerMap* mComposerMap;
@@ -296,6 +298,23 @@ void TestQgsComposerTableV2::attributeTableRender()
   QgsCompositionChecker checker( "composerattributetable_render", mComposition );
   bool result = checker.testComposition( mReport );
   QVERIFY( result );
+}
+
+void TestQgsComposerTableV2::attributeTableExtend()
+{
+  mComposerAttributeTable->removeFrame( 1 );
+
+  //force auto creation of some new frames
+  mComposerAttributeTable->setResizeMode( QgsComposerMultiFrame::ExtendToNextPage );
+
+  mComposition->setSelectedItem( mComposerAttributeTable->frame( 1 ) );
+
+  QgsCompositionChecker checker( "composerattributetable_render", mComposition );
+
+  //now auto remove extra created frames
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 1 );
+  bool result = checker.testComposition( mReport, 1 );
+
 }
 
 QTEST_MAIN( TestQgsComposerTableV2 )

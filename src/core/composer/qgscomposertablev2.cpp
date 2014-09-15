@@ -32,6 +32,12 @@ QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool create
     , mGridStrokeWidth( 0.5 )
     , mGridColor( Qt::black )
 {
+
+  if ( mComposition )
+  {
+    QObject::connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( handleFrameRemoval( QgsComposerItem* ) ) );
+  }
+
   //get default composer font from settings
   QSettings settings;
   QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
