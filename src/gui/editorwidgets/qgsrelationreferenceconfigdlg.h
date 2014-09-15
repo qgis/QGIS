@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsrelreferenceconfigdlgbase.h
+    qgsrelationreferenceconfigdlgbase.h
      --------------------------------------
     Date                 : 21.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
@@ -13,18 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSRELREFERENCECONFIGDLGBASE_H
-#define QGSRELREFERENCECONFIGDLGBASE_H
+#ifndef QGSRELATIONREFERENCECONFIGDLGBASE_H
+#define QGSRELATIONREFERENCECONFIGDLGBASE_H
 
 #include "ui_qgsrelreferenceconfigdlgbase.h"
 #include "qgseditorconfigwidget.h"
 
-class GUI_EXPORT QgsRelReferenceConfigDlg : public QgsEditorConfigWidget, private Ui::QgsRelReferenceConfigDlgBase
+class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, private Ui::QgsRelReferenceConfigDlgBase
 {
     Q_OBJECT
 
   public:
-    explicit QgsRelReferenceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
+    explicit QgsRelationReferenceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
     virtual QgsEditorWidgetConfig config();
     virtual void setConfig( const QgsEditorWidgetConfig& config );
 
@@ -32,4 +32,4 @@ class GUI_EXPORT QgsRelReferenceConfigDlg : public QgsEditorConfigWidget, privat
     void relationChanged( int idx );
 };
 
-#endif // QGSRELREFERENCECONFIGDLGBASE_H
+#endif // QGSRELATIONREFERENCECONFIGDLGBASE_H

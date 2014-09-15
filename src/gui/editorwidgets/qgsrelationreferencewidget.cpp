@@ -30,7 +30,7 @@
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
-#include "qgsrelreferenceconfigdlg.h"
+#include "qgsrelationreferenceconfigdlg.h"
 #include "qgsvectorlayer.h"
 
 

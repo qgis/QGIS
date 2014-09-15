@@ -82,10 +82,10 @@ editorwidgets/qgsrangeconfigdlg.cpp
 editorwidgets/qgsrangewidgetwrapper.cpp
 editorwidgets/qgsrangewidgetfactory.cpp
 editorwidgets/qgsrelationwidgetwrapper.cpp
+editorwidgets/qgsrelationreferenceconfigdlg.cpp
 editorwidgets/qgsrelationreferencefactory.cpp
 editorwidgets/qgsrelationreferencewidget.cpp
 editorwidgets/qgsrelationreferencewidgetwrapper.cpp
-editorwidgets/qgsrelreferenceconfigdlg.cpp
 editorwidgets/qgstexteditconfigdlg.cpp
 editorwidgets/qgstexteditwrapper.cpp
 editorwidgets/qgstexteditwidgetfactory.cpp
@@ -300,10 +300,10 @@ editorwidgets/qgsphotoconfigdlg.h
 editorwidgets/qgsphotowidgetwrapper.h
 editorwidgets/qgsrangeconfigdlg.h
 editorwidgets/qgsrangewidgetwrapper.h
+editorwidgets/qgsrelationreferenceconfigdlg.h
 editorwidgets/qgsrelationreferencewidget.h
 editorwidgets/qgsrelationreferencewidgetwrapper.h
 editorwidgets/qgsrelationwidgetwrapper.h
-editorwidgets/qgsrelreferenceconfigdlg.h
 editorwidgets/qgstexteditconfigdlg.h
 editorwidgets/qgstexteditwrapper.h
 editorwidgets/qgsuniquevaluesconfigdlg.h
@@ -531,11 +531,11 @@ editorwidgets/qgsphotowidgetfactory.h
 editorwidgets/qgsrangeconfigdlg.h
 editorwidgets/qgsrangewidgetwrapper.h
 editorwidgets/qgsrangewidgetfactory.h
+editorwidgets/qgsrelationreferenceconfigdlg.h
 editorwidgets/qgsrelationreferencefactory.h
 editorwidgets/qgsrelationreferencewidget.h
 editorwidgets/qgsrelationreferencewidgetwrapper.h
 editorwidgets/qgsrelationwidgetwrapper.h
-editorwidgets/qgsrelreferenceconfigdlg.h
 editorwidgets/qgstexteditconfigdlg.h
 editorwidgets/qgstexteditwrapper.h
 editorwidgets/qgstexteditwidgetfactory.h

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsrelreferenceconfigdlg.cpp
+    qgsrelationreferenceconfigdlg.cpp
      --------------------------------------
     Date                 : 21.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrelreferenceconfigdlg.h"
+#include "qgsrelationreferenceconfigdlg.h"
 
 #include "qgseditorwidgetfactory.h"
 #include "qgsfield.h"
@@ -22,7 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
 
-QgsRelReferenceConfigDlg::QgsRelReferenceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
+QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
     : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
@@ -38,7 +38,7 @@ QgsRelReferenceConfigDlg::QgsRelReferenceConfigDlg( QgsVectorLayer* vl, int fiel
   }
 }
 
-void QgsRelReferenceConfigDlg::setConfig( const QMap<QString, QVariant>& config )
+void QgsRelationReferenceConfigDlg::setConfig( const QMap<QString, QVariant>& config )
 {
   if ( config.contains( "AllowNULL" ) )
   {
@@ -66,7 +66,7 @@ void QgsRelReferenceConfigDlg::setConfig( const QMap<QString, QVariant>& config 
   }
 }
 
-void QgsRelReferenceConfigDlg::relationChanged( int idx )
+void QgsRelationReferenceConfigDlg::relationChanged( int idx )
 {
   QString relName = mComboRelation->itemData( idx ).toString();
   QgsRelation rel = QgsProject::instance()->relationManager()->relation( relName );
@@ -80,7 +80,7 @@ void QgsRelReferenceConfigDlg::relationChanged( int idx )
   }
 }
 
-QgsEditorWidgetConfig QgsRelReferenceConfigDlg::config()
+QgsEditorWidgetConfig QgsRelationReferenceConfigDlg::config()
 {
   QgsEditorWidgetConfig myConfig;
   myConfig.insert( "AllowNULL", mCbxAllowNull->isChecked() );

@@ -16,7 +16,7 @@
 #include "qgsrelationreferencefactory.h"
 
 #include "qgsrelationreferencewidgetwrapper.h"
-#include "qgsrelreferenceconfigdlg.h"
+#include "qgsrelationreferenceconfigdlg.h"
 
 QgsRelationReferenceFactory::QgsRelationReferenceFactory( QString name, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
     : QgsEditorWidgetFactory( name )
@@ -32,7 +32,7 @@ QgsEditorWidgetWrapper* QgsRelationReferenceFactory::create( QgsVectorLayer* vl,
 
 QgsEditorConfigWidget* QgsRelationReferenceFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
-  return new QgsRelReferenceConfigDlg( vl, fieldIdx, parent );
+  return new QgsRelationReferenceConfigDlg( vl, fieldIdx, parent );
 }
 
 QgsEditorWidgetConfig QgsRelationReferenceFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
