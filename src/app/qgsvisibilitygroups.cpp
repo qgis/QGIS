@@ -66,30 +66,39 @@ void QgsVisibilityGroups::addVisibleLayersToGroup( QgsLayerTreeGroup* parent, Qg
     {
       QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
       if ( nodeLayer->isVisible() )
-      {
         rec.mVisibleLayerIDs << nodeLayer->layerId();
+    }
+  }
+}
 
-        QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
-        bool hasCheckableItems = false;
-        bool someItemsUnchecked = false;
-        QSet<QString> checkedItems;
-        foreach ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer ) )
-        {
-          if ( legendNode->flags() & Qt::ItemIsUserCheckable )
-          {
-            hasCheckableItems = true;
+void QgsVisibilityGroups::addPerLayerCheckedLegendSymbols( QgsVisibilityGroups::GroupRecord& rec )
+{
+  QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
 
-            if ( legendNode->data( Qt::CheckStateRole ).toInt() == Qt::Checked )
-              checkedItems << legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
-            else
-              someItemsUnchecked = true;
-          }
-        }
+  foreach ( QString layerID, rec.mVisibleLayerIDs )
+  {
+    QgsLayerTreeLayer* nodeLayer = model->rootGroup()->findLayer( layerID );
+    if ( !nodeLayer )
+      continue;
 
-        if ( hasCheckableItems && someItemsUnchecked )
-          rec.mPerLayerCheckedLegendSymbols.insert( nodeLayer->layerId(), checkedItems );
+    bool hasCheckableItems = false;
+    bool someItemsUnchecked = false;
+    QSet<QString> checkedItems;
+    foreach ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer ) )
+    {
+      if ( legendNode->flags() & Qt::ItemIsUserCheckable )
+      {
+        hasCheckableItems = true;
+
+        if ( legendNode->data( Qt::CheckStateRole ).toInt() == Qt::Checked )
+          checkedItems << legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+        else
+          someItemsUnchecked = true;
       }
     }
+
+    if ( hasCheckableItems && someItemsUnchecked )
+      rec.mPerLayerCheckedLegendSymbols.insert( nodeLayer->layerId(), checkedItems );
   }
 }
 
@@ -98,6 +107,16 @@ QgsVisibilityGroups::GroupRecord QgsVisibilityGroups::currentState()
   GroupRecord rec;
   QgsLayerTreeGroup* root = QgsProject::instance()->layerTreeRoot();
   addVisibleLayersToGroup( root, rec );
+  addPerLayerCheckedLegendSymbols( rec );
+  return rec;
+}
+
+QgsVisibilityGroups::GroupRecord QgsVisibilityGroups::currentStateFromLayerList( const QStringList& layerIDs )
+{
+  GroupRecord rec;
+  foreach ( const QString& layerID, layerIDs )
+    rec.mVisibleLayerIDs << layerID;
+  addPerLayerCheckedLegendSymbols( rec );
   return rec;
 }
 

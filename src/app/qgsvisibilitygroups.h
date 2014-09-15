@@ -37,6 +37,24 @@ class QgsVisibilityGroups : public QObject
     Q_OBJECT
   public:
 
+    typedef struct GroupRecord
+    {
+      bool operator==( const GroupRecord& other ) const
+      {
+        return mVisibleLayerIDs == other.mVisibleLayerIDs && mPerLayerCheckedLegendSymbols == other.mPerLayerCheckedLegendSymbols;
+      }
+      bool operator!=( const GroupRecord& other ) const
+      {
+        return !( *this == other );
+      }
+
+      //! List of layers that are visible
+      QSet<QString> mVisibleLayerIDs;
+      //! For layers that have checkable legend symbols and not all symbols are checked - list which ones are
+      QMap<QString, QSet<QString> > mPerLayerCheckedLegendSymbols;
+    } GroupRecord;
+
+
     static QgsVisibilityGroups* instance();
 
     //! Add a new group using the current state of project's layer tree
@@ -52,6 +70,9 @@ class QgsVisibilityGroups : public QObject
     //! Return list of existing group names
     QStringList groups() const;
 
+    //! Return recorded state of a group
+    GroupRecord groupState( const QString& groupName ) const { return mGroups[groupName]; }
+
     //! Return list of layer IDs that should be visible for particular group
     QStringList groupVisibleLayers( const QString& name ) const;
 
@@ -60,6 +81,9 @@ class QgsVisibilityGroups : public QObject
 
     //! Convenience menu that lists available groups and actions for management
     QMenu* menu();
+
+    //! Create group record given a list of visible layers (needs to store per-layer checked legend symbols)
+    GroupRecord currentStateFromLayerList( const QStringList& layerIDs );
 
   signals:
     void groupsChanged();
@@ -78,27 +102,11 @@ class QgsVisibilityGroups : public QObject
   protected:
     QgsVisibilityGroups(); // singleton
 
-    typedef struct GroupRecord
-    {
-      bool operator==( const GroupRecord& other ) const
-      {
-        return mVisibleLayerIDs == other.mVisibleLayerIDs && mPerLayerCheckedLegendSymbols == other.mPerLayerCheckedLegendSymbols;
-      }
-      bool operator!=( const GroupRecord& other ) const
-      {
-        return !( *this == other );
-      }
-
-      //! List of layers that are visible
-      QSet<QString> mVisibleLayerIDs;
-      //! For layers that have checkable legend symbols and not all symbols are checked - list which ones are
-      QMap<QString, QSet<QString> > mPerLayerCheckedLegendSymbols;
-    } GroupRecord;
-
     typedef QMap<QString, GroupRecord> GroupRecordMap;
 
     void addVisibleLayersToGroup( QgsLayerTreeGroup* parent, GroupRecord& rec );
     void applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const GroupRecord& rec );
+    void addPerLayerCheckedLegendSymbols( GroupRecord& rec );
 
     GroupRecord currentState();
     void applyState( const QString& groupName );

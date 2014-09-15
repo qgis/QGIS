@@ -265,10 +265,15 @@ void QgsComposerMapWidget::aboutToShowVisibilityGroupsMenu()
   if ( !menu )
     return;
 
+  QgsVisibilityGroups::GroupRecord rec = QgsVisibilityGroups::instance()->currentStateFromLayerList( mComposerMap->layerSet() );
+
   menu->clear();
   foreach ( QString groupName, QgsVisibilityGroups::instance()->groups() )
   {
-    menu->addAction( groupName, this, SLOT( visibilityGroupSelected() ) );
+    QAction* a = menu->addAction( groupName, this, SLOT( visibilityGroupSelected() ) );
+    a->setCheckable( true );
+    if ( rec == QgsVisibilityGroups::instance()->groupState( groupName ) )
+      a->setChecked( true );
   }
 
   if ( menu->actions().isEmpty() )
