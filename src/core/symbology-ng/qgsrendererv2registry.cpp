@@ -38,7 +38,7 @@ QgsRendererV2Registry::QgsRendererV2Registry()
                                           QObject::tr( "Graduated" ),
                                           QgsGraduatedSymbolRendererV2::create ) );
 
-  addRenderer( new QgsRendererV2Metadata( "ruleRenderer",
+  addRenderer( new QgsRendererV2Metadata( "RuleRenderer",
                                           QObject::tr( "Rule-based" ),
                                           QgsRuleBasedRendererV2::create,
                                           QgsRuleBasedRendererV2::createFromSld ) );

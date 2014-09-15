@@ -450,7 +450,7 @@ QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::convertFromRenderer( con
   if ( renderer->type() == "singleSymbol" ||
        renderer->type() == "categorizedSymbol" ||
        renderer->type() == "graduatedSymbol" ||
-       renderer->type() == "ruleRenderer" )
+       renderer->type() == "RuleRenderer" )
   {
     return new QgsInvertedPolygonRenderer( renderer->clone() );
   }

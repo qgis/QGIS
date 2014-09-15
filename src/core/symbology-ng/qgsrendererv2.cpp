@@ -467,7 +467,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis:
   QString rendererType;
   if ( needRuleRenderer )
   {
-    rendererType = "ruleRenderer";
+    rendererType = "RuleRenderer";
   }
   else
   {

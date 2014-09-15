@@ -739,12 +739,12 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
 /////////////////////
 
 QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsRuleBasedRendererV2::Rule* root )
-    : QgsFeatureRendererV2( "ruleRenderer" ), mRootRule( root )
+    : QgsFeatureRendererV2( "RuleRenderer" ), mRootRule( root )
 {
 }
 
 QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol )
-    : QgsFeatureRendererV2( "ruleRenderer" )
+    : QgsFeatureRendererV2( "RuleRenderer" )
 {
   mRootRule = new Rule( NULL ); // root has no symbol, no filter etc - just a container
   mRootRule->appendChild( new Rule( defaultSymbol ) );
@@ -1058,7 +1058,7 @@ QgsSymbolV2List QgsRuleBasedRendererV2::symbolsForFeature( QgsFeature& feat )
 
 QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFeatureRendererV2* renderer )
 {
-  if ( renderer->type() == "ruleRenderer" )
+  if ( renderer->type() == "RuleRenderer" )
   {
     return dynamic_cast<QgsRuleBasedRendererV2*>( renderer->clone() );
   }

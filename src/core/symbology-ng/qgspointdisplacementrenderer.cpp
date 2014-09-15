@@ -528,7 +528,7 @@ QgsPointDisplacementRenderer* QgsPointDisplacementRenderer::convertFromRenderer(
   if ( renderer->type() == "singleSymbol" ||
        renderer->type() == "categorizedSymbol" ||
        renderer->type() == "graduatedSymbol" ||
-       renderer->type() == "ruleRenderer" )
+       renderer->type() == "RuleRenderer" )
   {
     QgsPointDisplacementRenderer* pointRenderer = new QgsPointDisplacementRenderer();
     pointRenderer->setEmbeddedRenderer( renderer->clone() );
