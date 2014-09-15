@@ -211,14 +211,27 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
      */
     void copyColors();
 
+  signals:
+
+    /**Emitted when a color is selected from the list
+     * @param color color selected
+     */
+    void colorSelected( const QColor color );
+
   protected:
 
     void keyPressEvent( QKeyEvent* event );
+
+    void mousePressEvent( QMouseEvent* event );
+
+    void mouseReleaseEvent( QMouseEvent* event );
 
   private:
     QgsColorScheme* mScheme;
     QgsColorSchemeModel* mModel;
     QgsColorSwatchDelegate* mSwatchDelegate;
+
+    QPoint mDragStartPosition;
 
 };
 

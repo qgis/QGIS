@@ -157,6 +157,35 @@ void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
   QTreeView::keyPressEvent( event );
 }
 
+void QgsColorSchemeList::mousePressEvent( QMouseEvent *event )
+{
+  if ( event->button() == Qt::LeftButton )
+  {
+    //record press start position
+    mDragStartPosition = event->pos();
+  }
+  QTreeView::mousePressEvent( event );
+}
+
+void QgsColorSchemeList::mouseReleaseEvent( QMouseEvent *event )
+{
+  if (( event->button() == Qt::LeftButton ) &&
+      ( event->pos() - mDragStartPosition ).manhattanLength() <= QApplication::startDragDistance() )
+  {
+    //just a click, not a drag
+
+    //if only one item is selected, emit color changed signal
+    //(if multiple are selected, user probably was interacting with color list rather than trying to pick a color)
+    if ( selectedIndexes().length() == mModel->columnCount() )
+    {
+      QModelIndex selectedColor = selectedIndexes().at( 0 );
+      emit colorSelected( mModel->colors().at( selectedColor.row() ).first );
+    }
+  }
+
+  QTreeView::mouseReleaseEvent( event );
+}
+
 bool QgsColorSchemeList::importColorsFromGpl( QFile &file )
 {
   QgsNamedColorList importedColors;

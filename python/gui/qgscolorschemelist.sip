@@ -169,10 +169,21 @@ class QgsColorSchemeList: QTreeView
      * @see pasteColors
      */
     void copyColors();
+    
+  signals:
+
+    /**Emitted when a color is selected from the list
+     * @param color color selected
+     */
+    void colorSelected( const QColor color );
 
   protected:
 
     void keyPressEvent( QKeyEvent* event );
 
+    void mousePressEvent( QMouseEvent* event );
+
+    void mouseReleaseEvent( QMouseEvent* event );
+    
 };
 
