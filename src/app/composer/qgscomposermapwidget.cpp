@@ -37,7 +37,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsproject.h"
-#include "qgsvisibilitygroups.h"
+#include "qgsvisibilitypresets.h"
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QMessageBox>
@@ -113,12 +113,11 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
   toggleFrameControls( false, false, false );
 
   QMenu* m = new QMenu( this );
-  m->addAction( "No groups" )->setEnabled( false );
-  mLayerListFromGroupButton->setMenu( m );
-  mLayerListFromGroupButton->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
-  mLayerListFromGroupButton->setToolTip( tr( "Set layer list from a visibility group" ) );
+  mLayerListFromPresetButton->setMenu( m );
+  mLayerListFromPresetButton->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
+  mLayerListFromPresetButton->setToolTip( tr( "Set layer list from a visibility preset" ) );
 
-  connect( m, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowVisibilityGroupsMenu() ) );
+  connect( m, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowVisibilityPresetsMenu() ) );
 
   if ( composerMap )
   {
@@ -259,34 +258,34 @@ void QgsComposerMapWidget::compositionAtlasToggled( bool atlasEnabled )
   }
 }
 
-void QgsComposerMapWidget::aboutToShowVisibilityGroupsMenu()
+void QgsComposerMapWidget::aboutToShowVisibilityPresetsMenu()
 {
   QMenu* menu = qobject_cast<QMenu*>( sender() );
   if ( !menu )
     return;
 
-  QgsVisibilityGroups::GroupRecord rec = QgsVisibilityGroups::instance()->currentStateFromLayerList( mComposerMap->layerSet() );
+  QgsVisibilityPresets::PresetRecord rec = QgsVisibilityPresets::instance()->currentStateFromLayerList( mComposerMap->layerSet() );
 
   menu->clear();
-  foreach ( QString groupName, QgsVisibilityGroups::instance()->groups() )
+  foreach ( QString presetName, QgsVisibilityPresets::instance()->presets() )
   {
-    QAction* a = menu->addAction( groupName, this, SLOT( visibilityGroupSelected() ) );
+    QAction* a = menu->addAction( presetName, this, SLOT( visibilityPresetSelected() ) );
     a->setCheckable( true );
-    if ( rec == QgsVisibilityGroups::instance()->groupState( groupName ) )
+    if ( rec == QgsVisibilityPresets::instance()->presetState( presetName ) )
       a->setChecked( true );
   }
 
   if ( menu->actions().isEmpty() )
-    menu->addAction( tr( "No groups defined" ) )->setEnabled( false );
+    menu->addAction( tr( "No presets defined" ) )->setEnabled( false );
 }
 
-void QgsComposerMapWidget::visibilityGroupSelected()
+void QgsComposerMapWidget::visibilityPresetSelected()
 {
   QAction* action = qobject_cast<QAction*>( sender() );
   if ( !action )
     return;
 
-  QStringList lst = QgsVisibilityGroups::instance()->groupVisibleLayers( action->text() );
+  QStringList lst = QgsVisibilityPresets::instance()->presetVisibleLayers( action->text() );
   if ( mComposerMap )
   {
     mKeepLayerListCheckBox->setChecked( true );
@@ -294,7 +293,7 @@ void QgsComposerMapWidget::visibilityGroupSelected()
 
     // also apply legend node check states
     foreach ( QString layerID, lst )
-      QgsVisibilityGroups::instance()->applyGroupCheckedLegendNodesToLayer( action->text(), layerID );
+      QgsVisibilityPresets::instance()->applyPresetCheckedLegendNodesToLayer( action->text(), layerID );
 
     mComposerMap->cache();
     mComposerMap->update();

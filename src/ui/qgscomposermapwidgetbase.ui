@@ -191,7 +191,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QToolButton" name="mLayerListFromGroupButton">
+             <widget class="QToolButton" name="mLayerListFromPresetButton">
               <property name="text">
                <string>...</string>
               </property>
@@ -1305,7 +1305,7 @@
   <tabstop>mMapRotationDDBtn</tabstop>
   <tabstop>mDrawCanvasItemsCheckBox</tabstop>
   <tabstop>mKeepLayerListCheckBox</tabstop>
-  <tabstop>mLayerListFromGroupButton</tabstop>
+  <tabstop>mLayerListFromPresetButton</tabstop>
   <tabstop>mXMinLineEdit</tabstop>
   <tabstop>mXMinDDBtn</tabstop>
   <tabstop>mYMinLineEdit</tabstop>

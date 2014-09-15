@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsvisibilitygroups.cpp
+  qgsvisibilitypresets.cpp
   --------------------------------------
   Date                 : September 2014
   Copyright            : (C) 2014 by Martin Dobias
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsvisibilitygroups.h"
+#include "qgsvisibilitypresets.h"
 
 #include "qgslayertree.h"
 #include "qgslayertreemapcanvasbridge.h"
@@ -29,10 +29,10 @@
 #include <QInputDialog>
 
 
-QgsVisibilityGroups* QgsVisibilityGroups::sInstance;
+QgsVisibilityPresets* QgsVisibilityPresets::sInstance;
 
 
-QgsVisibilityGroups::QgsVisibilityGroups()
+QgsVisibilityPresets::QgsVisibilityPresets()
     : mMenu( new QMenu )
 {
 
@@ -40,10 +40,10 @@ QgsVisibilityGroups::QgsVisibilityGroups()
   mMenu->addAction( QgisApp::instance()->actionHideAllLayers() );
   mMenu->addSeparator();
 
-  mMenu->addAction( tr( "Add group..." ), this, SLOT( addGroup() ) );
+  mMenu->addAction( tr( "Add Preset..." ), this, SLOT( addPreset() ) );
   mMenuSeparator = mMenu->addSeparator();
 
-  mActionRemoveCurrentGroup = mMenu->addAction( tr( "Remove current group" ), this, SLOT( removeCurrentGroup() ) );
+  mActionRemoveCurrentPreset = mMenu->addAction( tr( "Remove Current Preset" ), this, SLOT( removeCurrentPreset() ) );
 
   connect( mMenu, SIGNAL( aboutToShow() ), this, SLOT( menuAboutToShow() ) );
 
@@ -56,12 +56,12 @@ QgsVisibilityGroups::QgsVisibilityGroups()
            this, SLOT( writeProject( QDomDocument & ) ) );
 }
 
-void QgsVisibilityGroups::addVisibleLayersToGroup( QgsLayerTreeGroup* parent, QgsVisibilityGroups::GroupRecord& rec )
+void QgsVisibilityPresets::addVisibleLayersToPreset( QgsLayerTreeGroup* parent, QgsVisibilityPresets::PresetRecord& rec )
 {
   foreach ( QgsLayerTreeNode* node, parent->children() )
   {
     if ( QgsLayerTree::isGroup( node ) )
-      addVisibleLayersToGroup( QgsLayerTree::toGroup( node ), rec );
+      addVisibleLayersToPreset( QgsLayerTree::toGroup( node ), rec );
     else if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
@@ -71,7 +71,7 @@ void QgsVisibilityGroups::addVisibleLayersToGroup( QgsLayerTreeGroup* parent, Qg
   }
 }
 
-void QgsVisibilityGroups::addPerLayerCheckedLegendSymbols( QgsVisibilityGroups::GroupRecord& rec )
+void QgsVisibilityPresets::addPerLayerCheckedLegendSymbols( QgsVisibilityPresets::PresetRecord& rec )
 {
   QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
 
@@ -102,18 +102,18 @@ void QgsVisibilityGroups::addPerLayerCheckedLegendSymbols( QgsVisibilityGroups::
   }
 }
 
-QgsVisibilityGroups::GroupRecord QgsVisibilityGroups::currentState()
+QgsVisibilityPresets::PresetRecord QgsVisibilityPresets::currentState()
 {
-  GroupRecord rec;
+  PresetRecord rec;
   QgsLayerTreeGroup* root = QgsProject::instance()->layerTreeRoot();
-  addVisibleLayersToGroup( root, rec );
+  addVisibleLayersToPreset( root, rec );
   addPerLayerCheckedLegendSymbols( rec );
   return rec;
 }
 
-QgsVisibilityGroups::GroupRecord QgsVisibilityGroups::currentStateFromLayerList( const QStringList& layerIDs )
+QgsVisibilityPresets::PresetRecord QgsVisibilityPresets::currentStateFromLayerList( const QStringList& layerIDs )
 {
-  GroupRecord rec;
+  PresetRecord rec;
   foreach ( const QString& layerID, layerIDs )
     rec.mVisibleLayerIDs << layerID;
   addPerLayerCheckedLegendSymbols( rec );
@@ -121,45 +121,45 @@ QgsVisibilityGroups::GroupRecord QgsVisibilityGroups::currentStateFromLayerList(
 }
 
 
-QgsVisibilityGroups* QgsVisibilityGroups::instance()
+QgsVisibilityPresets* QgsVisibilityPresets::instance()
 {
   if ( !sInstance )
-    sInstance = new QgsVisibilityGroups();
+    sInstance = new QgsVisibilityPresets();
 
   return sInstance;
 }
 
-void QgsVisibilityGroups::addGroup( const QString& name )
+void QgsVisibilityPresets::addPreset( const QString& name )
 {
-  mGroups.insert( name, currentState() );
+  mPresets.insert( name, currentState() );
 }
 
-void QgsVisibilityGroups::updateGroup( const QString& name )
+void QgsVisibilityPresets::updatePreset( const QString& name )
 {
-  if ( !mGroups.contains( name ) )
+  if ( !mPresets.contains( name ) )
     return;
 
-  mGroups[name] = currentState();
+  mPresets[name] = currentState();
 }
 
-void QgsVisibilityGroups::removeGroup( const QString& name )
+void QgsVisibilityPresets::removePreset( const QString& name )
 {
-  mGroups.remove( name );
+  mPresets.remove( name );
 }
 
-void QgsVisibilityGroups::clear()
+void QgsVisibilityPresets::clear()
 {
-  mGroups.clear();
+  mPresets.clear();
 }
 
-QStringList QgsVisibilityGroups::groups() const
+QStringList QgsVisibilityPresets::presets() const
 {
-  return mGroups.keys();
+  return mPresets.keys();
 }
 
-QStringList QgsVisibilityGroups::groupVisibleLayers( const QString& name ) const
+QStringList QgsVisibilityPresets::presetVisibleLayers( const QString& name ) const
 {
-  QSet<QString> visibleIds = mGroups.value( name ).mVisibleLayerIDs;
+  QSet<QString> visibleIds = mPresets.value( name ).mVisibleLayerIDs;
 
   // also make sure to order the layers according to map canvas order
   QgsLayerTreeMapCanvasBridge* bridge = QgisApp::instance()->layerTreeCanvasBridge();
@@ -175,9 +175,9 @@ QStringList QgsVisibilityGroups::groupVisibleLayers( const QString& name ) const
 }
 
 
-void QgsVisibilityGroups::applyGroupCheckedLegendNodesToLayer( const QString& name, const QString& layerID )
+void QgsVisibilityPresets::applyPresetCheckedLegendNodesToLayer( const QString& name, const QString& layerID )
 {
-  if ( !mGroups.contains( name ) )
+  if ( !mPresets.contains( name ) )
     return;
 
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) );
@@ -187,7 +187,7 @@ void QgsVisibilityGroups::applyGroupCheckedLegendNodesToLayer( const QString& na
   if ( !vlayer->rendererV2()->legendSymbolItemsCheckable() )
     return; // no need to do anything
 
-  const GroupRecord& rec = mGroups[name];
+  const PresetRecord& rec = mPresets[name];
   bool someNodesUnchecked = rec.mPerLayerCheckedLegendSymbols.contains( layerID );
 
   foreach ( const QgsLegendSymbolItemV2& item, vlayer->rendererV2()->legendSymbolItemsV2() )
@@ -199,34 +199,34 @@ void QgsVisibilityGroups::applyGroupCheckedLegendNodesToLayer( const QString& na
   }
 }
 
-QMenu* QgsVisibilityGroups::menu()
+QMenu* QgsVisibilityPresets::menu()
 {
   return mMenu;
 }
 
 
-void QgsVisibilityGroups::addGroup()
+void QgsVisibilityPresets::addPreset()
 {
   bool ok;
-  QString name = QInputDialog::getText( 0, tr( "Visibility groups" ), tr( "Name of the new group" ), QLineEdit::Normal, QString(), &ok );
+  QString name = QInputDialog::getText( 0, tr( "Visibility Presets" ), tr( "Name of the new preset" ), QLineEdit::Normal, QString(), &ok );
   if ( !ok && name.isEmpty() )
     return;
 
-  addGroup( name );
+  addPreset( name );
 }
 
 
-void QgsVisibilityGroups::groupTriggerred()
+void QgsVisibilityPresets::presetTriggerred()
 {
-  QAction* actionGroup = qobject_cast<QAction*>( sender() );
-  if ( !actionGroup )
+  QAction* actionPreset = qobject_cast<QAction*>( sender() );
+  if ( !actionPreset )
     return;
 
-  applyState( actionGroup->text() );
+  applyState( actionPreset->text() );
 }
 
 
-void QgsVisibilityGroups::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const GroupRecord& rec )
+void QgsVisibilityPresets::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const PresetRecord& rec )
 {
   foreach ( QgsLayerTreeNode* node, parent->children() )
   {
@@ -269,18 +269,18 @@ void QgsVisibilityGroups::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent,
 }
 
 
-void QgsVisibilityGroups::applyState( const QString& groupName )
+void QgsVisibilityPresets::applyState( const QString& presetName )
 {
-  if ( !mGroups.contains( groupName ) )
+  if ( !mPresets.contains( presetName ) )
     return;
 
-  applyStateToLayerTreeGroup( QgsProject::instance()->layerTreeRoot(), mGroups[groupName] );
+  applyStateToLayerTreeGroup( QgsProject::instance()->layerTreeRoot(), mPresets[presetName] );
 
-  // also make sure that the group is up-to-date (not containing any non-existant legend items)
-  if ( mGroups[groupName] == currentState() )
+  // also make sure that the preset is up-to-date (not containing any non-existant legend items)
+  if ( mPresets[presetName] == currentState() )
     return; // no need for update
 
-  GroupRecord& rec = mGroups[groupName];
+  PresetRecord& rec = mPresets[presetName];
   foreach ( QString layerID, rec.mPerLayerCheckedLegendSymbols.keys() )
   {
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) );
@@ -302,68 +302,68 @@ void QgsVisibilityGroups::applyState( const QString& groupName )
 }
 
 
-void QgsVisibilityGroups::removeCurrentGroup()
+void QgsVisibilityPresets::removeCurrentPreset()
 {
-  foreach ( QAction* a, mMenuGroupActions )
+  foreach ( QAction* a, mMenuPresetActions )
   {
     if ( a->isChecked() )
     {
-      removeGroup( a->text() );
+      removePreset( a->text() );
       break;
     }
   }
 }
 
 
-void QgsVisibilityGroups::menuAboutToShow()
+void QgsVisibilityPresets::menuAboutToShow()
 {
-  qDeleteAll( mMenuGroupActions );
-  mMenuGroupActions.clear();
+  qDeleteAll( mMenuPresetActions );
+  mMenuPresetActions.clear();
 
-  GroupRecord rec = currentState();
+  PresetRecord rec = currentState();
   bool hasCurrent = false;
 
-  foreach ( const QString& grpName, mGroups.keys() )
+  foreach ( const QString& grpName, mPresets.keys() )
   {
     QAction* a = new QAction( grpName, mMenu );
     a->setCheckable( true );
-    if ( rec == mGroups[grpName] )
+    if ( rec == mPresets[grpName] )
     {
       a->setChecked( true );
       hasCurrent = true;
     }
-    connect( a, SIGNAL( triggered() ), this, SLOT( groupTriggerred() ) );
-    mMenuGroupActions.append( a );
+    connect( a, SIGNAL( triggered() ), this, SLOT( presetTriggerred() ) );
+    mMenuPresetActions.append( a );
   }
-  mMenu->insertActions( mMenuSeparator, mMenuGroupActions );
+  mMenu->insertActions( mMenuSeparator, mMenuPresetActions );
 
-  mActionRemoveCurrentGroup->setEnabled( hasCurrent );
+  mActionRemoveCurrentPreset->setEnabled( hasCurrent );
 }
 
 
-void QgsVisibilityGroups::readProject( const QDomDocument& doc )
+void QgsVisibilityPresets::readProject( const QDomDocument& doc )
 {
   clear();
 
-  QDomElement visGroupsElem = doc.firstChildElement( "qgis" ).firstChildElement( "visibility-groups" );
-  if ( visGroupsElem.isNull() )
+  QDomElement visPresetsElem = doc.firstChildElement( "qgis" ).firstChildElement( "visibility-presets" );
+  if ( visPresetsElem.isNull() )
     return;
 
-  QDomElement visGroupElem = visGroupsElem.firstChildElement( "visibility-group" );
-  while ( !visGroupElem.isNull() )
+  QDomElement visPresetElem = visPresetsElem.firstChildElement( "visibility-preset" );
+  while ( !visPresetElem.isNull() )
   {
-    QString groupName = visGroupElem.attribute( "name" );
-    GroupRecord rec;
-    QDomElement visGroupLayerElem = visGroupElem.firstChildElement( "layer" );
-    while ( !visGroupLayerElem.isNull() )
+    QString presetName = visPresetElem.attribute( "name" );
+    PresetRecord rec;
+    QDomElement visPresetLayerElem = visPresetElem.firstChildElement( "layer" );
+    while ( !visPresetLayerElem.isNull() )
     {
-      QString layerID = visGroupLayerElem.attribute( "id" );
+      QString layerID = visPresetLayerElem.attribute( "id" );
       if ( QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
         rec.mVisibleLayerIDs << layerID; // only use valid layer IDs
-      visGroupLayerElem = visGroupLayerElem.nextSiblingElement( "layer" );
+      visPresetLayerElem = visPresetLayerElem.nextSiblingElement( "layer" );
     }
 
-    QDomElement checkedLegendNodesElem = visGroupElem.firstChildElement( "checked-legend-nodes" );
+    QDomElement checkedLegendNodesElem = visPresetElem.firstChildElement( "checked-legend-nodes" );
     while ( !checkedLegendNodesElem.isNull() )
     {
       QSet<QString> checkedLegendNodes;
@@ -381,25 +381,25 @@ void QgsVisibilityGroups::readProject( const QDomDocument& doc )
       checkedLegendNodesElem = checkedLegendNodesElem.nextSiblingElement( "checked-legend-nodes" );
     }
 
-    mGroups.insert( groupName, rec );
+    mPresets.insert( presetName, rec );
 
-    visGroupElem = visGroupElem.nextSiblingElement( "visibility-group" );
+    visPresetElem = visPresetElem.nextSiblingElement( "visibility-preset" );
   }
 }
 
-void QgsVisibilityGroups::writeProject( QDomDocument& doc )
+void QgsVisibilityPresets::writeProject( QDomDocument& doc )
 {
-  QDomElement visGroupsElem = doc.createElement( "visibility-groups" );
-  foreach ( const QString& grpName, mGroups.keys() )
+  QDomElement visPresetsElem = doc.createElement( "visibility-presets" );
+  foreach ( const QString& grpName, mPresets.keys() )
   {
-    const GroupRecord& rec = mGroups[grpName];
-    QDomElement visGroupElem = doc.createElement( "visibility-group" );
-    visGroupElem.setAttribute( "name", grpName );
+    const PresetRecord& rec = mPresets[grpName];
+    QDomElement visPresetElem = doc.createElement( "visibility-preset" );
+    visPresetElem.setAttribute( "name", grpName );
     foreach ( QString layerID, rec.mVisibleLayerIDs )
     {
       QDomElement layerElem = doc.createElement( "layer" );
       layerElem.setAttribute( "id", layerID );
-      visGroupElem.appendChild( layerElem );
+      visPresetElem.appendChild( layerElem );
     }
 
     foreach ( QString layerID, rec.mPerLayerCheckedLegendSymbols.keys() )
@@ -412,22 +412,22 @@ void QgsVisibilityGroups::writeProject( QDomDocument& doc )
         checkedLegendNodeElem.setAttribute( "id", checkedLegendNode );
         checkedLegendNodesElem.appendChild( checkedLegendNodeElem );
       }
-      visGroupElem.appendChild( checkedLegendNodesElem );
+      visPresetElem.appendChild( checkedLegendNodesElem );
     }
 
-    visGroupsElem.appendChild( visGroupElem );
+    visPresetsElem.appendChild( visPresetElem );
   }
 
-  doc.firstChildElement( "qgis" ).appendChild( visGroupsElem );
+  doc.firstChildElement( "qgis" ).appendChild( visPresetsElem );
 }
 
-void QgsVisibilityGroups::registryLayersRemoved( QStringList layerIDs )
+void QgsVisibilityPresets::registryLayersRemoved( QStringList layerIDs )
 {
   foreach ( QString layerID, layerIDs )
   {
-    foreach ( QString groupName, mGroups.keys() )
+    foreach ( QString presetName, mPresets.keys() )
     {
-      GroupRecord& rec = mGroups[groupName];
+      PresetRecord& rec = mPresets[presetName];
       rec.mVisibleLayerIDs.remove( layerID );
       rec.mPerLayerCheckedLegendSymbols.remove( layerID );
     }

@@ -108,7 +108,7 @@ SET(QGIS_APP_SRCS
   qgstipgui.cpp
   qgstipfactory.cpp
   qgsvectorlayerproperties.cpp
-  qgsvisibilitygroups.cpp
+  qgsvisibilitypresets.cpp
   qgshandlebadlayers.cpp
 
   composer/qgsattributeselectiondialog.cpp
@@ -247,7 +247,7 @@ SET (QGIS_APP_MOC_HDRS
   qgstipfactory.h
   qgsundowidget.h
   qgsvectorlayerproperties.h
-  qgsvisibilitygroups.h
+  qgsvisibilitypresets.h
   qgshandlebadlayers.h
 
   composer/qgsattributeselectiondialog.h

@@ -195,7 +195,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
-#include "qgsvisibilitygroups.h"
+#include "qgsvisibilitypresets.h"
 #include "qgsmessagelogviewer.h"
 #include "qgsdataitem.h"
 #include "qgsmaplayeractionregistry.h"
@@ -2326,12 +2326,12 @@ void QgisApp::initLayerTreeView()
   connect( btnAddGroup, SIGNAL( clicked() ), mLayerTreeView->defaultActions(), SLOT( addGroup() ) );
 
   // visibility groups tool button
-  QToolButton* btnVisibilityGroups = new QToolButton;
-  btnVisibilityGroups->setAutoRaise( true );
-  btnVisibilityGroups->setToolTip( tr( "Manage Layer Visibility" ) );
-  btnVisibilityGroups->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
-  btnVisibilityGroups->setPopupMode( QToolButton::InstantPopup );
-  btnVisibilityGroups->setMenu( QgsVisibilityGroups::instance()->menu() );
+  QToolButton* btnVisibilityPresets = new QToolButton;
+  btnVisibilityPresets->setAutoRaise( true );
+  btnVisibilityPresets->setToolTip( tr( "Manage Layer Visibility" ) );
+  btnVisibilityPresets->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
+  btnVisibilityPresets->setPopupMode( QToolButton::InstantPopup );
+  btnVisibilityPresets->setMenu( QgsVisibilityPresets::instance()->menu() );
 
   // expand / collapse tool buttons
   QToolButton* btnExpandAll = new QToolButton;
@@ -2352,7 +2352,7 @@ void QgisApp::initLayerTreeView()
   QHBoxLayout* toolbarLayout = new QHBoxLayout;
   toolbarLayout->setContentsMargins( QMargins( 5, 0, 5, 0 ) );
   toolbarLayout->addWidget( btnAddGroup );
-  toolbarLayout->addWidget( btnVisibilityGroups );
+  toolbarLayout->addWidget( btnVisibilityPresets );
   toolbarLayout->addWidget( btnExpandAll );
   toolbarLayout->addWidget( btnCollapseAll );
   toolbarLayout->addWidget( btnRemoveItem );
@@ -3496,7 +3496,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
     fileNewFromDefaultTemplate();
   }
 
-  QgsVisibilityGroups::instance()->clear();
+  QgsVisibilityPresets::instance()->clear();
 
   // set the initial map tool
 #ifndef HAVE_TOUCH
