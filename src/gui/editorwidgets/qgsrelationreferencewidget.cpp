@@ -63,6 +63,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
 
   QHBoxLayout* editLayout = new QHBoxLayout();
   editLayout->setContentsMargins( 0, 0, 0, 0 );
+  editLayout->setSpacing( 2 );
 
   // combobox (for non-geometric relation)
   mComboBox = new QComboBox( this );
@@ -96,14 +97,19 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
 
   // map identification button
   mMapIdentificationButton = new QToolButton( this );
-  mMapIdentificationButton->setPopupMode( QToolButton::MenuButtonPopup );
   mMapIdentificationAction = new QAction( QgsApplication::getThemeIcon( "/mActionMapIdentification.svg" ), tr( "Select on map" ), this );
   mMapIdentificationButton->addAction( mMapIdentificationAction );
-  mRemoveFeatureAction = new QAction( QgsApplication::getThemeIcon( "/mActionRemove.svg" ), tr( "No selection" ), this );
-  mMapIdentificationButton->addAction( mRemoveFeatureAction );
   mMapIdentificationButton->setDefaultAction( mMapIdentificationAction );
-  connect( mMapIdentificationButton, SIGNAL( triggered( QAction* ) ), this, SLOT( mapIdentificationTriggered( QAction* ) ) );
+  connect( mMapIdentificationButton, SIGNAL( triggered( QAction* ) ), this, SLOT( mapIdentification() ) );
   editLayout->addWidget( mMapIdentificationButton );
+
+  // remove foreign key button
+  mRemoveFKButton = new QToolButton( this );
+  mRemoveFKAction = new QAction( QgsApplication::getThemeIcon( "/mActionRemove.svg" ), tr( "No selection" ), this );
+  mRemoveFKButton->addAction( mRemoveFKAction );
+  mRemoveFKButton->setDefaultAction( mRemoveFKAction );
+  connect( mRemoveFKButton, SIGNAL( triggered( QAction* ) ), this, SLOT( deleteForeignKey() ) );
+  editLayout->addWidget( mRemoveFKButton );
 
   // spacer
   editLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ) );
@@ -134,15 +140,7 @@ QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
 void QgsRelationReferenceWidget::setRelation( QgsRelation relation, bool allowNullValue )
 {
   mAllowNull = allowNullValue;
-  if ( !allowNullValue && mMapIdentificationButton->actions().contains( mRemoveFeatureAction ) )
-  {
-    mMapIdentificationButton->removeAction( mRemoveFeatureAction );
-  }
-  else if ( allowNullValue && !mMapIdentificationButton->actions().contains( mRemoveFeatureAction ) )
-  {
-    mMapIdentificationButton->addAction( mRemoveFeatureAction );
-  }
-  mMapIdentificationButton->setPopupMode( allowNullValue ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
+  mRemoveFKButton->setVisible( allowNullValue && mReadOnlySelector );
 
   if ( relation.isValid() )
   {
@@ -184,6 +182,7 @@ void QgsRelationReferenceWidget::setRelationEditable( bool editable )
   mLineEdit->setEnabled( editable );
   mComboBox->setEnabled( editable );
   mMapIdentificationButton->setEnabled( editable );
+  mRemoveFKButton->setEnabled( editable );
 }
 
 void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
@@ -234,6 +233,7 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
     }
   }
 
+  mRemoveFKButton->setEnabled( true );
   highlightFeature( f );
   updateAttributeEditorFrame( f );
   emit foreignKeyChanged( foreignKey() );
@@ -264,7 +264,7 @@ void QgsRelationReferenceWidget::deleteForeignKey()
       mComboBox->setCurrentIndex( -1 );
     }
   }
-
+  mRemoveFKButton->setEnabled( false );
   updateAttributeEditorFrame( QgsFeature() );
   emit foreignKeyChanged( QVariant( QVariant::Int ) );
 }
@@ -339,6 +339,7 @@ void QgsRelationReferenceWidget::setReadOnlySelector( bool readOnly )
 {
   mComboBox->setHidden( readOnly );
   mLineEdit->setVisible( readOnly );
+  mRemoveFKButton->setVisible( mAllowNull && readOnly );
   mReadOnlySelector = readOnly;
 }
 
@@ -497,38 +498,30 @@ void QgsRelationReferenceWidget::deleteHighlight()
   mHighlight = NULL;
 }
 
-void QgsRelationReferenceWidget::mapIdentificationTriggered( QAction* action )
+void QgsRelationReferenceWidget::mapIdentification()
 {
-  if ( action == mRemoveFeatureAction )
+  if ( !mReferencedLayer )
+    return;
+
+  const QgsVectorLayerTools* tools = mEditorContext.vectorLayerTools();
+  if ( !tools )
+    return;
+  if ( !mCanvas )
+    return;
+
+  mMapTool = new QgsMapToolIdentifyFeature( mReferencedLayer, mCanvas );
+  mCanvas->setMapTool( mMapTool );
+  mWindowWidget = window();
+  mWindowWidget->hide();
+  connect( mMapTool, SIGNAL( featureIdentified( QgsFeature ) ), this, SLOT( featureIdentified( const QgsFeature ) ) );
+  connect( mMapTool, SIGNAL( deactivated() ), this, SLOT( mapToolDeactivated() ) );
+
+  if ( mMessageBar )
   {
-    deleteForeignKey();
-  }
-
-  else if ( action == mMapIdentificationAction )
-  {
-    if ( !mReferencedLayer )
-      return;
-
-    const QgsVectorLayerTools* tools = mEditorContext.vectorLayerTools();
-    if ( !tools )
-      return;
-    if ( !mCanvas )
-      return;
-
-    mMapTool = new QgsMapToolIdentifyFeature( mReferencedLayer, mCanvas );
-    mCanvas->setMapTool( mMapTool );
-    mWindowWidget = window();
-    mWindowWidget->hide();
-    connect( mMapTool, SIGNAL( featureIdentified( QgsFeature ) ), this, SLOT( featureIdentified( const QgsFeature ) ) );
-    connect( mMapTool, SIGNAL( deactivated() ), this, SLOT( mapToolDeactivated() ) );
-
-    if ( mMessageBar )
-    {
-      QString title = QString( "Relation %1 for %2." ).arg( mRelationName ).arg( mReferencingLayer->name() );
-      QString msg = tr( "identify a feature of %1 to be associated. Press <ESC> to cancel." ).arg( mReferencedLayer->name() );
-      mMessageBarItem = QgsMessageBar::createMessage( title, msg );
-      mMessageBar->pushItem( mMessageBarItem );
-    }
+    QString title = QString( "Relation %1 for %2." ).arg( mRelationName ).arg( mReferencingLayer->name() );
+    QString msg = tr( "identify a feature of %1 to be associated. Press <ESC> to cancel." ).arg( mReferencedLayer->name() );
+    mMessageBarItem = QgsMessageBar::createMessage( title, msg );
+    mMessageBar->pushItem( mMessageBarItem );
   }
 }
 
@@ -567,6 +560,7 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature& feature )
     mComboBox->setCurrentIndex( mComboBox->findData( feature.attribute( mFkeyFieldIdx ) ) );
   }
 
+  mRemoveFKButton->setEnabled( true );
   highlightFeature( feature );
   updateAttributeEditorFrame( feature );
   emit foreignKeyChanged( foreignKey() );

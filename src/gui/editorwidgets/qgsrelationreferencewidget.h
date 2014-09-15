@@ -79,7 +79,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void highlightActionTriggered( QAction* action );
     void deleteHighlight();
     void openForm();
-    void mapIdentificationTriggered( QAction* action );
+    void mapIdentification();
     void comboReferenceChanged( int index );
     void deleteForeignKey();
     void featureIdentified( const QgsFeature& feature );
@@ -119,6 +119,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QVBoxLayout* mTopLayout;
     QHash<QgsFeatureId, QVariant> mFidFkMap; // Mapping from feature id => foreign key
     QToolButton* mMapIdentificationButton;
+    QToolButton* mRemoveFKButton;
     QToolButton* mOpenFormButton;
     QToolButton* mHighlightFeatureButton;
     QAction* mHighlightFeatureAction;
@@ -126,7 +127,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QAction* mPanHighlightFeatureAction;
     QAction* mOpenFormAction;
     QAction* mMapIdentificationAction;
-    QAction* mRemoveFeatureAction;
+    QAction* mRemoveFKAction;
     QComboBox* mComboBox;
     QgsCollapsibleGroupBox* mAttributeEditorFrame;
     QVBoxLayout* mAttributeEditorLayout;
