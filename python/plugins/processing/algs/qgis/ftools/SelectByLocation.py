@@ -80,6 +80,7 @@ class SelectByLocation(GeoAlgorithm):
         selectLayer = dataobjects.getObjectFromUri(filename)
 
         oldSelection = set(inputLayer.selectedFeaturesIds())
+        inputLayer.removeSelection()
         index = vector.spatialindex(inputLayer)
 
         def _points_op(geomA,geomB):
