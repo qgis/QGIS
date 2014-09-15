@@ -186,11 +186,11 @@ void QgsRelationReferenceWidget::setRelationEditable( bool editable )
   mMapIdentificationButton->setEnabled( editable );
 }
 
-void QgsRelationReferenceWidget::setRelatedFeature( const QVariant& value )
+void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
 {
   if ( !value.isValid() || value.isNull() )
   {
-    removeRelatedFeature();
+    deleteForeignKey();
     return;
   }
 
@@ -210,7 +210,7 @@ void QgsRelationReferenceWidget::setRelatedFeature( const QVariant& value )
 
   if ( !f.isValid() )
   {
-    removeRelatedFeature();
+    deleteForeignKey();
     return;
   }
 
@@ -236,10 +236,10 @@ void QgsRelationReferenceWidget::setRelatedFeature( const QVariant& value )
 
   highlightFeature( f );
   updateAttributeEditorFrame( f );
-  emit relatedFeatureChanged( foreignKey() );
+  emit foreignKeyChanged( foreignKey() );
 }
 
-void QgsRelationReferenceWidget::removeRelatedFeature()
+void QgsRelationReferenceWidget::deleteForeignKey()
 {
   QVariant nullValue = QSettings().value( "qgis/nullValue", "NULL" );
   if ( mReadOnlySelector )
@@ -266,7 +266,7 @@ void QgsRelationReferenceWidget::removeRelatedFeature()
   }
 
   updateAttributeEditorFrame( QgsFeature() );
-  emit relatedFeatureChanged( QVariant( QVariant::Int ) );
+  emit foreignKeyChanged( QVariant( QVariant::Int ) );
 }
 
 void QgsRelationReferenceWidget::mapToolDeactivated()
@@ -501,7 +501,7 @@ void QgsRelationReferenceWidget::mapIdentificationTriggered( QAction* action )
 {
   if ( action == mRemoveFeatureAction )
   {
-    removeRelatedFeature();
+    deleteForeignKey();
   }
 
   else if ( action == mMapIdentificationAction )
@@ -539,7 +539,7 @@ void QgsRelationReferenceWidget::comboReferenceChanged( int index )
   mReferencedLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( feat );
   highlightFeature( feat );
   updateAttributeEditorFrame( feat );
-  emit relatedFeatureChanged( mFidFkMap.value( fid ) );
+  emit foreignKeyChanged( mFidFkMap.value( fid ) );
 }
 
 void QgsRelationReferenceWidget::updateAttributeEditorFrame( const QgsFeature feature )
@@ -569,7 +569,7 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature& feature )
 
   highlightFeature( feature );
   updateAttributeEditorFrame( feature );
-  emit relatedFeatureChanged( foreignKey() );
+  emit foreignKeyChanged( foreignKey() );
 
   // deactivate map tool if activate
   if ( mCanvas && mMapTool )

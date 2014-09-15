@@ -51,7 +51,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void setRelationEditable( bool editable );
 
     //! this sets the related feature using from the foreign key
-    void setRelatedFeature( const QVariant &value );
+    void setForeignKey( const QVariant &value );
 
     //! returns the related feature foreign key
     QVariant foreignKey();
@@ -73,7 +73,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void init();
 
   signals:
-    void relatedFeatureChanged( QVariant );
+    void foreignKeyChanged( QVariant );
 
   private slots:
     void highlightActionTriggered( QAction* action );
@@ -81,7 +81,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void openForm();
     void mapIdentificationTriggered( QAction* action );
     void comboReferenceChanged( int index );
-    void removeRelatedFeature();
+    void deleteForeignKey();
     void featureIdentified( const QgsFeature& feature );
     void mapToolDeactivated();
 

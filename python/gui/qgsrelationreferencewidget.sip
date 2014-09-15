@@ -44,5 +44,5 @@ class QgsRelationReferenceWidget : QWidget
     void init();
 
    signals:
-    void relatedFeatureChanged( QVariant );
+    void foreignKeyChanged( QVariant );
 };

@@ -39,7 +39,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     virtual void setEnabled( bool enabled );
 
   private slots:
-    void relatedFeatureChanged( QVariant value );
+    void foreignKeyChanged( QVariant value );
 
   private:
     QgsRelationReferenceWidget* mWidget;
