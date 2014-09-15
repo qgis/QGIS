@@ -1298,11 +1298,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * <li>Photo (QgsPhotoWidgetWrapper)</li>
      * <li>Range (QgsRangeWidgetWrapper)</li>
      * <li>RelationReference (QgsRelationReferenceWidgetWrapper)</li>
-     * <li>TextEdit (QgsTextEditWidgetWrapper)</li>
-     * <li>UniqueValues (QgsUniqueValueWidgetWrapper)</li>
+     * <li>TextEdit (QgsTextEditWrapper)</li>
+     * <li>UniqueValues (QgsUniqueValuesWidgetWrapper)</li>
      * <li>UuidGenerator (QgsUuidWidgetWrapper)</li>
      * <li>ValueMap (QgsValueMapWidgetWrapper)</li>
-     * <li>ValueRelation (QgsValueRelationWidget)</li>
+     * <li>ValueRelation (QgsValueRelationWidgetWrapper)</li>
      * <li>WebView (QgsWebViewWidgetWrapper)</li>
      * </ul>
      *
@@ -1318,7 +1318,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * Example:
      * \code{.py}
-     *   layer.setEditorWidgetV2Config( 1, { 'Layer': 'otherlayerid_1234', 'Key': 'Keyfield', 'Value': 'ValueField } )
+     *   layer.setEditorWidgetV2Config( 1, { 'Layer': 'otherlayerid_1234', 'Key': 'Keyfield', 'Value': 'ValueField' } )
      * \endcode
      *
      * @param attrIdx     Index of the field
