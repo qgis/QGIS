@@ -31,6 +31,7 @@ __revision__ = '$Format:%H$'
 from PyQt4.QtGui import *
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
+from ftools.RegularPoints import RegularPoints
 
 from RandomExtract import RandomExtract
 from RandomExtractWithinSubsets import RandomExtractWithinSubsets
@@ -145,7 +146,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RandomSelection(), RandomSelectionWithinSubsets(),
                         SelectByLocation(), RandomExtract(),
                         RandomExtractWithinSubsets(), ExtractByLocation(),
-                        SpatialJoin(), DeleteColumn(),
+                        SpatialJoin(), RegularPoints(),
+                        DeleteColumn(),
                         DeleteDuplicateGeometries(), TextToFloat(),
                         ExtractByAttribute(), SelectByAttribute(), Grid(),
                         Gridify(), HubDistance(), HubLines(), Merge(),
