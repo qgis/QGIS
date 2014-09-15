@@ -21,6 +21,7 @@
 #include <QColorDialog>
 #include <QMimeData>
 #include <QClipboard>
+#include <QKeyEvent>
 
 //For model testing
 //#include "modeltest.h"
@@ -129,6 +130,31 @@ void QgsColorSchemeList::copyColors()
   //copy colors
   QMimeData* mimeData = QgsSymbolLayerV2Utils::colorListToMimeData( colorsToCopy );
   QApplication::clipboard()->setMimeData( mimeData );
+}
+
+void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
+{
+  //listen out for delete/backspace presses and remove selected colors
+  if (( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete ) )
+  {
+    QList<int> rows;
+    foreach ( const QModelIndex &index, selectedIndexes() )
+    {
+      rows << index.row();
+    }
+    //remove duplicates
+    QList<int> rowsToRemove =  QList<int>::fromSet( rows.toSet() );
+
+    //remove rows in descending order
+    qSort( rowsToRemove.begin(), rowsToRemove.end(), qGreater<int>() );
+    foreach ( const int row, rowsToRemove )
+    {
+      mModel->removeRow( row );
+    }
+    return;
+  }
+
+  QTreeView::keyPressEvent( event );
 }
 
 bool QgsColorSchemeList::importColorsFromGpl( QFile &file )

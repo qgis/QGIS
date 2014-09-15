@@ -170,5 +170,9 @@ class QgsColorSchemeList: QTreeView
      */
     void copyColors();
 
+  protected:
+
+    void keyPressEvent( QKeyEvent* event );
+
 };
 

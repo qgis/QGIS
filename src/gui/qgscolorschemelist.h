@@ -211,6 +211,10 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
      */
     void copyColors();
 
+  protected:
+
+    void keyPressEvent( QKeyEvent* event );
+
   private:
     QgsColorScheme* mScheme;
     QgsColorSchemeModel* mModel;
