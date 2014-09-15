@@ -24,13 +24,13 @@
     <item>
      <layout class="QHBoxLayout" name="mLayoutHeader">
       <property name="spacing">
-       <number>5</number>
+       <number>6</number>
       </property>
       <property name="leftMargin">
-       <number>5</number>
+       <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>5</number>
+       <number>0</number>
       </property>
       <item>
        <widget class="QToolButton" name="mBtnRefresh">
