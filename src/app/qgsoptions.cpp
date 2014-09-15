@@ -1315,7 +1315,10 @@ void QgsOptions::saveOptions()
   //
   // Color palette
   //
-  mTreeCustomColors->saveColorsToScheme();
+  if ( mTreeCustomColors->isDirty() )
+  {
+    mTreeCustomColors->saveColorsToScheme();
+  }
 
   //
   // Composer settings

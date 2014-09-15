@@ -918,7 +918,10 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "DefaultStyles", "/ColorRamp", cboStyleColorRamp->currentText() );
   QgsProject::instance()->writeEntry( "DefaultStyles", "/AlphaInt", ( int )( 255 - ( mTransparencySlider->value() * 2.55 ) ) );
   QgsProject::instance()->writeEntry( "DefaultStyles", "/RandomColors", cbxStyleRandomColors->isChecked() );
-  mTreeProjectColors->saveColorsToScheme();
+  if ( mTreeProjectColors->isDirty() )
+  {
+    mTreeProjectColors->saveColorsToScheme();
+  }
 
   // store project macros
   QString pythonMacros = ptePythonMacros->text();

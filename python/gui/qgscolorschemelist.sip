@@ -87,6 +87,11 @@ class QgsColorSchemeModel: QAbstractItemModel
      */
     void addColor( const QColor color, const QString label = QString() );
 
+    /**Returns whether the color scheme model has been modified
+     * @returns true if colors have been modified
+     */
+    bool isDirty() const;
+
 };
 
 /** \ingroup gui
@@ -137,6 +142,11 @@ class QgsColorSchemeList: QTreeView
      * @see importColorsFromGpl
      */
     bool exportColorsToGpl( QFile &file );
+
+    /**Returns whether the color scheme list has been modified
+     * @returns true if colors have been modified
+     */
+    bool isDirty() const;
 
   public slots:
 

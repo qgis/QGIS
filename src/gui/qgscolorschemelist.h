@@ -117,6 +117,11 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
      */
     void addColor( const QColor color, const QString label = QString() );
 
+    /**Returns whether the color scheme model has been modified
+     * @returns true if colors have been modified
+     */
+    bool isDirty() const { return mIsDirty; }
+
   private:
 
     enum Columns
@@ -129,6 +134,7 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     QgsColorScheme* mScheme;
     QString mContext;
     QColor mBaseColor;
+    bool mIsDirty;
 };
 
 /** \ingroup gui
@@ -177,6 +183,11 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
      * @see importColorsFromGpl
      */
     bool exportColorsToGpl( QFile &file );
+
+    /**Returns whether the color scheme list has been modified
+     * @returns true if colors have been modified
+     */
+    bool isDirty() const;
 
   public slots:
 

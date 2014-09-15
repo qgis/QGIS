@@ -162,6 +162,16 @@ bool QgsColorSchemeList::exportColorsToGpl( QFile &file )
   return QgsSymbolLayerV2Utils::saveColorsToGpl( file, QString(), mModel->colors() );
 }
 
+bool QgsColorSchemeList::isDirty() const
+{
+  if ( !mModel )
+  {
+    return false;
+  }
+
+  return mModel->isDirty();
+}
+
 //
 // QgsColorSchemeModel
 //
@@ -171,6 +181,7 @@ QgsColorSchemeModel::QgsColorSchemeModel( QgsColorScheme *scheme, const QString 
     , mScheme( scheme )
     , mContext( context )
     , mBaseColor( baseColor )
+    , mIsDirty( false )
 {
   if ( scheme )
   {
@@ -297,11 +308,13 @@ bool QgsColorSchemeModel::setData( const QModelIndex &index, const QVariant &val
     case ColorSwatch:
       mColors[ index.row()].first = value.value<QColor>();
       emit dataChanged( index, index );
+      mIsDirty = true;
       return true;
 
     case ColorLabel:
       mColors[ index.row()].second = value.toString();
       emit dataChanged( index, index );
+      mIsDirty = true;
       return true;
 
     default:
@@ -425,6 +438,7 @@ bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction ac
     setData( labelIdx, !( *colorIt ).second.isEmpty() ? ( *colorIt ).second : QgsSymbolLayerV2Utils::colorToName(( *colorIt ).first ) );
     beginRow++;
   }
+  mIsDirty = true;
 
   return true;
 }
@@ -434,6 +448,7 @@ void QgsColorSchemeModel::setScheme( QgsColorScheme *scheme, const QString conte
   mScheme = scheme;
   mContext = context;
   mBaseColor = baseColor;
+  mIsDirty = false;
   beginResetModel();
   mColors = scheme->fetchColors( mContext, mBaseColor );
   endResetModel();
@@ -462,6 +477,8 @@ bool QgsColorSchemeModel::removeRows( int row, int count, const QModelIndex &par
     mColors.removeAt( i );
     endRemoveRows();
   }
+
+  mIsDirty = true;
   return true;
 }
 
@@ -481,6 +498,7 @@ bool QgsColorSchemeModel::insertRows( int row, int count, const QModelIndex& par
     mColors.insert( i, newColor );
   }
   endInsertRows();
+  mIsDirty = true;
   return true;
 }
 
@@ -497,6 +515,7 @@ void QgsColorSchemeModel::addColor( const QColor color, const QString label )
   setData( colorIdx, QVariant( color ) );
   QModelIndex labelIdx = index( row, 1, QModelIndex() );
   setData( labelIdx, QVariant( label ) );
+  mIsDirty = true;
 }
 
 
