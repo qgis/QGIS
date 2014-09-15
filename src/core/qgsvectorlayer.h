@@ -1264,14 +1264,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**
      * Get edit type
      *
-     * @deprecated Use @see{editorWidgetV2} instead
+     * @deprecated Use editorWidgetV2() instead
      */
     Q_DECL_DEPRECATED EditType editType( int idx );
 
     /**
      * Get edit type
      *
-     * @deprecated Use @see{setEditorWidgetV2} instead
+     * @deprecated Use setEditorWidgetV2() instead
      */
     Q_DECL_DEPRECATED void setEditType( int idx, EditType edit );
 
@@ -1312,17 +1312,26 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void setEditorWidgetV2( int attrIdx, const QString& widgetType );
 
     /**
-     * Set the editor widget config for a field
+     * Set the editor widget config for a field.
+     *
+     * Python: Will accept a map.
+     *
+     * Example:
+     * \code{.py}
+     *   layer.setEditorWidgetV2Config( 1, { 'Layer': 'otherlayerid_1234', 'Key': 'Keyfield', 'Value': 'ValueField } )
+     * \endcode
      *
      * @param attrIdx     Index of the field
      * @param config      The config to set for this field
+     *
+     * @see setEditorWidgetV2() for a list of widgets and choose the widget to see the available options.
      */
     void setEditorWidgetV2Config( int attrIdx, const QgsEditorWidgetConfig& config );
 
     /**
      * Set string representing 'true' for a checkbox (added in 1.4)
      *
-     * @deprecated Use @see{setEditorWidgetV2Config} instead
+     * @deprecated Use setEditorWidgetV2Config() instead
      */
     Q_DECL_DEPRECATED void setCheckedState( int idx, QString checked, QString notChecked );
 
@@ -1354,14 +1363,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**
      * Access value map
-     * @deprecated Use @see{editorWidgetV2Config} instead
+     * @deprecated Use editorWidgetV2Config() instead
      */
     Q_DECL_DEPRECATED QMap<QString, QVariant> valueMap( int idx );
 
     /**
      * Access range widget config data
      *
-     * @deprecated Use @see{editorWidgetV2Config} instead
+     * @deprecated Use editorWidgetV2Config() instead
      */
     Q_DECL_DEPRECATED RangeData range( int idx );
 
@@ -1385,7 +1394,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * @note added in 1.9
      *
-     * @deprecated Use @see{setEditorWdigetV2Config} instead
+     * @deprecated Use setEditorWidgetV2Config() instead
      */
     Q_DECL_DEPRECATED QString dateFormat( int idx );
 
@@ -1394,7 +1403,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * @note added in 1.9
      *
-     * @deprecated Use @see{setEditorWdigetV2Config} instead
+     * @deprecated Use setEditorWidgetV2Config() instead
      */
     Q_DECL_DEPRECATED QSize widgetSize( int idx );
 
