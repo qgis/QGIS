@@ -96,6 +96,9 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     /** Called when apply button is pressed or dialog is accepted */
     void apply();
 
+    /** Called when cancel button is pressed */
+    void onCancel();
+
     //
     //methods reimplemented from qt designer base class
     //
@@ -165,6 +168,9 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QgsDiagramProperties* diagramPropertiesDialog;
     /**Fields dialog. If apply is pressed, options are applied to vector's diagrams*/
     QgsFieldsProperties* mFieldsPropertiesDialog;
+
+    //! List of joins of a layer at the time of creation of the dialog. Used to return joins to previous state if dialog is cancelled
+    QList< QgsVectorJoinInfo > mOldJoins;
 
     void initDiagramTab();
 
