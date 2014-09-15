@@ -173,6 +173,10 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     query = self.editSql.text()
     if query == "":
       return
+      
+    # remove a trailing ';' from query if present
+    if query.strip().endswith(';'):
+       query = query.strip()[:-1]      
 
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
@@ -216,7 +220,11 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
       if not escaped.search(query):
         break
       aliasIndex += 1
-
+    
+    # remove a trailing ';' from query if present
+    if query.strip().endswith(';'):
+       query = query.strip()[:-1]
+    
     # get all the columns
     cols = []
     connector = self.db.connector
