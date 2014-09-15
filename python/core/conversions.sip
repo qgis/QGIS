@@ -1564,4 +1564,4 @@ template <TYPE>
     return sipGetState(sipTransferObj);
 %End
 };
-%Endif
+%End
