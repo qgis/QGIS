@@ -53,7 +53,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
     /**
      * Add a relation.
      *
-     * @param The relation to add.
+     * @param relation The relation to add.
      */
     void addRelation( const QgsRelation& relation );
 
