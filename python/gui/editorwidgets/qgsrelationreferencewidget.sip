@@ -13,7 +13,7 @@ class QgsRelationReferenceWidget : QWidget
       Scale
     };
 
-    explicit QgsRelationReferenceWidget( QWidget* parent );
+    explicit QgsRelationReferenceWidget( QWidget* parent /TransferThis/ );
 
     ~QgsRelationReferenceWidget();
 
@@ -22,7 +22,7 @@ class QgsRelationReferenceWidget : QWidget
     void setRelationEditable( bool editable );
 
     //! this sets the related feature using from the foreign key
-    void setRelatedFeature( const QVariant &value );
+    void setForeignKey( const QVariant &value );
 
     //! returns the related feature foreign key
     QVariant foreignKey();

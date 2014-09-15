@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsrelationreferencewidget.cpp
+    qgsrelationreferencewidgetwrapper.cpp
      --------------------------------------
     Date                 : 20.4.2013
     Copyright            : (C) 2013 Matthias Kuhn

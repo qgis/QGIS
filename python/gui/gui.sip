@@ -174,5 +174,7 @@
 %Include editorwidgets/core/qgseditorwidgetfactory.sip
 %Include editorwidgets/core/qgseditorwidgetregistry.sip
 %Include editorwidgets/core/qgseditorwidgetwrapper.sip
+%Include editorwidgets/qgsrelationreferencewidget.sip
+%Include editorwidgets/qgsrelationreferencewidgetwrapper.sip
 
 %Include layertree/qgslayertreeview.sip
