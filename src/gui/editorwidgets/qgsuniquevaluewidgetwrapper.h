@@ -21,6 +21,16 @@
 #include <QComboBox>
 #include <QLineEdit>
 
+/**
+ * Wraps a unique value widget. Will offer any value previously used for this field.
+ *
+ * Options:
+ * <ul>
+ * <li><b>Editable</b> <i>If True the user can manually insert new (not yet used) values.</i></li>
+ * </ul>
+ *
+ */
+
 class GUI_EXPORT QgsUniqueValuesWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
