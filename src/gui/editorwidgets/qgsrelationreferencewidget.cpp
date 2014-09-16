@@ -165,6 +165,7 @@ void QgsRelationReferenceWidget::setRelation( QgsRelation relation, bool allowNu
   else
   {
     QLabel* lbl = new QLabel( tr( "The relation is not valid. Please make sure your relation definitions are ok." ) );
+    lbl->setWordWrap( true );
     QFont font = lbl->font();
     font.setItalic( true );
     lbl->setStyleSheet( "QLabel { color: red; } " );
