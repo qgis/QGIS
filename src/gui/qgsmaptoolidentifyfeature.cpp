@@ -18,10 +18,10 @@
 #include "qgsmaptoolidentifyfeature.h"
 #include "qgsmapcanvas.h"
 
-QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsVectorLayer* vl, QgsMapCanvas* canvas )
+QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas* canvas, QgsVectorLayer* vl )
     : QgsMapToolIdentify( canvas )
-    , mLayer( vl )
     , mCanvas( canvas )
+    , mLayer( vl )
 {
 }
 

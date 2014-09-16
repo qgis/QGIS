@@ -516,7 +516,7 @@ void QgsRelationReferenceWidget::mapIdentification()
   if ( !mCanvas )
     return;
 
-  mMapTool = new QgsMapToolIdentifyFeature( mReferencedLayer, mCanvas );
+  mMapTool = new QgsMapToolIdentifyFeature( mCanvas, mReferencedLayer );
   mCanvas->setMapTool( mMapTool );
   mWindowWidget = window();
   mWindowWidget->hide();

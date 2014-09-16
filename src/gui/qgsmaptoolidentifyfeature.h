@@ -19,7 +19,7 @@
 #include "qgsmaptoolidentify.h"
 
 /**
- * @brief The QgsMapToolIdentifyFeature class is a map tool to be used to identify a feature on a chosen layer.
+ * @brief The QgsMapToolIdentifyFeature class is a map tool to identify a feature on a chosen layer.
  * Once the map tool is enable, user can click on the map canvas to identify a feature.
  * A signal will then be emitted.
  */
@@ -28,7 +28,15 @@ class GUI_EXPORT QgsMapToolIdentifyFeature : public QgsMapToolIdentify
     Q_OBJECT
 
   public:
-    QgsMapToolIdentifyFeature( QgsVectorLayer* vl, QgsMapCanvas* canvas );
+    /**
+     * @brief QgsMapToolIdentifyFeature is a map tool to identify a feature on a chosen layer
+     * @param canvas the map canvas
+     * @param vl the vector layer. The map tool can be initialized without any layer and can be set afterward.
+     */
+    QgsMapToolIdentifyFeature( QgsMapCanvas* canvas, QgsVectorLayer* vl = 0 );
+
+    //! change the layer used by the map tool to identify
+    void setLayer( QgsVectorLayer* vl ){ mLayer = vl; }
 
     virtual void canvasReleaseEvent( QMouseEvent* e );
 
@@ -40,8 +48,8 @@ class GUI_EXPORT QgsMapToolIdentifyFeature : public QgsMapToolIdentify
     virtual void keyPressEvent( QKeyEvent* e );
 
   private:
-    QgsVectorLayer* mLayer;
     QgsMapCanvas* mCanvas;
+    QgsVectorLayer* mLayer;
 };
 
 #endif // QGSMAPTOOLIDENTIFYFEATURE_H

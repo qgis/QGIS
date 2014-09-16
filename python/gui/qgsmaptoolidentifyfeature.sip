@@ -5,7 +5,15 @@ class QgsMapToolIdentifyFeature : QgsMapToolIdentify
 %End
 
   public:
-    QgsMapToolIdentifyFeature( QgsVectorLayer* vl, QgsMapCanvas* canvas );
+    /**
+     * @brief QgsMapToolIdentifyFeature is a map tool to identify a feature on a chosen layer
+     * @param canvas the map canvas
+     * @param vl the vector layer. The map tool can be initialized without any layer and can be set afterward.
+     */
+    QgsMapToolIdentifyFeature( QgsMapCanvas* canvas, QgsVectorLayer* vl = 0 );
+
+    //! change the layer used by the map tool to identify
+    void setLayer( QgsVectorLayer* vl );
 
     void canvasReleaseEvent( QMouseEvent* e );
 
