@@ -1825,10 +1825,10 @@ int QgsExpression::functionCount()
 }
 
 QgsExpression::QgsExpression( const QString& expr )
-  : mRowNumber( 0 )
-  , mScale( 0 )
-  , mExp( expr )
-  , mCalc( 0 )
+    : mRowNumber( 0 )
+    , mScale( 0 )
+    , mExp( expr )
+    , mCalc( 0 )
 {
   mRootNode = ::parseExpression( expr, mParserErrorString );
 
@@ -1901,19 +1901,30 @@ bool QgsExpression::prepare( const QgsFields& fields )
   return mRootNode->prepare( this, fields );
 }
 
-QVariant QgsExpression::evaluate( const QgsFeature* f )
+QVariant QgsExpression::evaluate( const QgsFeature* f, const QgsField field )
 {
+  QVariant result;
+
   mEvalErrorString = QString();
   if ( !mRootNode )
   {
     mEvalErrorString = QObject::tr( "No root node! Parsing failed?" );
-    return QVariant();
+  }
+  else
+  {
+    result = mRootNode->eval( this, f );
+
+    // If the field type is set and we cannot properly convert
+    // the result we return an Invalid QVariant
+    if ( field.type() != QVariant::Invalid &&
+         !field.convertCompatible( result ) )
+      result = QVariant();
   }
 
-  return mRootNode->eval( this, f );
+  return result;
 }
 
-QVariant QgsExpression::evaluate( const QgsFeature* f, const QgsFields& fields )
+QVariant QgsExpression::evaluate( const QgsFeature* f, const QgsFields& fields , const QgsField field )
 {
   // first prepare
   bool res = prepare( fields );
@@ -1921,35 +1932,7 @@ QVariant QgsExpression::evaluate( const QgsFeature* f, const QgsFields& fields )
     return QVariant();
 
   // then evaluate
-  return evaluate( f );
-}
-
-QVariant QgsExpression::evaluate( const QgsField& field, const QgsFeature* f )
-{
-  QVariant result = evaluate( f );
-
-  // If the target field is not set or we can convert the result
-  // return the result
-  // If it's not possible, return an invalid QVariant (error)
-  if ( field.type() == QVariant::Invalid ||
-       field.convertCompatible( result ) )
-    return result;
-  else
-    return QVariant();
-}
-
-QVariant QgsExpression::evaluate( const QgsField& field, const QgsFeature* f, const QgsFields& fields )
-{
-  QVariant result = evaluate( f, fields );
-
-  // If the target field is not set or we can convert the result
-  // return the result
-  // If it's not possible, return an invalid QVariant (error)
-  if ( field.type() == QVariant::Invalid ||
-       field.convertCompatible( result ) )
-    return result;
-  else
-    return QVariant();
+  return evaluate( f, field );
 }
 
 QString QgsExpression::dump() const

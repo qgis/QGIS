@@ -353,7 +353,6 @@ QgsVectorLayerUndoCommandDeleteAttribute::QgsVectorLayerUndoCommandDeleteAttribu
     // need to store the field definition
     mOldField = mBuffer->mAddedAttributes[mOriginIndex];
   }
-
   // save values of new features
   for ( QgsFeatureMap::const_iterator it = mBuffer->mAddedFeatures.begin(); it != mBuffer->mAddedFeatures.end(); ++it )
   {

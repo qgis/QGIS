@@ -212,7 +212,7 @@ void QgsFieldCalculator::accept()
     }
 
     exp.setCurrentRowNumber( rownum );
-    QVariant value = exp.evaluate( mVectorLayer->pendingFields()[mAttributeId], &feature );
+    QVariant value = exp.evaluate( &feature, mVectorLayer->pendingFields()[mAttributeId] );
     if ( exp.hasEvalError() )
     {
       calculationSuccess = false;
