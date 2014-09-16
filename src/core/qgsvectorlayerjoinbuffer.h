@@ -33,12 +33,13 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
 {
     Q_OBJECT
   public:
-    QgsVectorLayerJoinBuffer();
+    QgsVectorLayerJoinBuffer( QgsVectorLayer* layer = 0 );
     ~QgsVectorLayerJoinBuffer();
 
     /**Joins another vector layer to this layer
-      @param joinInfo join object containing join layer id, target and source field */
-    void addJoin( const QgsVectorJoinInfo& joinInfo );
+      @param joinInfo join object containing join layer id, target and source field
+      @return (since 2.6) whether the join was successfully added */
+    bool addJoin( const QgsVectorJoinInfo& joinInfo );
 
     /**Removes  a vector layer join*/
     void removeJoin( const QString& joinLayerId );
@@ -89,6 +90,8 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
     void joinedLayerUpdatedFields();
 
   private:
+
+    QgsVectorLayer* mLayer;
 
     /**Joined vector layers*/
     QgsVectorJoinList mVectorJoins;

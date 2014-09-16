@@ -42,6 +42,7 @@ class TestVectorLayerJoinBuffer: public QObject
     void testJoinBasic_data();
     void testJoinBasic();
     void testJoinTransitive();
+    void testJoinDetectCycle();
     void testJoinSubset_data();
     void testJoinSubset();
 
@@ -198,6 +199,33 @@ void TestVectorLayerJoinBuffer::testJoinTransitive()
   // cleanup
   mLayerA->removeJoin( mLayerB->id() );
   mLayerB->removeJoin( mLayerC->id() );
+}
+
+
+void TestVectorLayerJoinBuffer::testJoinDetectCycle()
+{
+  // if A joins B and B joins A, we may get to an infinite loop if the case is not handled properly
+
+  QgsVectorJoinInfo joinInfo;
+  joinInfo.targetFieldName = "id_a";
+  joinInfo.joinLayerId = mLayerB->id();
+  joinInfo.joinFieldName = "id_b";
+  joinInfo.memoryCache = true;
+  mLayerA->addJoin( joinInfo );
+
+  QgsVectorJoinInfo joinInfo2;
+  joinInfo2.targetFieldName = "id_b";
+  joinInfo2.joinLayerId = mLayerA->id();
+  joinInfo2.joinFieldName = "id_a";
+  joinInfo2.memoryCache = true;
+  bool res = mLayerB->addJoin( joinInfo2 );
+
+  QVERIFY( !res );
+
+  // the join in layer B must be rejected
+  QVERIFY( mLayerB->vectorJoins().count() == 0 );
+
+  mLayerA->removeJoin( mLayerB->id() );
 }
 
 

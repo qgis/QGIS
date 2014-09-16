@@ -1298,7 +1298,7 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   //load vector joins
   if ( !mJoinBuffer )
   {
-    mJoinBuffer = new QgsVectorLayerJoinBuffer();
+    mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
     connect( mJoinBuffer, SIGNAL( joinedFieldsChanged() ), this, SLOT( onJoinedFieldsChanged() ) );
   }
   mJoinBuffer->readXml( layer_node );
@@ -1361,7 +1361,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       // get and store the feature type
       mWkbType = mDataProvider->geometryType();
 
-      mJoinBuffer = new QgsVectorLayerJoinBuffer();
+      mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
       connect( mJoinBuffer, SIGNAL( joinedFieldsChanged() ), this, SLOT( onJoinedFieldsChanged() ) );
       mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
       updateFields();
@@ -2736,10 +2736,9 @@ int QgsVectorLayer::fieldNameIndex( const QString& fieldName ) const
   return pendingFields().fieldNameIndex( fieldName );
 }
 
-void QgsVectorLayer::addJoin( const QgsVectorJoinInfo& joinInfo )
+bool QgsVectorLayer::addJoin( const QgsVectorJoinInfo& joinInfo )
 {
-  mJoinBuffer->addJoin( joinInfo );
-  updateFields();
+  return mJoinBuffer->addJoin( joinInfo );
 }
 
 void QgsVectorLayer::checkJoinLayerRemove( QString theLayerId )
@@ -2750,7 +2749,6 @@ void QgsVectorLayer::checkJoinLayerRemove( QString theLayerId )
 void QgsVectorLayer::removeJoin( const QString& joinLayerId )
 {
   mJoinBuffer->removeJoin( joinLayerId );
-  updateFields();
 }
 
 const QList< QgsVectorJoinInfo >& QgsVectorLayer::vectorJoins() const

@@ -22,7 +22,8 @@
 
 #include <QDomElement>
 
-QgsVectorLayerJoinBuffer::QgsVectorLayerJoinBuffer()
+QgsVectorLayerJoinBuffer::QgsVectorLayerJoinBuffer( QgsVectorLayer* layer )
+ : mLayer( layer )
 {
 }
 
@@ -30,9 +31,48 @@ QgsVectorLayerJoinBuffer::~QgsVectorLayerJoinBuffer()
 {
 }
 
-void QgsVectorLayerJoinBuffer::addJoin( const QgsVectorJoinInfo& joinInfo )
+static QList<QgsVectorLayer*> _outEdges( QgsVectorLayer* vl )
+{
+  QList<QgsVectorLayer*> lst;
+  foreach ( const QgsVectorJoinInfo& info, vl->vectorJoins() )
+  {
+    if ( QgsVectorLayer* joinVl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( info.joinLayerId ) ) )
+      lst << joinVl;
+  }
+  return lst;
+}
+
+static bool _hasCycleDFS( QgsVectorLayer* n, QHash<QgsVectorLayer*, int>& mark )
+{
+  if ( mark.value( n ) == 1 ) // temporary
+    return true;
+  if ( mark.value( n ) == 0 ) // not visited
+  {
+    mark[n] = 1; // temporary
+    foreach ( QgsVectorLayer* m, _outEdges(n) )
+    {
+      if ( _hasCycleDFS( m, mark ) )
+        return true;
+    }
+    mark[n] = 2; // permanent
+  }
+  return false;
+}
+
+
+bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorJoinInfo& joinInfo )
 {
   mVectorJoins.push_back( joinInfo );
+
+  // run depth-first search to detect cycles in the graph of joins between layers.
+  // any cycle would cause infinite recursion when updating fields
+  QHash<QgsVectorLayer*, int> markDFS;
+  if ( mLayer && _hasCycleDFS( mLayer, markDFS ) )
+  {
+    // we have to reject this one
+    mVectorJoins.pop_back();
+    return false;
+  }
 
   //cache joined layer to virtual memory if specified by user
   if ( joinInfo.memoryCache )
@@ -48,6 +88,7 @@ void QgsVectorLayerJoinBuffer::addJoin( const QgsVectorJoinInfo& joinInfo )
     connect( vl, SIGNAL( updatedFields() ), this, SLOT( joinedLayerUpdatedFields() ), Qt::UniqueConnection );
 
   emit joinedFieldsChanged();
+  return true;
 }
 
 
@@ -315,7 +356,7 @@ const QgsVectorJoinInfo* QgsVectorLayerJoinBuffer::joinForFieldIndex( int index,
 
 QgsVectorLayerJoinBuffer* QgsVectorLayerJoinBuffer::clone() const
 {
-  QgsVectorLayerJoinBuffer* cloned = new QgsVectorLayerJoinBuffer;
+  QgsVectorLayerJoinBuffer* cloned = new QgsVectorLayerJoinBuffer( mLayer );
   cloned->mVectorJoins = mVectorJoins;
   return cloned;
 }

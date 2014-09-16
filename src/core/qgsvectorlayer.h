@@ -640,8 +640,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Joins another vector layer to this layer
       @param joinInfo join object containing join layer id, target and source field
-      @note added in 1.7 */
-    void addJoin( const QgsVectorJoinInfo& joinInfo );
+      @note added in 1.7
+      @note since 2.6 returns bool indicating whether the join can be added */
+    bool addJoin( const QgsVectorJoinInfo& joinInfo );
 
     /** Removes  a vector layer join
       @note added in 1.7 */
