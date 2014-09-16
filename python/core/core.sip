@@ -95,6 +95,7 @@
 %Include qgssimplifymethod.sip
 %Include qgssnapper.sip
 %Include qgsspatialindex.sip
+%Include qgstextrenderer.sip
 %Include qgstolerance.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip

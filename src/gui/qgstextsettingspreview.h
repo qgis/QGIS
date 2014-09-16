@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgslabelpreview.h
+    qgstextsettingspreview.h
     ---------------------
     begin                : May 2010
     copyright            : (C) 2010 by Marco Hugentobler
@@ -12,37 +12,32 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSLABELPREVIEW_H
-#define QGSLABELPREVIEW_H
+#ifndef QGSTEXTSETTINGSPREVIEW_H
+#define QGSTEXTSETTINGSPREVIEW_H
 
-#include "qgspallabeling.h"
+#include "qgstextrenderer.h"
 
 #include <QLabel>
 
 class QgsRenderContext;
 
-class APP_EXPORT QgsLabelPreview : public QLabel
+class GUI_EXPORT QgsTextSettingsPreview : public QLabel
 {
   public:
-    QgsLabelPreview( QWidget* parent = NULL );
-    ~QgsLabelPreview();
-
-    void setTextColor( QColor color );
-
-    void setBuffer( double size, QColor color, Qt::PenJoinStyle joinStyle, bool noFill = false );
-
-    void setFont( QFont f ) { mFont = f; }
-    QFont font() { return mFont; }
+    QgsTextSettingsPreview( QWidget* parent = NULL );
+    ~QgsTextSettingsPreview();
 
     void paintEvent( QPaintEvent* e );
 
+    void setTextRendererSettings( const QgsTextRendererSettings &textSettings );
+
+    void setMapUnitScale( const double scale );
+
   private:
-    QgsPalLayerSettings* mTmpLyr;
-    QColor mTextColor;
-    QFont mFont;
+    QgsTextRendererSettings mTextSettings;
 
     // device-based render context
     QgsRenderContext* mContext;
 };
 
-#endif // LABELPREVIEW_H
+#endif // QGSTEXTSETTINGSPREVIEW_H
