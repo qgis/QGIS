@@ -228,9 +228,6 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     /**Checks if this vector layer will be removed (and sets mVectorLayer to 0 if yes) */
     void removeLayer( QString layerId );
 
-  signals:
-    /**This signal is emitted if the maximum number of feature changes (interactively)*/
-    void maximumNumberOfFeaturesChanged( int n );
 };
 
 #endif // QGSCOMPOSERATTRIBUTETABLEV2_H

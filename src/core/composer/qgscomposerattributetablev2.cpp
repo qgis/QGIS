@@ -157,6 +157,8 @@ void QgsComposerAttributeTableV2::setVectorLayer( QgsVectorLayer* layer )
 
   //listen for modifications to layer and refresh table when they occur
   QObject::connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( refreshAttributes() ) );
+
+  emit changed();
 }
 
 void QgsComposerAttributeTableV2::resetColumns()
@@ -202,6 +204,7 @@ void QgsComposerAttributeTableV2::setComposerMap( const QgsComposerMap* map )
     QObject::connect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( refreshAttributes() ) );
   }
   refreshAttributes();
+  emit changed();
 }
 
 void QgsComposerAttributeTableV2::setMaximumNumberOfFeatures( int features )
@@ -213,6 +216,7 @@ void QgsComposerAttributeTableV2::setMaximumNumberOfFeatures( int features )
 
   mMaximumNumberOfFeatures = features;
   refreshAttributes();
+  emit changed();
 }
 
 void QgsComposerAttributeTableV2::setDisplayOnlyVisibleFeatures( bool visibleOnly )
@@ -224,6 +228,7 @@ void QgsComposerAttributeTableV2::setDisplayOnlyVisibleFeatures( bool visibleOnl
 
   mShowOnlyVisibleFeatures = visibleOnly;
   refreshAttributes();
+  emit changed();
 }
 
 void QgsComposerAttributeTableV2::setFilterFeatures( bool filter )
@@ -235,6 +240,7 @@ void QgsComposerAttributeTableV2::setFilterFeatures( bool filter )
 
   mFilterFeatures = filter;
   refreshAttributes();
+  emit changed();
 }
 
 void QgsComposerAttributeTableV2::setFeatureFilter( const QString& expression )
@@ -246,6 +252,7 @@ void QgsComposerAttributeTableV2::setFeatureFilter( const QString& expression )
 
   mFeatureFilter = expression;
   refreshAttributes();
+  emit changed();
 }
 
 void QgsComposerAttributeTableV2::setDisplayAttributes( const QSet<int>& attr, bool refresh )

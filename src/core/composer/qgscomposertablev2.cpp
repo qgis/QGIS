@@ -61,6 +61,7 @@ bool QgsComposerTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool i
   elem.setAttribute( "headerFont", mHeaderFont.toString() );
   elem.setAttribute( "headerFontColor", QgsSymbolLayerV2Utils::encodeColor( mHeaderFontColor ) );
   elem.setAttribute( "headerHAlignment", QString::number(( int )mHeaderHAlignment ) );
+  elem.setAttribute( "headerMode", QString::number(( int )mHeaderMode ) );
   elem.setAttribute( "contentFont", mContentFont.toString() );
   elem.setAttribute( "contentFontColor", QgsSymbolLayerV2Utils::encodeColor( mContentFontColor ) );
   elem.setAttribute( "gridStrokeWidth", QString::number( mGridStrokeWidth ) );
@@ -288,8 +289,11 @@ void QgsComposerTableV2::setCellMargin( const double margin )
   }
 
   mCellMargin = margin;
+
   //since spacing has changed, we need to recalculate the table size
   adjustFrameToSize();
+
+  emit changed();
 }
 
 void QgsComposerTableV2::setHeaderFont( const QFont &font )
@@ -302,6 +306,8 @@ void QgsComposerTableV2::setHeaderFont( const QFont &font )
   mHeaderFont = font;
   //since font attributes have changed, we need to recalculate the table size
   adjustFrameToSize();
+
+  emit changed();
 }
 
 void QgsComposerTableV2::setHeaderFontColor( const QColor &color )
@@ -313,6 +319,8 @@ void QgsComposerTableV2::setHeaderFontColor( const QColor &color )
 
   mHeaderFontColor = color;
   repaint();
+
+  emit changed();
 }
 
 void QgsComposerTableV2::setHeaderHAlignment( const QgsComposerTableV2::HeaderHAlignment alignment )
@@ -324,6 +332,8 @@ void QgsComposerTableV2::setHeaderHAlignment( const QgsComposerTableV2::HeaderHA
 
   mHeaderHAlignment = alignment;
   repaint();
+
+  emit changed();
 }
 
 void QgsComposerTableV2::setHeaderMode( const QgsComposerTableV2::HeaderMode mode )
@@ -336,6 +346,7 @@ void QgsComposerTableV2::setHeaderMode( const QgsComposerTableV2::HeaderMode mod
   mHeaderMode = mode;
   adjustFrameToSize();
 
+  emit changed();
 }
 
 void QgsComposerTableV2::setContentFont( const QFont &font )
@@ -348,6 +359,8 @@ void QgsComposerTableV2::setContentFont( const QFont &font )
   mContentFont = font;
   //since font attributes have changed, we need to recalculate the table size
   adjustFrameToSize();
+
+  emit changed();
 }
 
 void QgsComposerTableV2::setContentFontColor( const QColor &color )
@@ -359,6 +372,8 @@ void QgsComposerTableV2::setContentFontColor( const QColor &color )
 
   mContentFontColor = color;
   repaint();
+
+  emit changed();
 }
 
 void QgsComposerTableV2::setShowGrid( const bool showGrid )
@@ -371,6 +386,8 @@ void QgsComposerTableV2::setShowGrid( const bool showGrid )
   mShowGrid = showGrid;
   //since grid spacing has changed, we need to recalculate the table size
   adjustFrameToSize();
+
+  emit changed();
 }
 
 void QgsComposerTableV2::setGridStrokeWidth( const double width )
@@ -383,6 +400,8 @@ void QgsComposerTableV2::setGridStrokeWidth( const double width )
   mGridStrokeWidth = width;
   //since grid spacing has changed, we need to recalculate the table size
   adjustFrameToSize();
+
+  emit changed();
 }
 
 void QgsComposerTableV2::setGridColor( const QColor &color )
@@ -394,6 +413,8 @@ void QgsComposerTableV2::setGridColor( const QColor &color )
 
   mGridColor = color;
   repaint();
+
+  emit changed();
 }
 
 void QgsComposerTableV2::setColumns( QgsComposerTableColumns columns )
