@@ -52,6 +52,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
     , mReferencingLayer( NULL )
     , mWindowWidget( NULL )
     , mShown( false )
+    , mIsEditable( true )
     , mEmbedForm( false )
     , mReadOnlySelector( false )
     , mAllowMapIdentification( false )
@@ -181,10 +182,10 @@ void QgsRelationReferenceWidget::setRelation( QgsRelation relation, bool allowNu
 
 void QgsRelationReferenceWidget::setRelationEditable( bool editable )
 {
-  mLineEdit->setEnabled( editable );
   mComboBox->setEnabled( editable );
   mMapIdentificationButton->setEnabled( editable );
   mRemoveFKButton->setEnabled( editable );
+  mIsEditable = editable;
 }
 
 void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
@@ -235,7 +236,7 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
     }
   }
 
-  mRemoveFKButton->setEnabled( true );
+  mRemoveFKButton->setEnabled( mIsEditable );
   highlightFeature( f );
   updateAttributeEditorFrame( f );
   emit foreignKeyChanged( foreignKey() );
@@ -508,7 +509,7 @@ void QgsRelationReferenceWidget::deleteHighlight()
 
 void QgsRelationReferenceWidget::mapIdentification()
 {
-  if ( !mReferencedLayer )
+  if ( !mAllowMapIdentification || !mReferencedLayer )
     return;
 
   const QgsVectorLayerTools* tools = mEditorContext.vectorLayerTools();
@@ -570,7 +571,7 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature& feature )
     mComboBox->setCurrentIndex( mComboBox->findData( feature.attribute( mFkeyFieldIdx ) ) );
   }
 
-  mRemoveFKButton->setEnabled( true );
+  mRemoveFKButton->setEnabled( mIsEditable );
   highlightFeature( feature );
   updateAttributeEditorFrame( feature );
   emit foreignKeyChanged( foreignKey() );

@@ -59,17 +59,27 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     void setEditorContext( QgsAttributeEditorContext context, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
 
+    //! determines if the form of the related feature will be shown
     bool embedForm() {return mEmbedForm;}
     void setEmbedForm( bool display );
 
+    //! determines if the foreign key is shown in a combox box or a read-only line edit
     bool readOnlySelector() {return mReadOnlySelector;}
     void setReadOnlySelector( bool readOnly );
 
+    //! determines if the widge offers the possibility to select the related feature on the map (using a dedicated map tool)
     bool allowMapIdentification() {return mAllowMapIdentification;}
     void setAllowMapIdentification( bool allowMapIdentification );
 
+    //! determines the open form button is visible in the widget
     bool openFormButtonVisible() {return mOpenFormButtonVisible;}
     void setOpenFormButtonVisible( bool openFormButtonVisible );
+
+  public slots:
+    //! open the form of the related feature in a new dialog
+    void openForm();
+    //! activate the map tool to select the related feature on the map
+    void mapIdentification();
 
   protected:
     virtual void showEvent( QShowEvent* e );
@@ -82,8 +92,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
   private slots:
     void highlightActionTriggered( QAction* action );
     void deleteHighlight();
-    void openForm();
-    void mapIdentification();
     void comboReferenceChanged( int index );
     void deleteForeignKey();
     void featureIdentified( const QgsFeature& feature );
@@ -113,6 +121,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QWidget* mWindowWidget;
     bool mShown;
     QgsRelation mRelation;
+    bool mIsEditable;
 
     // Q_PROPERTY
     bool mEmbedForm;

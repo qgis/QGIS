@@ -29,17 +29,27 @@ class QgsRelationReferenceWidget : QWidget
 
     void setEditorContext( QgsAttributeEditorContext context, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
 
+    //! determines if the form of the related feature will be shown
     bool embedForm();
     void setEmbedForm( bool display );
 
+    //! determines if the foreign key is shown in a combox box or a read-only line edit
     bool readOnlySelector();
     void setReadOnlySelector( bool readOnly );
 
+    //! determines if the widge offers the possibility to select the related feature on the map (using a dedicated map tool)
     bool allowMapIdentification();
     void setAllowMapIdentification( bool allowMapIdentification );
 
+    //! determines the open form button is visible in the widget
     bool openFormButtonVisible();
     void setOpenFormButtonVisible( bool openFormButtonVisible );
+
+  public slots:
+    //! open the form of the related feature in a new dialog
+    void openForm();
+    //! activate the map tool to select the related feature on the map
+    void mapIdentification();
 
   protected:
     virtual void showEvent( QShowEvent* e );
