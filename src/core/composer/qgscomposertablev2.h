@@ -329,6 +329,8 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      */
     int rowsVisible( const int frameIndex ) const;
 
+    int rowsVisible( const double frameHeight, const bool includeHeader ) const;
+
     /**Calculates a range of rows which should be visible in a given
      * rectangle.
      * @param extent visible extent
@@ -336,7 +338,6 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @returns row range
      */
     QPair<int, int> rowRange( const QRectF extent, const int frameIndex ) const;
-
 
     /**Draws the horizontal grid lines for the table.
      * @param painter destination painter for grid lines

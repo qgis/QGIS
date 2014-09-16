@@ -155,10 +155,20 @@ int QgsComposerTableV2::rowsVisible( const int frameIndex ) const
   }
   QRectF frameExtent = frame( frameIndex )->extent();
 
-  //calculate header height
-  double headerHeight = 0;
+  bool includeHeader = false;
   if (( mHeaderMode == QgsComposerTableV2::FirstFrame && frameIndex < 1 )
       || ( mHeaderMode == QgsComposerTableV2::AllFrames ) )
+  {
+    includeHeader = true;
+  }
+  return rowsVisible( frameExtent.height(), includeHeader );
+}
+
+int QgsComposerTableV2::rowsVisible( const double frameHeight, const bool includeHeader ) const
+{
+  //calculate header height
+  double headerHeight = 0;
+  if ( includeHeader )
   {
     //frame has a header
     headerHeight = 2 * ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin +  QgsComposerUtils::fontAscentMM( mHeaderFont );
@@ -170,7 +180,7 @@ int QgsComposerTableV2::rowsVisible( const int frameIndex ) const
   }
 
   //remaining height available for content rows
-  double contentHeight = frameExtent.height() - headerHeight;
+  double contentHeight = frameHeight - headerHeight;
 
   //calculate number of visible rows
   double rowHeight = ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin + QgsComposerUtils::fontAscentMM( mContentFont );
@@ -519,7 +529,8 @@ void QgsComposerTableV2::refreshAttributes()
 
   //since contents have changed, we also need to recalculate the column widths
   //and size of table
-  adjustFrameToSize();
+  //gettablecontents does this!
+// adjustFrameToSize();
 }
 
 bool QgsComposerTableV2::calculateMaxColumnWidths()
@@ -600,6 +611,14 @@ double QgsComposerTableV2::totalHeight() const
       //shown entire contents of table, nothing remaining
       return height;
     }
+  }
+
+  if ( mResizeMode == QgsComposerMultiFrame::ExtendToNextPage )
+  {
+    heightOfLastFrame = mComposition->paperHeight();
+    bool hasHeader = (( mHeaderMode == QgsComposerTableV2::FirstFrame && numberExistingFrames < 1 )
+                      || ( mHeaderMode == QgsComposerTableV2::AllFrames ) );
+    rowsVisibleInLastFrame = rowsVisible( heightOfLastFrame, hasHeader );
   }
 
   //calculate how many rows left to show
@@ -685,9 +704,10 @@ void QgsComposerTableV2::drawVerticalGridLines( QPainter *painter, const QMap<in
 void QgsComposerTableV2::adjustFrameToSize()
 {
   mTableSize = QSizeF( totalWidth(), totalHeight() );
+
+  recalculateFrameSizes();
+
   //force recalculation of frame rects, so that they are set to the correct
   //fixed and minimum frame sizes
   recalculateFrameRects();
-
-  recalculateFrameSizes();
 }

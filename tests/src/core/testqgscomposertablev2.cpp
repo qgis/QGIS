@@ -47,6 +47,7 @@ class TestQgsComposerTableV2: public QObject
     void attributeTableRender(); //test rendering attribute table
 
     void attributeTableExtend();
+    void attributeTableRepeat();
 
   private:
     QgsComposition* mComposition;
@@ -314,7 +315,32 @@ void TestQgsComposerTableV2::attributeTableExtend()
   //now auto remove extra created frames
   mComposerAttributeTable->setMaximumNumberOfFeatures( 1 );
   bool result = checker.testComposition( mReport, 1 );
+}
 
+void TestQgsComposerTableV2::attributeTableRepeat()
+{
+  mComposerAttributeTable->setResizeMode( QgsComposerMultiFrame::UseExistingFrames );
+  //remove extra frames
+  for ( int idx = mComposerAttributeTable->frameCount(); idx > 0; --idx )
+  {
+    mComposerAttributeTable->removeFrame( idx - 1 );
+  }
+
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 1 );
+
+  //force auto creation of some new frames
+  mComposerAttributeTable->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
+
+  for ( int features = 0; features < 50; ++features )
+  {
+    mComposerAttributeTable->setMaximumNumberOfFeatures( features );
+  }
+
+  //and then the reverse....
+  for ( int features = 50; features > 1; --features )
+  {
+    mComposerAttributeTable->setMaximumNumberOfFeatures( features );
+  }
 }
 
 QTEST_MAIN( TestQgsComposerTableV2 )
