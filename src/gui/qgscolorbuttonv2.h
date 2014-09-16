@@ -42,6 +42,14 @@ class GUI_EXPORT QgsColorButtonV2: public QToolButton
 
   public:
 
+    /*! Specifies the behaviour when the button is clicked
+     */
+    enum Behaviour
+    {
+      ShowDialog = 0, /*!< show a color picker dialog when clicked */
+      SignalOnly /*!< emit colorClicked signal only, no dialog */
+    };
+
     /**Construct a new color button.
      * @param parent The parent QWidget for the dialog
      * @param cdt The title to show in the color chooser dialog
@@ -98,6 +106,32 @@ class GUI_EXPORT QgsColorButtonV2: public QToolButton
      * @see acceptLiveUpdates
      */
     void setAcceptLiveUpdates( const bool accept ) { mAcceptLiveUpdates = accept; }
+
+    /**Sets whether the drop down menu should be shown for the button. The default behaviour is to
+     * show the menu.
+     * @param showMenu set to false to hide the drop down menu
+     * @see showMenu
+     */
+    void setShowMenu( const bool showMenu );
+
+    /**Returns whether the drop down menu is shown for the button.
+     * @returns true if drop down menu is shown
+     * @see setShowMenu
+     */
+    bool showMenu() const { return menu() ? true : false; }
+
+    /**Sets the behaviour for when the button is clicked. The default behaviour is to show
+     * a color picker dialog.
+     * @param behaviour behaviour when button is clicked
+     * @see behaviour
+     */
+    void setBehaviour( const Behaviour behaviour );
+
+    /**Returns the behaviour for when the button is clicked.
+     * @returns behaviour when button is clicked
+     * @see setBehaviour
+     */
+    Behaviour behaviour() const { return mBehaviour; }
 
     /**Sets the default color for the button, which is shown in the button's drop down menu for the
      * "default color" option.
@@ -238,10 +272,18 @@ class GUI_EXPORT QgsColorButtonV2: public QToolButton
      */
     void colorChanged( const QColor &color );
 
+    /**Emitted when the button is clicked, if the button's behaviour is set to SignalOnly
+     * @param color button color
+     * @see setBehaviour
+     * @see behaviour
+     */
+    void colorClicked( const QColor color );
+
   protected:
 
     void changeEvent( QEvent* e );
     void showEvent( QShowEvent* e );
+    void resizeEvent( QResizeEvent *event );
 
     /**Returns a checkboard pattern pixmap for use as a background to transparent colors
      */
@@ -283,6 +325,8 @@ class GUI_EXPORT QgsColorButtonV2: public QToolButton
     void dropEvent( QDropEvent *e );
 
   private:
+
+    Behaviour mBehaviour;
     QString mColorDialogTitle;
     QColor mColor;
 
@@ -333,6 +377,8 @@ class GUI_EXPORT QgsColorButtonV2: public QToolButton
     QPixmap createMenuIcon( const QColor color , const bool showChecks = true );
 
   private slots:
+
+    void buttonClicked();
 
     void showColorDialog();
 

@@ -40,6 +40,7 @@
 
 QgsColorButtonV2::QgsColorButtonV2( QWidget *parent, QString cdt, QColorDialog::ColorDialogOptions cdo, QgsColorSchemeRegistry* registry )
     : QToolButton( parent )
+    , mBehaviour( QgsColorButtonV2::ShowDialog )
     , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )
     , mColor( Qt::black )
     , mDefaultColor( QColor() ) //default to invalid color
@@ -57,7 +58,7 @@ QgsColorButtonV2::QgsColorButtonV2( QWidget *parent, QString cdt, QColorDialog::
 
   setAcceptDrops( true );
   setMinimumSize( QSize( 24, 16 ) );
-  connect( this, SIGNAL( clicked() ), this, SLOT( showColorDialog() ) );
+  connect( this, SIGNAL( clicked() ), this, SLOT( buttonClicked() ) );
 
   //setup dropdown menu
   mMenu = new QMenu( this );
@@ -330,6 +331,19 @@ QPixmap QgsColorButtonV2::createMenuIcon( const QColor color, const bool showChe
   return pixmap;
 }
 
+void QgsColorButtonV2::buttonClicked()
+{
+  switch ( mBehaviour )
+  {
+    case ShowDialog:
+      showColorDialog();
+      return;
+    case SignalOnly:
+      emit colorClicked( mColor );
+      return;
+  }
+}
+
 void QgsColorButtonV2::prepareMenu()
 {
   //we need to tear down and rebuild this menu every time it is shown. Otherwise the space allocated to any
@@ -429,6 +443,14 @@ void QgsColorButtonV2::showEvent( QShowEvent* e )
   QToolButton::showEvent( e );
 }
 
+void QgsColorButtonV2::resizeEvent( QResizeEvent *event )
+{
+  QToolButton::resizeEvent( event );
+  //recalculate icon size and redraw icon
+  mIconSize = QSize();
+  setButtonBackground( mColor );
+}
+
 void QgsColorButtonV2::setColor( const QColor &color )
 {
   if ( !color.isValid() )
@@ -455,6 +477,11 @@ void QgsColorButtonV2::setColor( const QColor &color )
 
 void QgsColorButtonV2::addRecentColor( const QColor color )
 {
+  if ( !color.isValid() )
+  {
+    return;
+  }
+
   //strip alpha from color
   QColor opaqueColor = color;
   opaqueColor.setAlpha( 255 );
@@ -485,26 +512,41 @@ void QgsColorButtonV2::setButtonBackground( const QColor color )
 
   bool useAlpha = ( mColorDialogOptions & QColorDialog::ShowAlphaChannel );
 
+  QSize currentIconSize;
   //icon size is button size with a small margin
-  if ( !mIconSize.isValid() )
+  if ( menu() )
   {
-    //calculate size of push button part of widget (ie, without the menu dropdown button part)
-    QStyleOptionToolButton opt;
-    initStyleOption( &opt );
-    QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
-                       this );
-    //make sure height of icon looks good under different platforms
+    if ( !mIconSize.isValid() )
+    {
+      //calculate size of push button part of widget (ie, without the menu dropdown button part)
+      QStyleOptionToolButton opt;
+      initStyleOption( &opt );
+      QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
+                         this );
+      //make sure height of icon looks good under different platforms
 #ifdef Q_WS_WIN
-    mIconSize = QSize( buttonSize.width() - 10, height() - 14 );
+      mIconSize = QSize( buttonSize.width() - 10, height() - 14 );
 #else
-    mIconSize = QSize( buttonSize.width() - 10, height() - 12 );
+      mIconSize = QSize( buttonSize.width() - 10, height() - 12 );
+#endif
+    }
+    currentIconSize = mIconSize;
+  }
+  else
+  {
+    //no menu
+#ifdef Q_WS_WIN
+    currentIconSize = QSize( width() - 10, height() - 14 );
+#else
+    currentIconSize = QSize( width() - 10, height() - 12 );
 #endif
   }
+
   //create an icon pixmap
-  QPixmap pixmap( mIconSize );
+  QPixmap pixmap( currentIconSize );
   pixmap.fill( Qt::transparent );
 
-  QRect rect( 0, 0, mIconSize.width(), mIconSize.height() );
+  QRect rect( 0, 0, currentIconSize.width(), currentIconSize.height() );
   QPainter p;
   p.begin( &pixmap );
   p.setRenderHint( QPainter::Antialiasing );
@@ -522,7 +564,7 @@ void QgsColorButtonV2::setButtonBackground( const QColor color )
   p.drawRoundedRect( rect, 3, 3 );
   p.end();
 
-  setIconSize( mIconSize );
+  setIconSize( currentIconSize );
   setIcon( pixmap );
 }
 
@@ -576,6 +618,20 @@ void QgsColorButtonV2::setColorDialogTitle( const QString title )
 QString QgsColorButtonV2::colorDialogTitle() const
 {
   return mColorDialogTitle;
+}
+
+void QgsColorButtonV2::setShowMenu( const bool showMenu )
+{
+  setMenu( showMenu ? mMenu : 0 );
+  setPopupMode( showMenu ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
+  //force recalculation of icon size
+  mIconSize = QSize();
+  setButtonBackground( mColor );
+}
+
+void QgsColorButtonV2::setBehaviour( const QgsColorButtonV2::Behaviour behaviour )
+{
+  mBehaviour = behaviour;
 }
 
 void QgsColorButtonV2::setDefaultColor( const QColor color )
