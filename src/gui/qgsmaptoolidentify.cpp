@@ -56,6 +56,7 @@ QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
 
 QgsMapToolIdentify::~QgsMapToolIdentify()
 {
+  delete mIdentifyMenu;
 }
 
 void QgsMapToolIdentify::canvasMoveEvent( QMouseEvent * e )
@@ -168,6 +169,7 @@ void QgsMapToolIdentify::activate()
 
 void QgsMapToolIdentify::deactivate()
 {
+
   QgsMapTool::deactivate();
 }
 

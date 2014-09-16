@@ -84,7 +84,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
   }
 
   // sort results by layer
-  Q_FOREACH( const QgsMapToolIdentify::IdentifyResult result, idResults )
+  Q_FOREACH ( const QgsMapToolIdentify::IdentifyResult result, idResults )
   {
     QgsMapLayer *layer = result.mLayer;
     if ( mLayerIdResults.contains( layer ) )
@@ -190,7 +190,7 @@ void QgsIdentifyMenu::addRasterLayer( QgsMapLayer* layer )
   layerMenu->addAction( identifyFeatureAction );
 
   // add custom/layer actions
-  Q_FOREACH( QgsMapLayerAction* mapLayerAction, layerActions )
+  Q_FOREACH ( QgsMapLayerAction* mapLayerAction, layerActions )
   {
     QAction* action = new QAction( mapLayerAction->icon(), mapLayerAction->text(), layerMenu );
     action->setData( QVariant::fromValue<ActionData>( ActionData( layer, true ) ) );
@@ -281,7 +281,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
 
   // add results to the menu
   int count = 0;
-  Q_FOREACH( const QgsMapToolIdentify::IdentifyResult result, results )
+  Q_FOREACH ( const QgsMapToolIdentify::IdentifyResult result, results )
   {
     if ( mMaxFeatureDisplay != 0 && count > mMaxFeatureDisplay )
       break;
@@ -342,7 +342,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     featureMenu->addSeparator();
 
     // custom action at feature level
-    Q_FOREACH( QgsMapLayerAction* mapLayerAction, customFeatureActions )
+    Q_FOREACH ( QgsMapLayerAction* mapLayerAction, customFeatureActions )
     {
       QAction* action = new QAction( mapLayerAction->icon(), mapLayerAction->text(), featureMenu );
       action->setData( QVariant::fromValue<ActionData>( ActionData( layer, result.mFeature.id(), mapLayerAction ) ) );
@@ -353,7 +353,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     // use QgsActionMenu for feature actions
     if ( featureActionMenu )
     {
-      Q_FOREACH( QAction* action, featureActionMenu->actions() )
+      Q_FOREACH ( QAction* action, featureActionMenu->actions() )
       {
         connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
         featureMenu->addAction( action );
@@ -374,7 +374,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
   }
 
   // add custom/layer actions
-  Q_FOREACH( QgsMapLayerAction* mapLayerAction, layerActions )
+  Q_FOREACH ( QgsMapLayerAction* mapLayerAction, layerActions )
   {
     QString title = mapLayerAction->text();
     if ( mapLayerAction->targets().testFlag( QgsMapLayerAction::MultipleFeatures ) )
@@ -414,7 +414,7 @@ void QgsIdentifyMenu::triggerMapLayerAction()
     if ( actData.mMapLayerAction->targets().testFlag( QgsMapLayerAction::MultipleFeatures ) )
     {
       QList<const QgsFeature*> featureList;
-      Q_FOREACH( QgsMapToolIdentify::IdentifyResult result, mLayerIdResults[actData.mLayer] )
+      Q_FOREACH ( QgsMapToolIdentify::IdentifyResult result, mLayerIdResults[actData.mLayer] )
       {
         featureList << new QgsFeature( result.mFeature );
       }
@@ -424,7 +424,7 @@ void QgsIdentifyMenu::triggerMapLayerAction()
     // single feature
     if ( actData.mMapLayerAction->targets().testFlag( QgsMapLayerAction::SingleFeature ) )
     {
-      Q_FOREACH( QgsMapToolIdentify::IdentifyResult result, mLayerIdResults[actData.mLayer] )
+      Q_FOREACH ( QgsMapToolIdentify::IdentifyResult result, mLayerIdResults[actData.mLayer] )
       {
         if ( result.mFeature.id() == actData.mFeatureId )
         {
@@ -510,7 +510,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::results( QAction* act
 
   if ( actData.mLevel == FeatureLevel )
   {
-    Q_FOREACH( QgsMapToolIdentify::IdentifyResult res, mLayerIdResults[actData.mLayer] )
+    Q_FOREACH ( QgsMapToolIdentify::IdentifyResult res, mLayerIdResults[actData.mLayer] )
     {
       if ( res.mFeature.id() == actData.mFeatureId )
       {
@@ -538,7 +538,7 @@ void QgsIdentifyMenu::handleMenuHover()
   bool externalAction;
   QList<QgsMapToolIdentify::IdentifyResult> idResults = results( senderAction, externalAction );
 
-  Q_FOREACH( const QgsMapToolIdentify::IdentifyResult result, idResults )
+  Q_FOREACH ( const QgsMapToolIdentify::IdentifyResult result, idResults )
   {
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( result.mLayer );
     if ( !vl )
@@ -576,5 +576,8 @@ void QgsIdentifyMenu::layerDestroyed()
   }
 }
 
+void QgsIdentifyMenu::removeCustomActions()
+{
+  mCustomActionRegistry.clear();
 
-
+}

@@ -120,7 +120,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     void addCustomAction( QgsMapLayerAction* action ) {mCustomActionRegistry.addMapLayerAction( action );}
 
     //! remove all custom actions from the menu to be built
-    void removeCustomActions() {mCustomActionRegistry.clear();}
+    void removeCustomActions();
 
     /**
      * @brief exec

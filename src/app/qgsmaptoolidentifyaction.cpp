@@ -55,8 +55,9 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas * canvas )
 
   mIdentifyMenu->setAllowMultipleReturn( true );
 
-  QgsMapLayerAction* attrTableAction = new QgsMapLayerAction( tr( "Show attribute table" ), this, QgsMapLayer::VectorLayer, QgsMapLayerAction::MultipleFeatures );
   connect( attrTableAction, SIGNAL( triggeredForFeatures( QgsMapLayer*, QList<const QgsFeature*> ) ), this, SLOT( showAttributeTable( QgsMapLayer*, QList<const QgsFeature*> ) ) );
+
+  QgsMapLayerAction* attrTableAction = new QgsMapLayerAction( tr( "Show attribute table" ), mIdentifyMenu, QgsMapLayer::VectorLayer, QgsMapLayerAction::MultipleFeatures );
   identifyMenu()->addCustomAction( attrTableAction );
 }
 
