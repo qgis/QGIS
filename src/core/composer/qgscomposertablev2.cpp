@@ -136,13 +136,6 @@ bool QgsComposerTableV2::readXML( const QDomElement &itemElem, const QDomDocumen
 
 QSizeF QgsComposerTableV2::totalSize() const
 {
-  //TODO - handle multiple cell headers
-  //also check height calculation function
-
-
-
-  //calculate total size
-
   return mTableSize;
 }
 
@@ -526,11 +519,12 @@ void QgsComposerTableV2::refreshAttributes()
   {
     return;
   }
+}
 
-  //since contents have changed, we also need to recalculate the column widths
-  //and size of table
-  //gettablecontents does this!
-// adjustFrameToSize();
+void QgsComposerTableV2::recalculateFrameSizes()
+{
+  mTableSize = QSizeF( totalWidth(), totalHeight() );
+  QgsComposerMultiFrame::recalculateFrameSizes();
 }
 
 bool QgsComposerTableV2::calculateMaxColumnWidths()
@@ -703,8 +697,6 @@ void QgsComposerTableV2::drawVerticalGridLines( QPainter *painter, const QMap<in
 
 void QgsComposerTableV2::adjustFrameToSize()
 {
-  mTableSize = QSizeF( totalWidth(), totalHeight() );
-
   recalculateFrameSizes();
 
   //force recalculation of frame rects, so that they are set to the correct

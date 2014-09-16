@@ -272,6 +272,8 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     */
     virtual void refreshAttributes();
 
+    void recalculateFrameSizes();
+
   protected:
     /**Margin between cell borders and cell text*/
     double mCellMargin;

@@ -142,7 +142,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * this may cause new frames to be added or frames to be removed, in order to fit
      * the current size of the multiframe's content.
      */
-    void recalculateFrameSizes();
+    virtual void recalculateFrameSizes();
 
     /**Forces a recalculation of all the associated frame's scene rectangles. This
      * method is useful for multiframes which implement a minFrameSize() or
