@@ -22,7 +22,7 @@
 class QgsFeatureSelectionModel;
 class QPainter;
 class QgsVectorLayer;
-class QgsAttributeTableView;
+class QgsAttributeTableModel;
 
 /** \ingroup app
  * A delegate item class for QgsAttributeTable (see Qt documentation for
@@ -31,16 +31,18 @@ class QgsAttributeTableView;
 
 class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
 {
-    Q_OBJECT;
+    Q_OBJECT
 
-    QgsVectorLayer *layer( const QAbstractItemModel *model ) const;
+    static QgsVectorLayer* layer( const QAbstractItemModel* model );
+    static const QgsAttributeTableModel* masterModel( const QAbstractItemModel* model );
 
   public:
     /** Constructor
      * @param parent parent object
      */
     QgsAttributeTableDelegate( QObject* parent = NULL ) :
-        QItemDelegate( parent ) {};
+        QItemDelegate( parent ) {}
+
     /** Used to create an editor for when the user tries to
      * change the contents of a cell */
     QWidget * createEditor(

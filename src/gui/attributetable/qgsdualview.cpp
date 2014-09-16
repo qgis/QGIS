@@ -114,7 +114,7 @@ void QgsDualView::columnBoxInit()
       // ... If there are primary key(s) defined
       QStringList pkFields;
 
-      Q_FOREACH ( int attr, pkAttrs )
+      Q_FOREACH( int attr, pkAttrs )
       {
         pkFields.append( "COALESCE(\"" + fields[attr].name() + "\", '<NULL>')" );
       }
@@ -224,6 +224,7 @@ void QgsDualView::initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& 
 {
   mMasterModel = new QgsAttributeTableModel( mLayerCache, this );
   mMasterModel->setRequest( request );
+  mMasterModel->setEditorContext( mEditorContext );
 
   connect( mMasterModel, SIGNAL( progress( int, bool & ) ), this, SLOT( progress( int, bool & ) ) );
   connect( mMasterModel, SIGNAL( finished() ), this, SLOT( finished() ) );

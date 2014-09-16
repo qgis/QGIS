@@ -48,7 +48,7 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
     w = new QgsRelationEditorWidget( editor );
   }
 
-  QgsAttributeEditorContext myContext( QgsAttributeEditorContext( context(), mRelation, QgsAttributeEditorContext::EmbedMultiple ) );
+  QgsAttributeEditorContext myContext( QgsAttributeEditorContext( context(), mRelation, QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed ) );
 
   w->setEditorContext( myContext );
 
@@ -56,7 +56,7 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
   const QgsAttributeEditorContext* ctx = &context();
   do
   {
-    if ( ctx->relation().name() == mRelation.name() && ctx->relationMode() == QgsAttributeEditorContext::EmbedMultiple )
+    if ( ctx->relation().name() == mRelation.name() && ctx->relationMode() == QgsAttributeEditorContext::Multiple )
     {
       w->setSaveCollapsedState( false );
       w->setCollapsed( true );

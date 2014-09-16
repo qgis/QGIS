@@ -152,7 +152,7 @@ void QgsRelationReferenceWidget::setRelation( QgsRelation relation, bool allowNu
     mFkeyFieldIdx = mReferencedLayer->fieldNameIndex( relation.fieldPairs().first().second );
 
 
-    QgsAttributeEditorContext context( mEditorContext, relation, QgsAttributeEditorContext::EmbedSingle );
+    QgsAttributeEditorContext context( mEditorContext, relation, QgsAttributeEditorContext::Single, QgsAttributeEditorContext::Embed );
 
     if ( mEmbedForm )
     {
@@ -430,7 +430,7 @@ void QgsRelationReferenceWidget::openForm()
   if ( !feat.isValid() )
     return;
 
-  QgsAttributeEditorContext context( mEditorContext, mRelation, QgsAttributeEditorContext::StandaloneSingle );
+  QgsAttributeEditorContext context( mEditorContext, mRelation, QgsAttributeEditorContext::Single, QgsAttributeEditorContext::StandaloneDialog );
   QgsAttributeDialog attributeDialog( mReferencedLayer, new QgsFeature( feat ), true, this, true, context );
   attributeDialog.exec();
 }

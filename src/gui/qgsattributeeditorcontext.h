@@ -38,10 +38,16 @@ class GUI_EXPORT QgsAttributeEditorContext
      */
     enum RelationMode
     {
-      Undefined,       //!< This context is not defined by a relation
-      EmbedMultiple,   //!< When embedding a list of features (e.g. houses as an embedded form in a district form)
-      EmbedSingle,     //!< When embedding a single feature (e.g. district information when looking at the form of a house)
-      StandaloneSingle //!< When showing a new dialog for a single feature (e.g. district information when looking at the form of a house)
+      Undefined,  //!< This context is not defined by a relation
+      Multiple,   //!< When showing a list of features (e.g. houses as an embedded form in a district form)
+      Single      //!< When showing a single feature (e.g. district information when looking at the form of a house)
+    };
+
+    enum FormMode
+    {
+      Embed,            //!< A form was embedded as a widget on another form
+      StandaloneDialog, //!< A form was opened as a new dialog
+      Popup             //!< A widget was opened as a popup (e.g. attribute table editor widget)
     };
 
     QgsAttributeEditorContext()
@@ -51,13 +57,25 @@ class GUI_EXPORT QgsAttributeEditorContext
         , mRelationMode( Undefined )
     {}
 
-    QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, const QgsRelation& relation, RelationMode mode )
+    QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, FormMode formMode )
+        : mParentContext( &parentContext )
+        , mLayer( 0 )
+        , mVectorLayerTools( parentContext.mVectorLayerTools )
+        , mDistanceArea( parentContext.mDistanceArea )
+        , mRelationMode( Undefined )
+        , mFormMode( formMode )
+    {
+      Q_ASSERT( parentContext.vectorLayerTools() );
+    }
+
+    QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, const QgsRelation& relation, RelationMode relationMode, FormMode widgetMode )
         : mParentContext( &parentContext )
         , mLayer( 0 )
         , mVectorLayerTools( parentContext.mVectorLayerTools )
         , mDistanceArea( parentContext.mDistanceArea )
         , mRelation( relation )
-        , mRelationMode( mode )
+        , mRelationMode( relationMode )
+        , mFormMode( widgetMode )
     {
       Q_ASSERT( parentContext.vectorLayerTools() );
     }
@@ -80,6 +98,8 @@ class GUI_EXPORT QgsAttributeEditorContext
     inline const QgsRelation& relation() const { return mRelation; }
     inline RelationMode relationMode() const { return mRelationMode; }
 
+    inline FormMode formMode() const { return mFormMode; }
+
     inline const QgsAttributeEditorContext* parentContext() const { return mParentContext; }
 
   private:
@@ -89,6 +109,7 @@ class GUI_EXPORT QgsAttributeEditorContext
     QgsDistanceArea mDistanceArea;
     QgsRelation mRelation;
     RelationMode mRelationMode;
+    FormMode mFormMode;
 };
 
 #endif // QGSATTRIBUTEEDITORCONTEXT_H

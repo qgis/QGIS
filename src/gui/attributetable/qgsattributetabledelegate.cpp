@@ -29,10 +29,7 @@
 #include "qgsvectordataprovider.h"
 
 
-
-// TODO: Remove this casting orgy
-
-QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *model ) const
+QgsVectorLayer* QgsAttributeTableDelegate::layer( const QAbstractItemModel *model )
 {
   const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( model );
   if ( tm )
@@ -42,7 +39,20 @@ QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *mode
   if ( fm )
     return fm->layer();
 
-  return NULL;
+  return 0;
+}
+
+const QgsAttributeTableModel* QgsAttributeTableDelegate::masterModel( const QAbstractItemModel* model )
+{
+  const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( model );
+  if ( tm )
+    return tm;
+
+  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( model );
+  if ( fm )
+    return fm->masterModel();
+
+  return 0;
 }
 
 QWidget *QgsAttributeTableDelegate::createEditor(
@@ -59,7 +69,8 @@ QWidget *QgsAttributeTableDelegate::createEditor(
 
   QString widgetType = vl->editorWidgetV2( fieldIdx );
   QgsEditorWidgetConfig cfg = vl->editorWidgetV2Config( fieldIdx );
-  QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, vl, fieldIdx, cfg, 0, parent );
+  QgsAttributeEditorContext context( masterModel( index.model() )->editorContext(), QgsAttributeEditorContext::Popup );
+  QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, vl, fieldIdx, cfg, 0, parent, context );
   QWidget* w = eww->widget();
 
   w->setAutoFillBackground( true );
