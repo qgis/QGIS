@@ -42,7 +42,7 @@ QgsColorButtonV2::QgsColorButtonV2( QWidget *parent, QString cdt, QColorDialog::
     : QToolButton( parent )
     , mBehaviour( QgsColorButtonV2::ShowDialog )
     , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )
-    , mColor( Qt::black )
+    , mColor( QColor() )
     , mDefaultColor( QColor() ) //default to invalid color
     , mColorDialogOptions( cdo )
     , mAcceptLiveUpdates( true )
@@ -190,9 +190,9 @@ void QgsColorButtonV2::mouseMoveEvent( QMouseEvent *e )
 
   //handle dragging colors from button
 
-  if ( !( e->buttons() & Qt::LeftButton ) )
+  if ( !( e->buttons() & Qt::LeftButton ) || !mColor.isValid() )
   {
-    //left button not depressed, so not a drag
+    //left button not depressed or no color set, so not a drag
     QToolButton::mouseMoveEvent( e );
     return;
   }
@@ -453,11 +453,6 @@ void QgsColorButtonV2::resizeEvent( QResizeEvent *event )
 
 void QgsColorButtonV2::setColor( const QColor &color )
 {
-  if ( !color.isValid() )
-  {
-    return;
-  }
-
   QColor oldColor = mColor;
   mColor = color;
 
@@ -546,23 +541,26 @@ void QgsColorButtonV2::setButtonBackground( const QColor color )
   QPixmap pixmap( currentIconSize );
   pixmap.fill( Qt::transparent );
 
-  QRect rect( 0, 0, currentIconSize.width(), currentIconSize.height() );
-  QPainter p;
-  p.begin( &pixmap );
-  p.setRenderHint( QPainter::Antialiasing );
-  p.setPen( Qt::NoPen );
-  if ( useAlpha && backgroundColor.alpha() < 255 )
+  if ( backgroundColor.isValid() )
   {
-    //start with checkboard pattern
-    QBrush checkBrush = QBrush( transparentBackground() );
-    p.setBrush( checkBrush );
-    p.drawRoundedRect( rect, 3, 3 );
-  }
+    QRect rect( 0, 0, currentIconSize.width(), currentIconSize.height() );
+    QPainter p;
+    p.begin( &pixmap );
+    p.setRenderHint( QPainter::Antialiasing );
+    p.setPen( Qt::NoPen );
+    if ( useAlpha && backgroundColor.alpha() < 255 )
+    {
+      //start with checkboard pattern
+      QBrush checkBrush = QBrush( transparentBackground() );
+      p.setBrush( checkBrush );
+      p.drawRoundedRect( rect, 3, 3 );
+    }
 
-  //draw semi-transparent color on top
-  p.setBrush( backgroundColor );
-  p.drawRoundedRect( rect, 3, 3 );
-  p.end();
+    //draw semi-transparent color on top
+    p.setBrush( backgroundColor );
+    p.drawRoundedRect( rect, 3, 3 );
+    p.end();
+  }
 
   setIconSize( currentIconSize );
   setIcon( pixmap );
