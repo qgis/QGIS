@@ -49,7 +49,8 @@ class QgsEditorWidgetRegistry : QObject
                                     QgsVectorLayer* vl,
                                     int fieldIdx,
                                     const QgsEditorWidgetConfig& config,
-                                    QWidget* editor, QWidget* parent,
+                                    QWidget* editor,
+                                    QWidget* parent /TransferThis/,
                                     const QgsAttributeEditorContext context = QgsAttributeEditorContext() ) /Factory/;
 
     /**

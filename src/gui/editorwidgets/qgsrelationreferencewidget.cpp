@@ -275,7 +275,7 @@ void QgsRelationReferenceWidget::mapToolDeactivated()
 {
   if ( mWindowWidget )
   {
-    mWindowWidget->show();
+    mWindowWidget->raise();
   }
 
   if ( mMessageBar && mMessageBarItem )
@@ -352,9 +352,9 @@ void QgsRelationReferenceWidget::setAllowMapIdentification( bool allowMapIdentif
   mAllowMapIdentification = allowMapIdentification;
 }
 
-void QgsRelationReferenceWidget::setOpenFormButtonVisible(bool openFormButtonVisible)
+void QgsRelationReferenceWidget::setOpenFormButtonVisible( bool openFormButtonVisible )
 {
-  mOpenFormButton->setVisible(openFormButtonVisible);
+  mOpenFormButton->setVisible( openFormButtonVisible );
   mOpenFormButtonVisible = openFormButtonVisible;
 }
 
@@ -518,9 +518,11 @@ void QgsRelationReferenceWidget::mapIdentification()
     return;
 
   mMapTool = new QgsMapToolIdentifyFeature( mCanvas, mReferencedLayer );
+  mMapTool->setAction( mMapIdentificationAction );
   mCanvas->setMapTool( mMapTool );
   mWindowWidget = window();
-  mWindowWidget->hide();
+  mCanvas->raise();
+
   connect( mMapTool, SIGNAL( featureIdentified( QgsFeature ) ), this, SLOT( featureIdentified( const QgsFeature ) ) );
   connect( mMapTool, SIGNAL( deactivated() ), this, SLOT( mapToolDeactivated() ) );
 
@@ -580,5 +582,5 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature& feature )
   }
 
   if ( mWindowWidget )
-    mWindowWidget->show();
+    mWindowWidget->raise();
 }
