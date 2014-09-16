@@ -55,7 +55,12 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return A new widget wrapper
      */
-    QgsEditorWidgetWrapper* create( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* editor, QWidget* parent, const QgsAttributeEditorContext context = QgsAttributeEditorContext() );
+    QgsEditorWidgetWrapper* create( const QString& widgetId,
+                                    QgsVectorLayer* vl,
+                                    int fieldIdx,
+                                    const QgsEditorWidgetConfig& config,
+                                    QWidget* editor, QWidget* parent,
+                                    const QgsAttributeEditorContext context = QgsAttributeEditorContext() );
 
     /**
      * Creates a configuration widget

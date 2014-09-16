@@ -45,7 +45,12 @@ class QgsEditorWidgetRegistry : QObject
      *
      * @return A new widget wrapper
      */
-    QgsEditorWidgetWrapper* create( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* editor = NULL, QWidget* parent = NULL ) /Factory/;
+    QgsEditorWidgetWrapper* create( const QString& widgetId,
+                                    QgsVectorLayer* vl,
+                                    int fieldIdx,
+                                    const QgsEditorWidgetConfig& config,
+                                    QWidget* editor, QWidget* parent,
+                                    const QgsAttributeEditorContext context = QgsAttributeEditorContext() ) /Factory/;
 
     /**
      * Creates a configuration widget
