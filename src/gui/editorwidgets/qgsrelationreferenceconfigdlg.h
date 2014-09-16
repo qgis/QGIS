@@ -16,7 +16,7 @@
 #ifndef QGSRELATIONREFERENCECONFIGDLGBASE_H
 #define QGSRELATIONREFERENCECONFIGDLGBASE_H
 
-#include "ui_qgsrelreferenceconfigdlgbase.h"
+#include "ui_qgsrelationreferenceconfigdlgbase.h"
 #include "qgseditorconfigwidget.h"
 
 class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, private Ui::QgsRelReferenceConfigDlgBase
