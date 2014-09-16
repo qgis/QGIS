@@ -250,6 +250,8 @@ void QgsColorWidget::setComponentValue( const int value )
   mCurrentColor.getRgb( &r, &g, &b, &a );
   int h, s, v;
   mCurrentColor.getHsv( &h, &s, &v );
+  //overwrite hue with explicit hue if required
+  h = hue();
 
   switch ( mComponent )
   {
