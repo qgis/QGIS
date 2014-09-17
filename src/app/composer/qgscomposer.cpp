@@ -167,7 +167,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   toggleActionGroup->addAction( mActionAddTriangle );
   toggleActionGroup->addAction( mActionAddEllipse );
   toggleActionGroup->addAction( mActionAddArrow );
-  toggleActionGroup->addAction( mActionAddTable );
+  //toggleActionGroup->addAction( mActionAddTable );
   toggleActionGroup->addAction( mActionAddAttributeTable );
   toggleActionGroup->addAction( mActionAddHtml );
   toggleActionGroup->setExclusive( true );
@@ -355,7 +355,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   layoutMenu->addAction( mActionAddNewLegend );
   layoutMenu->addAction( mActionAddImage );
   layoutMenu->addAction( mActionAddArrow );
-  layoutMenu->addAction( mActionAddTable );
+  //layoutMenu->addAction( mActionAddTable );
   layoutMenu->addAction( mActionAddAttributeTable );
   layoutMenu->addSeparator();
   layoutMenu->addAction( mActionSelectMoveItem );

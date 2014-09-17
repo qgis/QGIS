@@ -8,7 +8,7 @@ typedef QList< QVariant > QgsComposerTableRow;
  * for a QgsComposerTable
  * \note Added in version 2.5
 */
-typedef QList< QgsComposerTableRow > QgsComposerTableContents;
+typedef QList< QList< QVariant > > QgsComposerTableContents;
 
 /**List of column definitions for a QgsComposerTable
  * \note Added in version 2.5

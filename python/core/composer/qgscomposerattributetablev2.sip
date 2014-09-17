@@ -1,3 +1,4 @@
+
 /**Helper class for sorting tables, takes into account sorting column and ascending / descending*/
 class QgsComposerAttributeTableCompareV2
 {
