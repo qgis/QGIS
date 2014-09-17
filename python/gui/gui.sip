@@ -58,6 +58,7 @@
 %Include qgsformannotationitem.sip
 %Include qgsgenericprojectionselector.sip
 %Include qgshtmlannotationitem.sip
+%Include qgsidentifymenu.sip
 %Include qgslegendinterface.sip
 %Include qgspluginmanagerinterface.sip
 %Include qgslonglongvalidator.sip
