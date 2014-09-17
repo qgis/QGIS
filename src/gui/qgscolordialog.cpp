@@ -86,7 +86,7 @@ QgsColorDialogV2::QgsColorDialogV2( QWidget *parent, Qt::WindowFlags fl, const Q
   {
     mSchemeComboBox->addItem(( *schemeIt )->schemeName() );
   }
-  int activeScheme = settings.value( "/Windows/ColorDialog/activeScheme", 0 ).toInt();
+  int activeScheme = qMin( settings.value( "/Windows/ColorDialog/activeScheme", 0 ).toInt(), schemeList.length() - 1 );
   if ( activeScheme < schemeList.length() )
   {
     mSchemeList->setScheme( schemeList.at( activeScheme ) );
@@ -100,12 +100,15 @@ QgsColorDialogV2::QgsColorDialogV2( QWidget *parent, Qt::WindowFlags fl, const Q
   connect( mActionPasteColors, SIGNAL( triggered() ), mSchemeList, SLOT( pasteColors() ) );
   connect( mActionExportColors, SIGNAL( triggered() ), this, SLOT( exportColors() ) );
   connect( mActionImportColors, SIGNAL( triggered() ), this, SLOT( importColors() ) );
+  connect( mActionImportPalette, SIGNAL( triggered() ), this, SLOT( importPalette() ) );
   connect( mRemoveColorsFromSchemeButton, SIGNAL( clicked() ), mSchemeList, SLOT( removeSelection() ) );
 
   QMenu* schemeMenu = new QMenu( mSchemeToolButton );
   schemeMenu->addAction( mActionPasteColors );
   schemeMenu->addAction( mActionImportColors );
   schemeMenu->addAction( mActionExportColors );
+  schemeMenu->addSeparator();
+  schemeMenu->addAction( mActionImportPalette );
   mSchemeToolButton->setMenu( schemeMenu );
 
   connect( mSchemeComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( schemeIndexChanged( int ) ) );
@@ -380,6 +383,65 @@ void QgsColorDialogV2::importColors()
     QMessageBox::critical( 0, tr( "Invalid file" ), tr( "Error, no colors found in palette file" ) );
     return;
   }
+}
+
+void QgsColorDialogV2::importPalette()
+{
+  QSettings s;
+  QString lastDir = s.value( "/UI/lastGplPaletteDir", "" ).toString();
+  QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, "GPL (*.gpl);;All files (*.*)" );
+  activateWindow();
+  if ( filePath.isEmpty() )
+  {
+    return;
+  }
+
+  //check if file exists
+  QFileInfo fileInfo( filePath );
+  if ( !fileInfo.exists() || !fileInfo.isReadable() )
+  {
+    QMessageBox::critical( 0, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
+    return;
+  }
+
+  s.setValue( "/UI/lastGplPaletteDir", fileInfo.absolutePath() );
+  QFile file( filePath );
+
+  QgsNamedColorList importedColors;
+  bool ok = false;
+  QString paletteName;
+  importedColors = QgsSymbolLayerV2Utils::importColorsFromGpl( file, ok, paletteName );
+  if ( !ok )
+  {
+    QMessageBox::critical( 0, tr( "Invalid file" ), tr( "Palette file is not readable" ) );
+    return;
+  }
+
+  if ( importedColors.length() == 0 )
+  {
+    //no imported colors
+    QMessageBox::critical( 0, tr( "Invalid file" ), tr( "No colors found in palette file" ) );
+    return;
+  }
+
+  //TODO - handle conflicting file names, name for new palette
+  QgsUserColorScheme* importedScheme = new QgsUserColorScheme( fileInfo.fileName() );
+  importedScheme->setName( paletteName );
+  importedScheme->setColors( importedColors );
+
+  QgsColorSchemeRegistry::instance()->addColorScheme( importedScheme );
+
+  //refresh combobox
+  mSchemeComboBox->blockSignals( true );
+  mSchemeComboBox->clear();
+  QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
+  QList<QgsColorScheme *>::const_iterator schemeIt = schemeList.constBegin();
+  for ( ; schemeIt != schemeList.constEnd(); ++schemeIt )
+  {
+    mSchemeComboBox->addItem(( *schemeIt )->schemeName() );
+  }
+  mSchemeComboBox->blockSignals( false );
+  mSchemeComboBox->setCurrentIndex( mSchemeComboBox->count() - 1 );
 }
 
 void QgsColorDialogV2::exportColors()

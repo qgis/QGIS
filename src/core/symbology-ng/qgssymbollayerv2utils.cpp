@@ -3033,7 +3033,7 @@ bool QgsSymbolLayerV2Utils::saveColorsToGpl( QFile &file, const QString paletteN
   return true;
 }
 
-QgsNamedColorList QgsSymbolLayerV2Utils::importColorsFromGpl( QFile &file, bool &ok )
+QgsNamedColorList QgsSymbolLayerV2Utils::importColorsFromGpl( QFile &file, bool &ok, QString &name )
 {
   QgsNamedColorList importedColors;
 
@@ -3052,6 +3052,20 @@ QgsNamedColorList QgsSymbolLayerV2Utils::importColorsFromGpl( QFile &file, bool 
     return importedColors;
   }
 
+  //find name line
+  while ( !in.atEnd() && !line.startsWith( "Name:" ) && !line.startsWith( "#" ) )
+  {
+    line = in.readLine();
+  }
+  if ( line.startsWith( "Name:" ) )
+  {
+    QRegExp nameRx( "Name:\\s*(\\S.*)$" );
+    if ( nameRx.indexIn( line ) != -1 )
+    {
+      name = nameRx.cap( 1 );
+    }
+  }
+
   //ignore lines until after "#"
   while ( !in.atEnd() && !line.startsWith( "#" ) )
   {
@@ -3064,10 +3078,10 @@ QgsNamedColorList QgsSymbolLayerV2Utils::importColorsFromGpl( QFile &file, bool 
   }
 
   //ready to start reading colors
+  QRegExp rx( "^\\s*(\\d+)\\s+(\\d+)\\s+(\\d+)(\\s.*)?$" );
   while ( !in.atEnd() )
   {
     line = in.readLine();
-    QRegExp rx( "^\\s*(\\d+)\\s+(\\d+)\\s+(\\d+)(\\s.*)?$" );
     if ( rx.indexIn( line ) == -1 )
     {
       continue;

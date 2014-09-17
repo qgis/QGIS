@@ -150,6 +150,11 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 
     virtual bool isEditable() const { return true; }
 
+    /**Sets the name for the scheme
+     * @param name new name
+    */
+    void setName( const QString name ) { mName = name; }
+
   protected:
 
     QString mName;

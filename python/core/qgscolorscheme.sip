@@ -137,6 +137,11 @@ class  QgsUserColorScheme : QgsGplColorScheme
     virtual QgsColorScheme* clone() const;
 
     virtual bool isEditable() const;
+    
+    /**Sets the name for the scheme
+     * @param name new name
+    */
+    void setName( const QString name );
 
   protected:
 

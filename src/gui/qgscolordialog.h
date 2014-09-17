@@ -160,6 +160,7 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
 
     void exportColors();
     void importColors();
+    void importPalette();
 
     void schemeIndexChanged( int index );
 

@@ -266,8 +266,9 @@ QgsNamedColorList QgsGplColorScheme::fetchColors( const QString context, const Q
   }
 
   bool ok;
+  QString name;
   QFile sourceFile( sourceFilePath );
-  return QgsSymbolLayerV2Utils::importColorsFromGpl( sourceFile, ok );
+  return QgsSymbolLayerV2Utils::importColorsFromGpl( sourceFile, ok, name );
 }
 
 bool QgsGplColorScheme::setColors( const QgsNamedColorList colors, const QString context, const QColor baseColor )
