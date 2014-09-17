@@ -1685,6 +1685,28 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void editCommandDestroyed();
 
+    /**
+     * Signal emitted whenever the symbology (QML-file) for this layer is being read.
+     * If there is custom style information saved in the file, you can connect to this signal
+     * and update the layer style accordingly.
+     *
+     * @param element The XML layer style element.
+     *
+     * @param errorMessage Write error messages into this string.
+     */
+    void readCustomSymbology( const QDomElement& element, QString& errorMessage );
+
+    /**
+     * Signal emitted whenever the symbology (QML-file) for this layer is being written.
+     * If there is custom style information you want to save to the file, you can connect
+     * to this signal and update the element accordingly.
+     *
+     * @param element  The XML element where you can add additional style information to.
+     * @param doc      The XML document that you can use to create new XML nodes.
+     * @param errorMessage Write error messages into this string.
+     */
+    void writeCustomSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage ) const;
+
   private slots:
     void onRelationsLoaded();
     void onJoinedFieldsChanged();

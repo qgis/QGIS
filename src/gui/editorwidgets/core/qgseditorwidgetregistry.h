@@ -136,7 +136,33 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * @param layerElem  The XML element to which the config will be written
      * @param doc        The document from which to create elements
      */
-    void writeMapLayer( QgsMapLayer* mapLayer , QDomElement& layerElem, QDomDocument& doc );
+    void writeMapLayer( QgsMapLayer* mapLayer , QDomElement& layerElem, QDomDocument& doc ) const;
+
+    /**
+     * Will connect to appropriate signals from map layers to load and save style
+     *
+     * @param mapLayer The layer to connect
+     */
+    void mapLayerAdded( QgsMapLayer* mapLayer );
+
+    /**
+     * Loads layer symbology for the layer that emitted the signal
+     *
+     * @param element The XML element containing the style information
+     *
+     * @param errorMessage Errors will be written into this string (unused)
+     */
+    void readSymbology( const QDomElement& element, QString& errorMessage );
+
+    /**
+     * Saves layer symbology for the layer that emitted the signal
+     *
+     * @param element The XML element where the style information be written to
+     * @param doc     The XML document where the style information be written to
+     *
+     * @param errorMessage Errors will be written into this string (unused)
+     */
+    void writeSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage );
 
   private:
     QMap<QString, QgsEditorWidgetFactory*> mWidgetFactories;

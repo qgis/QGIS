@@ -21,6 +21,7 @@
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
 
 QgsEditorWidgetRegistry* QgsEditorWidgetRegistry::instance()
 {
@@ -32,6 +33,8 @@ QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
 {
   connect( QgsProject::instance(), SIGNAL( readMapLayer( QgsMapLayer*, const QDomElement& ) ), this, SLOT( readMapLayer( QgsMapLayer*, const QDomElement& ) ) );
   connect( QgsProject::instance(), SIGNAL( writeMapLayer( QgsMapLayer*, QDomElement&, QDomDocument& ) ), this, SLOT( writeMapLayer( QgsMapLayer*, QDomElement&, QDomDocument& ) ) );
+
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( mapLayerAdded( QgsMapLayer* ) ) );
 }
 
 QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
@@ -177,7 +180,7 @@ const QString QgsEditorWidgetRegistry::readLegacyConfig( QgsVectorLayer* vl, con
   Q_NOWARN_DEPRECATED_POP
 }
 
-void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement& layerElem, QDomDocument& doc )
+void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement& layerElem, QDomDocument& doc ) const
 {
   if ( mapLayer->type() != QgsMapLayer::VectorLayer )
   {
@@ -222,4 +225,35 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
   }
 
   layerElem.appendChild( editTypesNode );
+}
+
+void QgsEditorWidgetRegistry::mapLayerAdded( QgsMapLayer* mapLayer )
+{
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( mapLayer );
+
+  if ( vl )
+  {
+    connect( vl, SIGNAL( readCustomSymbology( const QDomElement&, QString& ) ), this, SLOT( readSymbology( const QDomElement&, QString& ) ) );
+    connect( vl, SIGNAL( writeCustomSymbology( QDomElement&, QDomDocument&, QString& ) ), this, SLOT( writeSymbology( QDomElement&, QDomDocument&, QString& ) ) );
+  }
+}
+
+void QgsEditorWidgetRegistry::readSymbology( const QDomElement& element, QString& errorMessage )
+{
+  Q_UNUSED( errorMessage )
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( sender() );
+
+  Q_ASSERT( vl );
+
+  readMapLayer( vl, element );
+}
+
+void QgsEditorWidgetRegistry::writeSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage )
+{
+  Q_UNUSED( errorMessage )
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( sender() );
+
+  Q_ASSERT( vl );
+
+  writeMapLayer( vl, element, doc );
 }
