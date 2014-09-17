@@ -79,7 +79,7 @@ void QgsMapLayerAction::triggerForFeatures( QgsMapLayer* layer, QList<const QgsF
 
 void QgsMapLayerAction::triggerForFeature( QgsMapLayer* layer, const QgsFeature* feature )
 {
-  emit triggeredForFeature( layer, feature );
+  emit triggeredForFeature( layer, *feature );
 }
 
 void QgsMapLayerAction::triggerForLayer( QgsMapLayer* layer )

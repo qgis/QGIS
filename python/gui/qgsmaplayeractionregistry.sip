@@ -25,9 +25,8 @@ class QgsMapLayerAction : QAction
     /** True if action can run using the specified layer */
     bool canRunUsingLayer( QgsMapLayer* layer ) const;
 
-    /** Triggers the action with the specified layer and feature. This also emits the triggeredForLayer( QgsMapLayer *)
-     * and triggered() slots */
-    void triggerForFeature( QgsMapLayer* layer, QgsFeature* feature );
+    /** Triggers the action with the specified layer and list of feature. */
+    void triggerForFeatures( QgsMapLayer* layer, QList<const QgsFeature*> featureList );
 
     /** Triggers the action with the specified layer. This also emits the triggered() slot. */
     void triggerForLayer( QgsMapLayer* layer );
@@ -37,8 +36,11 @@ class QgsMapLayerAction : QAction
     const Targets& targets() const;
 
   signals:
+    /** Triggered when action has been run for a specific list of features */
+    void triggeredForFeatures( QgsMapLayer* layer, QList<const QgsFeature*> featureList );
+
     /** Triggered when action has been run for a specific feature */
-    void triggeredForFeature( QgsMapLayer* layer, QgsFeature* feature );
+    void triggeredForFeature( QgsMapLayer* layer, const QgsFeature* feature );
 
     /** Triggered when action has been run for a specific layer */
     void triggeredForLayer( QgsMapLayer* layer );
