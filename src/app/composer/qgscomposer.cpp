@@ -3523,12 +3523,12 @@ void QgsComposer::writeWorldFile( QString worldFileName, double a, double b, dou
 }
 
 
-void QgsComposer::setAtlasFeature( QgsMapLayer* layer, const QgsFeature * feat )
+void QgsComposer::setAtlasFeature( QgsMapLayer* layer, const QgsFeature& feat )
 {
   //update expression variables
-  QgsExpression::setSpecialColumn( "$atlasfeatureid", feat->id() );
-  QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( *feat ) );
-  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *( feat->geometry() ) ) );
+  QgsExpression::setSpecialColumn( "$atlasfeatureid", feat.id() );
+  QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( feat ) );
+  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *( feat.geometry() ) ) );
 
   emit atlasPreviewFeatureChanged();
 
@@ -3557,7 +3557,7 @@ void QgsComposer::setAtlasFeature( QgsMapLayer* layer, const QgsFeature * feat )
   activate();
 
   //set current preview feature id
-  atlas.prepareForFeature( feat );
+  atlas.prepareForFeature( &feat );
   emit( atlasPreviewFeatureChanged() );
 }
 
@@ -3573,7 +3573,7 @@ void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer )
   {
     mAtlasFeatureAction = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ), this, coverageLayer, QgsMapLayerAction::SingleFeature );
     QgsMapLayerActionRegistry::instance()->addMapLayerAction( mAtlasFeatureAction );
-    connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, const QgsFeature* ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, const QgsFeature* ) ) );
+    connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, const QgsFeature& ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, const QgsFeature& ) ) );
   }
 }
 
@@ -3618,7 +3618,7 @@ void QgsComposer::updateAtlasMapLayerAction( bool atlasEnabled )
     QgsAtlasComposition& atlas = mComposition->atlasComposition();
     mAtlasFeatureAction = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ), this, atlas.coverageLayer(), QgsMapLayerAction::SingleFeature );
     QgsMapLayerActionRegistry::instance()->addMapLayerAction( mAtlasFeatureAction );
-    connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, const QgsFeature* ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, const QgsFeature* ) ) );
+    connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, const QgsFeature& ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, const QgsFeature& ) ) );
   }
 }
 
