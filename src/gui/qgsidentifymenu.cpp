@@ -413,10 +413,10 @@ void QgsIdentifyMenu::triggerMapLayerAction()
     // multiples features
     if ( actData.mMapLayerAction->targets().testFlag( QgsMapLayerAction::MultipleFeatures ) )
     {
-      QList<const QgsFeature*> featureList;
+      QList<QgsFeature> featureList;
       Q_FOREACH ( QgsMapToolIdentify::IdentifyResult result, mLayerIdResults[actData.mLayer] )
       {
-        featureList << new QgsFeature( result.mFeature );
+        featureList << result.mFeature;
       }
       actData.mMapLayerAction->triggerForFeatures( actData.mLayer, featureList );
     }

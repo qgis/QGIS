@@ -72,7 +72,8 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     void copyToClipboard( QgsFeatureStore & );
 
   private slots:
-    void showAttributeTable( QgsMapLayer* layer, QList<const QgsFeature*> featureList );
+    void showAttributeTable( QgsMapLayer* layer, const QList<QgsFeature> featureList );
+
   private:
     //! Pointer to the identify results dialog for name/value pairs
     QPointer<QgsIdentifyResultsDialog> mResultsDialog;
