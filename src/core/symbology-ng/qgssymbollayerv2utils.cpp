@@ -37,6 +37,7 @@
 #include <QIcon>
 #include <QPainter>
 #include <QSettings>
+#include <QRegExp>
 
 QString QgsSymbolLayerV2Utils::encodeColor( QColor color )
 {
@@ -3066,22 +3067,29 @@ QgsNamedColorList QgsSymbolLayerV2Utils::importColorsFromGpl( QFile &file, bool 
   while ( !in.atEnd() )
   {
     line = in.readLine();
-    QStringList parts = line.simplified().split( " " );
-    if ( parts.length() < 3 )
+    QRegExp rx( "^\\s*(\\d+)\\s+(\\d+)\\s+(\\d+)(\\s.*)?$" );
+    if ( rx.indexIn( line ) == -1 )
     {
       continue;
     }
-    int red = parts.at( 0 ).toInt();
-    int green = parts.at( 1 ).toInt();
-    int blue = parts.at( 2 ).toInt();
+    int red = rx.cap( 1 ).toInt();
+    int green = rx.cap( 2 ).toInt();
+    int blue = rx.cap( 3 ).toInt();
     QColor color = QColor( red, green, blue );
+    if ( !color.isValid() )
+    {
+      continue;
+    }
 
     //try to read color name
     QString label;
-    parts = line.split( "\t" );
-    if ( parts.length() > 1 )
+    if ( rx.captureCount() > 3 )
     {
-      label = parts.at( parts.length() - 1 );
+      label = rx.cap( 4 ).simplified();
+    }
+    else
+    {
+      label = colorToName( color );
     }
 
     importedColors << qMakePair( color, label );
