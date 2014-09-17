@@ -84,6 +84,66 @@ class CORE_EXPORT QgsColorScheme
 };
 
 /** \ingroup core
+ * \class QgsGplColorScheme
+ * \brief A color scheme which stores its colors in a gpl palette file.
+ * \note Added in version 2.5
+ */
+class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
+{
+  public:
+
+    QgsGplColorScheme();
+
+    virtual ~QgsGplColorScheme();
+
+    virtual QgsNamedColorList fetchColors( const QString context = QString(),
+                                           const QColor baseColor = QColor() );
+
+    virtual bool setColors( const QgsNamedColorList colors, const QString context = QString(), const QColor baseColor = QColor() );
+
+  protected:
+
+    /**Returns the file path for the associated gpl palette file
+     * @returns gpl file path
+    */
+    virtual QString gplFilePath() = 0;
+
+};
+
+/** \ingroup core
+ * \class QgsUserColorScheme
+ * \brief A color scheme which stores its colors in a gpl palette file within the "palettes"
+ * subfolder off the user's QGIS settings folder.
+ * \note Added in version 2.5
+ */
+class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
+{
+  public:
+
+    /**Constructs a new user color scheme, using a specified gpl palette file
+     * @param filename filename of gpl palette file stored in the users "palettes" folder
+    */
+    QgsUserColorScheme( const QString filename );
+
+    virtual ~QgsUserColorScheme();
+
+    virtual QString schemeName() const;
+
+    virtual QgsColorScheme* clone() const;
+
+    virtual bool isEditable() const { return true; }
+
+  protected:
+
+    QString mName;
+
+    QString mFilename;
+
+    virtual QString gplFilePath();
+
+};
+
+/** \ingroup core
  * \class QgsRecentColorScheme
  * \brief A color scheme which contains the most recently used colors.
  * \note Added in version 2.5

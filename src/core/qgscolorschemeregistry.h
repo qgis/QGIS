@@ -54,8 +54,16 @@ class CORE_EXPORT QgsColorSchemeRegistry
     /**Adds all default color schemes to this color scheme.
      * @see populateFromInstance
      * @see addColorScheme
+     * @see addUserSchemes
      */
     void addDefaultSchemes();
+
+    /**Creates schemes for all gpl palettes in the user's palettes folder.
+     * @see populateFromInstance
+     * @see addDefaultSchemes
+     * @see addColorScheme
+     */
+    void addUserSchemes();
 
     /**Adds a color scheme to the registry. Ownership of the scheme is transferred
      * to the registry.
