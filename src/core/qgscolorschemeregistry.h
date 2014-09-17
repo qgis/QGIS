@@ -18,9 +18,8 @@
 #ifndef QGSCOLORSCHEMEREGISTRY_H
 #define QGSCOLORSCHEMEREGISTRY_H
 
+#include "qgscolorscheme.h"
 #include <QList>
-
-class QgsColorScheme;
 
 /** \ingroup core
  * \class QgsColorSchemeRegistry
@@ -84,6 +83,12 @@ class CORE_EXPORT QgsColorSchemeRegistry
      * @returns list of color schemes
     */
     QList<QgsColorScheme *> schemes() const;
+
+    /**Returns all color schemes in the registry which have a specified flag set
+     * @param flag flag to match
+     * @returns list of color schemes with flag set
+    */
+    QList<QgsColorScheme *> schemes( const QgsColorScheme::SchemeFlag flag ) const;
 
     /**Return color schemes of a specific type
      * @param schemeList destination list for matching schemes

@@ -309,7 +309,7 @@ QgsUserColorScheme::QgsUserColorScheme( const QString filename )
     }
     if ( !in.atEnd() )
     {
-      QRegExp rx( "Name:\\s*(.*)$" );
+      QRegExp rx( "Name:\\s*(\\S.*)$" );
       if ( rx.indexIn( line ) != -1 )
       {
         mName = rx.cap( 1 );

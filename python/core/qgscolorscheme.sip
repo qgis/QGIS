@@ -16,7 +16,17 @@ class QgsColorScheme
 #include <qgscolorscheme.h>
 %End
 
-    public:
+  public:
+
+    /** Flags for controlling behaviour of color scheme
+     */
+    enum SchemeFlag
+    {
+      ShowInColorDialog, /*< show scheme in color picker dialog */
+      ShowInColorButtonMenu, /*< show scheme in color button drop down menu */
+      ShowInAllContexts /*< show scheme in all contexts */
+    };
+    typedef QFlags<QgsColorScheme::SchemeFlag> SchemeFlags;
 
     QgsColorScheme();
 
@@ -26,6 +36,11 @@ class QgsColorScheme
      * @returns color scheme name
     */
     virtual QString schemeName() const = 0;
+
+    /**Returns the current flags for the color scheme.
+     * @returns current flags
+    */
+    virtual SchemeFlags flags() const;
 
     /**Gets a list of colors from the scheme. The colors can optionally
      * be generated using the supplied context and base color.
@@ -61,6 +76,8 @@ class QgsColorScheme
     virtual QgsColorScheme* clone() const = 0 /Factory/;
 	
 }; // class QgsColorScheme
+
+QFlags<QgsColorScheme::SchemeFlag> operator|(QgsColorScheme::SchemeFlag f1, QFlags<QgsColorScheme::SchemeFlag> f2);
 
 
 /** \ingroup core
@@ -146,6 +163,8 @@ class QgsRecentColorScheme : QgsColorScheme
 
     virtual QString schemeName() const;
 
+    virtual SchemeFlags flags() const;
+
     virtual QgsNamedColorList fetchColors( const QString context = QString(),
         const QColor baseColor = QColor() );
 
@@ -170,6 +189,8 @@ class QgsCustomColorScheme : QgsColorScheme
     virtual ~QgsCustomColorScheme();
 
     virtual QString schemeName() const;
+
+    virtual SchemeFlags flags() const;
 
     virtual QgsNamedColorList fetchColors( const QString context = QString(),
                                            const QColor baseColor = QColor() );
@@ -198,6 +219,8 @@ class QgsProjectColorScheme : QgsColorScheme
     virtual ~QgsProjectColorScheme();
 
     virtual QString schemeName() const;
+
+    virtual SchemeFlags flags() const;
 
     virtual QgsNamedColorList fetchColors( const QString context = QString(),
                                            const QColor baseColor = QColor() );

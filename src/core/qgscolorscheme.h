@@ -40,6 +40,16 @@ class CORE_EXPORT QgsColorScheme
 {
   public:
 
+    /** Flags for controlling behaviour of color scheme
+     */
+    enum SchemeFlag
+    {
+      ShowInColorDialog = 0x01, /*< show scheme in color picker dialog */
+      ShowInColorButtonMenu = 0x02, /*< show scheme in color button drop down menu */
+      ShowInAllContexts = ShowInColorDialog | ShowInColorButtonMenu /*< show scheme in all contexts */
+    };
+    Q_DECLARE_FLAGS( SchemeFlags, SchemeFlag )
+
     QgsColorScheme();
 
     virtual ~QgsColorScheme();
@@ -48,6 +58,11 @@ class CORE_EXPORT QgsColorScheme
      * @returns color scheme name
     */
     virtual QString schemeName() const = 0;
+
+    /**Returns the current flags for the color scheme.
+     * @returns current flags
+    */
+    virtual SchemeFlags flags() const { return ShowInColorDialog; }
 
     /**Gets a list of colors from the scheme. The colors can optionally
      * be generated using the supplied context and base color.
@@ -82,6 +97,8 @@ class CORE_EXPORT QgsColorScheme
     */
     virtual QgsColorScheme* clone() const = 0;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsColorScheme::SchemeFlags )
 
 /** \ingroup core
  * \class QgsGplColorScheme
@@ -158,6 +175,8 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
 
     virtual QString schemeName() const { return QT_TR_NOOP( "Recent colors" ); }
 
+    virtual SchemeFlags flags() const { return ShowInAllContexts; }
+
     virtual QgsNamedColorList fetchColors( const QString context = QString(),
                                            const QColor baseColor = QColor() );
 
@@ -178,6 +197,8 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
     virtual ~QgsCustomColorScheme();
 
     virtual QString schemeName() const { return QT_TR_NOOP( "Standard colors" ); }
+
+    virtual SchemeFlags flags() const { return ShowInAllContexts; }
 
     virtual QgsNamedColorList fetchColors( const QString context = QString(),
                                            const QColor baseColor = QColor() );
@@ -203,6 +224,8 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
     virtual ~QgsProjectColorScheme();
 
     virtual QString schemeName() const { return QT_TR_NOOP( "Project colors" ); }
+
+    virtual SchemeFlags flags() const { return ShowInAllContexts; }
 
     virtual QgsNamedColorList fetchColors( const QString context = QString(),
                                            const QColor baseColor = QColor() );

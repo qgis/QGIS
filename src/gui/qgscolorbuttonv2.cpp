@@ -405,7 +405,8 @@ void QgsColorButtonV2::prepareMenu()
 
   if ( mColorSchemeRegistry )
   {
-    QList< QgsColorScheme* > schemeList = mColorSchemeRegistry->schemes();
+    //get schemes with ShowInColorButtonMenu flag set
+    QList< QgsColorScheme* > schemeList = mColorSchemeRegistry->schemes( QgsColorScheme::ShowInColorButtonMenu );
     QList< QgsColorScheme* >::iterator it = schemeList.begin();
     for ( ; it != schemeList.end(); ++it )
     {

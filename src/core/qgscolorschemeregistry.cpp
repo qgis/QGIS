@@ -111,6 +111,20 @@ QList<QgsColorScheme *> QgsColorSchemeRegistry::schemes() const
   return allSchemes;
 }
 
+QList<QgsColorScheme *> QgsColorSchemeRegistry::schemes( const QgsColorScheme::SchemeFlag flag ) const
+{
+  QList< QgsColorScheme* > matchingSchemes;
+  QList<QgsColorScheme*>::const_iterator schemeIt;
+  for ( schemeIt = mColorSchemeList.constBegin(); schemeIt != mColorSchemeList.constEnd(); ++schemeIt )
+  {
+    if (( *schemeIt )->flags().testFlag( flag ) )
+    {
+      matchingSchemes.append(( *schemeIt ) );
+    }
+  }
+  return matchingSchemes;
+}
+
 bool QgsColorSchemeRegistry::removeColorScheme( QgsColorScheme *scheme )
 {
   if ( mColorSchemeList.indexOf( scheme ) != -1 )

@@ -79,7 +79,8 @@ QgsColorDialogV2::QgsColorDialogV2( QWidget *parent, Qt::WindowFlags fl, const Q
   mSchemeList->header()->hide();
   mSchemeList->setColumnWidth( 0, 44 );
 
-  QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes();
+  //get schemes with ShowInColorDialog set
+  QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
   QList<QgsColorScheme *>::const_iterator schemeIt = schemeList.constBegin();
   for ( ; schemeIt != schemeList.constEnd(); ++schemeIt )
   {
@@ -418,7 +419,8 @@ void QgsColorDialogV2::schemeIndexChanged( int index )
     mSchemeList->saveColorsToScheme();
   }
 
-  QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes();
+  //get schemes with ShowInColorDialog set
+  QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
   if ( index >= schemeList.length() )
   {
     return;
