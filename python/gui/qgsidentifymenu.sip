@@ -25,7 +25,7 @@ class QgsIdentifyMenu : QMenu
       bool mIsExternalAction;
       QgsMapLayer* mLayer;
       QgsFeatureId mFeatureId;
-      MenuLevel mLevel;
+      QgsIdentifyMenu::MenuLevel mLevel;
       QgsMapLayerAction* mMapLayerAction;
     };
 
