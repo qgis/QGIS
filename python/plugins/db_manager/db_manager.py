@@ -25,6 +25,7 @@ The content of this file is based on
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+from qgis.gui import QgsMessageBar
 from .info_viewer import InfoViewer
 from .table_viewer import TableViewer
 from .layer_preview import LayerPreview
@@ -147,7 +148,7 @@ class DBManager(QMainWindow):
 	def importActionSlot(self):
 		db = self.tree.currentDatabase()
 		if db is None:
-			QMessageBox.information(self, self.tr("Sorry"), self.tr("No database selected or you are not connected to it."))
+			self.infoBar.pushMessage(self.tr("Sorry"), self.tr("No database selected or you are not connected to it."), QgsMessageBar.INFO, self.iface.messageTimeout())
 			return
 
 		outUri = db.uri()
@@ -162,7 +163,7 @@ class DBManager(QMainWindow):
 	def exportActionSlot(self):
 		table = self.tree.currentTable()
 		if table is None:
-			QMessageBox.information(self, self.tr("Sorry"), self.tr("Select the table you want export to file."))
+			self.infoBar.pushMessage(self.tr("Sorry"), self.tr("Select the table you want export to file."), QgsMessageBar.INFO, self.iface.messageTimeout())
 			return
 
 		inLayer = table.toMapLayer()
@@ -176,7 +177,7 @@ class DBManager(QMainWindow):
 	def runSqlWindow(self):
 		db = self.tree.currentDatabase()
 		if db == None:
-			QMessageBox.information(self, self.tr("Sorry"), self.tr("No database selected or you are not connected to it."))
+			self.infoBar.pushMessage(self.tr("No database selected or you are not connected to it."), QgsMessageBar.INFO, self.iface.messageTimeout())
 			return
 
 		from dlg_sql_window import DlgSqlWindow
@@ -346,6 +347,17 @@ class DBManager(QMainWindow):
 		self.preview = LayerPreview(self)
 		self.tabs.addTab(self.preview, self.tr("Preview"))
 		self.setCentralWidget(self.tabs)
+
+		# Creates layout for message bar
+		self.layout = QGridLayout(self.info)
+		self.layout.setContentsMargins(0, 0, 0, 0)
+		spacerItem = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+		self.layout.addItem(spacerItem, 1, 0, 1, 1)
+		# init messageBar instance
+		self.infoBar = QgsMessageBar(self.info)
+		sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+		self.infoBar.setSizePolicy(sizePolicy)
+		self.layout.addWidget(self.infoBar, 0, 0, 1, 1)
 
 		# create database tree
 		self.dock = QDockWidget("Tree", self)
