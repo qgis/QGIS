@@ -424,7 +424,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
     qStableSort( contents.begin(), contents.end(), c );
   }
 
-  adjustFrameToSize();
+  recalculateTableSize();
   return true;
 }
 

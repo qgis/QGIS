@@ -172,7 +172,6 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      */
     QgsComposerTableColumn* columnFromIndex( const QModelIndex & index ) const;
 
-
     /**Returns the QgsComposerTableColumn corresponding to an index from the source
      * QgsComposerAttributeTableColumnModel model.
      * @returns QgsComposerTableColumn for specified index from QgsComposerAttributeTableColumnModel

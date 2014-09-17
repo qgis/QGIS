@@ -47,12 +47,12 @@ void QgsComposerMultiFrame::render( QPainter *p, const QRectF &renderExtent )
   Q_UNUSED( renderExtent );
 }
 
-void QgsComposerMultiFrame::render( QPainter *p, const QRectF &renderExtent, const int frameIndex )
+void QgsComposerMultiFrame::render( QPainter *painter, const QRectF &renderExtent, const int frameIndex )
 {
   Q_UNUSED( frameIndex );
   //base implementation ignores frameIndex
   Q_NOWARN_DEPRECATED_PUSH
-  render( p, renderExtent );
+  render( painter, renderExtent );
   Q_NOWARN_DEPRECATED_POP
 }
 

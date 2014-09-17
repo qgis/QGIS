@@ -1,30 +1,3 @@
-/***************************************************************************
-                         qgscomposertablev2.h
-                         ------------------
-    begin                : July 2014
-    copyright            : (C) 2014 by Nyall Dawson, Marco Hugentobler
-    email                : nyall dot dawson at gmail dot com
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
-#ifndef QGSCOMPOSERTABLEV2_H
-#define QGSCOMPOSERTABLEV2_H
-
-#include "qgscomposermultiframe.h"
-#include <QFont>
-#include <QColor>
-#include <QPair>
-
-class QgsComposerTableColumn;
-
 /**List of QVariants, representing a the contents of a single row in
  * a QgsComposerTable
  * \note Added in version 2.5
@@ -46,13 +19,15 @@ typedef QList<QgsComposerTableColumn*> QgsComposerTableColumns;
  * the table to span over multiple frames
  * @note added in QGIS 2.5
  */
-class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
+class QgsComposerTableV2: QgsComposerMultiFrame
 {
-    Q_OBJECT
+%TypeHeaderCode
+#include <qgscomposertablev2.h>
+%End
 
   public:
 
-    /*! Controls how headers are horizontally aligned in a table
+/*! Controls how headers are horizontally aligned in a table
      */
     enum HeaderHAlignment
     {
@@ -61,15 +36,15 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
       HeaderCenter, /*!< align headers to center */
       HeaderRight /*!< align headers right */
     };
-
+    
     /*! Controls where headers are shown in the table
      */
     enum HeaderMode
     {
-      FirstFrame = 0, /*!< header shown on first frame only */
+      FirstFrame, /*!< header shown on first frame only */
       AllFrames, /*!< headers shown on all frames */
       NoHeaders /*!< no headers shown for table */
-    };
+    };    
 
     QgsComposerTableV2( QgsComposition* composition, bool createUndoCommands );
     QgsComposerTableV2();
@@ -86,7 +61,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @returns margin for cell contents
      * @see setCellMargin
      */
-    double cellMargin() const { return mCellMargin; }
+    double cellMargin() const;
 
     /**Sets the font used to draw header text in the table.
      * @param font font for header cells
@@ -100,7 +75,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see setHeaderFont
      * @see contentFont
      */
-    QFont headerFont() const { return mHeaderFont; }
+    QFont headerFont() const;
 
     /**Sets the color used to draw header text in the table.
      * @param color header text color
@@ -116,7 +91,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see headerFont
      * @see contentFontColor
      */
-    QColor headerFontColor() const { return mHeaderFontColor; }
+    QColor headerFontColor() const;
 
     /**Sets the horizontal alignment for table headers
      * @param alignment Horizontal alignment for table header cells
@@ -128,7 +103,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @returns Horizontal alignment for table header cells
      * @see setHeaderHAlignment
      */
-    HeaderHAlignment headerHAlignment() const { return mHeaderHAlignment; }
+    HeaderHAlignment headerHAlignment() const;
 
     /**Sets the display mode for headers in the table. This property controls
      * if and where headers are shown in the table.
@@ -142,7 +117,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @returns display mode for headers
      * @see setHeaderMode
      */
-    HeaderMode headerMode() const { return mHeaderMode; }
+    HeaderMode headerMode() const;
 
     /**Sets the font used to draw text in table body cells.
      * @param font font for table cells
@@ -156,7 +131,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see setContentFont
      * @see headerFont
      */
-    QFont contentFont() const { return mContentFont; }
+    QFont contentFont() const;
 
     /**Sets the color used to draw text in table body cells.
      * @param color table cell text color
@@ -172,7 +147,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see contentFont
      * @see headerFontColor
      */
-    QColor contentFontColor() const { return mContentFontColor; }
+    QColor contentFontColor() const;
 
     /**Sets whether grid lines should be drawn in the table
      * @param showGrid set to true to show grid lines
@@ -188,7 +163,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see gridStrokeWidth
      * @see gridColor
      */
-    bool showGrid() const { return mShowGrid; }
+    bool showGrid() const;
 
     /**Sets the width for grid lines in the table.
      * @param width grid line width
@@ -204,7 +179,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see showGrid
      * @see gridColor
      */
-    double gridStrokeWidth() const { return mGridStrokeWidth; }
+    double gridStrokeWidth() const;
 
     /**Sets color used for grid lines in the table.
      * @param color grid line color
@@ -220,13 +195,13 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see showGrid
      * @see gridStrokeWidth
      */
-    QColor gridColor() const { return mGridColor; }
+    QColor gridColor() const;
 
     /**Returns a pointer to the list of QgsComposerTableColumns shown in the table
      * @returns pointer to list of columns in table
      * @see setColumns
      */
-    QgsComposerTableColumns* columns() { return &mColumns; }
+    QgsComposerTableColumns* columns();
 
     /**Replaces the columns in the table with a specified list of QgsComposerTableColumns.
      * @param columns list of QgsComposerTableColumns to show in table
@@ -258,7 +233,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
     virtual QSizeF totalSize() const;
     virtual void render( QPainter* p, const QRectF& renderExtent, const int frameIndex );
-
+    
   public slots:
 
     /**Refreshes the contents shown in the table by querying for new data.
@@ -269,50 +244,10 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     virtual void refreshAttributes();
 
     void recalculateFrameSizes();
-
+    
   protected:
-    /**Margin between cell borders and cell text*/
-    double mCellMargin;
-
-    /**Header font*/
-    QFont mHeaderFont;
-
-    /**Header font color*/
-    QColor mHeaderFontColor;
-
-    /**Alignment for table headers*/
-    HeaderHAlignment mHeaderHAlignment;
-
-    /**Header display mode*/
-    HeaderMode mHeaderMode;
-
-    /**Table contents font*/
-    QFont mContentFont;
-
-    /**Table contents font color*/
-    QColor mContentFontColor;
-
-    /**True if grid should be shown*/
-    bool mShowGrid;
-
-    /**Width of grid lines*/
-    double mGridStrokeWidth;
-
-    /**Color for grid lines*/
-    QColor mGridColor;
-
-    /**Columns to show in table*/
-    QgsComposerTableColumns mColumns;
-
-    /**Contents to show in table*/
-    QgsComposerTableContents mTableContents;
-
-    /**Map of maximum width for each column*/
-    QMap<int, double> mMaxColumnWidthMap;
-
-    QSizeF mTableSize;
-
-    /**Calculates the maximum width of text shown in columns.
+  
+      /**Calculates the maximum width of text shown in columns.
      */
     virtual bool calculateMaxColumnWidths();
 
@@ -370,11 +305,10 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see calculateMaxColumnWidths
      * @note not available in python bindings
      */
-    void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap, const int numberRows, const bool hasHeader ) const;
+    //void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap, const int numberRows, const bool hasHeader ) const;
 
     /**Recalculates and updates the size of the table and all table frames.
      */
     void recalculateTableSize();
+    
 };
-
-#endif // QGSCOMPOSERTABLEV2_H

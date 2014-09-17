@@ -1,8 +1,8 @@
-/**A model for displaying columns shown in a QgsComposerAttributeTable*/
-class QgsComposerAttributeTableColumnModel: QAbstractTableModel
+/**A model for displaying columns shown in a QgsComposerAttributeTableV2*/
+class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
 {
 %TypeHeaderCode
-#include <qgscomposerattributetablemodel.h>
+#include <qgscomposerattributetablemodelv2.h>
 %End
 
   public:
@@ -16,11 +16,12 @@ class QgsComposerAttributeTableColumnModel: QAbstractTableModel
     };
 
     /**Constructor for QgsComposerAttributeTableColumnModel.
+    /**Constructor for QgsComposerAttributeTableColumnModel.
      * @param composerTable QgsComposerAttributeTable the model is attached to
      * @param parent optional parent
      */
-    QgsComposerAttributeTableColumnModel( QgsComposerAttributeTable *composerTable, QObject *parent /TransferThis/ = 0 );
-    virtual ~QgsComposerAttributeTableColumnModel();
+    QgsComposerAttributeTableColumnModelV2( QgsComposerAttributeTableV2 *composerTable, QObject *parent /TransferThis/ = 0 );
+    virtual ~QgsComposerAttributeTableColumnModelV2();
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -32,7 +33,7 @@ class QgsComposerAttributeTableColumnModel: QAbstractTableModel
     bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
     QModelIndex index( int row, int column, const QModelIndex &parent ) const;
     QModelIndex parent( const QModelIndex &child ) const;
-
+    
     /**Moves the specified row up or down in the model. Used for rearranging the attribute tables
      * columns.
      * @returns true if the move is allowed
@@ -47,7 +48,7 @@ class QgsComposerAttributeTableColumnModel: QAbstractTableModel
      * @note added in 2.3
      */
     void resetToLayer();
-
+    
     /**Returns the QgsComposerTableColumn corresponding to an index in the model.
      * @returns QgsComposerTableColumn for specified index
      * @param index a QModelIndex
@@ -93,10 +94,10 @@ class QgsComposerAttributeTableColumnModel: QAbstractTableModel
 };
 
 /**Allows for filtering QgsComposerAttributeTable columns by columns which are sorted or unsorted*/
-class QgsComposerTableSortColumnsProxyModel : QSortFilterProxyModel
+class QgsComposerTableSortColumnsProxyModelV2 : QSortFilterProxyModel
 {
 %TypeHeaderCode
-#include <qgscomposerattributetablemodel.h>
+#include <qgscomposerattributetablemodelv2.h>
 %End
 
   public:
@@ -114,9 +115,9 @@ class QgsComposerTableSortColumnsProxyModel : QSortFilterProxyModel
      * @param filterType filter for columns, controls whether sorted or unsorted columns are shown
      * @param parent optional parent
      */
-    QgsComposerTableSortColumnsProxyModel( QgsComposerAttributeTable *composerTable, ColumnFilterType filterType, QObject *parent /TransferThis/ = 0 );
+    QgsComposerTableSortColumnsProxyModelV2( QgsComposerAttributeTableV2 *composerTable, ColumnFilterType filterType, QObject *parent /TransferThis/ = 0 );
 
-    virtual ~QgsComposerTableSortColumnsProxyModel();
+    virtual ~QgsComposerTableSortColumnsProxyModelV2();
 
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -141,7 +142,6 @@ class QgsComposerTableSortColumnsProxyModel : QSortFilterProxyModel
      * @see columnFromSourceIndex
      */
     QgsComposerTableColumn* columnFromIndex( const QModelIndex & index ) const;
-
 
     /**Returns the QgsComposerTableColumn corresponding to an index from the source
      * QgsComposerAttributeTableColumnModel model.

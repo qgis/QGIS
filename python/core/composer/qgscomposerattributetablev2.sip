@@ -1,17 +1,15 @@
-/** \ingroup MapComposer
- * Attribute table item for map composer.
- */
-
 /**Helper class for sorting tables, takes into account sorting column and ascending / descending*/
-class QgsComposerAttributeTableCompare
+class QgsComposerAttributeTableCompareV2
 {
 %TypeHeaderCode
-#include <qgscomposerattributetable.h>
+#include <qgscomposerattributetablev2.h>
 %End
 
   public:
-    QgsComposerAttributeTableCompare();
-    // bool operator()( const QgsAttributeMap& m1, const QgsAttributeMap& m2 );
+
+    QgsComposerAttributeTableCompareV2();
+    
+    bool operator()( const QgsComposerTableRow& m1, const QgsComposerTableRow& m2 );
 
     /**Sets column number to sort by
      * @param col column number for sorting
@@ -22,38 +20,36 @@ class QgsComposerAttributeTableCompare
      * @param asc set to true to sort in ascending order, false to sort in descending order
      */
     void setAscending( bool asc );
+
 };
 
-/**A table class that displays a vector attribute table*/
-class QgsComposerAttributeTable : QgsComposerTable
+/**A table that displays attributes from a vector layer*/
+class QgsComposerAttributeTableV2 : QgsComposerTableV2
 {
 %TypeHeaderCode
-#include <qgscomposerattributetable.h>
+#include <qgscomposerattributetablev2.h>
 %End
 
   public:
-    QgsComposerAttributeTable( QgsComposition* composition /TransferThis/ );
-    ~QgsComposerAttributeTable();
 
-    /** return correct graphics item type. Added in v1.7 */
-    virtual int type() const;
-
-    /** \brief Reimplementation of QCanvasItem::paint*/
-    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    QgsComposerAttributeTableV2( QgsComposition* composition, bool createUndoCommands );
+    ~QgsComposerAttributeTableV2();
 
     /**Writes properties specific to attribute tables
      * @param elem an existing QDomElement in which to store the attribute table's properties.
      * @param doc QDomDocument for the destination xml.
      * @see readXML
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    virtual bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
 
     /**Reads the properties specific to an attribute table from xml.
      * @param itemElem a QDomElement holding the attribute table's desired properties.
      * @param doc QDomDocument for the source xml.
      * @see writeXML
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
+
+    virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true );
 
     /**Sets the vector layer from which to display feature attributes
      * @param layer Vector layer for attribute table
@@ -68,7 +64,6 @@ class QgsComposerAttributeTable : QgsComposerTable
     QgsVectorLayer* vectorLayer() const;
 
     /**Resets the attribute table's columns to match the vector layer's fields
-     * @note added in 2.3
      * @see setVectorLayer
      */
     void resetColumns();
@@ -82,7 +77,7 @@ class QgsComposerAttributeTable : QgsComposerTable
      * @see composerMap
      * @see setDisplayOnlyVisibleFeatures
      */
-    void setComposerMap( const QgsComposerMap* map /TransferThis/ );
+    void setComposerMap( const QgsComposerMap* map );
 
     /**Returns the composer map whose extents are controlling the features shown in the
      * table. The extents of the map are only used if displayOnlyVisibleFeatures() is true.
@@ -91,7 +86,7 @@ class QgsComposerAttributeTable : QgsComposerTable
      * @see displayOnlyVisibleFeatures
      */
     const QgsComposerMap* composerMap() const;
-
+    
     /**Sets the maximum number of features shown by the table. Changing this setting may result
      * in the attribute table changing its size to accommodate the new number of rows, and requires
      * the table to refetch features from its vector layer.
@@ -113,7 +108,7 @@ class QgsComposerAttributeTable : QgsComposerTable
      * @see displayOnlyVisibleFeatures
      * @see setComposerMap
      */
-    void setDisplayOnlyVisibleFeatures( bool b );
+    void setDisplayOnlyVisibleFeatures( bool visibleOnly );
 
     /**Returns true if the table is set to show only features visible on a corresponding
      * composer map item.
@@ -125,7 +120,6 @@ class QgsComposerAttributeTable : QgsComposerTable
 
     /**Returns true if a feature filter is active on the attribute table
      * @returns bool state of the feature filter
-     * @note added in 2.3
      * @see setFilterFeatures
      * @see featureFilter
      */
@@ -135,7 +129,6 @@ class QgsComposerAttributeTable : QgsComposerTable
      * this setting forces the table to refetch features from its vector layer, and may result in
      * the table changing size to accommodate the new displayed feature attributes.
      * @param filter Set to true to enable the feature filter
-     * @note added in 2.3
      * @see filterFeatures
      * @see setFeatureFilter
      */
@@ -144,7 +137,6 @@ class QgsComposerAttributeTable : QgsComposerTable
     /**Returns the current expression used to filter features for the table. The filter is only
      * active if filterFeatures() is true.
      * @returns feature filter expression
-     * @note added in 2.3
      * @see setFeatureFilter
      * @see filterFeatures
      */
@@ -155,19 +147,10 @@ class QgsComposerAttributeTable : QgsComposerTable
      * to refetch features from its vector layer, and may result in
      * the table changing size to accommodate the new displayed feature attributes.
      * @param expression filter to use for selecting which features to display in the table
-     * @note added in 2.3
      * @see featureFilter
      * @see setFilterFeatures
      */
     void setFeatureFilter( const QString& expression );
-
-    /**Returns the attributes fields which are shown by the table.
-     * @returns a QSet of integers refering to the attributes in the vector layer. If
-     * result is an empty QSet than all feature attributes will be shown.
-     * @see setDisplayAttributes
-     * @deprecated use QgsComposerTable::columns() instead
-     */
-    QSet<int> displayAttributes() const /Deprecated/;
 
     /**Sets the attributes to display in the table.
      * @param attr QSet of integer values refering to the attributes from the vector layer to show.
@@ -177,45 +160,7 @@ class QgsComposerAttributeTable : QgsComposerTable
      * to accommodate the new displayed feature attributes.
      * @see displayAttributes
      */
-    void setDisplayAttributes( const QSet<int>& attr );
-
-    /**Returns the attribute field aliases, which control how fields are named in the table's
-     * header row.
-     * @returns a QMap of integers to strings, where the string is the field's alias and the
-     * integer is the field index from the associated vector layer.
-     * @see setFieldAliasMap
-     * @deprecated use QgsComposerTable::columns() instead
-     */
-    QMap<int, QString> fieldAliasMap() const /Deprecated/;
-
-    /**Sets the attribute field aliases, which control how fields are named in the table's
-     * header row.
-     * @param map QMap of integers to strings, where the string is the alias to use for the
-     * corresponding field, and the integer is the field index from the vector layer
-     * @see fieldAliasMap
-     * @deprecated use QgsComposerTable::columns() instead
-     */
-    void setFieldAliasMap( const QMap<int, QString>& map ) /Deprecated/;
-
-    /**Adapts mMaximumNumberOfFeatures depending on the rectangle height. Calling this forces
-     * the table to refetch features from its vector layer and immediately updates the display
-     * of the table.
-     * @see maximumNumberOfFeatures
-     * @see setMaximumNumberOfFeatures
-     */
-    void setSceneRect( const QRectF& rectangle );
-
-    /**Sets the attributes to use to sort the table's features.
-     * @param att QList integers/bool pairs, where the integer refers to the attribute index and
-     * the bool sets the sort order for the attribute. If true the attribute is sorted ascending,
-     * if false, the attribute is sorted in descending order. Note that features are sorted
-     * after the maximum number of displayed features have been fetched from the vector layer's
-     * provider.
-     * @see sortAttributes
-     * @deprecated use QgsComposerTable::columns() instead
-     * @note not available in python bindings
-     */
-    // void setSortAttributes( const QList<QPair<int, bool> > att ) /Deprecated/;
+    void setDisplayAttributes( const QSet<int>& attr, bool refresh = true );
 
     /**Returns the attributes used to sort the table's features.
      * @returns a QList of integer/bool pairs, where the integer refers to the attribute index and
@@ -223,13 +168,13 @@ class QgsComposerAttributeTable : QgsComposerTable
      * if false, the attribute is sorted in descending order.
      * @note not available in python bindings
      */
-    // QList<QPair<int, bool> > sortAttributes() const;
+    //QList<QPair<int, bool> > sortAttributes() const;
 
     /**Queries the attribute table's vector layer for attributes to show in the table.
      * @param attributeMaps list of QgsAttributeMaps where the fetched feature attributes will be stored
      * @returns true if attributes were successfully fetched
      * @note not available in python bindings
      */
-    // bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps );
+    bool getTableContents( QgsComposerTableContents &contents );
 
 };

@@ -45,7 +45,11 @@ class QgsComposerMultiFrameMergeCommand: QgsComposerMultiFrameCommand
       //composer html
       HtmlSource,
       HtmlStylesheet,
-      HtmlBreakDistance
+      HtmlBreakDistance,
+      //attribute table
+      TableMaximumFeatures,
+      TableMargin,
+      TableGridStrokeWidth
     };
 
     QgsComposerMultiFrameMergeCommand( Context c, QgsComposerMultiFrame* multiFrame, const QString& text );

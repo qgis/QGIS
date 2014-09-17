@@ -47,10 +47,11 @@ class CORE_EXPORT QgsComposerAttributeTableCompareV2
 };
 
 
-/**A table class that displays a vector attribute table*/
+/**A table that displays attributes from a vector layer*/
 class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
 {
     Q_OBJECT
+
   public:
     QgsComposerAttributeTableV2( QgsComposition* composition, bool createUndoCommands );
     ~QgsComposerAttributeTableV2();

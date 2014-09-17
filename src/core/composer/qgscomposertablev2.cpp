@@ -342,7 +342,7 @@ void QgsComposerTableV2::setCellMargin( const double margin )
   mCellMargin = margin;
 
   //since spacing has changed, we need to recalculate the table size
-  adjustFrameToSize();
+  recalculateTableSize();
 
   emit changed();
 }
@@ -356,7 +356,7 @@ void QgsComposerTableV2::setHeaderFont( const QFont &font )
 
   mHeaderFont = font;
   //since font attributes have changed, we need to recalculate the table size
-  adjustFrameToSize();
+  recalculateTableSize();
 
   emit changed();
 }
@@ -395,7 +395,7 @@ void QgsComposerTableV2::setHeaderMode( const QgsComposerTableV2::HeaderMode mod
   }
 
   mHeaderMode = mode;
-  adjustFrameToSize();
+  recalculateTableSize();
 
   emit changed();
 }
@@ -409,7 +409,7 @@ void QgsComposerTableV2::setContentFont( const QFont &font )
 
   mContentFont = font;
   //since font attributes have changed, we need to recalculate the table size
-  adjustFrameToSize();
+  recalculateTableSize();
 
   emit changed();
 }
@@ -436,7 +436,7 @@ void QgsComposerTableV2::setShowGrid( const bool showGrid )
 
   mShowGrid = showGrid;
   //since grid spacing has changed, we need to recalculate the table size
-  adjustFrameToSize();
+  recalculateTableSize();
 
   emit changed();
 }
@@ -450,7 +450,7 @@ void QgsComposerTableV2::setGridStrokeWidth( const double width )
 
   mGridStrokeWidth = width;
   //since grid spacing has changed, we need to recalculate the table size
-  adjustFrameToSize();
+  recalculateTableSize();
 
   emit changed();
 }
@@ -695,7 +695,7 @@ void QgsComposerTableV2::drawVerticalGridLines( QPainter *painter, const QMap<in
   }
 }
 
-void QgsComposerTableV2::adjustFrameToSize()
+void QgsComposerTableV2::recalculateTableSize()
 {
   recalculateFrameSizes();
 
