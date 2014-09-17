@@ -224,7 +224,7 @@ def startPlugin(packageName):
 
   # add to active plugins
   active_plugins.append(packageName)
-  end = time.end()
+  end = time.clock()
   plugin_times[packageName] = "{0:02f}s".format(end - start)
 
   return True
