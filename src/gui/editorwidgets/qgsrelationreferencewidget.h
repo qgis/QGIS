@@ -95,8 +95,8 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void comboReferenceChanged( int index );
     void deleteForeignKey();
     void featureIdentified( const QgsFeature& feature );
+    void unsetMapTool();
     void mapToolDeactivated();
-
 
   private:
     QgsFeature relatedFeature();

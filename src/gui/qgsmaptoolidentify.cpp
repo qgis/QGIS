@@ -169,7 +169,6 @@ void QgsMapToolIdentify::activate()
 
 void QgsMapToolIdentify::deactivate()
 {
-
   QgsMapTool::deactivate();
 }
 

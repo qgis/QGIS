@@ -15,6 +15,7 @@
 
 #include <QMouseEvent>
 
+#include "qgscursors.h"
 #include "qgsmaptoolidentifyfeature.h"
 #include "qgsmapcanvas.h"
 
@@ -23,6 +24,9 @@ QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas* canvas, QgsV
     , mCanvas( canvas )
     , mLayer( vl )
 {
+  // set cursor
+  QPixmap cursorPixmap = QPixmap(( const char ** ) cross_hair_cursor );
+  mCursor = QCursor( cursorPixmap, 1, 1 );
 }
 
 void QgsMapToolIdentifyFeature::canvasReleaseEvent( QMouseEvent* e )
@@ -44,6 +48,6 @@ void QgsMapToolIdentifyFeature::keyPressEvent( QKeyEvent* e )
 {
   if ( e->key() == Qt::Key_Escape )
   {
-    deactivate();
+    mCanvas->unsetMapTool( this );
   }
 }
