@@ -90,7 +90,7 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, const QLi
     return;
 
   QString filter = "$id IN (";
-  Q_FOREACH ( const QgsFeature feature, featureList )
+  Q_FOREACH ( const QgsFeature &feature, featureList )
   {
     filter.append( QString( "%1," ).arg( feature.id() ) );
   }

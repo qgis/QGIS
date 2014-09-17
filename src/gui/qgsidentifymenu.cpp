@@ -98,6 +98,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
   }
 
   // add results to the menu
+  bool singleLayer = mLayerIdResults.count() == 1;
   int count = 0;
   QMapIterator< QgsMapLayer*, QList<QgsMapToolIdentify::IdentifyResult> > it( mLayerIdResults ) ;
   while ( it.hasNext() )
@@ -116,12 +117,12 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
       if ( !vl )
         continue;
-      addVectorLayer( vl, it.value() );
+      addVectorLayer( vl, it.value(), singleLayer );
     }
   }
 
   // add an "identify all" action on the top level
-  if ( mAllowMultipleReturn && idResults.count() > 1 )
+  if ( !singleLayer && mAllowMultipleReturn && idResults.count() > 1 )
   {
     addSeparator();
     QAction* allAction = new QAction( tr( "%1 for all (%2)" ).arg( mDefaultActionName ).arg( idResults.count() ), this );
@@ -204,12 +205,13 @@ void QgsIdentifyMenu::addRasterLayer( QgsMapLayer* layer )
   }
 }
 
-void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapToolIdentify::IdentifyResult> results )
+void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapToolIdentify::IdentifyResult> results, bool singleLayer )
 {
-  QAction* layerAction;
+  QAction* layerAction = 0;
   QMenu* layerMenu = 0;
 
-  // do not add actions for multiple results if only 1
+  // do not add actions with MultipleFeatures as target if only 1 feature is found for this layer
+  // targets defines which actions will be shown
   QgsMapLayerAction::Targets targets = results.count() > 1 ? QgsMapLayerAction::Layer | QgsMapLayerAction::MultipleFeatures : QgsMapLayerAction::Layer;
 
   QList<QgsMapLayerAction*> separators = QList<QgsMapLayerAction*>();
@@ -228,9 +230,15 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
       separators << layerActions[nCustomActions];
     }
   }
+
+  // determines if a menu should be created or not. Following cases:
+  // 1. only one result and no feature action to be shown => just create an action
+  // 2. several features (2a) or display feature actions (2b) => create a menu
+  // 3. case 2 but only one layer (singeLayer) => do not create a menu, but give the top menu instead
+
   bool createMenu = results.count() > 1 || layerActions.count() > 0;
 
-  // still create a menu for layer, if there is a sub-level for features
+  // case 2b: still create a menu for layer, if there is a sub-level for features
   // i.e custom actions or map layer actions at feature level
   if ( !createMenu )
   {
@@ -246,36 +254,50 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
   // use a menu only if actions will be listed
   if ( !createMenu )
   {
+    // case 1
     layerAction = new QAction( layer->name(), this );
   }
   else
   {
-    layerMenu = new QMenu( layer->name(), this );
-    layerAction = layerMenu->menuAction();
+    if ( singleLayer )
+    {
+      // case 3
+      layerMenu = this;
+    }
+    else
+    {
+      // case 2
+      layerMenu = new QMenu( layer->name(), this );
+      layerAction = layerMenu->menuAction();
+    }
   }
 
-  // icons
-  switch ( layer->geometryType() )
+  // case 1 or 2
+  if ( layerAction )
   {
-    case QGis::Point:
-      layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPointLayer.png" ) );
-      break;
-    case QGis::Line:
-      layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconLineLayer.png" ) );
-      break;
-    case QGis::Polygon:
-      layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPolygonLayer.png" ) );
-      break;
-    default:
-      break;
+    // icons
+    switch ( layer->geometryType() )
+    {
+      case QGis::Point:
+        layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPointLayer.png" ) );
+        break;
+      case QGis::Line:
+        layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconLineLayer.png" ) );
+        break;
+      case QGis::Polygon:
+        layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPolygonLayer.png" ) );
+        break;
+      default:
+        break;
+    }
+
+    // add layer action to the top menu
+    layerAction->setData( QVariant::fromValue<ActionData>( ActionData( layer ) ) );
+    connect( layerAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+    addAction( layerAction );
   }
 
-  // add layer action to the top menu
-  layerAction->setData( QVariant::fromValue<ActionData>( ActionData( layer ) ) );
-  connect( layerAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
-  addAction( layerAction );
-
-  // no need to go further if there is no menu
+  // case 1. no need to go further
   if ( !layerMenu )
     return;
 
@@ -315,7 +337,6 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
       // if we are here with only one results, this means there is a sub-feature level (for actions)
       // => skip the feature level since there would be only a single entry
       // => give the layer menu as pointer instead of a new feature menu
-      featureAction = layerAction;
       featureMenu = layerMenu;
     }
     else
