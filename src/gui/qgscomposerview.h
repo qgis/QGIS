@@ -36,7 +36,7 @@ class QgsComposerPicture;
 class QgsComposerRuler;
 class QgsComposerScaleBar;
 class QgsComposerShape;
-class QgsComposerAttributeTable;
+class QgsComposerAttributeTableV2;
 
 /** \ingroup MapComposer
  * Widget to display the composer items. Manages the composer tools and the
@@ -64,7 +64,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
       AddRectangle,
       AddEllipse,
       AddTriangle,
-      AddTable, //add attribute table
+      AddTable, //add table
+      AddAttributeTable,
       MoveItemContent, //move content of item (e.g. content of map)
       Pan,
       Zoom

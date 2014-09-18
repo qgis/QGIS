@@ -17,6 +17,9 @@
 
 #include "qgscolorschemeregistry.h"
 #include "qgscolorscheme.h"
+#include "qgsapplication.h"
+#include <QDir>
+#include <QFileInfoList>
 
 //
 // Static calls to enforce singleton behaviour
@@ -30,6 +33,8 @@ QgsColorSchemeRegistry *QgsColorSchemeRegistry::instance()
 
     //add default color schemes
     mInstance->addDefaultSchemes();
+    //add user schemes
+    mInstance->addUserSchemes();
   }
 
   return mInstance;
@@ -69,6 +74,25 @@ void QgsColorSchemeRegistry::addDefaultSchemes()
   addColorScheme( new QgsRecentColorScheme() );
   addColorScheme( new QgsCustomColorScheme() );
   addColorScheme( new QgsProjectColorScheme() );
+
+}
+
+void QgsColorSchemeRegistry::addUserSchemes()
+{
+  QString palettesDir = QgsApplication::qgisSettingsDirPath() + "/palettes";
+
+  QDir localDir;
+  if ( !localDir.mkpath( palettesDir ) )
+  {
+    return;
+  }
+
+  QFileInfoList fileInfoList = QDir( palettesDir ).entryInfoList( QStringList( "*.gpl" ), QDir::Files );
+  QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
+  for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
+  {
+    addColorScheme( new QgsUserColorScheme( infoIt->fileName() ) );
+  }
 }
 
 void QgsColorSchemeRegistry::addColorScheme( QgsColorScheme *scheme )
@@ -85,6 +109,20 @@ QList<QgsColorScheme *> QgsColorSchemeRegistry::schemes() const
     allSchemes.append(( *schemeIt ) );
   }
   return allSchemes;
+}
+
+QList<QgsColorScheme *> QgsColorSchemeRegistry::schemes( const QgsColorScheme::SchemeFlag flag ) const
+{
+  QList< QgsColorScheme* > matchingSchemes;
+  QList<QgsColorScheme*>::const_iterator schemeIt;
+  for ( schemeIt = mColorSchemeList.constBegin(); schemeIt != mColorSchemeList.constEnd(); ++schemeIt )
+  {
+    if (( *schemeIt )->flags().testFlag( flag ) )
+    {
+      matchingSchemes.append(( *schemeIt ) );
+    }
+  }
+  return matchingSchemes;
 }
 
 bool QgsColorSchemeRegistry::removeColorScheme( QgsColorScheme *scheme )

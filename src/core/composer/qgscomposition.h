@@ -45,6 +45,7 @@ class QDomElement;
 class QgsComposerArrow;
 class QgsComposerMouseHandles;
 class QgsComposerHtml;
+class QgsComposerTableV2;
 class QgsComposerItem;
 class QgsComposerLabel;
 class QgsComposerLegend;
@@ -53,6 +54,7 @@ class QgsComposerPicture;
 class QgsComposerScaleBar;
 class QgsComposerShape;
 class QgsComposerAttributeTable;
+class QgsComposerAttributeTableV2;
 class QgsComposerMultiFrame;
 class QgsComposerMultiFrameCommand;
 class QgsVectorLayer;
@@ -459,6 +461,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     void beginMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, const QgsComposerMultiFrameMergeCommand::Context c = QgsComposerMultiFrameMergeCommand::Unknown );
     void endMultiFrameCommand();
+    /**Deletes current multi frame command*/
+    void cancelMultiFrameCommand();
 
     /**Adds multiframe. The object is owned by QgsComposition until removeMultiFrame is called*/
     void addMultiFrame( QgsComposerMultiFrame* multiFrame );
@@ -481,8 +485,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void addComposerShape( QgsComposerShape* shape );
     /**Adds a composer table to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerTable( QgsComposerAttributeTable* table );
-    /**Adds composer html frame and advices composer to create a widget for it (through signal)*/
+    /**Adds composer html frame and advises composer to create a widget for it (through signal)*/
     void addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame );
+    /**Adds composer tablev2 frame and advises composer to create a widget for it (through signal)*/
+    void addComposerTableFrame( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame );
 
     /**Remove item from the graphics scene. Additionally to QGraphicsScene::removeItem, this function considers undo/redo command*/
     void removeComposerItem( QgsComposerItem* item, const bool createCommand = true, const bool removeGroupItems = true );
@@ -787,6 +793,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void composerShapeAdded( QgsComposerShape* shape );
     /**Is emitted when a new composer table has been added*/
     void composerTableAdded( QgsComposerAttributeTable* table );
+    /**Is emitted when a new composer table frame has been added to the view*/
+    void composerTableFrameAdded( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame );
     /**Is emitted when a composer item has been removed from the scene*/
     void itemRemoved( QgsComposerItem* );
 

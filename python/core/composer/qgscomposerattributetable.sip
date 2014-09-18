@@ -232,8 +232,4 @@ class QgsComposerAttributeTable : QgsComposerTable
      */
     // bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps );
 
-
-  signals:
-    /**This signal is emitted if the maximum number of feature changes (interactively)*/
-    void maximumNumberOfFeaturesChanged( int n );
 };

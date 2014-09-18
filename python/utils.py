@@ -39,6 +39,7 @@ import re
 import ConfigParser
 import warnings
 import codecs
+import time
 
 #######################
 # ERROR HANDLING
@@ -105,6 +106,8 @@ plugin_paths = []
 
 # dictionary of plugins
 plugins = {}
+
+plugin_times = {}
 
 # list of active (started) plugins
 active_plugins = []
@@ -190,7 +193,7 @@ def loadPlugin(packageName):
 
 def startPlugin(packageName):
   """ initialize the plugin """
-  global plugins, active_plugins, iface
+  global plugins, active_plugins, iface, plugin_times
 
   if packageName in active_plugins: return False
   if packageName not in sys.modules: return False
@@ -199,6 +202,7 @@ def startPlugin(packageName):
 
   errMsg = QCoreApplication.translate("Python", "Couldn't load plugin %s" ) % packageName
 
+  start = time.clock()
   # create an instance of the plugin
   try:
     plugins[packageName] = package.classFactory(iface)
@@ -220,6 +224,8 @@ def startPlugin(packageName):
 
   # add to active plugins
   active_plugins.append(packageName)
+  end = time.clock()
+  plugin_times[packageName] = "{0:02f}s".format(end - start)
 
   return True
 

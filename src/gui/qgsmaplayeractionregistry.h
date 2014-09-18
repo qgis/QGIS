@@ -47,10 +47,10 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     //! @note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatiblity reasons.
     QgsMapLayerAction( QString name, QObject *parent, Targets targets = AllActions );
 
-    /**Creates a map layer action which can run only on a specific layer*/
+    //! Creates a map layer action which can run only on a specific layer
     QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer* layer, Targets targets = AllActions );
 
-    /**Creates a map layer action which can run on a specific type of layer*/
+    //! Creates a map layer action which can run on a specific type of layer
     QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer::LayerType layerType, Targets targets = AllActions );
 
     ~QgsMapLayerAction();
@@ -59,9 +59,9 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     bool canRunUsingLayer( QgsMapLayer* layer ) const;
 
     /** Triggers the action with the specified layer and list of feature. */
-    void triggerForFeatures( QgsMapLayer* layer, QList<const QgsFeature*> featureList );
+    void triggerForFeatures( QgsMapLayer* layer, const QList<QgsFeature> featureList );
 
-    /** Triggers the action with the specified layer and feature.  */
+    /** Triggers the action with the specified layer and feature. */
     void triggerForFeature( QgsMapLayer* layer, const QgsFeature* feature );
 
     /** Triggers the action with the specified layer. */
@@ -74,10 +74,10 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
   signals:
     /** Triggered when action has been run for a specific list of features */
-    void triggeredForFeatures( QgsMapLayer* layer, QList<const QgsFeature*> featureList );
+    void triggeredForFeatures( QgsMapLayer* layer, const QList<QgsFeature> featureList );
 
     /** Triggered when action has been run for a specific feature */
-    void triggeredForFeature( QgsMapLayer* layer, const QgsFeature* feature );
+    void triggeredForFeature( QgsMapLayer* layer, const QgsFeature& feature );
 
     /** Triggered when action has been run for a specific layer */
     void triggeredForLayer( QgsMapLayer* layer );

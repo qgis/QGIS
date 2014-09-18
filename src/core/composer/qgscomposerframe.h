@@ -21,30 +21,48 @@
 class QgsComposition;
 class QgsComposerMultiFrame;
 
-/**Frame for html, table, text which can be divided onto several frames*/
+/**Frame item for a composer multiframe item*/
 class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
 {
+
   public:
+
     QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height );
+
     ~QgsComposerFrame();
 
-    /**Sets the part of this frame (relative to the total multiframe extent in mm)*/
+    /**Sets the visible part of the multiframe's content which is visible within
+     * this frame (relative to the total multiframe extent in mm).
+     * @param section visible portion of content
+     * @see extent
+    */
     void setContentSection( const QRectF& section ) { mSection = section; }
 
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
-
-    void beginItemCommand( const QString& text );
-    void endItemCommand();
-
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
-
-    int type() const { return ComposerFrame; }
-
+    /**Returns the parent multiframe for the frame.
+     * @returns parent multiframe
+     */
     QgsComposerMultiFrame* multiFrame() const { return mMultiFrame; }
 
     //Overriden to allow multiframe to set display name
     virtual QString displayName() const;
+
+    //Overriden to handle fixed frame sizes set by multi frame
+    void setSceneRect( const QRectF& rectangle );
+
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void beginItemCommand( const QString& text );
+    void endItemCommand();
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    int type() const { return ComposerFrame; }
+
+    /**Returns the visible portion of the multi frame's content which
+     * is shown in this frame.
+     * @returns extent of visible portion
+     * @note added in QGIS 2.5
+     * @see setContentSection
+     */
+    QRectF extent() const { return mSection; }
 
   private:
     QgsComposerFrame(); //forbidden

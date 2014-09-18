@@ -56,7 +56,7 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas * canvas )
   mIdentifyMenu->setAllowMultipleReturn( true );
 
   QgsMapLayerAction* attrTableAction = new QgsMapLayerAction( tr( "Show attribute table" ), mIdentifyMenu, QgsMapLayer::VectorLayer, QgsMapLayerAction::MultipleFeatures );
-  connect( attrTableAction, SIGNAL( triggeredForFeatures( QgsMapLayer*, QList<const QgsFeature*> ) ), this, SLOT( showAttributeTable( QgsMapLayer*, QList<const QgsFeature*> ) ) );
+  connect( attrTableAction, SIGNAL( triggeredForFeatures( QgsMapLayer*, const QList<QgsFeature> ) ), this, SLOT( showAttributeTable( QgsMapLayer*, const QList<QgsFeature> ) ) );
   identifyMenu()->addCustomAction( attrTableAction );
 }
 
@@ -81,7 +81,7 @@ QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
   return mResultsDialog;
 }
 
-void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, QList<const QgsFeature*> featureList )
+void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, const QList<QgsFeature> featureList )
 {
   resultsDialog()->clear();
 
@@ -90,9 +90,9 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, QList<con
     return;
 
   QString filter = "$id IN (";
-  Q_FOREACH ( const QgsFeature* feature, featureList )
+  Q_FOREACH ( const QgsFeature &feature, featureList )
   {
-    filter.append( QString( "%1," ).arg( feature->id() ) );
+    filter.append( QString( "%1," ).arg( feature.id() ) );
   }
   filter = filter.replace( QRegExp( ",$" ), ")" );
 

@@ -1485,7 +1485,8 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
 bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
 {
-  Q_UNUSED( errorMessage );
+  emit readCustomSymbology( node.toElement(), errorMessage );
+
   if ( hasGeometryType() )
   {
     // try renderer v2 first
@@ -1644,7 +1645,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   if ( !aliasesNode.isNull() )
   {
     QDomElement aliasElem;
-    QString name;
 
     QDomNodeList aliasNodeList = aliasesNode.toElement().elementsByTagName( "alias" );
     for ( int i = 0; i < aliasNodeList.size(); ++i )
@@ -1767,8 +1767,9 @@ QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement(
 
 bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
 {
-  Q_UNUSED( errorMessage );
   QDomElement mapLayerNode = node.toElement();
+
+  emit writeCustomSymbology( mapLayerNode, doc, errorMessage );
 
   if ( hasGeometryType() )
   {
@@ -2822,8 +2823,10 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
     if ( mEditBuffer )
     {
       QSet<QString> vals;
-      Q_FOREACH ( const QVariant& v, uniqueValues )
+      Q_FOREACH( const QVariant& v, uniqueValues )
+      {
         vals << v.toString();
+      }
 
       QMapIterator< QgsFeatureId, QgsAttributeMap > it( mEditBuffer->changedAttributeValues() );
       while ( it.hasNext() && ( limit < 0 || uniqueValues.count() < limit ) )
@@ -3546,13 +3549,13 @@ void QgsVectorLayer::invalidateSymbolCountedFlag()
 
 void QgsVectorLayer::onRelationsLoaded()
 {
-  Q_FOREACH ( QgsAttributeEditorElement* elem, mAttributeEditorElements )
+  Q_FOREACH( QgsAttributeEditorElement* elem, mAttributeEditorElements )
   {
     if ( elem->type() == QgsAttributeEditorElement::AeTypeContainer )
     {
       QgsAttributeEditorContainer* cont = dynamic_cast< QgsAttributeEditorContainer* >( elem );
       QList<QgsAttributeEditorElement*> relations = cont->findElements( QgsAttributeEditorElement::AeTypeRelation );
-      Q_FOREACH ( QgsAttributeEditorElement* relElem, relations )
+      Q_FOREACH( QgsAttributeEditorElement* relElem, relations )
       {
         QgsAttributeEditorRelation* rel = dynamic_cast< QgsAttributeEditorRelation* >( relElem );
         rel->init( QgsProject::instance()->relationManager() );
@@ -3608,7 +3611,7 @@ QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const
   QDomElement elem = doc.createElement( "attributeEditorContainer" );
   elem.setAttribute( "name", mName );
 
-  Q_FOREACH ( QgsAttributeEditorElement* child, mChildren )
+  Q_FOREACH( QgsAttributeEditorElement* child, mChildren )
   {
     elem.appendChild( child->toDomElement( doc ) );
   }
@@ -3624,7 +3627,7 @@ QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( Qgs
 {
   QList<QgsAttributeEditorElement*> results;
 
-  Q_FOREACH ( QgsAttributeEditorElement* elem, mChildren )
+  Q_FOREACH( QgsAttributeEditorElement* elem, mChildren )
   {
     if ( elem->type() == type )
     {

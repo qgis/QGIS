@@ -37,6 +37,13 @@ class GUI_EXPORT QgsColorButtonV2: public QToolButton
     Q_PROPERTY( QString colorDialogTitle READ colorDialogTitle WRITE setColorDialogTitle )
     Q_PROPERTY( bool acceptLiveUpdates READ acceptLiveUpdates WRITE setAcceptLiveUpdates )
     Q_PROPERTY( QColor color READ color WRITE setColor )
+    Q_PROPERTY( bool allowAlpha READ allowAlpha WRITE setAllowAlpha )
+    Q_PROPERTY( bool showMenu READ showMenu WRITE setShowMenu )
+    Q_PROPERTY( Behaviour behaviour READ behaviour WRITE setBehaviour )
+    Q_PROPERTY( QColor defaultColor READ defaultColor WRITE setDefaultColor )
+    Q_PROPERTY( bool showNoColor READ showNoColor WRITE setShowNoColor )
+    Q_PROPERTY( QString noColorString READ noColorString WRITE setNoColorString )
+    Q_PROPERTY( QString context READ context WRITE setContext )
 
   public:
 

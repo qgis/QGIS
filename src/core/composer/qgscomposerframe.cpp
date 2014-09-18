@@ -23,6 +23,11 @@ QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf
 {
   //repaint frame when multiframe content changes
   connect( mf, SIGNAL( contentsChanged() ), this, SLOT( repaint() ) );
+  if ( mf )
+  {
+    //force recalculation of rect, so that multiframe specified sizes can be applied
+    setSceneRect( QRectF( pos().x(), pos().y(), rect().width(), rect().height() ) );
+  }
 }
 
 QgsComposerFrame::QgsComposerFrame()
@@ -77,6 +82,34 @@ QString QgsComposerFrame::displayName() const
   return tr( "<frame>" );
 }
 
+void QgsComposerFrame::setSceneRect( const QRectF &rectangle )
+{
+  QRectF fixedRect = rectangle;
+
+  if ( mMultiFrame )
+  {
+    //calculate index of frame
+    int frameIndex = mMultiFrame->frameIndex( this );
+
+    QSizeF fixedSize = mMultiFrame->fixedFrameSize( frameIndex );
+    if ( fixedSize.width() > 0 )
+    {
+      fixedRect.setWidth( fixedSize.width() );
+    }
+    if ( fixedSize.height() > 0 )
+    {
+      fixedRect.setHeight( fixedSize.height() );
+    }
+
+    //check minimum size
+    QSizeF minSize = mMultiFrame->minFrameSize( frameIndex );
+    fixedRect.setWidth( qMax( minSize.width(), fixedRect.width() ) );
+    fixedRect.setHeight( qMax( minSize.height(), fixedRect.height() ) );
+  }
+
+  QgsComposerItem::setSceneRect( fixedRect );
+}
+
 void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
   Q_UNUSED( itemStyle );
@@ -90,7 +123,9 @@ void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   drawBackground( painter );
   if ( mMultiFrame )
   {
-    mMultiFrame->render( painter, mSection );
+    //calculate index of frame
+    int frameIndex = mMultiFrame->frameIndex( this );
+    mMultiFrame->render( painter, mSection, frameIndex );
   }
 
   drawFrame( painter );

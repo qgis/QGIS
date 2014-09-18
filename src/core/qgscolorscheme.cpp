@@ -20,6 +20,9 @@
 #include <QSettings>
 #include "qgsproject.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsapplication.h"
+#include "qgssymbollayerv2utils.h"
+#include <QDir>
 
 QgsColorScheme::QgsColorScheme()
 {
@@ -232,4 +235,118 @@ bool QgsProjectColorScheme::setColors( const QgsNamedColorList colors, const QSt
 QgsColorScheme *QgsProjectColorScheme::clone() const
 {
   return new QgsProjectColorScheme();
+}
+
+
+//
+// QgsGplColorScheme
+//
+
+QgsGplColorScheme::QgsGplColorScheme()
+    : QgsColorScheme()
+{
+
+}
+
+QgsGplColorScheme::~QgsGplColorScheme()
+{
+
+}
+
+QgsNamedColorList QgsGplColorScheme::fetchColors( const QString context, const QColor baseColor )
+{
+  Q_UNUSED( context );
+  Q_UNUSED( baseColor );
+
+  QString sourceFilePath = gplFilePath();
+  if ( sourceFilePath.isEmpty() )
+  {
+    QgsNamedColorList noColors;
+    return noColors;
+  }
+
+  bool ok;
+  QString name;
+  QFile sourceFile( sourceFilePath );
+  return QgsSymbolLayerV2Utils::importColorsFromGpl( sourceFile, ok, name );
+}
+
+bool QgsGplColorScheme::setColors( const QgsNamedColorList colors, const QString context, const QColor baseColor )
+{
+  Q_UNUSED( context );
+  Q_UNUSED( baseColor );
+
+  QString destFilePath = gplFilePath();
+  if ( destFilePath.isEmpty() )
+  {
+    return false;
+  }
+
+  QFile destFile( destFilePath );
+  return QgsSymbolLayerV2Utils::saveColorsToGpl( destFile, schemeName(), colors );
+}
+
+
+//
+// QgsUserColorScheme
+//
+
+QgsUserColorScheme::QgsUserColorScheme( const QString filename )
+    : QgsGplColorScheme()
+    , mFilename( filename )
+{
+  QFile sourceFile( gplFilePath() );
+
+  //read in name
+  if ( sourceFile.open( QIODevice::ReadOnly ) )
+  {
+    QTextStream in( &sourceFile );
+
+    //find name line
+    QString line;
+    while ( !in.atEnd() && !line.startsWith( "Name:" ) )
+    {
+      line = in.readLine();
+    }
+    if ( !in.atEnd() )
+    {
+      QRegExp rx( "Name:\\s*(\\S.*)$" );
+      if ( rx.indexIn( line ) != -1 )
+      {
+        mName = rx.cap( 1 );
+      }
+    }
+  }
+  if ( mName.isEmpty() )
+  {
+    mName = mFilename;
+  }
+}
+
+QgsUserColorScheme::~QgsUserColorScheme()
+{
+
+}
+
+QString QgsUserColorScheme::schemeName() const
+{
+  return mName;
+}
+
+QgsColorScheme *QgsUserColorScheme::clone() const
+{
+  return new QgsUserColorScheme( mFilename );
+}
+
+QString QgsUserColorScheme::gplFilePath()
+{
+  QString palettesDir = QgsApplication::qgisSettingsDirPath() + "/palettes";
+
+  QDir localDir;
+  if ( !localDir.mkpath( palettesDir ) )
+  {
+    return QString();
+  }
+
+  return QDir( palettesDir ).filePath( mFilename );
 }

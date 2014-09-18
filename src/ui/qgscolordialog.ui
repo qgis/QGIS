@@ -789,7 +789,7 @@
   </layout>
   <action name="mActionImportColors">
    <property name="text">
-    <string>Import Colors</string>
+    <string>Import Colors...</string>
    </property>
    <property name="toolTip">
     <string>Import colors from file</string>
@@ -797,7 +797,7 @@
   </action>
   <action name="mActionExportColors">
    <property name="text">
-    <string>Export Colors</string>
+    <string>Export Colors...</string>
    </property>
    <property name="toolTip">
     <string>Export colors to file</string>
@@ -809,6 +809,14 @@
    </property>
    <property name="toolTip">
     <string>Paste colors from clipboard</string>
+   </property>
+  </action>
+  <action name="mActionImportPalette">
+   <property name="text">
+    <string>Import Palette...</string>
+   </property>
+   <property name="toolTip">
+    <string>Import palette from file</string>
    </property>
   </action>
  </widget>

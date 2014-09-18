@@ -29,6 +29,7 @@
 #include "qgsatlascompositionwidget.h"
 #include "qgscomposerarrow.h"
 #include "qgscomposerarrowwidget.h"
+#include "qgscomposerattributetablewidget.h"
 #include "qgscomposerframe.h"
 #include "qgscomposerhtml.h"
 #include "qgscomposerhtmlwidget.h"
@@ -46,6 +47,7 @@
 #include "qgscomposershape.h"
 #include "qgscomposershapewidget.h"
 #include "qgscomposerattributetable.h"
+#include "qgscomposerattributetablev2.h"
 #include "qgscomposertablewidget.h"
 #include "qgsexception.h"
 #include "qgslogger.h"
@@ -165,7 +167,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   toggleActionGroup->addAction( mActionAddTriangle );
   toggleActionGroup->addAction( mActionAddEllipse );
   toggleActionGroup->addAction( mActionAddArrow );
-  toggleActionGroup->addAction( mActionAddTable );
+  //toggleActionGroup->addAction( mActionAddTable );
+  toggleActionGroup->addAction( mActionAddAttributeTable );
   toggleActionGroup->addAction( mActionAddHtml );
   toggleActionGroup->setExclusive( true );
 
@@ -352,7 +355,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   layoutMenu->addAction( mActionAddNewLegend );
   layoutMenu->addAction( mActionAddImage );
   layoutMenu->addAction( mActionAddArrow );
-  layoutMenu->addAction( mActionAddTable );
+  //layoutMenu->addAction( mActionAddTable );
+  layoutMenu->addAction( mActionAddAttributeTable );
   layoutMenu->addSeparator();
   layoutMenu->addAction( mActionSelectMoveItem );
   layoutMenu->addAction( mActionMoveItemContent );
@@ -667,6 +671,7 @@ void QgsComposer::setupTheme()
   mActionAddEllipse->setIcon( QgsApplication::getThemeIcon( "/mActionAddBasicShape.png" ) );
   mActionAddArrow->setIcon( QgsApplication::getThemeIcon( "/mActionAddArrow.png" ) );
   mActionAddTable->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ) );
+  mActionAddAttributeTable->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ) );
   mActionAddHtml->setIcon( QgsApplication::getThemeIcon( "/mActionAddHtml.png" ) );
   mActionSelectMoveItem->setIcon( QgsApplication::getThemeIcon( "/mActionSelect.svg" ) );
   mActionMoveItemContent->setIcon( QgsApplication::getThemeIcon( "/mActionMoveItemContent.png" ) );
@@ -730,6 +735,7 @@ void QgsComposer::connectCompositionSlots()
   connect( mComposition, SIGNAL( composerPictureAdded( QgsComposerPicture* ) ), this, SLOT( addComposerPicture( QgsComposerPicture* ) ) );
   connect( mComposition, SIGNAL( composerShapeAdded( QgsComposerShape* ) ), this, SLOT( addComposerShape( QgsComposerShape* ) ) );
   connect( mComposition, SIGNAL( composerTableAdded( QgsComposerAttributeTable* ) ), this, SLOT( addComposerTable( QgsComposerAttributeTable* ) ) );
+  connect( mComposition, SIGNAL( composerTableFrameAdded( QgsComposerAttributeTableV2*, QgsComposerFrame* ) ), this, SLOT( addComposerTableV2( QgsComposerAttributeTableV2*, QgsComposerFrame* ) ) );
   connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( deleteItem( QgsComposerItem* ) ) );
   connect( mComposition, SIGNAL( paperSizeChanged() ), mHorizontalRuler, SLOT( update() ) );
   connect( mComposition, SIGNAL( paperSizeChanged() ), mVerticalRuler, SLOT( update() ) );
@@ -2427,6 +2433,14 @@ void QgsComposer::on_mActionAddTable_triggered()
   }
 }
 
+void QgsComposer::on_mActionAddAttributeTable_triggered()
+{
+  if ( mView )
+  {
+    mView->setCurrentTool( QgsComposerView::AddAttributeTable );
+  }
+}
+
 void QgsComposer::on_mActionAddHtml_triggered()
 {
   if ( mView )
@@ -3211,8 +3225,19 @@ void QgsComposer::addComposerTable( QgsComposerAttributeTable* table )
   {
     return;
   }
+
   QgsComposerTableWidget* tWidget = new QgsComposerTableWidget( table );
   mItemWidgetMap.insert( table, tWidget );
+}
+
+void QgsComposer::addComposerTableV2( QgsComposerAttributeTableV2 *table, QgsComposerFrame* frame )
+{
+  if ( !table )
+  {
+    return;
+  }
+  QgsComposerAttributeTableWidget* tWidget = new QgsComposerAttributeTableWidget( table, frame );
+  mItemWidgetMap.insert( frame, tWidget );
 }
 
 void QgsComposer::addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame )
@@ -3236,7 +3261,7 @@ void QgsComposer::deleteItem( QgsComposerItem* item )
   }
 
   //the item itself is not deleted here (usually, this is done in the destructor of QgsAddRemoveItemCommand)
-  delete( it.value() );
+  it.value()->deleteLater();
   mItemWidgetMap.remove( it.key() );
 
   QgsComposerMap* map = dynamic_cast<QgsComposerMap*>( item );
@@ -3523,12 +3548,12 @@ void QgsComposer::writeWorldFile( QString worldFileName, double a, double b, dou
 }
 
 
-void QgsComposer::setAtlasFeature( QgsMapLayer* layer, const QgsFeature * feat )
+void QgsComposer::setAtlasFeature( QgsMapLayer* layer, const QgsFeature& feat )
 {
   //update expression variables
-  QgsExpression::setSpecialColumn( "$atlasfeatureid", feat->id() );
-  QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( *feat ) );
-  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *( feat->geometry() ) ) );
+  QgsExpression::setSpecialColumn( "$atlasfeatureid", feat.id() );
+  QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( feat ) );
+  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *( feat.geometry() ) ) );
 
   emit atlasPreviewFeatureChanged();
 
@@ -3557,7 +3582,7 @@ void QgsComposer::setAtlasFeature( QgsMapLayer* layer, const QgsFeature * feat )
   activate();
 
   //set current preview feature id
-  atlas.prepareForFeature( feat );
+  atlas.prepareForFeature( &feat );
   emit( atlasPreviewFeatureChanged() );
 }
 
@@ -3573,7 +3598,7 @@ void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer )
   {
     mAtlasFeatureAction = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ), this, coverageLayer, QgsMapLayerAction::SingleFeature );
     QgsMapLayerActionRegistry::instance()->addMapLayerAction( mAtlasFeatureAction );
-    connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, const QgsFeature* ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, const QgsFeature* ) ) );
+    connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, const QgsFeature& ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, const QgsFeature& ) ) );
   }
 }
 
@@ -3618,7 +3643,7 @@ void QgsComposer::updateAtlasMapLayerAction( bool atlasEnabled )
     QgsAtlasComposition& atlas = mComposition->atlasComposition();
     mAtlasFeatureAction = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ), this, atlas.coverageLayer(), QgsMapLayerAction::SingleFeature );
     QgsMapLayerActionRegistry::instance()->addMapLayerAction( mAtlasFeatureAction );
-    connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, const QgsFeature* ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, const QgsFeature* ) ) );
+    connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, const QgsFeature& ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, const QgsFeature& ) ) );
   }
 }
 

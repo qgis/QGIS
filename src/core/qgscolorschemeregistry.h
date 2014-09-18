@@ -18,9 +18,8 @@
 #ifndef QGSCOLORSCHEMEREGISTRY_H
 #define QGSCOLORSCHEMEREGISTRY_H
 
+#include "qgscolorscheme.h"
 #include <QList>
-
-class QgsColorScheme;
 
 /** \ingroup core
  * \class QgsColorSchemeRegistry
@@ -54,8 +53,16 @@ class CORE_EXPORT QgsColorSchemeRegistry
     /**Adds all default color schemes to this color scheme.
      * @see populateFromInstance
      * @see addColorScheme
+     * @see addUserSchemes
      */
     void addDefaultSchemes();
+
+    /**Creates schemes for all gpl palettes in the user's palettes folder.
+     * @see populateFromInstance
+     * @see addDefaultSchemes
+     * @see addColorScheme
+     */
+    void addUserSchemes();
 
     /**Adds a color scheme to the registry. Ownership of the scheme is transferred
      * to the registry.
@@ -76,6 +83,12 @@ class CORE_EXPORT QgsColorSchemeRegistry
      * @returns list of color schemes
     */
     QList<QgsColorScheme *> schemes() const;
+
+    /**Returns all color schemes in the registry which have a specified flag set
+     * @param flag flag to match
+     * @returns list of color schemes with flag set
+    */
+    QList<QgsColorScheme *> schemes( const QgsColorScheme::SchemeFlag flag ) const;
 
     /**Return color schemes of a specific type
      * @param schemeList destination list for matching schemes

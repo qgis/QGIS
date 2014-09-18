@@ -52,6 +52,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
     , mReferencingLayer( NULL )
     , mWindowWidget( NULL )
     , mShown( false )
+    , mIsEditable( true )
     , mEmbedForm( false )
     , mReadOnlySelector( false )
     , mAllowMapIdentification( false )
@@ -99,6 +100,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
   // map identification button
   mMapIdentificationButton = new QToolButton( this );
   mMapIdentificationAction = new QAction( QgsApplication::getThemeIcon( "/mActionMapIdentification.svg" ), tr( "Select on map" ), this );
+  mMapIdentificationAction->setCheckable( true );
   mMapIdentificationButton->addAction( mMapIdentificationAction );
   mMapIdentificationButton->setDefaultAction( mMapIdentificationAction );
   connect( mMapIdentificationButton, SIGNAL( triggered( QAction* ) ), this, SLOT( mapIdentification() ) );
@@ -135,7 +137,9 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
 QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
 {
   deleteHighlight();
-  delete mMapTool;
+  unsetMapTool();
+  if ( mMapTool )
+    delete mMapTool;
 }
 
 void QgsRelationReferenceWidget::setRelation( QgsRelation relation, bool allowNullValue )
@@ -181,10 +185,13 @@ void QgsRelationReferenceWidget::setRelation( QgsRelation relation, bool allowNu
 
 void QgsRelationReferenceWidget::setRelationEditable( bool editable )
 {
-  mLineEdit->setEnabled( editable );
+  if ( !editable )
+    unsetMapTool();
+
   mComboBox->setEnabled( editable );
   mMapIdentificationButton->setEnabled( editable );
   mRemoveFKButton->setEnabled( editable );
+  mIsEditable = editable;
 }
 
 void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
@@ -235,7 +242,7 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
     }
   }
 
-  mRemoveFKButton->setEnabled( true );
+  mRemoveFKButton->setEnabled( mIsEditable );
   highlightFeature( f );
   updateAttributeEditorFrame( f );
   emit foreignKeyChanged( foreignKey() );
@@ -271,21 +278,7 @@ void QgsRelationReferenceWidget::deleteForeignKey()
   emit foreignKeyChanged( QVariant( QVariant::Int ) );
 }
 
-void QgsRelationReferenceWidget::mapToolDeactivated()
-{
-  if ( mWindowWidget )
-  {
-    mWindowWidget->raise();
-  }
-
-  if ( mMessageBar && mMessageBarItem )
-  {
-    mMessageBar->popWidget( mMessageBarItem );
-  }
-  mMessageBarItem = NULL;
-}
-
-QgsFeature QgsRelationReferenceWidget::relatedFeature()
+QgsFeature QgsRelationReferenceWidget::referencedFeature()
 {
   QgsFeature f;
   if ( mReferencedLayer )
@@ -329,6 +322,11 @@ void QgsRelationReferenceWidget::setEditorContext( QgsAttributeEditorContext con
   mEditorContext = context;
   mCanvas = canvas;
   mMessageBar = messageBar;
+
+  if ( mMapTool )
+    delete mMapTool;
+  mMapTool = new QgsMapToolIdentifyFeature( mCanvas );
+  mMapTool->setAction( mMapIdentificationAction );
 }
 
 void QgsRelationReferenceWidget::setEmbedForm( bool display )
@@ -425,7 +423,7 @@ void QgsRelationReferenceWidget::highlightActionTriggered( QAction* action )
 
 void QgsRelationReferenceWidget::openForm()
 {
-  QgsFeature feat = relatedFeature();
+  QgsFeature feat = referencedFeature();
 
   if ( !feat.isValid() )
     return;
@@ -442,7 +440,7 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
 
   if ( !f.isValid() )
   {
-    f = relatedFeature();
+    f = referencedFeature();
     if ( !f.isValid() )
       return;
   }
@@ -508,7 +506,7 @@ void QgsRelationReferenceWidget::deleteHighlight()
 
 void QgsRelationReferenceWidget::mapIdentification()
 {
-  if ( !mReferencedLayer )
+  if ( !mAllowMapIdentification || !mReferencedLayer )
     return;
 
   const QgsVectorLayerTools* tools = mEditorContext.vectorLayerTools();
@@ -517,11 +515,13 @@ void QgsRelationReferenceWidget::mapIdentification()
   if ( !mCanvas )
     return;
 
-  mMapTool = new QgsMapToolIdentifyFeature( mCanvas, mReferencedLayer );
-  mMapTool->setAction( mMapIdentificationAction );
+  mMapTool->setLayer( mReferencedLayer );
   mCanvas->setMapTool( mMapTool );
+
   mWindowWidget = window();
-  mCanvas->raise();
+
+  mCanvas->window()->raise();
+  mCanvas->activateWindow();
 
   connect( mMapTool, SIGNAL( featureIdentified( QgsFeature ) ), this, SLOT( featureIdentified( const QgsFeature ) ) );
   connect( mMapTool, SIGNAL( deactivated() ), this, SLOT( mapToolDeactivated() ) );
@@ -529,8 +529,8 @@ void QgsRelationReferenceWidget::mapIdentification()
   if ( mMessageBar )
   {
     QString title = QString( "Relation %1 for %2." ).arg( mRelationName ).arg( mReferencingLayer->name() );
-    QString msg = tr( "identify a feature of %1 to be associated. Press <ESC> to cancel." ).arg( mReferencedLayer->name() );
-    mMessageBarItem = QgsMessageBar::createMessage( title, msg );
+    QString msg = tr( "Identify a feature of %1 to be associated. Press <ESC> to cancel." ).arg( mReferencedLayer->name() );
+    mMessageBarItem = QgsMessageBar::createMessage( title, msg, this );
     mMessageBar->pushItem( mMessageBarItem );
   }
 }
@@ -570,17 +570,36 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature& feature )
     mComboBox->setCurrentIndex( mComboBox->findData( feature.attribute( mFkeyFieldIdx ) ) );
   }
 
-  mRemoveFKButton->setEnabled( true );
+  mRemoveFKButton->setEnabled( mIsEditable );
   highlightFeature( feature );
   updateAttributeEditorFrame( feature );
   emit foreignKeyChanged( foreignKey() );
 
-  // deactivate map tool if activate
+  unsetMapTool();
+}
+
+void QgsRelationReferenceWidget::unsetMapTool()
+{
+  // deactivate map tool if activated
   if ( mCanvas && mMapTool )
   {
+    /* this will call mapToolDeactivated */
     mCanvas->unsetMapTool( mMapTool );
   }
-
-  if ( mWindowWidget )
-    mWindowWidget->raise();
 }
+
+void QgsRelationReferenceWidget::mapToolDeactivated()
+{
+  if ( mWindowWidget )
+  {
+    mWindowWidget->raise();
+    mWindowWidget->activateWindow();
+  }
+
+  if ( mMessageBar && mMessageBarItem )
+  {
+    mMessageBar->popWidget( mMessageBarItem );
+  }
+  mMessageBarItem = NULL;
+}
+

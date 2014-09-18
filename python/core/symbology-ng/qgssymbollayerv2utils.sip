@@ -259,10 +259,11 @@ class QgsSymbolLayerV2Utils
      * Imports colors from a gpl GIMP palette file
      * @param file source gpl file
      * @param ok will be true if file was successfully read
+     * @param name will be set to palette name from gpl file, if present
      * @returns list of imported colors
      * @see saveColorsToGpl
     */
-    static QgsNamedColorList importColorsFromGpl( QFile &file, bool &ok );
+    static QgsNamedColorList importColorsFromGpl( QFile &file, bool &ok, QString& name );
 
     /**
      * Attempts to parse a string as a color using a variety of common formats, including hex

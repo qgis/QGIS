@@ -35,6 +35,7 @@ class QgsComposerView : QGraphicsView
       AddEllipse,
       AddTriangle,
       AddTable,        // add attribute table
+      AddAttributeTable,
       MoveItemContent, // move content of item (e.g. content of map)
       Pan,
       Zoom

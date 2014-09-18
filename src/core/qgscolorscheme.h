@@ -40,6 +40,16 @@ class CORE_EXPORT QgsColorScheme
 {
   public:
 
+    /** Flags for controlling behaviour of color scheme
+     */
+    enum SchemeFlag
+    {
+      ShowInColorDialog = 0x01, /*< show scheme in color picker dialog */
+      ShowInColorButtonMenu = 0x02, /*< show scheme in color button drop down menu */
+      ShowInAllContexts = ShowInColorDialog | ShowInColorButtonMenu /*< show scheme in all contexts */
+    };
+    Q_DECLARE_FLAGS( SchemeFlags, SchemeFlag )
+
     QgsColorScheme();
 
     virtual ~QgsColorScheme();
@@ -48,6 +58,11 @@ class CORE_EXPORT QgsColorScheme
      * @returns color scheme name
     */
     virtual QString schemeName() const = 0;
+
+    /**Returns the current flags for the color scheme.
+     * @returns current flags
+    */
+    virtual SchemeFlags flags() const { return ShowInColorDialog; }
 
     /**Gets a list of colors from the scheme. The colors can optionally
      * be generated using the supplied context and base color.
@@ -83,6 +98,73 @@ class CORE_EXPORT QgsColorScheme
     virtual QgsColorScheme* clone() const = 0;
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsColorScheme::SchemeFlags )
+
+/** \ingroup core
+ * \class QgsGplColorScheme
+ * \brief A color scheme which stores its colors in a gpl palette file.
+ * \note Added in version 2.5
+ */
+class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
+{
+  public:
+
+    QgsGplColorScheme();
+
+    virtual ~QgsGplColorScheme();
+
+    virtual QgsNamedColorList fetchColors( const QString context = QString(),
+                                           const QColor baseColor = QColor() );
+
+    virtual bool setColors( const QgsNamedColorList colors, const QString context = QString(), const QColor baseColor = QColor() );
+
+  protected:
+
+    /**Returns the file path for the associated gpl palette file
+     * @returns gpl file path
+    */
+    virtual QString gplFilePath() = 0;
+
+};
+
+/** \ingroup core
+ * \class QgsUserColorScheme
+ * \brief A color scheme which stores its colors in a gpl palette file within the "palettes"
+ * subfolder off the user's QGIS settings folder.
+ * \note Added in version 2.5
+ */
+class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
+{
+  public:
+
+    /**Constructs a new user color scheme, using a specified gpl palette file
+     * @param filename filename of gpl palette file stored in the users "palettes" folder
+    */
+    QgsUserColorScheme( const QString filename );
+
+    virtual ~QgsUserColorScheme();
+
+    virtual QString schemeName() const;
+
+    virtual QgsColorScheme* clone() const;
+
+    virtual bool isEditable() const { return true; }
+
+    /**Sets the name for the scheme
+     * @param name new name
+    */
+    void setName( const QString name ) { mName = name; }
+
+  protected:
+
+    QString mName;
+
+    QString mFilename;
+
+    virtual QString gplFilePath();
+
+};
+
 /** \ingroup core
  * \class QgsRecentColorScheme
  * \brief A color scheme which contains the most recently used colors.
@@ -97,6 +179,8 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
     virtual ~QgsRecentColorScheme();
 
     virtual QString schemeName() const { return QT_TR_NOOP( "Recent colors" ); }
+
+    virtual SchemeFlags flags() const { return ShowInAllContexts; }
 
     virtual QgsNamedColorList fetchColors( const QString context = QString(),
                                            const QColor baseColor = QColor() );
@@ -118,6 +202,8 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
     virtual ~QgsCustomColorScheme();
 
     virtual QString schemeName() const { return QT_TR_NOOP( "Standard colors" ); }
+
+    virtual SchemeFlags flags() const { return ShowInAllContexts; }
 
     virtual QgsNamedColorList fetchColors( const QString context = QString(),
                                            const QColor baseColor = QColor() );
@@ -143,6 +229,8 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
     virtual ~QgsProjectColorScheme();
 
     virtual QString schemeName() const { return QT_TR_NOOP( "Project colors" ); }
+
+    virtual SchemeFlags flags() const { return ShowInAllContexts; }
 
     virtual QgsNamedColorList fetchColors( const QString context = QString(),
                                            const QColor baseColor = QColor() );

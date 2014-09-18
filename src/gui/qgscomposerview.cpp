@@ -39,7 +39,7 @@
 #include "qgscomposerruler.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
-#include "qgscomposerattributetable.h"
+#include "qgscomposerattributetablev2.h"
 #include "qgslogger.h"
 #include "qgsaddremovemultiframecommand.h"
 #include "qgspaperitem.h"
@@ -113,6 +113,7 @@ void QgsComposerView::setCurrentTool( QgsComposerView::Tool t )
     case QgsComposerView::AddEllipse:
     case QgsComposerView::AddTriangle:
     case QgsComposerView::AddTable:
+    case QgsComposerView::AddAttributeTable:
     {
       //using a drawing tool
       //lock cursor to prevent composer items changing it
@@ -345,6 +346,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     case AddLabel:
     case AddLegend:
     case AddTable:
+    case AddAttributeTable:
     {
       QTransform t;
       mRubberBandItem = new QGraphicsRectItem( 0, 0, 0, 0 );
@@ -416,6 +418,7 @@ QCursor QgsComposerView::defaultCursorForTool( Tool currentTool )
     case AddLegend:
     case AddPicture:
     case AddTable:
+    case AddAttributeTable:
     {
       QPixmap myCrosshairQPixmap = QPixmap(( const char ** )( cross_hair_cursor ) );
       return QCursor( myCrosshairQPixmap, 8, 8 );
@@ -865,12 +868,13 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       else
       {
         QgsComposerAttributeTable* newTable = new QgsComposerAttributeTable( composition() );
-        newTable->setSceneRect( QRectF( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), qMax( mRubberBandItem->rect().height(), (qreal)15.0 ) ) );
         QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
         if ( mapItemList.size() > 0 )
         {
           newTable->setComposerMap( mapItemList.at( 0 ) );
         }
+        newTable->setSceneRect( QRectF( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() ) );
+
         composition()->addComposerTable( newTable );
 
         composition()->setAllUnselected();
@@ -880,6 +884,39 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         removeRubberBand();
         emit actionFinished();
         composition()->pushAddRemoveCommand( newTable, tr( "Table added" ) );
+      }
+      break;
+
+    case AddAttributeTable:
+      if ( !composition() || !mRubberBandItem )
+      {
+        removeRubberBand();
+        return;
+      }
+      else
+      {
+        QgsComposerAttributeTableV2* newTable = new QgsComposerAttributeTableV2( composition(), true );
+        QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
+        if ( mapItemList.size() > 0 )
+        {
+          newTable->setComposerMap( mapItemList.at( 0 ) );
+        }
+        QgsAddRemoveMultiFrameCommand* command = new QgsAddRemoveMultiFrameCommand( QgsAddRemoveMultiFrameCommand::Added,
+            newTable, composition(), tr( "Attribute table added" ) );
+        composition()->undoStack()->push( command );
+        QgsComposerFrame* frame = new QgsComposerFrame( composition(), newTable, mRubberBandItem->transform().dx(),
+            mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(),
+            mRubberBandItem->rect().height() );
+        composition()->beginMultiFrameCommand( newTable, tr( "Attribute table frame added" ) );
+        newTable->addFrame( frame );
+        composition()->endMultiFrameCommand();
+
+        composition()->setAllUnselected();
+        frame->setSelected( true );
+        emit selectedItemChanged( frame );
+
+        removeRubberBand();
+        emit actionFinished();
       }
       break;
 
@@ -994,6 +1031,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       case AddLabel:
       case AddLegend:
       case AddTable:
+      case AddAttributeTable:
         //adjust rubber band item
       {
         updateRubberBandRect( scenePoint, shiftModifier, altModifier );

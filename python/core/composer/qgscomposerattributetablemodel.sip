@@ -19,7 +19,7 @@ class QgsComposerAttributeTableColumnModel: QAbstractTableModel
      * @param composerTable QgsComposerAttributeTable the model is attached to
      * @param parent optional parent
      */
-    QgsComposerAttributeTableColumnModel( QgsComposerAttributeTable *composerTable, QObject *parent = 0 );
+    QgsComposerAttributeTableColumnModel( QgsComposerAttributeTable *composerTable, QObject *parent /TransferThis/ = 0 );
     virtual ~QgsComposerAttributeTableColumnModel();
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -114,7 +114,7 @@ class QgsComposerTableSortColumnsProxyModel : QSortFilterProxyModel
      * @param filterType filter for columns, controls whether sorted or unsorted columns are shown
      * @param parent optional parent
      */
-    QgsComposerTableSortColumnsProxyModel( QgsComposerAttributeTable *composerTable, ColumnFilterType filterType, QObject *parent = 0 );
+    QgsComposerTableSortColumnsProxyModel( QgsComposerAttributeTable *composerTable, ColumnFilterType filterType, QObject *parent /TransferThis/ = 0 );
 
     virtual ~QgsComposerTableSortColumnsProxyModel();
 

@@ -40,6 +40,22 @@ QgsComposerMultiFrame::~QgsComposerMultiFrame()
   deleteFrames();
 }
 
+void QgsComposerMultiFrame::render( QPainter *p, const QRectF &renderExtent )
+{
+  //base implementation does nothing
+  Q_UNUSED( p );
+  Q_UNUSED( renderExtent );
+}
+
+void QgsComposerMultiFrame::render( QPainter *painter, const QRectF &renderExtent, const int frameIndex )
+{
+  Q_UNUSED( frameIndex );
+  //base implementation ignores frameIndex
+  Q_NOWARN_DEPRECATED_PUSH
+  render( painter, renderExtent );
+  Q_NOWARN_DEPRECATED_POP
+}
+
 void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
 {
   if ( mode != mResizeMode )
@@ -160,6 +176,22 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
   }
 }
 
+void QgsComposerMultiFrame::recalculateFrameRects()
+{
+  if ( mFrameItems.size() < 1 )
+  {
+    //no frames, nothing to do
+    return;
+  }
+
+  QList<QgsComposerFrame*>::iterator frameIt = mFrameItems.begin();
+  for ( ; frameIt != mFrameItems.end(); ++frameIt )
+  {
+    ( *frameIt )->setSceneRect( QRectF(( *frameIt )->scenePos().x(), ( *frameIt )->scenePos().y(),
+                                       ( *frameIt )->rect().width(), ( *frameIt )->rect().height() ) );
+  }
+}
+
 QgsComposerFrame* QgsComposerMultiFrame::createNewFrame( QgsComposerFrame* currentFrame, QPointF pos, QSizeF size )
 {
   if ( !currentFrame )
@@ -201,6 +233,7 @@ void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
   {
     return;
   }
+
   mFrameItems.removeAt( index );
   if ( mFrameItems.size() > 0 )
   {
@@ -305,6 +338,11 @@ QgsComposerFrame* QgsComposerMultiFrame::frame( int i ) const
     return 0;
   }
   return mFrameItems.at( i );
+}
+
+int QgsComposerMultiFrame::frameIndex( QgsComposerFrame *frame ) const
+{
+  return mFrameItems.indexOf( frame );
 }
 
 bool QgsComposerMultiFrame::_writeXML( QDomElement& elem, QDomDocument& doc, bool ignoreFrames ) const

@@ -405,7 +405,8 @@ void QgsColorButtonV2::prepareMenu()
 
   if ( mColorSchemeRegistry )
   {
-    QList< QgsColorScheme* > schemeList = mColorSchemeRegistry->schemes();
+    //get schemes with ShowInColorButtonMenu flag set
+    QList< QgsColorScheme* > schemeList = mColorSchemeRegistry->schemes( QgsColorScheme::ShowInColorButtonMenu );
     QList< QgsColorScheme* >::iterator it = schemeList.begin();
     for ( ; it != schemeList.end(); ++it )
     {
@@ -553,7 +554,7 @@ void QgsColorButtonV2::setButtonBackground( const QColor color )
                          this );
       //make sure height of icon looks good under different platforms
 #ifdef Q_WS_WIN
-      mIconSize = QSize( buttonSize.width() - 10, height() - 14 );
+      mIconSize = QSize( buttonSize.width() - 10, height() - 6 );
 #else
       mIconSize = QSize( buttonSize.width() - 10, height() - 12 );
 #endif
@@ -564,7 +565,7 @@ void QgsColorButtonV2::setButtonBackground( const QColor color )
   {
     //no menu
 #ifdef Q_WS_WIN
-    currentIconSize = QSize( width() - 10, height() - 14 );
+    currentIconSize = QSize( width() - 10, height() - 6 );
 #else
     currentIconSize = QSize( width() - 10, height() - 12 );
 #endif

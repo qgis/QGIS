@@ -72,14 +72,14 @@ bool QgsMapLayerAction::canRunUsingLayer( QgsMapLayer* layer ) const
   return false;
 }
 
-void QgsMapLayerAction::triggerForFeatures( QgsMapLayer* layer, QList<const QgsFeature*> featureList )
+void QgsMapLayerAction::triggerForFeatures( QgsMapLayer* layer, const QList<QgsFeature> featureList )
 {
   emit triggeredForFeatures( layer, featureList );
 }
 
 void QgsMapLayerAction::triggerForFeature( QgsMapLayer* layer, const QgsFeature* feature )
 {
-  emit triggeredForFeature( layer, feature );
+  emit triggeredForFeature( layer, *feature );
 }
 
 void QgsMapLayerAction::triggerForLayer( QgsMapLayer* layer )

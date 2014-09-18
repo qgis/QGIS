@@ -96,17 +96,23 @@ void QgsComposerHtml::setUrl( const QUrl& url )
 
   mUrl = url;
   loadHtml();
+  emit changed();
 }
 
 void QgsComposerHtml::setHtml( const QString html )
 {
   mHtml = html;
+  //TODO - this signal should be emitted, but without changing the signal which sets the html
+  //to an equivalent of editingFinished it causes a lot of problems. Need to investigate
+  //ways of doing this using QScintilla widgets.
+  //emit changed();
 }
 
 void QgsComposerHtml::setEvaluateExpressions( bool evaluateExpressions )
 {
   mEvaluateExpressions = evaluateExpressions;
   loadHtml();
+  emit changed();
 }
 
 void QgsComposerHtml::loadHtml()
@@ -252,8 +258,10 @@ QSizeF QgsComposerHtml::totalSize() const
   return mSize;
 }
 
-void QgsComposerHtml::render( QPainter* p, const QRectF& renderExtent )
+void QgsComposerHtml::render( QPainter* p, const QRectF& renderExtent, const int frameIndex )
 {
+  Q_UNUSED( frameIndex );
+
   if ( !mWebPage )
   {
     return;
@@ -398,6 +406,10 @@ void QgsComposerHtml::setMaxBreakDistance( double maxBreakDistance )
 void QgsComposerHtml::setUserStylesheet( const QString stylesheet )
 {
   mUserStylesheet = stylesheet;
+  //TODO - this signal should be emitted, but without changing the signal which sets the css
+  //to an equivalent of editingFinished it causes a lot of problems. Need to investigate
+  //ways of doing this using QScintilla widgets.
+  //emit changed();
 }
 
 void QgsComposerHtml::setUserStylesheetEnabled( const bool stylesheetEnabled )
@@ -406,6 +418,7 @@ void QgsComposerHtml::setUserStylesheetEnabled( const bool stylesheetEnabled )
   {
     mEnableUserStylesheet = stylesheetEnabled;
     loadHtml();
+    emit changed();
   }
 }
 

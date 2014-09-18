@@ -35,6 +35,29 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
+      <widget class="QScrollArea" name="scrollArea">
+       <property name="geometry">
+        <rect>
+         <x>280</x>
+         <y>110</y>
+         <width>120</width>
+         <height>80</height>
+        </rect>
+       </property>
+       <property name="widgetResizable">
+        <bool>true</bool>
+       </property>
+       <widget class="QWidget" name="scrollAreaWidgetContents">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>118</width>
+          <height>78</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -117,7 +140,7 @@
    <addaction name="mActionAddNewLegend"/>
    <addaction name="mActionAddNewScalebar"/>
    <addaction name="mActionAddArrow"/>
-   <addaction name="mActionAddTable"/>
+   <addaction name="mActionAddAttributeTable"/>
    <addaction name="mActionAddHtml"/>
   </widget>
   <widget class="QToolBar" name="mAtlasToolbar">
@@ -574,6 +597,17 @@
     <string>Add Table</string>
    </property>
    <property name="toolTip">
+    <string>Add table</string>
+   </property>
+  </action>
+  <action name="mActionAddAttributeTable">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Attribute Table</string>
+   </property>
+   <property name="toolTip">
     <string>Add attribute table</string>
    </property>
   </action>
@@ -949,8 +983,8 @@
   </action>
  </widget>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../python/plugins/fTools/resources.qrc"/>
+  <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
 </ui>

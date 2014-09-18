@@ -31,6 +31,7 @@
 #include "qgscomposerlabel.h"
 #include "qgscomposermodel.h"
 #include "qgscomposerattributetable.h"
+#include "qgscomposerattributetablev2.h"
 #include "qgsaddremovemultiframecommand.h"
 #include "qgscomposermultiframecommand.h"
 #include "qgspaintenginehack.h"
@@ -1266,7 +1267,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     }
   }
   // html
-  //TODO - fix this. pasting html items has no effect
+  //TODO - fix this. pasting multiframe frame items has no effect
   QDomNodeList composerHtmlList = elem.elementsByTagName( "ComposerHtml" );
   for ( int i = 0; i < composerHtmlList.size(); ++i )
   {
@@ -1275,6 +1276,23 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     newHtml->readXML( currentHtmlElem, doc );
     newHtml->setCreateUndoCommands( true );
     this->addMultiFrame( newHtml );
+
+    //offset z values for frames
+    //TODO - fix this after fixing html item paste
+    /*for ( int frameIdx = 0; frameIdx < newHtml->frameCount(); ++frameIdx )
+    {
+      QgsComposerFrame * frame = newHtml->frame( frameIdx );
+      frame->setZValue( frame->zValue() + zOrderOffset );
+    }*/
+  }
+  QDomNodeList composerAttributeTableV2List = elem.elementsByTagName( "ComposerAttributeTableV2" );
+  for ( int i = 0; i < composerAttributeTableV2List.size(); ++i )
+  {
+    QDomElement currentTableElem = composerAttributeTableV2List.at( i ).toElement();
+    QgsComposerAttributeTableV2* newTable = new QgsComposerAttributeTableV2( this, false );
+    newTable->readXML( currentTableElem, doc );
+    newTable->setCreateUndoCommands( true );
+    this->addMultiFrame( newTable );
 
     //offset z values for frames
     //TODO - fix this after fixing html item paste
@@ -2141,6 +2159,12 @@ void QgsComposition::endMultiFrameCommand()
   }
 }
 
+void QgsComposition::cancelMultiFrameCommand()
+{
+  delete mActiveMultiFrameCommand;
+  mActiveMultiFrameCommand = 0;
+}
+
 void QgsComposition::addMultiFrame( QgsComposerMultiFrame* multiFrame )
 {
   mMultiFrames.insert( multiFrame );
@@ -2253,6 +2277,16 @@ void QgsComposition::addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFra
   connect( frame, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
 
   emit composerHtmlFrameAdded( html, frame );
+}
+
+void QgsComposition::addComposerTableFrame( QgsComposerAttributeTableV2 *table, QgsComposerFrame *frame )
+{
+  addItem( frame );
+
+  updateBounds();
+  connect( frame, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
+  emit composerTableFrameAdded( table, frame );
 }
 
 void QgsComposition::removeComposerItem( QgsComposerItem* item, const bool createCommand, const bool removeGroupItems )
@@ -2419,6 +2453,11 @@ void QgsComposition::sendItemAddedSignal( QgsComposerItem* item )
     if ( html )
     {
       emit composerHtmlFrameAdded( html, frame );
+    }
+    QgsComposerAttributeTableV2* table = dynamic_cast<QgsComposerAttributeTableV2*>( mf );
+    if ( table )
+    {
+      emit composerTableFrameAdded( table, frame );
     }
     emit selectedItemChanged( frame );
     return;

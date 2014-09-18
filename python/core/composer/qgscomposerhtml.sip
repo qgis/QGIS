@@ -94,17 +94,6 @@ class QgsComposerHtml: QgsComposerMultiFrame
      */
     void setEvaluateExpressions( bool evaluateExpressions );
 
-    QSizeF totalSize() const;
-    void render( QPainter* p, const QRectF& renderExtent );
-
-    bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
-
-    void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true );
-
-    //overriden to break frames without dividing lines of text
-    double findNearbyPageBreak( double yPos );
-
     /**Returns whether html item is using smart breaks. Smart breaks prevent
      * the html frame contents from breaking mid-way though a line of text.
      * @returns true if html item is using smart breaks
@@ -183,6 +172,13 @@ class QgsComposerHtml: QgsComposerMultiFrame
     bool userStylesheetEnabled() const;
 
     virtual QString displayName() const;
+    QSizeF totalSize() const;
+    void render( QPainter* p, const QRectF& renderExtent, const int frameIndex );
+    bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
+    void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true );
+    //overriden to break frames without dividing lines of text
+    double findNearbyPageBreak( double yPos );
 
   public slots:
 

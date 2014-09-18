@@ -191,7 +191,8 @@ bool QgsColorSchemeList::importColorsFromGpl( QFile &file )
 {
   QgsNamedColorList importedColors;
   bool ok = false;
-  importedColors = QgsSymbolLayerV2Utils::importColorsFromGpl( file, ok );
+  QString name;
+  importedColors = QgsSymbolLayerV2Utils::importColorsFromGpl( file, ok, name );
   if ( !ok )
   {
     return false;
