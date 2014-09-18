@@ -139,11 +139,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
   // delete actions
   clear();
   // also remove the QgsActionMenu
-  QList<QgsActionMenu*> actionMenus = findChildren<QgsActionMenu*>();
-  Q_FOREACH ( QgsActionMenu* actionMenu, actionMenus )
-  {
-    delete actionMenu;
-  }
+  qDeleteAll( findChildren<QgsActionMenu*>() );
 
   if ( externalAction && !mResultsIfExternalAction )
   {
