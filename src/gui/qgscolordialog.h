@@ -161,6 +161,7 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
     void exportColors();
     void importColors();
     void importPalette();
+    void removePalette();
 
     void schemeIndexChanged( int index );
 
@@ -200,6 +201,10 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
      * @returns average color from sampled position
      */
     QColor sampleColor( const QPoint &point ) const;
+
+    /**Repopulates the scheme combo box with current color schemes
+     */
+    void refreshSchemeComboBox();
 };
 
 #endif // #ifndef QGSCOLORDIALOG_H

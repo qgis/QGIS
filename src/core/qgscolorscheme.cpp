@@ -338,6 +338,18 @@ QgsColorScheme *QgsUserColorScheme::clone() const
   return new QgsUserColorScheme( mFilename );
 }
 
+bool QgsUserColorScheme::erase()
+{
+  QString filePath = gplFilePath();
+  if ( filePath.isEmpty() )
+  {
+    return false;
+  }
+
+  //try to erase gpl file
+  return QFile::remove( filePath );
+}
+
 QString QgsUserColorScheme::gplFilePath()
 {
   QString palettesDir = QgsApplication::qgisSettingsDirPath() + "/palettes";
