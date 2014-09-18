@@ -75,11 +75,19 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool openFormButtonVisible() {return mOpenFormButtonVisible;}
     void setOpenFormButtonVisible( bool openFormButtonVisible );
 
+    //! return the related feature (from the referenced layer)
+    //! if no feature is related, it returns an invalid feature
+    QgsFeature referencedFeature();
+
   public slots:
     //! open the form of the related feature in a new dialog
     void openForm();
-    //! activate the map tool to select the related feature on the map
+
+    //! activate the map tool to select a new related feature on the map
     void mapIdentification();
+
+    //! unset the currently related feature
+    void deleteForeignKey();
 
   protected:
     virtual void showEvent( QShowEvent* e );
@@ -93,13 +101,11 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void highlightActionTriggered( QAction* action );
     void deleteHighlight();
     void comboReferenceChanged( int index );
-    void deleteForeignKey();
     void featureIdentified( const QgsFeature& feature );
     void unsetMapTool();
     void mapToolDeactivated();
 
   private:
-    QgsFeature relatedFeature();
     void highlightFeature( QgsFeature f = QgsFeature(), CanvasExtent canvasExtent = Fixed );
     void updateAttributeEditorFrame( const QgsFeature feature );
 

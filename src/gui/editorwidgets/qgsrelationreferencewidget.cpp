@@ -138,7 +138,8 @@ QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
 {
   deleteHighlight();
   unsetMapTool();
-  delete mMapTool;
+  if ( mMapTool )
+    delete mMapTool;
 }
 
 void QgsRelationReferenceWidget::setRelation( QgsRelation relation, bool allowNullValue )
@@ -277,7 +278,7 @@ void QgsRelationReferenceWidget::deleteForeignKey()
   emit foreignKeyChanged( QVariant( QVariant::Int ) );
 }
 
-QgsFeature QgsRelationReferenceWidget::relatedFeature()
+QgsFeature QgsRelationReferenceWidget::referencedFeature()
 {
   QgsFeature f;
   if ( mReferencedLayer )
@@ -422,7 +423,7 @@ void QgsRelationReferenceWidget::highlightActionTriggered( QAction* action )
 
 void QgsRelationReferenceWidget::openForm()
 {
-  QgsFeature feat = relatedFeature();
+  QgsFeature feat = referencedFeature();
 
   if ( !feat.isValid() )
     return;
@@ -439,7 +440,7 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
 
   if ( !f.isValid() )
   {
-    f = relatedFeature();
+    f = referencedFeature();
     if ( !f.isValid() )
       return;
   }

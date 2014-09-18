@@ -29,6 +29,10 @@ QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas* canvas, QgsV
   mCursor = QCursor( cursorPixmap, 1, 1 );
 }
 
+QgsMapToolIdentifyFeature::~QgsMapToolIdentifyFeature()
+{
+}
+
 void QgsMapToolIdentifyFeature::canvasReleaseEvent( QMouseEvent* e )
 {
 
