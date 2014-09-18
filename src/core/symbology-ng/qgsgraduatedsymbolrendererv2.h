@@ -104,6 +104,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     bool updateRangeLowerValue( int rangeIndex, double value );
     //! @note added in 2.5
     bool updateRangeRenderState( int rangeIndex, bool render );
+    QString defaultRangeLabel( const QgsRendererRangeV2 &range );
 
 
     void addClass( QgsSymbolV2* symbol );
@@ -131,6 +132,9 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     Mode mode() const { return mMode; }
     void setMode( Mode mode ) { mMode = mode; }
 
+    QString units() const { return mUnits; }
+    void setUnits( QString units, bool updateRanges=true );
+
     static QgsGraduatedSymbolRendererV2* createRenderer(
       QgsVectorLayer* vlayer,
       QString attrName,
@@ -138,7 +142,8 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
       Mode mode,
       QgsSymbolV2* symbol,
       QgsVectorColorRampV2* ramp,
-      bool inverted = false );
+      bool inverted = false,
+      QString units = "");
 
     //! create renderer from XML element
     static QgsFeatureRendererV2* create( QDomElement& element );
@@ -209,6 +214,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
   protected:
     QString mAttrName;
+    QString mUnits;
     QgsRangeList mRanges;
     Mode mMode;
     QScopedPointer<QgsSymbolV2> mSourceSymbol;

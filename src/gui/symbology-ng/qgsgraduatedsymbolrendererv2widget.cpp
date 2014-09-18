@@ -330,6 +330,16 @@ void QgsGraduatedSymbolRendererV2Model::sort( int column, Qt::SortOrder order )
   QgsDebugMsg( "Done" );
 }
 
+void QgsGraduatedSymbolRendererV2Model::updateSymbology()
+{
+  emit dataChanged( createIndex( 0, 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
+}
+
+void QgsGraduatedSymbolRendererV2Model::updateLabels()
+{
+  emit dataChanged( createIndex( 0, 2 ), createIndex( mRenderer->ranges().size(), 2 ) );
+}
+
 // ------------------------------ View style --------------------------------
 QgsGraduatedSymbolRendererV2ViewStyle::QgsGraduatedSymbolRendererV2ViewStyle( QStyle* style )
     : QProxyStyle( style )
@@ -422,6 +432,8 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   connect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ) , this, SLOT( classifyGraduated() ) );
   connect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( classifyGraduated() ) );
   connect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( reapplyColorRamp() ) );
+  connect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ) , this, SLOT( reapplyColorRamp() ) );
+  connect( txtUnits, SIGNAL( textChanged(QString)), this, SLOT(unitsChanged(QString)));
 
   // menus for data-defined rotation/size
   QMenu* advMenu = new QMenu;
@@ -478,6 +490,8 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer()
     cboGraduatedColorRamp->setSourceColorRamp( mRenderer->sourceColorRamp() );
     cbxInvertedColorRamp->setChecked( mRenderer->invertedColorRamp() );
   }
+
+  txtUnits->setText( mRenderer->units() );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::graduatedColumnChanged( QString field )
@@ -526,7 +540,8 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   // create and set new renderer
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QgsGraduatedSymbolRendererV2* r = QgsGraduatedSymbolRendererV2::createRenderer(
-                                      mLayer, attrName, classes, mode, mGraduatedSymbol, ramp, cbxInvertedColorRamp->isChecked() );
+        mLayer, attrName, classes, mode, mGraduatedSymbol, ramp,
+        cbxInvertedColorRamp->isChecked(), txtUnits->text() );
   QApplication::restoreOverrideCursor();
   if ( !r )
   {
@@ -700,55 +715,23 @@ void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
   {
     double lowerValue = dialog.lowerValue().toDouble();
     double upperValue = dialog.upperValue().toDouble();
-
-    QString label = createLabel( range.lowerValue(), range.upperValue() );
-    QString newLabel;
-
     mRenderer->updateRangeUpperValue( rangeIdx, upperValue );
     mRenderer->updateRangeLowerValue( rangeIdx, lowerValue );
-
-    //If the label was the label automatically generated, we generate a new one for the new range
-    if ( range.label() == label )
-    {
-      newLabel = createLabel( lowerValue, upperValue );
-      mRenderer->updateRangeLabel( rangeIdx, newLabel );
-    }
 
     //If the boundaries have to stay linked, we update the ranges above and below, as well as their label if needed
     if ( cbxLinkBoundaries->isChecked() )
     {
       if ( rangeIdx > 0 )
       {
-        const QgsRendererRangeV2& rangeLower = mRenderer->ranges()[rangeIdx - 1];
-        label = createLabel( rangeLower.lowerValue(), rangeLower.upperValue() );
         mRenderer->updateRangeUpperValue( rangeIdx - 1, lowerValue );
-
-        if ( label == rangeLower.label() )
-        {
-          newLabel = createLabel( rangeLower.lowerValue(), lowerValue );
-          mRenderer->updateRangeLabel( rangeIdx - 1, newLabel );
-        }
       }
 
       if ( rangeIdx < mRenderer->ranges().size() - 1 )
       {
-        const QgsRendererRangeV2& rangeUpper = mRenderer->ranges()[rangeIdx + 1];
-        label = createLabel( rangeUpper.lowerValue(), rangeUpper.upperValue() );
         mRenderer->updateRangeLowerValue( rangeIdx + 1, upperValue );
-
-        if ( label == rangeUpper.label() )
-        {
-          newLabel = createLabel( upperValue, rangeUpper.upperValue() );
-          mRenderer->updateRangeLabel( rangeIdx + 1, newLabel );
-        }
       }
     }
   }
-}
-
-QString QgsGraduatedSymbolRendererV2Widget::createLabel( double lowerValue, double upperValue )
-{
-  return QString::number( lowerValue , 'f', 4 ) + " - " + QString::number( upperValue, 'f', 4 );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::addClass()
@@ -806,6 +789,12 @@ void QgsGraduatedSymbolRendererV2Widget::scaleMethodChanged( QgsSymbolV2::ScaleM
   mRenderer->setScaleMethod( scaleMethod );
 }
 
+void QgsGraduatedSymbolRendererV2Widget::unitsChanged(QString units)
+{
+  mRenderer->setUnits(units);
+  mModel->updateLabels();
+}
+
 QList<QgsSymbolV2*> QgsGraduatedSymbolRendererV2Widget::selectedSymbols()
 {
   QList<QgsSymbolV2*> selectedSymbols;
@@ -851,6 +840,10 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2Widget::findSymbolForRange( double lowe
 
 void QgsGraduatedSymbolRendererV2Widget::refreshSymbolView()
 {
+  if( mModel )
+  {
+    mModel->updateSymbology();
+  }
 }
 
 void QgsGraduatedSymbolRendererV2Widget::showSymbolLevels()

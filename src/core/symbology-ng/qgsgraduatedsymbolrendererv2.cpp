@@ -163,6 +163,7 @@ QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( QString attrName, Qg
     mRanges( ranges ),
     mMode( Custom ),
     mInvertedColorRamp( false ),
+    mUnits(""),
     mScaleMethod( DEFAULT_SCALE_METHOD )
 {
   // TODO: check ranges for sanity (NULL symbols, invalid ranges)
@@ -331,7 +332,10 @@ bool QgsGraduatedSymbolRendererV2::updateRangeUpperValue( int rangeIndex, double
 {
   if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
     return false;
-  mRanges[rangeIndex].setUpperValue( value );
+  QgsRendererRangeV2 &range=mRanges[rangeIndex];
+  bool isDefaultLabel= range.label() == defaultRangeLabel(range);
+  range.setUpperValue( value );
+  if( isDefaultLabel ) range.setLabel(defaultRangeLabel(range));
   return true;
 }
 
@@ -339,7 +343,10 @@ bool QgsGraduatedSymbolRendererV2::updateRangeLowerValue( int rangeIndex, double
 {
   if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
     return false;
-  mRanges[rangeIndex].setLowerValue( value );
+  QgsRendererRangeV2 &range=mRanges[rangeIndex];
+  bool isDefaultLabel= range.label() == defaultRangeLabel(range);
+  range.setLowerValue( value );
+  if( isDefaultLabel ) range.setLabel(defaultRangeLabel(range));
   return true;
 }
 
@@ -349,6 +356,11 @@ bool QgsGraduatedSymbolRendererV2::updateRangeRenderState( int rangeIndex, bool 
     return false;
   mRanges[rangeIndex].setRenderState( value );
   return true;
+}
+
+QString QgsGraduatedSymbolRendererV2::defaultRangeLabel(const QgsRendererRangeV2 & range )
+{
+  return QString::number( range.lowerValue(), 'f', 4 ) + " - " + QString::number( range.upperValue(), 'f', 4 ) + mUnits;
 }
 
 QString QgsGraduatedSymbolRendererV2::dump() const
@@ -374,6 +386,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone() const
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
   r->setScaleMethod( scaleMethod() );
+  r->setUnits( units(), false );
   return r;
 }
 
@@ -800,7 +813,8 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   Mode mode,
   QgsSymbolV2* symbol,
   QgsVectorColorRampV2* ramp,
-  bool inverted )
+  bool inverted,
+  QString units )
 {
   if ( classes < 1 )
     return NULL;
@@ -890,12 +904,30 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   double lower, upper = minimum;
   QString label;
 
+  QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( attrName, ranges );
+  r->setSourceSymbol( symbol->clone() );
+  r->setSourceColorRamp( ramp->clone() );
+  r->setInvertedColorRamp( inverted );
+  r->setMode( mode );
+  r->setUnits( units );
+
   // "breaks" list contains all values at class breaks plus maximum as last break
   int i = 0;
   for ( QList<double>::iterator it = breaks.begin(); it != breaks.end(); ++it, ++i )
   {
     lower = upper; // upper border from last interval
     upper = *it;
+
+    // Symbol based on range
+    QgsSymbolV2* newSymbol = symbol->clone();
+    double colorValue;
+    if ( inverted ) colorValue = ( breaks.count() > 1 ? ( double )( breaks.count() - i - 1 ) / ( breaks.count() - 1 ) : 0 );
+    else colorValue = ( breaks.count() > 1 ? ( double ) i / ( breaks.count() - 1 ) : 0 );
+    newSymbol->setColor( ramp->color( colorValue ) ); // color from (0 / cl-1) to (cl-1 / cl-1)
+
+    QgsRendererRangeV2 range = QgsRendererRangeV2( lower, upper, newSymbol, "" );
+
+    // Label - either StdDev label or default label for a range
     if ( mode == StdDev )
     {
       if ( i == 0 )
@@ -913,25 +945,17 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     }
     else
     {
-      label = QString::number( lower, 'f', 4 ) + " - " + QString::number( upper, 'f', 4 );
+      label=r->defaultRangeLabel(range);
     }
+    range.setLabel(label);
 
-    QgsSymbolV2* newSymbol = symbol->clone();
-    double colorValue;
-    if ( inverted ) colorValue = ( breaks.count() > 1 ? ( double )( breaks.count() - i - 1 ) / ( breaks.count() - 1 ) : 0 );
-    else colorValue = ( breaks.count() > 1 ? ( double ) i / ( breaks.count() - 1 ) : 0 );
-    newSymbol->setColor( ramp->color( colorValue ) ); // color from (0 / cl-1) to (cl-1 / cl-1)
-
-    ranges.append( QgsRendererRangeV2( lower, upper, newSymbol, label ) );
+    r->addClass( range );
   }
 
-  QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( attrName, ranges );
-  r->setSourceSymbol( symbol->clone() );
-  r->setSourceColorRamp( ramp->clone() );
-  r->setInvertedColorRamp( inverted );
-  r->setMode( mode );
   return r;
 }
+
+
 
 QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element )
 {
@@ -1019,6 +1043,12 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
     r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
   r->setScaleMethod( QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) );
 
+  QDomElement unitsElem = element.firstChildElement( "units" );
+  if( ! unitsElem.isNull() )
+  {
+    QString unitString=unitsElem.attribute("name");
+    r->setUnits(unitString, false);
+  }
   // TODO: symbol levels
   return r;
 }
@@ -1105,6 +1135,10 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
     sizeScaleElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) );
   sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
+
+  QDomElement unitsElem=doc.createElement("units");
+  unitsElem.setAttribute("name",mUnits);
+  rendererElem.appendChild( unitsElem );
 
   return rendererElem;
 }
@@ -1244,7 +1278,6 @@ void QgsGraduatedSymbolRendererV2::addClass( QgsSymbolV2* symbol )
   QgsSymbolV2* newSymbol = symbol->clone();
   QString label = "0.0 - 0.0";
   mRanges.insert( 0, QgsRendererRangeV2( 0.0, 0.0, newSymbol, label ) );
-
 }
 
 void QgsGraduatedSymbolRendererV2::addClass( QgsRendererRangeV2 range )
@@ -1260,6 +1293,23 @@ void QgsGraduatedSymbolRendererV2::deleteClass( int idx )
 void QgsGraduatedSymbolRendererV2::deleteAllClasses()
 {
   mRanges.clear();
+}
+
+void QgsGraduatedSymbolRendererV2::setUnits( QString units, bool updateRanges )
+{
+  if( updateRanges )
+  {
+    for ( QgsRangeList::iterator it = mRanges.begin(); it != mRanges.end(); ++it )
+    {
+      QString label=it->label();
+      if( label.endsWith(mUnits))
+      {
+        label=label.left(label.length()-mUnits.length())+units;
+        it->setLabel(label);
+      }
+    }
+  }
+  mUnits=units;
 }
 
 void QgsGraduatedSymbolRendererV2::moveClass( int from, int to )

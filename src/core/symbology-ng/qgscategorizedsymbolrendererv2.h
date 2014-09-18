@@ -142,6 +142,8 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
 
     QgsSymbolV2* sourceSymbol();
     void setSourceSymbol( QgsSymbolV2* sym );
+    //! @note added in 2.5
+    void updateSymbols( QgsSymbolV2* sym );
 
     QgsVectorColorRampV2* sourceColorRamp();
     void setSourceColorRamp( QgsVectorColorRampV2* ramp );
@@ -150,6 +152,9 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     bool invertedColorRamp() { return mInvertedColorRamp; }
     void setInvertedColorRamp( bool inverted ) { mInvertedColorRamp = inverted; }
 
+    // Update the color ramp used. Also updates all symbols colors.
+    // @note added in 2.5
+    void updateColorRamp( QgsVectorColorRampV2* ramp, bool inverted = false );
     //! @note added in 1.6
     void setRotationField( QString fieldOrExpression );
     //! @note added in 1.6
