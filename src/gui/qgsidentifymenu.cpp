@@ -136,10 +136,23 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
   bool externalAction;
   returnResults = results( selectedAction, externalAction );
 
-  if ( externalAction && !mResultsIfExternalAction )
-    return QList<QgsMapToolIdentify::IdentifyResult>();
+  // delete actions
+  clear();
+  // also remove the QgsActionMenu
+  QList<QgsActionMenu*> actionMenus = findChildren<QgsActionMenu*>();
+  Q_FOREACH ( QgsActionMenu* actionMenu, actionMenus )
+  {
+    delete actionMenu;
+  }
 
-  return returnResults;
+  if ( externalAction && !mResultsIfExternalAction )
+  {
+    return QList<QgsMapToolIdentify::IdentifyResult>();
+  }
+  else
+  {
+    return returnResults;
+  }
 }
 
 void QgsIdentifyMenu::addRasterLayer( QgsMapLayer* layer )
@@ -316,7 +329,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     QList<QgsMapLayerAction*> customFeatureActions = mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature );
     if ( mShowFeatureActions )
     {
-      featureActionMenu = new QgsActionMenu( layer, &( result.mFeature ), this );
+      featureActionMenu = new QgsActionMenu( layer, &( result.mFeature ), layerMenu );
     }
 
     // feature title
