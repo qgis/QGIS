@@ -137,8 +137,8 @@ class ZonalStatistics(GeoAlgorithm):
                 columnPrefix + 'unique', 21, 6)
         (idxRange, fields) = vector.findOrCreateField(layer, fields,
                 columnPrefix + 'range', 21, 6)
-        (idxCV, fields) = vector.findOrCreateField(layer, fields, columnPrefix
-                + 'cv', 21, 6)
+        (idxVar, fields) = vector.findOrCreateField(layer, fields, columnPrefix
+                + 'var', 21, 6)
 
         # idxMedian, fields = ftools_utils.findOrCreateField(layer, fields,
         #        columnPrefix + "median", 21, 6)
@@ -222,7 +222,7 @@ class ZonalStatistics(GeoAlgorithm):
             attrs.insert(idxStd, float(masked.std()))
             attrs.insert(idxUnique, numpy.unique(masked.compressed()).size)
             attrs.insert(idxRange, float(masked.max()) - float(masked.min()))
-            attrs.insert(idxCV, float(masked.var()))
+            attrs.insert(idxVar, float(masked.var()))
             # attrs.insert(idxMedian, float(masked.median()))
 
             outFeat.setAttributes(attrs)
