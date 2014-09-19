@@ -52,16 +52,20 @@ void QgsRelationManager::addRelation( const QgsRelation& relation )
   mRelations.insert( relation.id(), relation );
 
   mProject->dirty( true );
+
+  emit relationsChanged();
 }
 
-void QgsRelationManager::removeRelation( const QString& name )
+void QgsRelationManager::removeRelation( const QString& id )
 {
-  mRelations.remove( name );
+  mRelations.remove( id );
+  emit relationsChanged();
 }
 
 void QgsRelationManager::removeRelation( const QgsRelation& relation )
 {
   mRelations.remove( relation.id() );
+  emit relationsChanged();
 }
 
 QgsRelation QgsRelationManager::relation( const QString& id ) const
@@ -72,6 +76,7 @@ QgsRelation QgsRelationManager::relation( const QString& id ) const
 void QgsRelationManager::clear()
 {
   mRelations.clear();
+  emit relationsChanged();
 }
 
 QList<QgsRelation> QgsRelationManager::referencingRelations( QgsVectorLayer* layer, int fieldIdx ) const
@@ -152,6 +157,7 @@ void QgsRelationManager::readProject( const QDomDocument & doc )
   }
 
   emit( relationsLoaded() );
+  emit( relationsChanged() );
 }
 
 void QgsRelationManager::writeProject( QDomDocument & doc )

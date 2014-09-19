@@ -12,7 +12,7 @@ class QgsRelationManager : QObject
     void setRelations( const QList<QgsRelation>& relations );
     const QMap<QString, QgsRelation>& relations() const;
     void addRelation( const QgsRelation& relation );
-    void removeRelation( const QString& name );
+    void removeRelation( const QString& id );
     void removeRelation( const QgsRelation& relation );
     QgsRelation relation( const QString& id ) const;
     void clear();
@@ -21,5 +21,9 @@ class QgsRelationManager : QObject
     QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = 0 ) const;
 
   signals:
+    /** this signal is emitted when the relations were loaded after reading a project */
     void relationsLoaded();
+
+    /** this signal is emitted whenever the relations in the project changed */
+    void relationsChanged();
 };
