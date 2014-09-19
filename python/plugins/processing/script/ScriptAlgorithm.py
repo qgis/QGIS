@@ -263,7 +263,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             ns[out.name] = out.value
 
         script += self.script
-        exec script in ns
+        exec(script) in ns
         for out in self.outputs:
             out.setValue(ns[out.name])
 
