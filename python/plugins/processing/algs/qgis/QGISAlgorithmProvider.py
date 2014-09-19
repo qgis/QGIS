@@ -16,8 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.script.ScriptUtils import ScriptUtils
-import os
+
+
 
 
 __author__ = 'Victor Olaya'
@@ -28,12 +28,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
 from PyQt4.QtGui import *
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
+from processing.script.ScriptUtils import ScriptUtils
+
 from ftools.RegularPoints import RegularPoints
 from ftools.SymetricalDifference import SymetricalDifference
 from ftools.VectorSplit import VectorSplit
+from ftools.VectorGrid import VectorGrid
 
 from RandomExtract import RandomExtract
 from RandomExtractWithinSubsets import RandomExtractWithinSubsets
@@ -149,7 +154,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SelectByLocation(), RandomExtract(),
                         RandomExtractWithinSubsets(), ExtractByLocation(),
                         SpatialJoin(), RegularPoints(), SymetricalDifference(),
-                        VectorSplit(), DeleteColumn(),
+                        VectorSplit(), VectorGrid(), DeleteColumn(),
                         DeleteDuplicateGeometries(), TextToFloat(),
                         ExtractByAttribute(), SelectByAttribute(), Grid(),
                         Gridify(), HubDistance(), HubLines(), Merge(),
