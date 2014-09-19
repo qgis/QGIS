@@ -33,6 +33,7 @@ from PyQt4.QtGui import *
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from ftools.RegularPoints import RegularPoints
 from ftools.SymetricalDifference import SymetricalDifference
+from ftools.VectorSplit import VectorSplit
 
 from RandomExtract import RandomExtract
 from RandomExtractWithinSubsets import RandomExtractWithinSubsets
@@ -148,7 +149,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SelectByLocation(), RandomExtract(),
                         RandomExtractWithinSubsets(), ExtractByLocation(),
                         SpatialJoin(), RegularPoints(), SymetricalDifference(),
-                        DeleteColumn(),
+                        VectorSplit(), DeleteColumn(),
                         DeleteDuplicateGeometries(), TextToFloat(),
                         ExtractByAttribute(), SelectByAttribute(), Grid(),
                         Gridify(), HubDistance(), HubLines(), Merge(),
