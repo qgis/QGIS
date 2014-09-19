@@ -56,9 +56,9 @@ void QgsRelationManager::addRelation( const QgsRelation& relation )
   emit changed();
 }
 
-void QgsRelationManager::removeRelation( const QString& name )
+void QgsRelationManager::removeRelation( const QString& id )
 {
-  mRelations.remove( name );
+  mRelations.remove( id );
   emit changed();
 }
 
