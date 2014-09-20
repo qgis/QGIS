@@ -571,6 +571,11 @@ void QgsColorButtonV2::setButtonBackground( const QColor color )
 #endif
   }
 
+  if ( !currentIconSize.isValid() )
+  {
+    return;
+  }
+
   //create an icon pixmap
   QPixmap pixmap( currentIconSize );
   pixmap.fill( Qt::transparent );
