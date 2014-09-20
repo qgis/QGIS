@@ -23,6 +23,7 @@
 #include <QString>
 #include <QDomElement>
 #include <QDomDocument>
+#include <QStringList>
 
 class QgsComposerMap;
 class QgsComposition;
@@ -304,6 +305,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
   public:
     typedef QMap< QgsFeatureId, QVariant > SorterKeys;
+
+  private slots:
+    void removeLayers( QStringList layers );
 
   private:
     // value of field that is used for ordering of features

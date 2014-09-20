@@ -47,6 +47,9 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
   QgsExpression::setSpecialColumn( "$atlasfeatureid", QVariant(( int )0 ) );
   QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( QgsFeature() ) );
   QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( QgsGeometry() ) );
+
+  //listen out for layer removal
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
 }
 
 QgsAtlasComposition::~QgsAtlasComposition()
@@ -55,13 +58,43 @@ QgsAtlasComposition::~QgsAtlasComposition()
 
 void QgsAtlasComposition::setEnabled( bool enabled )
 {
+  if ( enabled == mEnabled )
+  {
+    return;
+  }
+
   mEnabled = enabled;
   mComposition->setAtlasMode( QgsComposition::AtlasOff );
   emit toggled( enabled );
+  emit parameterChanged();
+}
+
+void QgsAtlasComposition::removeLayers( QStringList layers )
+{
+  if ( !mCoverageLayer )
+  {
+    return;
+  }
+
+  foreach ( QString layerId, layers )
+  {
+    if ( layerId == mCoverageLayer->id() )
+    {
+      //current coverage layer removed
+      mCoverageLayer = 0;
+      setEnabled( false );
+      return;
+    }
+  }
 }
 
 void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
 {
+  if ( layer == mCoverageLayer )
+  {
+    return;
+  }
+
   mCoverageLayer = layer;
 
   // update the number of features
