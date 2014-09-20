@@ -107,6 +107,12 @@ class CORE_EXPORT QgsRelationManager : public QObject
   signals:
     void relationsLoaded();
 
+    /**
+     * Emitted when relations are added or removed to the manager.
+     * @note added in QGIS 2.5
+     */
+    void changed();
+
   private slots:
     void readProject( const QDomDocument &doc );
     void writeProject( QDomDocument &doc );

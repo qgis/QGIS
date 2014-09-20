@@ -22,4 +22,10 @@ class QgsRelationManager : QObject
 
   signals:
     void relationsLoaded();
+    
+    /**
+     * Emitted when relations are added or removed to the manager.
+     * @note added in QGIS 2.5
+     */
+    void changed();
 };
