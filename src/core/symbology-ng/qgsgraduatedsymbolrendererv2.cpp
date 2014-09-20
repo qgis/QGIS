@@ -361,7 +361,6 @@ bool QgsGraduatedSymbolRendererV2::updateRangeRenderState( int rangeIndex, bool 
 
 QString QgsGraduatedSymbolRendererV2::defaultRangeLabel(const QgsRendererRangeV2 & range )
 {
-  int ndp=mDecimalPlaces;
   return QString::number( range.lowerValue(), 'f', mDecimalPlaces )
       + " - " + QString::number( range.upperValue(), 'f', mDecimalPlaces ) + mUnits;
 }

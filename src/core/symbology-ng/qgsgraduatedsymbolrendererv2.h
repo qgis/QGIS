@@ -135,7 +135,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     QString units() const { return mUnits; }
     void setUnits( QString units, bool updateRanges=true );
 
-    int decimalPlaces() const { return mDecimalPlaces; };
+    int decimalPlaces() const { return mDecimalPlaces; }
     void setDecimalPlaces( int decimalPlaces, bool updateRanges=true );
 
     static QgsGraduatedSymbolRendererV2* createRenderer(
@@ -218,13 +218,13 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
   protected:
     QString mAttrName;
-    QString mUnits;
-    int mDecimalPlaces;
     QgsRangeList mRanges;
     Mode mMode;
     QScopedPointer<QgsSymbolV2> mSourceSymbol;
     QScopedPointer<QgsVectorColorRampV2> mSourceColorRamp;
     bool mInvertedColorRamp;
+    QString mUnits;
+    int mDecimalPlaces;
     QScopedPointer<QgsExpression> mRotation;
     QScopedPointer<QgsExpression> mSizeScale;
     QgsSymbolV2::ScaleMethod mScaleMethod;
