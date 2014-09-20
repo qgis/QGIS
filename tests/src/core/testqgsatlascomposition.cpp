@@ -63,6 +63,8 @@ class TestQgsAtlasComposition: public QObject
     void filtering_render();
     // test render signals
     void test_signals();
+    // test removing coverage layer while atlas is enabled
+    void test_remove_layer();
 
   private:
     QgsComposition* mComposition;
@@ -73,6 +75,7 @@ class TestQgsAtlasComposition: public QObject
     //QgsMapRenderer* mMapRenderer;
     QgsMapSettings mMapSettings;
     QgsVectorLayer* mVectorLayer;
+    QgsVectorLayer* mVectorLayer2;
     QgsAtlasComposition* mAtlas;
     QString mReport;
 };
@@ -87,6 +90,9 @@ void TestQgsAtlasComposition::initTestCase()
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
+  mVectorLayer2 = new QgsVectorLayer( vectorFileInfo.filePath(),
+                                      vectorFileInfo.completeBaseName(),
+                                      "ogr" );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
@@ -439,6 +445,25 @@ void TestQgsAtlasComposition::test_signals()
   QVERIFY( spyPreparedForAtlas.count() == 2 );
   mAtlas->endRender();
   QVERIFY( spyRenderEnded.count() == 1 );
+}
+
+void TestQgsAtlasComposition::test_remove_layer()
+{
+  mAtlas->setCoverageLayer( mVectorLayer2 );
+  mAtlas->setEnabled( true );
+
+  QSignalSpy spyToggled( mAtlas, SIGNAL( toggled( bool ) ) );
+
+  //remove coverage layer while atlas is enabled
+  QgsMapLayerRegistry::instance()->removeMapLayer( mVectorLayer2->id() );
+  mVectorLayer2 = 0;
+
+  QVERIFY( !mAtlas->enabled() );
+  QVERIFY( spyToggled.count() == 1 );
+
+  //clean up
+  mAtlas->setCoverageLayer( mVectorLayer );
+  mAtlas->setEnabled( true );
 }
 
 QTEST_MAIN( TestQgsAtlasComposition )

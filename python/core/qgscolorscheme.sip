@@ -143,6 +143,11 @@ class  QgsUserColorScheme : QgsGplColorScheme
     */
     void setName( const QString name );
 
+    /**Erases the associated gpl palette file from the users "palettes" folder
+     * @returns true if erase was successful
+    */
+    bool erase();
+
   protected:
 
     virtual QString gplFilePath();

@@ -80,14 +80,10 @@ QgsColorDialogV2::QgsColorDialogV2( QWidget *parent, Qt::WindowFlags fl, const Q
   mSchemeList->setColumnWidth( 0, 44 );
 
   //get schemes with ShowInColorDialog set
+  refreshSchemeComboBox();
   QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
-  QList<QgsColorScheme *>::const_iterator schemeIt = schemeList.constBegin();
-  for ( ; schemeIt != schemeList.constEnd(); ++schemeIt )
-  {
-    mSchemeComboBox->addItem(( *schemeIt )->schemeName() );
-  }
-  int activeScheme = qMin( settings.value( "/Windows/ColorDialog/activeScheme", 0 ).toInt(), schemeList.length() - 1 );
-  if ( activeScheme < schemeList.length() )
+  int activeScheme = settings.value( "/Windows/ColorDialog/activeScheme", 0 ).toInt();
+  if ( activeScheme < mSchemeComboBox->count() )
   {
     mSchemeList->setScheme( schemeList.at( activeScheme ) );
     mSchemeComboBox->setCurrentIndex( activeScheme );
@@ -95,12 +91,15 @@ QgsColorDialogV2::QgsColorDialogV2( QWidget *parent, Qt::WindowFlags fl, const Q
     mActionPasteColors->setEnabled( schemeList.at( activeScheme )->isEditable() );
     mAddColorToSchemeButton->setEnabled( schemeList.at( activeScheme )->isEditable() );
     mRemoveColorsFromSchemeButton->setEnabled( schemeList.at( activeScheme )->isEditable() );
+    QgsUserColorScheme* userScheme = dynamic_cast<QgsUserColorScheme*>( schemeList.at( activeScheme ) );
+    mActionRemovePalette->setEnabled( userScheme ? true : false );
   }
 
   connect( mActionPasteColors, SIGNAL( triggered() ), mSchemeList, SLOT( pasteColors() ) );
   connect( mActionExportColors, SIGNAL( triggered() ), this, SLOT( exportColors() ) );
   connect( mActionImportColors, SIGNAL( triggered() ), this, SLOT( importColors() ) );
   connect( mActionImportPalette, SIGNAL( triggered() ), this, SLOT( importPalette() ) );
+  connect( mActionRemovePalette, SIGNAL( triggered() ), this, SLOT( removePalette() ) );
   connect( mRemoveColorsFromSchemeButton, SIGNAL( clicked() ), mSchemeList, SLOT( removeSelection() ) );
 
   QMenu* schemeMenu = new QMenu( mSchemeToolButton );
@@ -109,6 +108,7 @@ QgsColorDialogV2::QgsColorDialogV2( QWidget *parent, Qt::WindowFlags fl, const Q
   schemeMenu->addAction( mActionExportColors );
   schemeMenu->addSeparator();
   schemeMenu->addAction( mActionImportPalette );
+  schemeMenu->addAction( mActionRemovePalette );
   mSchemeToolButton->setMenu( schemeMenu );
 
   connect( mSchemeComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( schemeIndexChanged( int ) ) );
@@ -385,6 +385,19 @@ void QgsColorDialogV2::importColors()
   }
 }
 
+void QgsColorDialogV2::refreshSchemeComboBox()
+{
+  mSchemeComboBox->blockSignals( true );
+  mSchemeComboBox->clear();
+  QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
+  QList<QgsColorScheme *>::const_iterator schemeIt = schemeList.constBegin();
+  for ( ; schemeIt != schemeList.constEnd(); ++schemeIt )
+  {
+    mSchemeComboBox->addItem(( *schemeIt )->schemeName() );
+  }
+  mSchemeComboBox->blockSignals( false );
+}
+
 void QgsColorDialogV2::importPalette()
 {
   QSettings s;
@@ -432,16 +445,47 @@ void QgsColorDialogV2::importPalette()
   QgsColorSchemeRegistry::instance()->addColorScheme( importedScheme );
 
   //refresh combobox
-  mSchemeComboBox->blockSignals( true );
-  mSchemeComboBox->clear();
-  QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
-  QList<QgsColorScheme *>::const_iterator schemeIt = schemeList.constBegin();
-  for ( ; schemeIt != schemeList.constEnd(); ++schemeIt )
-  {
-    mSchemeComboBox->addItem(( *schemeIt )->schemeName() );
-  }
-  mSchemeComboBox->blockSignals( false );
+  refreshSchemeComboBox();
   mSchemeComboBox->setCurrentIndex( mSchemeComboBox->count() - 1 );
+}
+
+void QgsColorDialogV2::removePalette()
+{
+  //get current scheme
+  QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
+  int prevIndex = mSchemeComboBox->currentIndex();
+  if ( prevIndex >= schemeList.length() )
+  {
+    return;
+  }
+
+  //make user scheme is a user removable scheme
+  QgsUserColorScheme* userScheme = dynamic_cast<QgsUserColorScheme*>( schemeList.at( prevIndex ) );
+  if ( !userScheme )
+  {
+    return;
+  }
+
+  if ( QMessageBox::question( this, tr( "Remove Color Palette" ),
+                              QString( tr( "Are you sure you want to remove %1?" ) ).arg( userScheme->schemeName() ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  {
+    //user cancelled
+    return;
+  }
+
+  //remove palette and associated gpl file
+  if ( !userScheme->erase() )
+  {
+    //something went wrong
+    return;
+  }
+
+  //remove scheme from registry
+  QgsColorSchemeRegistry::instance()->removeColorScheme( userScheme );
+  refreshSchemeComboBox();
+  prevIndex = qMax( qMin( prevIndex, mSchemeComboBox->count() - 1 ), 0 );
+  mSchemeComboBox->setCurrentIndex( prevIndex );
 }
 
 void QgsColorDialogV2::exportColors()
@@ -494,6 +538,8 @@ void QgsColorDialogV2::schemeIndexChanged( int index )
   mActionPasteColors->setEnabled( scheme->isEditable() );
   mAddColorToSchemeButton->setEnabled( scheme->isEditable() );
   mRemoveColorsFromSchemeButton->setEnabled( scheme->isEditable() );
+  QgsUserColorScheme* userScheme = dynamic_cast<QgsUserColorScheme*>( scheme );
+  mActionRemovePalette->setEnabled( userScheme ? true : false );
 }
 
 void QgsColorDialogV2::on_mAddCustomColorButton_clicked()

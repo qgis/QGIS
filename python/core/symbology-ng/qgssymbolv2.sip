@@ -85,6 +85,8 @@ class QgsSymbolV2
     //! @note customContext parameter added in 2.6
     void drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext* customContext = 0 );
 
+    QImage asImage( QSize size, QgsRenderContext* customContext = 0 );
+
     QImage bigSymbolPreviewImage();
 
     QString dump() const;

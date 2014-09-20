@@ -819,6 +819,14 @@
     <string>Import palette from file</string>
    </property>
   </action>
+  <action name="mActionRemovePalette">
+   <property name="text">
+    <string>Remove Palette</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove current palette</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

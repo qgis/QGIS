@@ -113,7 +113,7 @@ class PointDistance(GeoAlgorithm):
         index = vector.spatialindex(targetLayer)
 
         inIdx = inLayer.fieldNameIndex(inField)
-        outIdx = targetLayer.fieldNameIndex(inField)
+        outIdx = targetLayer.fieldNameIndex(targetField)
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
@@ -125,7 +125,7 @@ class PointDistance(GeoAlgorithm):
         total = 100.0 / float(len(features))
         for inFeat in features:
             inGeom = inFeat.geometry()
-            inID = inFeat.attributes()[inIdx]
+            inID = unicode(inFeat.attributes()[inIdx])
             featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
             distList = []
             vari = 0.0
@@ -137,17 +137,16 @@ class PointDistance(GeoAlgorithm):
                 dist = distArea.measureLine(inGeom.asPoint(),
                                             outGeom.asPoint())
                 if matType == 0:
-                    self.writer.addRecord([unicode(inID), unicode(outID),
-                                           unicode(dist)])
+                    self.writer.addRecord([inID,unicode(outID),unicode(dist)])
                 else:
                     distList.append(float(dist))
 
-            if matType == 2:
+            if matType != 0:
                 mean = sum(distList) / len(distList)
                 for i in distList:
                     vari += (i - mean) * (i - mean)
                 vari = math.sqrt(vari / len(distList))
-                self.writer.addRecord([unicode(inID), unicode(mean),
+                self.writer.addRecord([inID, unicode(mean),
                                       unicode(vari), unicode(min(distList)),
                                       unicode(max(distList))])
 
@@ -173,18 +172,16 @@ class PointDistance(GeoAlgorithm):
 
         for inFeat in features:
             inGeom = inFeat.geometry()
-            inID = inFeat.attributes()[inIdx]
+            inID = unicode(inFeat.attributes()[inIdx])
+            featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
             if first:
-                featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
                 first = False
                 data = ['ID']
-                for i in featList:
-                    request = QgsFeatureRequest().setFilterFid(i)
-                    outFeat = targetLayer.getFeatures(request).next()
-                    data.append(unicode(outFeat.attributes[outIdx]))
+                for i in range(len(featList)):
+                    data.append('DIST_{0}'.format(i+1))
                 self.writer.addRecord(data)
 
-            data = [unicode(inID)]
+            data = [inID]
             for i in featList:
                 request = QgsFeatureRequest().setFilterFid(i)
                 outFeat = targetLayer.getFeatures(request).next()

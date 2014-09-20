@@ -61,6 +61,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/attributetable
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR} # remove once raster layer is cleaned up
 )
 
