@@ -140,29 +140,78 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="3">
-      <widget class="QLineEdit" name="txtUnits"/>
-     </item>
-     <item row="2" column="2">
-      <widget class="QLabel" name="label">
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Units</string>
+        <string>Column</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QLabel" name="label_9">
+       <property name="text">
+        <string>Decimal places</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>spinDecimalPlaces</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="QSpinBox" name="spinDecimalPlaces">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimum">
+        <number>0</number>
+       </property>
+       <property name="maximum">
+        <number>10</number>
+       </property>
+       <property name="value">
+        <number>4</number>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="txtUnits">
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Label units</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
        <property name="buddy">
         <cstring>txtUnits</cstring>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="2" column="1" colspan="2">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <property name="topMargin">
         <number>0</number>
        </property>
        <item>
         <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>500</width>
@@ -185,13 +234,6 @@
         </spacer>
        </item>
       </layout>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Column</string>
-       </property>
-      </widget>
      </item>
     </layout>
    </item>
@@ -298,11 +340,12 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>txtUnits</tabstop>
+  <tabstop>spinDecimalPlaces</tabstop>
   <tabstop>btnChangeGraduatedSymbol</tabstop>
+  <tabstop>spinGraduatedClasses</tabstop>
   <tabstop>cboGraduatedColorRamp</tabstop>
   <tabstop>cbxInvertedColorRamp</tabstop>
-  <tabstop>txtUnits</tabstop>
-  <tabstop>spinGraduatedClasses</tabstop>
   <tabstop>cboGraduatedMode</tabstop>
   <tabstop>viewGraduated</tabstop>
   <tabstop>btnGraduatedClassify</tabstop>

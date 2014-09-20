@@ -135,6 +135,9 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     QString units() const { return mUnits; }
     void setUnits( QString units, bool updateRanges=true );
 
+    int decimalPlaces() const { return mDecimalPlaces; };
+    void setDecimalPlaces( int decimalPlaces, bool updateRanges=true );
+
     static QgsGraduatedSymbolRendererV2* createRenderer(
       QgsVectorLayer* vlayer,
       QString attrName,
@@ -143,7 +146,8 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
       QgsSymbolV2* symbol,
       QgsVectorColorRampV2* ramp,
       bool inverted = false,
-      QString units = "");
+      QString units = "",
+      int decimalPlaces = 4);
 
     //! create renderer from XML element
     static QgsFeatureRendererV2* create( QDomElement& element );
@@ -215,6 +219,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
   protected:
     QString mAttrName;
     QString mUnits;
+    int mDecimalPlaces;
     QgsRangeList mRanges;
     Mode mMode;
     QScopedPointer<QgsSymbolV2> mSourceSymbol;

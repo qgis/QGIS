@@ -80,6 +80,8 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     bool updateRangeLowerValue( int rangeIndex, double value );
     //! @note added in 2.5
     bool updateRangeRenderState( int rangeIndex, bool render );
+    QString defaultRangeLabel( const QgsRendererRangeV2 &range );
+
 
     void addClass( QgsSymbolV2* symbol );
     //! @note available in python bindings as addClassRange
@@ -106,6 +108,12 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     Mode mode() const;
     void setMode( Mode mode );
 
+    QString units();
+    void setUnits( QString units, bool updateRanges=true );
+
+    int decimalPlaces() const;
+    void setDecimalPlaces( int decimalPlaces, bool updateRanges=true );
+
     static QgsGraduatedSymbolRendererV2* createRenderer(
       QgsVectorLayer* vlayer,
       QString attrName,
@@ -113,7 +121,9 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
       Mode mode,
       QgsSymbolV2* symbol /Transfer/,
       QgsVectorColorRampV2* ramp /Transfer/,
-      bool inverted = false ) /Factory/;
+      bool inverted = false,
+      QString units = "",
+      int decimalPlaces = 4 ) /Factory/;
 
     //! create renderer from XML element
     static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
@@ -141,7 +151,7 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     /** Update the color ramp used. Also updates all symbols colors.
       * Doesn't alter current breaks.
       */
-    void updateColorRamp( QgsVectorColorRampV2* ramp /Transfer/ );
+    void updateColorRamp( QgsVectorColorRampV2* ramp /Transfer/, bool inverted = false );
 
     /** Update the all symbols but leave breaks and colors. */
     void updateSymbols( QgsSymbolV2* sym /Transfer/ );
@@ -177,6 +187,10 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     //! @note added in 2.5
     //! @returns a new renderer if the conversion was possible, otherwise 0.
     static QgsGraduatedSymbolRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer ) /Factory/;
+
+    //! If supported by the renderer, return classification attribute for the use in legend
+    //! @note added in 2.6
+    virtual QString legendClassificationAttribute();
 
   protected:
     QgsSymbolV2* symbolForValue( double value );

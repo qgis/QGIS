@@ -393,5 +393,11 @@ QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::convertFromRenderer( const
     return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
 
   }
+
+  QgsSymbolV2List symbols=const_cast<QgsFeatureRendererV2 *>(renderer)->symbols();
+  if( symbols.size() > 0 )
+  {
+    return new QgsSingleSymbolRendererV2(symbols.at(0)->clone());
+  }
   return 0;
 }

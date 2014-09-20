@@ -433,6 +433,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   connect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( classifyGraduated() ) );
   connect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( reapplyColorRamp() ) );
   connect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ) , this, SLOT( reapplyColorRamp() ) );
+  connect( spinDecimalPlaces, SIGNAL(valueChanged(int)), this, SLOT(decimalPlacesChanged()));
   connect( txtUnits, SIGNAL( textChanged(QString)), this, SLOT(unitsChanged(QString)));
 
   // menus for data-defined rotation/size
@@ -491,6 +492,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer()
     cbxInvertedColorRamp->setChecked( mRenderer->invertedColorRamp() );
   }
 
+  spinDecimalPlaces->setValue( mRenderer->decimalPlaces());
   txtUnits->setText( mRenderer->units() );
 }
 
@@ -541,7 +543,7 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QgsGraduatedSymbolRendererV2* r = QgsGraduatedSymbolRendererV2::createRenderer(
         mLayer, attrName, classes, mode, mGraduatedSymbol, ramp,
-        cbxInvertedColorRamp->isChecked(), txtUnits->text() );
+        cbxInvertedColorRamp->isChecked(), txtUnits->text(), spinDecimalPlaces->value() );
   QApplication::restoreOverrideCursor();
   if ( !r )
   {
@@ -708,8 +710,10 @@ void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
   QgsLUDialog dialog( this );
 
   const QgsRendererRangeV2& range = mRenderer->ranges()[rangeIdx];
-  dialog.setLowerValue( QString::number( range.lowerValue(), 'f', 4 ) );
-  dialog.setUpperValue( QString::number( range.upperValue(), 'f', 4 ) );
+  // Add arbitrary 3 to number of decimal places to retain a bit extra accuracy in
+  // case we want to??
+  dialog.setLowerValue( QString::number( range.lowerValue(), 'f', mRenderer->decimalPlaces()+3 ) );
+  dialog.setUpperValue( QString::number( range.upperValue(), 'f', mRenderer->decimalPlaces()+3 ) );
 
   if ( dialog.exec() == QDialog::Accepted )
   {
@@ -787,6 +791,12 @@ void QgsGraduatedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName 
 void QgsGraduatedSymbolRendererV2Widget::scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod )
 {
   mRenderer->setScaleMethod( scaleMethod );
+}
+
+void QgsGraduatedSymbolRendererV2Widget::decimalPlacesChanged()
+{
+  mRenderer->setDecimalPlaces( spinDecimalPlaces->value() );
+  mModel->updateLabels();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::unitsChanged(QString units)

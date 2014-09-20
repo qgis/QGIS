@@ -410,16 +410,20 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
       cboCategorizedColorRamp->setCurrentIndex( index );
   }
 
+  mCategorizedSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
+
   mModel = new QgsCategorizedSymbolRendererV2Model( this );
   mModel->setRenderer( mRenderer );
+
+  // update GUI from renderer
+  updateUiFromRenderer();
+
   viewCategories->setModel( mModel );
   viewCategories->resizeColumnToContents( 0 );
   viewCategories->resizeColumnToContents( 1 );
   viewCategories->resizeColumnToContents( 2 );
 
   viewCategories->setStyle( new QgsCategorizedSymbolRendererV2ViewStyle( viewCategories->style() ) );
-
-  mCategorizedSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
 
   connect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
 
@@ -435,9 +439,6 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   connect( btnAddCategory, SIGNAL( clicked() ), this, SLOT( addCategory() ) );
   connect( cbxInvertedColorRamp, SIGNAL( toggled(bool)), this, SLOT( applyColorRamp()));
   connect( cboCategorizedColorRamp, SIGNAL(currentIndexChanged(int)), this, SLOT( applyColorRamp()));
-
-  // update GUI from renderer
-  updateUiFromRenderer();
 
   // menus for data-defined rotation/size
   QMenu* advMenu = new QMenu;
@@ -460,16 +461,17 @@ QgsCategorizedSymbolRendererV2Widget::~QgsCategorizedSymbolRendererV2Widget()
 
 void QgsCategorizedSymbolRendererV2Widget::updateUiFromRenderer()
 {
+  // Note: This assumes that the signals for UI element changes have not
+  // yet been connected, so that the updates to color ramp, symbol, etc
+  // don't override existing customisations.
+
   updateCategorizedSymbolIcon();
 
   //mModel->setRenderer ( mRenderer ); // necessary?
 
   // set column
-  disconnect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( categoryColumnChanged( QString ) ) );
   QString attrName = mRenderer->classAttribute();
   mExpressionWidget->setField( attrName );
-  connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( categoryColumnChanged( QString ) ) );
-
 
   // set source symbol
   if ( mRenderer->sourceSymbol() )
@@ -621,29 +623,19 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
   }
 }
 
-void QgsCategorizedSymbolRendererV2Widget::applyColorRampToCategories(const QgsCategoryList& cats )
+QgsVectorColorRampV2* QgsCategorizedSymbolRendererV2Widget::getColorRamp()
 {
-
   QgsVectorColorRampV2* ramp = cboCategorizedColorRamp->currentColorRamp();
-  bool invert = cbxInvertedColorRamp->isChecked();
-
   if ( ramp == NULL )
   {
     if ( cboCategorizedColorRamp->count() == 0 )
       QMessageBox::critical( this, tr( "Error" ), tr( "There are no available color ramps. You can add them in Style Manager." ) );
     else
       QMessageBox::critical( this, tr( "Error" ), tr( "The selected color ramp is not available." ) );
-    return;
   }
-
-  int num=cats.length()-1;
-  for( int i=0; i <= num; i++ )
-  {
-    double x = ( invert ? num - i : i )  / ( double ) num;
-    cats.at(i).symbol()->setColor(ramp->color( x ) );
-  }
-
+  return ramp;
 }
+
 
 void QgsCategorizedSymbolRendererV2Widget::addCategories()
 {
@@ -711,9 +703,12 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
     deleteExisting = ( res == QMessageBox::Yes );
   }
 
+  // First element to apply coloring to
+  bool keepExistingColors=false;
   if ( !deleteExisting )
   {
     QgsCategoryList prevCats = mRenderer->categories();
+    keepExistingColors=prevCats.size() > 0;
     for ( int i = 0; i < cats.size(); ++i )
     {
       bool contains = false;
@@ -752,13 +747,12 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   // recreate renderer
   QgsCategorizedSymbolRendererV2 *r = new QgsCategorizedSymbolRendererV2( attrName, cats );
   r->setSourceSymbol( mCategorizedSymbol->clone() );
-  QgsVectorColorRampV2* ramp = cboCategorizedColorRamp->currentColorRamp();
-  if( ramp ) r->setSourceColorRamp( ramp->clone() );
-  r->setInvertedColorRamp( cbxInvertedColorRamp->isChecked() );
   r->setScaleMethod( mRenderer->scaleMethod() );
   r->setSizeScaleField( mRenderer->sizeScaleField() );
   r->setRotationField( mRenderer->rotationField() );
   r->setInvertedColorRamp( cbxInvertedColorRamp->isChecked() );
+  QgsVectorColorRampV2* ramp = getColorRamp();
+  if( ramp ) r->setSourceColorRamp(ramp->clone());
 
   if ( mModel )
   {
@@ -766,16 +760,17 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   }
   delete mRenderer;
   mRenderer = r;
+  if( ! keepExistingColors && ramp ) applyColorRamp();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::applyColorRamp()
 {
-  const QgsCategoryList& categories=mRenderer->categories();
-  if( categories.length() > 0 )
+  QgsVectorColorRampV2* ramp = getColorRamp();
+  if( ramp )
   {
-    applyColorRampToCategories( categories );
-    mModel->updateSymbology();
+    mRenderer->updateColorRamp(ramp->clone(),cbxInvertedColorRamp->isChecked());
   }
+  mModel->updateSymbology();
 }
 
 int QgsCategorizedSymbolRendererV2Widget::currentCategoryRow()
