@@ -1,33 +1,3 @@
-/***************************************************************************
-                         qgscomposermapoverview.h
-                         --------------------
-    begin                : July 2014
-    copyright            : (C) 2014 by Nyall Dawson
-    email                : nyall dot dawson at gmail dot com
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
-#ifndef QGSCOMPOSERMAPOVERVIEW_H
-#define QGSCOMPOSERMAPOVERVIEW_H
-
-#include "qgscomposermapitem.h"
-#include <QString>
-#include <QObject>
-#include <QPainter>
-
-class QDomDocument;
-class QDomElement;
-class QgsFillSymbolV2;
-class QgsComposerMapOverview;
-
 /**\ingroup MapComposer
  * \class QgsComposerMapOverviewStack
  * \brief A collection of overviews which are drawn above the map content in a
@@ -36,8 +6,11 @@ class QgsComposerMapOverview;
  * \note added in QGIS 2.5
  * \see QgsComposerMapOverview
  */
-class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
+class QgsComposerMapOverviewStack : QgsComposerMapItemStack
 {
+%TypeHeaderCode
+#include <qgscomposermapoverview.h>
+%End
   public:
 
     /**Constructor for QgsComposerMapOverviewStack.
@@ -55,7 +28,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * @see removeOverview
     */
-    void addOverview( QgsComposerMapOverview* overview );
+    void addOverview( QgsComposerMapOverview* overview /Transfer/ );
 
     /**Removes an overview from the stack and deletes the corresponding QgsComposerMapOverview
      * @param overviewId id for the QgsComposerMapOverview to remove
@@ -125,6 +98,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
 
 };
 
+
 /**\ingroup MapComposer
  * \class QgsComposerMapOverview
  * \brief An individual overview which is drawn above the map content in a
@@ -132,9 +106,11 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
  * \note added in QGIS 2.5
  * \see QgsComposerMapOverviewStack
  */
-class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
+class QgsComposerMapOverview : QgsComposerMapItem
 {
-    Q_OBJECT
+%TypeHeaderCode
+#include <qgscomposermapoverview.h>
+%End
 
   public:
 
@@ -176,7 +152,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
     /**Returns id of source map.
      * @returns source map id, or -1 if no source map set
     */
-    int frameMapId() const { return mFrameMapId; }
+    int frameMapId() const;
 
     /**Sets the fill symbol used for drawing the overview extent.
      * @param symbol fill symbol for overview
@@ -188,19 +164,13 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
      * @returns fill symbol for overview
      * @see setFrameSymbol
     */
-    QgsFillSymbolV2* frameSymbol() { return mFrameSymbol; }
-
-    /**Gets the fill symbol used for drawing the overview extent.
-     * @returns fill symbol for overview
-     * @see setFrameSymbol
-    */
-    const QgsFillSymbolV2* frameSymbol() const { return mFrameSymbol; }
+    QgsFillSymbolV2* frameSymbol();
 
     /**Retrieves the blending mode used for drawing the overview.
      * @returns blending mode for overview
      * @see setBlendMode
     */
-    QPainter::CompositionMode blendMode() const { return mBlendMode; }
+    QPainter::CompositionMode blendMode() const;
 
     /**Sets the blending mode used for drawing the overview.
      * @param mode blending mode for overview
@@ -213,7 +183,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
      * @returns true if overview frame is inverted
      * @see setInverted
     */
-    bool inverted() const { return mInverted; }
+    bool inverted() const;
 
     /**Sets whether the overview frame is inverted, ie, whether the shaded area is drawn outside
      * the extent of the overview map.
@@ -226,7 +196,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
      * @returns true if map will be centered on overview
      * @see setCentered
     */
-    bool centered() const { return mCentered; }
+    bool centered() const;
 
     /**Sets whether the extent of the map is forced to center on the overview
      * @param centered set to true if map will be centered on overview
@@ -244,29 +214,5 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
     /**Handles recentering of the map and redrawing of the map's overview
     */
     void overviewExtentChanged();
-
-  private:
-
-    QgsComposerMapOverview(); //forbidden
-
-    /**Id of map which displays its extent rectangle into this composer map (overview map functionality). -1 if not present*/
-    int mFrameMapId;
-
-    /**Drawing style for overview farme*/
-    QgsFillSymbolV2* mFrameSymbol;
-
-    /**Blend mode for overview*/
-    QPainter::CompositionMode mBlendMode;
-
-    /**True if overview is inverted*/
-    bool mInverted;
-
-    /**True if map is centered on overview*/
-    bool mCentered;
-
-    /**Creates default overview symbol*/
-    void createDefaultFrameSymbol();
-
+  
 };
-
-#endif // QGSCOMPOSERMAPOVERVIEW_H

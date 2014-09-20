@@ -3315,20 +3315,9 @@ bool QgsComposer::containsAdvancedEffects() const
     }
     // If item is a composer map, check if it contains any advanced effects
     currentMap = dynamic_cast<QgsComposerMap *>( currentItem );
-    if ( currentMap )
+    if ( currentMap && currentMap->containsAdvancedEffects() )
     {
-      if ( currentMap->containsAdvancedEffects() )
-      {
-        return true;
-      }
-      if ( currentMap->overviewFrameMapId() != -1 )
-      {
-        // map contains an overview, check its blend mode
-        if ( currentMap->overviewBlendMode() != QPainter::CompositionMode_SourceOver )
-        {
-          return true;
-        }
-      }
+      return true;
     }
   }
   return false;

@@ -2065,10 +2065,10 @@ void QgsComposerMapWidget::on_mAddOverviewPushButton_clicked()
     return;
   }
 
-  QString itemName = tr( "Overview %1" ).arg( mComposerMap->overviewCount() + 1 );
+  QString itemName = tr( "Overview %1" ).arg( mComposerMap->overviews()->size() + 1 );
   QgsComposerMapOverview* overview = new QgsComposerMapOverview( itemName, mComposerMap );
   mComposerMap->beginCommand( tr( "Add map overview" ) );
-  mComposerMap->addOverview( overview );
+  mComposerMap->overviews()->addOverview( overview );
   mComposerMap->endCommand();
   mComposerMap->update();
 
@@ -2084,7 +2084,7 @@ void QgsComposerMapWidget::on_mRemoveOverviewPushButton_clicked()
     return;
   }
 
-  mComposerMap->removeOverview( item->text() );
+  mComposerMap->overviews()->removeOverview( item->data( Qt::UserRole ).toString() );
   QListWidgetItem* delItem = mOverviewListWidget->takeItem( mOverviewListWidget->row( item ) );
   delete delItem;
   mComposerMap->update();
@@ -2106,7 +2106,8 @@ void QgsComposerMapWidget::on_mOverviewUpButton_clicked()
   mOverviewListWidget->takeItem( row );
   mOverviewListWidget->insertItem( row - 1, item );
   mOverviewListWidget->setCurrentItem( item );
-  mComposerMap->moveOverviewUp( item->text() );
+  mComposerMap->overviews()->moveOverviewUp( item->data( Qt::UserRole ).toString() );
+  mComposerMap->update();
 }
 
 void QgsComposerMapWidget::on_mOverviewDownButton_clicked()
@@ -2125,7 +2126,8 @@ void QgsComposerMapWidget::on_mOverviewDownButton_clicked()
   mOverviewListWidget->takeItem( row );
   mOverviewListWidget->insertItem( row + 1, item );
   mOverviewListWidget->setCurrentItem( item );
-  mComposerMap->moveOverviewDown( item->text() );
+  mComposerMap->overviews()->moveOverviewDown( item->data( Qt::UserRole ).toString() );
+  mComposerMap->update();
 }
 
 QgsComposerMapOverview* QgsComposerMapWidget::currentOverview()
@@ -2141,7 +2143,7 @@ QgsComposerMapOverview* QgsComposerMapWidget::currentOverview()
     return 0;
   }
 
-  return mComposerMap->mapOverview( item->data( Qt::UserRole ).toString() );
+  return mComposerMap->overviews()->overview( item->data( Qt::UserRole ).toString() );
 }
 
 void QgsComposerMapWidget::on_mOverviewListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous )
@@ -2154,7 +2156,7 @@ void QgsComposerMapWidget::on_mOverviewListWidget_currentItemChanged( QListWidge
   }
 
   mOverviewCheckBox->setEnabled( true );
-  setOverviewItems( mComposerMap->constMapOverview( current->data( Qt::UserRole ).toString() ) );
+  setOverviewItems( mComposerMap->overviews()->constOverview( current->data( Qt::UserRole ).toString() ) );
 }
 
 void QgsComposerMapWidget::on_mOverviewListWidget_itemChanged( QListWidgetItem* item )
@@ -2164,7 +2166,7 @@ void QgsComposerMapWidget::on_mOverviewListWidget_itemChanged( QListWidgetItem* 
     return;
   }
 
-  QgsComposerMapOverview* overview = mComposerMap->mapOverview( item->data( Qt::UserRole ).toString() );
+  QgsComposerMapOverview* overview = mComposerMap->overviews()->overview( item->data( Qt::UserRole ).toString() );
   if ( !overview )
   {
     return;
@@ -2266,7 +2268,7 @@ void QgsComposerMapWidget::loadOverviewEntries()
   }
 
   //load all composer overviews into list widget
-  QList< QgsComposerMapOverview* > overviews = mComposerMap->mapOverviews();
+  QList< QgsComposerMapOverview* > overviews = mComposerMap->overviews()->asList();
   QList< QgsComposerMapOverview* >::const_iterator overviewIt = overviews.constBegin();
   for ( ; overviewIt != overviews.constEnd(); ++overviewIt )
   {

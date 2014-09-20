@@ -134,6 +134,8 @@
 %Include composer/qgscomposerlegenditem.sip
 %Include composer/qgscomposermap.sip
 %Include composer/qgscomposermapgrid.sip
+%Include composer/qgscomposermapitem.sip
+%Include composer/qgscomposermapoverview.sip
 %Include composer/qgscomposermultiframe.sip
 %Include composer/qgscomposermultiframecommand.sip
 %Include composer/qgscomposerpicture.sip

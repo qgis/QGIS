@@ -178,6 +178,7 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposerlegenditem.cpp
   composer/qgscomposerpicture.cpp
   composer/qgscomposermap.cpp
+  composer/qgscomposermapitem.cpp
   composer/qgscomposermapgrid.cpp
   composer/qgscomposermapoverview.cpp
   composer/qgscomposertable.cpp
@@ -378,6 +379,8 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgsaddremoveitemcommand.h
   composer/qgscomposerlegend.h
   composer/qgscomposermap.h
+  composer/qgscomposermapitem.h
+  composer/qgscomposermapgrid.h
   composer/qgscomposermapoverview.h
   composer/qgscomposerpicture.h
   composer/qgscomposerscalebar.h

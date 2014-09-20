@@ -6,7 +6,7 @@
  * \note added in QGIS 2.5
  * \see QgsComposerMapGrid
  */
-class QgsComposerMapGridStack
+class QgsComposerMapGridStack : QgsComposerMapItemStack
 {
 %TypeHeaderCode
 #include <qgscomposermapgrid.h>
@@ -47,11 +47,11 @@ class QgsComposerMapGridStack
     */
     void moveGridUp( const QString& gridId );
 
-    /**Moves a grid up the stack, causing it to be rendered above other grids
-     * @param gridId id for the QgsComposerMapGrid to move up
+    /**Moves a grid down the stack, causing it to be rendered below other grids
+     * @param gridId id for the QgsComposerMapGrid to move down
      * @note after moving a grid within the stack, update() should be
      * called for the QgsComposerMap to redraw the map with the new grid stack order
-     * @see moveGridDown
+     * @see moveGridUp
     */
     void moveGridDown( const QString& gridId );
 
@@ -89,20 +89,6 @@ class QgsComposerMapGridStack
     */
     QList< QgsComposerMapGrid* > asList() const;
 
-
-    /**Returns the number of grids in the stack
-     * @returns number of grids in the stack
-    */
-    int size() const;
-
-    /**Stores the state of the grid stack in a DOM node
-     * @param elem is DOM element corresponding to a 'ComposerMap' tag
-     * @param doc DOM document
-     * @returns true if write was successful
-     * @see readXML
-     */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
-
     /**Sets the grid stack's state from a DOM document
      * @param elem is DOM node corresponding to 'a ComposerMap' tag
      * @param doc DOM document
@@ -111,22 +97,11 @@ class QgsComposerMapGridStack
      */
     bool readXML( const QDomElement& elem, const QDomDocument& doc );
 
-    /**Draws the grids from the stack on a specified painter
-     * @param painter destination QPainter
-     */
-    void drawGrids( QPainter* painter );
-
     /**Calculates the maximum distance grids within the stack extend
      * beyond the QgsComposerMap's item rect
      * @returns maximum grid extension
      */
     double maxGridExtension() const;
-
-    /**Returns whether any grids within the stack contain advanced effects,
-     * such as blending modes
-     * @returns true if grid stack contains advanced effects
-     */
-    bool containsAdvancedEffects() const;
 
 };
 
@@ -137,7 +112,7 @@ class QgsComposerMapGridStack
  * \note added in QGIS 2.5
  * \see QgsComposerMapGridStack
  */
-class QgsComposerMapGrid
+class QgsComposerMapGrid : QgsComposerMapItem
 {
 %TypeHeaderCode
 #include <qgscomposermapgrid.h>
@@ -248,7 +223,7 @@ class QgsComposerMapGrid
     /**Draws a grid
      * @param painter destination QPainter
      */
-    void drawGrid( QPainter* painter ) const;
+    void draw( QPainter* painter ) const;
 
     /**Stores grid state in DOM element
      * @param elem is DOM element corresponding to a 'ComposerMap' tag
@@ -263,48 +238,6 @@ class QgsComposerMapGrid
      * @see writeXML
     */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
-
-    /**Sets composer map for the grid
-     * @param map composer map
-     * @see composerMap
-    */
-    void setComposerMap( QgsComposerMap* map );
-
-    /**Get composer map for the grid
-     * @returns composer map
-     * @see setComposerMap
-    */
-    const QgsComposerMap* composerMap() const;
-
-    /**Sets the friendly display name for the grid
-     * @param name display name
-     * @see name
-    */
-    void setName( const QString& name );
-
-    /**Get friendly display name for the grid
-     * @returns display name
-     * @see setName
-    */
-    QString name() const;
-
-    /**Get the unique id for the grid
-     * @returns unique id
-     * @see name
-    */
-    QString id() const;
-
-    /**Controls whether the grid will be drawn
-     * @param enabled set to true to enable drawing of the grid
-     * @see enabled
-    */
-    void setEnabled( const bool enabled );
-
-    /**Returns whether the grid will be drawn
-     * @returns true if grid will be drawn on the map
-     * @see setEnabled
-    */
-    bool enabled() const;
 
     /**Sets the CRS for the grid.
      * @param crs coordinate reference system for grid

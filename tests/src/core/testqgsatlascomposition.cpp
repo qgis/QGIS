@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include "qgscompositionchecker.h"
 #include "qgscomposermap.h"
+#include "qgscomposermapoverview.h"
 #include "qgsatlascomposition.h"
 #include "qgscomposerlabel.h"
 #include "qgsmaplayerregistry.h"
@@ -132,7 +133,7 @@ void TestQgsAtlasComposition::initTestCase()
   // an overview
   mOverview = new QgsComposerMap( mComposition, 180, 20, 50, 50 );
   mOverview->setFrameEnabled( true );
-  mOverview->setOverviewFrameMap( mAtlasMap->id() );
+  mOverview->overview()->setFrameMap( mAtlasMap->id() );
   mComposition->addComposerMap( mOverview );
   mOverview->setNewExtent( QgsRectangle( 49670.718, 6415139.086, 699672.519, 7065140.887 ) );
 
@@ -140,7 +141,7 @@ void TestQgsAtlasComposition::initTestCase()
   QgsStringMap props2;
   props2.insert( "color", "127,0,0,127" );
   QgsFillSymbolV2* fillSymbol2 = QgsFillSymbolV2::createSimple( props2 );
-  mOverview->setOverviewFrameMapSymbol( fillSymbol2 );
+  mOverview->overview()->setFrameSymbol( fillSymbol2 );
 
   // header label
   mLabel1 = new QgsComposerLabel( mComposition );
