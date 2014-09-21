@@ -150,6 +150,9 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
  */
 class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 {
+
+    Q_OBJECT
+
   public:
 
     /** Unit for grid values
