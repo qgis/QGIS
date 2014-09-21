@@ -187,7 +187,7 @@ class CORE_EXPORT QgsComposerMapItemStack
     void addItem( QgsComposerMapItem* item );
 
     /**Removes an item from the stack and deletes the corresponding QgsComposerMapItem
-     * @param QgsComposerMapItem id for the QgsComposerMapItem to remove
+     * @param itemId id for the QgsComposerMapItem to remove
      * @note after removing an item from the stack, update()
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * @see addItem

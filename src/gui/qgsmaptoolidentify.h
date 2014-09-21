@@ -110,7 +110,6 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     @param y y coordinates of mouseEvent
     @param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
     @param mode Identification mode. Can use Qgis default settings or a defined mode. Default mode is DefaultQgsSetting.
-    @param selectedAction will set the pointer of the action clicked in the menu (if corresponding mode is used). This is useful for custom actions.
     @return a list of IdentifyResult*/
     QList<IdentifyResult> identify( int x, int y, QList<QgsMapLayer*> layerList = QList<QgsMapLayer*>(), IdentifyMode mode = DefaultQgsSetting );
 
@@ -121,7 +120,6 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     @param y y coordinates of mouseEvent
     @param mode Identification mode. Can use Qgis default settings or a defined mode.
     @param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
-    @param selectedAction will set the pointer of the action clicked in the menu (if corresponding mode is used). This is useful for custom actions.
     @return a list of IdentifyResult*/
     QList<IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
@@ -146,7 +144,6 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     @param mode Identification mode. Can use Qgis default settings or a defined mode.
     @param layerList Performs the identification within the given list of layers.
     @param layerType Only performs identification in a certain type of layers (raster, vector).
-    @param selectedAction will set the pointer of the action clicked in the menu (if corresponding mode is used). This is useful for custom actions.
     @return a list of IdentifyResult*/
     QList<IdentifyResult> identify( int x, int y, IdentifyMode mode,  QList<QgsMapLayer*> layerList, LayerType layerType = AllLayers );
 

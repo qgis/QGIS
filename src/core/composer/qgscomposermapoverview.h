@@ -203,7 +203,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
     /**Sets the blending mode used for drawing the overview.
-     * @param mode blending mode for overview
+     * @param blendMode blending mode for overview
      * @see blendMode
     */
     void setBlendMode( const QPainter::CompositionMode blendMode );
