@@ -309,7 +309,11 @@ void QgsAttributeForm::synchronizeEnabledState()
 void QgsAttributeForm::init()
 {
   QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+
+  // Cleanup of any previously shown widget, we start from scratch
   QWidget* formWidget = 0;
+  delete mButtonBox;
+  mButtonBox = 0;
 
   qDeleteAll( mWidgets );
   mWidgets.clear();
