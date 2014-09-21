@@ -297,12 +297,13 @@ void TestQgsComposerTableV2::attributeTableRender()
 {
   mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
   QgsCompositionChecker checker( "composerattributetable_render", mComposition );
-  bool result = checker.testComposition( mReport );
+  bool result = checker.testComposition( mReport, 0 );
   QVERIFY( result );
 }
 
 void TestQgsComposerTableV2::attributeTableExtend()
 {
+  //test that adding and removing frames automatically does not result in a crash
   mComposerAttributeTable->removeFrame( 1 );
 
   //force auto creation of some new frames
@@ -310,11 +311,8 @@ void TestQgsComposerTableV2::attributeTableExtend()
 
   mComposition->setSelectedItem( mComposerAttributeTable->frame( 1 ) );
 
-  QgsCompositionChecker checker( "composerattributetable_render", mComposition );
-
   //now auto remove extra created frames
   mComposerAttributeTable->setMaximumNumberOfFeatures( 1 );
-  bool result = checker.testComposition( mReport, 1 );
 }
 
 void TestQgsComposerTableV2::attributeTableRepeat()
