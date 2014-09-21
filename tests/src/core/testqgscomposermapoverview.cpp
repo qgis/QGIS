@@ -111,7 +111,7 @@ void TestQgsComposerMapOverview::overviewMap()
   overviewMap->overview()->setFrameMap( mComposerMap->id() );
   QgsCompositionChecker checker( "composermap_overview", mComposition );
 
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposition->removeComposerItem( overviewMap );
   QVERIFY( testResult );
 }
@@ -127,7 +127,7 @@ void TestQgsComposerMapOverview::overviewMapRotated()
   overviewMap->overview()->setFrameMap( mComposerMap->id() );
   QgsCompositionChecker checker( "composermap_overview_rotated", mComposition );
 
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposition->removeComposerItem( overviewMap );
   mComposerMap->setMapRotation( 0 );
   QVERIFY( testResult );
@@ -144,7 +144,7 @@ void TestQgsComposerMapOverview::overviewMapRotated2()
   overviewMap->overview()->setFrameMap( mComposerMap->id() );
   QgsCompositionChecker checker( "composermap_overview_rotated2", mComposition );
 
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposition->removeComposerItem( overviewMap );
   QVERIFY( testResult );
 }
@@ -161,7 +161,7 @@ void TestQgsComposerMapOverview::overviewMapBlending()
 
   QgsCompositionChecker checker( "composermap_overview_blending", mComposition );
 
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposition->removeComposerItem( overviewMapBlend );
   QVERIFY( testResult );
 }
@@ -178,7 +178,7 @@ void TestQgsComposerMapOverview::overviewMapInvert()
 
   QgsCompositionChecker checker( "composermap_overview_invert", mComposition );
 
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposition->removeComposerItem( overviewMapInvert );
   QVERIFY( testResult );
 }
@@ -195,7 +195,7 @@ void TestQgsComposerMapOverview::overviewMapCenter()
 
   QgsCompositionChecker checker( "composermap_overview_center", mComposition );
 
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposition->removeComposerItem( overviewMapCenter );
   QVERIFY( testResult );
 }

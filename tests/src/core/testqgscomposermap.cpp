@@ -102,7 +102,7 @@ void TestQgsComposerMap::render()
   mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
   QgsCompositionChecker checker( "composermap_render", mComposition );
 
-  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
 void TestQgsComposerMap::uniqueId()
