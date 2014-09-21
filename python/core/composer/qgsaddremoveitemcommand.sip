@@ -13,7 +13,7 @@ class QgsAddRemoveItemCommand: QObject, QUndoCommand
       Removed
     };
 
-    QgsAddRemoveItemCommand( State s, QgsComposerItem* item, QgsComposition* c, const QString& text, QUndoCommand* parent = 0 );
+    QgsAddRemoveItemCommand( State s, QgsComposerItem* item, QgsComposition* c, const QString& text, QUndoCommand* parent /TransferThis/ = 0 );
     ~QgsAddRemoveItemCommand();
 
     void redo();

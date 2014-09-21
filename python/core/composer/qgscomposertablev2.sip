@@ -46,7 +46,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
       NoHeaders /*!< no headers shown for table */
     };    
 
-    QgsComposerTableV2( QgsComposition* composition, bool createUndoCommands );
+    QgsComposerTableV2( QgsComposition* composition /TransferThis/, bool createUndoCommands );
     QgsComposerTableV2();
 
     virtual ~QgsComposerTableV2();

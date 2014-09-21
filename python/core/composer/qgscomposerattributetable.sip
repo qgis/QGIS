@@ -82,7 +82,7 @@ class QgsComposerAttributeTable : QgsComposerTable
      * @see composerMap
      * @see setDisplayOnlyVisibleFeatures
      */
-    void setComposerMap( const QgsComposerMap* map /TransferThis/ );
+    void setComposerMap( const QgsComposerMap* map );
 
     /**Returns the composer map whose extents are controlling the features shown in the
      * table. The extents of the map are only used if displayOnlyVisibleFeatures() is true.

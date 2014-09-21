@@ -33,7 +33,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
 
   public:
 
-    QgsComposerAttributeTableV2( QgsComposition* composition, bool createUndoCommands );
+    QgsComposerAttributeTableV2( QgsComposition* composition /TransferThis/, bool createUndoCommands );
     ~QgsComposerAttributeTableV2();
 
     /**Writes properties specific to attribute tables
@@ -50,7 +50,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      */
     virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
 
-    virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true );
+    virtual void addFrame( QgsComposerFrame* frame /Transfer/, bool recalcFrameSizes = true );
 
     /**Sets the vector layer from which to display feature attributes
      * @param layer Vector layer for attribute table

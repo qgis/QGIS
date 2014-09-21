@@ -158,7 +158,7 @@ class QgsComposerMapOverview : QgsComposerMapItem
      * @param symbol fill symbol for overview
      * @see frameSymbol
     */
-    void setFrameSymbol( QgsFillSymbolV2* symbol );
+    void setFrameSymbol( QgsFillSymbolV2* symbol /Transfer/ );
 
     /**Gets the fill symbol used for drawing the overview extent.
      * @returns fill symbol for overview

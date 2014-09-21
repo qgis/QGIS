@@ -588,7 +588,7 @@ class QgsComposerMap : QgsComposerItem
     /**
      * @deprecated use overview()->setFrameSymbol() or overviews() instead
     */
-    void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol ) /Deprecated/;
+    void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol /Transfer/ ) /Deprecated/;
 
     /**
      * @deprecated use overview()->frameSymbol() or overviews() instead
