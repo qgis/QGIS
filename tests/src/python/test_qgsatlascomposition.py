@@ -78,7 +78,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         # set the fill symbol of the overview map
         props2 = { "color": "127,0,0,127" }
         fillSymbol2 = QgsFillSymbolV2.createSimple( props2 )
-        mOverview.setOverviewFrameMapSymbol( fillSymbol2 );
+        mOverview.setOverviewFrameMapSymbol( fillSymbol2 )
 
         # header label
         self.mLabel1 = QgsComposerLabel( self.mComposition )
@@ -158,11 +158,12 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mAtlas.setFixedScale( True )
         self.mAtlas.setMargin( 0 )
         self.mAtlas.setComposerMap( None )
+        self.mAtlasMap.setAtlasDriven( False )
 
     def fixedscale_render_test( self ):
+        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) )
         self.mAtlasMap.setAtlasDriven( True )
         self.mAtlasMap.setAtlasScalingMode( QgsComposerMap.Fixed )
-        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
 
         self.mAtlas.beginRender()
 
@@ -178,7 +179,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
 
     def predefinedscales_render_test( self ):
         self.mAtlasMap.setAtlasDriven( True )
-        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) )
         self.mAtlasMap.setAtlasScalingMode( QgsComposerMap.Predefined )
 
         scales = [1800000, 5000000]
@@ -199,7 +200,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mAtlas.endRender()
 
     def hidden_render_test( self ):
-        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) )
         self.mAtlasMap.setAtlasScalingMode( QgsComposerMap.Fixed )
         self.mAtlas.setHideCoverage( True )
 
@@ -216,7 +217,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mAtlas.endRender()
 
     def sorting_render_test( self ):
-        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) )
         self.mAtlasMap.setAtlasScalingMode( QgsComposerMap.Fixed )
         self.mAtlas.setHideCoverage( False )
 
@@ -237,7 +238,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mAtlas.endRender()
 
     def filtering_render_test( self ):
-        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) )
         self.mAtlasMap.setAtlasScalingMode( QgsComposerMap.Fixed )
         self.mAtlas.setHideCoverage( False )
 
