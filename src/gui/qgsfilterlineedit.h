@@ -35,22 +35,54 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
     void setNullValue( QString nullValue ) { mNullValue = nullValue; }
 
-    QString nullValue() const {return mNullValue;}
+    QString nullValue() const { return mNullValue; }
+
+    /**
+     * Sets the current text with NULL support
+     *
+     * @param value The text to set. If a Null string is provided, the text will match the nullValue.
+     */
+    void setValue( QString value ) { setText( value.isNull() ? mNullValue : value ); }
+
+    /**
+     * Returns the text of this edit with NULL support
+     *
+     * @return Current text (Null string if it matches the nullValue property )
+     */
+    QString value() { return isNull() ? QString::null : text(); }
+
+    /**
+     * Determine if the current text represents Null.
+     *
+     * @return True if the value is Null.
+     */
+    inline bool isNull() { return text() == mNullValue; }
 
   signals:
     void cleared();
 
+    /**
+     * Same as textChanged(const QString& ) but with support for Null values.
+     *
+     * @param value The current text or Null string if it matches the nullValue property.
+     */
+    void valueChanged( const QString& value );
+
   protected:
-    void resizeEvent( QResizeEvent * );
-    void changeEvent( QEvent * );
+    void mousePressEvent( QMouseEvent* e );
+    void focusInEvent( QFocusEvent* e );
+    void resizeEvent( QResizeEvent* e );
+    void changeEvent( QEvent* e );
 
   private slots:
     void clear();
-    void toggleClearButton( const QString &text );
+    void onTextChanged( const QString &text );
 
   private:
     QString mNullValue;
     QToolButton *btnClear;
+    QString mStyleSheet;
+    bool mFocusInEvent;
 };
 
 #endif // QGSFILTERLINEEDIT_H
