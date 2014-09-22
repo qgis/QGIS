@@ -70,6 +70,8 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
     void on_mResizeModeComboBox_currentIndexChanged( int index );
     void on_mSourceComboBox_currentIndexChanged( int index );
     void on_mRelationsComboBox_currentIndexChanged( int index );
+    void on_mEmptyModeComboBox_currentIndexChanged( int index );
+    void on_mEmptyMessageLineEdit_editingFinished();
 
     /**Inserts a new maximum number of features into the spin box (without the spinbox emitting a signal)*/
     void setMaximumNumberOfFeatures( int n );

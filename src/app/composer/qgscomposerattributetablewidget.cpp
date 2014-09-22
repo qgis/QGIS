@@ -47,6 +47,11 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
   mResizeModeComboBox->addItem( tr( "Extend to next page" ), QgsComposerMultiFrame::ExtendToNextPage );
   mResizeModeComboBox->addItem( tr( "Repeat until finished" ), QgsComposerMultiFrame::RepeatUntilFinished );
 
+  mEmptyModeComboBox->addItem( tr( "Draw headers only" ), QgsComposerTableV2::HeadersOnly );
+  mEmptyModeComboBox->addItem( tr( "Hide entire table" ), QgsComposerTableV2::HideTable );
+  mEmptyModeComboBox->addItem( tr( "Draw empty cells" ), QgsComposerTableV2::DrawEmptyCells );
+  mEmptyModeComboBox->addItem( tr( "Show set message" ), QgsComposerTableV2::ShowMessage );
+
   bool atlasEnabled = atlasComposition() && atlasComposition()->enabled();
   mSourceComboBox->addItem( tr( "Layer features" ), QgsComposerAttributeTableV2::LayerAttributes );
   toggleAtlasSpecificControls( atlasEnabled );
@@ -494,6 +499,11 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
   mHeaderHAlignmentComboBox->setCurrentIndex(( int )mComposerTable->headerHAlignment() );
   mHeaderModeComboBox->setCurrentIndex(( int )mComposerTable->headerMode() );
 
+  mEmptyModeComboBox->setCurrentIndex( mEmptyModeComboBox->findData( mComposerTable->emptyTableBehaviour() ) );
+  mEmptyMessageLineEdit->setText( mComposerTable->emptyTableMessage() );
+  mEmptyMessageLineEdit->setEnabled( mComposerTable->emptyTableBehaviour() == QgsComposerTableV2::ShowMessage );
+  mEmptyMessageLabel->setEnabled( mComposerTable->emptyTableBehaviour() == QgsComposerTableV2::ShowMessage );
+
   mResizeModeComboBox->setCurrentIndex( mResizeModeComboBox->findData( mComposerTable->resizeMode() ) );
   mAddFramePushButton->setEnabled( mComposerTable->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
 
@@ -585,6 +595,8 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
   mContentFontColorButton->blockSignals( b );
   mResizeModeComboBox->blockSignals( b );
   mRelationsComboBox->blockSignals( b );
+  mEmptyModeComboBox->blockSignals( b );
+  mEmptyMessageLineEdit->blockSignals( b );
 }
 
 void QgsComposerAttributeTableWidget::setMaximumNumberOfFeatures( int n )
@@ -846,6 +858,44 @@ void QgsComposerAttributeTableWidget::on_mRelationsComboBox_currentIndexChanged(
   {
     composition->beginMultiFrameCommand( mComposerTable, tr( "Change table source relation" ) );
     mComposerTable->setRelationId( mRelationsComboBox->itemData( index ).toString() );
+    composition->endMultiFrameCommand();
+  }
+}
+
+void QgsComposerAttributeTableWidget::on_mEmptyModeComboBox_currentIndexChanged( int index )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mComposerTable->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Change empty table behaviour" ) );
+    mComposerTable->setEmptyTableBehaviour(( QgsComposerTableV2::EmptyTableMode ) mEmptyModeComboBox->itemData( index ).toInt() );
+    composition->endMultiFrameCommand();
+    mEmptyMessageLineEdit->setEnabled( mComposerTable->emptyTableBehaviour() == QgsComposerTableV2::ShowMessage );
+    mEmptyMessageLabel->setEnabled( mComposerTable->emptyTableBehaviour() == QgsComposerTableV2::ShowMessage );
+  }
+}
+
+void QgsComposerAttributeTableWidget::on_mEmptyMessageLineEdit_editingFinished()
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mComposerTable->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Empty table message changed" ) );
+  }
+  mComposerTable->setEmptyTableMessage( mEmptyMessageLineEdit->text() );
+  mComposerTable->update();
+  if ( composition )
+  {
     composition->endMultiFrameCommand();
   }
 }

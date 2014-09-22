@@ -45,6 +45,16 @@ class QgsComposerTableV2: QgsComposerMultiFrame
       AllFrames, /*!< headers shown on all frames */
       NoHeaders /*!< no headers shown for table */
     };    
+    
+    /*! Controls how empty tables are displayed
+     */
+    enum EmptyTableMode
+    {
+      HeadersOnly, /*!< show header rows only */
+      HideTable, /*!< hides entire table if empty */
+      DrawEmptyCells, /*!< draws empty cells */
+      ShowMessage /*!< shows preset message instead of table contents*/
+    };    
 
     QgsComposerTableV2( QgsComposition* composition /TransferThis/, bool createUndoCommands );
     QgsComposerTableV2();
@@ -62,6 +72,37 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @see setCellMargin
      */
     double cellMargin() const;
+    
+    /**Sets the behaviour for empty tables with no content rows.
+     * @param mode behaviour mode for empty tables
+     * @see emptyTableBehaviour
+     */
+    void setEmptyTableBehaviour( const EmptyTableMode mode );
+
+    /**Returns the behaviour mode for empty tables. This property controls
+     * how the table is drawn if it contains no content rows.
+     * @returns behaviour mode for empty tables
+     * @see setEmptyTableBehaviour
+     */
+    EmptyTableMode emptyTableBehaviour() const;
+
+    /**Sets the message for empty tables with no content rows. This message
+     * is displayed in the table body if the empty table behaviour is
+     * set to ShowMessage
+     * @param message message to show for empty tables
+     * @see emptyTableMessage
+     * @see setEmptyTableBehaviour
+     */
+    void setEmptyTableMessage( const QString message );
+
+    /**Returns the message for empty tables with no content rows. This message
+     * is displayed in the table body if the empty table behaviour is
+     * set to ShowMessage
+     * @returns message to show for empty tables
+     * @see setEmptyTableMessage
+     * @see emptyTableBehaviour
+     */
+    QString emptyTableMessage() const; 
 
     /**Sets the font used to draw header text in the table.
      * @param font font for header cells
@@ -305,12 +346,13 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * maximum width of text present in the column.
      * @param numberRows number of rows of content in table frame
      * @param hasHeader set to true if table frame includes header cells
+     * @param mergeCells set to true to merge table content cells
      * @note not available in python bindings
      * @see drawVerticalGridLines
      * @see calculateMaxColumnWidths
      * @note not available in python bindings
      */
-    //void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap, const int numberRows, const bool hasHeader ) const;
+    //void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap, const int numberRows, const bool hasHeader, const bool mergeCells = false ) const;
 
     /**Recalculates and updates the size of the table and all table frames.
      */

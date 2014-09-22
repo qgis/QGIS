@@ -49,12 +49,10 @@ class TestQgsComposerTableV2: public QObject
     void attributeTableSetAttributes(); //test subset of attributes in table
     void attributeTableVisibleOnly(); //test displaying only visible attributes
     void attributeTableRender(); //test rendering attribute table
-
     void manualColumnWidth(); //test setting manual column widths
-
+    void attributeTableEmpty(); //test empty modes for attribute table
     void attributeTableExtend();
     void attributeTableRepeat();
-
     void attributeTableAtlasSource(); //test attribute table in atlas feature mode
     void attributeTableRelationSource(); //test attribute table in relation mode
 
@@ -323,6 +321,33 @@ void TestQgsComposerTableV2::manualColumnWidth()
   bool result = checker.testComposition( mReport, 0 );
   mComposerAttributeTable->columns()->at( 0 )->setWidth( 0 );
   QVERIFY( result );
+}
+
+void TestQgsComposerTableV2::attributeTableEmpty()
+{
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
+  //hide all features from table
+  mComposerAttributeTable->setFeatureFilter( QString( "1=2" ) );
+  mComposerAttributeTable->setFilterFeatures( true );
+
+  mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::HeadersOnly );
+  QgsCompositionChecker checker( "composerattributetable_headersonly", mComposition );
+  QVERIFY( checker.testComposition( mReport, 0 ) );
+
+  mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::HideTable );
+  QgsCompositionChecker checker2( "composerattributetable_hidetable", mComposition );
+  QVERIFY( checker2.testComposition( mReport, 0 ) );
+
+  mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::DrawEmptyCells );
+  QgsCompositionChecker checker3( "composerattributetable_drawempty", mComposition );
+  QVERIFY( checker3.testComposition( mReport, 0 ) );
+
+  mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::ShowMessage );
+  mComposerAttributeTable->setEmptyTableMessage( "no rows" );
+  QgsCompositionChecker checker4( "composerattributetable_showmessage", mComposition );
+  QVERIFY( checker4.testComposition( mReport, 0 ) );
+
+  mComposerAttributeTable->setFilterFeatures( false );
 }
 
 void TestQgsComposerTableV2::attributeTableExtend()

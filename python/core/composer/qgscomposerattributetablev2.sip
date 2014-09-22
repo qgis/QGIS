@@ -72,6 +72,14 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see setSource
      */
     ContentSource source() const;
+    
+    /**Returns the source layer for the table, considering the table source mode. Eg,
+     * if the table is set to atlas feature mode, then the source layer will be the
+     * atlas coverage layer. If the table is set to layer attributes mode, then
+     * the source layer will be the user specified vector layer.
+     * @returns actual source layer
+     */
+    QgsVectorLayer* sourceLayer();    
 
     /**Sets the vector layer from which to display feature attributes
      * @param layer Vector layer for attribute table
