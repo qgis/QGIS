@@ -27,6 +27,7 @@
 #include "qgsfeature.h"
 #include "qgscompositionchecker.h"
 #include "qgsfontutils.h"
+#include "qgsmaplayerregistry.h"
 
 #include <QObject>
 #include <QtTest>
@@ -52,11 +53,16 @@ class TestQgsComposerTableV2: public QObject
     void attributeTableExtend();
     void attributeTableRepeat();
 
+    void attributeTableAtlasSource(); //test attribute table in atlas feature mode
+
+
+
   private:
     QgsComposition* mComposition;
     QgsComposerMap* mComposerMap;
     QgsMapSettings mMapSettings;
     QgsVectorLayer* mVectorLayer;
+    QgsVectorLayer* mVectorLayer2;
     QgsComposerAttributeTableV2* mComposerAttributeTable;
     QgsComposerFrame* mFrame1;
     QgsComposerFrame* mFrame2;
@@ -76,9 +82,12 @@ void TestQgsComposerTableV2::initTestCase()
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
+  mVectorLayer2 = new QgsVectorLayer( vectorFileInfo.filePath(),
+                                      vectorFileInfo.completeBaseName(),
+                                      "ogr" );
 
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings.setLayers( QStringList() << mVectorLayer->id() << mVectorLayer2->id() );
   mMapSettings.setCrsTransformEnabled( false );
   mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 portrait
@@ -300,7 +309,7 @@ void TestQgsComposerTableV2::attributeTableRender()
 {
   mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
   QgsCompositionChecker checker( "composerattributetable_render", mComposition );
-  bool result = checker.testComposition( mReport, 0 );
+  bool result = checker.testComposition( mReport );
   QVERIFY( result );
 }
 
@@ -330,6 +339,8 @@ void TestQgsComposerTableV2::attributeTableExtend()
 
 void TestQgsComposerTableV2::attributeTableRepeat()
 {
+  //test that creating and removing new frames in repeat mode does not crash
+
   mComposerAttributeTable->setResizeMode( QgsComposerMultiFrame::UseExistingFrames );
   //remove extra frames
   for ( int idx = mComposerAttributeTable->frameCount(); idx > 0; --idx )
@@ -352,6 +363,62 @@ void TestQgsComposerTableV2::attributeTableRepeat()
   {
     mComposerAttributeTable->setMaximumNumberOfFeatures( features );
   }
+}
+
+void TestQgsComposerTableV2::attributeTableAtlasSource()
+{
+  QgsComposerAttributeTableV2* table = new QgsComposerAttributeTableV2( mComposition, false );
+
+
+  table->setSource( QgsComposerAttributeTableV2::AtlasFeature );
+
+  //setup atlas
+  mComposition->atlasComposition().setCoverageLayer( mVectorLayer2 );
+  mComposition->atlasComposition().setEnabled( true );
+  QVERIFY( mComposition->atlasComposition().beginRender() );
+
+  QVERIFY( mComposition->atlasComposition().prepareForFeature( 0 ) );
+  QCOMPARE( table->contents()->length(), 1 );
+  QgsComposerTableRow row = table->contents()->at( 0 );
+
+  //check a couple of results
+  QCOMPARE( row.at( 0 ), QVariant( "Jet" ) );
+  QCOMPARE( row.at( 1 ), QVariant( 90 ) );
+  QCOMPARE( row.at( 2 ), QVariant( 3 ) );
+  QCOMPARE( row.at( 3 ), QVariant( 2 ) );
+  QCOMPARE( row.at( 4 ), QVariant( 0 ) );
+  QCOMPARE( row.at( 5 ), QVariant( 2 ) );
+
+  //next atlas feature
+  QVERIFY( mComposition->atlasComposition().prepareForFeature( 1 ) );
+  QCOMPARE( table->contents()->length(), 1 );
+  row = table->contents()->at( 0 );
+  QCOMPARE( row.at( 0 ), QVariant( "Biplane" ) );
+  QCOMPARE( row.at( 1 ), QVariant( 0 ) );
+  QCOMPARE( row.at( 2 ), QVariant( 1 ) );
+  QCOMPARE( row.at( 3 ), QVariant( 3 ) );
+  QCOMPARE( row.at( 4 ), QVariant( 3 ) );
+  QCOMPARE( row.at( 5 ), QVariant( 6 ) );
+
+  //next atlas feature
+  QVERIFY( mComposition->atlasComposition().prepareForFeature( 2 ) );
+  QCOMPARE( table->contents()->length(), 1 );
+  row = table->contents()->at( 0 );
+  QCOMPARE( row.at( 0 ), QVariant( "Jet" ) );
+  QCOMPARE( row.at( 1 ), QVariant( 85 ) );
+  QCOMPARE( row.at( 2 ), QVariant( 3 ) );
+  QCOMPARE( row.at( 3 ), QVariant( 1 ) );
+  QCOMPARE( row.at( 4 ), QVariant( 1 ) );
+  QCOMPARE( row.at( 5 ), QVariant( 2 ) );
+
+  mComposition->atlasComposition().endRender();
+
+  //try for a crash when removing current atlas layer
+  QgsMapLayerRegistry::instance()->removeMapLayer( mVectorLayer2->id() );
+  table->refreshAttributes();
+
+  mComposition->removeMultiFrame( table );
+  delete table;
 }
 
 QTEST_MAIN( TestQgsComposerTableV2 )

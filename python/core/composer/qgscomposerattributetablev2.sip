@@ -32,6 +32,15 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
 %End
 
   public:
+  
+    /*! Specifies the content source for the attribute table
+     */
+    enum ContentSource
+    {
+      LayerAttributes = 0, /*!< table shows attributes from features in a vector layer */
+      AtlasFeature, /*!< table shows attributes from the current atlas feature */
+      RelationChildren /*!< table shows attributes from related child features */
+    };
 
     QgsComposerAttributeTableV2( QgsComposition* composition /TransferThis/, bool createUndoCommands );
     ~QgsComposerAttributeTableV2();
@@ -51,6 +60,18 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
     virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
 
     virtual void addFrame( QgsComposerFrame* frame /Transfer/, bool recalcFrameSizes = true );
+
+    /**Sets the source for attributes to show in table body.
+     * @param source content source
+     * @see source
+     */
+    void setSource( const ContentSource source );
+
+    /**Returns the source for attributes shown in the table body.
+     * @returns content source
+     * @see setSource
+     */
+    ContentSource source() const;
 
     /**Sets the vector layer from which to display feature attributes
      * @param layer Vector layer for attribute table

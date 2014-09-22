@@ -248,6 +248,11 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      */
     virtual bool getTableContents( QgsComposerTableContents &contents ) = 0;
 
+    /**Returns the current contents of the table. Excludes header cells.
+     * @returns table contents
+     */
+    QgsComposerTableContents* contents() { return &mTableContents; }
+
     //reimplemented to return fixed table width
     virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
 

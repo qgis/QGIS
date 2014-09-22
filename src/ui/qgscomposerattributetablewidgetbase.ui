@@ -45,9 +45,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-21</y>
+        <y>0</y>
         <width>392</width>
-        <height>846</height>
+        <height>879</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -70,6 +70,16 @@
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
           </property>
           <item row="0" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Source</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="mSourceComboBox"/>
+          </item>
+          <item row="1" column="0">
            <widget class="QLabel" name="mLayerLabel">
             <property name="text">
              <string>Layer</string>
@@ -79,7 +89,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="1" column="1">
            <widget class="QgsMapLayerComboBox" name="mLayerComboBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -89,21 +99,21 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="2">
+          <item row="2" column="0" colspan="2">
            <widget class="QPushButton" name="mRefreshPushButton">
             <property name="text">
              <string>Refresh table data</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="2">
+          <item row="3" column="0" colspan="2">
            <widget class="QPushButton" name="mAttributesPushButton">
             <property name="text">
              <string>Attributes...</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="mMarginLabel">
             <property name="text">
              <string>Margin</string>
@@ -116,7 +126,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="4" column="1">
            <widget class="QDoubleSpinBox" name="mMarginSpinBox">
             <property name="suffix">
              <string> mm</string>
@@ -147,12 +157,12 @@
              <bool>true</bool>
             </property>
             <property name="buddy">
-             <cstring>mMaximumColumnsSpinBox</cstring>
+             <cstring>mMaximumRowsSpinBox</cstring>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QSpinBox" name="mMaximumColumnsSpinBox">
+           <widget class="QSpinBox" name="mMaximumRowsSpinBox">
             <property name="maximum">
              <number>999</number>
             </property>
@@ -211,7 +221,7 @@
          <zorder>mComposerMapLabel</zorder>
          <zorder>mComposerMapComboBox</zorder>
          <zorder>mFeatureFilterCheckBox</zorder>
-         <zorder>mMaximumColumnsSpinBox</zorder>
+         <zorder>mMaximumRowsSpinBox</zorder>
          <zorder>mMaxNumFeaturesLabel</zorder>
         </widget>
        </item>

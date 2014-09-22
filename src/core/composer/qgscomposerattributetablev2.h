@@ -53,6 +53,16 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     Q_OBJECT
 
   public:
+
+    /*! Specifies the content source for the attribute table
+     */
+    enum ContentSource
+    {
+      LayerAttributes = 0, /*!< table shows attributes from features in a vector layer */
+      AtlasFeature, /*!< table shows attributes from the current atlas feature */
+      RelationChildren /*!< table shows attributes from related child features */
+    };
+
     QgsComposerAttributeTableV2( QgsComposition* composition, bool createUndoCommands );
     ~QgsComposerAttributeTableV2();
 
@@ -73,6 +83,18 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
 
     virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true );
+
+    /**Sets the source for attributes to show in table body.
+     * @param source content source
+     * @see source
+     */
+    void setSource( const ContentSource source );
+
+    /**Returns the source for attributes shown in the table body.
+     * @returns content source
+     * @see setSource
+     */
+    ContentSource source() const { return mSource; }
 
     /**Sets the vector layer from which to display feature attributes
      * @param layer Vector layer for attribute table
@@ -201,8 +223,15 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     bool getTableContents( QgsComposerTableContents &contents );
 
   private:
+
+    /**Attribute source*/
+    ContentSource mSource;
     /**Associated vector layer*/
     QgsVectorLayer* mVectorLayer;
+
+    /**Current vector layer, if in atlas feature mode*/
+    QgsVectorLayer* mCurrentAtlasLayer;
+
     /**Associated composer map (used to display the visible features)*/
     const QgsComposerMap* mComposerMap;
     /**Maximum number of features that is displayed*/
@@ -215,6 +244,14 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     bool mFilterFeatures;
     /**Feature filter expression*/
     QString mFeatureFilter;
+
+    /**Returns the source layer for the table, considering the table source mode. Eg,
+     * if the table is set to atlas feature mode, then the source layer will be the
+     * atlas coverage layer. If the table is set to layer attributes mode, then
+     * the source layer will be the user specified vector layer.
+     * @returns actual source layer
+     */
+    QgsVectorLayer* sourceLayer();
 
     /**Returns a list of attribute indices corresponding to displayed fields in the table.
      * @note kept for compatibility with 2.0 api only
@@ -230,6 +267,8 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
   private slots:
     /**Checks if this vector layer will be removed (and sets mVectorLayer to 0 if yes) */
     void removeLayer( QString layerId );
+
+    void atlasLayerChanged( QgsVectorLayer* layer );
 
 };
 

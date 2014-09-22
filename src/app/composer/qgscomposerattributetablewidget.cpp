@@ -45,6 +45,13 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
   mResizeModeComboBox->addItem( tr( "Extend to next page" ), QgsComposerMultiFrame::ExtendToNextPage );
   mResizeModeComboBox->addItem( tr( "Repeat until finished" ), QgsComposerMultiFrame::RepeatUntilFinished );
 
+  bool atlasEnabled = atlasComposition() && atlasComposition()->enabled();
+  mSourceComboBox->addItem( tr( "Layer features" ), QgsComposerAttributeTableV2::LayerAttributes );
+  if ( atlasEnabled )
+  {
+    mSourceComboBox->addItem( tr( "Current atlas feature" ), QgsComposerAttributeTableV2::AtlasFeature );
+  }
+
   mLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   connect( mLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( changeLayer( QgsMapLayer* ) ) );
 
@@ -66,6 +73,15 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
   if ( mComposerTable )
   {
     QObject::connect( mComposerTable, SIGNAL( changed() ), this, SLOT( updateGuiElements() ) );
+
+    QgsAtlasComposition* atlas = atlasComposition();
+    if ( atlas )
+    {
+      // repopulate table source combo box if atlas properties change
+//      connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
+//               this, SLOT( populateDataDefinedButtons() ) );
+      connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( atlasToggled() ) );
+    }
   }
 }
 
@@ -202,7 +218,7 @@ void QgsComposerAttributeTableWidget::on_mComposerMapComboBox_activated( int ind
   }
 }
 
-void QgsComposerAttributeTableWidget::on_mMaximumColumnsSpinBox_valueChanged( int i )
+void QgsComposerAttributeTableWidget::on_mMaximumRowsSpinBox_valueChanged( int i )
 {
   if ( !mComposerTable )
   {
@@ -410,6 +426,8 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
 
   blockAllSignals( true );
 
+  mSourceComboBox->setCurrentIndex( mSourceComboBox->findData( mComposerTable->source() ) );
+
   //layer combo box
   if ( mComposerTable->vectorLayer() )
   {
@@ -436,7 +454,7 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
       mComposerMapComboBox->setCurrentIndex( mapIndex );
     }
   }
-  mMaximumColumnsSpinBox->setValue( mComposerTable->maximumNumberOfFeatures() );
+  mMaximumRowsSpinBox->setValue( mComposerTable->maximumNumberOfFeatures() );
   mMarginSpinBox->setValue( mComposerTable->cellMargin() );
   mGridStrokeWidthSpinBox->setValue( mComposerTable->gridStrokeWidth() );
   mGridColorButton->setColor( mComposerTable->gridColor() );
@@ -476,14 +494,42 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
   mResizeModeComboBox->setCurrentIndex( mResizeModeComboBox->findData( mComposerTable->resizeMode() ) );
   mAddFramePushButton->setEnabled( mComposerTable->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
 
+  toggleSourceControls();
+
   blockAllSignals( false );
+}
+
+void QgsComposerAttributeTableWidget::atlasToggled()
+{
+  //display/hide atlas options in source combobox depending on atlas status
+  bool atlasEnabled = atlasComposition() && atlasComposition()->enabled();
+  if ( !atlasEnabled )
+  {
+    if ( mComposerTable->source() == QgsComposerAttributeTableV2::AtlasFeature )
+    {
+      mComposerTable->setSource( QgsComposerAttributeTableV2::LayerAttributes );
+    }
+    mSourceComboBox->removeItem( mSourceComboBox->findData( QgsComposerAttributeTableV2::AtlasFeature ) );
+  }
+  else
+  {
+    if ( mSourceComboBox->findData( QgsComposerAttributeTableV2::AtlasFeature ) == -1 )
+    {
+      //add missing atlasfeature option to combobox
+      mSourceComboBox->addItem( tr( "Current atlas feature" ), QgsComposerAttributeTableV2::AtlasFeature );
+    }
+  }
+  mSourceComboBox->blockSignals( true );
+  mSourceComboBox->setCurrentIndex( mSourceComboBox->findData( mComposerTable->source() ) );
+  mSourceComboBox->blockSignals( false );
 }
 
 void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
 {
+  mSourceComboBox->blockSignals( b );
   mLayerComboBox->blockSignals( b );
   mComposerMapComboBox->blockSignals( b );
-  mMaximumColumnsSpinBox->blockSignals( b );
+  mMaximumRowsSpinBox->blockSignals( b );
   mMarginSpinBox->blockSignals( b );
   mGridColorButton->blockSignals( b );
   mGridStrokeWidthSpinBox->blockSignals( b );
@@ -500,9 +546,9 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
 
 void QgsComposerAttributeTableWidget::setMaximumNumberOfFeatures( int n )
 {
-  mMaximumColumnsSpinBox->blockSignals( true );
-  mMaximumColumnsSpinBox->setValue( n );
-  mMaximumColumnsSpinBox->blockSignals( false );
+  mMaximumRowsSpinBox->blockSignals( true );
+  mMaximumRowsSpinBox->setValue( n );
+  mMaximumRowsSpinBox->blockSignals( false );
 }
 
 void QgsComposerAttributeTableWidget::on_mShowOnlyVisibleFeaturesCheckBox_stateChanged( int state )
@@ -725,4 +771,47 @@ void QgsComposerAttributeTableWidget::on_mResizeModeComboBox_currentIndexChanged
   }
 
   mAddFramePushButton->setEnabled( mComposerTable->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
+}
+
+void QgsComposerAttributeTableWidget::on_mSourceComboBox_currentIndexChanged( int index )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mComposerTable->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Change table source" ) );
+    mComposerTable->setSource(( QgsComposerAttributeTableV2::ContentSource )mSourceComboBox->itemData( index ).toInt() );
+    composition->endMultiFrameCommand();
+  }
+
+  toggleSourceControls();
+}
+
+void QgsComposerAttributeTableWidget::toggleSourceControls()
+{
+  switch ( mComposerTable->source() )
+  {
+    case QgsComposerAttributeTableV2::LayerAttributes:
+      mLayerComboBox->setEnabled( true );
+      mMaximumRowsSpinBox->setEnabled( true );
+      mMaxNumFeaturesLabel->setEnabled( true );
+      mShowOnlyVisibleFeaturesCheckBox->setEnabled( true );
+      mComposerMapComboBox->setEnabled( mComposerTable->displayOnlyVisibleFeatures() );
+      mComposerMapLabel->setEnabled( mComposerTable->displayOnlyVisibleFeatures() );
+      break;
+    case QgsComposerAttributeTableV2::AtlasFeature:
+      mLayerComboBox->setEnabled( false );
+      mMaximumRowsSpinBox->setEnabled( false );
+      mMaxNumFeaturesLabel->setEnabled( false );
+      mShowOnlyVisibleFeaturesCheckBox->setEnabled( false );
+      mComposerMapComboBox->setEnabled( false );
+      mComposerMapLabel->setEnabled( false );
+      break;
+    default:
+      break;
+  }
 }

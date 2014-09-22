@@ -222,6 +222,11 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @note not available in python bindings
      */
     virtual bool getTableContents( QgsComposerTableContents &contents ) = 0;
+    
+    /**Returns the current contents of the table. Excludes header cells.
+     * @returns table contents
+     */
+    QgsComposerTableContents* contents();
 
     //reimplemented to return fixed table width
     virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
