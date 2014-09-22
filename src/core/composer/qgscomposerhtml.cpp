@@ -225,7 +225,10 @@ void QgsComposerHtml::recalculateFrameSizes()
   mWebPage->setViewportSize( contentsSize );
   mSize.setWidth( contentsSize.width() / mHtmlUnitsToMM );
   mSize.setHeight( contentsSize.height() / mHtmlUnitsToMM );
-  renderCachedImage();
+  if ( contentsSize.isValid() )
+  {
+    renderCachedImage();
+  }
   QgsComposerMultiFrame::recalculateFrameSizes();
   emit changed();
 }
