@@ -47,6 +47,39 @@ bool QgsWmsSettings::parseUri( QString uriString )
   mAuth.mReferer = uri.param( "referer" );
   QgsDebugMsg( "set referer to " + mAuth.mReferer );
 
+#ifndef QT_NO_OPENSSL
+  // parse ssl cert
+  if ( uri.hasParam( "certid" ) && uri.hasParam( "keyid" ) )
+  {
+    QgsDebugMsg( "ssl cert exists" );
+    mAuth.mSslCert.setStoreType(( QgsSslCertSettings::SslStoreType ) uri.param( "storetype" ).toInt() );
+    QgsDebugMsg( QString( "ssl cert storetype (enum): %1" ).arg( mAuth.mSslCert.storeType() ) );
+    mAuth.mSslCert.setCertId( uri.param( "certid" ) );
+    QgsDebugMsg( "ssl cert certid: " + mAuth.mSslCert.certId() );
+    mAuth.mSslCert.setKeyId( uri.param( "keyid" ) );
+    QgsDebugMsg( "ssl cert keyid: " + mAuth.mSslCert.keyId() );
+    if ( uri.hasParam( "haskeypass" ) )
+    {
+      mAuth.mSslCert.setHasKeyPassphrase( true );
+      QgsDebugMsg( "ssl cert key has password" );
+    }
+    if ( uri.hasParam( "keypass" ) )
+    {
+      mAuth.mSslCert.setHasKeyPassphrase( true ); // may not have been in URL
+      mAuth.mSslCert.setKeyPassphrase( uri.param( "keypass" ) );
+      QgsDebugMsg( "ssl cert password passed-in" );
+    }
+    mAuth.mSslCert.setIssuerId( uri.param( "issuerid" ) );
+    QgsDebugMsg( "ssl cert issuerid: " + mAuth.mSslCert.issuerId() );
+    if ( uri.hasParam( "issuerself" ) )
+    {
+      mAuth.mSslCert.setIssuerSelfSigned( true );
+      QgsDebugMsg( "ssl cert self-signed" );
+    }
+    mAuth.mSslCert.setAccessUrl( mHttpUri );
+  }
+#endif
+
   mActiveSubLayers = uri.params( "layers" );
   mActiveSubStyles = uri.params( "styles" );
   QgsDebugMsg( "Entering: layers:" + mActiveSubLayers.join( ", " ) + ", styles:" + mActiveSubStyles.join( ", " ) );
@@ -1866,6 +1899,13 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
 
   QgsDebugMsg( QString( "getcapabilities: %1" ).arg( url ) );
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+
+#ifndef QT_NO_OPENSSL
+  if ( mAuth.mSslCert.issuerSelfSigned() )
+  {
+    QgsSslUtils::updateReplyExpectedSslErrors( mCapabilitiesReply, mAuth.mSslCert );
+  }
+#endif
 
   connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
   connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );

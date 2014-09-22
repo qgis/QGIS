@@ -67,6 +67,43 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
     mUri.setParam( "password", password );
   }
 
+#ifndef QT_NO_OPENSSL
+  bool validcert = settings.value( credentialsKey + "/ssl/validcert", false ).toBool();
+  if ( validcert )
+  {
+    QString storetype = settings.value( credentialsKey + "/ssl/store" ).toString(); // int(enum) -> string
+    QString certid = settings.value( credentialsKey + "/ssl/certid" ).toString();
+    QString keyid = settings.value( credentialsKey + "/ssl/keyid" ).toString();
+    bool haskeypass = settings.value( credentialsKey + "/ssl/haskeypass", false ).toBool();
+    QString issuerid = settings.value( credentialsKey + "/ssl/issuerid" ).toString();
+    bool issuerself = settings.value( credentialsKey + "/ssl/issuerself", false ).toBool();
+
+    QString sslinfo;
+
+    // store/cert/key should always be non-empty for cert to have validated
+    sslinfo.append( ",storetype=" + storetype + ",certid=" + certid + ",keyid=" + keyid );
+    mUri.setParam( "storetype", storetype );
+    mUri.setParam( "certid", certid );
+    mUri.setParam( "keyid", keyid );
+    if ( haskeypass )
+    {
+      sslinfo.append( ",haskeypass=1" );
+      mUri.setParam( "haskeypass", "1" );
+    }
+    if ( !issuerid.isEmpty() )
+    {
+      sslinfo.append( ",issuerid=" + issuerid );
+      mUri.setParam( "issuerid", issuerid );
+    }
+    if ( issuerself )
+    {
+      sslinfo.append( ",issuerself=1" );
+      mUri.setParam( "issuerself", "1" );
+    }
+    mConnectionInfo.append( sslinfo );
+  }
+#endif
+
   QString referer = settings.value( key + "/referer" ).toString();
   if ( !referer.isEmpty() )
   {
