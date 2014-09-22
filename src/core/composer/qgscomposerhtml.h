@@ -211,6 +211,8 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      */
     void loadHtml();
 
+    /**Recalculates the frame sizes for the current viewport dimensions*/
+    void recalculateFrameSizes();
     void refreshExpressionContext();
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
