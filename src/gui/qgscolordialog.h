@@ -162,6 +162,7 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
     void importColors();
     void importPalette();
     void removePalette();
+    void newPalette();
 
     void schemeIndexChanged( int index );
 
@@ -205,6 +206,10 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
     /**Repopulates the scheme combo box with current color schemes
      */
     void refreshSchemeComboBox();
+
+    /**Returns the path to the user's palette folder
+     */
+    QString gplFilePath();
 };
 
 #endif // #ifndef QGSCOLORDIALOG_H

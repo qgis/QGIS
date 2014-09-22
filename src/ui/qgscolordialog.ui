@@ -827,6 +827,14 @@
     <string>Remove current palette</string>
    </property>
   </action>
+  <action name="mActionNewPalette">
+   <property name="text">
+    <string>New Palette...</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new palette</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
