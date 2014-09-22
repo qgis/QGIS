@@ -78,7 +78,8 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
 
   connect( mAttributeForm, SIGNAL( attributeChanged( QString, QVariant ) ), this, SLOT( featureFormAttributeChanged() ) );
 
-  columnBoxInit();
+  if ( !mFeatureListPreviewButton->actions().count() )
+    columnBoxInit();
 }
 
 void QgsDualView::columnBoxInit()
