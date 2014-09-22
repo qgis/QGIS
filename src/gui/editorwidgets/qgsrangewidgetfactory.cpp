@@ -45,6 +45,11 @@ QgsEditorWidgetConfig QgsRangeWidgetFactory::readConfig( const QDomElement& conf
   cfg.insert( "Max", configElement.attribute( "Max" ).toInt() );
   cfg.insert( "Step", configElement.attribute( "Step" ).toInt() );
 
+  if ( configElement.hasAttribute( "Suffix" ) )
+  {
+    cfg.insert( "Suffix", configElement.attribute( "Suffix" ) );
+  }
+
   return cfg;
 }
 
@@ -58,6 +63,10 @@ void QgsRangeWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QD
   configElement.setAttribute( "Min", config["Min"].toInt() );
   configElement.setAttribute( "Max", config["Max"].toInt() );
   configElement.setAttribute( "Step", config["Step"].toInt() );
+  if ( config.contains( "Suffix" ) )
+  {
+    configElement.setAttribute( "Suffix", config["Suffix"].toString() );
+  }
 }
 
 bool QgsRangeWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fieldIdx )

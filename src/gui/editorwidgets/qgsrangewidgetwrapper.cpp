@@ -78,6 +78,10 @@ void QgsRangeWidgetWrapper::initWidget( QWidget* editor )
     mDoubleSpinBox->setMinimum( config( "Min" ).toDouble() );
     mDoubleSpinBox->setMaximum( config( "Max" ).toDouble() );
     mDoubleSpinBox->setSingleStep( config( "Step" ).toDouble() );
+    if ( config( "Suffix" ).isValid() )
+    {
+      mDoubleSpinBox->setSuffix( config( "Suffix" ).toString() );
+    }
     connect( mDoubleSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( valueChanged( double ) ) );
   }
 
@@ -86,6 +90,10 @@ void QgsRangeWidgetWrapper::initWidget( QWidget* editor )
     mIntSpinBox->setMinimum( config( "Min" ).toInt() );
     mIntSpinBox->setMaximum( config( "Max" ).toInt() );
     mIntSpinBox->setSingleStep( config( "Step" ).toInt() );
+    if ( config( "Suffix" ).isValid() )
+    {
+      mIntSpinBox->setSuffix( config( "Suffix" ).toString() );
+    }
     connect( mIntSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( valueChanged( int ) ) );
   }
 

@@ -93,6 +93,11 @@ QgsEditorWidgetConfig QgsRangeConfigDlg::config()
 
   cfg.insert( "Style", rangeWidget->itemData( rangeWidget->currentIndex() ).toString() );
 
+  if ( suffixLineEdit->text() != "" )
+  {
+    cfg.insert( "Suffix", suffixLineEdit->text() );
+  }
+
   return cfg;
 }
 
@@ -107,4 +112,6 @@ void QgsRangeConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
   stepSpinBox->setValue( config.value( "Step", 1 ).toInt() );
 
   rangeWidget->setCurrentIndex( rangeWidget->findData( config.value( "Style", "SpinBox" ) ) );
+
+  suffixLineEdit->setText( config.value( "Suffix" ).toString() );
 }
