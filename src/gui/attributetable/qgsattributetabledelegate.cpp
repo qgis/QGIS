@@ -97,7 +97,7 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
 
   newValue = eww->value();
 
-  if ( oldValue != newValue && newValue.isValid() || oldValue.isNull() != newValue.isNull() )
+  if (( oldValue != newValue && newValue.isValid() ) || oldValue.isNull() != newValue.isNull() )
   {
     vl->beginEditCommand( tr( "Attribute changed" ) );
     vl->changeAttributeValue( fid, fieldIdx, newValue, oldValue );

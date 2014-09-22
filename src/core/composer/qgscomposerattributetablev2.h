@@ -194,7 +194,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     QList<QPair<int, bool> > sortAttributes() const;
 
     /**Queries the attribute table's vector layer for attributes to show in the table.
-     * @param content table content
+     * @param contents table content
      * @returns true if attributes were successfully fetched
      * @note not available in python bindings
      */

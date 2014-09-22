@@ -558,8 +558,8 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
      */
     enum ColorTextFormat
     {
-      HexRgb = 0, /*!< #RRGGBB in hexadecimal */
-      HexRgbA, /*!< #RRGGBBAA in hexadecimal, with alpha */
+      HexRgb = 0, /*!< \#RRGGBB in hexadecimal */
+      HexRgbA, /*!< \#RRGGBBAA in hexadecimal, with alpha */
       Rgb, /*!< rgb( r, g, b ) format */
       Rgba /*!< rgba( r, g, b, a ) format, with alpha */
     };
