@@ -43,6 +43,10 @@ class CORE_EXPORT QgsCredentials
     bool get( QString realm, QString &username, QString &password, QString message = QString::null );
     void put( QString realm, QString username, QString password );
 
+    // FIXME: Why doesn't this cache work here, but it does in QNetworkManager?
+    bool getSsl( QString keyhash, QString &password, QString accessurl, QString message = QString::null );
+    void putSsl( QString keyhash, QString password );
+
     /**
      * @brief Get a passphrase for a private key for a client certificate to be used in an SSL PKI handshake.
      * @param The passphrase for the key.
@@ -92,6 +96,9 @@ class CORE_EXPORT QgsCredentials
 
     //! cache for already requested credentials in this session
     QMap< QString, QPair<QString, QString> > mCredentialCache;
+
+    //! cache for already requested SSL hash of key and its password in this session
+    QMap< QString, QString > mCredentialSslCache;
 
     //! Pointer to the credential instance
     static QgsCredentials *smInstance;

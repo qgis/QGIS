@@ -78,6 +78,37 @@ void QgsCredentials::put( QString realm, QString username, QString password )
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
 }
 
+bool QgsCredentials::getSsl( QString keyhash, QString &password, QString accessurl, QString message )
+{
+  if ( mCredentialSslCache.contains( keyhash ) )
+  {
+    QString password = mCredentialSslCache.take( keyhash );
+    QgsDebugMsg( QString( "retrieved SSL key hash: %1" ).arg( keyhash ) );
+
+    if ( !password.isNull() )
+      return true;
+  }
+
+  // shorten url of resource to keep any dialog from being too wide
+  QString resource = QString::null;
+  if ( !accessurl.isEmpty() )
+  {
+    QUrl url( accessurl );
+    resource = QString( "%1://%2:%3" ).arg( url.scheme() ).arg( url.host() ).arg( url.port() );
+  }
+
+  if ( requestSsl( password, resource, message ) )
+  {
+    QgsDebugMsg( QString( "requested SSL key hash: %1" ).arg( keyhash ) );
+    return true;
+  }
+  else
+  {
+    QgsDebugMsg( QString( "unset SSL key hash: %1" ).arg( keyhash ) );
+    return false;
+  }
+}
+
 bool QgsCredentials::getSslNoCache( QString &password, QString accessurl, QString message )
 {
   // shorten url of resource to keep any dialog from being too wide
@@ -98,6 +129,12 @@ bool QgsCredentials::getSslNoCache( QString &password, QString accessurl, QStrin
     QgsDebugMsg( "Retrieve SSL password failed" );
     return false;
   }
+}
+
+void QgsCredentials::putSsl( QString keyhash, QString password )
+{
+  QgsDebugMsg( QString( "inserting SSL key hash: %1" ).arg( keyhash ) );
+  mCredentialSslCache.insert( keyhash, password );
 }
 
 void QgsCredentials::lock()

@@ -11,6 +11,9 @@ class QgsCredentials
     bool get( QString realm, QString &username /In,Out/, QString &password /In,Out/, QString message = QString::null );
     void put( QString realm, QString username, QString password );
 
+    bool getSsl( QString keyhash, QString &password /In,Out/, QString accessurl, QString message = QString::null );
+    void putSsl( QString keyhash, QString password );
+
     bool getSslNoCache( QString &password /In,Out/, QString accessurl, QString message = QString::null );
 
     //! retrieves instance
