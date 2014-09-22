@@ -139,7 +139,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @param features maximum number of features to show in the table
      * @see maximumNumberOfFeatures
      */
-    void setMaximumNumberOfFeatures( int features );
+    void setMaximumNumberOfFeatures( const int features );
 
     /**Returns the maximum number of features to be shown by the table.
      * @returns maximum number of features
@@ -154,7 +154,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see displayOnlyVisibleFeatures
      * @see setComposerMap
      */
-    void setDisplayOnlyVisibleFeatures( bool visibleOnly );
+    void setDisplayOnlyVisibleFeatures( const bool visibleOnly );
 
     /**Returns true if the table is set to show only features visible on a corresponding
      * composer map item.
@@ -163,6 +163,21 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see setDisplayOnlyVisibleFeatures
      */
     bool displayOnlyVisibleFeatures() const;
+    
+    /**Sets attribute table to only show features which intersect the current atlas
+     * feature.
+     * @param filterToAtlas set to true to show only features which intersect
+     * the atlas feature
+     * @see filterToAtlasFeature
+     */
+    void setFilterToAtlasFeature( const bool filterToAtlas );
+
+    /**Returns true if the table is set to only show features which intersect the current atlas
+     * feature.
+     * @returns true if table only shows features which intersect the atlas feature
+     * @see setFilterToAtlasFeature
+     */
+    bool filterToAtlasFeature() const;
 
     /**Returns true if a feature filter is active on the attribute table
      * @returns bool state of the feature filter
@@ -178,7 +193,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see filterFeatures
      * @see setFeatureFilter
      */
-    void setFilterFeatures( bool filter );
+    void setFilterFeatures( const bool filter );
 
     /**Returns the current expression used to filter features for the table. The filter is only
      * active if filterFeatures() is true.

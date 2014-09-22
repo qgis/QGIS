@@ -491,6 +491,7 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
     mComposerMapLabel->setEnabled( false );
   }
 
+  mIntersectAtlasCheckBox->setChecked( mComposerTable->filterToAtlasFeature() );
   mFeatureFilterEdit->setText( mComposerTable->featureFilter() );
   mFeatureFilterCheckBox->setCheckState( mComposerTable->filterFeatures() ? Qt::Checked : Qt::Unchecked );
   mFeatureFilterEdit->setEnabled( mComposerTable->filterFeatures() );
@@ -521,6 +522,11 @@ void QgsComposerAttributeTableWidget::atlasToggled()
   mSourceComboBox->blockSignals( true );
   mSourceComboBox->setCurrentIndex( mSourceComboBox->findData( mComposerTable->source() ) );
   mSourceComboBox->blockSignals( false );
+
+  if ( !atlasEnabled && mComposerTable && mComposerTable->filterToAtlasFeature() )
+  {
+    mComposerTable->setFilterToAtlasFeature( false );
+  }
 }
 
 void QgsComposerAttributeTableWidget::updateRelationsCombo()
@@ -556,6 +562,7 @@ void QgsComposerAttributeTableWidget::toggleAtlasSpecificControls( const bool at
     mRelationsComboBox->setEnabled( false );
     mRelationsComboBox->clear();
     mRelationsComboBox->blockSignals( false );
+    mIntersectAtlasCheckBox->setEnabled( false );
   }
   else
   {
@@ -573,6 +580,7 @@ void QgsComposerAttributeTableWidget::toggleAtlasSpecificControls( const bool at
     //add relations for coverage layer
     updateRelationsCombo();
     mRelationsComboBox->setEnabled( true );
+    mIntersectAtlasCheckBox->setEnabled( true );
   }
 }
 
@@ -587,6 +595,7 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
   mGridStrokeWidthSpinBox->blockSignals( b );
   mShowGridGroupCheckBox->blockSignals( b );
   mShowOnlyVisibleFeaturesCheckBox->blockSignals( b );
+  mIntersectAtlasCheckBox->blockSignals( b );
   mFeatureFilterEdit->blockSignals( b );
   mFeatureFilterCheckBox->blockSignals( b );
   mHeaderHAlignmentComboBox->blockSignals( b );
@@ -629,6 +638,27 @@ void QgsComposerAttributeTableWidget::on_mShowOnlyVisibleFeaturesCheckBox_stateC
   //enable/disable map combobox based on state of checkbox
   mComposerMapComboBox->setEnabled( state == Qt::Checked );
   mComposerMapLabel->setEnabled( state == Qt::Checked );
+}
+
+void QgsComposerAttributeTableWidget::on_mIntersectAtlasCheckBox_stateChanged( int state )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mComposerTable->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table filter to atlas changed" ) );
+  }
+  bool filterToAtlas = ( state == Qt::Checked );
+  mComposerTable->setFilterToAtlasFeature( filterToAtlas );
+  mComposerTable->update();
+  if ( composition )
+  {
+    composition->endMultiFrameCommand();
+  }
 }
 
 void QgsComposerAttributeTableWidget::on_mFeatureFilterCheckBox_stateChanged( int state )

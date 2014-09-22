@@ -25,6 +25,7 @@
 #include "qgsatlascomposition.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
+#include "qgsgeometry.h"
 
 //QgsComposerAttributeTableCompareV2
 
@@ -104,6 +105,7 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* compos
     , mComposerMap( 0 )
     , mMaximumNumberOfFeatures( 5 )
     , mShowOnlyVisibleFeatures( false )
+    , mFilterToAtlasIntersection( false )
     , mFilterFeatures( false )
     , mFeatureFilter( "" )
 {
@@ -279,7 +281,7 @@ void QgsComposerAttributeTableV2::setComposerMap( const QgsComposerMap* map )
   emit changed();
 }
 
-void QgsComposerAttributeTableV2::setMaximumNumberOfFeatures( int features )
+void QgsComposerAttributeTableV2::setMaximumNumberOfFeatures( const int features )
 {
   if ( features == mMaximumNumberOfFeatures )
   {
@@ -291,7 +293,7 @@ void QgsComposerAttributeTableV2::setMaximumNumberOfFeatures( int features )
   emit changed();
 }
 
-void QgsComposerAttributeTableV2::setDisplayOnlyVisibleFeatures( bool visibleOnly )
+void QgsComposerAttributeTableV2::setDisplayOnlyVisibleFeatures( const bool visibleOnly )
 {
   if ( visibleOnly == mShowOnlyVisibleFeatures )
   {
@@ -303,7 +305,19 @@ void QgsComposerAttributeTableV2::setDisplayOnlyVisibleFeatures( bool visibleOnl
   emit changed();
 }
 
-void QgsComposerAttributeTableV2::setFilterFeatures( bool filter )
+void QgsComposerAttributeTableV2::setFilterToAtlasFeature( const bool filterToAtlas )
+{
+  if ( filterToAtlas == mFilterToAtlasIntersection )
+  {
+    return;
+  }
+
+  mFilterToAtlasIntersection = filterToAtlas;
+  refreshAttributes();
+  emit changed();
+}
+
+void QgsComposerAttributeTableV2::setFilterFeatures( const bool filter )
 {
   if ( filter == mFilterFeatures )
   {
@@ -505,6 +519,21 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
         continue;
       }
     }
+    //check against atlas feature intersection
+    if ( mFilterToAtlasIntersection )
+    {
+      if ( !f.geometry() || ! mComposition->atlasComposition().enabled() )
+      {
+        continue;
+      }
+      QgsFeature* atlasFeature = mComposition->atlasComposition().currentFeature();
+      if ( !atlasFeature || !atlasFeature->geometry() ||
+           !f.geometry()->intersects( atlasFeature->geometry() ) )
+      {
+        //feature falls outside current atlas feature
+        continue;
+      }
+    }
 
     QgsComposerTableRow currentRow;
 
@@ -616,6 +645,7 @@ bool QgsComposerAttributeTableV2::writeXML( QDomElement& elem, QDomDocument & do
   composerTableElem.setAttribute( "source", QString::number(( int )mSource ) );
   composerTableElem.setAttribute( "relationId", mRelationId );
   composerTableElem.setAttribute( "showOnlyVisibleFeatures", mShowOnlyVisibleFeatures );
+  composerTableElem.setAttribute( "filterToAtlasIntersection", mFilterToAtlasIntersection );
   composerTableElem.setAttribute( "maxFeatures", mMaximumNumberOfFeatures );
   composerTableElem.setAttribute( "filterFeatures", mFilterFeatures ? "true" : "false" );
   composerTableElem.setAttribute( "featureFilter", mFeatureFilter );
@@ -669,6 +699,7 @@ bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QD
   }
 
   mShowOnlyVisibleFeatures = itemElem.attribute( "showOnlyVisibleFeatures", "1" ).toInt();
+  mFilterToAtlasIntersection = itemElem.attribute( "filterToAtlasIntersection", "0" ).toInt();
   mFilterFeatures = itemElem.attribute( "filterFeatures", "false" ) == "true" ? true : false;
   mFeatureFilter = itemElem.attribute( "featureFilter", "" );
   mMaximumNumberOfFeatures = itemElem.attribute( "maxFeatures", "5" ).toInt();
