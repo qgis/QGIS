@@ -31,7 +31,7 @@ class CORE_EXPORT QgsRelation
     /**
      * Defines a relation between matchin fields of the two involved tables of a relation.
      * Often, a relation is only defined by just one FieldPair with the name of the foreign key
-     * column of the referencing table as first element and the name of the primkary key column
+     * column of the referencing table as first element and the name of the primary key column
      * of the referenced table as the second element.
      *
      */

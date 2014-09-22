@@ -44,6 +44,8 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
 
     void toggleSourceControls();
 
+    void toggleAtlasSpecificControls( const bool atlasEnabled );
+
   private slots:
     void on_mRefreshPushButton_clicked();
     void on_mAttributesPushButton_clicked();
@@ -67,6 +69,7 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
     void on_mAddFramePushButton_clicked();
     void on_mResizeModeComboBox_currentIndexChanged( int index );
     void on_mSourceComboBox_currentIndexChanged( int index );
+    void on_mRelationsComboBox_currentIndexChanged( int index );
 
     /**Inserts a new maximum number of features into the spin box (without the spinbox emitting a signal)*/
     void setMaximumNumberOfFeatures( int n );
@@ -76,6 +79,7 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
 
     void atlasToggled();
 
+    void updateRelationsCombo();
 };
 
 #endif // QGSCOMPOSERATTRIBUTETABLEWIDGET_H

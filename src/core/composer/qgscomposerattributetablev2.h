@@ -96,6 +96,14 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      */
     ContentSource source() const { return mSource; }
 
+    /**Returns the source layer for the table, considering the table source mode. Eg,
+     * if the table is set to atlas feature mode, then the source layer will be the
+     * atlas coverage layer. If the table is set to layer attributes mode, then
+     * the source layer will be the user specified vector layer.
+     * @returns actual source layer
+     */
+    QgsVectorLayer* sourceLayer();
+
     /**Sets the vector layer from which to display feature attributes
      * @param layer Vector layer for attribute table
      * @see vectorLayer
@@ -107,6 +115,22 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @see setVectorLayer
      */
     QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
+
+    /**Sets the relation id from which to display child features
+     * @param relationId id for relation to display child features from
+     * @see relationId
+     * @see setSource
+     * @note only used if table source is set to RelationChildren
+     */
+    void setRelationId( const QString relationId );
+
+    /**Returns the relation id which the table displays child features from
+     * @returns relation id
+     * @see setRelationId
+     * @see source
+     * @note only used if table source is set to RelationChildren
+     */
+    QString relationId() const { return mRelationId; }
 
     /**Resets the attribute table's columns to match the vector layer's fields
      * @see setVectorLayer
@@ -228,6 +252,8 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     ContentSource mSource;
     /**Associated vector layer*/
     QgsVectorLayer* mVectorLayer;
+    /**Relation id, if in relation children mode*/
+    QString mRelationId;
 
     /**Current vector layer, if in atlas feature mode*/
     QgsVectorLayer* mCurrentAtlasLayer;
@@ -244,14 +270,6 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     bool mFilterFeatures;
     /**Feature filter expression*/
     QString mFeatureFilter;
-
-    /**Returns the source layer for the table, considering the table source mode. Eg,
-     * if the table is set to atlas feature mode, then the source layer will be the
-     * atlas coverage layer. If the table is set to layer attributes mode, then
-     * the source layer will be the user specified vector layer.
-     * @returns actual source layer
-     */
-    QgsVectorLayer* sourceLayer();
 
     /**Returns a list of attribute indices corresponding to displayed fields in the table.
      * @note kept for compatibility with 2.0 api only

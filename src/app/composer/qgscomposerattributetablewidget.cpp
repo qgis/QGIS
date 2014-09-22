@@ -26,6 +26,8 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
 #include <QColorDialog>
 #include <QFontDialog>
 
@@ -47,10 +49,10 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
 
   bool atlasEnabled = atlasComposition() && atlasComposition()->enabled();
   mSourceComboBox->addItem( tr( "Layer features" ), QgsComposerAttributeTableV2::LayerAttributes );
-  if ( atlasEnabled )
-  {
-    mSourceComboBox->addItem( tr( "Current atlas feature" ), QgsComposerAttributeTableV2::AtlasFeature );
-  }
+  toggleAtlasSpecificControls( atlasEnabled );
+
+  //update relations combo when relations modified in project
+  connect( QgsProject::instance()->relationManager(), SIGNAL( changed() ), this, SLOT( updateRelationsCombo() ) );
 
   mLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   connect( mLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( changeLayer( QgsMapLayer* ) ) );
@@ -77,9 +79,9 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
     QgsAtlasComposition* atlas = atlasComposition();
     if ( atlas )
     {
-      // repopulate table source combo box if atlas properties change
-//      connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
-//               this, SLOT( populateDataDefinedButtons() ) );
+      // repopulate relations combo box if atlas layer changes
+      connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
+               this, SLOT( updateRelationsCombo() ) );
       connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( atlasToggled() ) );
     }
   }
@@ -162,7 +164,7 @@ void QgsComposerAttributeTableWidget::on_mAttributesPushButton_clicked()
     composition->beginMultiFrameCommand( mComposerTable, tr( "Table attribute settings" ) );
   }
 
-  QgsAttributeSelectionDialog d( mComposerTable, mComposerTable->vectorLayer(), 0 );
+  QgsAttributeSelectionDialog d( mComposerTable, mComposerTable->sourceLayer(), 0 );
   if ( d.exec() == QDialog::Accepted )
   {
     mComposerTable->refreshAttributes();
@@ -427,6 +429,7 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
   blockAllSignals( true );
 
   mSourceComboBox->setCurrentIndex( mSourceComboBox->findData( mComposerTable->source() ) );
+  mRelationsComboBox->setCurrentIndex( mRelationsComboBox->findData( mComposerTable->relationId() ) );
 
   //layer combo box
   if ( mComposerTable->vectorLayer() )
@@ -503,6 +506,34 @@ void QgsComposerAttributeTableWidget::atlasToggled()
 {
   //display/hide atlas options in source combobox depending on atlas status
   bool atlasEnabled = atlasComposition() && atlasComposition()->enabled();
+  toggleAtlasSpecificControls( atlasEnabled );
+
+  mSourceComboBox->blockSignals( true );
+  mSourceComboBox->setCurrentIndex( mSourceComboBox->findData( mComposerTable->source() ) );
+  mSourceComboBox->blockSignals( false );
+}
+
+void QgsComposerAttributeTableWidget::updateRelationsCombo()
+{
+  mRelationsComboBox->blockSignals( true );
+  mRelationsComboBox->clear();
+
+  QgsVectorLayer* atlasLayer = atlasCoverageLayer();
+  if ( atlasLayer )
+  {
+    QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mComposerTable->composition()->atlasComposition().coverageLayer() );
+    Q_FOREACH( const QgsRelation& relation, relations )
+    {
+      mRelationsComboBox->addItem( relation.name(), relation.id() );
+    }
+  }
+
+  mRelationsComboBox->setCurrentIndex( mRelationsComboBox->findData( mComposerTable->relationId() ) );
+  mRelationsComboBox->blockSignals( false );
+}
+
+void QgsComposerAttributeTableWidget::toggleAtlasSpecificControls( const bool atlasEnabled )
+{
   if ( !atlasEnabled )
   {
     if ( mComposerTable->source() == QgsComposerAttributeTableV2::AtlasFeature )
@@ -510,6 +541,11 @@ void QgsComposerAttributeTableWidget::atlasToggled()
       mComposerTable->setSource( QgsComposerAttributeTableV2::LayerAttributes );
     }
     mSourceComboBox->removeItem( mSourceComboBox->findData( QgsComposerAttributeTableV2::AtlasFeature ) );
+    mSourceComboBox->removeItem( mSourceComboBox->findData( QgsComposerAttributeTableV2::RelationChildren ) );
+    mRelationsComboBox->blockSignals( true );
+    mRelationsComboBox->setEnabled( false );
+    mRelationsComboBox->clear();
+    mRelationsComboBox->blockSignals( false );
   }
   else
   {
@@ -518,10 +554,16 @@ void QgsComposerAttributeTableWidget::atlasToggled()
       //add missing atlasfeature option to combobox
       mSourceComboBox->addItem( tr( "Current atlas feature" ), QgsComposerAttributeTableV2::AtlasFeature );
     }
+    if ( mSourceComboBox->findData( QgsComposerAttributeTableV2::RelationChildren ) == -1 )
+    {
+      //add missing relation children option to combobox
+      mSourceComboBox->addItem( tr( "Relation children" ), QgsComposerAttributeTableV2::RelationChildren );
+    }
+
+    //add relations for coverage layer
+    updateRelationsCombo();
+    mRelationsComboBox->setEnabled( true );
   }
-  mSourceComboBox->blockSignals( true );
-  mSourceComboBox->setCurrentIndex( mSourceComboBox->findData( mComposerTable->source() ) );
-  mSourceComboBox->blockSignals( false );
 }
 
 void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
@@ -542,6 +584,7 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
   mHeaderFontColorButton->blockSignals( b );
   mContentFontColorButton->blockSignals( b );
   mResizeModeComboBox->blockSignals( b );
+  mRelationsComboBox->blockSignals( b );
 }
 
 void QgsComposerAttributeTableWidget::setMaximumNumberOfFeatures( int n )
@@ -634,7 +677,7 @@ void QgsComposerAttributeTableWidget::on_mFeatureFilterButton_clicked()
     return;
   }
 
-  QgsExpressionBuilderDialog exprDlg( mComposerTable->vectorLayer(), mFeatureFilterEdit->text(), this );
+  QgsExpressionBuilderDialog exprDlg( mComposerTable->sourceLayer(), mFeatureFilterEdit->text(), this );
   exprDlg.setWindowTitle( tr( "Expression based filter" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
@@ -791,12 +834,33 @@ void QgsComposerAttributeTableWidget::on_mSourceComboBox_currentIndexChanged( in
   toggleSourceControls();
 }
 
+void QgsComposerAttributeTableWidget::on_mRelationsComboBox_currentIndexChanged( int index )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mComposerTable->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Change table source relation" ) );
+    mComposerTable->setRelationId( mRelationsComboBox->itemData( index ).toString() );
+    composition->endMultiFrameCommand();
+  }
+}
+
 void QgsComposerAttributeTableWidget::toggleSourceControls()
 {
   switch ( mComposerTable->source() )
   {
     case QgsComposerAttributeTableV2::LayerAttributes:
       mLayerComboBox->setEnabled( true );
+      mLayerComboBox->setVisible( true );
+      mLayerLabel->setVisible( true );
+      mRelationsComboBox->setEnabled( false );
+      mRelationsComboBox->setVisible( false );
+      mRelationLabel->setVisible( false );
       mMaximumRowsSpinBox->setEnabled( true );
       mMaxNumFeaturesLabel->setEnabled( true );
       mShowOnlyVisibleFeaturesCheckBox->setEnabled( true );
@@ -805,13 +869,29 @@ void QgsComposerAttributeTableWidget::toggleSourceControls()
       break;
     case QgsComposerAttributeTableV2::AtlasFeature:
       mLayerComboBox->setEnabled( false );
+      mLayerComboBox->setVisible( false );
+      mLayerLabel->setVisible( false );
+      mRelationsComboBox->setEnabled( false );
+      mRelationsComboBox->setVisible( false );
+      mRelationLabel->setVisible( false );
       mMaximumRowsSpinBox->setEnabled( false );
       mMaxNumFeaturesLabel->setEnabled( false );
       mShowOnlyVisibleFeaturesCheckBox->setEnabled( false );
       mComposerMapComboBox->setEnabled( false );
       mComposerMapLabel->setEnabled( false );
       break;
-    default:
+    case QgsComposerAttributeTableV2::RelationChildren:
+      mLayerComboBox->setEnabled( false );
+      mLayerComboBox->setVisible( false );
+      mLayerLabel->setVisible( false );
+      mRelationsComboBox->setEnabled( true );
+      mRelationsComboBox->setVisible( true );
+      mRelationLabel->setVisible( true );
+      mMaximumRowsSpinBox->setEnabled( true );
+      mMaxNumFeaturesLabel->setEnabled( true );
+      mShowOnlyVisibleFeaturesCheckBox->setEnabled( true );
+      mComposerMapComboBox->setEnabled( true );
+      mComposerMapLabel->setEnabled( true );
       break;
   }
 }

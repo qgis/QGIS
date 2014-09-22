@@ -84,6 +84,22 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see setVectorLayer
      */
     QgsVectorLayer* vectorLayer() const;
+    
+    /**Sets the relation id from which to display child features
+     * @param relationId id for relation to display child features from
+     * @see relationId
+     * @see setSource
+     * @note only used if table source is set to RelationChildren
+     */
+    void setRelationId( const QString relationId );
+
+    /**Returns the relation id which the table displays child features from
+     * @returns relation id
+     * @see setRelationId
+     * @see source
+     * @note only used if table source is set to RelationChildren
+     */
+    QString relationId() const; 
 
     /**Resets the attribute table's columns to match the vector layer's fields
      * @see setVectorLayer
