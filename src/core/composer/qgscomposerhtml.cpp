@@ -47,6 +47,12 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): 
   mWebPage = new QWebPage();
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
+
+  //This makes the background transparent. Found on http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
+  QPalette palette = mWebPage->palette();
+  palette.setBrush( QPalette::Base, Qt::transparent );
+  mWebPage->setPalette( palette );
+
   mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
   QObject::connect( mWebPage, SIGNAL( loadFinished( bool ) ), this, SLOT( frameLoaded( bool ) ) );
   if ( mComposition )
