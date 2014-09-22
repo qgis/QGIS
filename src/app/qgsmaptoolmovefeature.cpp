@@ -120,7 +120,10 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
     mMovedFeatures = vlayer->selectedFeaturesIds();
 
     mRubberBand = createRubberBand( vlayer->geometryType() );
-    Q_FOREACH( const QgsFeature& feat, vlayer->selectedFeatures() )
+    QgsFeature feat;
+    QgsFeatureIterator it = vlayer->selectedFeaturesIterator( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+
+    while ( it.nextFeature( feat ) )
     {
       mRubberBand->addGeometry( feat.geometry(), vlayer );
     }

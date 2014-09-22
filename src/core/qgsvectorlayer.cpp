@@ -2301,13 +2301,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
 {
   QgsFeatureList features;
 
-  QgsFeatureRequest req;
-  if ( geometryType() == QGis::NoGeometry )
-    req.setFlags( QgsFeatureRequest::NoGeometry );
-
-  req.setFilterFids( mSelectedFeatureIds );
-
-  QgsFeatureIterator it = getFeatures( req );
+  QgsFeatureIterator it = selectedFeaturesIterator();
 
   QgsFeature f;
   while ( it.nextFeature( f ) )
@@ -2316,6 +2310,16 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
   }
 
   return features;
+}
+
+QgsFeatureIterator QgsVectorLayer::selectedFeaturesIterator( QgsFeatureRequest request )
+{
+  if ( geometryType() == QGis::NoGeometry )
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+
+  request.setFilterFids( mSelectedFeatureIds );
+
+  return getFeatures( request );
 }
 
 bool QgsVectorLayer::addFeatures( QgsFeatureList features, bool makeSelected )

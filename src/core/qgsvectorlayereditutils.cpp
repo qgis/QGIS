@@ -198,12 +198,12 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
   int splitFunctionReturn; //return code of QgsGeometry::splitGeometry
   int numberOfSplittedFeatures = 0;
 
-  QgsFeatureList featureList;
+  QgsFeatureIterator features;
   const QgsFeatureIds selectedIds = L->selectedFeaturesIds();
 
   if ( selectedIds.size() > 0 ) //consider only the selected features if there is a selection
   {
-    featureList = L->selectedFeatures();
+    features = L->selectedFeaturesIterator();
   }
   else //else consider all the feature that intersect the bounding box of the split line
   {
@@ -243,28 +243,24 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
       }
     }
 
-    QgsFeatureIterator fit = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
-
-    QgsFeature f;
-    while ( fit.nextFeature( f ) )
-      featureList << QgsFeature( f );
+    features = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
   }
 
-  QgsFeatureList::iterator select_it = featureList.begin();
-  for ( ; select_it != featureList.end(); ++select_it )
+  QgsFeature feat;
+  while ( features.nextFeature( feat ) )
   {
-    if ( !select_it->geometry() )
+    if ( !feat.geometry() )
     {
       continue;
     }
     QList<QgsGeometry*> newGeometries;
     QList<QgsPoint> topologyTestPoints;
     QgsGeometry* newGeometry = 0;
-    splitFunctionReturn = select_it->geometry()->splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
+    splitFunctionReturn = feat.geometry()->splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
     if ( splitFunctionReturn == 0 )
     {
       //change this geometry
-      L->editBuffer()->changeGeometry( select_it->id(), select_it->geometry() );
+      L->editBuffer()->changeGeometry( feat.id(), feat.geometry() );
 
       //insert new features
       for ( int i = 0; i < newGeometries.size(); ++i )
@@ -275,7 +271,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
 
         //use default value where possible for primary key (e.g. autoincrement),
         //and use the value from the original (split) feature if not primary key
-        QgsAttributes newAttributes = select_it->attributes();
+        QgsAttributes newAttributes = feat.attributes();
         foreach ( int pkIdx, L->dataProvider()->pkAttributeIndexes() )
         {
           const QVariant defaultValue = L->dataProvider()->defaultValue( pkIdx );
@@ -335,12 +331,11 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
   int splitFunctionReturn; //return code of QgsGeometry::splitGeometry
   int numberOfSplittedParts = 0;
 
-  QgsFeatureList featureList;
-  const QgsFeatureIds selectedIds = L->selectedFeaturesIds();
+  QgsFeatureIterator fit;
 
-  if ( selectedIds.size() > 0 ) //consider only the selected features if there is a selection
+  if ( L->selectedFeatureCount() > 0 ) //consider only the selected features if there is a selection
   {
-    featureList = L->selectedFeatures();
+    fit = L->selectedFeaturesIterator();
   }
   else //else consider all the feature that intersect the bounding box of the split line
   {
@@ -380,15 +375,13 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
       }
     }
 
-    QgsFeatureIterator fit = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
-
-    QgsFeature f;
-    while ( fit.nextFeature( f ) )
-      featureList << QgsFeature( f );
+    fit = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
   }
 
   int addPartRet = 0;
-  foreach ( const QgsFeature& feat, featureList )
+
+  QgsFeature feat;
+  while ( fit.nextFeature( feat ) )
   {
     QList<QgsGeometry*> newGeometries;
     QList<QgsPoint> topologyTestPoints;
@@ -448,7 +441,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
     qDeleteAll( newGeometries );
   }
 
-  if ( numberOfSplittedParts == 0 && selectedIds.size() > 0  && returnCode == 0 )
+  if ( numberOfSplittedParts == 0 && L->selectedFeatureCount() > 0  && returnCode == 0 )
   {
     //There is a selection but no feature has been split.
     //Maybe user forgot that only the selected features are split
