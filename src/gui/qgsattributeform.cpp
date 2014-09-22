@@ -207,13 +207,14 @@ bool QgsAttributeForm::save()
         {
           if (( dst[i] == src[i] && dst[i].isNull() == src[i].isNull() ) || !dst[i].isValid() )
           {
-            QgsDebugMsg( "equal or invalid destination" );
-            QgsDebugMsg( QString( "dst:'%1' (type:%2,isNull:%3,isValid:%4)" )
-                         .arg( dst[i].toString() ).arg( dst[i].typeName() ).arg( dst[i].isNull() ).arg( dst[i].isValid() ) );
-            QgsDebugMsg( QString( "src:'%1' (type:%2,isNull:%3,isValid:%4)" )
-                         .arg( src[i].toString() ).arg( src[i].typeName() ).arg( src[i].isNull() ).arg( src[i].isValid() ) );
             continue;
           }
+
+          QgsDebugMsg( QString( "Updating field %1" ).arg( i ) );
+          QgsDebugMsg( QString( "dst:'%1' (type:%2, isNull:%3, isValid:%4)" )
+                       .arg( dst[i].toString() ).arg( dst[i].typeName() ).arg( dst[i].isNull() ).arg( dst[i].isValid() ) );
+          QgsDebugMsg( QString( "src:'%1' (type:%2, isNull:%3, isValid:%4)" )
+                       .arg( src[i].toString() ).arg( src[i].typeName() ).arg( src[i].isNull() ).arg( src[i].isValid() ) );
 
           success &= mLayer->changeAttributeValue( mFeature.id(), i, dst[i], src[i] );
           n++;

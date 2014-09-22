@@ -17,7 +17,7 @@
 
 #include <QGridLayout>
 #include <QFileDialog>
-
+#include <QSettings>
 
 #include "qgsfilterlineedit.h"
 
@@ -64,7 +64,12 @@ QVariant QgsPhotoWidgetWrapper::value()
   QVariant v;
 
   if ( mLineEdit )
-    v = mLineEdit->text();
+  {
+    if ( mLineEdit->text() == QSettings().value( "qgis/nullValue", "NULL" ).toString() )
+      v = QVariant( QVariant::String );
+    else
+      v = mLineEdit->text();
+  }
 
   return v;
 }
@@ -123,9 +128,12 @@ void QgsPhotoWidgetWrapper::initWidget( QWidget* editor )
 void QgsPhotoWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mLineEdit )
-    mLineEdit->setText( value.toString() );
-
-
+  {
+    if ( value.isNull() )
+      mLineEdit->setText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+    else
+      mLineEdit->setText( value.toString() );
+  }
 }
 
 void QgsPhotoWidgetWrapper::setEnabled( bool enabled )
