@@ -37,6 +37,8 @@ QgsDualView::QgsDualView( QWidget* parent )
     : QStackedWidget( parent )
     , mEditorContext()
     , mMasterModel( 0 )
+    , mFilterModel( 0 )
+    , mFeatureListModel( 0 )
     , mAttributeForm( 0 )
     , mLayerCache( 0 )
     , mProgressDlg( 0 )
@@ -78,7 +80,9 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
 
   connect( mAttributeForm, SIGNAL( attributeChanged( QString, QVariant ) ), this, SLOT( featureFormAttributeChanged() ) );
 
-  if ( !mFeatureListPreviewButton->actions().count() )
+  if ( mFeatureListPreviewButton->defaultAction() )
+    mFeatureList->setDisplayExpression( mDisplayExpression );
+  else
     columnBoxInit();
 }
 
@@ -143,21 +147,10 @@ void QgsDualView::columnBoxInit()
     }
   }
 
-  // now initialise the menu
-  QList< QAction* > previewActions = mFeatureListPreviewButton->actions();
-  foreach ( QAction* a, previewActions )
-  {
-    if ( a != mActionExpressionPreview )
-    {
-      mPreviewActionMapper->removeMappings( a );
-      delete a;
-    }
-  }
-
   mFeatureListPreviewButton->addAction( mActionExpressionPreview );
   mFeatureListPreviewButton->addAction( mActionPreviewColumnsMenu );
 
-  foreach ( const QgsField& field, fields )
+  Q_FOREACH( const QgsField& field, fields )
   {
     if ( mLayerCache->layer()->editorWidgetV2( mLayerCache->layer()->fieldNameIndex( field.name() ) ) != "Hidden" )
     {
@@ -182,6 +175,7 @@ void QgsDualView::columnBoxInit()
   {
     mFeatureList->setDisplayExpression( displayExpression );
     mFeatureListPreviewButton->setDefaultAction( mActionExpressionPreview );
+    mDisplayExpression = mFeatureList->displayExpression();
   }
   else
   {
@@ -223,6 +217,10 @@ void QgsDualView::initLayerCache( QgsVectorLayer* layer )
 
 void QgsDualView::initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request )
 {
+  delete mFeatureListModel;
+  delete mFilterModel;
+  delete mMasterModel;
+
   mMasterModel = new QgsAttributeTableModel( mLayerCache, this );
   mMasterModel->setRequest( request );
   mMasterModel->setEditorContext( mEditorContext );
@@ -282,6 +280,8 @@ void QgsDualView::previewExpressionBuilder()
     mFeatureListPreviewButton->setDefaultAction( mActionExpressionPreview );
     mFeatureListPreviewButton->setPopupMode( QToolButton::MenuButtonPopup );
   }
+
+  mDisplayExpression = mFeatureList->displayExpression();
 }
 
 void QgsDualView::previewColumnChanged( QObject* action )
@@ -305,6 +305,8 @@ void QgsDualView::previewColumnChanged( QObject* action )
       mFeatureListPreviewButton->setPopupMode( QToolButton::InstantPopup );
     }
   }
+
+  mDisplayExpression = mFeatureList->displayExpression();
 
   Q_ASSERT( previewAction );
 }

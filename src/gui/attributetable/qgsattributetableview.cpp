@@ -118,8 +118,10 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel 
   mFilterModel = filterModel;
   QTableView::setModel( filterModel );
 
+  connect( mFilterModel, SIGNAL( destroyed() ), this, SLOT( modelDeleted() ) );
+
   delete mFeatureSelectionModel;
-  mFeatureSelectionModel = NULL;
+  mFeatureSelectionModel = 0;
 
   if ( filterModel )
   {
@@ -253,6 +255,13 @@ void QgsAttributeTableView::selectRow( int row )
 void QgsAttributeTableView::_q_selectRow( int row )
 {
   selectRow( row, false );
+}
+
+void QgsAttributeTableView::modelDeleted()
+{
+  mFilterModel = 0;
+  mFeatureSelectionManager = 0;
+  mFeatureSelectionModel = 0;
 }
 
 void QgsAttributeTableView::selectRow( int row, bool anchor )
