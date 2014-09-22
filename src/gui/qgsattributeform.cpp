@@ -312,8 +312,15 @@ void QgsAttributeForm::init()
 
   // Cleanup of any previously shown widget, we start from scratch
   QWidget* formWidget = 0;
-  delete mButtonBox;
-  mButtonBox = 0;
+
+  bool buttonBoxVisible = true;
+  // Cleanup button box but preserve visibility
+  if ( mButtonBox )
+  {
+    buttonBoxVisible = mButtonBox->isVisible();
+    delete mButtonBox;
+    mButtonBox = 0;
+  }
 
   qDeleteAll( mWidgets );
   mWidgets.clear();
@@ -450,6 +457,8 @@ void QgsAttributeForm::init()
     mButtonBox->setObjectName( "buttonBox" );
     layout()->addWidget( mButtonBox );
   }
+
+  mButtonBox->setVisible( buttonBoxVisible );
 
   connectWrappers();
 
