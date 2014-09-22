@@ -19,7 +19,7 @@ class QgsAttributeEditorElement : QObject
       AeTypeInvalid
     };
 
-    QgsAttributeEditorElement( AttributeEditorType type, QString name, QObject *parent = NULL );
+    QgsAttributeEditorElement( AttributeEditorType type, QString name, QObject *parent /TransferThis/ = NULL );
 
     virtual ~QgsAttributeEditorElement();
 
@@ -37,7 +37,7 @@ class QgsAttributeEditorContainer : QgsAttributeEditorElement
 %End
 
   public:
-    QgsAttributeEditorContainer( QString name, QObject *parent );
+    QgsAttributeEditorContainer( QString name, QObject *parent  /TransferThis/ );
 
     ~QgsAttributeEditorContainer();
 
@@ -54,7 +54,7 @@ class QgsAttributeEditorField : QgsAttributeEditorElement
 #include "qgsvectorlayer.h"
 %End
   public:
-    QgsAttributeEditorField( QString name , int idx, QObject *parent );
+    QgsAttributeEditorField( QString name , int idx, QObject *parent /TransferThis/ );
 
     ~QgsAttributeEditorField();
 
@@ -66,9 +66,9 @@ class QgsAttributeEditorField : QgsAttributeEditorElement
 class QgsAttributeEditorRelation : QgsAttributeEditorElement
 {
   public:
-    QgsAttributeEditorRelation( QString name, const QString &relationId, QObject *parent );
+    QgsAttributeEditorRelation( QString name, const QString &relationId, QObject *parent /TransferThis/ );
 
-    QgsAttributeEditorRelation( QString name, const QgsRelation& relation, QObject *parent );
+    QgsAttributeEditorRelation( QString name, const QgsRelation& relation, QObject *parent /TransferThis/);
 
     ~QgsAttributeEditorRelation();
 
