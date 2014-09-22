@@ -2305,10 +2305,14 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
   if ( geometryType() == QGis::NoGeometry )
     req.setFlags( QgsFeatureRequest::NoGeometry );
 
-  foreach ( QgsFeatureId fid, mSelectedFeatureIds )
+  req.setFilterFids( mSelectedFeatureIds );
+
+  QgsFeatureIterator it = getFeatures( req );
+
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
   {
-    features.push_back( QgsFeature() );
-    getFeatures( req.setFilterFid( fid ) ).nextFeature( features.back() );
+    features.push_back( f );
   }
 
   return features;
