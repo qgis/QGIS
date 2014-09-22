@@ -75,6 +75,13 @@ void QgsWebViewWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mLineEdit )
   {
+
+    QgsFilterLineEdit* fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
+    if ( fle )
+    {
+      fle->setNullValue( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+    }
+
     container = qobject_cast<QWidget*>( mLineEdit->parent() );
   }
   else

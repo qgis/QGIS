@@ -120,6 +120,13 @@ void QgsPhotoWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mLineEdit )
   {
+
+    QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
+    if ( fle )
+    {
+      fle->setNullValue( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+    }
+
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( loadPixmap( QString ) ) );
   }

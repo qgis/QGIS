@@ -16,8 +16,10 @@
 #include "qgsuniquevaluewidgetwrapper.h"
 
 #include "qgsvectorlayer.h"
+#include "qgsfilterlineedit.h"
 
 #include <QCompleter>
+#include <QSettings>
 
 QgsUniqueValuesWidgetWrapper::QgsUniqueValuesWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
@@ -32,7 +34,12 @@ QVariant QgsUniqueValuesWidgetWrapper::value()
     value = mComboBox->itemData( mComboBox->currentIndex() );
 
   if ( mLineEdit )
-    value = mLineEdit->text();
+  {
+    if ( mLineEdit->text() == QSettings().value( "qgis/nullValue", "NULL" ).toString() )
+      value = QVariant( field().type() );
+    else
+      value = mLineEdit->text();
+  }
 
   return value;
 }
@@ -40,7 +47,7 @@ QVariant QgsUniqueValuesWidgetWrapper::value()
 QWidget* QgsUniqueValuesWidgetWrapper::createWidget( QWidget* parent )
 {
   if ( config( "Editable" ).toBool() )
-    return new QLineEdit( parent );
+    return new QgsFilterLineEdit( parent );
   else
     return new QComboBox( parent );
 }
@@ -56,7 +63,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget* editor )
 
   layer()->uniqueValues( fieldIdx(), values );
 
-  Q_FOREACH ( QVariant v, values )
+  Q_FOREACH( QVariant v, values )
   {
     if ( mComboBox )
     {
@@ -71,6 +78,12 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mLineEdit )
   {
+    QgsFilterLineEdit* fle = qobject_cast<QgsFilterLineEdit*>( editor );
+    if ( fle && !( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) )
+    {
+      fle->setNullValue( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+    }
+
     QCompleter* c = new QCompleter( sValues );
     c->setCompletionMode( QCompleter::PopupCompletion );
     mLineEdit->setCompleter( c );
@@ -93,6 +106,9 @@ void QgsUniqueValuesWidgetWrapper::setValue( const QVariant& value )
 
   if ( mLineEdit )
   {
-    mLineEdit->setText( value.toString() );
+    if ( value.isNull() )
+      mLineEdit->setText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+    else
+      mLineEdit->setText( value.toString() );
   }
 }
