@@ -373,12 +373,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   QSignalMapper *smPublied = new QSignalMapper( this );
   connect( smPublied, SIGNAL( mapped( int ) ), this, SLOT( cbxWFSPubliedStateChanged( int ) ) );
-  QSignalMapper *smUpdate = new QSignalMapper( this );
-  connect( smUpdate, SIGNAL( mapped( int ) ), this, SLOT( cbxWFSUpdateStateChanged( int ) ) );
-  QSignalMapper *smInsert = new QSignalMapper( this );
-  connect( smInsert, SIGNAL( mapped( int ) ), this, SLOT( cbxWFSInsertStateChanged( int ) ) );
-  QSignalMapper *smDelete = new QSignalMapper( this );
-  connect( smDelete, SIGNAL( mapped( int ) ), this, SLOT( cbxWFSDeleteStateChanged( int ) ) );
 
   twWFSLayers->setColumnCount( 6 );
   twWFSLayers->horizontalHeader()->setVisible( true );
@@ -418,27 +412,18 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
         QCheckBox* cbu = new QCheckBox();
         cbu->setChecked( wfstUpdateLayerIdList.contains( currentLayer->id() ) );
         twWFSLayers->setCellWidget( j, 3, cbu );
-
-        smUpdate->setMapping( cbu, j );
-        connect( cbu, SIGNAL( stateChanged( int ) ), smUpdate, SLOT( map() ) );
       }
       if (( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
       {
         QCheckBox* cbi = new QCheckBox();
         cbi->setChecked( wfstInsertLayerIdList.contains( currentLayer->id() ) );
         twWFSLayers->setCellWidget( j, 4, cbi );
-
-        smInsert->setMapping( cbi, j );
-        connect( cbi, SIGNAL( stateChanged( int ) ), smInsert, SLOT( map() ) );
       }
       if (( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
       {
         QCheckBox* cbd = new QCheckBox();
         cbd->setChecked( wfstDeleteLayerIdList.contains( currentLayer->id() ) );
         twWFSLayers->setCellWidget( j, 5, cbd );
-
-        smDelete->setMapping( cbd, j );
-        connect( cbd, SIGNAL( stateChanged( int ) ), smDelete, SLOT( map() ) );
       }
 
       j++;
@@ -1010,54 +995,21 @@ void QgsProjectProperties::cbxWFSPubliedStateChanged( int aIdx )
   QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 1 ) );
   if ( cb && !cb->isChecked() )
   {
-    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 2 ) );
-    if ( cbn )
-      cbn->setChecked( false );
-  }
-}
-
-void QgsProjectProperties::cbxWFSUpdateStateChanged( int aIdx )
-{
-  QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 2 ) );
-  if ( cb && cb->isChecked() )
-  {
-    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 1 ) );
-    if ( cbn )
-      cbn->setChecked( true );
-  }
-  else if ( cb && !cb->isChecked() )
-  {
-    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
-    if ( cbn )
-      cbn->setChecked( false );
-  }
-}
-
-void QgsProjectProperties::cbxWFSInsertStateChanged( int aIdx )
-{
-  QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
-  if ( cb && cb->isChecked() )
-  {
-    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 2 ) );
-    if ( cbn )
-      cbn->setChecked( true );
-  }
-  else if ( cb && !cb->isChecked() )
-  {
-    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 4 ) );
-    if ( cbn )
-      cbn->setChecked( false );
-  }
-}
-
-void QgsProjectProperties::cbxWFSDeleteStateChanged( int aIdx )
-{
-  QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 4 ) );
-  if ( cb && cb->isChecked() )
-  {
-    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
-    if ( cbn )
-      cbn->setChecked( true );
+    QCheckBox* cbUpdate = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
+    if ( cbUpdate )
+    {
+      cbUpdate->setChecked( false );
+    }
+    QCheckBox* cbInsert = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 4 ) );
+    if ( cbInsert )
+    {
+      cbInsert->setChecked( false );
+    }
+    QCheckBox* cbDelete = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 5 ) );
+    if ( cbDelete )
+    {
+      cbDelete->setChecked( false );
+    }
   }
 }
 
