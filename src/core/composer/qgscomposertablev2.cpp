@@ -266,6 +266,15 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
     currentY = ( mShowGrid ? mGridStrokeWidth : 0 );
     currentX += mCellMargin;
 
+    Qt::TextFlag textFlag = ( Qt::TextFlag )0;
+    if (( *columnIt )->width() <= 0 )
+    {
+      //automatic column width, so we use the Qt::TextDontClip flag when drawing contents, as this works nicer for italicised text
+      //which may slightly exceed the calculated width
+      //if column size was manually set then we do apply text clipping, to avoid painting text outside of columns width
+      textFlag = Qt::TextDontClip;
+    }
+
     if ( drawHeader )
     {
       //draw the header
@@ -289,8 +298,7 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
           break;
       }
 
-
-      QgsComposerUtils::drawText( p, cell, ( *columnIt )->heading(), mHeaderFont, mHeaderFontColor, headerAlign, Qt::AlignVCenter, Qt::TextDontClip );
+      QgsComposerUtils::drawText( p, cell, ( *columnIt )->heading(), mHeaderFont, mHeaderFontColor, headerAlign, Qt::AlignVCenter, textFlag );
 
       currentY += cellHeaderHeight;
       currentY += ( mShowGrid ? mGridStrokeWidth : 0 );
@@ -303,7 +311,8 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
 
       QVariant cellContents = mTableContents.at( row ).at( col );
       QString str = cellContents.toString();
-      QgsComposerUtils::drawText( p, cell, str, mContentFont, mContentFontColor, ( *columnIt )->hAlignment(), Qt::AlignVCenter, Qt::TextDontClip );
+
+      QgsComposerUtils::drawText( p, cell, str, mContentFont, mContentFontColor, ( *columnIt )->hAlignment(), Qt::AlignVCenter, textFlag );
 
       currentY += cellBodyHeight;
       currentY += ( mShowGrid ? mGridStrokeWidth : 0 );
@@ -537,10 +546,16 @@ bool QgsComposerTableV2::calculateMaxColumnWidths()
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
     double width = 0;
-    if ( mHeaderMode != QgsComposerTableV2::NoHeaders )
+    if (( *columnIt )->width() > 0 )
+    {
+      //column has manually specified width
+      width = ( *columnIt )->width();
+    }
+    else if ( mHeaderMode != QgsComposerTableV2::NoHeaders )
     {
       width = QgsComposerUtils::textWidthMM( mHeaderFont, ( *columnIt )->heading() );
     }
+
     mMaxColumnWidthMap.insert( col, width );
     col++;
   }
@@ -554,8 +569,12 @@ bool QgsComposerTableV2::calculateMaxColumnWidths()
     int columnNumber = 0;
     for ( ; colIt != rowIt->constEnd(); ++colIt )
     {
-      currentCellTextWidth = QgsComposerUtils::textWidthMM( mContentFont, ( *colIt ).toString() );
-      mMaxColumnWidthMap[ columnNumber ] = qMax( currentCellTextWidth, mMaxColumnWidthMap[ columnNumber ] );
+      if ( mColumns.at( columnNumber )->width() <= 0 )
+      {
+        //column width set to automatic, so check content size
+        currentCellTextWidth = QgsComposerUtils::textWidthMM( mContentFont, ( *colIt ).toString() );
+        mMaxColumnWidthMap[ columnNumber ] = qMax( currentCellTextWidth, mMaxColumnWidthMap[ columnNumber ] );
+      }
       columnNumber++;
     }
   }

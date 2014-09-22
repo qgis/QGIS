@@ -63,7 +63,7 @@ int QgsComposerAttributeTableColumnModelV2::rowCount( const QModelIndex &parent 
 int QgsComposerAttributeTableColumnModelV2::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
-  return 3;
+  return 4;
 }
 
 QVariant QgsComposerAttributeTableColumnModelV2::data( const QModelIndex &index, int role ) const
@@ -119,7 +119,18 @@ QVariant QgsComposerAttributeTableColumnModelV2::data( const QModelIndex &index,
         return column->hAlignment();
       }
     }
-
+    case 3:
+    {
+      if ( role == Qt::DisplayRole )
+      {
+        return column->width() <= 0 ? tr( "Automatic" ) : QString( tr( "%1 mm" ) ).arg( column->width(), 0, 'f', 2 );
+      }
+      else
+      {
+        //edit role
+        return column->width();
+      }
+    }
     default:
       return QVariant();
   }
@@ -151,6 +162,9 @@ QVariant QgsComposerAttributeTableColumnModelV2::headerData( int section, Qt::Or
 
         case 2:
           return QVariant( tr( "Alignment" ) );
+
+        case 3:
+          return QVariant( tr( "Width" ) );
 
         default:
           return QVariant();
@@ -199,6 +213,10 @@ bool QgsComposerAttributeTableColumnModelV2::setData( const QModelIndex& index, 
       return true;
     case 2:
       column->setHAlignment(( Qt::AlignmentFlag )value.toInt() );
+      emit dataChanged( index, index );
+      return true;
+    case 3:
+      column->setWidth( value.toDouble( ) );
       emit dataChanged( index, index );
       return true;
     default:

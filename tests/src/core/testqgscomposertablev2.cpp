@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include "qgscomposermap.h"
 #include "qgscomposerattributetablev2.h"
+#include "qgscomposertablecolumn.h"
 #include "qgscomposerframe.h"
 #include "qgsmapsettings.h"
 #include "qgsvectorlayer.h"
@@ -45,6 +46,8 @@ class TestQgsComposerTableV2: public QObject
     void attributeTableSetAttributes(); //test subset of attributes in table
     void attributeTableVisibleOnly(); //test displaying only visible attributes
     void attributeTableRender(); //test rendering attribute table
+
+    void manualColumnWidth(); //test setting manual column widths
 
     void attributeTableExtend();
     void attributeTableRepeat();
@@ -298,6 +301,16 @@ void TestQgsComposerTableV2::attributeTableRender()
   mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
   QgsCompositionChecker checker( "composerattributetable_render", mComposition );
   bool result = checker.testComposition( mReport, 0 );
+  QVERIFY( result );
+}
+
+void TestQgsComposerTableV2::manualColumnWidth()
+{
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
+  mComposerAttributeTable->columns()->at( 0 )->setWidth( 5 );
+  QgsCompositionChecker checker( "composerattributetable_columnwidth", mComposition );
+  bool result = checker.testComposition( mReport, 0 );
+  mComposerAttributeTable->columns()->at( 0 )->setWidth( 0 );
   QVERIFY( result );
 }
 

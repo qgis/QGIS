@@ -48,6 +48,20 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      */
     virtual bool readXML( const QDomElement& columnElem );
 
+    /**Returns the width for a column.
+     * @returns column width in mm, or 0 if column width is automatically calculated.
+     * @note added in 2.5
+     * @see setWidth
+     */
+    double width() const { return mWidth; }
+
+    /**Sets the width for a column.
+     * @param width column width in mm, or 0 if column width is to be automatically calculated.
+     * @note added in 2.5
+     * @see width
+     */
+    void setWidth( const double width ) { mWidth = width; }
+
     /**Returns the heading for a column, which is the value displayed in the columns
      * header cell.
      * @returns Heading for column.
@@ -160,6 +174,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
     QString mAttribute;
     int mSortByRank;
     Qt::SortOrder mSortOrder;
+    double mWidth;
 
 };
 

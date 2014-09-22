@@ -217,6 +217,52 @@ void QgsComposerColumnSortOrderDelegate::updateEditorGeometry( QWidget* editor, 
 }
 
 
+//
+// QgsComposerColumnWidthDelegate
+//
+
+QgsComposerColumnWidthDelegate::QgsComposerColumnWidthDelegate( QObject *parent )
+    : QItemDelegate( parent )
+{
+
+}
+
+QWidget *QgsComposerColumnWidthDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  Q_UNUSED( index );
+  Q_UNUSED( option );
+  QDoubleSpinBox *editor = new QDoubleSpinBox( parent );
+  editor->setMinimum( 0 );
+  editor->setMaximum( 1000 );
+  editor->setDecimals( 2 );
+  editor->setSuffix( tr( " mm" ) );
+  editor->setSpecialValueText( tr( "Automatic" ) );
+  return editor;
+}
+
+void QgsComposerColumnWidthDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+{
+  int value = index.model()->data( index, Qt::EditRole ).toInt();
+
+  QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>( editor );
+  spinBox->setValue( value );
+}
+
+void QgsComposerColumnWidthDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+{
+  QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>( editor );
+  spinBox->interpretText();
+  int value = spinBox->value();
+
+  model->setData( index, value, Qt::EditRole );
+}
+
+void QgsComposerColumnWidthDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  Q_UNUSED( index );
+  editor->setGeometry( option.rect );
+}
+
 
 // QgsAttributeSelectionDialog
 
@@ -232,7 +278,8 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
     mAvailableSortProxyModel( 0 ),
     mAvailableSortProxyModelV1( 0 ),
     mColumnAlignmentDelegate( 0 ),
-    mColumnSortOrderDelegate( 0 )
+    mColumnSortOrderDelegate( 0 ),
+    mColumnWidthDelegate( 0 )
 {
   setupUi( this );
 
@@ -250,6 +297,8 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
     mColumnsTableView->setItemDelegateForColumn( 0, mColumnSourceDelegate );
     mColumnAlignmentDelegate = new QgsComposerColumnAlignmentDelegate( mColumnsTableView );
     mColumnsTableView->setItemDelegateForColumn( 2, mColumnAlignmentDelegate );
+    mColumnWidthDelegate = new QgsComposerColumnWidthDelegate( mColumnsTableView );
+    mColumnsTableView->setItemDelegateForColumn( 3, mColumnWidthDelegate );
 
     mAvailableSortProxyModel = new QgsComposerTableSortColumnsProxyModelV2( mComposerTable, QgsComposerTableSortColumnsProxyModelV2::ShowUnsortedColumns, mSortColumnComboBox );
     mAvailableSortProxyModel->setSourceModel( mColumnModel );
@@ -540,3 +589,4 @@ void QgsAttributeSelectionDialog::on_mSortColumnDownPushButton_clicked()
     mColumnModelV1->moveColumnInSortRank( column, QgsComposerAttributeTableColumnModel::ShiftDown );
   }
 }
+
