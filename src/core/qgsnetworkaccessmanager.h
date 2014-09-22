@@ -84,6 +84,41 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
     bool useSystemProxy() { return mUseSystemProxy; }
 
+    // NOTE: The following PKI hash/passphrase cache is in this singleton,
+    //       since it doesn't seem to function in QgsCredentials.
+
+    /**
+     * @brief Cache a hash/passphrase for private key of PKI certificate
+     * @param Cryptographic hash representing the checksum of the private key's data
+     * @param The passphrase
+     * @note Do NOT expose to Python
+     */
+    void setKeyPass( const QString& keyhash, const QString& keypass ) { mKeyPasses.insert( keyhash, keypass ); }
+    /**
+     * @brief Whether cache has a hash/passphrase for private key of PKI certificate
+     * @param Cryptographic hash representing the checksum of the private key's data
+     * @note Do NOT expose to Python
+     */
+    bool hasKeyPass( const QString& keyhash ) { return mKeyPasses.contains( keyhash ); }
+    /**
+     * @brief Get passphrase for private key of PKI certificate
+     * @param Cryptographic hash representing the checksum of the private key's data
+     *
+     * @note ################## Do NOT expose to Python ######################
+     */
+    const QString keyPass( const QString& keyhash ) { return mKeyPasses.value( keyhash ); }
+    /**
+     * @brief Remove cache entry for a hash/passphrase for private key of PKI certificate
+     * @param Cryptographic hash representing the checksum of the private key's data
+     * @note Do NOT expose to Python
+     */
+    bool removeKeyPass( const QString& keyhash ) { return ( bool ) mKeyPasses.remove( keyhash ); }
+    /**
+     * @brief Clear cache of hash/passphrases for private keys of PKI certificates
+     * @note Do NOT expose to Python
+     */
+    void clearKeyPasses() { mKeyPasses.clear(); }
+
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
@@ -100,6 +135,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
     bool mUseSystemProxy;
+    QHash< QString, QString > mKeyPasses;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H

@@ -100,6 +100,7 @@
 %Include qgsscalerangewidget.sip
 %Include qgsscalevisibilitydialog.sip
 %Include qgssearchquerybuilder.sip
+%Include qgssslcertificatewidget.sip
 %Include qgstextannotationitem.sip
 %Include qgsvertexmarker.sip
 %Include qgsvectorlayertools.sip

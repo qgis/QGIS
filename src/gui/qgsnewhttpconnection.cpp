@@ -16,6 +16,9 @@
  ***************************************************************************/
 #include "qgsnewhttpconnection.h"
 #include "qgscontexthelp.h"
+#ifndef QT_NO_OPENSSL
+#include "qgssslcertificatewidget.h"
+#endif
 #include <QSettings>
 #include <QMessageBox>
 #include <QUrl>
@@ -26,7 +29,8 @@ QgsNewHttpConnection::QgsNewHttpConnection(
   QWidget *parent, const QString& baseKey, const QString& connName, Qt::WindowFlags fl ):
     QDialog( parent, fl ),
     mBaseKey( baseKey ),
-    mOriginalConnName( connName )
+    mOriginalConnName( connName ),
+    mCertWidget( 0 )
 {
   setupUi( this );
 
@@ -48,6 +52,11 @@ QgsNewHttpConnection::QgsNewHttpConnection(
   cmbDpiMode->addItem( tr( "QGIS" ) );
   cmbDpiMode->addItem( tr( "UMN" ) );
   cmbDpiMode->addItem( tr( "GeoServer" ) );
+
+#ifndef QT_NO_OPENSSL
+  mCertWidget = new QgsSslCertificateWidget( this );
+  tabAuth->insertTab( 1, mCertWidget, tr( "Certificate" ) );
+#endif
 
   if ( !connName.isEmpty() )
   {
@@ -92,6 +101,18 @@ QgsNewHttpConnection::QgsNewHttpConnection(
 
     txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
     txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
+
+#ifndef QT_NO_OPENSSL
+    mCertWidget->loadSettings(
+      ( QgsSslCertSettings::SslStoreType ) settings.value( credentialsKey + "/ssl/store", QgsSslCertSettings::QGISStore ).toUInt(),
+      settings.value( credentialsKey + "/ssl/certid", "" ).toString(),
+      settings.value( credentialsKey + "/ssl/keyid", "" ).toString(),
+      settings.value( credentialsKey + "/ssl/haskeypass", false ).toBool(),
+      settings.value( credentialsKey + "/ssl/issuerid", "" ).toString(),
+      settings.value( credentialsKey + "/ssl/issuerself", false ).toBool()
+    );
+    mCertWidget->setAccessUrl( settings.value( key + "/url" ).toString() );
+#endif
   }
 
   if ( mBaseKey != "/Qgis/connections-wms/" )
@@ -247,6 +268,20 @@ void QgsNewHttpConnection::accept()
   settings.setValue( credentialsKey + "/password", txtPassword->text() );
 
   settings.setValue( mBaseKey + "/selected", txtName->text() );
+
+#ifndef QT_NO_OPENSSL
+  settings.setValue( credentialsKey + "/ssl/store", ( unsigned ) mCertWidget->ssLStoreType() );
+  settings.setValue( credentialsKey + "/ssl/certid", mCertWidget->certId() );
+  settings.setValue( credentialsKey + "/ssl/keyid", mCertWidget->keyId() );
+  settings.setValue( credentialsKey + "/ssl/haskeypass", mCertWidget->keyHasPassPhrase() );
+  settings.setValue( credentialsKey + "/ssl/issuerid", mCertWidget->issuerId() );
+  settings.setValue( credentialsKey + "/ssl/issuerself", mCertWidget->issuerSelfSigned() );
+  // this setting is not loaded into the SSL widget, but is stored only on apply and
+  // used later, to decide whether connection URI is to include SSL components
+  // NOTE: this doesn't mean the cert will be valid at a later date, when the user loads the project,
+  //       just that we should pass the validated cert until the user decides otherwise
+  settings.setValue( credentialsKey + "/ssl/validcert", mCertWidget->certIsValid() );
+#endif
 
   QDialog::accept();
 }

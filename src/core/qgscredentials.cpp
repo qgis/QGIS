@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 
 #include <QTextStream>
+#include <QUrl>
 
 QgsCredentials *QgsCredentials::smInstance = 0;
 
@@ -77,6 +78,28 @@ void QgsCredentials::put( QString realm, QString username, QString password )
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
 }
 
+bool QgsCredentials::getSslNoCache( QString &password, QString accessurl, QString message )
+{
+  // shorten url of resource to keep any dialog from being too wide
+  QString resource = QString::null;
+  if ( !accessurl.isEmpty() )
+  {
+    QUrl url( accessurl );
+    resource = QString( "%1://%2:%3" ).arg( url.scheme() ).arg( url.host() ).arg( url.port() );
+  }
+
+  if ( requestSsl( password, resource, message ) )
+  {
+    QgsDebugMsg( "Retrieve SSL password succeeded" );
+    return true;
+  }
+  else
+  {
+    QgsDebugMsg( "Retrieve SSL password failed" );
+    return false;
+  }
+}
+
 void QgsCredentials::lock()
 {
   mMutex.lock();
@@ -106,6 +129,22 @@ bool QgsCredentialsConsole::request( QString realm, QString &username, QString &
     out << "message: " << message << endl;
   out << "username: ";
   in >> username;
+  out << "password: ";
+  in >> password;
+
+  return true;
+}
+
+bool QgsCredentialsConsole::requestSsl( QString &password, QString resource, QString message )
+{
+  QTextStream in( stdin, QIODevice::ReadOnly );
+  QTextStream out( stdout, QIODevice::WriteOnly );
+
+  out << "Enter password for certificate key";
+  if ( !resource.isEmpty() )
+    out << "for resource: " << resource << endl;
+  if ( !message.isEmpty() )
+    out << "message: " << message << endl;
   out << "password: ";
   in >> password;
 
