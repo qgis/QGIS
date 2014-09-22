@@ -164,7 +164,7 @@ bool QgsAttributeForm::save()
         QVariant srcVar = eww->value();
         // need to check dstVar.isNull() != srcVar.isNull()
         // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
-        if (( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() )
+        if (( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() && mLayer->fieldEditable( eww->fieldIdx() ) )
         {
           dst[eww->fieldIdx()] = srcVar;
 
@@ -205,7 +205,9 @@ bool QgsAttributeForm::save()
         int n = 0;
         for ( int i = 0; i < dst.count(); ++i )
         {
-          if (( dst[i] == src[i] && dst[i].isNull() == src[i].isNull() ) || !dst[i].isValid() )
+          if (( dst[i] == src[i] && dst[i].isNull() == src[i].isNull() )  // If field is not changed...
+              || !dst[i].isValid()                                       // or the widget returns invalid (== do not change)
+              || !mLayer->fieldEditable( i ) )                           // or the field cannot be edited ...
           {
             continue;
           }
