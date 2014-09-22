@@ -2296,7 +2296,6 @@ const QgsFeatureIds& QgsVectorLayer::selectedFeaturesIds() const
   return mSelectedFeatureIds;
 }
 
-
 QgsFeatureList QgsVectorLayer::selectedFeatures()
 {
   QgsFeatureList features;

@@ -373,6 +373,18 @@ class QgsVectorLayer : QgsMapLayer
     QgsFeatureList selectedFeatures();
 
     /**
+     * Get an iterator of the selected features
+     *
+     * @param request You may specify a request, e.g. to limit the set of requested attributes.
+     *                Any filter on the request will be discarded.
+     *
+     * @return Iterator over the selected features
+     *
+     * @see    selectedFeaturesIds()
+     */
+    QgsFeatureIterator selectedFeaturesIterator( QgsFeatureRequest request = QgsFeatureRequest() );
+
+    /**
      * Return reference to identifiers of selected features
      *
      * @return A list of { @link QgsFeatureId } 's

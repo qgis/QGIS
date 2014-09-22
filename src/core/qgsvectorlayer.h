@@ -731,6 +731,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @return A list of { @link QgsFeature } 's
      *
      * @see    selectedFeaturesIds()
+     * @see    selectedFeaturesIterator() which is more memory friendly when handling large selections
      */
     QgsFeatureList selectedFeatures();
 
@@ -743,6 +744,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @return Iterator over the selected features
      *
      * @see    selectedFeaturesIds()
+     * @see    selectedFeatures()
      */
     QgsFeatureIterator selectedFeaturesIterator( QgsFeatureRequest request = QgsFeatureRequest() );
 
