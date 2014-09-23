@@ -134,14 +134,14 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
   font.setItalic( true );
   mInvalidLabel->setStyleSheet( "QLabel { color: red; } " );
   mInvalidLabel->setFont( font );
-  mTopLayout->addWidget( mInvalidLabel, 1, 0 );
-  mInvalidLabel->hide();
+  mTopLayout->addWidget( mInvalidLabel );
 
   // default mode is combobox, no geometric relation and no embed form
   mLineEdit->hide();
   mMapIdentificationButton->hide();
   mHighlightFeatureButton->hide();
   mAttributeEditorFrame->hide();
+  mInvalidLabel->hide();
 }
 
 QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
