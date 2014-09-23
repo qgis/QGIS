@@ -104,6 +104,7 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* compos
     , mCurrentAtlasLayer( 0 )
     , mComposerMap( 0 )
     , mMaximumNumberOfFeatures( 5 )
+    , mShowUniqueRowsOnly( false )
     , mShowOnlyVisibleFeatures( false )
     , mFilterToAtlasIntersection( false )
     , mFilterFeatures( false )
@@ -289,6 +290,18 @@ void QgsComposerAttributeTableV2::setMaximumNumberOfFeatures( const int features
   }
 
   mMaximumNumberOfFeatures = features;
+  refreshAttributes();
+  emit changed();
+}
+
+void QgsComposerAttributeTableV2::setUniqueRowsOnly( const bool uniqueOnly )
+{
+  if ( uniqueOnly == mShowUniqueRowsOnly )
+  {
+    return;
+  }
+
+  mShowUniqueRowsOnly = uniqueOnly;
   refreshAttributes();
   emit changed();
 }
@@ -555,8 +568,12 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
         currentRow << value;
       }
     }
-    contents << currentRow;
-    ++counter;
+
+    if ( !mShowUniqueRowsOnly || !contentsContainsRow( contents, currentRow ) )
+    {
+      contents << currentRow;
+      ++counter;
+    }
   }
 
   //sort the list, starting with the last attribute
@@ -644,6 +661,7 @@ bool QgsComposerAttributeTableV2::writeXML( QDomElement& elem, QDomDocument & do
   QDomElement composerTableElem = doc.createElement( "ComposerAttributeTableV2" );
   composerTableElem.setAttribute( "source", QString::number(( int )mSource ) );
   composerTableElem.setAttribute( "relationId", mRelationId );
+  composerTableElem.setAttribute( "showUniqueRowsOnly", mShowUniqueRowsOnly );
   composerTableElem.setAttribute( "showOnlyVisibleFeatures", mShowOnlyVisibleFeatures );
   composerTableElem.setAttribute( "filterToAtlasIntersection", mFilterToAtlasIntersection );
   composerTableElem.setAttribute( "maxFeatures", mMaximumNumberOfFeatures );
@@ -698,6 +716,7 @@ bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QD
     mCurrentAtlasLayer = mComposition->atlasComposition().coverageLayer();
   }
 
+  mShowUniqueRowsOnly = itemElem.attribute( "showUniqueRowsOnly", "0" ).toInt();
   mShowOnlyVisibleFeatures = itemElem.attribute( "showOnlyVisibleFeatures", "1" ).toInt();
   mFilterToAtlasIntersection = itemElem.attribute( "filterToAtlasIntersection", "0" ).toInt();
   mFilterFeatures = itemElem.attribute( "filterFeatures", "false" ) == "true" ? true : false;

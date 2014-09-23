@@ -801,3 +801,15 @@ void QgsComposerTableV2::recalculateTableSize()
   //fixed and minimum frame sizes
   recalculateFrameRects();
 }
+
+bool QgsComposerTableV2::contentsContainsRow( const QgsComposerTableContents &contents, const QgsComposerTableRow &row ) const
+{
+  if ( contents.indexOf( row ) >= 0 )
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}

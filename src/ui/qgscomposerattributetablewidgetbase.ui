@@ -47,7 +47,7 @@
         <x>0</x>
         <y>0</y>
         <width>392</width>
-        <height>1048</height>
+        <height>1076</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -158,14 +158,14 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="2">
+          <item row="2" column="0" colspan="2">
            <widget class="QCheckBox" name="mShowOnlyVisibleFeaturesCheckBox">
             <property name="text">
              <string>Show only features visible within a map</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="mComposerMapLabel">
             <property name="text">
              <string>Composer map</string>
@@ -178,17 +178,17 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="3" column="1">
            <widget class="QComboBox" name="mComposerMapComboBox"/>
           </item>
-          <item row="4" column="0">
+          <item row="5" column="0">
            <widget class="QCheckBox" name="mFeatureFilterCheckBox">
             <property name="text">
              <string>Filter with</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
+          <item row="5" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QLineEdit" name="mFeatureFilterEdit"/>
@@ -206,10 +206,17 @@
             </item>
            </layout>
           </item>
-          <item row="3" column="0" colspan="2">
+          <item row="4" column="0" colspan="2">
            <widget class="QCheckBox" name="mIntersectAtlasCheckBox">
             <property name="text">
              <string>Show only features intersecting atlas feature</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="mUniqueOnlyCheckBox">
+            <property name="text">
+             <string>Remove duplicate rows from table</string>
             </property>
            </widget>
           </item>
@@ -221,6 +228,7 @@
          <zorder>mMaximumRowsSpinBox</zorder>
          <zorder>mMaxNumFeaturesLabel</zorder>
          <zorder>mIntersectAtlasCheckBox</zorder>
+         <zorder>mUniqueOnlyCheckBox</zorder>
         </widget>
        </item>
        <item>

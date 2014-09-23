@@ -358,4 +358,11 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      */
     void recalculateTableSize();
     
+    /**Checks whether a table contents contains a given row
+     * @param contents table contents to check
+     * @param row row to check for
+     * @returns true if contents contains rows
+     */
+    bool contentsContainsRow( const QgsComposerTableContents &contents, const QgsComposerTableRow &row ) const;
+    
 };

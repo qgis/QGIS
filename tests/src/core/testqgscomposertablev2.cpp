@@ -55,6 +55,8 @@ class TestQgsComposerTableV2: public QObject
     void attributeTableRepeat();
     void attributeTableAtlasSource(); //test attribute table in atlas feature mode
     void attributeTableRelationSource(); //test attribute table in relation mode
+    void contentsContainsRow(); //test the contentsContainsRow function
+    void removeDuplicates(); //test removing duplicate rows
 
   private:
     QgsComposition* mComposition;
@@ -533,6 +535,74 @@ void TestQgsComposerTableV2::attributeTableRelationSource()
 
   mComposition->removeMultiFrame( table );
   delete table;
+}
+
+void TestQgsComposerTableV2::contentsContainsRow()
+{
+  QgsComposerTableContents testContents;
+  QgsComposerTableRow row1;
+  row1 << QVariant( QString( "string 1" ) ) << QVariant( 2 ) << QVariant( 1.5 ) << QVariant( QString( "string 2" ) );
+  QgsComposerTableRow row2;
+  row2 << QVariant( QString( "string 2" ) ) << QVariant( 2 ) << QVariant( 1.5 ) << QVariant( QString( "string 2" ) );
+  //same as row1
+  QgsComposerTableRow row3;
+  row3 << QVariant( QString( "string 1" ) ) << QVariant( 2 ) << QVariant( 1.5 ) << QVariant( QString( "string 2" ) );
+  QgsComposerTableRow row4;
+  row4 << QVariant( QString( "string 1" ) ) << QVariant( 2 ) << QVariant( 1.7 ) << QVariant( QString( "string 2" ) );
+
+  testContents << row1;
+  testContents << row2;
+
+  QVERIFY( mComposerAttributeTable->contentsContainsRow( testContents, row1 ) );
+  QVERIFY( mComposerAttributeTable->contentsContainsRow( testContents, row2 ) );
+  QVERIFY( mComposerAttributeTable->contentsContainsRow( testContents, row3 ) );
+  QVERIFY( !mComposerAttributeTable->contentsContainsRow( testContents, row4 ) );
+}
+
+void TestQgsComposerTableV2::removeDuplicates()
+{
+  QgsVectorLayer* dupesLayer = new QgsVectorLayer( "Point?field=col1:integer&field=col2:integer&field=col3:integer", "dupes", "memory" );
+  QVERIFY( dupesLayer->isValid() );
+  QgsFeature f1( dupesLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "col1", 1 );
+  f1.setAttribute( "col2", 1 );
+  f1.setAttribute( "col3", 1 );
+  QgsFeature f2( dupesLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( "col1", 1 );
+  f2.setAttribute( "col2", 2 );
+  f2.setAttribute( "col3", 2 );
+  QgsFeature f3( dupesLayer->dataProvider()->fields(), 3 );
+  f3.setAttribute( "col1", 1 );
+  f3.setAttribute( "col2", 2 );
+  f3.setAttribute( "col3", 3 );
+  QgsFeature f4( dupesLayer->dataProvider()->fields(), 4 );
+  f4.setAttribute( "col1", 1 );
+  f4.setAttribute( "col2", 1 );
+  f4.setAttribute( "col3", 1 );
+  dupesLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
+
+  QgsComposerAttributeTableV2* table = new QgsComposerAttributeTableV2( mComposition, false );
+  table->setSource( QgsComposerAttributeTableV2::LayerAttributes );
+  table->setVectorLayer( dupesLayer );
+  table->setMaximumNumberOfFeatures( 50 );
+  QCOMPARE( table->contents()->length(), 4 );
+
+  table->setUniqueRowsOnly( true );
+  QCOMPARE( table->contents()->length(), 3 );
+
+  //check if removing attributes in unique mode works correctly (should result in duplicate rows,
+  //which will be stripped out)
+  table->columns()->removeLast();
+  table->refreshAttributes();
+  QCOMPARE( table->contents()->length(), 2 );
+  table->columns()->removeLast();
+  table->refreshAttributes();
+  QCOMPARE( table->contents()->length(), 1 );
+  table->setUniqueRowsOnly( false );
+  QCOMPARE( table->contents()->length(), 4 );
+
+  mComposition->removeMultiFrame( table );
+  delete dupesLayer;
 }
 
 QTEST_MAIN( TestQgsComposerTableV2 )

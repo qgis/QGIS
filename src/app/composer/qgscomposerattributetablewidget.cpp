@@ -491,6 +491,7 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
     mComposerMapLabel->setEnabled( false );
   }
 
+  mUniqueOnlyCheckBox->setChecked( mComposerTable->uniqueRowsOnly() );
   mIntersectAtlasCheckBox->setChecked( mComposerTable->filterToAtlasFeature() );
   mFeatureFilterEdit->setText( mComposerTable->featureFilter() );
   mFeatureFilterCheckBox->setCheckState( mComposerTable->filterFeatures() ? Qt::Checked : Qt::Unchecked );
@@ -595,6 +596,7 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
   mGridStrokeWidthSpinBox->blockSignals( b );
   mShowGridGroupCheckBox->blockSignals( b );
   mShowOnlyVisibleFeaturesCheckBox->blockSignals( b );
+  mUniqueOnlyCheckBox->blockSignals( b );
   mIntersectAtlasCheckBox->blockSignals( b );
   mFeatureFilterEdit->blockSignals( b );
   mFeatureFilterCheckBox->blockSignals( b );
@@ -638,6 +640,26 @@ void QgsComposerAttributeTableWidget::on_mShowOnlyVisibleFeaturesCheckBox_stateC
   //enable/disable map combobox based on state of checkbox
   mComposerMapComboBox->setEnabled( state == Qt::Checked );
   mComposerMapLabel->setEnabled( state == Qt::Checked );
+}
+
+void QgsComposerAttributeTableWidget::on_mUniqueOnlyCheckBox_stateChanged( int state )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mComposerTable->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table remove duplicates changed" ) );
+  }
+  mComposerTable->setUniqueRowsOnly( state == Qt::Checked );
+  mComposerTable->update();
+  if ( composition )
+  {
+    composition->endMultiFrameCommand();
+  }
 }
 
 void QgsComposerAttributeTableWidget::on_mIntersectAtlasCheckBox_stateChanged( int state )

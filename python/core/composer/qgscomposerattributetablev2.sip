@@ -146,7 +146,21 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see setMaximumNumberOfFeatures
      */
     int maximumNumberOfFeatures() const;
+    
+    /**Sets attribute table to only show unique rows.
+     * @param uniqueOnly set to true to show only unique rows. Duplicate rows
+     * will be stripped from the table.
+     * @see uniqueRowsOnly
+     */
+    void setUniqueRowsOnly( const bool uniqueOnly );
 
+    /**Returns true if the table is set to show only unique rows.
+     * @returns true if table only shows unique rows and is stripping out
+     * duplicate rows.
+     * @see setUniqueRowsOnly
+     */
+    bool uniqueRowsOnly() const;
+    
     /**Sets attribute table to only show features which are visible in a composer map item. Changing
      * this setting forces the table to refetch features from its vector layer, and may result in
      * the table changing size to accommodate the new displayed feature attributes.

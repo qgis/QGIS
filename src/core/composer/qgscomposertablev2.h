@@ -428,6 +428,15 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     /**Recalculates and updates the size of the table and all table frames.
      */
     void recalculateTableSize();
+
+    /**Checks whether a table contents contains a given row
+     * @param contents table contents to check
+     * @param row row to check for
+     * @returns true if contents contains rows
+     */
+    bool contentsContainsRow( const QgsComposerTableContents &contents, const QgsComposerTableRow &row ) const;
+
+    friend class TestQgsComposerTableV2;
 };
 
 #endif // QGSCOMPOSERTABLEV2_H
