@@ -106,6 +106,14 @@ void QgsCodeEditor::setFoldingVisible( bool folding )
   }
 }
 
+void QgsCodeEditor::insertText( QString theText )
+{
+  int line, index;
+  getCursorPosition( &line, &index );
+  insertAt( theText, line, index );
+  setCursorPosition( line, index + theText.length() );
+}
+
 // Settings for font and fontsize
 bool QgsCodeEditor::isFixedPitch( const QFont& font )
 {

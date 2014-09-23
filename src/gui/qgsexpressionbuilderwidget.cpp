@@ -158,7 +158,7 @@ void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked( const QModelIn
     return;
 
   // Insert the expression text.
-  txtExpressionString->insert( item->getExpressionText() );
+  txtExpressionString->insertText( item->getExpressionText() );
   txtExpressionString->setFocus();
 }
 
@@ -392,14 +392,14 @@ void QgsExpressionBuilderWidget::on_lblPreview_linkActivated( QString link )
 
 void QgsExpressionBuilderWidget::on_mValueListWidget_itemDoubleClicked( QListWidgetItem *item )
 {
-  txtExpressionString->insert( " " + item->text() + " " );
+  txtExpressionString->insertText( " " + item->text() + " " );
   txtExpressionString->setFocus();
 }
 
 void QgsExpressionBuilderWidget::operatorButtonClicked()
 {
   QPushButton* button = dynamic_cast<QPushButton*>( sender() );
-  txtExpressionString->insert( " " + button->text() + " " );
+  txtExpressionString->insertText( " " + button->text() + " " );
   txtExpressionString->setFocus();
 }
 

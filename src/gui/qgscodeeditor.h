@@ -60,6 +60,11 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void setFoldingVisible( bool folding );
     bool foldingVisible() { return mFolding; }
 
+    /** Isert text at cursor position
+     * @param theText The text to be inserted
+     */
+    void insertText( QString theText );
+
   protected:
 
     bool isFixedPitch( const QFont& font );
