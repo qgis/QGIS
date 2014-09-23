@@ -131,12 +131,14 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     Mode mode() const { return mMode; }
     void setMode( Mode mode ) { mMode = mode; }
+    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
 
     QString units() const { return mUnits; }
     void setUnits( QString units, bool updateRanges=true );
 
     int decimalPlaces() const { return mDecimalPlaces; }
     void setDecimalPlaces( int decimalPlaces, bool updateRanges=true );
+    void calculateDecimalPlaces( bool updateRanges=true );
 
     static QgsGraduatedSymbolRendererV2* createRenderer(
       QgsVectorLayer* vlayer,

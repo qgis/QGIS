@@ -69,6 +69,11 @@
          <string>Pretty Breaks</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Manual Breaks</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item row="5" column="0">

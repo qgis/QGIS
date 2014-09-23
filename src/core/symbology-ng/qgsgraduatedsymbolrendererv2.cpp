@@ -630,7 +630,7 @@ static QList<double> _calcPrettyBreaks( double minimum, double maximum, int clas
 } // _calcPrettyBreaks
 
 
-static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList<int> &labels )
+static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList<double> &labels )
 {
 
   // C++ implementation of the standard deviation class interval algorithm
@@ -669,7 +669,7 @@ static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList
   QList<double> breaks = _calcPrettyBreaks(( minimum - mean ) / stdDev, ( maximum - mean ) / stdDev, classes );
   for ( int i = 0; i < breaks.count(); i++ )
   {
-    labels.append(( int ) breaks[i] );
+    labels.append( breaks[i] );
     breaks[i] = ( breaks[i] * stdDev ) + mean;
   }
 
@@ -820,10 +820,31 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   QString units,
   int decimalPlaces )
 {
-  if ( classes < 1 )
-    return NULL;
+  QgsRangeList ranges;
+  QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( attrName, ranges );
+  r->setSourceSymbol( symbol->clone() );
+  r->setSourceColorRamp( ramp->clone() );
+  r->setInvertedColorRamp( inverted );
+  r->setMode( mode );
+  r->setUnits( units );
+  r->updateClasses(vlayer,mode,classes);
+  r->setDecimalPlaces( decimalPlaces );
 
-  int attrNum = vlayer->fieldNameIndex( attrName );
+  return r;
+}
+
+
+void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses )
+{
+  // Custom classes are not recalculated
+  setMode(mode);
+  if( mode == Custom ) return;
+
+
+
+  if ( nclasses < 1 ) nclasses=1;
+
+  int attrNum = vlayer->fieldNameIndex( mAttrName );
   double minimum;
   double maximum;
 
@@ -832,9 +853,9 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   if ( attrNum == -1 )
   {
     // try to use expression
-    expression.reset( new QgsExpression( attrName ) );
+    expression.reset( new QgsExpression( mAttrName ) );
     if ( expression->hasParserError() || !expression->prepare( vlayer->pendingFields() ) )
-      return 0; // should have a means to report errors
+      return; // should have a means to report errors
 
     QList<double> values;
     QgsFeatureIterator fit = vlayer->getFeatures();
@@ -855,14 +876,14 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
 
   QgsDebugMsg( QString( "min %1 // max %2" ).arg( minimum ).arg( maximum ) );
   QList<double> breaks;
-  QList<int> labels;
+  QList<double> labels;
   if ( mode == EqualInterval )
   {
-    breaks = _calcEqualIntervalBreaks( minimum, maximum, classes );
+    breaks = _calcEqualIntervalBreaks( minimum, maximum, nclasses );
   }
   else if ( mode == Pretty )
   {
-    breaks = _calcPrettyBreaks( minimum, maximum, classes );
+    breaks = _calcPrettyBreaks( minimum, maximum, nclasses );
   }
   else if ( mode == Quantile || mode == Jenks || mode == StdDev )
   {
@@ -871,7 +892,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     QgsFeature f;
     QStringList lst;
     if ( expression.isNull() )
-      lst.append( attrName );
+      lst.append( mAttrName );
     else
       lst = expression->referencedColumns();
 
@@ -888,15 +909,15 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     // calculate the breaks
     if ( mode == Quantile )
     {
-      breaks = _calcQuantileBreaks( values, classes );
+      breaks = _calcQuantileBreaks( values, nclasses );
     }
     else if ( mode == Jenks )
     {
-      breaks = _calcJenksBreaks( values, classes, minimum, maximum );
+      breaks = _calcJenksBreaks( values, nclasses, minimum, maximum );
     }
     else if ( mode == StdDev )
     {
-      breaks = _calcStdDevBreaks( values, classes, labels );
+      breaks = _calcStdDevBreaks( values, nclasses, labels );
     }
   }
   else
@@ -904,19 +925,13 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     Q_ASSERT( false );
   }
 
-  QgsRangeList ranges;
+
   double lower, upper = minimum;
   QString label;
-
-  QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( attrName, ranges );
-  r->setSourceSymbol( symbol->clone() );
-  r->setSourceColorRamp( ramp->clone() );
-  r->setInvertedColorRamp( inverted );
-  r->setMode( mode );
-  r->setUnits( units );
-  r->setDecimalPlaces( decimalPlaces );
+  mRanges.clear();
 
   // "breaks" list contains all values at class breaks plus maximum as last break
+
   int i = 0;
   for ( QList<double>::iterator it = breaks.begin(); it != breaks.end(); ++it, ++i )
   {
@@ -924,12 +939,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     upper = *it;
 
     // Symbol based on range
-    QgsSymbolV2* newSymbol = symbol->clone();
-    double colorValue;
-    if ( inverted ) colorValue = ( breaks.count() > 1 ? ( double )( breaks.count() - i - 1 ) / ( breaks.count() - 1 ) : 0 );
-    else colorValue = ( breaks.count() > 1 ? ( double ) i / ( breaks.count() - 1 ) : 0 );
-    newSymbol->setColor( ramp->color( colorValue ) ); // color from (0 / cl-1) to (cl-1 / cl-1)
-
+    QgsSymbolV2* newSymbol = mSourceSymbol->clone();
     QgsRendererRangeV2 range = QgsRendererRangeV2( lower, upper, newSymbol, "" );
 
     // Label - either StdDev label or default label for a range
@@ -937,27 +947,27 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     {
       if ( i == 0 )
       {
-        label = "< " + QString::number( labels[i], 'i', 0 ) + " Std Dev";
+        label = "< " + QString::number( labels[i], 'f', 2 ) + " Std Dev";
       }
       else if ( i == labels.count() - 1 )
       {
-        label = ">= " + QString::number( labels[i-1], 'i', 0 ) + " Std Dev";
+        label = ">= " + QString::number( labels[i-1], 'f', 2 ) + " Std Dev";
       }
       else
       {
-        label = QString::number( labels[i-1], 'i', 0 ) + " Std Dev" + " - " + QString::number( labels[i], 'i', 0 ) + " Std Dev";
+        label = QString::number( labels[i-1], 'f', 2 ) + " Std Dev" + " - " + QString::number( labels[i], 'f', 2 ) + " Std Dev";
       }
     }
     else
     {
-      label=r->defaultRangeLabel(range);
+      label=defaultRangeLabel(range);
     }
     range.setLabel(label);
 
-    r->addClass( range );
+    addClass( range );
   }
+  updateColorRamp(0,mInvertedColorRamp);
 
-  return r;
 }
 
 
@@ -1201,18 +1211,20 @@ void QgsGraduatedSymbolRendererV2::setSourceColorRamp( QgsVectorColorRampV2* ram
 void QgsGraduatedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2 *ramp, bool inverted )
 {
   int i = 0;
+  if( ramp ) this->setSourceColorRamp( ramp );
+  this->setInvertedColorRamp( inverted );
+
   foreach ( QgsRendererRangeV2 range, mRanges )
   {
     QgsSymbolV2* symbol = range.symbol()->clone();
     double colorValue;
     if ( inverted ) colorValue = ( mRanges.count() > 1 ? ( double )( mRanges.count() - i - 1 ) / ( mRanges.count() - 1 ) : 0 );
     else colorValue = ( mRanges.count() > 1 ? ( double ) i / ( mRanges.count() - 1 ) : 0 );
-    symbol->setColor( ramp->color( colorValue ) );
+    symbol->setColor( mSourceColorRamp->color( colorValue ) );
     updateRangeSymbol( i, symbol );
     ++i;
   }
-  this->setSourceColorRamp( ramp );
-  this->setInvertedColorRamp( inverted );
+
 }
 
 void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )
@@ -1341,6 +1353,32 @@ void QgsGraduatedSymbolRendererV2::setDecimalPlaces( int decimalPlaces, bool upd
     }
   }
   mDecimalPlaces=decimalPlaces;
+}
+
+void QgsGraduatedSymbolRendererV2::calculateDecimalPlaces( bool updateRanges )
+{
+  // Find the minimum size of a class
+  double minClassRange=0.0;
+  for ( QgsRangeList::iterator it = mRanges.begin(); it != mRanges.end(); ++it )
+  {
+    double range = it->upperValue()-it->lowerValue();
+    if( range <= 0.0 ) continue;
+    if( minClassRange == 0.0 || range < minClassRange ) minClassRange=range;
+  }
+  if( minClassRange <= 0.0 ) return;
+
+  // Now set the number of decimal places to ensure no more than 20% error in
+  // representing this range (up to 10% at upper and lower end)
+
+  int ndp=10;
+  double nextDpMinRange=0.0000000099;
+  while( ndp > 0 && nextDpMinRange < minClassRange )
+  {
+    ndp--;
+    nextDpMinRange *= 10.0;
+  }
+
+  setDecimalPlaces(ndp,updateRanges);
 }
 
 void QgsGraduatedSymbolRendererV2::moveClass( int from, int to )

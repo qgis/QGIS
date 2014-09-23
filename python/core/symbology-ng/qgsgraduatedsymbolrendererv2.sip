@@ -107,12 +107,14 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     Mode mode() const;
     void setMode( Mode mode );
+    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
 
     QString units();
     void setUnits( QString units, bool updateRanges=true );
 
     int decimalPlaces() const;
     void setDecimalPlaces( int decimalPlaces, bool updateRanges=true );
+    void calculateDecimalPlaces( bool updateRanges=true );
 
     static QgsGraduatedSymbolRendererV2* createRenderer(
       QgsVectorLayer* vlayer,

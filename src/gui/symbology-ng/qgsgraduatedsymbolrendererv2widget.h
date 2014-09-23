@@ -110,7 +110,9 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void rowsMoved();
 
   protected:
-    void updateUiFromRenderer();
+    void updateUiFromRenderer( bool updateCount=true );
+    void connectUpdateHandlers();
+    void disconnectUpdateHandlers();
 
     void updateGraduatedSymbolIcon();
 

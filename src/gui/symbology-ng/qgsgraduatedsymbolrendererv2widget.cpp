@@ -401,12 +401,6 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
       cboGraduatedColorRamp->setCurrentIndex( index );
   }
 
-  mModel = new QgsGraduatedSymbolRendererV2Model( this );
-  mModel->setRenderer( mRenderer );
-  viewGraduated->setModel( mModel );
-  viewGraduated->resizeColumnToContents( 0 );
-  viewGraduated->resizeColumnToContents( 1 );
-  viewGraduated->resizeColumnToContents( 2 );
 
   viewGraduated->setStyle( new QgsGraduatedSymbolRendererV2ViewStyle( viewGraduated->style() ) );
 
@@ -426,15 +420,10 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   connect( btnGraduatedAdd, SIGNAL( clicked() ), this, SLOT( addClass() ) );
   connect( cbxLinkBoundaries, SIGNAL( toggled( bool ) ), this, SLOT( toggleBoundariesLink( bool ) ) );
 
+  connectUpdateHandlers();
+
   // initialize from previously set renderer
   updateUiFromRenderer();
-
-  connect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ) , this, SLOT( classifyGraduated() ) );
-  connect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( classifyGraduated() ) );
-  connect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( reapplyColorRamp() ) );
-  connect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ) , this, SLOT( reapplyColorRamp() ) );
-  connect( spinDecimalPlaces, SIGNAL(valueChanged(int)), this, SLOT(decimalPlacesChanged()));
-  connect( txtUnits, SIGNAL( textChanged(QString)), this, SLOT(unitsChanged(QString)));
 
   // menus for data-defined rotation/size
   QMenu* advMenu = new QMenu;
@@ -460,22 +449,48 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2Widget::renderer()
   return mRenderer;
 }
 
+// Connect/disconnect event handlers which trigger updating renderer
 
-void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer()
+void QgsGraduatedSymbolRendererV2Widget::connectUpdateHandlers()
 {
+  connect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ) , this, SLOT( classifyGraduated() ) );
+  connect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( classifyGraduated() ) );
+  connect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( reapplyColorRamp() ) );
+  connect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ) , this, SLOT( reapplyColorRamp() ) );
+  connect( spinDecimalPlaces, SIGNAL(valueChanged(int)), this, SLOT(decimalPlacesChanged()));
+  connect( txtUnits, SIGNAL( textChanged(QString)), this, SLOT(unitsChanged(QString)));
+}
+
+// Connect/disconnect event handlers which trigger updating renderer
+
+void QgsGraduatedSymbolRendererV2Widget::disconnectUpdateHandlers()
+{
+  disconnect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ) , this, SLOT( classifyGraduated() ) );
+  disconnect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( classifyGraduated() ) );
+  disconnect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( reapplyColorRamp() ) );
+  disconnect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ) , this, SLOT( reapplyColorRamp() ) );
+  disconnect( spinDecimalPlaces, SIGNAL(valueChanged(int)), this, SLOT(decimalPlacesChanged()));
+  disconnect( txtUnits, SIGNAL( textChanged(QString)), this, SLOT(unitsChanged(QString)));
+}
+
+void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount )
+{
+  disconnectUpdateHandlers();
+
   updateGraduatedSymbolIcon();
 
   // update UI from the graduated renderer (update combo boxes, view)
   if ( mRenderer->mode() < cboGraduatedMode->count() )
     cboGraduatedMode->setCurrentIndex( mRenderer->mode() );
-  if ( mRenderer->ranges().count() )
+
+  // Only update class count if different - otherwise typing value gets very messy
+  int nclasses=mRenderer->ranges().count();
+  if ( nclasses && updateCount )
     spinGraduatedClasses->setValue( mRenderer->ranges().count() );
 
   // set column
-  disconnect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( graduatedColumnChanged( QString ) ) );
   QString attrName = mRenderer->classAttribute();
   mExpressionWidget->setField( attrName );
-  connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( graduatedColumnChanged( QString ) ) );
 
   // set source symbol
   if ( mRenderer->sourceSymbol() )
@@ -494,6 +509,15 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer()
 
   spinDecimalPlaces->setValue( mRenderer->decimalPlaces());
   txtUnits->setText( mRenderer->units() );
+
+  mModel = new QgsGraduatedSymbolRendererV2Model( this );
+  mModel->setRenderer( mRenderer );
+  viewGraduated->setModel( mModel );
+  viewGraduated->resizeColumnToContents( 0 );
+  viewGraduated->resizeColumnToContents( 1 );
+  viewGraduated->resizeColumnToContents( 2 );
+
+  connectUpdateHandlers();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::graduatedColumnChanged( QString field )
@@ -505,7 +529,7 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
 {
   QString attrName = mExpressionWidget->currentField();
 
-  int classes = spinGraduatedClasses->value();
+  int nclasses = spinGraduatedClasses->value();
 
   QgsVectorColorRampV2* ramp = cboGraduatedColorRamp->currentColorRamp();
 
@@ -527,6 +551,8 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
     mode = QgsGraduatedSymbolRendererV2::StdDev;
   else if ( cboGraduatedMode->currentIndex() == 4 )
     mode = QgsGraduatedSymbolRendererV2::Pretty;
+  else if ( cboGraduatedMode->currentIndex() == 5)
+    mode = QgsGraduatedSymbolRendererV2::Custom;
   else // default should be quantile for now
     mode = QgsGraduatedSymbolRendererV2::Quantile;
 
@@ -541,26 +567,24 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
 
   // create and set new renderer
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  QgsGraduatedSymbolRendererV2* r = QgsGraduatedSymbolRendererV2::createRenderer(
-        mLayer, attrName, classes, mode, mGraduatedSymbol, ramp,
-        cbxInvertedColorRamp->isChecked(), txtUnits->text(), spinDecimalPlaces->value() );
+  mRenderer->setClassAttribute(attrName);
+  mRenderer->setMode(mode);
+  bool updateUiCount=true;
+  if( mode == QgsGraduatedSymbolRendererV2::Custom )
+  {
+    // Need to insert code for manually setting ranges
+  }
+  else
+  {
+    mRenderer->updateClasses(mLayer,mode,nclasses);
+    // PrettyBreaks and StdDev calculation don't generate exact
+    // number of classes - leave user interface unchanged for these
+    updateUiCount=false;
+  }
+  mRenderer->calculateDecimalPlaces();
+
   QApplication::restoreOverrideCursor();
-  if ( !r )
-  {
-    QMessageBox::critical( this, tr( "Error" ), tr( "Renderer creation has failed." ) );
-    return;
-  }
-
-  r->setSizeScaleField( mRenderer->sizeScaleField() );
-  r->setRotationField( mRenderer->rotationField() );
-  r->setScaleMethod( mRenderer->scaleMethod() );
-
-  if ( mModel )
-  {
-    mModel->setRenderer( r );
-  }
-  delete mRenderer;
-  mRenderer = r;
+  updateUiFromRenderer( updateUiCount );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::reapplyColorRamp()

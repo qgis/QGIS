@@ -40,7 +40,9 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
     void rowsMoved();
 
   protected:
-    void updateUiFromRenderer();
+    void updateUiFromRenderer( bool updateCount=true );
+    void connectUpdateHandlers();
+    void disconnectUpdateHandlers();
 
     void updateGraduatedSymbolIcon();
 
