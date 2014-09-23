@@ -67,7 +67,7 @@ void QgsCodeEditor::setSciWidget()
   setAutoCompletionSource( QsciScintilla::AcsAPIs );
 }
 
-void QgsCodeEditor::setTitle( QString title )
+void QgsCodeEditor::setTitle( const QString title )
 {
   setWindowTitle( title );
 }
@@ -106,12 +106,20 @@ void QgsCodeEditor::setFoldingVisible( bool folding )
   }
 }
 
-void QgsCodeEditor::insertText( QString theText )
+void QgsCodeEditor::insertText( const QString theText )
 {
-  int line, index;
-  getCursorPosition( &line, &index );
-  insertAt( theText, line, index );
-  setCursorPosition( line, index + theText.length() );
+  // Insert the text or replace selected text
+  if ( hasSelectedText() )
+  {
+    replaceSelectedText( theText );
+  }
+  else
+  {
+    int line, index;
+    getCursorPosition( &line, &index );
+    insertAt( theText, line, index );
+    setCursorPosition( line, index + theText.length() );
+  }
 }
 
 // Settings for font and fontsize
