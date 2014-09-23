@@ -152,6 +152,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsCollapsibleGroupBox* mAttributeEditorFrame;
     QVBoxLayout* mAttributeEditorLayout;
     QLineEdit* mLineEdit;
+    QLabel* mInvalidLabel;
 };
 
 #endif // QGSRELATIONREFERENCEWIDGET_H
