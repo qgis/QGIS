@@ -60,8 +60,12 @@ def getHtmlFromHelpFile(alg, helpFile):
     try:
         with open(helpFile) as f:
             descriptions = json.load(f)
+            return getHtmlFromDescriptionsDict(descriptions)
     except:
         return None
+
+def getHtmlFromDescriptionsDict(alg, descriptions):
+
     s = '<html><body><h2>Algorithm description</h2>\n'
     s += '<p>' + getDescription(ALG_DESC, descriptions) + '</p>\n'
     s += '<h2>Input parameters</h2>\n'
