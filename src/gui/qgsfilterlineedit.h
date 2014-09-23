@@ -49,14 +49,14 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      *
      * @return Current text (Null string if it matches the nullValue property )
      */
-    QString value() { return isNull() ? QString::null : text(); }
+    QString value() const { return isNull() ? QString::null : text(); }
 
     /**
      * Determine if the current text represents Null.
      *
      * @return True if the value is Null.
      */
-    inline bool isNull() { return text() == mNullValue; }
+    inline bool isNull() const { return text() == mNullValue; }
 
   signals:
     void cleared();
