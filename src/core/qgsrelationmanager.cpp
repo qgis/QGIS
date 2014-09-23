@@ -37,6 +37,7 @@ void QgsRelationManager::setRelations( const QList<QgsRelation>& relations )
   {
     addRelation( rel );
   }
+  emit changed();
 }
 
 const QMap<QString, QgsRelation>& QgsRelationManager::relations() const
@@ -52,16 +53,19 @@ void QgsRelationManager::addRelation( const QgsRelation& relation )
   mRelations.insert( relation.id(), relation );
 
   mProject->dirty( true );
+  emit changed();
 }
 
-void QgsRelationManager::removeRelation( const QString& name )
+void QgsRelationManager::removeRelation( const QString& id )
 {
-  mRelations.remove( name );
+  mRelations.remove( id );
+  emit changed();
 }
 
 void QgsRelationManager::removeRelation( const QgsRelation& relation )
 {
   mRelations.remove( relation.id() );
+  emit changed();
 }
 
 QgsRelation QgsRelationManager::relation( const QString& id ) const
@@ -72,6 +76,7 @@ QgsRelation QgsRelationManager::relation( const QString& id ) const
 void QgsRelationManager::clear()
 {
   mRelations.clear();
+  emit changed();
 }
 
 QList<QgsRelation> QgsRelationManager::referencingRelations( QgsVectorLayer* layer, int fieldIdx ) const
@@ -152,6 +157,7 @@ void QgsRelationManager::readProject( const QDomDocument & doc )
   }
 
   emit( relationsLoaded() );
+  emit changed();
 }
 
 void QgsRelationManager::writeProject( QDomDocument & doc )
@@ -175,7 +181,8 @@ void QgsRelationManager::writeProject( QDomDocument & doc )
 
 void QgsRelationManager::layersRemoved( const QStringList& layers )
 {
-  Q_FOREACH ( const QString& layer, layers )
+  bool relationsChanged = false;
+  Q_FOREACH( const QString& layer, layers )
   {
     QMapIterator<QString, QgsRelation> it( mRelations );
 
@@ -187,7 +194,12 @@ void QgsRelationManager::layersRemoved( const QStringList& layers )
            || it.value().referencingLayerId() == layer )
       {
         mRelations.remove( it.key() );
+        relationsChanged = true;
       }
     }
+  }
+  if ( relationsChanged )
+  {
+    emit changed();
   }
 }

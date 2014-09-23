@@ -15,14 +15,14 @@ class QgsComposerArrow: QgsComposerItem
     /**Constructor
      * @param c parent composition
      */
-    QgsComposerArrow( QgsComposition* c );
+    QgsComposerArrow( QgsComposition* c /TransferThis/ );
 
     /**Constructor
      * @param startPoint start point for line
      * @param stopPoint end point for line
      * @param c parent composition
      */
-    QgsComposerArrow( const QPointF& startPoint, const QPointF& stopPoint, QgsComposition* c );
+    QgsComposerArrow( const QPointF& startPoint, const QPointF& stopPoint, QgsComposition* c /TransferThis/ );
 
     ~QgsComposerArrow();
 
@@ -151,7 +151,7 @@ class QgsComposerArrow: QgsComposerItem
      * @see lineSymbol
      * @note added in 2.5
      */
-    void setLineSymbol( QgsLineSymbolV2* symbol );
+    void setLineSymbol( QgsLineSymbolV2* symbol /Transfer/ );
 
     /**Returns the line symbol used for drawing the line portion of the arrow
      * @returns line symbol

@@ -127,11 +127,21 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
   mAttributeEditorFrame->setSizePolicy( mAttributeEditorFrame->sizePolicy().horizontalPolicy(), QSizePolicy::Expanding );
   mTopLayout->addWidget( mAttributeEditorFrame );
 
+  // invalid label
+  mInvalidLabel = new QLabel( tr( "The relation is not valid. Please make sure your relation definitions are ok." ) );
+  mInvalidLabel->setWordWrap( true );
+  QFont font = mInvalidLabel->font();
+  font.setItalic( true );
+  mInvalidLabel->setStyleSheet( "QLabel { color: red; } " );
+  mInvalidLabel->setFont( font );
+  mTopLayout->addWidget( mInvalidLabel );
+
   // default mode is combobox, no geometric relation and no embed form
   mLineEdit->hide();
   mMapIdentificationButton->hide();
   mHighlightFeatureButton->hide();
   mAttributeEditorFrame->hide();
+  mInvalidLabel->hide();
 }
 
 QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
@@ -149,12 +159,13 @@ void QgsRelationReferenceWidget::setRelation( QgsRelation relation, bool allowNu
 
   if ( relation.isValid() )
   {
+    mInvalidLabel->hide();
+
     mRelation = relation;
     mReferencingLayer = relation.referencingLayer();
     mRelationName = relation.name();
     mReferencedLayer = relation.referencedLayer();
     mFkeyFieldIdx = mReferencedLayer->fieldNameIndex( relation.fieldPairs().first().second );
-
 
     QgsAttributeEditorContext context( mEditorContext, relation, QgsAttributeEditorContext::Single, QgsAttributeEditorContext::Embed );
 
@@ -168,13 +179,7 @@ void QgsRelationReferenceWidget::setRelation( QgsRelation relation, bool allowNu
   }
   else
   {
-    QLabel* lbl = new QLabel( tr( "The relation is not valid. Please make sure your relation definitions are ok." ) );
-    lbl->setWordWrap( true );
-    QFont font = lbl->font();
-    font.setItalic( true );
-    lbl->setStyleSheet( "QLabel { color: red; } " );
-    lbl->setFont( font );
-    mTopLayout->addWidget( lbl, 1, 0 );
+    mInvalidLabel->show();
   }
 
   if ( mShown && isVisible() )

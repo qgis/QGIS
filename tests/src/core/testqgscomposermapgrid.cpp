@@ -119,7 +119,7 @@ void TestQgsComposerMapGrid::grid()
   qWarning() << "grid annotation font: " << mComposerMap->grid()->annotationFont().toString() << " exactMatch:" << mComposerMap->grid()->annotationFont().exactMatch();
   QgsCompositionChecker checker( "composermap_grid", mComposition );
 
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposerMap->grid()->setEnabled( false );
   mComposerMap->grid()->setAnnotationEnabled( false );
   QVERIFY( testResult );
@@ -139,7 +139,7 @@ void TestQgsComposerMapGrid::crossGrid()
   mComposerMap->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   QgsCompositionChecker checker( "composermap_crossgrid", mComposition );
 
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposerMap->grid()->setStyle( QgsComposerMapGrid::Solid );
   mComposerMap->grid()->setEnabled( false );
   mComposerMap->grid()->setAnnotationEnabled( false );
@@ -157,7 +157,7 @@ void TestQgsComposerMapGrid::markerGrid()
   mComposerMap->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   QgsCompositionChecker checker( "composermap_markergrid", mComposition );
 
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposerMap->grid()->setStyle( QgsComposerMapGrid::Solid );
   mComposerMap->grid()->setEnabled( false );
   mComposerMap->grid()->setAnnotationEnabled( false );
@@ -178,7 +178,7 @@ void TestQgsComposerMapGrid::frameOnly()
   mComposerMap->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   QgsCompositionChecker checker( "composermap_gridframeonly", mComposition );
 
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposerMap->grid()->setStyle( QgsComposerMapGrid::Solid );
   mComposerMap->grid()->setEnabled( false );
   mComposerMap->grid()->setAnnotationEnabled( false );
@@ -203,7 +203,7 @@ void TestQgsComposerMapGrid::zebraStyle()
 
   QgsCompositionChecker checker( "composermap_zebrastyle", mComposition );
 
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 }
 
@@ -228,17 +228,17 @@ void TestQgsComposerMapGrid::zebraStyleSides()
   mComposerMap->grid()->setFrameSideFlag( QgsComposerMapGrid::FrameBottom, false );
 
   QgsCompositionChecker checker( "composermap_zebrastyle_left", mComposition );
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
   mComposerMap->grid()->setFrameSideFlag( QgsComposerMapGrid::FrameTop, true );
   QgsCompositionChecker checker2( "composermap_zebrastyle_lefttop", mComposition );
-  bool testResult2 = checker2.testComposition( mReport, 0, 100 );
+  bool testResult2 = checker2.testComposition( mReport, 0, 0 );
   QVERIFY( testResult2 );
 
   mComposerMap->grid()->setFrameSideFlag( QgsComposerMapGrid::FrameRight, true );
   QgsCompositionChecker checker3( "composermap_zebrastyle_lefttopright", mComposition );
-  bool testResult3 = checker3.testComposition( mReport, 0, 100 );
+  bool testResult3 = checker3.testComposition( mReport, 0, 0 );
   QVERIFY( testResult3 );
 
   mComposerMap->grid()->setFrameSideFlag( QgsComposerMapGrid::FrameBottom, true );
@@ -258,7 +258,7 @@ void TestQgsComposerMapGrid::interiorTicks()
   mComposerMap->grid()->setStyle( QgsComposerMapGrid::FrameAnnotationsOnly );
 
   QgsCompositionChecker checker( "composermap_interiorticks", mComposition );
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
   mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::NoFrame );
@@ -282,7 +282,7 @@ void TestQgsComposerMapGrid::interiorTicksAnnotated()
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::InsideMapFrame, QgsComposerMapGrid::Bottom );
 
   QgsCompositionChecker checker( "composermap_interiorticks_annotated", mComposition );
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, QgsComposerMapGrid::Left );
@@ -291,7 +291,7 @@ void TestQgsComposerMapGrid::interiorTicksAnnotated()
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, QgsComposerMapGrid::Bottom );
 
   QgsCompositionChecker checker2( "composermap_interiorticks_annotated2", mComposition );
-  bool testResult2 = checker2.testComposition( mReport, 0, 100 );
+  bool testResult2 = checker2.testComposition( mReport, 0, 0 );
   QVERIFY( testResult2 );
 
   mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::NoFrame );
@@ -310,7 +310,7 @@ void TestQgsComposerMapGrid::exteriorTicks()
   mComposerMap->grid()->setStyle( QgsComposerMapGrid::FrameAnnotationsOnly );
 
   QgsCompositionChecker checker( "composermap_exteriorticks", mComposition );
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
   mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::NoFrame );
@@ -334,7 +334,7 @@ void TestQgsComposerMapGrid::exteriorTicksAnnotated()
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::InsideMapFrame, QgsComposerMapGrid::Bottom );
 
   QgsCompositionChecker checker( "composermap_exteriorticks_annotated", mComposition );
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, QgsComposerMapGrid::Left );
@@ -343,7 +343,7 @@ void TestQgsComposerMapGrid::exteriorTicksAnnotated()
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, QgsComposerMapGrid::Bottom );
 
   QgsCompositionChecker checker2( "composermap_exteriorticks_annotated2", mComposition );
-  bool testResult2 = checker2.testComposition( mReport, 0, 100 );
+  bool testResult2 = checker2.testComposition( mReport, 0, 0 );
   QVERIFY( testResult2 );
 
   mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::NoFrame );
@@ -362,7 +362,7 @@ void TestQgsComposerMapGrid::interiorExteriorTicks()
   mComposerMap->grid()->setStyle( QgsComposerMapGrid::FrameAnnotationsOnly );
 
   QgsCompositionChecker checker( "composermap_interiorexteriorticks", mComposition );
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
   mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::NoFrame );
@@ -386,7 +386,7 @@ void TestQgsComposerMapGrid::interiorExteriorTicksAnnotated()
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::InsideMapFrame, QgsComposerMapGrid::Bottom );
 
   QgsCompositionChecker checker( "composermap_interiorexteriorticks_annotated", mComposition );
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, QgsComposerMapGrid::Left );
@@ -395,7 +395,7 @@ void TestQgsComposerMapGrid::interiorExteriorTicksAnnotated()
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, QgsComposerMapGrid::Bottom );
 
   QgsCompositionChecker checker2( "composermap_interiorexteriorticks_annotated2", mComposition );
-  bool testResult2 = checker2.testComposition( mReport, 0, 100 );
+  bool testResult2 = checker2.testComposition( mReport, 0, 0 );
   QVERIFY( testResult2 );
 
   mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::NoFrame );
@@ -414,7 +414,7 @@ void TestQgsComposerMapGrid::lineBorder()
   mComposerMap->grid()->setStyle( QgsComposerMapGrid::FrameAnnotationsOnly );
 
   QgsCompositionChecker checker( "composermap_lineborder", mComposition );
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
   mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::NoFrame );
@@ -438,7 +438,7 @@ void TestQgsComposerMapGrid::lineBorderAnnotated()
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::InsideMapFrame, QgsComposerMapGrid::Bottom );
 
   QgsCompositionChecker checker( "composermap_lineborder_annotated", mComposition );
-  bool testResult = checker.testComposition( mReport, 0, 100 );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, QgsComposerMapGrid::Left );
@@ -447,7 +447,7 @@ void TestQgsComposerMapGrid::lineBorderAnnotated()
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, QgsComposerMapGrid::Bottom );
 
   QgsCompositionChecker checker2( "composermap_lineborder_annotated2", mComposition );
-  bool testResult2 = checker2.testComposition( mReport, 0, 100 );
+  bool testResult2 = checker2.testComposition( mReport, 0, 0 );
   QVERIFY( testResult2 );
 
   mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::NoFrame );

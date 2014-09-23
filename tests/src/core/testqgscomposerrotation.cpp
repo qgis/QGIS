@@ -156,7 +156,7 @@ void TestQgsComposerRotation::labelRotation()
   mComposerLabel->setItemRotation( 135, true );
 
   QgsCompositionChecker checker( "composerrotation_label", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 20 ) );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   // removeItem() for label does not work, the label is rendered in the next test
   // cannot find why, other items are removed correctly
@@ -187,7 +187,7 @@ void TestQgsComposerRotation::mapRotation()
   mComposerMap->setMapRotation( 90 );
 
   QgsCompositionChecker checker( "composerrotation_maprotation", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerMap );
   mComposerMap->setMapRotation( 0 );

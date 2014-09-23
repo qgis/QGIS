@@ -146,6 +146,17 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation& relation, c
 
   bool canChangeAttributes = lyr->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
   mToggleEditingButton->setEnabled( canChangeAttributes && !lyr->isReadOnly() );
+
+  // If not yet initialized, it is not (yet) visible, so we don't load it to be faster (lazy loading)
+  // If it is already initialized, it has been set visible before and the currently shown feature is changing
+  // and the widget needs updating
+
+  if ( mInitialized )
+  {
+    QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
+
+    mDualView->init( mRelation.referencingLayer(), 0, myRequest, mEditorContext );
+  }
 }
 
 void QgsRelationEditorWidget::setEditorContext( const QgsAttributeEditorContext& context )

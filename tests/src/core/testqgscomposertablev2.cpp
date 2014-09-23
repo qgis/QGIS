@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include "qgscomposermap.h"
 #include "qgscomposerattributetablev2.h"
+#include "qgscomposertablecolumn.h"
 #include "qgscomposerframe.h"
 #include "qgsmapsettings.h"
 #include "qgsvectorlayer.h"
@@ -26,6 +27,9 @@
 #include "qgsfeature.h"
 #include "qgscompositionchecker.h"
 #include "qgsfontutils.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
 
 #include <QObject>
 #include <QtTest>
@@ -45,15 +49,21 @@ class TestQgsComposerTableV2: public QObject
     void attributeTableSetAttributes(); //test subset of attributes in table
     void attributeTableVisibleOnly(); //test displaying only visible attributes
     void attributeTableRender(); //test rendering attribute table
-
+    void manualColumnWidth(); //test setting manual column widths
+    void attributeTableEmpty(); //test empty modes for attribute table
     void attributeTableExtend();
     void attributeTableRepeat();
+    void attributeTableAtlasSource(); //test attribute table in atlas feature mode
+    void attributeTableRelationSource(); //test attribute table in relation mode
+    void contentsContainsRow(); //test the contentsContainsRow function
+    void removeDuplicates(); //test removing duplicate rows
 
   private:
     QgsComposition* mComposition;
     QgsComposerMap* mComposerMap;
     QgsMapSettings mMapSettings;
     QgsVectorLayer* mVectorLayer;
+    QgsVectorLayer* mVectorLayer2;
     QgsComposerAttributeTableV2* mComposerAttributeTable;
     QgsComposerFrame* mFrame1;
     QgsComposerFrame* mFrame2;
@@ -73,9 +83,13 @@ void TestQgsComposerTableV2::initTestCase()
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
+  QgsMapLayerRegistry::instance()->addMapLayer( mVectorLayer );
+  mVectorLayer2 = new QgsVectorLayer( vectorFileInfo.filePath(),
+                                      vectorFileInfo.completeBaseName(),
+                                      "ogr" );
 
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings.setLayers( QStringList() << mVectorLayer->id() << mVectorLayer2->id() );
   mMapSettings.setCrsTransformEnabled( false );
   mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 portrait
@@ -301,8 +315,46 @@ void TestQgsComposerTableV2::attributeTableRender()
   QVERIFY( result );
 }
 
+void TestQgsComposerTableV2::manualColumnWidth()
+{
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
+  mComposerAttributeTable->columns()->at( 0 )->setWidth( 5 );
+  QgsCompositionChecker checker( "composerattributetable_columnwidth", mComposition );
+  bool result = checker.testComposition( mReport, 0 );
+  mComposerAttributeTable->columns()->at( 0 )->setWidth( 0 );
+  QVERIFY( result );
+}
+
+void TestQgsComposerTableV2::attributeTableEmpty()
+{
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
+  //hide all features from table
+  mComposerAttributeTable->setFeatureFilter( QString( "1=2" ) );
+  mComposerAttributeTable->setFilterFeatures( true );
+
+  mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::HeadersOnly );
+  QgsCompositionChecker checker( "composerattributetable_headersonly", mComposition );
+  QVERIFY( checker.testComposition( mReport, 0 ) );
+
+  mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::HideTable );
+  QgsCompositionChecker checker2( "composerattributetable_hidetable", mComposition );
+  QVERIFY( checker2.testComposition( mReport, 0 ) );
+
+  mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::DrawEmptyCells );
+  QgsCompositionChecker checker3( "composerattributetable_drawempty", mComposition );
+  QVERIFY( checker3.testComposition( mReport, 0 ) );
+
+  mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::ShowMessage );
+  mComposerAttributeTable->setEmptyTableMessage( "no rows" );
+  QgsCompositionChecker checker4( "composerattributetable_showmessage", mComposition );
+  QVERIFY( checker4.testComposition( mReport, 0 ) );
+
+  mComposerAttributeTable->setFilterFeatures( false );
+}
+
 void TestQgsComposerTableV2::attributeTableExtend()
 {
+  //test that adding and removing frames automatically does not result in a crash
   mComposerAttributeTable->removeFrame( 1 );
 
   //force auto creation of some new frames
@@ -310,15 +362,14 @@ void TestQgsComposerTableV2::attributeTableExtend()
 
   mComposition->setSelectedItem( mComposerAttributeTable->frame( 1 ) );
 
-  QgsCompositionChecker checker( "composerattributetable_render", mComposition );
-
   //now auto remove extra created frames
   mComposerAttributeTable->setMaximumNumberOfFeatures( 1 );
-  bool result = checker.testComposition( mReport, 1 );
 }
 
 void TestQgsComposerTableV2::attributeTableRepeat()
 {
+  //test that creating and removing new frames in repeat mode does not crash
+
   mComposerAttributeTable->setResizeMode( QgsComposerMultiFrame::UseExistingFrames );
   //remove extra frames
   for ( int idx = mComposerAttributeTable->frameCount(); idx > 0; --idx )
@@ -341,6 +392,217 @@ void TestQgsComposerTableV2::attributeTableRepeat()
   {
     mComposerAttributeTable->setMaximumNumberOfFeatures( features );
   }
+}
+
+void TestQgsComposerTableV2::attributeTableAtlasSource()
+{
+  QgsComposerAttributeTableV2* table = new QgsComposerAttributeTableV2( mComposition, false );
+
+
+  table->setSource( QgsComposerAttributeTableV2::AtlasFeature );
+
+  //setup atlas
+  mComposition->atlasComposition().setCoverageLayer( mVectorLayer2 );
+  mComposition->atlasComposition().setEnabled( true );
+  QVERIFY( mComposition->atlasComposition().beginRender() );
+
+  QVERIFY( mComposition->atlasComposition().prepareForFeature( 0 ) );
+  QCOMPARE( table->contents()->length(), 1 );
+  QgsComposerTableRow row = table->contents()->at( 0 );
+
+  //check a couple of results
+  QCOMPARE( row.at( 0 ), QVariant( "Jet" ) );
+  QCOMPARE( row.at( 1 ), QVariant( 90 ) );
+  QCOMPARE( row.at( 2 ), QVariant( 3 ) );
+  QCOMPARE( row.at( 3 ), QVariant( 2 ) );
+  QCOMPARE( row.at( 4 ), QVariant( 0 ) );
+  QCOMPARE( row.at( 5 ), QVariant( 2 ) );
+
+  //next atlas feature
+  QVERIFY( mComposition->atlasComposition().prepareForFeature( 1 ) );
+  QCOMPARE( table->contents()->length(), 1 );
+  row = table->contents()->at( 0 );
+  QCOMPARE( row.at( 0 ), QVariant( "Biplane" ) );
+  QCOMPARE( row.at( 1 ), QVariant( 0 ) );
+  QCOMPARE( row.at( 2 ), QVariant( 1 ) );
+  QCOMPARE( row.at( 3 ), QVariant( 3 ) );
+  QCOMPARE( row.at( 4 ), QVariant( 3 ) );
+  QCOMPARE( row.at( 5 ), QVariant( 6 ) );
+
+  //next atlas feature
+  QVERIFY( mComposition->atlasComposition().prepareForFeature( 2 ) );
+  QCOMPARE( table->contents()->length(), 1 );
+  row = table->contents()->at( 0 );
+  QCOMPARE( row.at( 0 ), QVariant( "Jet" ) );
+  QCOMPARE( row.at( 1 ), QVariant( 85 ) );
+  QCOMPARE( row.at( 2 ), QVariant( 3 ) );
+  QCOMPARE( row.at( 3 ), QVariant( 1 ) );
+  QCOMPARE( row.at( 4 ), QVariant( 1 ) );
+  QCOMPARE( row.at( 5 ), QVariant( 2 ) );
+
+  mComposition->atlasComposition().endRender();
+
+  //try for a crash when removing current atlas layer
+  QgsMapLayerRegistry::instance()->removeMapLayer( mVectorLayer2->id() );
+  table->refreshAttributes();
+
+  mComposition->removeMultiFrame( table );
+  delete table;
+}
+
+
+void TestQgsComposerTableV2::attributeTableRelationSource()
+{
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "points_relations.shp" );
+  QgsVectorLayer* atlasLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      "ogr" );
+
+  QgsMapLayerRegistry::instance()->addMapLayer( atlasLayer );
+
+  //setup atlas
+  mComposition->atlasComposition().setCoverageLayer( atlasLayer );
+  mComposition->atlasComposition().setEnabled( true );
+
+  //create a relation
+  QgsRelation relation;
+  relation.setRelationId( "testrelation" );
+  relation.setReferencedLayer( atlasLayer->id() );
+  relation.setReferencingLayer( mVectorLayer->id() );
+  relation.addFieldPair( "Class", "Class" );
+  QgsProject::instance()->relationManager()->addRelation( relation );
+
+  QgsComposerAttributeTableV2* table = new QgsComposerAttributeTableV2( mComposition, false );
+  table->setMaximumNumberOfFeatures( 50 );
+  table->setSource( QgsComposerAttributeTableV2::RelationChildren );
+  table->setRelationId( relation.id() );
+
+  QVERIFY( mComposition->atlasComposition().beginRender() );
+  QVERIFY( mComposition->atlasComposition().prepareForFeature( 0 ) );
+
+  QCOMPARE( mComposition->atlasComposition().currentFeature()->attribute( "Class" ).toString(), QString( "Jet" ) );
+  QCOMPARE( table->contents()->length(), 8 );
+
+  QgsComposerTableRow row = table->contents()->at( 0 );
+
+  //check a couple of results
+  QCOMPARE( row.at( 0 ), QVariant( "Jet" ) );
+  QCOMPARE( row.at( 1 ), QVariant( 90 ) );
+  QCOMPARE( row.at( 2 ), QVariant( 3 ) );
+  QCOMPARE( row.at( 3 ), QVariant( 2 ) );
+  QCOMPARE( row.at( 4 ), QVariant( 0 ) );
+  QCOMPARE( row.at( 5 ), QVariant( 2 ) );
+  row = table->contents()->at( 1 );
+  QCOMPARE( row.at( 0 ), QVariant( "Jet" ) );
+  QCOMPARE( row.at( 1 ), QVariant( 85 ) );
+  QCOMPARE( row.at( 2 ), QVariant( 3 ) );
+  QCOMPARE( row.at( 3 ), QVariant( 1 ) );
+  QCOMPARE( row.at( 4 ), QVariant( 1 ) );
+  QCOMPARE( row.at( 5 ), QVariant( 2 ) );
+  row = table->contents()->at( 2 );
+  QCOMPARE( row.at( 0 ), QVariant( "Jet" ) );
+  QCOMPARE( row.at( 1 ), QVariant( 95 ) );
+  QCOMPARE( row.at( 2 ), QVariant( 3 ) );
+  QCOMPARE( row.at( 3 ), QVariant( 1 ) );
+  QCOMPARE( row.at( 4 ), QVariant( 1 ) );
+  QCOMPARE( row.at( 5 ), QVariant( 2 ) );
+
+  //next atlas feature
+  QVERIFY( mComposition->atlasComposition().prepareForFeature( 1 ) );
+  QCOMPARE( mComposition->atlasComposition().currentFeature()->attribute( "Class" ).toString(), QString( "Biplane" ) );
+  QCOMPARE( table->contents()->length(), 5 );
+  row = table->contents()->at( 0 );
+  QCOMPARE( row.at( 0 ), QVariant( "Biplane" ) );
+  QCOMPARE( row.at( 1 ), QVariant( 0 ) );
+  QCOMPARE( row.at( 2 ), QVariant( 1 ) );
+  QCOMPARE( row.at( 3 ), QVariant( 3 ) );
+  QCOMPARE( row.at( 4 ), QVariant( 3 ) );
+  QCOMPARE( row.at( 5 ), QVariant( 6 ) );
+  row = table->contents()->at( 1 );
+  QCOMPARE( row.at( 0 ), QVariant( "Biplane" ) );
+  QCOMPARE( row.at( 1 ), QVariant( 340 ) );
+  QCOMPARE( row.at( 2 ), QVariant( 1 ) );
+  QCOMPARE( row.at( 3 ), QVariant( 3 ) );
+  QCOMPARE( row.at( 4 ), QVariant( 3 ) );
+  QCOMPARE( row.at( 5 ), QVariant( 6 ) );
+
+  mComposition->atlasComposition().endRender();
+
+  //try for a crash when removing current atlas layer
+  QgsMapLayerRegistry::instance()->removeMapLayer( atlasLayer->id() );
+
+  table->refreshAttributes();
+
+  mComposition->removeMultiFrame( table );
+  delete table;
+}
+
+void TestQgsComposerTableV2::contentsContainsRow()
+{
+  QgsComposerTableContents testContents;
+  QgsComposerTableRow row1;
+  row1 << QVariant( QString( "string 1" ) ) << QVariant( 2 ) << QVariant( 1.5 ) << QVariant( QString( "string 2" ) );
+  QgsComposerTableRow row2;
+  row2 << QVariant( QString( "string 2" ) ) << QVariant( 2 ) << QVariant( 1.5 ) << QVariant( QString( "string 2" ) );
+  //same as row1
+  QgsComposerTableRow row3;
+  row3 << QVariant( QString( "string 1" ) ) << QVariant( 2 ) << QVariant( 1.5 ) << QVariant( QString( "string 2" ) );
+  QgsComposerTableRow row4;
+  row4 << QVariant( QString( "string 1" ) ) << QVariant( 2 ) << QVariant( 1.7 ) << QVariant( QString( "string 2" ) );
+
+  testContents << row1;
+  testContents << row2;
+
+  QVERIFY( mComposerAttributeTable->contentsContainsRow( testContents, row1 ) );
+  QVERIFY( mComposerAttributeTable->contentsContainsRow( testContents, row2 ) );
+  QVERIFY( mComposerAttributeTable->contentsContainsRow( testContents, row3 ) );
+  QVERIFY( !mComposerAttributeTable->contentsContainsRow( testContents, row4 ) );
+}
+
+void TestQgsComposerTableV2::removeDuplicates()
+{
+  QgsVectorLayer* dupesLayer = new QgsVectorLayer( "Point?field=col1:integer&field=col2:integer&field=col3:integer", "dupes", "memory" );
+  QVERIFY( dupesLayer->isValid() );
+  QgsFeature f1( dupesLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "col1", 1 );
+  f1.setAttribute( "col2", 1 );
+  f1.setAttribute( "col3", 1 );
+  QgsFeature f2( dupesLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( "col1", 1 );
+  f2.setAttribute( "col2", 2 );
+  f2.setAttribute( "col3", 2 );
+  QgsFeature f3( dupesLayer->dataProvider()->fields(), 3 );
+  f3.setAttribute( "col1", 1 );
+  f3.setAttribute( "col2", 2 );
+  f3.setAttribute( "col3", 3 );
+  QgsFeature f4( dupesLayer->dataProvider()->fields(), 4 );
+  f4.setAttribute( "col1", 1 );
+  f4.setAttribute( "col2", 1 );
+  f4.setAttribute( "col3", 1 );
+  dupesLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
+
+  QgsComposerAttributeTableV2* table = new QgsComposerAttributeTableV2( mComposition, false );
+  table->setSource( QgsComposerAttributeTableV2::LayerAttributes );
+  table->setVectorLayer( dupesLayer );
+  table->setMaximumNumberOfFeatures( 50 );
+  QCOMPARE( table->contents()->length(), 4 );
+
+  table->setUniqueRowsOnly( true );
+  QCOMPARE( table->contents()->length(), 3 );
+
+  //check if removing attributes in unique mode works correctly (should result in duplicate rows,
+  //which will be stripped out)
+  table->columns()->removeLast();
+  table->refreshAttributes();
+  QCOMPARE( table->contents()->length(), 2 );
+  table->columns()->removeLast();
+  table->refreshAttributes();
+  QCOMPARE( table->contents()->length(), 1 );
+  table->setUniqueRowsOnly( false );
+  QCOMPARE( table->contents()->length(), 4 );
+
+  mComposition->removeMultiFrame( table );
+  delete dupesLayer;
 }
 
 QTEST_MAIN( TestQgsComposerTableV2 )

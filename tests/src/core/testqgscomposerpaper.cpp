@@ -128,7 +128,7 @@ void TestQgsComposerPaper::markerLinePaper()
 {
   mComposition->setPageStyleSymbol( mMarkerLineSymbol );
   QgsCompositionChecker checker( "composerpaper_markerborder", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 60 ) );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
 QTEST_MAIN( TestQgsComposerPaper )

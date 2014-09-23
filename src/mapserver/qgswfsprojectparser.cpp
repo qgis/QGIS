@@ -201,7 +201,7 @@ void QgsWFSProjectParser::featureTypeList( QDomElement& parentElement, QDomDocum
 
 QSet<QString> QgsWFSProjectParser::wfstUpdateLayers() const
 {
-  QStringList publiedIds = mProjectParser.wfsLayers();
+  QSet<QString> publishedIds = wfsLayerSet();
   QSet<QString> wfsList;
   if ( !mProjectParser.xmlDocument() )
   {
@@ -227,7 +227,7 @@ QSet<QString> QgsWFSProjectParser::wfstUpdateLayers() const
   for ( int i = 0; i < valueList.size(); ++i )
   {
     QString id = valueList.at( i ).toElement().text();
-    if ( publiedIds.contains( id ) )
+    if ( publishedIds.contains( id ) )
     {
       wfsList.insert( id );
     }
@@ -237,7 +237,7 @@ QSet<QString> QgsWFSProjectParser::wfstUpdateLayers() const
 
 QSet<QString> QgsWFSProjectParser::wfstInsertLayers() const
 {
-  QSet<QString> updateIds = wfstUpdateLayers();
+  QSet<QString> publishedIds = wfsLayerSet();
   QSet<QString> wfsList;
   if ( !mProjectParser.xmlDocument() )
   {
@@ -263,7 +263,7 @@ QSet<QString> QgsWFSProjectParser::wfstInsertLayers() const
   for ( int i = 0; i < valueList.size(); ++i )
   {
     QString id = valueList.at( i ).toElement().text();
-    if ( updateIds.contains( id ) )
+    if ( publishedIds.contains( id ) )
     {
       wfsList.insert( id );
     }
@@ -273,7 +273,7 @@ QSet<QString> QgsWFSProjectParser::wfstInsertLayers() const
 
 QSet<QString> QgsWFSProjectParser::wfstDeleteLayers() const
 {
-  QSet<QString> insertIds = wfstInsertLayers();
+  QSet<QString> publishedIds = wfsLayerSet();
   QSet<QString> wfsList;
   if ( !mProjectParser.xmlDocument() )
   {
@@ -299,7 +299,7 @@ QSet<QString> QgsWFSProjectParser::wfstDeleteLayers() const
   for ( int i = 0; i < valueList.size(); ++i )
   {
     QString id = valueList.at( i ).toElement().text();
-    if ( insertIds.contains( id ) )
+    if ( publishedIds.contains( id ) )
     {
       wfsList.insert( id );
     }
@@ -461,6 +461,11 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
 QStringList QgsWFSProjectParser::wfsLayers() const
 {
   return mProjectParser.wfsLayers();
+}
+
+QSet<QString> QgsWFSProjectParser::wfsLayerSet() const
+{
+  return QSet<QString>::fromList( wfsLayers() );
 }
 
 int QgsWFSProjectParser::wfsLayerPrecision( const QString& aLayerId ) const

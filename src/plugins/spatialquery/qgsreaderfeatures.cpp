@@ -28,49 +28,19 @@ QgsReaderFeatures::QgsReaderFeatures( QgsVectorLayer *layer, bool useSelection )
 
 } // QgsReaderFeatures::QgsReaderFeatures(QgsVectorLayer *layer, bool useSelection)
 
-QgsReaderFeatures::~QgsReaderFeatures()
-{
-  if ( mListSelectedFeature.count() > 0 )
-  {
-    mListSelectedFeature.clear();
-  }
-
-} // QgsReaderFeatures::~QgsReaderFeatures()
-
 bool QgsReaderFeatures::nextFeature( QgsFeature & feature )
 {
-  return ( this->*mFuncNextFeature )( feature );
-
+  return mFit.nextFeature( feature );
 } // bool QgsReaderFeatures::nextFeature(QgsFeature & feature)
 
 void QgsReaderFeatures::initReader( bool useSelection )
 {
   if ( useSelection )
   {
-    mListSelectedFeature = mLayer->selectedFeatures();
-    mIterSelectedFeature = mListSelectedFeature.begin();
-    mFuncNextFeature = &QgsReaderFeatures::nextFeatureSelected;
+    mFit = mLayer->selectedFeaturesIterator( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
   }
   else
   {
     mFit = mLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
-    mFuncNextFeature = &QgsReaderFeatures::nextFeatureTotal;
   }
-
 } // void QgsReaderFeatures::initReader()
-
-bool QgsReaderFeatures::nextFeatureTotal( QgsFeature & feature )
-{
-  return mFit.nextFeature( feature );
-} // bool QgsReaderFeatures::nextFeatureTotal ( QgsFeature & feature )
-
-bool QgsReaderFeatures::nextFeatureSelected( QgsFeature & feature )
-{
-  if ( mIterSelectedFeature == mListSelectedFeature.end() )
-    return false;
-
-  feature = *mIterSelectedFeature;
-  ++mIterSelectedFeature;
-
-  return true;
-} // bool QgsReaderFeatures::nextFeatureSelected( QgsFeature &feature )

@@ -29,7 +29,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param c parent composition
      * @param createUndoCommands
      */
-    QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands );
+    QgsComposerMultiFrame( QgsComposition* c /TransferThis/, bool createUndoCommands );
 
     virtual ~QgsComposerMultiFrame();
 
@@ -82,7 +82,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param recalcFrameSizes set to true to force recalculation of all existing frame sizes
      * @see removeFrame
     */
-    virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) = 0;
+    virtual void addFrame( QgsComposerFrame* frame /Transfer/, bool recalcFrameSizes = true ) = 0;
 
     /**Finds the optimal position to break a frame at.
      * @param yPos maximum vertical position for break

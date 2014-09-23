@@ -20,6 +20,7 @@
 
 #include <QGridLayout>
 #include <QFileDialog>
+#include <QSettings>
 
 QgsWebViewWidgetWrapper::QgsWebViewWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
@@ -37,7 +38,12 @@ QVariant QgsWebViewWidgetWrapper::value()
   QVariant v;
 
   if ( mLineEdit )
-    v = mLineEdit->text();
+  {
+    if ( mLineEdit->text() == QSettings().value( "qgis/nullValue", "NULL" ).toString() )
+      v = QVariant( QVariant::String );
+    else
+      v = mLineEdit->text();
+  }
 
   return v;
 }
@@ -69,6 +75,13 @@ void QgsWebViewWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mLineEdit )
   {
+
+    QgsFilterLineEdit* fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
+    if ( fle )
+    {
+      fle->setNullValue( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+    }
+
     container = qobject_cast<QWidget*>( mLineEdit->parent() );
   }
   else
@@ -108,7 +121,12 @@ void QgsWebViewWidgetWrapper::initWidget( QWidget* editor )
 void QgsWebViewWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mLineEdit )
-    mLineEdit->setText( value.toString() );
+  {
+    if ( value.isNull() )
+      mLineEdit->setText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+    else
+      mLineEdit->setText( value.toString() );
+  }
 
   loadUrl( value.toString() );
 }

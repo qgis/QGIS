@@ -42,11 +42,15 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
     void blockAllSignals( bool b );
     void refreshMapComboBox();
 
+    void toggleSourceControls();
+
+    void toggleAtlasSpecificControls( const bool atlasEnabled );
+
   private slots:
     void on_mRefreshPushButton_clicked();
     void on_mAttributesPushButton_clicked();
     void on_mComposerMapComboBox_activated( int index );
-    void on_mMaximumColumnsSpinBox_valueChanged( int i );
+    void on_mMaximumRowsSpinBox_valueChanged( int i );
     void on_mMarginSpinBox_valueChanged( double d );
     void on_mGridStrokeWidthSpinBox_valueChanged( double d );
     void on_mGridColorButton_colorChanged( const QColor& newColor );
@@ -64,12 +68,22 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
     void changeLayer( QgsMapLayer* layer );
     void on_mAddFramePushButton_clicked();
     void on_mResizeModeComboBox_currentIndexChanged( int index );
+    void on_mSourceComboBox_currentIndexChanged( int index );
+    void on_mRelationsComboBox_currentIndexChanged( int index );
+    void on_mEmptyModeComboBox_currentIndexChanged( int index );
+    void on_mEmptyMessageLineEdit_editingFinished();
+    void on_mIntersectAtlasCheckBox_stateChanged( int state );
+    void on_mUniqueOnlyCheckBox_stateChanged( int state );
 
     /**Inserts a new maximum number of features into the spin box (without the spinbox emitting a signal)*/
     void setMaximumNumberOfFeatures( int n );
 
     /**Sets the GUI elements to the values of mComposerTable*/
     void updateGuiElements();
+
+    void atlasToggled();
+
+    void updateRelationsCombo();
 
 };
 

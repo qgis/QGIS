@@ -92,7 +92,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     QString name = func->name();
     if ( name.startsWith( "_" ) ) // do not display private functions
       continue;
-    if ( func->params() >= 1 )
+    if ( func->params() != 0 )
       name += "(";
     registerItem( func->group(), func->name(), " " + name + " ", func->helptext() );
   }
@@ -157,8 +157,8 @@ void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked( const QModelIn
   if ( item->getItemType() == QgsExpressionItem::Header )
     return;
 
-  // Insert the expression text.
-  txtExpressionString->insert( item->getExpressionText() );
+  // Insert the expression text or replace selected text
+  txtExpressionString->insertText( item->getExpressionText() );
   txtExpressionString->setFocus();
 }
 
@@ -392,14 +392,17 @@ void QgsExpressionBuilderWidget::on_lblPreview_linkActivated( QString link )
 
 void QgsExpressionBuilderWidget::on_mValueListWidget_itemDoubleClicked( QListWidgetItem *item )
 {
-  txtExpressionString->insert( " " + item->text() + " " );
+  // Insert the item text or replace selected text
+  txtExpressionString->insertText( " " + item->text() + " " );
   txtExpressionString->setFocus();
 }
 
 void QgsExpressionBuilderWidget::operatorButtonClicked()
 {
   QPushButton* button = dynamic_cast<QPushButton*>( sender() );
-  txtExpressionString->insert( " " + button->text() + " " );
+
+  // Insert the button text or replace selected text
+  txtExpressionString->insertText( " " + button->text() + " " );
   txtExpressionString->setFocus();
 }
 

@@ -232,6 +232,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QProgressDialog* mProgressDlg;
     QgsIFeatureSelectionManager* mFeatureSelectionManager;
     QgsDistanceArea mDistanceArea;
+    QString mDisplayExpression;
 
     friend class TestQgsDualView;
 };

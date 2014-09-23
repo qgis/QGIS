@@ -65,10 +65,11 @@ class DBManagerPlugin:
 		# keep opened only one instance
 		if self.dlg == None:
 			from db_manager import DBManager
-			self.dlg = DBManager(self.iface, self.iface.mainWindow())
+			self.dlg = DBManager(self.iface)
 			QObject.connect(self.dlg, SIGNAL("destroyed(QObject *)"), self.onDestroyed)
 		self.dlg.show()
 		self.dlg.raise_()
+		self.dlg.setWindowState( self.dlg.windowState() & ~Qt.WindowMinimized )
 		self.dlg.activateWindow()
 
 	def onDestroyed(self, obj):

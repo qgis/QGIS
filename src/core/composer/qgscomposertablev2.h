@@ -71,6 +71,16 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
       NoHeaders /*!< no headers shown for table */
     };
 
+    /*! Controls how empty tables are displayed
+     */
+    enum EmptyTableMode
+    {
+      HeadersOnly = 0, /*!< show header rows only */
+      HideTable, /*!< hides entire table if empty */
+      DrawEmptyCells, /*!< draws empty cells */
+      ShowMessage /*!< shows preset message instead of table contents*/
+    };
+
     QgsComposerTableV2( QgsComposition* composition, bool createUndoCommands );
     QgsComposerTableV2();
 
@@ -87,6 +97,37 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see setCellMargin
      */
     double cellMargin() const { return mCellMargin; }
+
+    /**Sets the behaviour for empty tables with no content rows.
+     * @param mode behaviour mode for empty tables
+     * @see emptyTableBehaviour
+     */
+    void setEmptyTableBehaviour( const EmptyTableMode mode );
+
+    /**Returns the behaviour mode for empty tables. This property controls
+     * how the table is drawn if it contains no content rows.
+     * @returns behaviour mode for empty tables
+     * @see setEmptyTableBehaviour
+     */
+    EmptyTableMode emptyTableBehaviour() const { return mEmptyTableMode; }
+
+    /**Sets the message for empty tables with no content rows. This message
+     * is displayed in the table body if the empty table behaviour is
+     * set to ShowMessage
+     * @param message message to show for empty tables
+     * @see emptyTableMessage
+     * @see setEmptyTableBehaviour
+     */
+    void setEmptyTableMessage( const QString message );
+
+    /**Returns the message for empty tables with no content rows. This message
+     * is displayed in the table body if the empty table behaviour is
+     * set to ShowMessage
+     * @returns message to show for empty tables
+     * @see setEmptyTableMessage
+     * @see emptyTableBehaviour
+     */
+    QString emptyTableMessage() const { return mEmptyTableMessage; }
 
     /**Sets the font used to draw header text in the table.
      * @param font font for header cells
@@ -248,6 +289,11 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      */
     virtual bool getTableContents( QgsComposerTableContents &contents ) = 0;
 
+    /**Returns the current contents of the table. Excludes header cells.
+     * @returns table contents
+     */
+    QgsComposerTableContents* contents() { return &mTableContents; }
+
     //reimplemented to return fixed table width
     virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
 
@@ -273,6 +319,12 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
   protected:
     /**Margin between cell borders and cell text*/
     double mCellMargin;
+
+    /**Behaviour for empty tables*/
+    EmptyTableMode mEmptyTableMode;
+
+    /**String to show in empty tables*/
+    QString mEmptyTableMessage;
 
     /**Header font*/
     QFont mHeaderFont;
@@ -365,16 +417,26 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * maximum width of text present in the column.
      * @param numberRows number of rows of content in table frame
      * @param hasHeader set to true if table frame includes header cells
+     * @param mergeCells set to true to merge table content cells
      * @note not available in python bindings
      * @see drawVerticalGridLines
      * @see calculateMaxColumnWidths
      * @note not available in python bindings
      */
-    void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap, const int numberRows, const bool hasHeader ) const;
+    void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap, const int numberRows, const bool hasHeader, const bool mergeCells = false ) const;
 
     /**Recalculates and updates the size of the table and all table frames.
      */
     void recalculateTableSize();
+
+    /**Checks whether a table contents contains a given row
+     * @param contents table contents to check
+     * @param row row to check for
+     * @returns true if contents contains rows
+     */
+    bool contentsContainsRow( const QgsComposerTableContents &contents, const QgsComposerTableRow &row ) const;
+
+    friend class TestQgsComposerTableV2;
 };
 
 #endif // QGSCOMPOSERTABLEV2_H

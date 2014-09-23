@@ -137,6 +137,9 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     virtual void selectRow( int row );
     virtual void _q_selectRow( int row );
 
+  private slots:
+    void modelDeleted();
+
   private:
     void selectRow( int row, bool anchor );
     QgsAttributeTableModel* mMasterModel;

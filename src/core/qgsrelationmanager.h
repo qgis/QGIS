@@ -105,7 +105,14 @@ class CORE_EXPORT QgsRelationManager : public QObject
     QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = 0 ) const;
 
   signals:
+    /** this signal is emitted when the relations were loaded after reading a project */
     void relationsLoaded();
+
+    /**
+     * Emitted when relations are added or removed to the manager.
+     * @note added in QGIS 2.5
+     */
+    void changed();
 
   private slots:
     void readProject( const QDomDocument &doc );

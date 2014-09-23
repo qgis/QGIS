@@ -143,9 +143,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      * Slot to link WFS checkboxes
      */
     void cbxWFSPubliedStateChanged( int aIdx );
-    void cbxWFSUpdateStateChanged( int aIdx );
-    void cbxWFSInsertStateChanged( int aIdx );
-    void cbxWFSDeleteStateChanged( int aIdx );
 
     /*!
      * Slot to link WCS checkboxes

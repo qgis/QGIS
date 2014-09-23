@@ -18,6 +18,7 @@
 #include "qgsfilterlineedit.h"
 
 #include <QFileDialog>
+#include <QSettings>
 #include <QGridLayout>
 
 QgsFileNameWidgetWrapper::QgsFileNameWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
@@ -30,7 +31,12 @@ QVariant QgsFileNameWidgetWrapper::value()
   QVariant value;
 
   if ( mLineEdit )
-    value = mLineEdit->text();
+  {
+    if ( mLineEdit->text() == QSettings().value( "qgis/nullValue", "NULL" ).toString() )
+      value = QVariant( field().type() );
+    else
+      value = mLineEdit->text();
+  }
 
   if ( mLabel )
     value = mLabel->text();
@@ -73,13 +79,26 @@ void QgsFileNameWidgetWrapper::initWidget( QWidget* editor )
   mLabel = qobject_cast<QLabel*>( editor );
 
   if ( mLineEdit )
+  {
+    QgsFilterLineEdit* fle = qobject_cast<QgsFilterLineEdit*>( editor );
+    if ( fle )
+    {
+      fle->setNullValue( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+    }
+
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
+  }
 }
 
 void QgsFileNameWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mLineEdit )
-    mLineEdit->setText( value.toString() );
+  {
+    if ( value.isNull() )
+      mLineEdit->setText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+    else
+      mLineEdit->setText( value.toString() );
+  }
 
   if ( mLabel )
     mLabel->setText( value.toString() );

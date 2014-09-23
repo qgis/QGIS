@@ -12,7 +12,7 @@ class QgsAddRemoveMultiFrameCommand : QUndoCommand
       Removed
     };
 
-    QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame* multiFrame, QgsComposition* c, const QString& text, QUndoCommand* parent = 0 );
+    QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame* multiFrame, QgsComposition* c, const QString& text, QUndoCommand* parent /TransferThis/ = 0 );
     ~QgsAddRemoveMultiFrameCommand();
     void redo();
     void undo();

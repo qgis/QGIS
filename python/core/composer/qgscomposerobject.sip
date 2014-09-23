@@ -10,51 +10,52 @@ class QgsComposerObject : QObject
   public:
 
     /** Data defined properties for different item types
-   */
-  enum DataDefinedProperty
-  {
-    NoProperty = 0, /*< no property */
-    AllProperties, /*< all properties for item */
-    //composer page properties
-    PresetPaperSize, /*< preset paper size for composition */
-    PaperWidth, /*< paper width */
-    PaperHeight, /*< paper height */
-    NumPages, /*< number of pages in composition */
-    PaperOrientation, /*< paper orientation */
-    //general composer item properties
-    PageNumber, /*< page number for item placement */
-    PositionX, /*< x position on page */
-    PositionY, /*< y position on page */
-    ItemWidth, /*< width of item */
-    ItemHeight, /*< height of item */
-    ItemRotation, /*< rotation of item */
-    Transparency, /*< item transparency */
-    BlendMode, /*< item blend mode */
-    //composer map
-    MapRotation, /*< map rotation */
-    MapScale, /*< map scale */
-    MapXMin, /*< map extent x minimum */
-    MapYMin, /*< map extent y minimum */
-    MapXMax, /*< map extent x maximum */
-    MapYMax, /*< map extent y maximum */
-    //composer picture
-    PictureSource /*< picture source url */
-  };
+     */
+    enum DataDefinedProperty
+    {
+      NoProperty = 0, /*< no property */
+      AllProperties, /*< all properties for item */
+      //composer page properties
+      PresetPaperSize, /*< preset paper size for composition */
+      PaperWidth, /*< paper width */
+      PaperHeight, /*< paper height */
+      NumPages, /*< number of pages in composition */
+      PaperOrientation, /*< paper orientation */
+      //general composer item properties
+      PageNumber, /*< page number for item placement */
+      PositionX, /*< x position on page */
+      PositionY, /*< y position on page */
+      ItemWidth, /*< width of item */
+      ItemHeight, /*< height of item */
+      ItemRotation, /*< rotation of item */
+      Transparency, /*< item transparency */
+      BlendMode, /*< item blend mode */
+      //composer map
+      MapRotation, /*< map rotation */
+      MapScale, /*< map scale */
+      MapXMin, /*< map extent x minimum */
+      MapYMin, /*< map extent y minimum */
+      MapXMax, /*< map extent x maximum */
+      MapYMax, /*< map extent y maximum */
+      //composer picture
+      PictureSource /*< picture source url */
+    };
 
-  /** Specifies whether the value returned by a function should be the original, user
-   * set value, or the current evaluated value for the property. This may differ if
-   * a property has a data defined expression active.
-   */
-  enum PropertyValueType
-  {
-    EvaluatedValue = 0, /*< return the current evaluated value for the property */
-    OriginalValue /*< return the original, user set value */
-  };
-
+    /** Specifies whether the value returned by a function should be the original, user
+     * set value, or the current evaluated value for the property. This may differ if
+     * a property has a data defined expression active.
+     */
+    enum PropertyValueType
+    {
+      EvaluatedValue = 0, /*< return the current evaluated value for the property */
+      OriginalValue /*< return the original, user set value */
+    };
+  
     /**Constructor
      * @param composition parent composition
      */
     QgsComposerObject( QgsComposition* composition );
+
     virtual ~QgsComposerObject();
 
     /**Returns the composition the item is attached to.

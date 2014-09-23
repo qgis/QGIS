@@ -116,7 +116,7 @@ void TestQgsComposerPicture::pictureRotation()
   mComposerPicture->setPictureRotation( 45 );
 
   QgsCompositionChecker checker( "composerpicture_rotation", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
   mComposerPicture->setPictureRotation( 0 );
@@ -129,7 +129,7 @@ void TestQgsComposerPicture::pictureItemRotation()
   mComposerPicture->setItemRotation( 45, true );
 
   QgsCompositionChecker checker( "composerpicture_itemrotation", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
   mComposerPicture->setItemRotation( 0, true );
@@ -157,7 +157,7 @@ void TestQgsComposerPicture::pictureResizeZoom()
   mComposerPicture->setResizeMode( QgsComposerPicture::Zoom );
 
   QgsCompositionChecker checker( "composerpicture_resize_zoom", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
 }
@@ -169,7 +169,7 @@ void TestQgsComposerPicture::pictureResizeStretch()
   mComposerPicture->setResizeMode( QgsComposerPicture::Stretch );
 
   QgsCompositionChecker checker( "composerpicture_resize_stretch", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
   mComposerPicture->setResizeMode( QgsComposerPicture::Zoom );
@@ -263,7 +263,7 @@ void TestQgsComposerPicture::pictureZoomAnchor()
   mComposerPicture->setPictureAnchor( QgsComposerItem::LowerMiddle );
 
   QgsCompositionChecker checker( "composerpicture_zoom_anchor", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
   mComposerPicture->setPictureAnchor( QgsComposerItem::UpperLeft );
@@ -278,7 +278,7 @@ void TestQgsComposerPicture::pictureSvgZoom()
   mComposerPicture->setPicturePath( mSvgImage );
 
   QgsCompositionChecker checker( "composerpicture_svg_zoom", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
   mComposerPicture->setPicturePath( mPngImage );
@@ -293,7 +293,7 @@ void TestQgsComposerPicture::pictureSvgStretch()
   mComposerPicture->setSceneRect( QRectF( 70, 70, 20, 100 ) );
 
   QgsCompositionChecker checker( "composerpicture_svg_stretch", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
   mComposerPicture->setResizeMode( QgsComposerPicture::Zoom );
@@ -345,7 +345,7 @@ void TestQgsComposerPicture::pictureExpression()
   mComposerPicture->setUsePictureExpression( true );
 
   QgsCompositionChecker checker( "composerpicture_expression", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
   mComposerPicture->setUsePictureExpression( false );
@@ -361,7 +361,7 @@ void TestQgsComposerPicture::pictureInvalidExpression()
   mComposerPicture->setUsePictureExpression( true );
 
   QgsCompositionChecker checker( "composerpicture_badexpression", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
   mComposerPicture->setUsePictureExpression( false );
@@ -375,7 +375,7 @@ void TestQgsComposerPicture::pictureRemoteUrl()
   mComposerPicture->setPicturePath( "http://www.qgis.org/en/_static/logo.png" );
 
   QgsCompositionChecker checker( "composerpicture_remote", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
   mComposerPicture->setUsePictureExpression( false );

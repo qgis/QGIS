@@ -19,7 +19,7 @@ class QgsAttributeEditorElement : QObject
       AeTypeInvalid
     };
 
-    QgsAttributeEditorElement( AttributeEditorType type, QString name, QObject *parent = NULL );
+    QgsAttributeEditorElement( AttributeEditorType type, QString name, QObject *parent /TransferThis/ = NULL );
 
     virtual ~QgsAttributeEditorElement();
 
@@ -37,7 +37,7 @@ class QgsAttributeEditorContainer : QgsAttributeEditorElement
 %End
 
   public:
-    QgsAttributeEditorContainer( QString name, QObject *parent );
+    QgsAttributeEditorContainer( QString name, QObject *parent  /TransferThis/ );
 
     ~QgsAttributeEditorContainer();
 
@@ -54,7 +54,7 @@ class QgsAttributeEditorField : QgsAttributeEditorElement
 #include "qgsvectorlayer.h"
 %End
   public:
-    QgsAttributeEditorField( QString name , int idx, QObject *parent );
+    QgsAttributeEditorField( QString name , int idx, QObject *parent /TransferThis/ );
 
     ~QgsAttributeEditorField();
 
@@ -66,9 +66,9 @@ class QgsAttributeEditorField : QgsAttributeEditorElement
 class QgsAttributeEditorRelation : QgsAttributeEditorElement
 {
   public:
-    QgsAttributeEditorRelation( QString name, const QString &relationId, QObject *parent );
+    QgsAttributeEditorRelation( QString name, const QString &relationId, QObject *parent /TransferThis/ );
 
-    QgsAttributeEditorRelation( QString name, const QgsRelation& relation, QObject *parent );
+    QgsAttributeEditorRelation( QString name, const QgsRelation& relation, QObject *parent /TransferThis/);
 
     ~QgsAttributeEditorRelation();
 
@@ -371,6 +371,18 @@ class QgsVectorLayer : QgsMapLayer
      * @see    selectedFeaturesIds()
      */
     QgsFeatureList selectedFeatures();
+
+    /**
+     * Get an iterator of the selected features
+     *
+     * @param request You may specify a request, e.g. to limit the set of requested attributes.
+     *                Any filter on the request will be discarded.
+     *
+     * @return Iterator over the selected features
+     *
+     * @see    selectedFeaturesIds()
+     */
+    QgsFeatureIterator selectedFeaturesIterator( QgsFeatureRequest request = QgsFeatureRequest() );
 
     /**
      * Return reference to identifiers of selected features

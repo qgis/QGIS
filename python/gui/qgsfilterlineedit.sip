@@ -9,14 +9,35 @@ class QgsFilterLineEdit : QLineEdit
   public:
     QgsFilterLineEdit( QWidget* parent = 0 );
 
-    void setNullValue( QString nullValue );
-    
-    QString nullValue() const;
+    /**
+     * Sets the current text with NULL support
+     *
+     * @param value The text to set. If a Null string is provided, the text will match the nullValue.
+     */
+    void setValue( QString value );
+
+    /**
+     * Returns the text of this edit with NULL support
+     *
+     * @return Current text (Null string if it matches the nullValue property )
+     */
+    QString value() const;
+
+    /**
+     * Determine if the current text represents Null.
+     *
+     * @return True if the value is Null.
+     */
+    bool isNull() const;
 
   signals:
     void cleared();
 
-  protected:
-    void resizeEvent( QResizeEvent * );
-    void changeEvent( QEvent * );
+    /**
+     * Same as textChanged(const QString& ) but with support for Null values.
+     *
+     * @param value The current text or Null string if it matches the nullValue property.
+     */
+    void valueChanged( const QString& value );
+
 };

@@ -164,7 +164,7 @@ bool QgsAttributeForm::save()
         QVariant srcVar = eww->value();
         // need to check dstVar.isNull() != srcVar.isNull()
         // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
-        if (( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() )
+        if (( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() && mLayer->fieldEditable( eww->fieldIdx() ) )
         {
           dst[eww->fieldIdx()] = srcVar;
 
@@ -205,15 +205,18 @@ bool QgsAttributeForm::save()
         int n = 0;
         for ( int i = 0; i < dst.count(); ++i )
         {
-          if (( dst[i] == src[i] && dst[i].isNull() == src[i].isNull() ) || !dst[i].isValid() )
+          if (( dst[i] == src[i] && dst[i].isNull() == src[i].isNull() )  // If field is not changed...
+              || !dst[i].isValid()                                       // or the widget returns invalid (== do not change)
+              || !mLayer->fieldEditable( i ) )                           // or the field cannot be edited ...
           {
-            QgsDebugMsg( "equal or invalid destination" );
-            QgsDebugMsg( QString( "dst:'%1' (type:%2,isNull:%3,isValid:%4)" )
-                         .arg( dst[i].toString() ).arg( dst[i].typeName() ).arg( dst[i].isNull() ).arg( dst[i].isValid() ) );
-            QgsDebugMsg( QString( "src:'%1' (type:%2,isNull:%3,isValid:%4)" )
-                         .arg( src[i].toString() ).arg( src[i].typeName() ).arg( src[i].isNull() ).arg( src[i].isValid() ) );
             continue;
           }
+
+          QgsDebugMsg( QString( "Updating field %1" ).arg( i ) );
+          QgsDebugMsg( QString( "dst:'%1' (type:%2, isNull:%3, isValid:%4)" )
+                       .arg( dst[i].toString() ).arg( dst[i].typeName() ).arg( dst[i].isNull() ).arg( dst[i].isValid() ) );
+          QgsDebugMsg( QString( "src:'%1' (type:%2, isNull:%3, isValid:%4)" )
+                       .arg( src[i].toString() ).arg( src[i].typeName() ).arg( src[i].isNull() ).arg( src[i].isValid() ) );
 
           success &= mLayer->changeAttributeValue( mFeature.id(), i, dst[i], src[i] );
           n++;
@@ -309,7 +312,18 @@ void QgsAttributeForm::synchronizeEnabledState()
 void QgsAttributeForm::init()
 {
   QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+
+  // Cleanup of any previously shown widget, we start from scratch
   QWidget* formWidget = 0;
+
+  bool buttonBoxVisible = true;
+  // Cleanup button box but preserve visibility
+  if ( mButtonBox )
+  {
+    buttonBoxVisible = mButtonBox->isVisible();
+    delete mButtonBox;
+    mButtonBox = 0;
+  }
 
   qDeleteAll( mWidgets );
   mWidgets.clear();
@@ -446,6 +460,8 @@ void QgsAttributeForm::init()
     mButtonBox->setObjectName( "buttonBox" );
     layout()->addWidget( mButtonBox );
   }
+
+  mButtonBox->setVisible( buttonBoxVisible );
 
   connectWrappers();
 

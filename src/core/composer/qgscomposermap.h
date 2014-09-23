@@ -24,6 +24,7 @@
 #include <QGraphicsRectItem>
 
 class QgsComposition;
+class QgsComposerMapOverviewStack;
 class QgsComposerMapOverview;
 class QgsComposerMapGridStack;
 class QgsComposerMapGrid;
@@ -552,6 +553,21 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     QgsComposerMapGrid* grid();
 
+    /**Returns the map item's overview stack, which is used to control how overviews
+     * are drawn over the map's contents.
+     * @returns pointer to overview stack
+     * @see overview()
+     * @note introduced in QGIS 2.5
+     */
+    QgsComposerMapOverviewStack* overviews() { return mOverviewStack; }
+
+    /**Returns the map item's first overview. This is a convenience function.
+     * @returns pointer to first overview for map item
+     * @see overviews()
+     * @note introduced in QGIS 2.5
+     */
+    QgsComposerMapOverview* overview();
+
     /**In case of annotations, the bounding rectangle can be larger than the map item rectangle
     @note this function was added in version 1.4*/
     QRectF boundingRect() const;
@@ -595,29 +611,56 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double mapUnitsToMM() const;
 
     /**Sets overview frame map. -1 disables the overview frame
-    @note: this function was added in version 1.9*/
-    void setOverviewFrameMap( int mapId );
+     * @note: this function was added in version 1.9
+     * @deprecated use overview()->setFrameMap() or overviews() instead
+    */
+    Q_DECL_DEPRECATED void setOverviewFrameMap( int mapId );
+
     /**Returns id of overview frame (or -1 if no overfiew frame)
-    @note: this function was added in version 1.9*/
-    int overviewFrameMapId() const;
+     * @note: this function was added in version 1.9
+     * @deprecated use overview()->frameMapId() or overviews() instead
+    */
+    Q_DECL_DEPRECATED int overviewFrameMapId() const;
 
-    void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol );
-    QgsFillSymbolV2* overviewFrameMapSymbol();
+    /**
+     * @deprecated use overview()->setFrameSymbol() or overviews() instead
+    */
+    Q_DECL_DEPRECATED void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol );
 
-    /** Returns the overview's blending mode */
-    QPainter::CompositionMode overviewBlendMode() const;
-    /** Sets the overview's blending mode*/
-    void setOverviewBlendMode( QPainter::CompositionMode blendMode );
+    /**
+     * @deprecated use overview()->frameSymbol() or overviews() instead
+    */
+    Q_DECL_DEPRECATED QgsFillSymbolV2* overviewFrameMapSymbol();
 
-    /** Returns true if the overview frame is inverted */
-    bool overviewInverted() const;
-    /** Sets the overview's inversion mode*/
-    void setOverviewInverted( bool inverted );
+    /** Returns the overview's blending mode
+     * @deprecated use overview()->blendMode() or overviews() instead
+    */
+    Q_DECL_DEPRECATED QPainter::CompositionMode overviewBlendMode() const;
 
-    /** Returns true if the extent is forced to center on the overview */
-    bool overviewCentered() const;
-    /** Set the overview's centering mode */
-    void setOverviewCentered( bool centered );
+    /** Sets the overview's blending mode
+     * @deprecated use overview()->setBlendMode() or overviews() instead
+     */
+    Q_DECL_DEPRECATED void setOverviewBlendMode( QPainter::CompositionMode blendMode );
+
+    /** Returns true if the overview frame is inverted
+     * @deprecated use overview()->inverted() or overviews() instead
+    */
+    Q_DECL_DEPRECATED bool overviewInverted() const;
+
+    /** Sets the overview's inversion mode
+     * @deprecated use overview()->setInverted() or overviews() instead
+    */
+    Q_DECL_DEPRECATED void setOverviewInverted( bool inverted );
+
+    /** Returns true if the extent is forced to center on the overview
+     * @deprecated use overview()->centered() or overviews() instead
+    */
+    Q_DECL_DEPRECATED bool overviewCentered() const;
+
+    /** Set the overview's centering mode
+     * @deprecated use overview()->setCentered() or overviews() instead
+    */
+    Q_DECL_DEPRECATED void setOverviewCentered( bool centered );
 
     /**Sets mId to a number not yet used in the composition. mId is kept if it is not in use.
         Usually, this function is called before adding the composer map to the composition*/
@@ -723,23 +766,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //overriden to show "Map 1" type names
     virtual QString displayName() const;
 
-    /**Adds new map overview (takes ownership)*/
-    void addOverview( QgsComposerMapOverview* overview );
-    void removeOverview( const QString& name );
-    void moveOverviewUp( const QString& name );
-    void moveOverviewDown( const QString& name );
-    const QgsComposerMapOverview* constMapOverview( const QString& id ) const;
-    QgsComposerMapOverview* mapOverview( const QString& id ) const;
-    QList<QgsComposerMapOverview *> mapOverviews() const;
-    int overviewCount() const { return mOverviews.size(); }
-
     /**Returns extent that considers rotation and shift with mOffsetX / mOffsetY*/
     QPolygonF transformedMapPolygon() const;
 
     /**Transforms map coordinates to item coordinates (considering rotation and move offset)*/
     QPointF mapToItemCoords( const QPointF& mapCoords ) const;
 
-    void connectMapOverviewSignals();
+    Q_DECL_DEPRECATED void connectMapOverviewSignals();
 
   signals:
     void extentChanged();
@@ -772,6 +805,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     int mId;
 
     QgsComposerMapGridStack* mGridStack;
+
+    QgsComposerMapOverviewStack* mOverviewStack;
 
     // Map region in map units realy used for rendering
     // It can be the same as mUserExtent, but it can be bigger in on dimension if mCalculate==Scale,
@@ -828,20 +863,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     const QgsComposerMapGrid* constFirstMapGrid() const;
 
     /**Returns first map overview or creates an empty one if none*/
-    QgsComposerMapOverview* firstMapOverview();
     const QgsComposerMapOverview* constFirstMapOverview() const;
-
-    void removeOverviews();
-    void drawOverviews( QPainter* p );
 
     /**Current bounding rectangle. This is used to check if notification to the graphics scene is necessary*/
     QRectF mCurrentRectangle;
     QGraphicsView* mMapCanvas;
     /**True if annotation items, rubber band, etc. from the main canvas should be displayed*/
     bool mDrawCanvasItems;
-
-
-    QList< QgsComposerMapOverview* > mOverviews;
 
     /**Adjusts an extent rectangle to match the provided item width and height, so that extent
      * center of extent remains the same */

@@ -53,12 +53,23 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     Q_OBJECT
 
   public:
+
+    /*! Specifies the content source for the attribute table
+     */
+    enum ContentSource
+    {
+      LayerAttributes = 0, /*!< table shows attributes from features in a vector layer */
+      AtlasFeature, /*!< table shows attributes from the current atlas feature */
+      RelationChildren /*!< table shows attributes from related child features */
+    };
+
     QgsComposerAttributeTableV2( QgsComposition* composition, bool createUndoCommands );
     ~QgsComposerAttributeTableV2();
 
     /**Writes properties specific to attribute tables
      * @param elem an existing QDomElement in which to store the attribute table's properties.
      * @param doc QDomDocument for the destination xml.
+     * @param ignoreFrames ignore frames
      * @see readXML
      */
     virtual bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
@@ -66,11 +77,32 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     /**Reads the properties specific to an attribute table from xml.
      * @param itemElem a QDomElement holding the attribute table's desired properties.
      * @param doc QDomDocument for the source xml.
+     * @param ignoreFrames ignore frames
      * @see writeXML
      */
     virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
 
     virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true );
+
+    /**Sets the source for attributes to show in table body.
+     * @param source content source
+     * @see source
+     */
+    void setSource( const ContentSource source );
+
+    /**Returns the source for attributes shown in the table body.
+     * @returns content source
+     * @see setSource
+     */
+    ContentSource source() const { return mSource; }
+
+    /**Returns the source layer for the table, considering the table source mode. Eg,
+     * if the table is set to atlas feature mode, then the source layer will be the
+     * atlas coverage layer. If the table is set to layer attributes mode, then
+     * the source layer will be the user specified vector layer.
+     * @returns actual source layer
+     */
+    QgsVectorLayer* sourceLayer();
 
     /**Sets the vector layer from which to display feature attributes
      * @param layer Vector layer for attribute table
@@ -83,6 +115,22 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @see setVectorLayer
      */
     QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
+
+    /**Sets the relation id from which to display child features
+     * @param relationId id for relation to display child features from
+     * @see relationId
+     * @see setSource
+     * @note only used if table source is set to RelationChildren
+     */
+    void setRelationId( const QString relationId );
+
+    /**Returns the relation id which the table displays child features from
+     * @returns relation id
+     * @see setRelationId
+     * @see source
+     * @note only used if table source is set to RelationChildren
+     */
+    QString relationId() const { return mRelationId; }
 
     /**Resets the attribute table's columns to match the vector layer's fields
      * @see setVectorLayer
@@ -114,13 +162,27 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @param features maximum number of features to show in the table
      * @see maximumNumberOfFeatures
      */
-    void setMaximumNumberOfFeatures( int features );
+    void setMaximumNumberOfFeatures( const int features );
 
     /**Returns the maximum number of features to be shown by the table.
      * @returns maximum number of features
      * @see setMaximumNumberOfFeatures
      */
     int maximumNumberOfFeatures() const { return mMaximumNumberOfFeatures; }
+
+    /**Sets attribute table to only show unique rows.
+     * @param uniqueOnly set to true to show only unique rows. Duplicate rows
+     * will be stripped from the table.
+     * @see uniqueRowsOnly
+     */
+    void setUniqueRowsOnly( const bool uniqueOnly );
+
+    /**Returns true if the table is set to show only unique rows.
+     * @returns true if table only shows unique rows and is stripping out
+     * duplicate rows.
+     * @see setUniqueRowsOnly
+     */
+    bool uniqueRowsOnly() const { return mShowUniqueRowsOnly; }
 
     /**Sets attribute table to only show features which are visible in a composer map item. Changing
      * this setting forces the table to refetch features from its vector layer, and may result in
@@ -129,7 +191,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @see displayOnlyVisibleFeatures
      * @see setComposerMap
      */
-    void setDisplayOnlyVisibleFeatures( bool visibleOnly );
+    void setDisplayOnlyVisibleFeatures( const bool visibleOnly );
 
     /**Returns true if the table is set to show only features visible on a corresponding
      * composer map item.
@@ -138,6 +200,21 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @see setDisplayOnlyVisibleFeatures
      */
     bool displayOnlyVisibleFeatures() const { return mShowOnlyVisibleFeatures; }
+
+    /**Sets attribute table to only show features which intersect the current atlas
+     * feature.
+     * @param filterToAtlas set to true to show only features which intersect
+     * the atlas feature
+     * @see filterToAtlasFeature
+     */
+    void setFilterToAtlasFeature( const bool filterToAtlas );
+
+    /**Returns true if the table is set to only show features which intersect the current atlas
+     * feature.
+     * @returns true if table only shows features which intersect the atlas feature
+     * @see setFilterToAtlasFeature
+     */
+    bool filterToAtlasFeature() const { return mFilterToAtlasIntersection; }
 
     /**Returns true if a feature filter is active on the attribute table
      * @returns bool state of the feature filter
@@ -153,7 +230,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @see filterFeatures
      * @see setFeatureFilter
      */
-    void setFilterFeatures( bool filter );
+    void setFilterFeatures( const bool filter );
 
     /**Returns the current expression used to filter features for the table. The filter is only
      * active if filterFeatures() is true.
@@ -192,22 +269,37 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     QList<QPair<int, bool> > sortAttributes() const;
 
     /**Queries the attribute table's vector layer for attributes to show in the table.
-     * @param attributeMaps list of QgsAttributeMaps where the fetched feature attributes will be stored
+     * @param contents table content
      * @returns true if attributes were successfully fetched
      * @note not available in python bindings
      */
     bool getTableContents( QgsComposerTableContents &contents );
 
   private:
+
+    /**Attribute source*/
+    ContentSource mSource;
     /**Associated vector layer*/
     QgsVectorLayer* mVectorLayer;
+    /**Relation id, if in relation children mode*/
+    QString mRelationId;
+
+    /**Current vector layer, if in atlas feature mode*/
+    QgsVectorLayer* mCurrentAtlasLayer;
+
     /**Associated composer map (used to display the visible features)*/
     const QgsComposerMap* mComposerMap;
     /**Maximum number of features that is displayed*/
     int mMaximumNumberOfFeatures;
 
+    /**True if only unique rows should be shown*/
+    bool mShowUniqueRowsOnly;
+
     /**Shows only the features that are visible in the associated composer map (true by default)*/
     bool mShowOnlyVisibleFeatures;
+
+    /**Shows only the features that intersect the current atlas feature*/
+    bool mFilterToAtlasIntersection;
 
     /**True if feature filtering enabled*/
     bool mFilterFeatures;
@@ -228,6 +320,8 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
   private slots:
     /**Checks if this vector layer will be removed (and sets mVectorLayer to 0 if yes) */
     void removeLayer( QString layerId );
+
+    void atlasLayerChanged( QgsVectorLayer* layer );
 
 };
 

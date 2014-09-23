@@ -45,6 +45,14 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): 
 {
   mHtmlUnitsToMM = htmlUnitsToMM();
   mWebPage = new QWebPage();
+  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
+
+  //This makes the background transparent. Found on http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
+  QPalette palette = mWebPage->palette();
+  palette.setBrush( QPalette::Base, Qt::transparent );
+  mWebPage->setPalette( palette );
+
   mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
   QObject::connect( mWebPage, SIGNAL( loadFinished( bool ) ), this, SLOT( frameLoaded( bool ) ) );
   if ( mComposition )
@@ -187,6 +195,19 @@ void QgsComposerHtml::loadHtml()
     qApp->processEvents();
   }
 
+  recalculateFrameSizes();
+  //trigger a repaint
+  emit contentsChanged();
+}
+
+void QgsComposerHtml::frameLoaded( bool ok )
+{
+  Q_UNUSED( ok );
+  mLoaded = true;
+}
+
+void QgsComposerHtml::recalculateFrameSizes()
+{
   if ( frameCount() < 1 )  return;
 
   QSize contentsSize = mWebPage->mainFrame()->contentsSize();
@@ -202,23 +223,14 @@ void QgsComposerHtml::loadHtml()
   contentsSize.setWidth( maxFrameWidth * mHtmlUnitsToMM );
 
   mWebPage->setViewportSize( contentsSize );
-  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
-  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
   mSize.setWidth( contentsSize.width() / mHtmlUnitsToMM );
   mSize.setHeight( contentsSize.height() / mHtmlUnitsToMM );
-
-  renderCachedImage();
-
-  recalculateFrameSizes();
+  if ( contentsSize.isValid() )
+  {
+    renderCachedImage();
+  }
+  QgsComposerMultiFrame::recalculateFrameSizes();
   emit changed();
-  //trigger a repaint
-  emit contentsChanged();
-}
-
-void QgsComposerHtml::frameLoaded( bool ok )
-{
-  Q_UNUSED( ok );
-  mLoaded = true;
 }
 
 void QgsComposerHtml::renderCachedImage()

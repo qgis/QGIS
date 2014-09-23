@@ -71,6 +71,22 @@ class QgsComposerColumnSourceDelegate : public QItemDelegate
     QgsVectorLayer* mVectorLayer;
 };
 
+// QgsComposerColumnWidthDelegate
+
+/**A delegate for showing column width as a spin box*/
+class QgsComposerColumnWidthDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    QgsComposerColumnWidthDelegate( QObject *parent = 0 );
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
+};
+
 
 // QgsComposerColumnSortOrderDelegate
 
@@ -133,6 +149,7 @@ class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelec
     QgsComposerColumnAlignmentDelegate *mColumnAlignmentDelegate;
     QgsComposerColumnSourceDelegate *mColumnSourceDelegate;
     QgsComposerColumnSortOrderDelegate *mColumnSortOrderDelegate;
+    QgsComposerColumnWidthDelegate *mColumnWidthDelegate;
 
 };
 

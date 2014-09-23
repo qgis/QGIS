@@ -45,9 +45,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-21</y>
+        <y>0</y>
         <width>392</width>
-        <height>846</height>
+        <height>1076</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -70,6 +70,16 @@
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
           </property>
           <item row="0" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Source</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="mSourceComboBox"/>
+          </item>
+          <item row="1" column="0">
            <widget class="QLabel" name="mLayerLabel">
             <property name="text">
              <string>Layer</string>
@@ -79,7 +89,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="1" column="1">
            <widget class="QgsMapLayerComboBox" name="mLayerComboBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -89,37 +99,27 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="2">
+          <item row="2" column="0">
+           <widget class="QLabel" name="mRelationLabel">
+            <property name="text">
+             <string>Relation</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="mRelationsComboBox"/>
+          </item>
+          <item row="4" column="0" colspan="2">
            <widget class="QPushButton" name="mRefreshPushButton">
             <property name="text">
              <string>Refresh table data</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="2">
+          <item row="5" column="0" colspan="2">
            <widget class="QPushButton" name="mAttributesPushButton">
             <property name="text">
              <string>Attributes...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="mMarginLabel">
-            <property name="text">
-             <string>Margin</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mMarginSpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QDoubleSpinBox" name="mMarginSpinBox">
-            <property name="suffix">
-             <string> mm</string>
             </property>
            </widget>
           </item>
@@ -147,25 +147,25 @@
              <bool>true</bool>
             </property>
             <property name="buddy">
-             <cstring>mMaximumColumnsSpinBox</cstring>
+             <cstring>mMaximumRowsSpinBox</cstring>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QSpinBox" name="mMaximumColumnsSpinBox">
+           <widget class="QSpinBox" name="mMaximumRowsSpinBox">
             <property name="maximum">
              <number>999</number>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="2">
+          <item row="2" column="0" colspan="2">
            <widget class="QCheckBox" name="mShowOnlyVisibleFeaturesCheckBox">
             <property name="text">
-             <string>Show only visible features</string>
+             <string>Show only features visible within a map</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="mComposerMapLabel">
             <property name="text">
              <string>Composer map</string>
@@ -178,17 +178,17 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="3" column="1">
            <widget class="QComboBox" name="mComposerMapComboBox"/>
           </item>
-          <item row="3" column="0">
+          <item row="5" column="0">
            <widget class="QCheckBox" name="mFeatureFilterCheckBox">
             <property name="text">
              <string>Filter with</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="5" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QLineEdit" name="mFeatureFilterEdit"/>
@@ -206,13 +206,110 @@
             </item>
            </layout>
           </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="QCheckBox" name="mIntersectAtlasCheckBox">
+            <property name="text">
+             <string>Show only features intersecting atlas feature</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="mUniqueOnlyCheckBox">
+            <property name="text">
+             <string>Remove duplicate rows from table</string>
+            </property>
+           </widget>
+          </item>
          </layout>
          <zorder>mShowOnlyVisibleFeaturesCheckBox</zorder>
          <zorder>mComposerMapLabel</zorder>
          <zorder>mComposerMapComboBox</zorder>
          <zorder>mFeatureFilterCheckBox</zorder>
-         <zorder>mMaximumColumnsSpinBox</zorder>
+         <zorder>mMaximumRowsSpinBox</zorder>
          <zorder>mMaxNumFeaturesLabel</zorder>
+         <zorder>mIntersectAtlasCheckBox</zorder>
+         <zorder>mUniqueOnlyCheckBox</zorder>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_6">
+         <property name="title">
+          <string>Appearance</string>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <layout class="QFormLayout" name="formLayout_4">
+          <item row="0" column="0">
+           <widget class="QLabel" name="mMarginLabel">
+            <property name="text">
+             <string>Cell margins</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mMarginSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="mMarginSpinBox">
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Display header</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="mHeaderModeComboBox">
+            <item>
+             <property name="text">
+              <string>On first frame</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>On all frames</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>No header</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Empty tables</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="mEmptyModeComboBox"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mEmptyMessageLabel">
+            <property name="text">
+             <string>Message to display</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="mEmptyMessageLineEdit"/>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
@@ -297,13 +394,6 @@
              <string>Table heading</string>
             </property>
             <layout class="QGridLayout" name="gridLayout">
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_7">
-               <property name="text">
-                <string>Display</string>
-               </property>
-              </widget>
-             </item>
              <item row="5" column="1" colspan="2">
               <widget class="QComboBox" name="mHeaderHAlignmentComboBox">
                <property name="sizePolicy">
@@ -379,25 +469,6 @@
                <property name="text">
                 <string/>
                </property>
-              </widget>
-             </item>
-             <item row="1" column="1" colspan="2">
-              <widget class="QComboBox" name="mHeaderModeComboBox">
-               <item>
-                <property name="text">
-                 <string>On first frame</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>On all frames</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>No header</string>
-                </property>
-               </item>
               </widget>
              </item>
             </layout>

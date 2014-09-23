@@ -181,9 +181,6 @@ void TestQgsComposerHtml::tableMultiFrame()
   //page2
   QgsCompositionChecker checker2( "composerhtml_multiframe2", mComposition );
   result = checker2.testComposition( mReport, 1 ) && result;
-  //page 3
-  QgsCompositionChecker checker3( "composerhtml_multiframe3", mComposition );
-  result = checker3.testComposition( mReport, 2 ) && result;
 
   mComposition->removeMultiFrame( htmlItem );
   delete htmlItem;
@@ -207,9 +204,6 @@ void TestQgsComposerHtml::htmlMultiFrameSmartBreak()
   //page2
   QgsCompositionChecker checker2( "composerhtml_smartbreaks2", mComposition );
   result = checker2.testComposition( mReport, 1 ) && result;
-  //page 3
-  QgsCompositionChecker checker3( "composerhtml_smartbreaks3", mComposition );
-  result = checker3.testComposition( mReport, 2 ) && result;
 
   mComposition->removeMultiFrame( htmlItem );
   delete htmlItem;

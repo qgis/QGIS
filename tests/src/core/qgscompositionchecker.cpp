@@ -43,25 +43,26 @@ bool QgsCompositionChecker::testComposition( QString &report, int page, int pixe
     return false;
   }
 
+  setControlName( "expected_" + mTestName );
+
 #if 0
   //fake mode to generate expected image
-  //assume 300 dpi and size of the control image 3507 * 2480
-  QImage outputImage( QSize( 3507, 2480 ), QImage::Format_ARGB32 );
+  //assume 96 dpi and size of the control image 1122 * 794
+  QImage newImage( QSize( 1122, 794 ), QImage::Format_ARGB32 );
   mComposition->setPlotStyle( QgsComposition::Print );
-  outputImage.setDotsPerMeterX( 300 / 25.4 * 1000 );
-  outputImage.setDotsPerMeterY( 300 / 25.4 * 1000 );
-  outputImage.fill( 0 );
-  QPainter p( &outputImage );
+  newImage.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  newImage.setDotsPerMeterY( 96 / 25.4 * 1000 );
+  newImage.fill( 0 );
+  QPainter expectedPainter( &newImage );
   //QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
   //QRectF targetArea( 0, 0, 3507, 2480 );
-  mComposition->renderPage( &p, page );
-  p.end();
-  outputImage.save( "/tmp/composerhtml_table_control.png", "PNG" );
-  return false;
+  mComposition->renderPage( &expectedPainter, page );
+  expectedPainter.end();
+  newImage.save( mExpectedImageFile, "PNG" );
+  return true;
 #endif //0
 
   //load expected image
-  setControlName( "expected_" + mTestName );
   QImage expectedImage( mExpectedImageFile );
 
   //get width/height, create image and render the composition to it

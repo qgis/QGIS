@@ -511,6 +511,21 @@ class QgsComposerMap : QgsComposerItem
      * @note introduced in QGIS 2.5
      */
     QgsComposerMapGrid* grid();
+    
+    /**Returns the map item's overview stack, which is used to control how over
+     * are drawn over the map's contents.
+     * @returns pointer to overview stack
+     * @see overview()
+     * @note introduced in QGIS 2.5
+     */
+    QgsComposerMapOverviewStack* overviews();
+
+    /**Returns the map item's first overview. This is a convenience function.
+     * @returns pointer to first overview for map item
+     * @see overviews()
+     * @note introduced in QGIS 2.5
+     */
+    QgsComposerMapOverview* overview();
 
     /**In case of annotations, the bounding rectangle can be larger than the map item rectangle
     @note this function was added in version 1.4*/
@@ -559,29 +574,56 @@ class QgsComposerMap : QgsComposerItem
     double mapUnitsToMM() const;
 
     /**Sets overview frame map. -1 disables the overview frame
-    @note: this function was added in version 1.9*/
-    void setOverviewFrameMap( int mapId );
+     * @note: this function was added in version 1.9
+     * @deprecated use overview()->setFrameMap() or overviews() instead
+    */
+    void setOverviewFrameMap( int mapId ) /Deprecated/;
+
     /**Returns id of overview frame (or -1 if no overfiew frame)
-    @note: this function was added in version 1.9*/
-    int overviewFrameMapId() const;
+     * @note: this function was added in version 1.9
+     * @deprecated use overview()->frameMapId() or overviews() instead
+    */
+    int overviewFrameMapId() const /Deprecated/;
 
-    void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol /Transfer/ );
-    QgsFillSymbolV2* overviewFrameMapSymbol();
+    /**
+     * @deprecated use overview()->setFrameSymbol() or overviews() instead
+    */
+    void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol /Transfer/ ) /Deprecated/;
 
-    /** Returns the overview's blending mode */
-    QPainter::CompositionMode overviewBlendMode() const;
-    /** Sets the overview's blending mode*/
-    void setOverviewBlendMode( QPainter::CompositionMode blendMode );
+    /**
+     * @deprecated use overview()->frameSymbol() or overviews() instead
+    */
+    QgsFillSymbolV2* overviewFrameMapSymbol() /Deprecated/;
 
-    /** Returns true if the overview frame is inverted */
-    bool overviewInverted() const;
-    /** Sets the overview's inversion mode*/
-    void setOverviewInverted( bool inverted );
+    /** Returns the overview's blending mode
+     * @deprecated use overview()->blendMode() or overviews() instead
+    */
+    QPainter::CompositionMode overviewBlendMode() const /Deprecated/;
 
-    /** Returns true if the extent is forced to center on the overview */
+    /** Sets the overview's blending mode
+     * @deprecated use overview()->setBlendMode() or overviews() instead
+     */
+    void setOverviewBlendMode( QPainter::CompositionMode blendMode ) /Deprecated/;
+
+    /** Returns true if the overview frame is inverted
+     * @deprecated use overview()->inverted() or overviews() instead
+    */
+    bool overviewInverted() const /Deprecated/;
+
+    /** Sets the overview's inversion mode
+     * @deprecated use overview()->setInverted() or overviews() instead
+    */
+    void setOverviewInverted( bool inverted ) /Deprecated/;
+
+    /** Returns true if the extent is forced to center on the overview
+     * @deprecated use overview()->centered() or overviews() instead
+    */
     bool overviewCentered() const;
-    /** Set the overview's centering mode */
-    void setOverviewCentered( bool centered );
+
+    /** Set the overview's centering mode
+     * @deprecated use overview()->setCentered() or overviews() instead
+    */
+    void setOverviewCentered( bool centered ) /Deprecated/;
 
     /**Sets mId to a number not yet used in the composition. mId is kept if it is not in use.
         Usually, this function is called before adding the composer map to the composition*/
@@ -693,7 +735,7 @@ class QgsComposerMap : QgsComposerItem
     /**Transforms map coordinates to item coordinates (considering rotation and move offset)*/
     QPointF mapToItemCoords( const QPointF& mapCoords ) const;
 
-    void connectMapOverviewSignals();
+    void connectMapOverviewSignals() /Deprecated/;
 
   signals:
     void extentChanged();

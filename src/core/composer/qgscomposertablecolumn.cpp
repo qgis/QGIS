@@ -21,7 +21,8 @@ QgsComposerTableColumn::QgsComposerTableColumn() :
     mBackgroundColor( Qt::transparent ),
     mHAlignment( Qt::AlignLeft ),
     mSortByRank( 0 ),
-    mSortOrder( Qt::AscendingOrder )
+    mSortOrder( Qt::AscendingOrder ),
+    mWidth( 0.0 )
 {
 
 }
@@ -49,6 +50,8 @@ bool QgsComposerTableColumn::writeXML( QDomElement& columnElem, QDomDocument& do
   columnElem.setAttribute( "sortByRank", QString::number( mSortByRank ) );
   columnElem.setAttribute( "sortOrder", QString::number( mSortOrder ) );
 
+  columnElem.setAttribute( "width", QString::number( mWidth ) );
+
   return true;
 }
 
@@ -59,6 +62,7 @@ bool QgsComposerTableColumn::readXML( const QDomElement& columnElem )
   mAttribute = columnElem.attribute( "attribute", "" );
   mSortByRank = columnElem.attribute( "sortByRank", "0" ).toInt();
   mSortOrder = ( Qt::SortOrder )columnElem.attribute( "sortOrder", QString::number( Qt::AscendingOrder ) ).toInt();
+  mWidth = columnElem.attribute( "width", "0.0" ).toDouble();
 
   QDomNodeList bgColorList = columnElem.elementsByTagName( "backgroundColor" );
   if ( bgColorList.size() > 0 )
@@ -87,5 +91,6 @@ QgsComposerTableColumn* QgsComposerTableColumn::clone()
   newColumn->setHAlignment( mHAlignment );
   newColumn->setSortByRank( mSortByRank );
   newColumn->setSortOrder( mSortOrder );
+  newColumn->setWidth( mWidth );
   return newColumn;
 }

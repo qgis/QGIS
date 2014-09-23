@@ -17,7 +17,7 @@
 
 #include <QGridLayout>
 #include <QFileDialog>
-
+#include <QSettings>
 
 #include "qgsfilterlineedit.h"
 
@@ -64,7 +64,12 @@ QVariant QgsPhotoWidgetWrapper::value()
   QVariant v;
 
   if ( mLineEdit )
-    v = mLineEdit->text();
+  {
+    if ( mLineEdit->text() == QSettings().value( "qgis/nullValue", "NULL" ).toString() )
+      v = QVariant( QVariant::String );
+    else
+      v = mLineEdit->text();
+  }
 
   return v;
 }
@@ -115,6 +120,13 @@ void QgsPhotoWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mLineEdit )
   {
+
+    QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
+    if ( fle )
+    {
+      fle->setNullValue( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+    }
+
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( loadPixmap( QString ) ) );
   }
@@ -123,9 +135,12 @@ void QgsPhotoWidgetWrapper::initWidget( QWidget* editor )
 void QgsPhotoWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mLineEdit )
-    mLineEdit->setText( value.toString() );
-
-
+  {
+    if ( value.isNull() )
+      mLineEdit->setText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+    else
+      mLineEdit->setText( value.toString() );
+  }
 }
 
 void QgsPhotoWidgetWrapper::setEnabled( bool enabled )

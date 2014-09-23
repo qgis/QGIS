@@ -217,6 +217,52 @@ void QgsComposerColumnSortOrderDelegate::updateEditorGeometry( QWidget* editor, 
 }
 
 
+//
+// QgsComposerColumnWidthDelegate
+//
+
+QgsComposerColumnWidthDelegate::QgsComposerColumnWidthDelegate( QObject *parent )
+    : QItemDelegate( parent )
+{
+
+}
+
+QWidget *QgsComposerColumnWidthDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  Q_UNUSED( index );
+  Q_UNUSED( option );
+  QDoubleSpinBox *editor = new QDoubleSpinBox( parent );
+  editor->setMinimum( 0 );
+  editor->setMaximum( 1000 );
+  editor->setDecimals( 2 );
+  editor->setSuffix( tr( " mm" ) );
+  editor->setSpecialValueText( tr( "Automatic" ) );
+  return editor;
+}
+
+void QgsComposerColumnWidthDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+{
+  int value = index.model()->data( index, Qt::EditRole ).toInt();
+
+  QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>( editor );
+  spinBox->setValue( value );
+}
+
+void QgsComposerColumnWidthDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+{
+  QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>( editor );
+  spinBox->interpretText();
+  int value = spinBox->value();
+
+  model->setData( index, value, Qt::EditRole );
+}
+
+void QgsComposerColumnWidthDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  Q_UNUSED( index );
+  editor->setGeometry( option.rect );
+}
+
 
 // QgsAttributeSelectionDialog
 
@@ -232,7 +278,8 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
     mAvailableSortProxyModel( 0 ),
     mAvailableSortProxyModelV1( 0 ),
     mColumnAlignmentDelegate( 0 ),
-    mColumnSortOrderDelegate( 0 )
+    mColumnSortOrderDelegate( 0 ),
+    mColumnWidthDelegate( 0 )
 {
   setupUi( this );
 
@@ -250,6 +297,8 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
     mColumnsTableView->setItemDelegateForColumn( 0, mColumnSourceDelegate );
     mColumnAlignmentDelegate = new QgsComposerColumnAlignmentDelegate( mColumnsTableView );
     mColumnsTableView->setItemDelegateForColumn( 2, mColumnAlignmentDelegate );
+    mColumnWidthDelegate = new QgsComposerColumnWidthDelegate( mColumnsTableView );
+    mColumnsTableView->setItemDelegateForColumn( 3, mColumnWidthDelegate );
 
     mAvailableSortProxyModel = new QgsComposerTableSortColumnsProxyModelV2( mComposerTable, QgsComposerTableSortColumnsProxyModelV2::ShowUnsortedColumns, mSortColumnComboBox );
     mAvailableSortProxyModel->setSourceModel( mColumnModel );
@@ -334,15 +383,21 @@ void QgsAttributeSelectionDialog::on_mRemoveColumnPushButton_clicked()
   {
     //remove selected row from model
     QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-    int selectedRow = viewSelection.indexes().at( 0 ).row();
-    mColumnModel->removeRow( selectedRow );
+    if ( viewSelection.length() > 0 )
+    {
+      int selectedRow = viewSelection.indexes().at( 0 ).row();
+      mColumnModel->removeRow( selectedRow );
+    }
   }
   if ( mComposerTableV1 )
   {
     //remove selected row from model
     QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-    int selectedRow = viewSelection.indexes().at( 0 ).row();
-    mColumnModelV1->removeRow( selectedRow );
+    if ( viewSelection.length() > 0 )
+    {
+      int selectedRow = viewSelection.indexes().at( 0 ).row();
+      mColumnModelV1->removeRow( selectedRow );
+    }
   }
 
 }
@@ -367,15 +422,21 @@ void QgsAttributeSelectionDialog::on_mColumnUpPushButton_clicked()
   {
     //move selected row up
     QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-    int selectedRow = viewSelection.indexes().at( 0 ).row();
-    mColumnModel->moveRow( selectedRow, QgsComposerAttributeTableColumnModelV2::ShiftUp );
+    if ( viewSelection.size() > 0 )
+    {
+      int selectedRow = viewSelection.indexes().at( 0 ).row();
+      mColumnModel->moveRow( selectedRow, QgsComposerAttributeTableColumnModelV2::ShiftUp );
+    }
   }
   else if ( mComposerTableV1 )
   {
     //move selected row up
     QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-    int selectedRow = viewSelection.indexes().at( 0 ).row();
-    mColumnModelV1->moveRow( selectedRow, QgsComposerAttributeTableColumnModel::ShiftUp );
+    if ( viewSelection.size() > 0 )
+    {
+      int selectedRow = viewSelection.indexes().at( 0 ).row();
+      mColumnModelV1->moveRow( selectedRow, QgsComposerAttributeTableColumnModel::ShiftUp );
+    }
   }
 }
 
@@ -385,15 +446,21 @@ void QgsAttributeSelectionDialog::on_mColumnDownPushButton_clicked()
   {
     //move selected row down
     QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-    int selectedRow = viewSelection.indexes().at( 0 ).row();
-    mColumnModel->moveRow( selectedRow, QgsComposerAttributeTableColumnModelV2::ShiftDown );
+    if ( viewSelection.size() > 0 )
+    {
+      int selectedRow = viewSelection.indexes().at( 0 ).row();
+      mColumnModel->moveRow( selectedRow, QgsComposerAttributeTableColumnModelV2::ShiftDown );
+    }
   }
   else if ( mComposerTableV1 )
   {
     //move selected row down
     QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-    int selectedRow = viewSelection.indexes().at( 0 ).row();
-    mColumnModelV1->moveRow( selectedRow, QgsComposerAttributeTableColumnModel::ShiftDown );
+    if ( viewSelection.size() > 0 )
+    {
+      int selectedRow = viewSelection.indexes().at( 0 ).row();
+      mColumnModelV1->moveRow( selectedRow, QgsComposerAttributeTableColumnModel::ShiftDown );
+    }
   }
 
 }
@@ -449,8 +516,11 @@ void QgsAttributeSelectionDialog::on_mAddSortColumnPushButton_clicked()
 void QgsAttributeSelectionDialog::on_mRemoveSortColumnPushButton_clicked()
 {
   //remove selected rows from sort order widget
-
   QItemSelection sortSelection( mSortColumnTableView->selectionModel()->selection() );
+  if ( sortSelection.length() < 1 )
+  {
+    return;
+  }
   QModelIndex selectedIndex = sortSelection.indexes().at( 0 );
   int rowToRemove = selectedIndex.row();
 
@@ -487,6 +557,10 @@ void QgsAttributeSelectionDialog::on_mSortColumnUpPushButton_clicked()
 {
   //find selected row
   QItemSelection sortSelection( mSortColumnTableView->selectionModel()->selection() );
+  if ( sortSelection.length() < 1 )
+  {
+    return;
+  }
   QModelIndex selectedIndex = sortSelection.indexes().at( 0 );
 
   if ( mComposerTable )
@@ -513,10 +587,13 @@ void QgsAttributeSelectionDialog::on_mSortColumnUpPushButton_clicked()
 
 void QgsAttributeSelectionDialog::on_mSortColumnDownPushButton_clicked()
 {
-
-
   //find selected row
   QItemSelection sortSelection( mSortColumnTableView->selectionModel()->selection() );
+  if ( sortSelection.length() < 1 )
+  {
+    return;
+  }
+
   QModelIndex selectedIndex = sortSelection.indexes().at( 0 );
 
   if ( mComposerTable )
@@ -540,3 +617,4 @@ void QgsAttributeSelectionDialog::on_mSortColumnDownPushButton_clicked()
     mColumnModelV1->moveColumnInSortRank( column, QgsComposerAttributeTableColumnModel::ShiftDown );
   }
 }
+

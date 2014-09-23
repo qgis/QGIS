@@ -6,7 +6,7 @@ class QgsComposerItemCommand: QUndoCommand
   #include "qgscomposeritemcommand.h"
 %End
   public:
-    QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent = 0 );
+    QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent /TransferThis/ = 0 );
     virtual ~QgsComposerItemCommand();
 
     /**Reverses the command*/

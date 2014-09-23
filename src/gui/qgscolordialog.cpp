@@ -19,6 +19,7 @@
 #include "qgscolorschemeregistry.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgscursors.h"
+#include "qgsapplication.h"
 #include <QSettings>
 #include <QPushButton>
 #include <QMenu>
@@ -27,6 +28,7 @@
 #include <QMessageBox>
 #include <QDesktopWidget>
 #include <QMouseEvent>
+#include <QInputDialog>
 
 QgsColorDialog::QgsColorDialog()
 {
@@ -100,6 +102,7 @@ QgsColorDialogV2::QgsColorDialogV2( QWidget *parent, Qt::WindowFlags fl, const Q
   connect( mActionImportColors, SIGNAL( triggered() ), this, SLOT( importColors() ) );
   connect( mActionImportPalette, SIGNAL( triggered() ), this, SLOT( importPalette() ) );
   connect( mActionRemovePalette, SIGNAL( triggered() ), this, SLOT( removePalette() ) );
+  connect( mActionNewPalette, SIGNAL( triggered() ), this, SLOT( newPalette() ) );
   connect( mRemoveColorsFromSchemeButton, SIGNAL( clicked() ), mSchemeList, SLOT( removeSelection() ) );
 
   QMenu* schemeMenu = new QMenu( mSchemeToolButton );
@@ -107,6 +110,7 @@ QgsColorDialogV2::QgsColorDialogV2( QWidget *parent, Qt::WindowFlags fl, const Q
   schemeMenu->addAction( mActionImportColors );
   schemeMenu->addAction( mActionExportColors );
   schemeMenu->addSeparator();
+  schemeMenu->addAction( mActionNewPalette );
   schemeMenu->addAction( mActionImportPalette );
   schemeMenu->addAction( mActionRemovePalette );
   mSchemeToolButton->setMenu( schemeMenu );
@@ -486,6 +490,58 @@ void QgsColorDialogV2::removePalette()
   refreshSchemeComboBox();
   prevIndex = qMax( qMin( prevIndex, mSchemeComboBox->count() - 1 ), 0 );
   mSchemeComboBox->setCurrentIndex( prevIndex );
+}
+
+void QgsColorDialogV2::newPalette()
+{
+  bool ok = false;
+  QString name = QInputDialog::getText( this, tr( "Create New Palette" ), tr( "Enter a name for the new palette:" ),
+                                        QLineEdit::Normal, tr( "New palette" ), &ok );
+
+  if ( !ok || name.isEmpty() )
+  {
+    //user cancelled
+    return;
+  }
+
+  //generate file name for new palette
+  QDir palettePath( gplFilePath() );
+  QRegExp badChars( "[,^@={}\\[\\]~!?:&*\"|#%<>$\"'();`' /\\\\]" );
+  QString filename = name.simplified().toLower().replace( badChars, QString( "_" ) );
+  if ( filename.isEmpty() )
+  {
+    filename = tr( "new_palette" );
+  }
+  QFileInfo destFileInfo( palettePath.filePath( filename + ".gpl" ) );
+  int fileNumber = 1;
+  while ( destFileInfo.exists() )
+  {
+    //try to generate a unique file name
+    destFileInfo = QFileInfo( palettePath.filePath( filename + QString( "%1.gpl" ).arg( fileNumber ) ) );
+    fileNumber++;
+  }
+
+  QgsUserColorScheme* newScheme = new QgsUserColorScheme( destFileInfo.fileName() );
+  newScheme->setName( name );
+
+  QgsColorSchemeRegistry::instance()->addColorScheme( newScheme );
+
+  //refresh combobox and set new scheme as active
+  refreshSchemeComboBox();
+  mSchemeComboBox->setCurrentIndex( mSchemeComboBox->count() - 1 );
+}
+
+QString QgsColorDialogV2::gplFilePath()
+{
+  QString palettesDir = QgsApplication::qgisSettingsDirPath() + "/palettes";
+
+  QDir localDir;
+  if ( !localDir.mkpath( palettesDir ) )
+  {
+    return QString();
+  }
+
+  return palettesDir;
 }
 
 void QgsColorDialogV2::exportColors()

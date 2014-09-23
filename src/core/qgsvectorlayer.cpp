@@ -2296,22 +2296,29 @@ const QgsFeatureIds& QgsVectorLayer::selectedFeaturesIds() const
   return mSelectedFeatureIds;
 }
 
-
 QgsFeatureList QgsVectorLayer::selectedFeatures()
 {
   QgsFeatureList features;
 
-  QgsFeatureRequest req;
-  if ( geometryType() == QGis::NoGeometry )
-    req.setFlags( QgsFeatureRequest::NoGeometry );
+  QgsFeatureIterator it = selectedFeaturesIterator();
 
-  foreach ( QgsFeatureId fid, mSelectedFeatureIds )
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
   {
-    features.push_back( QgsFeature() );
-    getFeatures( req.setFilterFid( fid ) ).nextFeature( features.back() );
+    features.push_back( f );
   }
 
   return features;
+}
+
+QgsFeatureIterator QgsVectorLayer::selectedFeaturesIterator( QgsFeatureRequest request )
+{
+  if ( geometryType() == QGis::NoGeometry )
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+
+  request.setFilterFids( mSelectedFeatureIds );
+
+  return getFeatures( request );
 }
 
 bool QgsVectorLayer::addFeatures( QgsFeatureList features, bool makeSelected )

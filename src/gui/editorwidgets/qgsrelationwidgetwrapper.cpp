@@ -34,7 +34,7 @@ QWidget* QgsRelationWidgetWrapper::createWidget( QWidget* parent )
 
 void QgsRelationWidgetWrapper::setFeature( const QgsFeature& feature )
 {
-  if ( mWidget )
+  if ( mWidget && mRelation.isValid() )
     mWidget->setRelationFeature( mRelation, feature );
 }
 
