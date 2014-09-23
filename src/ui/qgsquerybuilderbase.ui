@@ -285,7 +285,7 @@ p, li { white-space: pre-wrap; }
            <number>11</number>
           </property>
           <item row="0" column="0">
-           <widget class="QTextEdit" name="txtSQL"/>
+           <widget class="QgsCodeEditorSQL" name="txtSQL" native="true"/>
           </item>
          </layout>
         </widget>
@@ -314,6 +314,12 @@ p, li { white-space: pre-wrap; }
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorSQL</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorsql.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>lstFields</tabstop>
@@ -334,7 +340,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>btnAnd</tabstop>
   <tabstop>btnOr</tabstop>
   <tabstop>btnNot</tabstop>
-  <tabstop>txtSQL</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
