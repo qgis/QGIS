@@ -131,13 +131,37 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     Mode mode() const { return mMode; }
     void setMode( Mode mode ) { mMode = mode; }
+    //! Recalculate classes for a layer
+    //! @param vlayer  The layer being rendered (from which data values are calculated)
+    //! @param mode    The calculation mode
+    //! @param nclasses The number of classes to calculate (approximate for some modes)
+    //! @note Added in 2.6
     void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
+    //! Evaluates the data expression and returns the list of values from the layer
+    //! @param vlayer  The layer for which to evaluate the expression
+    //! @note Added in 2.6
+    QList<double> getDataValues( QgsVectorLayer *vlayer );
 
+    //! Return the units string used to generate default classification labels
+    //! @note Added in 2.6
     QString units() const { return mUnits; }
+    //! Set the units string used to generate default classification labels
+    //! @param units The string appended to classification labels
+    //! @param updateRanges If true then ranges ending with the old unit string are updated to the new.
+    //! @note Added in 2.6
     void setUnits( QString units, bool updateRanges=true );
 
+    //! Return the number of decimal places used to generate labels
+    //! @note Added in 2.6
     int decimalPlaces() const { return mDecimalPlaces; }
+    //! Reset the number of decimal places used to generate labels
+    //! @param decimalPlaces the number of decimal places
+    //! @param updateRanges if true then ranges currently using the default label will be updated
+    //! @note Added in 2.6
     void setDecimalPlaces( int decimalPlaces, bool updateRanges=true );
+    //! Determine an appropriate number of decimal places based on the minimum class interval
+    //! @param updateRanges if true then ranges currently using the default label will be updated
+    //! @note Added in 2.6
     void calculateDecimalPlaces( bool updateRanges=true );
 
     static QgsGraduatedSymbolRendererV2* createRenderer(
@@ -177,7 +201,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     /** Update the color ramp used. Also updates all symbols colors.
       * Doesn't alter current breaks.
       */
-    void updateColorRamp( QgsVectorColorRampV2* ramp, bool inverted = false );
+    void updateColorRamp( QgsVectorColorRampV2* ramp=0, bool inverted = false );
 
     /** Update all the symbols but leave breaks and colors. */
     void updateSymbols( QgsSymbolV2* sym );
@@ -202,11 +226,11 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     virtual bool legendSymbolItemsCheckable() const;
 
     //! item in symbology was checked
-    // @note added in 2.5
+    //! @note added in 2.6
     virtual bool legendSymbolItemChecked( QString key );
 
     //! item in symbology was checked
-    // @note added in 2.5
+    //! @note added in 2.6
     virtual void checkLegendSymbolItem( QString key, bool state = true );
 
     //! If supported by the renderer, return classification attribute for the use in legend
@@ -214,7 +238,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     virtual QString legendClassificationAttribute() const { return classAttribute(); }
 
     //! creates a QgsGraduatedSymbolRendererV2 from an existing renderer.
-    //! @note added in 2.5
+    //! @note added in 2.6
     //! @returns a new renderer if the conversion was possible, otherwise 0.
     static QgsGraduatedSymbolRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer );
 

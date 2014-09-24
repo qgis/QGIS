@@ -25,6 +25,7 @@
 #include "qgsexpressionbuilderdialog.h"
 
 #include "qgsludialog.h"
+#include "qgsgraduatedrendererclasseditor.h"
 
 #include "qgsproject.h"
 
@@ -566,24 +567,31 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   }
 
   // create and set new renderer
-  QApplication::setOverrideCursor( Qt::WaitCursor );
+
   mRenderer->setClassAttribute(attrName);
   mRenderer->setMode(mode);
   bool updateUiCount=true;
   if( mode == QgsGraduatedSymbolRendererV2::Custom )
   {
-    // Need to insert code for manually setting ranges
+    QgsGraduatedRendererClassEditor dialog( this );
+    dialog.setRendererAndLayer(mRenderer,mLayer);
+    if ( dialog.exec() != QDialog::Accepted )
+    {
+      return;
+    }
+    mRenderer->updateColorRamp();
+    mRenderer->calculateDecimalPlaces();
   }
   else
   {
+    QApplication::setOverrideCursor( Qt::WaitCursor );
     mRenderer->updateClasses(mLayer,mode,nclasses);
+    mRenderer->calculateDecimalPlaces();
+    QApplication::restoreOverrideCursor();
     // PrettyBreaks and StdDev calculation don't generate exact
     // number of classes - leave user interface unchanged for these
     updateUiCount=false;
   }
-  mRenderer->calculateDecimalPlaces();
-
-  QApplication::restoreOverrideCursor();
   updateUiFromRenderer( updateUiCount );
 }
 

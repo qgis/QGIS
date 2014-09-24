@@ -833,6 +833,38 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   return r;
 }
 
+QList<double> QgsGraduatedSymbolRendererV2::getDataValues( QgsVectorLayer *vlayer )
+{
+  QList<double> values;
+  QScopedPointer<QgsExpression> expression;
+  int attrNum = vlayer->fieldNameIndex( mAttrName );
+
+  if ( attrNum == -1 )
+  {
+    // try to use expression
+    expression.reset( new QgsExpression( mAttrName ) );
+    if ( expression->hasParserError() || !expression->prepare( vlayer->pendingFields() ) )
+      return values; // should have a means to report errors
+  }
+
+  QgsFeature f;
+  QStringList lst;
+  if ( expression.isNull() )
+    lst.append( mAttrName );
+  else
+    lst = expression->referencedColumns();
+
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( lst, vlayer->pendingFields() ) );
+
+  // create list of non-null attribute values
+  while ( fit.nextFeature( f ) )
+  {
+    QVariant v = expression.isNull() ? f.attribute( attrNum ) : expression->evaluate( f );
+    if ( !v.isNull() )
+      values.append( v.toDouble() );
+  }
+  return values;
+}
 
 void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses )
 {
@@ -840,33 +872,22 @@ void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode m
   setMode(mode);
   if( mode == Custom ) return;
 
-
-
   if ( nclasses < 1 ) nclasses=1;
 
-  int attrNum = vlayer->fieldNameIndex( mAttrName );
+  QList<double> values;
+  bool valuesLoaded=false;
   double minimum;
   double maximum;
 
-  QScopedPointer<QgsExpression> expression;
+  int attrNum = vlayer->fieldNameIndex( mAttrName );
 
   if ( attrNum == -1 )
   {
-    // try to use expression
-    expression.reset( new QgsExpression( mAttrName ) );
-    if ( expression->hasParserError() || !expression->prepare( vlayer->pendingFields() ) )
-      return; // should have a means to report errors
-
-    QList<double> values;
-    QgsFeatureIterator fit = vlayer->getFeatures();
-    QgsFeature feature;
-    while ( fit.nextFeature( feature ) )
-    {
-      values << expression->evaluate( feature ).toDouble();
-    }
+    values=getDataValues( vlayer );
     qSort( values );
     minimum = values.first();
     maximum = values.last();
+    valuesLoaded=true;
   }
   else
   {
@@ -888,22 +909,11 @@ void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode m
   else if ( mode == Quantile || mode == Jenks || mode == StdDev )
   {
     // get values from layer
-    QList<double> values;
-    QgsFeature f;
-    QStringList lst;
-    if ( expression.isNull() )
-      lst.append( mAttrName );
-    else
-      lst = expression->referencedColumns();
 
-    QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( lst, vlayer->pendingFields() ) );
 
-    // create list of non-null attribute values
-    while ( fit.nextFeature( f ) )
+    if( ! valuesLoaded )
     {
-      QVariant v = expression.isNull() ? f.attribute( attrNum ) : expression->evaluate( f );
-      if ( !v.isNull() )
-        values.append( v.toDouble() );
+      values=getDataValues( vlayer );
     }
 
     // calculate the breaks
@@ -928,7 +938,7 @@ void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode m
 
   double lower, upper = minimum;
   QString label;
-  mRanges.clear();
+  deleteAllClasses();
 
   // "breaks" list contains all values at class breaks plus maximum as last break
 
@@ -1211,8 +1221,11 @@ void QgsGraduatedSymbolRendererV2::setSourceColorRamp( QgsVectorColorRampV2* ram
 void QgsGraduatedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2 *ramp, bool inverted )
 {
   int i = 0;
-  if( ramp ) this->setSourceColorRamp( ramp );
-  this->setInvertedColorRamp( inverted );
+  if( ramp )
+  {
+    this->setSourceColorRamp( ramp );
+    this->setInvertedColorRamp( inverted );
+  }
 
   foreach ( QgsRendererRangeV2 range, mRanges )
   {
