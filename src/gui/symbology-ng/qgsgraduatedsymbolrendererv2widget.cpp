@@ -25,7 +25,6 @@
 #include "qgsexpressionbuilderdialog.h"
 
 #include "qgsludialog.h"
-#include "qgsgraduatedrendererclasseditor.h"
 
 #include "qgsproject.h"
 
@@ -552,8 +551,6 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
     mode = QgsGraduatedSymbolRendererV2::StdDev;
   else if ( cboGraduatedMode->currentIndex() == 4 )
     mode = QgsGraduatedSymbolRendererV2::Pretty;
-  else if ( cboGraduatedMode->currentIndex() == 5)
-    mode = QgsGraduatedSymbolRendererV2::Custom;
   else // default should be quantile for now
     mode = QgsGraduatedSymbolRendererV2::Quantile;
 
@@ -571,27 +568,13 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   mRenderer->setClassAttribute(attrName);
   mRenderer->setMode(mode);
   bool updateUiCount=true;
-  if( mode == QgsGraduatedSymbolRendererV2::Custom )
-  {
-    QgsGraduatedRendererClassEditor dialog( this );
-    dialog.setRendererAndLayer(mRenderer,mLayer);
-    if ( dialog.exec() != QDialog::Accepted )
-    {
-      return;
-    }
-    mRenderer->updateColorRamp();
-    mRenderer->calculateDecimalPlaces();
-  }
-  else
-  {
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-    mRenderer->updateClasses(mLayer,mode,nclasses);
-    mRenderer->calculateDecimalPlaces();
-    QApplication::restoreOverrideCursor();
-    // PrettyBreaks and StdDev calculation don't generate exact
-    // number of classes - leave user interface unchanged for these
-    updateUiCount=false;
-  }
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+  mRenderer->updateClasses(mLayer,mode,nclasses);
+  mRenderer->calculateDecimalPlaces();
+  QApplication::restoreOverrideCursor();
+  // PrettyBreaks and StdDev calculation don't generate exact
+  // number of classes - leave user interface unchanged for these
+  updateUiCount=false;
   updateUiFromRenderer( updateUiCount );
 }
 
