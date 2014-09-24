@@ -158,6 +158,7 @@
 #include "qgsmessagelog.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsnewvectorlayerdialog.h"
+#include "qgsnewmemorylayerdialog.h"
 #include "qgsoptions.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
@@ -1102,6 +1103,7 @@ void QgisApp::createActions()
 
   connect( mActionNewVectorLayer, SIGNAL( triggered() ), this, SLOT( newVectorLayer() ) );
   connect( mActionNewSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
+  connect( mActionNewMemoryLayer, SIGNAL( triggered() ), this, SLOT( newMemoryLayer() ) );
   connect( mActionShowRasterCalculator, SIGNAL( triggered() ), this, SLOT( showRasterCalculator() ) );
   connect( mActionEmbedLayers, SIGNAL( triggered() ), this, SLOT( embedLayers() ) );
   connect( mActionAddLayerDefinition, SIGNAL( triggered() ), this, SLOT( addLayerDefinition() ) );
@@ -1608,12 +1610,14 @@ void QgisApp::createToolBars()
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionNewSpatiaLiteLayer );
   bt->addAction( mActionNewVectorLayer );
+  bt->addAction( mActionNewMemoryLayer );
 
   QAction* defNewLayerAction = mActionNewVectorLayer;
   switch ( settings.value( "/UI/defaultNewLayer", 1 ).toInt() )
   {
     case 0: defNewLayerAction = mActionNewSpatiaLiteLayer; break;
     case 1: defNewLayerAction = mActionNewVectorLayer; break;
+    case 2: defNewLayerAction = mActionNewMemoryLayer; break;
   }
   bt->setDefaultAction( defNewLayerAction );
   QAction* newLayerAction = mLayerToolBar->addWidget( bt );
@@ -1839,6 +1843,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionSetLayerCRS->setIcon( QgsApplication::getThemeIcon( "/mActionSetLayerCRS.png" ) );
   mActionSetProjectCRSFromLayer->setIcon( QgsApplication::getThemeIcon( "/mActionSetProjectCRSFromLayer.png" ) );
   mActionNewVectorLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewVectorLayer.svg" ) );
+  mActionNewMemoryLayer->setIcon( QgsApplication::getThemeIcon( "/mActionCreateMemory.png" ) );
   mActionAddAllToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionAddAllToOverview.svg" ) );
   mActionHideAllLayers->setIcon( QgsApplication::getThemeIcon( "/mActionHideAllLayers.png" ) );
   mActionShowAllLayers->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
@@ -3705,6 +3710,20 @@ void QgisApp::newVectorLayer()
     connect( msgLabel, SIGNAL( linkActivated( QString ) ), mLogDock, SLOT( show() ) );
     QgsMessageBarItem *item = new QgsMessageBarItem( msgLabel, QgsMessageBar::WARNING );
     messageBar()->pushItem( item );
+  }
+}
+
+void QgisApp::newMemoryLayer()
+{
+  QgsVectorLayer* newLayer = QgsNewMemoryLayerDialog::runAndCreateLayer( this );
+
+  if ( newLayer )
+  {
+    //then add the layer to the view
+    QList< QgsMapLayer* > layers;
+    layers << newLayer;
+
+    QgsMapLayerRegistry::instance()->addMapLayers( layers );
   }
 }
 
@@ -10155,6 +10174,8 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "/UI/defaultNewLayer", 0 );
   else if ( action == mActionNewVectorLayer )
     settings.setValue( "/UI/defaultNewLayer", 1 );
+  else if ( action == mActionNewMemoryLayer )
+    settings.setValue( "/UI/defaultNewLayer", 2 );
   bt->setDefaultAction( action );
 }
 
