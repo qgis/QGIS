@@ -16490,6 +16490,17 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsActionMenu</name>
+    <message>
+        <source>&amp;Actions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not supported on your platform</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsAddAttrDialog</name>
     <message>
         <source>Warning</source>
@@ -17038,6 +17049,10 @@ Error del analizador:
         <source>Search on web based on attribute&apos;s value</source>
         <translation>Buscar en la web en base al valor del atributo</translation>
     </message>
+    <message>
+        <source>Choose Icon...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeActionDialogBase</name>
@@ -17228,6 +17243,10 @@ Error del analizador:
     <message>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters within [% and %] will be evaluated as expression and replaced by its result. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
         <translation>Introduzca aquí la acción. Ésta puede ser cualquier programa, script o instrucción que haya disponible en su sistema. Cuando se invoca la acción, cualquier conjunto de caracteres dentro de [% y %] se evaluará como expresión y se reemplazará por su resultado. Las comillas dobles agrupan texto en argumentos sencillos para el programa, script o instrucción. Las comillas dobles se ignorarán si van precedidas de una barra invertida.</translation>
+    </message>
+    <message>
+        <source>Icon</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19018,6 +19037,204 @@ Should the existing classes be deleted before classification?</source>
     </message>
 </context>
 <context>
+    <name>QgsColorDialogBase</name>
+    <message>
+        <source>Color picker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>H</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S</source>
+        <translation type="unfinished">S</translation>
+    </message>
+    <message>
+        <source>V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>G</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>B</source>
+        <translation type="unfinished">N</translation>
+    </message>
+    <message>
+        <source>Opacity</source>
+        <translation type="unfinished">Opacidad</translation>
+    </message>
+    <message>
+        <source>HTML notation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color ramp</source>
+        <translation type="unfinished">Rampa de color</translation>
+    </message>
+    <message>
+        <source>Color wheel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color swatches</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Sample average radius</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> px</source>
+        <translation type="unfinished"> px</translation>
+    </message>
+    <message>
+        <source>Sample color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;i&gt;Press space to sample a color from under the mouse cursor&lt;/i&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current</source>
+        <translation type="unfinished">Actual</translation>
+    </message>
+    <message>
+        <source>Old</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import Colors...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import colors from file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export Colors...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export colors to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste colors from clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import Palette...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import palette from file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Palette</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove current palette</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Palette...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a new palette</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsColorDialogV2</name>
+    <message>
+        <source>Reset</source>
+        <translation type="unfinished">Restablecer</translation>
+    </message>
+    <message>
+        <source>Select Color</source>
+        <translation type="unfinished">Seleccionar color</translation>
+    </message>
+    <message>
+        <source>Select palette file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error, file does not exist or is not readable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error, no colors found in palette file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Palette file is not readable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No colors found in palette file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Color Palette</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to remove %1?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create New Palette</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter a name for the new palette:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New palette</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>new_palette</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Palette file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error exporting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error writing palette file</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsColorRampComboBox</name>
     <message>
         <source>New color ramp...</source>
@@ -19757,6 +19974,375 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
 </context>
 <context>
+    <name>QgsComposerAttributeTableColumnModelV2</name>
+    <message>
+        <source>Center</source>
+        <translation type="unfinished">Centro</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished">Derecha</translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished">Izquierda</translation>
+    </message>
+    <message>
+        <source>Automatic</source>
+        <translation type="unfinished">Automática</translation>
+    </message>
+    <message>
+        <source>%1 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute</source>
+        <translation type="unfinished">Atributo</translation>
+    </message>
+    <message>
+        <source>Heading</source>
+        <translation type="unfinished">Encabezado</translation>
+    </message>
+    <message>
+        <source>Alignment</source>
+        <translation type="unfinished">Alineación</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">Anchura</translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerAttributeTableWidget</name>
+    <message>
+        <source>Use existing frames</source>
+        <translation type="unfinished">Usar marcos existentes</translation>
+    </message>
+    <message>
+        <source>Extend to next page</source>
+        <translation type="unfinished">Extender a la página siguiente</translation>
+    </message>
+    <message>
+        <source>Repeat until finished</source>
+        <translation type="unfinished">Repetir hasta finalizar</translation>
+    </message>
+    <message>
+        <source>Draw headers only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide entire table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw empty cells</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show set message</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select header font color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select content font color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select grid color</source>
+        <translation type="unfinished">Seleccionar color de cuadrícula</translation>
+    </message>
+    <message>
+        <source>Map %1</source>
+        <translation type="unfinished">Mapa %1</translation>
+    </message>
+    <message>
+        <source>Table attribute settings</source>
+        <translation type="unfinished">Configuración de la tabla de atributos</translation>
+    </message>
+    <message>
+        <source>Table map changed</source>
+        <translation type="unfinished">Cambiado el mapa de la tabla</translation>
+    </message>
+    <message>
+        <source>Table maximum columns</source>
+        <translation type="unfinished">Máximo de columnas de la tabla</translation>
+    </message>
+    <message>
+        <source>Table margin changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Font</source>
+        <translation type="unfinished">Seleccionar tipo de letra</translation>
+    </message>
+    <message>
+        <source>Table header font</source>
+        <translation type="unfinished">Tipo de letra de la cabecera de la tabla</translation>
+    </message>
+    <message>
+        <source>Table header font color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table content font</source>
+        <translation type="unfinished">Tipo de letra del contenido de la tabla</translation>
+    </message>
+    <message>
+        <source>Table content font color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table grid stroke</source>
+        <translation type="unfinished">Líneas de la cuadrícula de la tabla</translation>
+    </message>
+    <message>
+        <source>Table grid color</source>
+        <translation type="unfinished">Color de cuadrícula de la tabla</translation>
+    </message>
+    <message>
+        <source>Table grid toggled</source>
+        <translation type="unfinished">Conmutada la cuadrícula de la tabla</translation>
+    </message>
+    <message>
+        <source>Current atlas feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relation children</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table visible only toggled</source>
+        <translation type="unfinished">Tabla visible solamente conmutado</translation>
+    </message>
+    <message>
+        <source>Table remove duplicates changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table filter to atlas changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table feature filter toggled</source>
+        <translation type="unfinished">Filtro de tabla de objetos espaciales conmutado</translation>
+    </message>
+    <message>
+        <source>Table feature filter modified</source>
+        <translation type="unfinished">Filtro de tabla de objetos espaciales modificado</translation>
+    </message>
+    <message>
+        <source>Expression based filter</source>
+        <translation type="unfinished">Filtro basado en expresión</translation>
+    </message>
+    <message>
+        <source>Table header alignment changed</source>
+        <translation type="unfinished">Cambiada la alineación de la cabecera de tabla</translation>
+    </message>
+    <message>
+        <source>Table header mode changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table layer changed</source>
+        <translation type="unfinished">Cambiada la capa de la tabla</translation>
+    </message>
+    <message>
+        <source>Change resize mode</source>
+        <translation type="unfinished">Cambiar modo de redimensionar</translation>
+    </message>
+    <message>
+        <source>Change table source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change table source relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change empty table behaviour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty table message changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerAttributeTableWidgetBase</name>
+    <message>
+        <source>Attribute Table</source>
+        <translation type="unfinished">Tabla de atributos</translation>
+    </message>
+    <message>
+        <source>Attribute table</source>
+        <translation type="unfinished">Tabla de atributos</translation>
+    </message>
+    <message>
+        <source>Main properties</source>
+        <translation type="unfinished">Propiedades principales</translation>
+    </message>
+    <message>
+        <source>Source</source>
+        <translation type="unfinished">Fuente</translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">Capa</translation>
+    </message>
+    <message>
+        <source>Relation</source>
+        <translation type="unfinished">Relación</translation>
+    </message>
+    <message>
+        <source>Refresh table data</source>
+        <translation type="unfinished">Actualizar datos de la tabla</translation>
+    </message>
+    <message>
+        <source>Attributes...</source>
+        <translation type="unfinished">Atributos...</translation>
+    </message>
+    <message>
+        <source>Feature filtering</source>
+        <translation type="unfinished">Filtrado de objetos espaciales</translation>
+    </message>
+    <message>
+        <source>Maximum rows</source>
+        <translation type="unfinished">Máximo de filas</translation>
+    </message>
+    <message>
+        <source>Show only features visible within a map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer map</source>
+        <translation type="unfinished">Mapa de diseñador</translation>
+    </message>
+    <message>
+        <source>Filter with</source>
+        <translation type="unfinished">Filtrar con</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Show only features intersecting atlas feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove duplicate rows from table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished">Apariencia</translation>
+    </message>
+    <message>
+        <source>Cell margins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> mm</source>
+        <translation type="unfinished"> mm</translation>
+    </message>
+    <message>
+        <source>Display header</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On first frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On all frames</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No header</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty tables</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Message to display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show grid</source>
+        <translation type="unfinished">Mostrar cuadrícula</translation>
+    </message>
+    <message>
+        <source>Stroke width</source>
+        <translation type="unfinished">Anchura de marca</translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished">Color</translation>
+    </message>
+    <message>
+        <source>Fonts and text styling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table heading</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Follow column alignment</source>
+        <translation type="unfinished">Seguir alineación de columna</translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished">Izquierda</translation>
+    </message>
+    <message>
+        <source>Center</source>
+        <translation type="unfinished">Centro</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished">Derecha</translation>
+    </message>
+    <message>
+        <source>Alignment</source>
+        <translation type="unfinished">Alineación</translation>
+    </message>
+    <message>
+        <source>Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose font...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table contents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Frames</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resize mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Frame</source>
+        <translation type="unfinished">Añadir marco</translation>
+    </message>
+</context>
+<context>
     <name>QgsComposerBase</name>
     <message>
         <source>MainWindow</source>
@@ -19984,7 +20570,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Add table</source>
-        <translation type="obsolete">Añadir tabla</translation>
+        <translation type="unfinished">Añadir tabla</translation>
     </message>
     <message>
         <source>Adds attribute table</source>
@@ -20514,6 +21100,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>Add items from template</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Add Attribute Table</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerColumnAlignmentDelegate</name>
@@ -20539,6 +21129,17 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Descending</source>
         <translation>Descendente</translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerColumnWidthDelegate</name>
+    <message>
+        <source> mm</source>
+        <translation type="unfinished"> mm</translation>
+    </message>
+    <message>
+        <source>Automatic</source>
+        <translation type="unfinished">Automática</translation>
     </message>
 </context>
 <context>
@@ -23470,6 +24071,32 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
 </context>
 <context>
+    <name>QgsComposerTableSortColumnsProxyModelV2</name>
+    <message>
+        <source>Descending</source>
+        <translation type="unfinished">Descendente</translation>
+    </message>
+    <message>
+        <source>Ascending</source>
+        <translation type="unfinished">Ascendente</translation>
+    </message>
+    <message>
+        <source>Attribute</source>
+        <translation type="unfinished">Atributo</translation>
+    </message>
+    <message>
+        <source>Sort Order</source>
+        <translation type="unfinished">Orden de ordenación</translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerTableV2</name>
+    <message>
+        <source>No matching records</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsComposerTableWidget</name>
     <message>
         <source>General options</source>
@@ -23823,6 +24450,14 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>QGIS</source>
         <translation>QGIS</translation>
+    </message>
+    <message>
+        <source>Attribute table added</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute table frame added</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -25415,7 +26050,7 @@ y el archivo actual es [%3]</translation>
 <context>
     <name>QgsDateTimeEditWrapper</name>
     <message>
-        <source>The usual date/time widget QDateTimeEdit cannot be configured to allow NULL values. For that the QGIS custom widget QgsDateTimeEdit is used.</source>
+        <source>The usual date/time widget QDateTimeEdit cannot be configured to allow NULL values. For that the QGIS custom widget QgsDateTimeEdit needs to be used.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -33691,6 +34326,17 @@ Puede haber un problema en su conexión a la red o en el servidor WMS.</numerusf
     </message>
 </context>
 <context>
+    <name>QgsIdentifyMenu</name>
+    <message>
+        <source>Identify</source>
+        <translation type="unfinished">Identificar</translation>
+    </message>
+    <message>
+        <source>%1 for all (%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsIdentifyResults</name>
     <message>
         <source>Identify Results</source>
@@ -37058,7 +37704,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>All (%1)</source>
-        <translation>Todo (%1)</translation>
+        <translation type="obsolete">Todo (%1)</translation>
     </message>
 </context>
 <context>
@@ -37066,6 +37712,10 @@ no se muestran</translation>
     <message>
         <source>No features at this position found.</source>
         <translation>No se han encontrado objetos espaciales en esta posición.</translation>
+    </message>
+    <message>
+        <source>Show attribute table</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -41956,6 +42606,10 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
         <source>Import</source>
         <translation type="unfinished">Importar</translation>
     </message>
+    <message>
+        <source>Use native color chooser dialogs</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsDialogBase</name>
@@ -46227,10 +46881,6 @@ Proceed?</source>
         <translation>Seleccionar %1 del menú desplegable para ajustar radios</translation>
     </message>
     <message>
-        <source>Select color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Select palette file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -46257,6 +46907,10 @@ Proceed?</source>
     <message>
         <source>Error writing palette file</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Color</source>
+        <translation type="unfinished">Seleccionar color</translation>
     </message>
 </context>
 <context>
@@ -47208,6 +47862,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Local minimum/maximum = 0/0</source>
         <translation>Mínimo/máximo local = 0/0</translation>
+    </message>
+    <message>
+        <source>Advanced options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Suffix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inactive</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50205,15 +50871,15 @@ desviación estándar ×</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>No selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>%1 (no selection)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
