@@ -192,6 +192,7 @@ qgsmessagebaritem.cpp
 qgsmessagelogviewer.cpp
 qgsmessageviewer.cpp
 qgsnewhttpconnection.cpp
+qgsnewmemorylayerdialog.cpp
 qgsnewvectorlayerdialog.cpp
 qgsnumericsortlistviewitem.cpp
 qgsoptionsdialogbase.cpp
@@ -386,6 +387,7 @@ qgsmessagebar.h
 qgsmessagelogviewer.h
 qgsmessageviewer.h
 qgsnewhttpconnection.h
+qgsnewmemorylayerdialog.h
 qgsnewvectorlayerdialog.h
 qgsoptionsdialogbase.h
 qgsowssourceselect.h

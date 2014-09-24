@@ -911,6 +911,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Create a new empty vector layer
     void newVectorLayer();
+    //! Create a new memory layer
+    void newMemoryLayer();
     //! Create a new empty spatialite layer
     void newSpatialiteLayer();
     //! Print the current map view frame
