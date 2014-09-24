@@ -27,13 +27,13 @@
 
 
 /**
- * @class QgsSslCertSettings
+ * @class QgsSslPkiSettings
  * @ingroup core
  * @brief Settings for working with a SSL certificate, key and optional certificate issuer
  * @since since 2.6
  */
 
-class CORE_EXPORT QgsSslCertSettings
+class CORE_EXPORT QgsSslPkiSettings
 {
   public:
 
@@ -47,24 +47,24 @@ class CORE_EXPORT QgsSslCertSettings
       QGISStore = 0
     };
 
-    QgsSslCertSettings();
+    QgsSslPkiSettings();
 
     /**
-     * @brief Get the client certificate for this PKI session
+     * @brief Get the client certificate data for this PKI session
      */
-    QSslCertificate clientCert() const;
+    QByteArray clientCertData() const;
 
     /**
-     * @brief Get the client certificate key for this PKI session
+     * @brief Get the client certificate key data for this PKI session
      */
-    QSslKey clientCertKey() const;
+    QByteArray clientKeyData() const;
 
     /**
-     * @brief Get the client certificate's issuer certificate (optional) for this PKI session.
+     * @brief Get the client certificate's issuer certificate data (optional) for this PKI session.
      * The certificate can be installed in the main OpenSSL store, but defining it here allows it
      * to specifically skip the blocking error of being self-signed.
      */
-    QSslCertificate issuerCert() const;
+    QByteArray issuerCertData() const;
 
     // TODO: add protocol option, e.g. QSsl::TlsV1SslV3, etc.?
 
@@ -79,8 +79,8 @@ class CORE_EXPORT QgsSslCertSettings
      * @brief The certificate store type, generally defauts to QGIS local store at ~/.qgis2/cert_store,
      * which is then added to the underlying OpenSSL store certificate chain.
      */
-    QgsSslCertSettings::SslStoreType storeType() const { return mStoreType; }
-    void setStoreType( QgsSslCertSettings::SslStoreType storetype ) { mStoreType = storetype; }
+    QgsSslPkiSettings::SslStoreType storeType() const { return mStoreType; }
+    void setStoreType( QgsSslPkiSettings::SslStoreType storetype ) { mStoreType = storetype; }
 
     /**
      * @brief String representation of the client certificate, e.g. file's basename.ext for QGIS local store.
@@ -97,10 +97,16 @@ class CORE_EXPORT QgsSslCertSettings
     void setKeyId( const QString& txtid ) { mKeyId = txtid; }
 
     /**
+     * @brief Whether the client certificate's private key path needs defined by user upon access of resource.
+     */
+    bool needsKeyPath() const { return mNeedsKeyId; }
+    void setNeedsKeyPath( bool needs ) { mNeedsKeyId = needs; }
+
+    /**
      * @brief Whether the private key for the client certificate is protected by a passphrase.
      */
-    bool hasKeyPassphrase() const { return mHasKeyPass; }
-    void setHasKeyPassphrase( bool has ) { mHasKeyPass = has; }
+    bool needsKeyPassphrase() const { return mHasKeyPass; }
+    void setNeedsKeyPassphrase( bool has ) { mHasKeyPass = has; }
 
     /**
      * @brief Temporary storage for the passphrase for private key of the client certificate,
@@ -135,9 +141,10 @@ class CORE_EXPORT QgsSslCertSettings
   private:
     bool mCertReady;
 
-    QgsSslCertSettings::SslStoreType mStoreType;
+    QgsSslPkiSettings::SslStoreType mStoreType;
     QString mCertId;
     QString mKeyId;
+    bool mNeedsKeyId;
     bool mHasKeyPass;
     QString mKeyPass;
     QString mIssuerCertId;
@@ -145,17 +152,71 @@ class CORE_EXPORT QgsSslCertSettings
     QString mAccessUrl;
 };
 
+
 /**
- * @class QgsSslUtils
+ * @class QgsSslPkiGroup
  * @ingroup core
- * @brief Utilites functions for working with SSL certificates, keys and connections
+ * @brief Storage set for constructed SSL certificate, key and optional certificate issuer
  * @since 2.6
  */
 
-class CORE_EXPORT QgsSslUtils
+class CORE_EXPORT QgsSslPkiGroup
 {
 
   public:
+    QgsSslPkiGroup( const QSslCertificate& cert = QSslCertificate(), const QSslKey& certkey = QSslKey(),
+                    const QSslCertificate& issuer = QSslCertificate(), bool issuerselfsigned = false );
+    ~QgsSslPkiGroup();
+
+    bool isNull();
+
+    QSslCertificate clientCert() { return mCert; }
+    void setClientCert( const QSslCertificate& cert ) { mCert = cert; }
+
+    QSslKey clientCertKey() { return mCertKey; }
+    void setClientCertKey( const QSslKey& certkey ) { mCertKey = certkey; }
+
+    QSslCertificate issuerCert() { return mIssuer; }
+    void setIssuerCert( const QSslCertificate& issuer ) { mIssuer = issuer; }
+
+    bool issuerSelfSigned() { return mIssuerSelfSigned; }
+    void setIssuerSelfSigned( bool selfsigned ) { mIssuerSelfSigned = selfsigned; }
+
+  private:
+    QSslCertificate mCert;
+    QSslKey mCertKey;
+    QSslCertificate mIssuer;
+    bool mIssuerSelfSigned;
+};
+
+
+/**
+ * @class QgsSslPkiUtility
+ * @ingroup core
+ * @brief Utilites functions for working with SSL certificates, keys and connections
+ * @note It's a singleton that can be used across QGIS.
+ * @since 2.6
+ */
+
+class CORE_EXPORT QgsSslPkiUtility
+{
+
+  public:
+
+    /** @brief Returns a pointer to the single instance
+     * and creates that instance on the first call.
+     */
+    static QgsSslPkiUtility *instance();
+
+    static bool urlToResource( const QString& accessurl, QString *resource );
+
+    /**
+     * @brief Storage management for cached certs, keys and issuers
+     */
+    QgsSslPkiGroup * getSslPkiGroup( const QgsSslPkiSettings& pki );
+    void putSslPkiGroup( const QgsSslPkiSettings& pki, QgsSslPkiGroup * pkigroup );
+    void removeSslPkiGroup( const QgsSslPkiSettings& pki );
+
     /**
      * @brief Path to user-local QGIS directory for certs, keys and issuers
      */
@@ -201,17 +262,17 @@ class CORE_EXPORT QgsSslUtils
      * @brief Filtered list of all available PEM PKI client certificates.
      * @param store The store type, e.g. QGIS local store
      */
-    static const QStringList storeCerts( QgsSslCertSettings::SslStoreType store );
+    static const QStringList storeCerts( QgsSslPkiSettings::SslStoreType store );
     /**
      * @brief Filtered list of all available PEM PKI client certificate keys.
      * @param store The store type, e.g. QGIS local store
      */
-    static const QStringList storeKeys( QgsSslCertSettings::SslStoreType store );
+    static const QStringList storeKeys( QgsSslPkiSettings::SslStoreType store );
     /**
      * @brief Filtered list of all available PEM PKI client certificate issuers.
      * @param store The store type, e.g. QGIS local store
      */
-    static const QStringList storeIssuers( QgsSslCertSettings::SslStoreType store );
+    static const QStringList storeIssuers( QgsSslPkiSettings::SslStoreType store );
 
     /**
      * @brief Get a certificate from an absolute file path.
@@ -224,53 +285,28 @@ class CORE_EXPORT QgsSslUtils
     static QSsl::KeyAlgorithm keyAlgorithm( const QByteArray& keydata );
 
     /**
-     * @brief Get a private/public key from provided data
-     * @param hasKeyPhrase Whether the key is passphrase-protected
-     * @param passphrase Passphrase of key (if set, you do not need hasKeyPhrase)
-     * @param accessurl Some URL associated with the SSL access. It is not used for any validation of PKI components.
-     * Shown in the private key's password input dialog, so user remembers what scheme://domain.tld:port the key was meant for.
-     */
-    static QSslKey keyFromData( const QByteArray& keydata,
-                                QSsl::EncodingFormat format = QSsl::Pem,
-                                QSsl::KeyType type = QSsl::PrivateKey,
-                                bool hasKeyPhrase = false,
-                                const QString& passphrase = QString(),
-                                const QString& accessurl = QString() );
-    /**
-     * @brief Get a private/public key from provided absolute file path
-     * @param hasKeyPhrase Whether the key is passphrase-protected
-     * @param passphrase Passphrase of key (if set, you do not need hasKeyPhrase)
-     * @param accessurl Some URL associated with the SSL access. It is not used for any validation of PKI components.
-     * Shown in the private key's password input dialog, so user remembers what scheme://domain.tld:port the key was meant for.
-     */
-    static QSslKey keyFromPath( const QString& path,
-                                QSsl::EncodingFormat format = QSsl::Pem,
-                                QSsl::KeyType type = QSsl::PrivateKey,
-                                bool hasKeyPhrase = false,
-                                const QString& passphrase = QString(),
-                                const QString& accessurl = QString() );
-
-    /**
-     * @brief Get hash string from data to be used as key for passphrase storage
-     * @return Hex-based checksum string
-     */
-    static const QString keyHashFromData( const QByteArray & data );
-    /**
-     * @brief Get hash string from absolute file path to be used as key for passphrase storage
-     * @return Hex-based checksum string
-     */
-    static const QString keyHashFromPath( const QString& path );
-
-    /**
      * @brief Update existing network request SslConfiguration with PKI connection settings
      * @note This should set up the connection with everything it needs for an (successful) SSL handshake
      */
-    static void updateRequestSslConfiguration( QNetworkRequest &request, const QgsSslCertSettings& pki );
+    void updateRequestSslConfiguration( QNetworkRequest &request, const QgsSslPkiSettings& pki );
     /**
      * @brief Update existing network reply with expected SSL errors derived from PKI connection settings
      * @note Generally this is used for ignoring self-signed issuer certificates, individually.
      */
-    static void updateReplyExpectedSslErrors( QNetworkReply *reply, const QgsSslCertSettings& pki );
+    void updateReplyExpectedSslErrors( QNetworkReply *reply, const QgsSslPkiSettings& pki );
+
+  protected:
+    QgsSslPkiUtility();
+    ~QgsSslPkiUtility();
+
+  private:
+    static QgsSslPkiUtility* smInstance;
+
+    /** cache for already requested SSL PKI certificate, key and optional issuer in this session
+     * key is the base url for the SSL resource, built from the access url from QgsSslPkiSettings
+     * @see QgsSslPkiSettings
+     */
+    static QMap<QString, QgsSslPkiGroup *> mSslPkiGroupCache;
 };
 
 #endif // QGSSSLUTILS_H

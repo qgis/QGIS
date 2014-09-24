@@ -104,10 +104,11 @@ QgsNewHttpConnection::QgsNewHttpConnection(
 
 #ifndef QT_NO_OPENSSL
     mCertWidget->loadSettings(
-      ( QgsSslCertSettings::SslStoreType ) settings.value( credentialsKey + "/ssl/store", QgsSslCertSettings::QGISStore ).toUInt(),
+      ( QgsSslPkiSettings::SslStoreType ) settings.value( credentialsKey + "/ssl/store", QgsSslPkiSettings::QGISStore ).toUInt(),
       settings.value( credentialsKey + "/ssl/certid", "" ).toString(),
       settings.value( credentialsKey + "/ssl/keyid", "" ).toString(),
-      settings.value( credentialsKey + "/ssl/haskeypass", false ).toBool(),
+      settings.value( credentialsKey + "/ssl/needskeypath", true ).toBool(),
+      settings.value( credentialsKey + "/ssl/needskeypass", false ).toBool(),
       settings.value( credentialsKey + "/ssl/issuerid", "" ).toString(),
       settings.value( credentialsKey + "/ssl/issuerself", false ).toBool()
     );
@@ -273,7 +274,8 @@ void QgsNewHttpConnection::accept()
   settings.setValue( credentialsKey + "/ssl/store", ( unsigned ) mCertWidget->ssLStoreType() );
   settings.setValue( credentialsKey + "/ssl/certid", mCertWidget->certId() );
   settings.setValue( credentialsKey + "/ssl/keyid", mCertWidget->keyId() );
-  settings.setValue( credentialsKey + "/ssl/haskeypass", mCertWidget->keyHasPassPhrase() );
+  settings.setValue( credentialsKey + "/ssl/needskeypath", mCertWidget->needsKeyPath() );
+  settings.setValue( credentialsKey + "/ssl/needskeypass", mCertWidget->needsKeyPassphrase() );
   settings.setValue( credentialsKey + "/ssl/issuerid", mCertWidget->issuerId() );
   settings.setValue( credentialsKey + "/ssl/issuerself", mCertWidget->issuerSelfSigned() );
   // this setting is not loaded into the SSL widget, but is stored only on apply and

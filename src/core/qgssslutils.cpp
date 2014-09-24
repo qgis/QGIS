@@ -29,11 +29,12 @@
 #include "qgsnetworkaccessmanager.h"
 
 
-QgsSslCertSettings::QgsSslCertSettings()
+QgsSslPkiSettings::QgsSslPkiSettings()
     : mCertReady( false )
-    , mStoreType( QgsSslCertSettings::QGISStore )
+    , mStoreType( QgsSslPkiSettings::QGISStore )
     , mCertId( "" )
     , mKeyId( "" )
+    , mNeedsKeyId( false )
     , mHasKeyPass( false )
     , mKeyPass( "" )
     , mIssuerCertId( "" )
@@ -42,7 +43,7 @@ QgsSslCertSettings::QgsSslCertSettings()
 {
 }
 
-bool QgsSslCertSettings::certIsReady() const
+bool QgsSslPkiSettings::certIsReady() const
 {
   bool ready = true;
 
@@ -52,108 +53,331 @@ bool QgsSslCertSettings::certIsReady() const
     QgsDebugMsg( "SSL cert not ready: client cert is empty" );
   }
 
-  if ( mKeyId.isEmpty() )
+  if ( !mNeedsKeyId && mKeyId.isEmpty() )
   {
     ready = ready && false;
     QgsDebugMsg( "SSL cert not ready: client key is empty" );
   }
 
-  if ( !clientCert().isValid() )
-  {
-    ready = ready && false;
-    QgsDebugMsg( "SSL cert not ready: client cert is invalid" );
-  }
+//  if ( !clientCert().isValid() )
+//  {
+//    ready = ready && false;
+//    QgsDebugMsg( "SSL cert not ready: client cert is invalid" );
+//  }
 
   return ready;
 }
 
-QSslCertificate QgsSslCertSettings::clientCert() const
+static QByteArray fileData_( const QString& path )
 {
-  if ( mCertId.isEmpty() )
+  QByteArray data;
+  QFile file( path );
+  if ( file.exists() )
   {
-    return QSslCertificate();
-  }
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
-  {
-    QString path = QgsSslUtils::qgisCertPath( mCertId );
-    if ( !path.isEmpty() )
+    bool ret = file.open( QIODevice::ReadOnly | QIODevice::Text );
+    if ( ret )
     {
-      return QgsSslUtils::certFromPath( path );
+      data = file.readAll();
     }
+    file.close();
   }
-  return QSslCertificate();
+  return data;
 }
 
-QSslKey QgsSslCertSettings::clientCertKey() const
+QByteArray QgsSslPkiSettings::clientCertData() const
 {
-  if ( mKeyId.isEmpty() )
+  QByteArray data;
+  if ( mCertId.isEmpty() )
   {
-    return QSslKey();
+    return data;
   }
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
-    QString path = QgsSslUtils::qgisKeyPath( mKeyId );
-    if ( path.isEmpty() )
+    QString path = QgsSslPkiUtility::qgisCertPath( mCertId );
+    if ( !path.isEmpty() )
     {
-      return QSslKey();
+      return data = fileData_( path );
     }
+  }
+  return data;
+}
 
-    if ( !mKeyPass.isEmpty() || mHasKeyPass )
+QByteArray QgsSslPkiSettings::clientKeyData() const
+{
+  QByteArray data;
+  if ( mNeedsKeyId || mKeyId.isEmpty() )
+  {
+    return data;
+  }
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
+  {
+    QString path = QgsSslPkiUtility::qgisKeyPath( mKeyId );
+    if ( !path.isEmpty() )
     {
-      QString passphrase = ( !mKeyPass.isEmpty() ? mKeyPass : "" );
-      return QgsSslUtils::keyFromPath( path, QSsl::Pem, QSsl::PrivateKey, mHasKeyPass, passphrase, mAccessUrl );
+      data = fileData_( path );
+    }
+  }
+  return data;
+}
+
+QByteArray QgsSslPkiSettings::issuerCertData() const
+{
+  QByteArray data;
+  if ( mIssuerCertId.isEmpty() )
+  {
+    return data;
+  }
+
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
+  {
+    QString path = QgsSslPkiUtility::qgisIssuerPath( mIssuerCertId );
+    if ( !path.isEmpty() )
+    {
+      data = fileData_( path );
+    }
+  }
+  return data;
+}
+
+//////////////////////////////////////////////////////
+// QgsSslPkiGroup
+//////////////////////////////////////////////////////
+
+QgsSslPkiGroup::QgsSslPkiGroup( const QSslCertificate& cert, const QSslKey& certkey,
+                                const QSslCertificate& issuer, bool issuerselfsigned )
+    : mCert( cert )
+    , mCertKey( certkey )
+    , mIssuer( issuer )
+    , mIssuerSelfSigned( issuerselfsigned )
+{
+}
+
+QgsSslPkiGroup::~QgsSslPkiGroup()
+{
+}
+
+bool QgsSslPkiGroup::isNull()
+{
+  return ( mCert.isNull() && mCertKey.isNull() );
+}
+
+//////////////////////////////////////////////////////
+// QgsSslPkiUtility
+//////////////////////////////////////////////////////
+
+QgsSslPkiUtility *QgsSslPkiUtility::smInstance = 0;
+QMap<QString, QgsSslPkiGroup *> QgsSslPkiUtility::mSslPkiGroupCache = QMap<QString, QgsSslPkiGroup *>();
+
+QgsSslPkiUtility *QgsSslPkiUtility::instance()
+{
+  if ( !smInstance )
+  {
+    smInstance = new QgsSslPkiUtility();
+  }
+  return smInstance;
+}
+
+// protected
+QgsSslPkiUtility::QgsSslPkiUtility()
+{
+}
+
+// protected
+QgsSslPkiUtility::~QgsSslPkiUtility()
+{
+  // clear cache
+  QMap<QString, QgsSslPkiGroup *>::iterator it = mSslPkiGroupCache.begin();
+  for ( ; it != mSslPkiGroupCache.end(); ++it )
+  {
+    delete( it.value() );
+    mSslPkiGroupCache.erase( it );
+  }
+}
+
+bool QgsSslPkiUtility::urlToResource( const QString& accessurl, QString *resource )
+{
+  QString res = QString();
+  if ( !accessurl.isEmpty() )
+  {
+    QUrl url( accessurl );
+    if ( url.isValid() )
+    {
+      res = QString( "%1://%2:%3" ).arg( url.scheme() ).arg( url.host() ).arg( url.port() );
+    }
+  }
+  *resource = res;
+  return ( !res.isEmpty() );
+}
+
+QgsSslPkiGroup * QgsSslPkiUtility::getSslPkiGroup( const QgsSslPkiSettings& pki )
+{
+  QgsSslPkiGroup * pkigrp = 0;
+
+  QString resource;
+  if ( !QgsSslPkiUtility::urlToResource( pki.accessUrl(), &resource ) )
+  {
+    QgsDebugMsg( QString( "Insert SSL PKI group FAILED: could not convert to resource from url: %1" ).arg( pki.accessUrl() ) );
+    return pkigrp;
+  }
+
+  // check if it is cached
+  if ( mSslPkiGroupCache.contains( resource ) )
+  {
+    pkigrp = mSslPkiGroupCache.value( resource );
+    if ( pkigrp )
+    {
+      QgsDebugMsg( QString( "Retrieved SSL PKI group for resource: %1" ).arg( resource ) );
+      return pkigrp;
+    }
+  }
+
+  // else build the SSL PKI group
+
+  // init client cert
+  // Note: if this is not valid, no sense continuing
+  QSslCertificate clientCert = QSslCertificate( pki.clientCertData() );
+  if ( !clientCert.isValid() )
+  {
+    QgsDebugMsg( "Insert SSL PKI group FAILED: client cert is not valid" );
+    return pkigrp;
+  }
+
+  // init key
+  QSslKey clientkey;
+  QByteArray keydata = pki.clientKeyData();
+
+  if ( keydata.isNull() && !pki.needsKeyPath() )
+  {
+    QgsDebugMsg( "Insert SSL PKI group FAILED: no key data read" );
+    return pkigrp;
+  }
+
+  // add key that is already defined
+  if ( !keydata.isNull() && !pki.needsKeyPath() && !pki.needsKeyPassphrase() )
+  {
+    if ( !pki.keyPassphrase().isEmpty() )
+    {
+      clientkey = QSslKey( keydata, QgsSslPkiUtility::keyAlgorithm( keydata ),
+                           QSsl::Pem, QSsl::PrivateKey, pki.keyPassphrase().toLocal8Bit() );
     }
     else
     {
-      return QgsSslUtils::keyFromPath( path );
+      clientkey = QSslKey( keydata, QgsSslPkiUtility::keyAlgorithm( keydata ) );
     }
-
-  }
-  return QSslKey();
-}
-
-QSslCertificate QgsSslCertSettings::issuerCert() const
-{
-  if ( mIssuerCertId.isEmpty() )
-  {
-    return QSslCertificate();
   }
 
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  // get needed key path or passphrase
+  QString inputphrase, keypath;
+  if ( clientkey.isNull() && ( pki.needsKeyPath() || pki.needsKeyPassphrase() ) )
   {
-    QString path = QgsSslUtils::qgisIssuerPath( mIssuerCertId );
-    if ( !path.isEmpty() )
+    QgsCredentials * creds = QgsCredentials::instance();
+    creds->lock();
+    bool ok = creds->getSslKeyInfo( inputphrase, keypath, pki.needsKeyPath(), resource );
+    creds->unlock();
+    if ( !ok )
     {
-      return QgsSslUtils::certFromPath( path );
+      QgsDebugMsg( "Insert SSL PKI group FAILED: user cancelled key credentials dialog" );
+      return pkigrp;
+    }
+
+    if ( pki.needsKeyPath() && !keypath.isEmpty() )
+    {
+      QFile file( keypath );
+      bool ret = file.open( QIODevice::ReadOnly | QIODevice::Text );
+      if ( ret )
+      {
+        keydata = file.readAll();
+      }
+      else
+      {
+        file.close();
+        QgsDebugMsg( "Insert SSL PKI group FAILED: chosen key filepath can not be read" );
+        return pkigrp;
+      }
+      file.close();
+    }
+
+    clientkey = QSslKey( keydata, QgsSslPkiUtility::keyAlgorithm( keydata ),
+                         QSsl::Pem, QSsl::PrivateKey, inputphrase.toLocal8Bit() );
+  }
+  // final client key check
+  if ( clientkey.isNull() )
+  {
+    QgsDebugMsg( "Insert SSL PKI group FAILED: cert key could not be created" );
+    return pkigrp;
+  }
+
+  // init issuer cert
+  QSslCertificate issuercert;
+  QByteArray issuerdata = pki.issuerCertData();
+  if ( !issuerdata.isNull() )
+  {
+    issuercert = QSslCertificate( pki.issuerCertData() );
+    if ( !issuercert.isValid() )
+    {
+      QgsDebugMsg( "Insert SSL PKI group FAILED: issuer cert is not valid" );
+      return pkigrp;
     }
   }
-  return QSslCertificate();
+
+  pkigrp = new QgsSslPkiGroup( clientCert, clientkey, issuercert, pki.issuerSelfSigned() );
+
+  // cache group
+  putSslPkiGroup( pki, pkigrp );
+
+  return pkigrp;
 }
 
-//////////////////////////////////////////////////////
-// QgsSslUtils
-//////////////////////////////////////////////////////
+void QgsSslPkiUtility::putSslPkiGroup( const QgsSslPkiSettings& pki, QgsSslPkiGroup * pkigroup )
+{
+  QString resource;
+  if ( QgsSslPkiUtility::urlToResource( pki.accessUrl(), &resource ) )
+  {
+    QgsDebugMsg( QString( "Inserting SSL PKI group for resource: %1" ).arg( resource ) );
+    mSslPkiGroupCache.insert( resource, pkigroup );
+  }
+  else
+  {
+    QgsDebugMsg( QString( "Inserting SSL PKI group FAILED: accessurl=%1" ).arg( pki.accessUrl() ) );
+  }
+}
+
+void QgsSslPkiUtility::removeSslPkiGroup( const QgsSslPkiSettings &pki )
+{
+  QString resource;
+  if ( !QgsSslPkiUtility::urlToResource( pki.accessUrl(), &resource ) )
+  {
+    QgsDebugMsg( QString( "Remove SSL PKI group FAILED: could not convert to resource from url: %1" ).arg( pki.accessUrl() ) );
+  }
+  if ( mSslPkiGroupCache.contains( resource ) )
+  {
+    QgsSslPkiGroup * pkigrp = mSslPkiGroupCache.take( resource );
+    delete pkigrp;
+    pkigrp = 0;
+    QgsDebugMsg( QString( "Removed SSL PKI group associated with resource: %1" ).arg( resource ) );
+  }
+}
 
 static QDir::Filters dirFilters = QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Readable;
 static QFile::Permissions dirPerms = QFile::ReadUser | QFile::WriteUser | QFile::ExeUser;
 
-const QString QgsSslUtils::qgisCertStoreDirPath()
+const QString QgsSslPkiUtility::qgisCertStoreDirPath()
 {
   QDir certsDir( QgsApplication::qgisSettingsDirPath() + "cert_store" );
   return certsDir.absolutePath();
 }
 
-const QString QgsSslUtils::qgisCertsDirPath() { return QgsSslUtils::qgisCertStoreDirPath() + QDir::separator() + "certs"; }
-const QString QgsSslUtils::qgisKeysDirPath() { return QgsSslUtils::qgisCertStoreDirPath() + QDir::separator() + "private"; }
-const QString QgsSslUtils::qgisIssuersDirPath() { return QgsSslUtils::qgisCertStoreDirPath() + QDir::separator() + "issuers"; }
+const QString QgsSslPkiUtility::qgisCertsDirPath() { return QgsSslPkiUtility::qgisCertStoreDirPath() + QDir::separator() + "certs"; }
+const QString QgsSslPkiUtility::qgisKeysDirPath() { return QgsSslPkiUtility::qgisCertStoreDirPath() + QDir::separator() + "private"; }
+const QString QgsSslPkiUtility::qgisIssuersDirPath() { return QgsSslPkiUtility::qgisCertStoreDirPath() + QDir::separator() + "issuers"; }
 
-bool QgsSslUtils::createQgisCertStoreDir()
+bool QgsSslPkiUtility::createQgisCertStoreDir()
 {
   QStringList paths;
-  paths << QgsSslUtils::qgisCertStoreDirPath()
-  << QgsSslUtils::qgisCertsDirPath()
-  << QgsSslUtils::qgisKeysDirPath()
-  << QgsSslUtils::qgisIssuersDirPath();
+  paths << QgsSslPkiUtility::qgisCertStoreDirPath()
+  << QgsSslPkiUtility::qgisCertsDirPath()
+  << QgsSslPkiUtility::qgisKeysDirPath()
+  << QgsSslPkiUtility::qgisIssuersDirPath();
 
   QDir cwd;
   foreach ( const QString& path, paths )
@@ -177,19 +401,31 @@ static QString existingFilePath_( const QString& dir, const QString& file )
   return ( exists ? path : QString() );
 }
 
-const QString QgsSslUtils::qgisCertPath( const QString& file )
+const QString QgsSslPkiUtility::qgisCertPath( const QString& file )
 {
-  return existingFilePath_( QgsSslUtils::qgisCertsDirPath(), file );
+  if ( QFile::exists( file ) )
+  {
+    return file;
+  }
+  return existingFilePath_( QgsSslPkiUtility::qgisCertsDirPath(), file );
 }
 
-const QString QgsSslUtils::qgisKeyPath( const QString& file )
+const QString QgsSslPkiUtility::qgisKeyPath( const QString& file )
 {
-  return existingFilePath_( QgsSslUtils::qgisKeysDirPath(), file );
+  if ( QFile::exists( file ) )
+  {
+    return file;
+  }
+  return existingFilePath_( QgsSslPkiUtility::qgisKeysDirPath(), file );
 }
 
-const QString QgsSslUtils::qgisIssuerPath( const QString& file )
+const QString QgsSslPkiUtility::qgisIssuerPath( const QString& file )
 {
-  return existingFilePath_( QgsSslUtils::qgisIssuersDirPath(), file );
+  if ( QFile::exists( file ) )
+  {
+    return file;
+  }
+  return existingFilePath_( QgsSslPkiUtility::qgisIssuersDirPath(), file );
 }
 
 static QStringList dirListing_( const QString& dirPath, const QStringList& nameFilter )
@@ -198,37 +434,37 @@ static QStringList dirListing_( const QString& dirPath, const QStringList& nameF
   return dir.entryList( nameFilter, dirFilters );
 }
 
-const QStringList QgsSslUtils::storeCerts( QgsSslCertSettings::SslStoreType store )
+const QStringList QgsSslPkiUtility::storeCerts( QgsSslPkiSettings::SslStoreType store )
 {
   QStringList certs;
-  if ( store == QgsSslCertSettings::QGISStore )
+  if ( store == QgsSslPkiSettings::QGISStore )
   {
-    certs = dirListing_( QgsSslUtils::qgisCertsDirPath(), QStringList() << "*.pem" );
+    certs = dirListing_( QgsSslPkiUtility::qgisCertsDirPath(), QStringList() << "*.pem" );
   }
   return certs;
 }
 
-const QStringList QgsSslUtils::storeKeys( QgsSslCertSettings::SslStoreType store )
+const QStringList QgsSslPkiUtility::storeKeys( QgsSslPkiSettings::SslStoreType store )
 {
   QStringList keys;
-  if ( store == QgsSslCertSettings::QGISStore )
+  if ( store == QgsSslPkiSettings::QGISStore )
   {
-    keys = dirListing_( QgsSslUtils::qgisKeysDirPath(), QStringList() << "*.pem" << "*.key" );
+    keys = dirListing_( QgsSslPkiUtility::qgisKeysDirPath(), QStringList() << "*.pem" << "*.key" );
   }
   return keys;
 }
 
-const QStringList QgsSslUtils::storeIssuers( QgsSslCertSettings::SslStoreType store )
+const QStringList QgsSslPkiUtility::storeIssuers( QgsSslPkiSettings::SslStoreType store )
 {
   QStringList iss;
-  if ( store == QgsSslCertSettings::QGISStore )
+  if ( store == QgsSslPkiSettings::QGISStore )
   {
-    iss = dirListing_( QgsSslUtils::qgisIssuersDirPath(), QStringList() << "*.pem" );
+    iss = dirListing_( QgsSslPkiUtility::qgisIssuersDirPath(), QStringList() << "*.pem" );
   }
   return iss;
 }
 
-QSslCertificate QgsSslUtils::certFromPath( const QString &path, QSsl::EncodingFormat format )
+QSslCertificate QgsSslPkiUtility::certFromPath( const QString &path, QSsl::EncodingFormat format )
 {
   QSslCertificate cert;
   QFile file( path );
@@ -244,21 +480,22 @@ QSslCertificate QgsSslUtils::certFromPath( const QString &path, QSsl::EncodingFo
   return cert;
 }
 
-QSsl::KeyAlgorithm QgsSslUtils::keyAlgorithm( const QByteArray& keydata )
+QSsl::KeyAlgorithm QgsSslPkiUtility::keyAlgorithm( const QByteArray& keydata )
 {
   QString keytxt( keydata );
   return (( keytxt.contains( "BEGIN DSA P" ) ) ? QSsl::Dsa : QSsl::Rsa );
 }
 
-QSslKey QgsSslUtils::keyFromData( const QByteArray& keydata,
-                                  QSsl::EncodingFormat format,
-                                  QSsl::KeyType type,
-                                  bool hasKeyPhrase,
-                                  const QString& passedinphrase,
-                                  const QString& accessurl )
+#if 0
+QSslKey QgsSslPkiUtility::keyFromData( const QByteArray& keydata,
+                                       QSsl::EncodingFormat format,
+                                       QSsl::KeyType type,
+                                       bool hasKeyPhrase,
+                                       const QString& passedinphrase,
+                                       const QString& accessurl )
 {
-  QSsl::KeyAlgorithm algorithm = QgsSslUtils::keyAlgorithm( keydata );
-  QString keyhash = QgsSslUtils::keyHashFromData( keydata );
+  QSsl::KeyAlgorithm algorithm = QgsSslPkiUtility::keyAlgorithm( keydata );
+  QString keyhash = QgsSslPkiUtility::keyHashFromData( keydata );
   QgsNetworkAccessManager * naM = QgsNetworkAccessManager::instance();
 
   if ( !passedinphrase.isEmpty() )
@@ -314,13 +551,15 @@ QSslKey QgsSslUtils::keyFromData( const QByteArray& keydata,
 
   return clientKey;
 }
+#endif
 
-QSslKey QgsSslUtils::keyFromPath( const QString& path,
-                                  QSsl::EncodingFormat format,
-                                  QSsl::KeyType type,
-                                  bool hasKeyPhrase,
-                                  const QString& passphrase,
-                                  const QString& accessurl )
+#if 0
+QSslKey QgsSslPkiUtility::keyFromPath( const QString& path,
+                                       QSsl::EncodingFormat format,
+                                       QSsl::KeyType type,
+                                       bool hasKeyPhrase,
+                                       const QString& passphrase,
+                                       const QString& accessurl )
 {
   QSslKey certkey;
   QFile file( path );
@@ -329,14 +568,16 @@ QSslKey QgsSslUtils::keyFromPath( const QString& path,
     bool ret = file.open( QIODevice::ReadOnly | QIODevice::Text );
     if ( ret )
     {
-      certkey = QgsSslUtils::keyFromData( file.readAll(), format, type, hasKeyPhrase, passphrase, accessurl );
+      certkey = QgsSslPkiUtility::keyFromData( file.readAll(), format, type, hasKeyPhrase, passphrase, accessurl );
     }
     file.close();
   }
   return certkey;
 }
+#endif
 
-const QString QgsSslUtils::keyHashFromData( const QByteArray & data )
+#if 0
+const QString QgsSslPkiUtility::keyHashFromData( const QByteArray & data )
 {
   if ( data.isEmpty() )
   {
@@ -346,8 +587,10 @@ const QString QgsSslUtils::keyHashFromData( const QByteArray & data )
   // it's just used to represent the key data as a short string
   return QString( QCryptographicHash::hash( data, QCryptographicHash::Md5 ).toHex() );
 }
+#endif
 
-const QString QgsSslUtils::keyHashFromPath( const QString& path )
+#if 0
+const QString QgsSslPkiUtility::keyHashFromPath( const QString& path )
 {
   QString hash;
   QFile file( path );
@@ -356,24 +599,25 @@ const QString QgsSslUtils::keyHashFromPath( const QString& path )
     bool ret = file.open( QIODevice::ReadOnly | QIODevice::Text );
     if ( ret )
     {
-      hash = QgsSslUtils::keyHashFromData( file.readAll() );
+      hash = QgsSslPkiUtility::keyHashFromData( file.readAll() );
     }
     file.close();
   }
   return hash;
 }
+#endif
 
-void QgsSslUtils::updateRequestSslConfiguration( QNetworkRequest &request, const QgsSslCertSettings& pki )
+void QgsSslPkiUtility::updateRequestSslConfiguration( QNetworkRequest &request, const QgsSslPkiSettings& pki )
 {
   if ( !pki.certIsReady() )
   {
     return;
   }
 
-  QSslCertificate clientcert = pki.clientCert();
-  QSslKey certkey = pki.clientCertKey();
-  if ( clientcert.isNull() || certkey.isNull() )
+  QgsSslPkiGroup * pkigrp = getSslPkiGroup( pki );
+  if ( !pkigrp || pkigrp->isNull() )
   {
+    QgsDebugMsg( QString( "Update request SSL config FAILED: PKI group empty or null" ) );
     return;
   }
 
@@ -382,7 +626,7 @@ void QgsSslUtils::updateRequestSslConfiguration( QNetworkRequest &request, const
 
   sslConfig.setProtocol( QSsl::TlsV1SslV3 );
 
-  QSslCertificate issuercert = pki.issuerCert();
+  QSslCertificate issuercert = pkigrp->issuerCert();
   if ( !issuercert.isNull() )
   {
     QList<QSslCertificate> sslCAs( sslConfig.caCertificates() );
@@ -390,42 +634,47 @@ void QgsSslUtils::updateRequestSslConfiguration( QNetworkRequest &request, const
     sslConfig.setCaCertificates( sslCAs );
   }
 
-  sslConfig.setLocalCertificate( clientcert );
-  sslConfig.setPrivateKey( certkey );
+  sslConfig.setLocalCertificate( pkigrp->clientCert() );
+  sslConfig.setPrivateKey( pkigrp->clientCertKey() );
 
   request.setSslConfiguration( sslConfig );
 }
 
-void QgsSslUtils::updateReplyExpectedSslErrors( QNetworkReply *reply, const QgsSslCertSettings& pki )
+void QgsSslPkiUtility::updateReplyExpectedSslErrors( QNetworkReply *reply, const QgsSslPkiSettings& pki )
 {
-  if ( !pki.certIsReady() )
+  QgsSslPkiGroup * pkigrp = getSslPkiGroup( pki );
+  if ( !pkigrp || pkigrp->isNull() )
   {
+    QgsDebugMsg( QString( "Update reply SSL errors FAILED: PKI group empty or null" ) );
+    return;
+  }
+  if ( !pkigrp->issuerSelfSigned() )
+  {
+    // TODO: maybe sniff if it is self-signed, regardless of what user defines
+    QgsDebugMsg( QString( "Update reply SSL errors SKIPPED: PKI issuer not set as self-signed" ) );
     return;
   }
 
-  if ( pki.issuerSelfSigned() )
-  {
-    QList<QSslError> expectedSslErrors;
-    QSslError error = QSslError();
-    QString issuer = "";
-    QSslCertificate issuercert = pki.issuerCert();
+  QList<QSslError> expectedSslErrors;
+  QSslError error = QSslError();
+  QString issuer = "";
+  QSslCertificate issuercert = pkigrp->issuerCert();
 
-    if ( !issuercert.isNull() )
-    {
-      issuer = " for defined issuer";
-      error = QSslError( QSslError::SelfSignedCertificate, issuercert );
-    }
-    else
-    {
-      // issuer not defined, but may already be in available CAs
-      issuer = " for ALL in chain";
-      error = QSslError( QSslError::SelfSignedCertificate );
-    }
-    if ( error.error() != QSslError::NoError )
-    {
-      QgsDebugMsg( QString( "Adding self-signed cert expected ssl error%1" ).arg( issuer ) );
-      expectedSslErrors.append( error );
-      reply->ignoreSslErrors( expectedSslErrors );
-    }
+  if ( !issuercert.isNull() )
+  {
+    issuer = " for defined issuer";
+    error = QSslError( QSslError::SelfSignedCertificate, issuercert );
+  }
+  else
+  {
+    // issuer not defined, but may already be in available CAs
+    issuer = " for ALL in chain";
+    error = QSslError( QSslError::SelfSignedCertificate );
+  }
+  if ( error.error() != QSslError::NoError )
+  {
+    QgsDebugMsg( QString( "Adding self-signed cert expected ssl error%1" ).arg( issuer ) );
+    expectedSslErrors.append( error );
+    reply->ignoreSslErrors( expectedSslErrors );
   }
 }

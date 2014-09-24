@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>493</width>
-    <height>221</height>
+    <height>240</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -169,7 +169,7 @@
           <bool>true</bool>
          </property>
          <property name="placeholderText">
-          <string>Required</string>
+          <string>Optional</string>
          </property>
         </widget>
        </item>

@@ -852,7 +852,7 @@ int main( int argc, char *argv[] )
 
 #ifndef QT_NO_OPENSSL
   //set up user-local SSL cert store
-  bool storeSetup = QgsSslUtils::createQgisCertStoreDir();
+  bool storeSetup = QgsSslPkiUtility::createQgisCertStoreDir();
   QgsDebugMsg( QString( "Setting up QGIS local cert store: %1" ).arg( storeSetup ? "succeeded" : "failed" ) );
 #endif
 

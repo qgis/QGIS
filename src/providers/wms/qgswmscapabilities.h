@@ -439,9 +439,14 @@ struct QgsWmsParserSettings
 
 struct QgsWmsAuthorization
 {
-  QgsWmsAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& referer = QString(),
-                       QgsSslCertSettings sslCert = QgsSslCertSettings() )
-      : mUserName( userName ), mPassword( password ), mReferer( referer ), mSslCert( sslCert ) {}
+  QgsWmsAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& referer = QString() )
+      : mUserName( userName )
+      , mPassword( password )
+      , mReferer( referer )
+#ifndef QT_NO_OPENSSL
+      , mSslCert( QgsSslPkiSettings() )
+#endif
+  {}
 
   void setAuthorization( QNetworkRequest &request ) const
   {
@@ -456,7 +461,7 @@ struct QgsWmsAuthorization
     }
 
 #ifndef QT_NO_OPENSSL
-    QgsSslUtils::updateRequestSslConfiguration( request, mSslCert );
+    QgsSslPkiUtility::instance()->updateRequestSslConfiguration( request, mSslCert );
 #endif
 
   }
@@ -472,7 +477,7 @@ struct QgsWmsAuthorization
 
 #ifndef QT_NO_OPENSSL
   //! Client SSL certificate
-  QgsSslCertSettings mSslCert;
+  QgsSslPkiSettings mSslCert;
 #endif
 };
 

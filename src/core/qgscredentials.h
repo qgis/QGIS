@@ -43,10 +43,6 @@ class CORE_EXPORT QgsCredentials
     bool get( QString realm, QString &username, QString &password, QString message = QString::null );
     void put( QString realm, QString username, QString password );
 
-    // FIXME: Why doesn't this cache work here, but it does in QNetworkManager?
-    bool getSsl( QString keyhash, QString &password, QString accessurl, QString message = QString::null );
-    void putSsl( QString keyhash, QString password );
-
     /**
      * @brief Get a passphrase for a private key for a client certificate to be used in an SSL PKI handshake.
      * @param The passphrase for the key.
@@ -54,7 +50,8 @@ class CORE_EXPORT QgsCredentials
      * @param Optional short message to go below password field.
      * @return
      */
-    bool getSslNoCache( QString &password, QString accessurl, QString message = QString::null );
+    bool getSslKeyInfo( QString &password, QString &keypath, bool needskeypath,
+                        QString accessurl, QString message = QString::null );
 
     //! retrieves instance
     static QgsCredentials *instance();
@@ -85,8 +82,9 @@ class CORE_EXPORT QgsCredentials
     //! request a password
     virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null ) = 0;
 
-    //! request a password for an SSL key
-    virtual bool requestSsl( QString &password, QString resource = QString::null, QString message = QString::null ) = 0;
+    //! request a password for an SSL key, and optionally its filepath
+    virtual bool requestSslKey( QString &password, QString &keypath, bool needskeypath,
+                                QString resource, QString message = QString::null ) = 0;
 
     //! register instance
     void setInstance( QgsCredentials *theInstance );
@@ -96,9 +94,6 @@ class CORE_EXPORT QgsCredentials
 
     //! cache for already requested credentials in this session
     QMap< QString, QPair<QString, QString> > mCredentialCache;
-
-    //! cache for already requested SSL hash of key and its password in this session
-    QMap< QString, QString > mCredentialSslCache;
 
     //! Pointer to the credential instance
     static QgsCredentials *smInstance;
@@ -128,7 +123,8 @@ class CORE_EXPORT QgsCredentialsConsole : public QObject, public QgsCredentials
   protected:
     virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null );
 
-    virtual bool requestSsl( QString &password, QString resource = QString::null, QString message = QString::null );
+    virtual bool requestSslKey( QString &password, QString &keypath, bool needskeypath,
+                                QString resource, QString message = QString::null );
 };
 
 #endif

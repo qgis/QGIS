@@ -46,28 +46,29 @@ class GUI_EXPORT QgsSslCertificateWidget : public QWidget, private Ui::QgsSslCer
 
     /**
      * @brief Load settings at once, like from QSettings
-     * @see QgsSslCertSettings
+     * @see QgsSslPkiSettings
      * @note The resource's access url is missing, because it may not be known yet.
      */
-    void loadSettings( QgsSslCertSettings::SslStoreType storeType = QgsSslCertSettings::QGISStore,
+    void loadSettings( QgsSslPkiSettings::SslStoreType storeType = QgsSslPkiSettings::QGISStore,
                        const QString& certId = "",
                        const QString& keyId = "",
-                       bool keyPassphrase = false,
+                       bool needsKeyPath = false,
+                       bool needsKeyPhrase = false,
                        const QString& issuerId = "",
                        bool issuerSelf = false );
 
     /**
-     * @brief Load settings at once from existing QgsSslCertSettings
-     * @see QgsSslCertSettings
+     * @brief Load settings at once from existing QgsSslPkiSettings
+     * @see QgsSslPkiSettings
      * @note Includes the resource's access url, though it may be empty.
      */
-    void loadSslCertSettings( const QgsSslCertSettings& pki );
+    void loadSslCertSettings( const QgsSslPkiSettings& pki );
 
     /**
-     * @brief Get settings as QgsSslCertSettings
+     * @brief Get settings as QgsSslPkiSettings
      * @note Includes the resource's access url, though it may be empty.
      */
-    QgsSslCertSettings toSslCertSettings();
+    QgsSslPkiSettings toSslCertSettings();
 
     /**
      * @brief Whether the cert is valid at the time function is accessed.
@@ -77,39 +78,44 @@ class GUI_EXPORT QgsSslCertificateWidget : public QWidget, private Ui::QgsSslCer
     bool certIsValid();
 
     /**
-     * @see QgsSslCertSettings
+     * @see QgsSslPkiSettings
      */
-    QgsSslCertSettings::SslStoreType ssLStoreType();
+    QgsSslPkiSettings::SslStoreType ssLStoreType();
     /**
-     * @see QgsSslCertSettings
+     * @see QgsSslPkiSettings
      */
     QString certId() const;
     /**
-     * @see QgsSslCertSettings
+     * @see QgsSslPkiSettings
      */
     QString keyId() const;
     /**
-     * @see QgsSslCertSettings
+     * @see QgsSslPkiSettings
      */
-    bool keyHasPassPhrase();
+    bool needsKeyPath();
     /**
-     * @see QgsSslCertSettings
+     * @see QgsSslPkiSettings
+     */
+    bool needsKeyPassphrase();
+    /**
+     * @see QgsSslPkiSettings
      */
     QString issuerId() const;
     /**
-     * @see QgsSslCertSettings
+     * @see QgsSslPkiSettings
      */
     bool issuerSelfSigned();
     /**
-     * @see QgsSslCertSettings
+     * @see QgsSslPkiSettings
      */
     QString accessUrl() const { return mAccessUrl; }
 
   public slots:
-    void setSslStoreType( QgsSslCertSettings::SslStoreType storeType );
+    void setSslStoreType( QgsSslPkiSettings::SslStoreType storeType );
     void setCertId( const QString& id );
     void setKeyId( const QString& id );
-    void setKeyHasPassPhrase( bool hasPass );
+    void setNeedsKeyPath( bool needsPath );
+    void setNeedsKeyPassphrase( bool needsPass );
     void setIssuerId( const QString& id );
     void setIssuerSelfSigned( bool selfSigned );
     void setAccessUrl( const QString& url ) { mAccessUrl = url; }
@@ -149,7 +155,7 @@ class GUI_EXPORT QgsSslCertificateWidget : public QWidget, private Ui::QgsSslCer
     QAction * clearAction();
     QAction * selectAction();
 
-    QgsSslCertSettings::SslStoreType mStoreType;
+    QgsSslPkiSettings::SslStoreType mStoreType;
     bool mCertValid;
     QString mAccessUrl;
 

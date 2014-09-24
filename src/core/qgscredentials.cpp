@@ -78,63 +78,27 @@ void QgsCredentials::put( QString realm, QString username, QString password )
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
 }
 
-bool QgsCredentials::getSsl( QString keyhash, QString &password, QString accessurl, QString message )
+bool QgsCredentials::getSslKeyInfo( QString &password, QString& keypath, bool needskeypath,
+                                    QString accessurl, QString message )
 {
-  if ( mCredentialSslCache.contains( keyhash ) )
-  {
-    QString password = mCredentialSslCache.take( keyhash );
-    QgsDebugMsg( QString( "retrieved SSL key hash: %1" ).arg( keyhash ) );
-
-    if ( !password.isNull() )
-      return true;
-  }
-
   // shorten url of resource to keep any dialog from being too wide
-  QString resource = QString::null;
+  QString resource = QObject::tr( "Unknown" );
   if ( !accessurl.isEmpty() )
   {
     QUrl url( accessurl );
     resource = QString( "%1://%2:%3" ).arg( url.scheme() ).arg( url.host() ).arg( url.port() );
   }
 
-  if ( requestSsl( password, resource, message ) )
+  if ( requestSslKey( password, keypath, needskeypath, resource, message ) )
   {
-    QgsDebugMsg( QString( "requested SSL key hash: %1" ).arg( keyhash ) );
+    QgsDebugMsg( "Retrieve SSL PKI key password/path succeeded" );
     return true;
   }
   else
   {
-    QgsDebugMsg( QString( "unset SSL key hash: %1" ).arg( keyhash ) );
+    QgsDebugMsg( "Retrieve SSL PKI key password/path failed" );
     return false;
   }
-}
-
-bool QgsCredentials::getSslNoCache( QString &password, QString accessurl, QString message )
-{
-  // shorten url of resource to keep any dialog from being too wide
-  QString resource = QString::null;
-  if ( !accessurl.isEmpty() )
-  {
-    QUrl url( accessurl );
-    resource = QString( "%1://%2:%3" ).arg( url.scheme() ).arg( url.host() ).arg( url.port() );
-  }
-
-  if ( requestSsl( password, resource, message ) )
-  {
-    QgsDebugMsg( "Retrieve SSL password succeeded" );
-    return true;
-  }
-  else
-  {
-    QgsDebugMsg( "Retrieve SSL password failed" );
-    return false;
-  }
-}
-
-void QgsCredentials::putSsl( QString keyhash, QString password )
-{
-  QgsDebugMsg( QString( "inserting SSL key hash: %1" ).arg( keyhash ) );
-  mCredentialSslCache.insert( keyhash, password );
 }
 
 void QgsCredentials::lock()
@@ -172,16 +136,27 @@ bool QgsCredentialsConsole::request( QString realm, QString &username, QString &
   return true;
 }
 
-bool QgsCredentialsConsole::requestSsl( QString &password, QString resource, QString message )
+bool QgsCredentialsConsole::requestSslKey( QString &password, QString &keypath, bool needskeypath,
+    QString resource, QString message )
 {
   QTextStream in( stdin, QIODevice::ReadOnly );
   QTextStream out( stdout, QIODevice::WriteOnly );
 
-  out << "Enter password for certificate key";
   if ( !resource.isEmpty() )
-    out << "for resource: " << resource << endl;
+    out << "For resource: " << resource << endl;
   if ( !message.isEmpty() )
-    out << "message: " << message << endl;
+    out << "  message: " << message << endl;
+  if ( needskeypath )
+  {
+    out << "Enter file path for certificate key";
+    out << "keypath: ";
+    in >> keypath;
+    out << "Enter password for certificate key (optional)";
+  }
+  else
+  {
+    out << "Enter password for certificate key";
+  }
   out << "password: ";
   in >> password;
 

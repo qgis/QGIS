@@ -49,23 +49,28 @@ bool QgsWmsSettings::parseUri( QString uriString )
 
 #ifndef QT_NO_OPENSSL
   // parse ssl cert
-  if ( uri.hasParam( "certid" ) && uri.hasParam( "keyid" ) )
+  if ( uri.hasParam( "certid" ) )
   {
     QgsDebugMsg( "ssl cert exists" );
-    mAuth.mSslCert.setStoreType(( QgsSslCertSettings::SslStoreType ) uri.param( "storetype" ).toInt() );
+    mAuth.mSslCert.setStoreType(( QgsSslPkiSettings::SslStoreType ) uri.param( "storetype" ).toInt() );
     QgsDebugMsg( QString( "ssl cert storetype (enum): %1" ).arg( mAuth.mSslCert.storeType() ) );
     mAuth.mSslCert.setCertId( uri.param( "certid" ) );
     QgsDebugMsg( "ssl cert certid: " + mAuth.mSslCert.certId() );
     mAuth.mSslCert.setKeyId( uri.param( "keyid" ) );
     QgsDebugMsg( "ssl cert keyid: " + mAuth.mSslCert.keyId() );
-    if ( uri.hasParam( "haskeypass" ) )
+    if ( uri.hasParam( "needskeypath" ) )
     {
-      mAuth.mSslCert.setHasKeyPassphrase( true );
-      QgsDebugMsg( "ssl cert key has password" );
+      mAuth.mSslCert.setNeedsKeyPath( true );
+      QgsDebugMsg( "ssl cert key needs path defined" );
+    }
+    if ( uri.hasParam( "needskeypass" ) )
+    {
+      mAuth.mSslCert.setNeedsKeyPassphrase( true );
+      QgsDebugMsg( "ssl cert key needs password" );
     }
     if ( uri.hasParam( "keypass" ) )
     {
-      mAuth.mSslCert.setHasKeyPassphrase( true ); // may not have been in URL
+      mAuth.mSslCert.setNeedsKeyPassphrase( true ); // may not have been in URL
       mAuth.mSslCert.setKeyPassphrase( uri.param( "keypass" ) );
       QgsDebugMsg( "ssl cert password passed-in" );
     }
@@ -1901,10 +1906,7 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
 
 #ifndef QT_NO_OPENSSL
-  if ( mAuth.mSslCert.issuerSelfSigned() )
-  {
-    QgsSslUtils::updateReplyExpectedSslErrors( mCapabilitiesReply, mAuth.mSslCert );
-  }
+  QgsSslPkiUtility::instance()->updateReplyExpectedSslErrors( mCapabilitiesReply, mAuth.mSslCert );
 #endif
 
   connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );

@@ -1,11 +1,11 @@
 /**
- * @class QgsSslCertSettings
+ * @class QgsSslPkiSettings
  * @ingroup core
  * @brief Settings for working with a SSL certificate, key and optional certificate issuer
  * @since since 2.5
  */
 
-class QgsSslCertSettings
+class QgsSslPkiSettings
 {
   public:
 
@@ -14,21 +14,21 @@ class QgsSslCertSettings
       QGISStore = 0
     };
 
-    QgsSslCertSettings();
+    QgsSslPkiSettings();
 
-    QSslCertificate clientCert() const;
+    QByteArray clientCertData() const;
 
-    QSslKey clientCertKey() const;
+    QByteArray clientKeyData() const;
 
-    QSslCertificate issuerCert() const;
+    QByteArray issuerCertData() const;
 
     // TODO: add protocol option, e.g. QSsl::TlsV1SslV3, etc.?
 
     bool certIsReady() const;
     void setCertReady( bool ready );
 
-    QgsSslCertSettings::SslStoreType storeType() const;
-    void setStoreType( QgsSslCertSettings::SslStoreType storetype );
+    QgsSslPkiSettings::SslStoreType storeType() const;
+    void setStoreType( QgsSslPkiSettings::SslStoreType storetype );
 
     QString certId() const;
     void setCertId( const QString& txtid );
@@ -36,8 +36,11 @@ class QgsSslCertSettings
     QString keyId() const;
     void setKeyId( const QString& txtid );
 
-    bool hasKeyPassphrase() const;
-    void setHasKeyPassphrase( bool has );
+    bool needsKeyPath() const;
+    void setNeedsKeyPath( bool needs );
+
+    bool needsKeyPassphrase() const;
+    void setNeedsKeyPassphrase( bool has );
 
     QString keyPassphrase() const;
     void setKeyPassphrase( const QString& passphrase );
@@ -53,25 +56,61 @@ class QgsSslCertSettings
 };
 
 /**
-  \class QgsSslUtils
+ * @class QgsSslPkiGroup
+ * @ingroup core
+ * @brief Storage set for constructed SSL certificate, key and optional certificate issuer
+ * @since 2.6
+ */
+
+class QgsSslPkiGroup
+{
+%TypeHeaderCode
+#include <qgssslutils.h>
+%End
+  public:
+    QgsSslPkiGroup( const QSslCertificate& cert = QSslCertificate(), const QSslKey& certkey = QSslKey(),
+                    const QSslCertificate& issuer = QSslCertificate(), bool issuerselfsigned = false );
+    ~QgsSslPkiGroup();
+
+    bool isNull();
+
+    QSslCertificate clientCert();
+    void setClientCert( const QSslCertificate& cert );
+
+    QSslKey clientCertKey();
+    void setClientCertKey( const QSslKey& certkey );
+
+    QSslCertificate issuerCert();
+    void setIssuerCert( const QSslCertificate& issuer );
+
+    bool issuerSelfSigned();
+    void setIssuerSelfSigned( bool selfsigned );
+};
+
+/**
+  \class QgsSslPkiUtility
   \ingroup core
   \brief Utilites functions for working with SSL certificates, keys and connections
   \since 2.5
 */
 
-class QgsSslUtils
+class QgsSslPkiUtility
 {
 %TypeHeaderCode
 #include <qgssslutils.h>
 %End
   public:
 
-    /** Path to user-local QGIS directory for certs, keys and issuers
-     */
+    static QgsSslPkiUtility *instance();
+
+    static bool urlToResource( const QString& accessurl, QString *resource );
+
+    QgsSslPkiGroup * getSslPkiGroup( const QgsSslPkiSettings& pki );
+    void putSslPkiGroup( const QgsSslPkiSettings& pki, QgsSslPkiGroup * pkigroup );
+    void removeSslPkiGroup( const QgsSslPkiSettings& pki );
+
     static const QString qgisCertStoreDirPath();
 
-    /** Create user-local QGIS directory for certs, keys and issuers
-     */
     static bool createQgisCertStoreDir();
 
     static const QString qgisCertsDirPath();
@@ -85,30 +124,14 @@ class QgsSslUtils
     static const QString qgisKeyPath( const QString& file );
     static const QString qgisIssuerPath( const QString& file );
 
-    static const QStringList storeCerts( QgsSslCertSettings::SslStoreType store );
-    static const QStringList storeKeys( QgsSslCertSettings::SslStoreType store );
-    static const QStringList storeIssuers( QgsSslCertSettings::SslStoreType store );
+    static const QStringList storeCerts( QgsSslPkiSettings::SslStoreType store );
+    static const QStringList storeKeys( QgsSslPkiSettings::SslStoreType store );
+    static const QStringList storeIssuers( QgsSslPkiSettings::SslStoreType store );
 
     static QSslCertificate certFromPath( const QString& path, QSsl::EncodingFormat format = QSsl::Pem );
 
     static QSsl::KeyAlgorithm keyAlgorithm( const QByteArray& keydata );
 
-    static QSslKey keyFromData( const QByteArray& keydata,
-                                QSsl::EncodingFormat format = QSsl::Pem,
-                                QSsl::KeyType type = QSsl::PrivateKey,
-                                bool hasKeyPhrase = false,
-                                const QString& passphrase = QString(),
-                                const QString& accessurl = QString() );
-    static QSslKey keyFromPath( const QString& path,
-                                QSsl::EncodingFormat format = QSsl::Pem,
-                                QSsl::KeyType type = QSsl::PrivateKey,
-                                bool hasKeyPhrase = false,
-                                const QString& passphrase = QString(),
-                                const QString& accessurl = QString() );
-
-    static const QString keyHashFromData( const QByteArray & data );
-    static const QString keyHashFromPath( const QString& path );
-
-    static void updateRequestSslConfiguration( QNetworkRequest &request /In,Out/, const QgsSslCertSettings& pki );
-    static void updateReplyExpectedSslErrors( QNetworkReply *reply, const QgsSslCertSettings& pki );
+    void updateRequestSslConfiguration( QNetworkRequest &request /In,Out/, const QgsSslPkiSettings& pki );
+    void updateReplyExpectedSslErrors( QNetworkReply *reply, const QgsSslPkiSettings& pki );
 };

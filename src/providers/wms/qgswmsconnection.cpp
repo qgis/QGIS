@@ -74,7 +74,8 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
     QString storetype = settings.value( credentialsKey + "/ssl/store" ).toString(); // int(enum) -> string
     QString certid = settings.value( credentialsKey + "/ssl/certid" ).toString();
     QString keyid = settings.value( credentialsKey + "/ssl/keyid" ).toString();
-    bool haskeypass = settings.value( credentialsKey + "/ssl/haskeypass", false ).toBool();
+    bool needskeypath = settings.value( credentialsKey + "/ssl/needskeypath", true ).toBool();
+    bool needskeypass = settings.value( credentialsKey + "/ssl/needskeypass", false ).toBool();
     QString issuerid = settings.value( credentialsKey + "/ssl/issuerid" ).toString();
     bool issuerself = settings.value( credentialsKey + "/ssl/issuerself", false ).toBool();
 
@@ -85,10 +86,15 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
     mUri.setParam( "storetype", storetype );
     mUri.setParam( "certid", certid );
     mUri.setParam( "keyid", keyid );
-    if ( haskeypass )
+    if ( needskeypath )
     {
-      sslinfo.append( ",haskeypass=1" );
-      mUri.setParam( "haskeypass", "1" );
+      sslinfo.append( ",needskeypath=1" );
+      mUri.setParam( "needskeypath", "1" );
+    }
+    if ( needskeypass )
+    {
+      sslinfo.append( ",needskeypass=1" );
+      mUri.setParam( "needskeypass", "1" );
     }
     if ( !issuerid.isEmpty() )
     {

@@ -18,32 +18,35 @@ class QgsSslCertificateWidget : QWidget
     explicit QgsSslCertificateWidget( QWidget *parent /TransferThis/ = 0, const QString& accessUrl = QString( "" ) );
     ~QgsSslCertificateWidget();
 
-    void loadSettings( QgsSslCertSettings::SslStoreType storeType = QgsSslCertSettings::QGISStore,
+    void loadSettings( QgsSslPkiSettings::SslStoreType storeType = QgsSslPkiSettings::QGISStore,
                        const QString& certId = "",
                        const QString& keyId = "",
-                       bool keyPassphrase = false,
+                       bool needsKeyPath = false,
+                       bool needsKeyPhrase = false,
                        const QString& issuerId = "",
                        bool issuerSelf = false );
 
-    void loadSslCertSettings( const QgsSslCertSettings& pki );
+    void loadSslCertSettings( const QgsSslPkiSettings& pki );
 
-    QgsSslCertSettings toSslCertSettings();
+    QgsSslPkiSettings toSslCertSettings();
 
     bool certIsValid();
 
-    QgsSslCertSettings::SslStoreType ssLStoreType();
+    QgsSslPkiSettings::SslStoreType ssLStoreType();
     QString certId() const;
     QString keyId() const;
-    bool keyHasPassPhrase();
+    bool needsKeyPath();
+    bool needsKeyPassphrase();
     QString issuerId() const;
     bool issuerSelfSigned();
     QString accessUrl() const;
 
   public slots:
-    void setSslStoreType( QgsSslCertSettings::SslStoreType storeType );
+    void setSslStoreType( QgsSslPkiSettings::SslStoreType storeType );
     void setCertId( const QString& id );
     void setKeyId( const QString& id );
-    void setKeyHasPassPhrase( bool hasPass );
+    void setNeedsKeyPath( bool needsPath );
+    void setNeedsKeyPassphrase( bool needsPass );
     void setIssuerId( const QString& id );
     void setIssuerSelfSigned( bool selfSigned );
     void setAccessUrl( const QString& url );

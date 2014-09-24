@@ -42,7 +42,7 @@ static QString validRed_( const QString& selector = "*" )
 
 QgsSslCertificateWidget::QgsSslCertificateWidget( QWidget *parent, const QString& accessUrl )
     : QWidget( parent )
-    , mStoreType( QgsSslCertSettings::QGISStore )
+    , mStoreType( QgsSslPkiSettings::QGISStore )
     , mCertValid( false )
     , mAccessUrl( accessUrl )
     , mQgisCertsMenu( 0 )
@@ -80,13 +80,14 @@ QgsSslCertificateWidget::~QgsSslCertificateWidget()
 {
 }
 
-void QgsSslCertificateWidget::loadSettings( QgsSslCertSettings::SslStoreType storeType, const QString &certId, const QString &keyId,
-    bool keyPassphrase, const QString &issuerId, bool issuerSelf )
+void QgsSslCertificateWidget::loadSettings( QgsSslPkiSettings::SslStoreType storeType, const QString &certId, const QString &keyId,
+    bool needsKeyPath, bool needsKeyPassphrase, const QString &issuerId, bool issuerSelf )
 {
   setSslStoreType( storeType );
   setCertId( certId );
   setKeyId( keyId );
-  setKeyHasPassPhrase( keyPassphrase );
+  setNeedsKeyPath( needsKeyPath );
+  setNeedsKeyPassphrase( needsKeyPassphrase );
   setIssuerId( issuerId );
   setIssuerSelfSigned( issuerSelf );
 
@@ -94,12 +95,13 @@ void QgsSslCertificateWidget::loadSettings( QgsSslCertSettings::SslStoreType sto
 }
 
 
-void QgsSslCertificateWidget::loadSslCertSettings( const QgsSslCertSettings& pki )
+void QgsSslCertificateWidget::loadSslCertSettings( const QgsSslPkiSettings& pki )
 {
   setSslStoreType( pki.storeType() );
   setCertId( pki.certId() );
   setKeyId( pki.keyId() );
-  setKeyHasPassPhrase( pki.hasKeyPassphrase() );
+  setNeedsKeyPath( pki.needsKeyPath() );
+  setNeedsKeyPassphrase( pki.needsKeyPassphrase() );
   setIssuerId( pki.issuerId() );
   setIssuerSelfSigned( pki.issuerSelfSigned() );
 
@@ -108,14 +110,15 @@ void QgsSslCertificateWidget::loadSslCertSettings( const QgsSslCertSettings& pki
   validateCert();
 }
 
-QgsSslCertSettings QgsSslCertificateWidget::toSslCertSettings()
+QgsSslPkiSettings QgsSslCertificateWidget::toSslCertSettings()
 {
-  QgsSslCertSettings pki;
+  QgsSslPkiSettings pki;
   pki.setCertReady( certIsValid() );
   pki.setStoreType( ssLStoreType() );
   pki.setCertId( certId() );
   pki.setKeyId( keyId() );
-  pki.setHasKeyPassphrase( keyHasPassPhrase() );
+  pki.setNeedsKeyPath( needsKeyPath() );
+  pki.setNeedsKeyPassphrase( needsKeyPassphrase() );
   pki.setIssuerId( issuerId() );
   pki.setIssuerSelfSigned( issuerSelfSigned() );
   pki.setAccessUrl( mAccessUrl );
@@ -146,23 +149,15 @@ void QgsSslCertificateWidget::validateCert()
 {
   mCertValid = false;
   bool certFound = false;
-  bool keyFound = false;
-  bool issuerFound = false;
 
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
-    QString certPath = QgsSslUtils::qgisCertPath( certId() );
-    QString keyPath = QgsSslUtils::qgisKeyPath( keyId() );
-    QString issuerPath = QgsSslUtils::qgisIssuerPath( issuerId() );
+    QString certPath = QgsSslPkiUtility::qgisCertPath( certId() );
     certFound = !certPath.isNull();
-    keyFound = !keyPath.isNull();
-    issuerFound = !issuerPath.isNull();
 
     fileFound( certId().isEmpty() || certFound, leQgisCert );
-    fileFound( keyId().isEmpty() || keyFound, leQgisKey );
-    fileFound( issuerId().isEmpty() || issuerFound, leQgisIssuer );
 
-    if ( !certFound || !keyFound )
+    if ( !certFound )
     {
       // invalid, due to missing components
       clearMessage();
@@ -171,8 +166,8 @@ void QgsSslCertificateWidget::validateCert()
     }
     else
     {
-      // check for validity, then why it is not
-      QSslCertificate cert( QgsSslUtils::certFromPath( certPath ) );
+      // check for validity, then notify status
+      QSslCertificate cert( QgsSslPkiUtility::certFromPath( certPath ) );
       QDateTime startDate( cert.effectiveDate() );
       QDateTime endDate( cert.expiryDate() );
 
@@ -217,14 +212,14 @@ void QgsSslCertificateWidget::writeMessage( const QString& msg, Validity valid )
   leMsg->show();
 }
 
-QgsSslCertSettings::SslStoreType QgsSslCertificateWidget::ssLStoreType()
+QgsSslPkiSettings::SslStoreType QgsSslCertificateWidget::ssLStoreType()
 {
   return mStoreType;
 }
 
 QString QgsSslCertificateWidget::certId() const
 {
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
     return leQgisCert->text();
   }
@@ -233,16 +228,25 @@ QString QgsSslCertificateWidget::certId() const
 
 QString QgsSslCertificateWidget::keyId() const
 {
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
     return leQgisKey->text();
   }
   return "";
 }
 
-bool QgsSslCertificateWidget::keyHasPassPhrase()
+bool QgsSslCertificateWidget::needsKeyPath()
 {
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
+  {
+    return leQgisKey->text().isEmpty();
+  }
+  return true;
+}
+
+bool QgsSslCertificateWidget::needsKeyPassphrase()
+{
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
     return chkQgisKeyPhrase->isChecked();
   }
@@ -251,7 +255,7 @@ bool QgsSslCertificateWidget::keyHasPassPhrase()
 
 QString QgsSslCertificateWidget::issuerId() const
 {
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
     return leQgisIssuer->text();
   }
@@ -260,14 +264,14 @@ QString QgsSslCertificateWidget::issuerId() const
 
 bool QgsSslCertificateWidget::issuerSelfSigned()
 {
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
     return chkQgisIssuerSelf->isChecked();
   }
   return false;
 }
 
-void QgsSslCertificateWidget::setSslStoreType( QgsSslCertSettings::SslStoreType storeType )
+void QgsSslCertificateWidget::setSslStoreType( QgsSslPkiSettings::SslStoreType storeType )
 {
   mStoreType = storeType;
   cmbStoreType->setCurrentIndex( mStoreType );
@@ -276,7 +280,7 @@ void QgsSslCertificateWidget::setSslStoreType( QgsSslCertSettings::SslStoreType 
 
 void QgsSslCertificateWidget::setCertId( const QString& id )
 {
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
     leQgisCert->setText( id );
     leQgisCert->setStyleSheet( "" );
@@ -285,24 +289,35 @@ void QgsSslCertificateWidget::setCertId( const QString& id )
 
 void QgsSslCertificateWidget::setKeyId( const QString& id )
 {
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
     leQgisKey->setText( id );
     leQgisKey->setStyleSheet( "" );
   }
 }
 
-void QgsSslCertificateWidget::setKeyHasPassPhrase( bool hasPass )
+void QgsSslCertificateWidget::setNeedsKeyPath( bool needsPath )
 {
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
-    chkQgisKeyPhrase->setChecked( hasPass );
+    if ( needsPath )
+    {
+      leQgisKey->clear();
+    }
+  }
+}
+
+void QgsSslCertificateWidget::setNeedsKeyPassphrase( bool needsPass )
+{
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
+  {
+    chkQgisKeyPhrase->setChecked( needsPass );
   }
 }
 
 void QgsSslCertificateWidget::setIssuerId( const QString& id )
 {
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
     leQgisIssuer->setText( id );
     leQgisIssuer->setStyleSheet( "" );
@@ -311,7 +326,7 @@ void QgsSslCertificateWidget::setIssuerId( const QString& id )
 
 void QgsSslCertificateWidget::setIssuerSelfSigned( bool selfSigned )
 {
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
     chkQgisIssuerSelf->setChecked( selfSigned );
   }
@@ -333,7 +348,7 @@ void QgsSslCertificateWidget::clearCert()
 
 void QgsSslCertificateWidget::clearCertId()
 {
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
     leQgisCert->clear();
     leQgisCert->setStyleSheet( "" );
@@ -342,7 +357,7 @@ void QgsSslCertificateWidget::clearCertId()
 
 void QgsSslCertificateWidget::clearKeyId()
 {
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
     leQgisKey->clear();
     leQgisKey->setStyleSheet( "" );
@@ -352,7 +367,7 @@ void QgsSslCertificateWidget::clearKeyId()
 
 void QgsSslCertificateWidget::clearKeyHasPassPhrase()
 {
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
     chkQgisKeyPhrase->setChecked( false );
   }
@@ -361,7 +376,7 @@ void QgsSslCertificateWidget::clearKeyHasPassPhrase()
 
 void QgsSslCertificateWidget::clearIssuerId()
 {
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
     leQgisIssuer->clear();
     leQgisIssuer->setStyleSheet( "" );
@@ -371,7 +386,7 @@ void QgsSslCertificateWidget::clearIssuerId()
 
 void QgsSslCertificateWidget::clearIssuerSelfSigned()
 {
-  if ( mStoreType == QgsSslCertSettings::QGISStore )
+  if ( mStoreType == QgsSslPkiSettings::QGISStore )
   {
     chkQgisIssuerSelf->setChecked( false );
   }
@@ -401,12 +416,12 @@ QAction * QgsSslCertificateWidget::selectAction()
 QString QgsSslCertificateWidget::getOpenFileName( const QString& path )
 {
   return QFileDialog::getOpenFileName( this, tr( "Open PEM File" ),
-                                       path, tr( "PEM (*.pem)" ) );
+                                       path, tr( "PEM (*.pem *.key)" ) );
 }
 
 void QgsSslCertificateWidget::openQgisStoreDir()
 {
-  QString path = QDir::toNativeSeparators( QgsSslUtils::qgisCertStoreDirPath() );
+  QString path = QDir::toNativeSeparators( QgsSslPkiUtility::qgisCertStoreDirPath() );
   QDesktopServices::openUrl( QUrl( QString( "file:///" ) + path ) );
 }
 
@@ -416,13 +431,13 @@ void QgsSslCertificateWidget::populateQgisCertsMenu()
   mQgisCertsMenu->addAction( clearAction() );
   mQgisCertsMenu->addSeparator();
 
-  QStringList certs( QgsSslUtils::storeCerts( QgsSslCertSettings::QGISStore ) );
+  QStringList certs( QgsSslPkiUtility::storeCerts( QgsSslPkiSettings::QGISStore ) );
   foreach ( QString cert, certs )
   {
     QAction * act = new QAction( cert, this );
     mQgisCertsMenu->addAction( act );
   }
-//  mQgisCertsMenu->addAction( selectAction() );
+  mQgisCertsMenu->addAction( selectAction() );
 }
 
 void QgsSslCertificateWidget::populateQgisKeysMenu()
@@ -431,13 +446,13 @@ void QgsSslCertificateWidget::populateQgisKeysMenu()
   mQgisKeysMenu->addAction( clearAction() );
   mQgisKeysMenu->addSeparator();
 
-  QStringList keys( QgsSslUtils::storeKeys( QgsSslCertSettings::QGISStore ) );
+  QStringList keys( QgsSslPkiUtility::storeKeys( QgsSslPkiSettings::QGISStore ) );
   foreach ( QString key, keys )
   {
     QAction * act = new QAction( key, this );
     mQgisKeysMenu->addAction( act );
   }
-//  mQgisKeysMenu->addAction( selectAction() );
+  mQgisKeysMenu->addAction( selectAction() );
 }
 
 void QgsSslCertificateWidget::populateQgisIssuersMenu()
@@ -446,13 +461,13 @@ void QgsSslCertificateWidget::populateQgisIssuersMenu()
   mQgisIssuersMenu->addAction( clearAction() );
   mQgisIssuersMenu->addSeparator();
 
-  QStringList isss( QgsSslUtils::storeIssuers( QgsSslCertSettings::QGISStore ) );
+  QStringList isss( QgsSslPkiUtility::storeIssuers( QgsSslPkiSettings::QGISStore ) );
   foreach ( QString iss, isss )
   {
     QAction * act = new QAction( iss, this );
     mQgisIssuersMenu->addAction( act );
   }
-//  mQgisIssuersMenu->addAction( selectAction() );
+  mQgisIssuersMenu->addAction( selectAction() );
 }
 
 void QgsSslCertificateWidget::qgisCertsMenuTriggered( QAction * act )
@@ -463,7 +478,7 @@ void QgsSslCertificateWidget::qgisCertsMenuTriggered( QAction * act )
   }
   else if ( act->data() == QVariant( "select" ) )
   {
-    const QString& fn = getOpenFileName( QgsSslUtils::qgisCertsDirPath() );
+    const QString& fn = getOpenFileName( QgsSslPkiUtility::qgisCertsDirPath() );
     if ( !fn.isEmpty() )
     {
       setCertId( fn );
@@ -484,7 +499,7 @@ void QgsSslCertificateWidget::qgisKeysMenuTriggered( QAction * act )
   }
   else if ( act->data() == QVariant( "select" ) )
   {
-    const QString& fn = getOpenFileName( QgsSslUtils::qgisKeysDirPath() );
+    const QString& fn = getOpenFileName( QgsSslPkiUtility::qgisKeysDirPath() );
     if ( !fn.isEmpty() )
     {
       setKeyId( fn );
@@ -505,7 +520,7 @@ void QgsSslCertificateWidget::qgisIssuersMenuTriggered( QAction * act )
   }
   else if ( act->data() == QVariant( "select" ) )
   {
-    const QString& fn = getOpenFileName( QgsSslUtils::qgisIssuersDirPath() );
+    const QString& fn = getOpenFileName( QgsSslPkiUtility::qgisIssuersDirPath() );
     if ( !fn.isEmpty() )
     {
       setIssuerId( fn );
