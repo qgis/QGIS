@@ -58,6 +58,12 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     inline bool isNull() const { return text() == mNullValue; }
 
+    /**
+     * @brief setReadOnly set the line edit to be read only and hide the clear button
+     * @note Since QLineEdit::setReadOnly() is not virtual, it needs to be called for QgsFilterLineEdit
+     */
+    void setReadOnly( bool readOnly );
+
   signals:
     void cleared();
 

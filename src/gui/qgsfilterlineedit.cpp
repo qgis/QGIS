@@ -81,15 +81,19 @@ void QgsFilterLineEdit::clear()
 void QgsFilterLineEdit::changeEvent( QEvent *e )
 {
   QLineEdit::changeEvent( e );
-  if ( !isEnabled() || isReadOnly() )
-    btnClear->setVisible( false );
-  else
-    btnClear->setVisible( text() != mNullValue );
+  btnClear->setVisible( isEnabled() && !isReadOnly() && !isNull() );
 }
+
+void QgsFilterLineEdit::setReadOnly( bool readOnly )
+{
+  QLineEdit::setReadOnly( readOnly );
+  btnClear->setVisible( isEnabled() && !isReadOnly() && !isNull() );
+}
+
 
 void QgsFilterLineEdit::onTextChanged( const QString &text )
 {
-  btnClear->setVisible( !isEnabled() && !isReadOnly() && text != mNullValue );
+  btnClear->setVisible( isEnabled() && !isReadOnly() && !isNull() );
 
   if ( isNull() )
   {
