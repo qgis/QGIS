@@ -112,9 +112,8 @@ void Heatmap::run()
 {
   HeatmapGui d( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags, &mSessionSettings );
 
-  // Start working on the input vector
-  QgsVectorLayer* inputLayer = d.inputVectorLayer();
-  if ( !inputLayer )
+  //check that dialog found a suitable vector layer
+  if ( !d.inputVectorLayer() )
   {
     mQGisIface->messageBar()->pushMessage( tr( "Layer not found" ), tr( "The heatmap plugin requires at least one point vector layer" ),  QgsMessageBar::INFO, mQGisIface->messageTimeout() );
     return;
@@ -123,6 +122,7 @@ void Heatmap::run()
   if ( d.exec() == QDialog::Accepted )
   {
     // everything runs here
+    QgsVectorLayer* inputLayer = d.inputVectorLayer();
 
     // Get the required data from the dialog
     QgsRectangle myBBox = d.bbox();
@@ -131,6 +131,9 @@ void Heatmap::run()
     double cellsize = d.cellSizeX(); // or d.cellSizeY();  both have the same value
     mDecay = d.decayRatio();
     int kernelShape = d.kernelShape();
+
+    //is input layer multipoint?
+    bool isMultiPoint = inputLayer->wkbType() == QGis::WKBMultiPoint || inputLayer->wkbType() == QGis::WKBMultiPoint25D;
 
     // Getting the rasterdataset in place
     GDALAllRegister();
@@ -235,16 +238,28 @@ void Heatmap::run()
         break;
       }
 
-      QgsGeometry* myPointGeometry;
-      myPointGeometry = myFeature.geometry();
-      // convert the geometry to point
-      QgsPoint myPoint;
-      myPoint = myPointGeometry->asPoint();
-      // avoiding any empty points or out of extent points
-      if (( myPoint.x() < myBBox.xMinimum() ) || ( myPoint.y() < myBBox.yMinimum() )
-          || ( myPoint.x() > myBBox.xMaximum() ) || ( myPoint.y() > myBBox.yMaximum() ) )
+      QgsGeometry* featureGeometry = myFeature.geometry();
+      if ( !featureGeometry )
       {
         continue;
+      }
+
+      // convert the geometry to multipoint
+      QgsMultiPoint multiPoints;
+      if ( !isMultiPoint )
+      {
+        QgsPoint myPoint = featureGeometry->asPoint();
+        // avoiding any empty points or out of extent points
+        if (( myPoint.x() < myBBox.xMinimum() ) || ( myPoint.y() < myBBox.yMinimum() )
+            || ( myPoint.x() > myBBox.xMaximum() ) || ( myPoint.y() > myBBox.yMaximum() ) )
+        {
+          continue;
+        }
+        multiPoints << myPoint;
+      }
+      else
+      {
+        multiPoints = featureGeometry->asMultiPoint();
       }
 
       // If radius is variable then fetch it and calculate new pixel buffer size
@@ -255,15 +270,6 @@ void Heatmap::run()
       }
 
       int blockSize = 2 * myBuffer + 1; //Block SIDE would be more appropriate
-      // calculate the pixel position
-      unsigned int xPosition, yPosition;
-      xPosition = (( myPoint.x() - myBBox.xMinimum() ) / cellsize ) - myBuffer;
-      yPosition = (( myPoint.y() - myBBox.yMinimum() ) / cellsize ) - myBuffer;
-
-      // get the data
-      float *dataBuffer = ( float * ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
-      poBand->RasterIO( GF_Read, xPosition, yPosition, blockSize, blockSize,
-                        dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
 
       double weight = 1.0;
       if ( d.weighted() )
@@ -271,50 +277,72 @@ void Heatmap::run()
         weight = myFeature.attribute( wField ).toDouble();
       }
 
-      for ( int xp = 0; xp <= myBuffer; xp++ )
+      //loop through all points in multipoint
+      for ( QgsMultiPoint::const_iterator pointIt = multiPoints.constBegin(); pointIt != multiPoints.constEnd(); ++pointIt )
       {
-        for ( int yp = 0; yp <= myBuffer; yp++ )
+        // avoiding any empty points or out of extent points
+        if ((( *pointIt ).x() < myBBox.xMinimum() ) || (( *pointIt ).y() < myBBox.yMinimum() )
+            || (( *pointIt ).x() > myBBox.xMaximum() ) || (( *pointIt ).y() > myBBox.yMaximum() ) )
         {
-          double distance = sqrt( pow( xp, 2.0 ) + pow( yp, 2.0 ) );
+          continue;
+        }
 
-          // is pixel outside search bandwidth of feature?
-          if ( distance > myBuffer )
-          {
-            continue;
-          }
+        // calculate the pixel position
+        unsigned int xPosition, yPosition;
+        xPosition = ((( *pointIt ).x() - myBBox.xMinimum() ) / cellsize ) - myBuffer;
+        yPosition = ((( *pointIt ).y() - myBBox.yMinimum() ) / cellsize ) - myBuffer;
 
-          double pixelValue = weight * calculateKernelValue( distance, myBuffer, kernelShape );
+        // get the data
+        float *dataBuffer = ( float * ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
+        poBand->RasterIO( GF_Read, xPosition, yPosition, blockSize, blockSize,
+                          dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
 
-          // clearing anamolies along the axes
-          if ( xp == 0 && yp == 0 )
+        for ( int xp = 0; xp <= myBuffer; xp++ )
+        {
+          for ( int yp = 0; yp <= myBuffer; yp++ )
           {
-            pixelValue /= 4;
-          }
-          else if ( xp == 0 || yp == 0 )
-          {
-            pixelValue /= 2;
-          }
+            double distance = sqrt( pow( xp, 2.0 ) + pow( yp, 2.0 ) );
 
-          int pos[4];
-          pos[0] = ( myBuffer + xp ) * blockSize + ( myBuffer + yp );
-          pos[1] = ( myBuffer + xp ) * blockSize + ( myBuffer - yp );
-          pos[2] = ( myBuffer - xp ) * blockSize + ( myBuffer + yp );
-          pos[3] = ( myBuffer - xp ) * blockSize + ( myBuffer - yp );
-          for ( int p = 0; p < 4; p++ )
-          {
-            if ( dataBuffer[ pos[p] ] == NO_DATA )
+            // is pixel outside search bandwidth of feature?
+            if ( distance > myBuffer )
             {
-              dataBuffer[ pos[p] ] = 0;
+              continue;
             }
-            dataBuffer[ pos[p] ] += pixelValue;
+
+            double pixelValue = weight * calculateKernelValue( distance, myBuffer, kernelShape );
+
+            // clearing anamolies along the axes
+            if ( xp == 0 && yp == 0 )
+            {
+              pixelValue /= 4;
+            }
+            else if ( xp == 0 || yp == 0 )
+            {
+              pixelValue /= 2;
+            }
+
+            int pos[4];
+            pos[0] = ( myBuffer + xp ) * blockSize + ( myBuffer + yp );
+            pos[1] = ( myBuffer + xp ) * blockSize + ( myBuffer - yp );
+            pos[2] = ( myBuffer - xp ) * blockSize + ( myBuffer + yp );
+            pos[3] = ( myBuffer - xp ) * blockSize + ( myBuffer - yp );
+            for ( int p = 0; p < 4; p++ )
+            {
+              if ( dataBuffer[ pos[p] ] == NO_DATA )
+              {
+                dataBuffer[ pos[p] ] = 0;
+              }
+              dataBuffer[ pos[p] ] += pixelValue;
+            }
           }
         }
+        poBand->RasterIO( GF_Write, xPosition, yPosition, blockSize, blockSize,
+                          dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
+        CPLFree( dataBuffer );
       }
-
-      poBand->RasterIO( GF_Write, xPosition, yPosition, blockSize, blockSize,
-                        dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
-      CPLFree( dataBuffer );
     }
+
+
     // Finally close the dataset
     GDALClose(( GDALDatasetH ) heatmapDS );
 
