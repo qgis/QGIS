@@ -119,239 +119,240 @@ void Heatmap::run()
     return;
   }
 
-  if ( d.exec() == QDialog::Accepted )
+  if ( d.exec() != QDialog::Accepted )
   {
-    // everything runs here
-    QgsVectorLayer* inputLayer = d.inputVectorLayer();
+    return;
+  }
 
-    // Get the required data from the dialog
-    QgsRectangle myBBox = d.bbox();
-    int columns = d.columns();
-    int rows = d.rows();
-    double cellsize = d.cellSizeX(); // or d.cellSizeY();  both have the same value
-    mDecay = d.decayRatio();
-    int kernelShape = d.kernelShape();
+  QgsVectorLayer* inputLayer = d.inputVectorLayer();
 
-    //is input layer multipoint?
-    bool isMultiPoint = inputLayer->wkbType() == QGis::WKBMultiPoint || inputLayer->wkbType() == QGis::WKBMultiPoint25D;
+  // Get the required data from the dialog
+  QgsRectangle myBBox = d.bbox();
+  int columns = d.columns();
+  int rows = d.rows();
+  double cellsize = d.cellSizeX(); // or d.cellSizeY();  both have the same value
+  mDecay = d.decayRatio();
+  int kernelShape = d.kernelShape();
 
-    // Getting the rasterdataset in place
-    GDALAllRegister();
+  //is input layer multipoint?
+  bool isMultiPoint = inputLayer->wkbType() == QGis::WKBMultiPoint || inputLayer->wkbType() == QGis::WKBMultiPoint25D;
 
-    GDALDataset *emptyDataset;
-    GDALDriver *myDriver;
+  // Getting the rasterdataset in place
+  GDALAllRegister();
 
-    myDriver = GetGDALDriverManager()->GetDriverByName( d.outputFormat().toUtf8() );
-    if ( myDriver == NULL )
+  GDALDataset *emptyDataset;
+  GDALDriver *myDriver;
+
+  myDriver = GetGDALDriverManager()->GetDriverByName( d.outputFormat().toUtf8() );
+  if ( myDriver == NULL )
+  {
+    mQGisIface->messageBar()->pushMessage( tr( "GDAL driver error" ), tr( "Cannot open the driver for the specified format" ), QgsMessageBar::WARNING, mQGisIface->messageTimeout() );
+    return;
+  }
+
+  double geoTransform[6] = { myBBox.xMinimum(), cellsize, 0, myBBox.yMinimum(), 0, cellsize };
+  emptyDataset = myDriver->Create( d.outputFilename().toUtf8(), columns, rows, 1, GDT_Float32, NULL );
+  emptyDataset->SetGeoTransform( geoTransform );
+  // Set the projection on the raster destination to match the input layer
+  emptyDataset->SetProjection( inputLayer->crs().toWkt().toLocal8Bit().data() );
+
+  GDALRasterBand *poBand;
+  poBand = emptyDataset->GetRasterBand( 1 );
+  poBand->SetNoDataValue( NO_DATA );
+
+  float* line = ( float * ) CPLMalloc( sizeof( float ) * columns );
+  for ( int i = 0; i < columns ; i++ )
+  {
+    line[i] = NO_DATA;
+  }
+  // Write the empty raster
+  for ( int i = 0; i < rows ; i++ )
+  {
+    poBand->RasterIO( GF_Write, 0, i, columns, 1, line, columns, 1, GDT_Float32, 0, 0 );
+  }
+
+  CPLFree( line );
+  //close the dataset
+  GDALClose(( GDALDatasetH ) emptyDataset );
+
+  // open the raster in GA_Update mode
+  GDALDataset *heatmapDS;
+  heatmapDS = ( GDALDataset * ) GDALOpen( TO8F( d.outputFilename() ), GA_Update );
+  if ( !heatmapDS )
+  {
+    mQGisIface->messageBar()->pushMessage( tr( "Raster update error" ), tr( "Could not open the created raster for updating. The heatmap was not generated." ), QgsMessageBar::WARNING );
+    return;
+  }
+  poBand = heatmapDS->GetRasterBand( 1 );
+
+  QgsAttributeList myAttrList;
+  int rField = 0;
+  int wField = 0;
+
+  // Handle different radius options
+  double radius;
+  double radiusToMapUnits = 1;
+  int myBuffer = 0;
+  if ( d.variableRadius() )
+  {
+    rField = d.radiusField();
+    myAttrList.append( rField );
+    QgsDebugMsg( QString( "Radius Field index received: %1" ).arg( rField ) );
+
+    // If not using map units, then calculate a conversion factor to convert the radii to map units
+    if ( d.radiusUnit() == HeatmapGui::Meters )
     {
-      mQGisIface->messageBar()->pushMessage( tr( "GDAL driver error" ), tr( "Cannot open the driver for the specified format" ), QgsMessageBar::WARNING, mQGisIface->messageTimeout() );
-      return;
+      radiusToMapUnits = mapUnitsOf( 1, inputLayer->crs() );
+    }
+  }
+  else
+  {
+    radius = d.radius(); // radius returned by d.radius() is already in map units
+    myBuffer = bufferSize( radius, cellsize );
+  }
+
+  if ( d.weighted() )
+  {
+    wField = d.weightField();
+    myAttrList.append( wField );
+  }
+
+  // This might have attributes or mightnot have attibutes at all
+  // based on the variableRadius() and weighted()
+  QgsFeatureIterator fit = inputLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( myAttrList ) );
+  int totalFeatures = inputLayer->featureCount();
+  int counter = 0;
+
+  QProgressDialog p( tr( "Creating heatmap" ), tr( "Abort" ), 0, totalFeatures, mQGisIface->mainWindow() );
+  p.setWindowModality( Qt::ApplicationModal );
+  p.show();
+
+  QgsFeature myFeature;
+
+  while ( fit.nextFeature( myFeature ) )
+  {
+    counter++;
+    p.setValue( counter );
+    QApplication::processEvents();
+    if ( p.wasCanceled() )
+    {
+      mQGisIface->messageBar()->pushMessage( tr( "Heatmap generation aborted" ), tr( "QGIS will now load the partially-computed raster" ), QgsMessageBar::INFO, mQGisIface->messageTimeout() );
+      break;
     }
 
-    double geoTransform[6] = { myBBox.xMinimum(), cellsize, 0, myBBox.yMinimum(), 0, cellsize };
-    emptyDataset = myDriver->Create( d.outputFilename().toUtf8(), columns, rows, 1, GDT_Float32, NULL );
-    emptyDataset->SetGeoTransform( geoTransform );
-    // Set the projection on the raster destination to match the input layer
-    emptyDataset->SetProjection( inputLayer->crs().toWkt().toLocal8Bit().data() );
-
-    GDALRasterBand *poBand;
-    poBand = emptyDataset->GetRasterBand( 1 );
-    poBand->SetNoDataValue( NO_DATA );
-
-    float* line = ( float * ) CPLMalloc( sizeof( float ) * columns );
-    for ( int i = 0; i < columns ; i++ )
+    QgsGeometry* featureGeometry = myFeature.geometry();
+    if ( !featureGeometry )
     {
-      line[i] = NO_DATA;
-    }
-    // Write the empty raster
-    for ( int i = 0; i < rows ; i++ )
-    {
-      poBand->RasterIO( GF_Write, 0, i, columns, 1, line, columns, 1, GDT_Float32, 0, 0 );
+      continue;
     }
 
-    CPLFree( line );
-    //close the dataset
-    GDALClose(( GDALDatasetH ) emptyDataset );
-
-    // open the raster in GA_Update mode
-    GDALDataset *heatmapDS;
-    heatmapDS = ( GDALDataset * ) GDALOpen( TO8F( d.outputFilename() ), GA_Update );
-    if ( !heatmapDS )
+    // convert the geometry to multipoint
+    QgsMultiPoint multiPoints;
+    if ( !isMultiPoint )
     {
-      mQGisIface->messageBar()->pushMessage( tr( "Raster update error" ), tr( "Could not open the created raster for updating. The heatmap was not generated." ), QgsMessageBar::WARNING );
-      return;
-    }
-    poBand = heatmapDS->GetRasterBand( 1 );
-
-    QgsAttributeList myAttrList;
-    int rField = 0;
-    int wField = 0;
-
-    // Handle different radius options
-    double radius;
-    double radiusToMapUnits = 1;
-    int myBuffer = 0;
-    if ( d.variableRadius() )
-    {
-      rField = d.radiusField();
-      myAttrList.append( rField );
-      QgsDebugMsg( QString( "Radius Field index received: %1" ).arg( rField ) );
-
-      // If not using map units, then calculate a conversion factor to convert the radii to map units
-      if ( d.radiusUnit() == HeatmapGui::Meters )
+      QgsPoint myPoint = featureGeometry->asPoint();
+      // avoiding any empty points or out of extent points
+      if (( myPoint.x() < myBBox.xMinimum() ) || ( myPoint.y() < myBBox.yMinimum() )
+          || ( myPoint.x() > myBBox.xMaximum() ) || ( myPoint.y() > myBBox.yMaximum() ) )
       {
-        radiusToMapUnits = mapUnitsOf( 1, inputLayer->crs() );
+        continue;
       }
+      multiPoints << myPoint;
     }
     else
     {
-      radius = d.radius(); // radius returned by d.radius() is already in map units
+      multiPoints = featureGeometry->asMultiPoint();
+    }
+
+    // If radius is variable then fetch it and calculate new pixel buffer size
+    if ( d.variableRadius() )
+    {
+      radius = myFeature.attribute( rField ).toDouble() * radiusToMapUnits;
       myBuffer = bufferSize( radius, cellsize );
     }
 
+    int blockSize = 2 * myBuffer + 1; //Block SIDE would be more appropriate
+
+    double weight = 1.0;
     if ( d.weighted() )
     {
-      wField = d.weightField();
-      myAttrList.append( wField );
+      weight = myFeature.attribute( wField ).toDouble();
     }
 
-    // This might have attributes or mightnot have attibutes at all
-    // based on the variableRadius() and weighted()
-    QgsFeatureIterator fit = inputLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( myAttrList ) );
-    int totalFeatures = inputLayer->featureCount();
-    int counter = 0;
-
-    QProgressDialog p( tr( "Creating heatmap" ), tr( "Abort" ), 0, totalFeatures, mQGisIface->mainWindow() );
-    p.setWindowModality( Qt::ApplicationModal );
-    p.show();
-
-    QgsFeature myFeature;
-
-    while ( fit.nextFeature( myFeature ) )
+    //loop through all points in multipoint
+    for ( QgsMultiPoint::const_iterator pointIt = multiPoints.constBegin(); pointIt != multiPoints.constEnd(); ++pointIt )
     {
-      counter++;
-      p.setValue( counter );
-      QApplication::processEvents();
-      if ( p.wasCanceled() )
-      {
-        mQGisIface->messageBar()->pushMessage( tr( "Heatmap generation aborted" ), tr( "QGIS will now load the partially-computed raster" ), QgsMessageBar::INFO, mQGisIface->messageTimeout() );
-        break;
-      }
-
-      QgsGeometry* featureGeometry = myFeature.geometry();
-      if ( !featureGeometry )
+      // avoiding any empty points or out of extent points
+      if ((( *pointIt ).x() < myBBox.xMinimum() ) || (( *pointIt ).y() < myBBox.yMinimum() )
+          || (( *pointIt ).x() > myBBox.xMaximum() ) || (( *pointIt ).y() > myBBox.yMaximum() ) )
       {
         continue;
       }
 
-      // convert the geometry to multipoint
-      QgsMultiPoint multiPoints;
-      if ( !isMultiPoint )
+      // calculate the pixel position
+      unsigned int xPosition, yPosition;
+      xPosition = ((( *pointIt ).x() - myBBox.xMinimum() ) / cellsize ) - myBuffer;
+      yPosition = ((( *pointIt ).y() - myBBox.yMinimum() ) / cellsize ) - myBuffer;
+
+      // get the data
+      float *dataBuffer = ( float * ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
+      poBand->RasterIO( GF_Read, xPosition, yPosition, blockSize, blockSize,
+                        dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
+
+      for ( int xp = 0; xp <= myBuffer; xp++ )
       {
-        QgsPoint myPoint = featureGeometry->asPoint();
-        // avoiding any empty points or out of extent points
-        if (( myPoint.x() < myBBox.xMinimum() ) || ( myPoint.y() < myBBox.yMinimum() )
-            || ( myPoint.x() > myBBox.xMaximum() ) || ( myPoint.y() > myBBox.yMaximum() ) )
+        for ( int yp = 0; yp <= myBuffer; yp++ )
         {
-          continue;
-        }
-        multiPoints << myPoint;
-      }
-      else
-      {
-        multiPoints = featureGeometry->asMultiPoint();
-      }
+          double distance = sqrt( pow( xp, 2.0 ) + pow( yp, 2.0 ) );
 
-      // If radius is variable then fetch it and calculate new pixel buffer size
-      if ( d.variableRadius() )
-      {
-        radius = myFeature.attribute( rField ).toDouble() * radiusToMapUnits;
-        myBuffer = bufferSize( radius, cellsize );
-      }
-
-      int blockSize = 2 * myBuffer + 1; //Block SIDE would be more appropriate
-
-      double weight = 1.0;
-      if ( d.weighted() )
-      {
-        weight = myFeature.attribute( wField ).toDouble();
-      }
-
-      //loop through all points in multipoint
-      for ( QgsMultiPoint::const_iterator pointIt = multiPoints.constBegin(); pointIt != multiPoints.constEnd(); ++pointIt )
-      {
-        // avoiding any empty points or out of extent points
-        if ((( *pointIt ).x() < myBBox.xMinimum() ) || (( *pointIt ).y() < myBBox.yMinimum() )
-            || (( *pointIt ).x() > myBBox.xMaximum() ) || (( *pointIt ).y() > myBBox.yMaximum() ) )
-        {
-          continue;
-        }
-
-        // calculate the pixel position
-        unsigned int xPosition, yPosition;
-        xPosition = ((( *pointIt ).x() - myBBox.xMinimum() ) / cellsize ) - myBuffer;
-        yPosition = ((( *pointIt ).y() - myBBox.yMinimum() ) / cellsize ) - myBuffer;
-
-        // get the data
-        float *dataBuffer = ( float * ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
-        poBand->RasterIO( GF_Read, xPosition, yPosition, blockSize, blockSize,
-                          dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
-
-        for ( int xp = 0; xp <= myBuffer; xp++ )
-        {
-          for ( int yp = 0; yp <= myBuffer; yp++ )
+          // is pixel outside search bandwidth of feature?
+          if ( distance > myBuffer )
           {
-            double distance = sqrt( pow( xp, 2.0 ) + pow( yp, 2.0 ) );
+            continue;
+          }
 
-            // is pixel outside search bandwidth of feature?
-            if ( distance > myBuffer )
-            {
-              continue;
-            }
+          double pixelValue = weight * calculateKernelValue( distance, myBuffer, kernelShape );
 
-            double pixelValue = weight * calculateKernelValue( distance, myBuffer, kernelShape );
+          // clearing anamolies along the axes
+          if ( xp == 0 && yp == 0 )
+          {
+            pixelValue /= 4;
+          }
+          else if ( xp == 0 || yp == 0 )
+          {
+            pixelValue /= 2;
+          }
 
-            // clearing anamolies along the axes
-            if ( xp == 0 && yp == 0 )
+          int pos[4];
+          pos[0] = ( myBuffer + xp ) * blockSize + ( myBuffer + yp );
+          pos[1] = ( myBuffer + xp ) * blockSize + ( myBuffer - yp );
+          pos[2] = ( myBuffer - xp ) * blockSize + ( myBuffer + yp );
+          pos[3] = ( myBuffer - xp ) * blockSize + ( myBuffer - yp );
+          for ( int p = 0; p < 4; p++ )
+          {
+            if ( dataBuffer[ pos[p] ] == NO_DATA )
             {
-              pixelValue /= 4;
+              dataBuffer[ pos[p] ] = 0;
             }
-            else if ( xp == 0 || yp == 0 )
-            {
-              pixelValue /= 2;
-            }
-
-            int pos[4];
-            pos[0] = ( myBuffer + xp ) * blockSize + ( myBuffer + yp );
-            pos[1] = ( myBuffer + xp ) * blockSize + ( myBuffer - yp );
-            pos[2] = ( myBuffer - xp ) * blockSize + ( myBuffer + yp );
-            pos[3] = ( myBuffer - xp ) * blockSize + ( myBuffer - yp );
-            for ( int p = 0; p < 4; p++ )
-            {
-              if ( dataBuffer[ pos[p] ] == NO_DATA )
-              {
-                dataBuffer[ pos[p] ] = 0;
-              }
-              dataBuffer[ pos[p] ] += pixelValue;
-            }
+            dataBuffer[ pos[p] ] += pixelValue;
           }
         }
-        poBand->RasterIO( GF_Write, xPosition, yPosition, blockSize, blockSize,
-                          dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
-        CPLFree( dataBuffer );
       }
-    }
-
-
-    // Finally close the dataset
-    GDALClose(( GDALDatasetH ) heatmapDS );
-
-    // Open the file in QGIS window if requested
-    if ( d.addToCanvas() )
-    {
-      mQGisIface->addRasterLayer( d.outputFilename(), QFileInfo( d.outputFilename() ).baseName() );
+      poBand->RasterIO( GF_Write, xPosition, yPosition, blockSize, blockSize,
+                        dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
+      CPLFree( dataBuffer );
     }
   }
+
+  // Finally close the dataset
+  GDALClose(( GDALDatasetH ) heatmapDS );
+
+  // Open the file in QGIS window if requested
+  if ( d.addToCanvas() )
+  {
+    mQGisIface->addRasterLayer( d.outputFilename(), QFileInfo( d.outputFilename() ).baseName() );
+  }
+
 }
 
 /*
