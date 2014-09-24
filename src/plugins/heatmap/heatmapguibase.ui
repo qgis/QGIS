@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>460</width>
-    <height>447</height>
+    <height>493</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -133,108 +133,6 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="1" column="0">
-       <layout class="QGridLayout" name="gridLayout_2">
-        <item row="1" column="0">
-         <widget class="QCheckBox" name="mRadiusFieldCheckBox">
-          <property name="text">
-           <string>Use radius from field</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QgsFieldComboBox" name="mRadiusFieldCombo">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QComboBox" name="mRadiusFieldUnitCombo">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <item>
-           <property name="text">
-            <string>meters</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>map units</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QCheckBox" name="mWeightFieldCheckBox">
-          <property name="text">
-           <string>Use weight from field</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1" colspan="2">
-         <widget class="QgsFieldComboBox" name="mWeightFieldCombo">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1" colspan="2">
-         <widget class="QLineEdit" name="mDecayLineEdit">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>0.0</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="decayLabel">
-          <property name="text">
-           <string>Decay ratio</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1" colspan="2">
-         <widget class="QComboBox" name="mKernelShapeCombo">
-          <item>
-           <property name="text">
-            <string>Quartic (biweight)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Triangular</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Uniform</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Triweight</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Epanechnikov</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="kernelShapeLabel">
-          <property name="text">
-           <string>Kernel shape</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
       <item row="0" column="0">
        <layout class="QGridLayout" name="advancedGrid">
         <property name="sizeConstraint">
@@ -311,6 +209,92 @@
         </item>
         <item row="1" column="3">
          <widget class="QLineEdit" name="mCellYLineEdit"/>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="2" column="0">
+         <widget class="QCheckBox" name="mWeightFieldCheckBox">
+          <property name="text">
+           <string>Use weight from field</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QgsFieldComboBox" name="mRadiusFieldCombo">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QCheckBox" name="mRadiusFieldCheckBox">
+          <property name="text">
+           <string>Use radius from field</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" colspan="2">
+         <widget class="QComboBox" name="mKernelShapeCombo"/>
+        </item>
+        <item row="3" column="1" colspan="2">
+         <widget class="QLineEdit" name="mDecayLineEdit">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>0.0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="decayLabel">
+          <property name="text">
+           <string>Decay ratio</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="kernelShapeLabel">
+          <property name="text">
+           <string>Kernel shape</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QComboBox" name="mRadiusFieldUnitCombo">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <item>
+           <property name="text">
+            <string>meters</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>map units</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="4" column="1" colspan="2">
+         <widget class="QComboBox" name="mOutputValuesComboBox"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Output values</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" colspan="2">
+         <widget class="QgsFieldComboBox" name="mWeightFieldCombo">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -412,22 +396,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>mWeightFieldCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mWeightFieldCombo</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>109</x>
-     <y>315</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>408</x>
-     <y>318</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>mRadiusFieldCheckBox</sender>
    <signal>toggled(bool)</signal>
    <receiver>mRadiusFieldCombo</receiver>
@@ -504,6 +472,22 @@
     <hint type="destinationlabel">
      <x>58</x>
      <y>116</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mWeightFieldCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mWeightFieldCombo</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>109</x>
+     <y>315</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>408</x>
+     <y>318</y>
     </hint>
    </hints>
   </connection>

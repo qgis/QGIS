@@ -15,6 +15,7 @@
 #include <QDialog>
 #include <ui_heatmapguibase.h>
 
+#include "heatmap.h"
 #include "qgsvectorlayer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
@@ -37,55 +38,58 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     };
 
     /** Returns whether to apply weighted heat */
-    bool weighted();
+    bool weighted() const;
 
     /** Returns whether the radius is static or based on a field */
-    bool variableRadius();
+    bool variableRadius() const;
 
     /** Returns the fixed radius value */
-    double radius();
+    double radius() const;
 
     /** Return the radius Unit (meters/map units) */
-    int radiusUnit();
+    int radiusUnit() const;
 
     /** Return the selected kernel shape */
-    int kernelShape();
+    Heatmap::KernelShape kernelShape() const;
+
+    /** Return the selected output values setting */
+    Heatmap::OutputValues outputValues() const;
 
     /** Return the decay ratio */
-    double decayRatio();
+    double decayRatio() const;
 
     /** Return the attribute field for variable radius */
-    int radiusField();
+    int radiusField() const;
 
     /** Returns the attrinute field for weighted heat */
-    int weightField();
+    int weightField() const;
 
     /** Returns state of the add to canvas checkbox*/
-    bool addToCanvas();
+    bool addToCanvas() const;
 
     /** Returns the output filename/path */
-    QString outputFilename();
+    QString outputFilename() const;
 
     /** Returns the GDAL Format for output raster */
-    QString outputFormat();
+    QString outputFormat() const;
 
     /** Returns the input Vector layer */
     QgsVectorLayer* inputVectorLayer() const;
 
     /** Returns the no of rows for the raster */
-    int rows() { return mRows; }
+    int rows() const { return mRows; }
 
     /** Returns the no of columns in the raster */
-    int columns() { return mColumns; }
+    int columns() const { return mColumns; }
 
     /** Returns the cell size X value */
-    double cellSizeX() { return mXcellsize; }
+    double cellSizeX() const { return mXcellsize; }
 
     /** Returns the cell size Y valuue */
-    double cellSizeY() { return mYcellsize; }
+    double cellSizeY() const { return mYcellsize; }
 
     /** Return the BBox */
-    QgsRectangle bbox() { return mBBox; }
+    QgsRectangle bbox() const { return mBBox; }
 
   private:
     QMap<QString, QString> mExtensionMap;
@@ -116,7 +120,7 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     void updateSize();
 
     /** Convert Maters value to the corresponding map units based on Layer projection */
-    double mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs );
+    double mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs ) const;
 
     /** Estimate a reasonable starting value for the radius field */
     double estimateRadius();

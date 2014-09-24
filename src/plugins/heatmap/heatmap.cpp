@@ -132,7 +132,8 @@ void Heatmap::run()
   int rows = d.rows();
   double cellsize = d.cellSizeX(); // or d.cellSizeY();  both have the same value
   mDecay = d.decayRatio();
-  int kernelShape = d.kernelShape();
+  KernelShape kernelShape = d.kernelShape();
+  OutputValues valueType = d.outputValues();
 
   //is input layer multipoint?
   bool isMultiPoint = inputLayer->wkbType() == QGis::WKBMultiPoint || inputLayer->wkbType() == QGis::WKBMultiPoint25D;
@@ -311,7 +312,7 @@ void Heatmap::run()
             continue;
           }
 
-          double pixelValue = weight * calculateKernelValue( distance, myBuffer, kernelShape );
+          double pixelValue = weight * calculateKernelValue( distance, myBuffer, kernelShape, valueType );
 
           // clearing anamolies along the axes
           if ( xp == 0 && yp == 0 )
@@ -386,24 +387,24 @@ int Heatmap::bufferSize( double radius, double cellsize )
   return buffer;
 }
 
-double Heatmap::calculateKernelValue( double distance, int bandwidth, int kernelShape )
+double Heatmap::calculateKernelValue( const double distance, const int bandwidth, const KernelShape shape, const OutputValues outputType )
 {
-  switch ( kernelShape )
+  switch ( shape )
   {
     case Heatmap::Triangular:
-      return triangularKernel( distance , bandwidth );
+      return triangularKernel( distance , bandwidth, outputType );
 
     case Heatmap::Uniform:
-      return uniformKernel( distance, bandwidth );
+      return uniformKernel( distance, bandwidth, outputType );
 
     case Heatmap::Quartic:
-      return quarticKernel( distance, bandwidth );
+      return quarticKernel( distance, bandwidth, outputType );
 
     case Heatmap::Triweight:
-      return triweightKernel( distance, bandwidth );
+      return triweightKernel( distance, bandwidth, outputType );
 
     case Heatmap::Epanechnikov:
-      return epanechnikovKernel( distance, bandwidth );
+      return epanechnikovKernel( distance, bandwidth, outputType );
   }
   return 0;
 
@@ -417,59 +418,99 @@ double Heatmap::calculateKernelValue( double distance, int bandwidth, int kernel
  * k is calculated by polar double integration of the kernel function
  * between a radius of 0 to the specified bandwidth and equating the area to 1. */
 
-double Heatmap::uniformKernel( double distance, int bandwidth )
+double Heatmap::uniformKernel( const double distance, const int bandwidth, const OutputValues outputType ) const
 {
   Q_UNUSED( distance );
-  // Normalizing constant
-  double k = 2. / ( M_PI * ( double )bandwidth );
-
-  // Derived from Wand and Jones (1995), p. 175
-  return k * ( 0.5 / ( double )bandwidth );
-}
-
-double Heatmap::quarticKernel( double distance, int bandwidth )
-{
-  // Normalizing constant
-  double k = 16. / ( 5. * M_PI * pow(( double )bandwidth, 2 ) );
-
-  // Derived from Wand and Jones (1995), p. 175
-  return k * ( 15. / 16. ) * pow( 1. - pow( distance / ( double )bandwidth, 2 ), 2 );
-}
-
-double Heatmap::triweightKernel( double distance, int bandwidth )
-{
-  // Normalizing constant
-  double k = 128. / ( 35. * M_PI * pow(( double )bandwidth, 2 ) );
-
-  // Derived from Wand and Jones (1995), p. 175
-  return k * ( 35. / 32. ) * pow( 1. - pow( distance / ( double )bandwidth, 2 ), 3 );
-}
-
-double Heatmap::epanechnikovKernel( double distance, int bandwidth )
-{
-  // Normalizing constant
-  double k = 8. / ( 3. * M_PI * pow(( double )bandwidth, 2 ) );
-
-  // Derived from Wand and Jones (1995), p. 175
-  return k * ( 3. / 4. ) * ( 1. - pow( distance / ( double )bandwidth, 2 ) );
-}
-
-double Heatmap::triangularKernel( double distance, int bandwidth )
-{
-  // Normalizing constant. In this case it's calculated a little different
-  // due to the inclusion of the non-standard "decay" parameter
-
-  if ( mDecay >= 0 )
+  switch ( outputType )
   {
-    double k = 3. / (( 1. + 2. * mDecay ) * M_PI * pow(( double )bandwidth, 2 ) );
+    case Heatmap::Scaled:
+    {
+      // Normalizing constant
+      double k = 2. / ( M_PI * ( double )bandwidth );
 
-    // Derived from Wand and Jones (1995), p. 175 (with addition of decay parameter)
-    return k * ( 1. - ( 1. - mDecay ) * ( distance / ( double )bandwidth ) );
+      // Derived from Wand and Jones (1995), p. 175
+      return k * ( 0.5 / ( double )bandwidth );
+    }
+    default:
+      return 1.0;
   }
-  else
+}
+
+double Heatmap::quarticKernel( const double distance, const int bandwidth, const OutputValues outputType ) const
+{
+  switch ( outputType )
   {
-    // Non-standard or mathematically valid negative decay ("coolmap")
-    return ( 1. - ( 1. - mDecay ) * ( distance / ( double )bandwidth ) );
+    case Heatmap::Scaled:
+    {
+      // Normalizing constant
+      double k = outputType == Heatmap::Scaled ? 116. / ( 5. * M_PI * pow(( double )bandwidth, 2 ) ) : 1.0;
+
+      // Derived from Wand and Jones (1995), p. 175
+      return k * ( 15. / 16. ) * pow( 1. - pow( distance / ( double )bandwidth, 2 ), 2 );
+    }
+    default:
+      return pow( 1. - pow( distance / ( double )bandwidth, 2 ), 2 );
+  }
+}
+
+double Heatmap::triweightKernel( const double distance, const int bandwidth, const OutputValues outputType ) const
+{
+  switch ( outputType )
+  {
+    case Heatmap::Scaled:
+    {
+      // Normalizing constant
+      double k = outputType == Heatmap::Scaled ? 128. / ( 35. * M_PI * pow(( double )bandwidth, 2 ) ) : 1.0;
+
+      // Derived from Wand and Jones (1995), p. 175
+      return k * ( 35. / 32. ) * pow( 1. - pow( distance / ( double )bandwidth, 2 ), 3 );
+    }
+    default:
+      return pow( 1. - pow( distance / ( double )bandwidth, 2 ), 3 );
+  }
+}
+
+double Heatmap::epanechnikovKernel( const double distance, const int bandwidth, const OutputValues outputType ) const
+{
+  switch ( outputType )
+  {
+    case Heatmap::Scaled:
+    {
+      // Normalizing constant
+      double k = outputType == Heatmap::Scaled ? 8. / ( 3. * M_PI * pow(( double )bandwidth, 2 ) ) : 1.0;
+
+      // Derived from Wand and Jones (1995), p. 175
+      return k * ( 3. / 4. ) * ( 1. - pow( distance / ( double )bandwidth, 2 ) );
+    }
+    default:
+      return ( 1. - pow( distance / ( double )bandwidth, 2 ) );
+  }
+}
+
+double Heatmap::triangularKernel( const double distance, const int bandwidth, const OutputValues outputType ) const
+{
+  switch ( outputType )
+  {
+    case Heatmap::Scaled:
+    {
+      // Normalizing constant. In this case it's calculated a little different
+      // due to the inclusion of the non-standard "decay" parameter
+
+      if ( mDecay >= 0 )
+      {
+        double k = 3. / (( 1. + 2. * mDecay ) * M_PI * pow(( double )bandwidth, 2 ) );
+
+        // Derived from Wand and Jones (1995), p. 175 (with addition of decay parameter)
+        return k * ( 1. - ( 1. - mDecay ) * ( distance / ( double )bandwidth ) );
+      }
+      else
+      {
+        // Non-standard or mathematically valid negative decay ("coolmap")
+        return ( 1. - ( 1. - mDecay ) * ( distance / ( double )bandwidth ) );
+      }
+    }
+    default:
+      return ( 1. - ( 1. - mDecay ) * ( distance / ( double )bandwidth ) );
   }
 }
 
