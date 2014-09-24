@@ -48,41 +48,8 @@ bool QgsWmsSettings::parseUri( QString uriString )
   QgsDebugMsg( "set referer to " + mAuth.mReferer );
 
 #ifndef QT_NO_OPENSSL
-  // parse ssl cert
-  if ( uri.hasParam( "certid" ) )
-  {
-    QgsDebugMsg( "ssl cert exists" );
-    mAuth.mSslCert.setStoreType(( QgsSslPkiSettings::SslStoreType ) uri.param( "storetype" ).toInt() );
-    QgsDebugMsg( QString( "ssl cert storetype (enum): %1" ).arg( mAuth.mSslCert.storeType() ) );
-    mAuth.mSslCert.setCertId( uri.param( "certid" ) );
-    QgsDebugMsg( "ssl cert certid: " + mAuth.mSslCert.certId() );
-    mAuth.mSslCert.setKeyId( uri.param( "keyid" ) );
-    QgsDebugMsg( "ssl cert keyid: " + mAuth.mSslCert.keyId() );
-    if ( uri.hasParam( "needskeypath" ) )
-    {
-      mAuth.mSslCert.setNeedsKeyPath( true );
-      QgsDebugMsg( "ssl cert key needs path defined" );
-    }
-    if ( uri.hasParam( "needskeypass" ) )
-    {
-      mAuth.mSslCert.setNeedsKeyPassphrase( true );
-      QgsDebugMsg( "ssl cert key needs password" );
-    }
-    if ( uri.hasParam( "keypass" ) )
-    {
-      mAuth.mSslCert.setNeedsKeyPassphrase( true ); // may not have been in URL
-      mAuth.mSslCert.setKeyPassphrase( uri.param( "keypass" ) );
-      QgsDebugMsg( "ssl cert password passed-in" );
-    }
-    mAuth.mSslCert.setIssuerId( uri.param( "issuerid" ) );
-    QgsDebugMsg( "ssl cert issuerid: " + mAuth.mSslCert.issuerId() );
-    if ( uri.hasParam( "issuerself" ) )
-    {
-      mAuth.mSslCert.setIssuerSelfSigned( true );
-      QgsDebugMsg( "ssl cert self-signed" );
-    }
-    mAuth.mSslCert.setAccessUrl( mHttpUri );
-  }
+  QgsSslPkiSettings * wmspki = &mAuth.mSslCert;
+  QgsSslPkiSettings::updateOwsCapabilities( wmspki, uri, mHttpUri );
 #endif
 
   mActiveSubLayers = uri.params( "layers" );

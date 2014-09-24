@@ -23,7 +23,10 @@
 #include <QNetworkRequest>
 #include <QSslCertificate>
 #include <QSslKey>
+#include <QSettings>
 #include <QUrl>
+
+#include "qgsdatasourceuri.h"
 
 
 /**
@@ -137,6 +140,15 @@ class CORE_EXPORT QgsSslPkiSettings
      */
     QString accessUrl() const { return mAccessUrl; }
     void setAccessUrl( const QString& url ) { mAccessUrl = url; }
+
+    static void updateOwsConnection( const QSettings& settings,
+                                     const QString& credentialsKey,
+                                     QgsDataSourceURI *uri,
+                                     QString *connectioninfo );
+
+    static void updateOwsCapabilities( QgsSslPkiSettings *pki,
+                                       const QgsDataSourceURI& uri,
+                                       const QString& accessurl );
 
   private:
     bool mCertReady;

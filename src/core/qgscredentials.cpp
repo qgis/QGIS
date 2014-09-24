@@ -78,7 +78,7 @@ void QgsCredentials::put( QString realm, QString username, QString password )
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
 }
 
-bool QgsCredentials::getSslKeyInfo( QString &password, QString& keypath, bool needskeypath,
+bool QgsCredentials::getSslKeyInfo( QString &password, QString &keypath, bool needskeypath,
                                     QString accessurl, QString message )
 {
   // shorten url of resource to keep any dialog from being too wide

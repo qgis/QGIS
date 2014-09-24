@@ -21,6 +21,10 @@
 #include "qgsrectangle.h"
 #include "qgsdatasourceuri.h"
 
+#ifndef QT_NO_OPENSSL
+#include "qgssslutils.h"
+#endif
+
 class QNetworkReply;
 
 class QgsWFSCapabilities : public QObject
@@ -100,6 +104,11 @@ class QgsWFSCapabilities : public QObject
 
     //! Password for basic http authentication
     QString mPassword;
+
+#ifndef QT_NO_OPENSSL
+    //! Client SSL certificate
+    QgsSslPkiSettings mSslCert;
+#endif
 };
 
 #endif // QGSWFSCAPABILITIES_H

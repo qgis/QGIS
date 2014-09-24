@@ -139,6 +139,93 @@ QByteArray QgsSslPkiSettings::issuerCertData() const
   return data;
 }
 
+void QgsSslPkiSettings::updateOwsConnection( const QSettings& settings,
+    const QString& credentialsKey,
+    QgsDataSourceURI *uri,
+    QString *connectioninfo )
+{
+  bool validcert = settings.value( credentialsKey + "/ssl/validcert", false ).toBool();
+  if ( validcert )
+  {
+    QString storetype = settings.value( credentialsKey + "/ssl/store" ).toString(); // int(enum) -> string
+    QString certid = settings.value( credentialsKey + "/ssl/certid" ).toString();
+    QString keyid = settings.value( credentialsKey + "/ssl/keyid" ).toString();
+    bool needskeypath = settings.value( credentialsKey + "/ssl/needskeypath", true ).toBool();
+    bool needskeypass = settings.value( credentialsKey + "/ssl/needskeypass", false ).toBool();
+    QString issuerid = settings.value( credentialsKey + "/ssl/issuerid" ).toString();
+    bool issuerself = settings.value( credentialsKey + "/ssl/issuerself", false ).toBool();
+
+    QString sslinfo;
+
+    // store/cert/key should always be non-empty for cert to have validated
+    sslinfo.append( ",storetype=" + storetype + ",certid=" + certid + ",keyid=" + keyid );
+    uri->setParam( "storetype", storetype );
+    uri->setParam( "certid", certid );
+    uri->setParam( "keyid", keyid );
+    if ( needskeypath )
+    {
+      sslinfo.append( ",needskeypath=1" );
+      uri->setParam( "needskeypath", "1" );
+    }
+    if ( needskeypass )
+    {
+      sslinfo.append( ",needskeypass=1" );
+      uri->setParam( "needskeypass", "1" );
+    }
+    if ( !issuerid.isEmpty() )
+    {
+      sslinfo.append( ",issuerid=" + issuerid );
+      uri->setParam( "issuerid", issuerid );
+    }
+    if ( issuerself )
+    {
+      sslinfo.append( ",issuerself=1" );
+      uri->setParam( "issuerself", "1" );
+    }
+    *connectioninfo = *connectioninfo + sslinfo;
+  }
+}
+
+void QgsSslPkiSettings::updateOwsCapabilities( QgsSslPkiSettings *pki,
+    const QgsDataSourceURI& uri,
+    const QString& accessurl )
+{
+  if ( uri.hasParam( "certid" ) )
+  {
+    QgsDebugMsg( "ssl cert exists" );
+    pki->setStoreType(( QgsSslPkiSettings::SslStoreType ) uri.param( "storetype" ).toInt() );
+    QgsDebugMsg( QString( "ssl cert storetype (enum): %1" ).arg( pki->storeType() ) );
+    pki->setCertId( uri.param( "certid" ) );
+    QgsDebugMsg( "ssl cert certid: " + pki->certId() );
+    pki->setKeyId( uri.param( "keyid" ) );
+    QgsDebugMsg( "ssl cert keyid: " + pki->keyId() );
+    if ( uri.hasParam( "needskeypath" ) )
+    {
+      pki->setNeedsKeyPath( true );
+      QgsDebugMsg( "ssl cert key needs path defined" );
+    }
+    if ( uri.hasParam( "needskeypass" ) )
+    {
+      pki->setNeedsKeyPassphrase( true );
+      QgsDebugMsg( "ssl cert key needs password" );
+    }
+    if ( uri.hasParam( "keypass" ) )
+    {
+      pki->setNeedsKeyPassphrase( true ); // may not have been in URL
+      pki->setKeyPassphrase( uri.param( "keypass" ) );
+      QgsDebugMsg( "ssl cert password passed-in" );
+    }
+    pki->setIssuerId( uri.param( "issuerid" ) );
+    QgsDebugMsg( "ssl cert issuerid: " + pki->issuerId() );
+    if ( uri.hasParam( "issuerself" ) )
+    {
+      pki->setIssuerSelfSigned( true );
+      QgsDebugMsg( "ssl cert self-signed" );
+    }
+    pki->setAccessUrl( accessurl );
+  }
+}
+
 //////////////////////////////////////////////////////
 // QgsSslPkiGroup
 //////////////////////////////////////////////////////

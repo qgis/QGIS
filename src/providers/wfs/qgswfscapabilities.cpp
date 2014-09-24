@@ -29,6 +29,9 @@ static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 QgsWFSCapabilities::QgsWFSCapabilities( QString theUri )
     : mCapabilitiesReply( 0 )
     , mErrorCode( QgsWFSCapabilities::NoError )
+#ifndef QT_NO_OPENSSL
+    , mSslCert( QgsSslPkiSettings() )
+#endif
 {
   mUri.setEncodedUri( theUri );
   QgsDebugMsg( "theUri = " + theUri );
@@ -53,6 +56,11 @@ QgsWFSCapabilities::QgsWFSCapabilities( QString theUri )
   {
     mUri.append( "&" );
   }
+#endif
+
+#ifndef QT_NO_OPENSSL
+  QgsSslPkiSettings * owspki = &mSslCert;
+  QgsSslPkiSettings::updateOwsCapabilities( owspki, mUri, theUri );
 #endif
 }
 
@@ -153,6 +161,10 @@ void QgsWFSCapabilities::setAuthorization( QNetworkRequest &request ) const
     QgsDebugMsg( "setAuthorization " + mUri.param( "username" ) );
     request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUri.param( "username" ) ).arg( mUri.param( "password" ) ).toAscii().toBase64() );
   }
+
+#ifndef QT_NO_OPENSSL
+  QgsSslPkiUtility::instance()->updateRequestSslConfiguration( request, mSslCert );
+#endif
 }
 
 void QgsWFSCapabilities::requestCapabilities()
@@ -164,6 +176,11 @@ void QgsWFSCapabilities::requestCapabilities()
   setAuthorization( request );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+
+#ifndef QT_NO_OPENSSL
+  QgsSslPkiUtility::instance()->updateReplyExpectedSslErrors( mCapabilitiesReply, mSslCert );
+#endif
+
   connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
 }
 

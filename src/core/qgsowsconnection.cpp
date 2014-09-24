@@ -26,6 +26,10 @@
 #include "qgsproviderregistry.h"
 #include "qgsowsconnection.h"
 
+#ifndef QT_NO_OPENSSL
+#include "qgssslutils.h"
+#endif
+
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPicture>
@@ -65,6 +69,11 @@ QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & 
     mUri.setParam( "username", username );
     mUri.setParam( "password", password );
   }
+
+#ifndef QT_NO_OPENSSL
+  QgsDataSourceURI * owsuri = &mUri;
+  QgsSslPkiSettings::updateOwsConnection( settings, credentialsKey, owsuri, &mConnectionInfo );
+#endif
 
   bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
   bool ignoreGetFeatureInfo = settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool();
