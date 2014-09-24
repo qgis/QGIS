@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>460</width>
-    <height>415</height>
+    <height>493</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,15 +23,41 @@
    <locale language="English" country="UnitedStates"/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="inputLabel">
+   <item row="2" column="1">
+    <widget class="QComboBox" name="mFormatCombo"/>
+   </item>
+   <item row="1" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
+     <item>
+      <widget class="QLineEdit" name="mOutputRasterLineEdit"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mBrowseButton">
+       <property name="maximumSize">
+        <size>
+         <width>30</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::ClickFocus</enum>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QCheckBox" name="mAddToCanvas">
      <property name="text">
-      <string>Input point layer</string>
+      <string>Add generated file to map</string>
      </property>
     </widget>
-   </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QComboBox" name="inputLayerCombo"/>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="outputLabel">
@@ -40,69 +66,57 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QLineEdit" name="outputRasterLineEdit"/>
-   </item>
-   <item row="1" column="2">
-    <widget class="QPushButton" name="browseButton">
-     <property name="focusPolicy">
-      <enum>Qt::ClickFocus</enum>
-     </property>
-     <property name="text">
-      <string>...</string>
-     </property>
-     <property name="autoDefault">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="0">
-    <widget class="QLabel" name="formatLabel">
-     <property name="text">
-      <string>Output format</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1" colspan="2">
-    <widget class="QComboBox" name="formatCombo"/>
-   </item>
-   <item row="9" column="0" colspan="3">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
     <widget class="QLabel" name="radiusLabel">
      <property name="text">
       <string>Radius</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QLineEdit" name="bufferLineEdit">
+   <item row="0" column="1">
+    <widget class="QgsMapLayerComboBox" name="mInputLayerCombo"/>
+   </item>
+   <item row="3" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0">
+     <item>
+      <widget class="QLineEdit" name="mBufferSizeLineEdit">
+       <property name="text">
+        <string>10</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mBufferUnitCombo">
+       <item>
+        <property name="text">
+         <string>meters</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>map units</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="formatLabel">
      <property name="text">
-      <string>10</string>
+      <string>Output format</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="2">
-    <widget class="QComboBox" name="radiusUnitCombo">
-     <item>
-      <property name="text">
-       <string>meters</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>map units</string>
-      </property>
-     </item>
+   <item row="7" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="3">
-    <widget class="QGroupBox" name="advancedGroupBox">
+   <item row="5" column="0" colspan="2">
+    <widget class="QgsCollapsibleGroupBoxBasic" name="mAdvancedGroupBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
        <horstretch>0</horstretch>
@@ -130,7 +144,7 @@
            <string>Rows</string>
           </property>
           <property name="buddy">
-           <cstring>rowsSpinBox</cstring>
+           <cstring>mRowsSpinBox</cstring>
           </property>
          </widget>
         </item>
@@ -140,7 +154,7 @@
            <string>Cell size X</string>
           </property>
           <property name="buddy">
-           <cstring>cellXLineEdit</cstring>
+           <cstring>mCellXLineEdit</cstring>
           </property>
          </widget>
         </item>
@@ -150,7 +164,7 @@
            <string>Columns</string>
           </property>
           <property name="buddy">
-           <cstring>columnsSpinBox</cstring>
+           <cstring>mColumnsSpinBox</cstring>
           </property>
          </widget>
         </item>
@@ -160,12 +174,12 @@
            <string>Cell size Y</string>
           </property>
           <property name="buddy">
-           <cstring>cellYLineEdit</cstring>
+           <cstring>mCellYLineEdit</cstring>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QSpinBox" name="rowsSpinBox">
+         <widget class="QSpinBox" name="mRowsSpinBox">
           <property name="keyboardTracking">
            <bool>false</bool>
           </property>
@@ -178,7 +192,7 @@
          </widget>
         </item>
         <item row="0" column="3">
-         <widget class="QSpinBox" name="columnsSpinBox">
+         <widget class="QSpinBox" name="mColumnsSpinBox">
           <property name="keyboardTracking">
            <bool>false</bool>
           </property>
@@ -191,62 +205,41 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="cellXLineEdit"/>
+         <widget class="QLineEdit" name="mCellXLineEdit"/>
         </item>
         <item row="1" column="3">
-         <widget class="QLineEdit" name="cellYLineEdit"/>
+         <widget class="QLineEdit" name="mCellYLineEdit"/>
         </item>
        </layout>
       </item>
       <item row="1" column="0">
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="1" column="0">
-         <widget class="QCheckBox" name="radiusFieldCheckBox">
-          <property name="text">
-           <string>Use radius from field</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="radiusFieldCombo">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QComboBox" name="radiusFieldUnitCombo">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <item>
-           <property name="text">
-            <string>meters</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>map units</string>
-           </property>
-          </item>
-         </widget>
-        </item>
         <item row="2" column="0">
-         <widget class="QCheckBox" name="weightFieldCheckBox">
+         <widget class="QCheckBox" name="mWeightFieldCheckBox">
           <property name="text">
            <string>Use weight from field</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1" colspan="2">
-         <widget class="QComboBox" name="weightFieldCombo">
+        <item row="1" column="1">
+         <widget class="QgsFieldComboBox" name="mRadiusFieldCombo">
           <property name="enabled">
            <bool>false</bool>
           </property>
          </widget>
         </item>
+        <item row="1" column="0">
+         <widget class="QCheckBox" name="mRadiusFieldCheckBox">
+          <property name="text">
+           <string>Use radius from field</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" colspan="2">
+         <widget class="QComboBox" name="mKernelShapeCombo"/>
+        </item>
         <item row="3" column="1" colspan="2">
-         <widget class="QLineEdit" name="decayLineEdit">
+         <widget class="QLineEdit" name="mDecayLineEdit">
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -262,39 +255,44 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1" colspan="2">
-         <widget class="QComboBox" name="kernelShapeCombo">
-          <item>
-           <property name="text">
-            <string>Quartic (biweight)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Triangular</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Uniform</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Triweight</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Epanechnikov</string>
-           </property>
-          </item>
-         </widget>
-        </item>
         <item row="0" column="0">
          <widget class="QLabel" name="kernelShapeLabel">
           <property name="text">
            <string>Kernel shape</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QComboBox" name="mRadiusFieldUnitCombo">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <item>
+           <property name="text">
+            <string>meters</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>map units</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="4" column="1" colspan="2">
+         <widget class="QComboBox" name="mOutputValuesComboBox"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Output values</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" colspan="2">
+         <widget class="QgsFieldComboBox" name="mWeightFieldCombo">
+          <property name="enabled">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -303,39 +301,70 @@
      </layout>
     </widget>
    </item>
-   <item row="5" column="0" colspan="3">
-    <widget class="QCheckBox" name="mAddToCanvas">
+   <item row="0" column="0">
+    <widget class="QLabel" name="inputLabel">
      <property name="text">
-      <string>Add generated file to map</string>
+      <string>Input point layer</string>
      </property>
     </widget>
    </item>
+   <item row="6" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgsmaplayercombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgsfieldcombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
-  <tabstop>inputLayerCombo</tabstop>
-  <tabstop>outputRasterLineEdit</tabstop>
-  <tabstop>formatCombo</tabstop>
-  <tabstop>bufferLineEdit</tabstop>
-  <tabstop>radiusUnitCombo</tabstop>
-  <tabstop>advancedGroupBox</tabstop>
-  <tabstop>rowsSpinBox</tabstop>
-  <tabstop>columnsSpinBox</tabstop>
-  <tabstop>cellXLineEdit</tabstop>
-  <tabstop>cellYLineEdit</tabstop>
-  <tabstop>kernelShapeCombo</tabstop>
-  <tabstop>radiusFieldCheckBox</tabstop>
-  <tabstop>radiusFieldCombo</tabstop>
-  <tabstop>radiusFieldUnitCombo</tabstop>
-  <tabstop>weightFieldCheckBox</tabstop>
-  <tabstop>weightFieldCombo</tabstop>
-  <tabstop>decayLineEdit</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>mInputLayerCombo</tabstop>
+  <tabstop>mOutputRasterLineEdit</tabstop>
+  <tabstop>mFormatCombo</tabstop>
+  <tabstop>mBufferSizeLineEdit</tabstop>
+  <tabstop>mBufferUnitCombo</tabstop>
+  <tabstop>mAdvancedGroupBox</tabstop>
+  <tabstop>mRowsSpinBox</tabstop>
+  <tabstop>mColumnsSpinBox</tabstop>
+  <tabstop>mCellXLineEdit</tabstop>
+  <tabstop>mCellYLineEdit</tabstop>
+  <tabstop>mKernelShapeCombo</tabstop>
+  <tabstop>mRadiusFieldCheckBox</tabstop>
+  <tabstop>mRadiusFieldCombo</tabstop>
+  <tabstop>mRadiusFieldUnitCombo</tabstop>
+  <tabstop>mWeightFieldCheckBox</tabstop>
+  <tabstop>mWeightFieldCombo</tabstop>
+  <tabstop>mDecayLineEdit</tabstop>
+  <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>accepted()</signal>
    <receiver>HeatmapGuiBase</receiver>
    <slot>accept()</slot>
@@ -351,7 +380,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>rejected()</signal>
    <receiver>HeatmapGuiBase</receiver>
    <slot>reject()</slot>
@@ -367,25 +396,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>weightFieldCheckBox</sender>
+   <sender>mRadiusFieldCheckBox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>weightFieldCombo</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>109</x>
-     <y>315</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>408</x>
-     <y>318</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radiusFieldCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>radiusFieldCombo</receiver>
+   <receiver>mRadiusFieldCombo</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -399,9 +412,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>radiusFieldCheckBox</sender>
+   <sender>mRadiusFieldCheckBox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>radiusFieldUnitCombo</receiver>
+   <receiver>mRadiusFieldUnitCombo</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -415,9 +428,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>radiusFieldCheckBox</sender>
+   <sender>mRadiusFieldCheckBox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>bufferLineEdit</receiver>
+   <receiver>mBufferSizeLineEdit</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -431,9 +444,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>radiusFieldCheckBox</sender>
+   <sender>mRadiusFieldCheckBox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>radiusUnitCombo</receiver>
+   <receiver>mBufferUnitCombo</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -447,7 +460,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>radiusFieldCheckBox</sender>
+   <sender>mRadiusFieldCheckBox</sender>
    <signal>toggled(bool)</signal>
    <receiver>radiusLabel</receiver>
    <slot>setDisabled(bool)</slot>
@@ -459,6 +472,22 @@
     <hint type="destinationlabel">
      <x>58</x>
      <y>116</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mWeightFieldCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mWeightFieldCombo</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>109</x>
+     <y>315</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>408</x>
+     <y>318</y>
     </hint>
    </hints>
   </connection>

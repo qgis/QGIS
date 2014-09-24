@@ -73,6 +73,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     void focusInEvent( QFocusEvent* e );
     void resizeEvent( QResizeEvent* e );
     void changeEvent( QEvent* e );
+    void paintEvent( QPaintEvent* e );
 
   private slots:
     void clear();

@@ -15,6 +15,7 @@
 #include <QDialog>
 #include <ui_heatmapguibase.h>
 
+#include "heatmap.h"
 #include "qgsvectorlayer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
@@ -37,55 +38,58 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     };
 
     /** Returns whether to apply weighted heat */
-    bool weighted();
+    bool weighted() const;
 
     /** Returns whether the radius is static or based on a field */
-    bool variableRadius();
+    bool variableRadius() const;
 
     /** Returns the fixed radius value */
-    double radius();
+    double radius() const;
 
     /** Return the radius Unit (meters/map units) */
-    int radiusUnit();
+    int radiusUnit() const;
 
     /** Return the selected kernel shape */
-    int kernelShape();
+    Heatmap::KernelShape kernelShape() const;
+
+    /** Return the selected output values setting */
+    Heatmap::OutputValues outputValues() const;
 
     /** Return the decay ratio */
-    double decayRatio();
+    double decayRatio() const;
 
     /** Return the attribute field for variable radius */
-    int radiusField();
+    int radiusField() const;
 
     /** Returns the attrinute field for weighted heat */
-    int weightField();
+    int weightField() const;
 
     /** Returns state of the add to canvas checkbox*/
-    bool addToCanvas();
+    bool addToCanvas() const;
 
     /** Returns the output filename/path */
-    QString outputFilename();
+    QString outputFilename() const;
 
     /** Returns the GDAL Format for output raster */
-    QString outputFormat();
+    QString outputFormat() const;
 
     /** Returns the input Vector layer */
-    QgsVectorLayer* inputVectorLayer();
+    QgsVectorLayer* inputVectorLayer() const;
 
     /** Returns the no of rows for the raster */
-    int rows() { return mRows; }
+    int rows() const { return mRows; }
 
     /** Returns the no of columns in the raster */
-    int columns() { return mColumns; }
+    int columns() const { return mColumns; }
 
     /** Returns the cell size X value */
-    double cellSizeX() { return mXcellsize; }
+    double cellSizeX() const { return mXcellsize; }
 
     /** Returns the cell size Y valuue */
-    double cellSizeY() { return mYcellsize; }
+    double cellSizeY() const { return mYcellsize; }
 
     /** Return the BBox */
-    QgsRectangle bbox() { return mBBox; }
+    QgsRectangle bbox() const { return mBBox; }
 
   private:
     QMap<QString, QString> mExtensionMap;
@@ -109,9 +113,6 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     /** Function to check wether all constrains are satisfied and enable the OK button */
     void enableOrDisableOkButton();
 
-    /** Populate the attribute fields from selected vector for radius&weight */
-    void populateFields();
-
     /** Set the mBBox value - mainly used for updation purpose */
     void updateBBox();
 
@@ -119,7 +120,7 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     void updateSize();
 
     /** Convert Maters value to the corresponding map units based on Layer projection */
-    double mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs );
+    double mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs ) const;
 
     /** Estimate a reasonable starting value for the radius field */
     double estimateRadius();
@@ -128,22 +129,22 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     { return a > b ? a : b; }
 
   private slots:
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
-    void on_browseButton_clicked();
-    void on_outputRasterLineEdit_editingFinished();
-    void on_advancedGroupBox_toggled( bool enabled );
-    void on_rowsSpinBox_valueChanged();
-    void on_columnsSpinBox_valueChanged();
-    void on_cellXLineEdit_editingFinished();
-    void on_cellYLineEdit_editingFinished();
-    void on_radiusFieldCombo_currentIndexChanged( int index );
-    void on_radiusFieldUnitCombo_currentIndexChanged( int index );
-    void on_radiusUnitCombo_currentIndexChanged( int index );
-    void on_inputLayerCombo_currentIndexChanged( int index );
-    void on_bufferLineEdit_editingFinished();
-    void on_kernelShapeCombo_currentIndexChanged( int index );
+    void on_mButtonBox_accepted();
+    void on_mButtonBox_rejected();
+    void on_mButtonBox_helpRequested();
+    void on_mBrowseButton_clicked();
+    void on_mOutputRasterLineEdit_editingFinished();
+    void on_mAdvancedGroupBox_toggled( bool enabled );
+    void on_mRowsSpinBox_valueChanged();
+    void on_mColumnsSpinBox_valueChanged();
+    void on_mCellXLineEdit_editingFinished();
+    void on_mCellYLineEdit_editingFinished();
+    void on_mRadiusFieldCombo_currentIndexChanged( int index );
+    void on_mRadiusFieldUnitCombo_currentIndexChanged( int index );
+    void on_mBufferUnitCombo_currentIndexChanged( int index );
+    void on_mInputLayerCombo_currentIndexChanged( int index );
+    void on_mBufferSizeLineEdit_editingFinished();
+    void on_mKernelShapeCombo_currentIndexChanged( int index );
 };
 
 #endif

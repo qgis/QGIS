@@ -17,8 +17,6 @@
 ***************************************************************************
 """
 
-
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -45,8 +43,7 @@ from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.parameters import *
 from processing.tools import dataobjects
 from processing.core.parameters import getParameterFromString
-
-
+from processing.gui.Help2Html import getHtmlFromDescriptionsDict
 
 class ModelerParameter():
 
@@ -468,8 +465,7 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def help(self):
         try:
-            helpfile = self.descriptionFile + '.help'
-            return True, getHtmlFromHelpFile(self, helpfile)
+            return True, getHtmlFromDescriptionsDict(self, self.help())
         except:
             return False, None
 

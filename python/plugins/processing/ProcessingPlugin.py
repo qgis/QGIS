@@ -49,9 +49,10 @@ class ProcessingPlugin:
 
     def __init__(self, iface):
         self.iface = iface
-        Processing.initialize()
 
     def initGui(self):
+        Processing.initialize()
+
         self.commander = None
         self.toolbox = ProcessingToolbox()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
