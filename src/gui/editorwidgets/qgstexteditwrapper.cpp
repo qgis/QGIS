@@ -139,11 +139,5 @@ void QgsTextEditWrapper::setEnabled( bool enabled )
     mPlainTextEdit->setReadOnly( !enabled );
 
   if ( mLineEdit )
-  {
-    QgsFilterLineEdit* qgsWidget = dynamic_cast<QgsFilterLineEdit*>( mLineEdit );
-    if ( qgsWidget )
-      qgsWidget->setReadOnly( !enabled );
-    else
-      mLineEdit->setReadOnly( !enabled );
-  }
+    mLineEdit->setReadOnly( !enabled );
 }

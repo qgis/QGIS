@@ -84,9 +84,9 @@ void QgsFilterLineEdit::changeEvent( QEvent *e )
   btnClear->setVisible( isEnabled() && !isReadOnly() && !isNull() );
 }
 
-void QgsFilterLineEdit::setReadOnly( bool readOnly )
+void QgsFilterLineEdit::paintEvent( QPaintEvent* e )
 {
-  QLineEdit::setReadOnly( readOnly );
+  QLineEdit::paintEvent( e );
   btnClear->setVisible( isEnabled() && !isReadOnly() && !isNull() );
 }
 
