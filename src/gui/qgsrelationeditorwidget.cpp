@@ -79,26 +79,22 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget* parent )
   buttonLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ) );
   // form view
   mFormViewButton = new QToolButton( this );
-  QAction* formViewAction = new QAction( QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ), tr( "Form view" ), this );
-  mFormViewButton->addAction( formViewAction );
-  mFormViewButton->setDefaultAction( formViewAction );
+  mFormViewButton->setText( tr( "Form view" ) );
+  mFormViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ) );
   mFormViewButton->setCheckable( true );
   mFormViewButton->setChecked( mViewMode == QgsDualView::AttributeEditor );
   buttonLayout->addWidget( mFormViewButton );
   // table view
   mTableViewButton = new QToolButton( this );
-  QAction* tableViewAction = new QAction( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ), tr( "Table view" ), this );
-  mTableViewButton->addAction( tableViewAction );
-  mTableViewButton->setDefaultAction( tableViewAction );
+  mTableViewButton->setText( tr( "Table view" ) );
+  mTableViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ) );
   mTableViewButton->setCheckable( true );
   mTableViewButton->setChecked( mViewMode == QgsDualView::AttributeTable );
   buttonLayout->addWidget( mTableViewButton );
   // button group
   mViewModeButtonGroup = new QButtonGroup( this );
-  mViewModeButtonGroup->addButton( mFormViewButton );
-  mViewModeButtonGroup->addButton( mTableViewButton );
-  mViewModeButtonGroup->setId( mTableViewButton, QgsDualView::AttributeTable );
-  mViewModeButtonGroup->setId( mFormViewButton, QgsDualView::AttributeEditor );
+  mViewModeButtonGroup->addButton( mFormViewButton ,  QgsDualView::AttributeEditor );
+  mViewModeButtonGroup->addButton( mTableViewButton , QgsDualView::AttributeTable );
 
   // add buttons layout
   topLayout->addLayout( buttonLayout );
@@ -168,8 +164,6 @@ void QgsRelationEditorWidget::setViewMode( QgsDualView::ViewMode mode )
 {
   mDualView->setView( mode );
   mViewMode = mode;
-  mTableViewButton->setChecked( mViewMode == QgsDualView::AttributeTable );
-  mFormViewButton->setChecked( mViewMode == QgsDualView::AttributeEditor );
 }
 
 void QgsRelationEditorWidget::referencingLayerEditingToggled()
@@ -193,7 +187,7 @@ void QgsRelationEditorWidget::addFeature()
 
   QgsFields fields = mRelation.referencingLayer()->pendingFields();
 
-  Q_FOREACH( QgsRelation::FieldPair fieldPair, mRelation.fieldPairs() )
+  Q_FOREACH ( QgsRelation::FieldPair fieldPair, mRelation.fieldPairs() )
   {
     keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), mFeature.attribute( fieldPair.referencedField() ) );
   }
@@ -208,14 +202,14 @@ void QgsRelationEditorWidget::linkFeature()
   if ( selectionDlg.exec() )
   {
     QMap<int, QVariant> keys;
-    Q_FOREACH( const QgsRelation::FieldPair fieldPair, mRelation.fieldPairs() )
+    Q_FOREACH ( const QgsRelation::FieldPair fieldPair, mRelation.fieldPairs() )
     {
       int idx = mRelation.referencingLayer()->fieldNameIndex( fieldPair.referencingField() );
       QVariant val = mFeature.attribute( fieldPair.referencedField() );
       keys.insert( idx, val );
     }
 
-    Q_FOREACH( QgsFeatureId fid, selectionDlg.selectedFeatures() )
+    Q_FOREACH ( QgsFeatureId fid, selectionDlg.selectedFeatures() )
     {
       QMapIterator<int, QVariant> it( keys );
       while ( it.hasNext() )
@@ -229,7 +223,7 @@ void QgsRelationEditorWidget::linkFeature()
 
 void QgsRelationEditorWidget::deleteFeature()
 {
-  Q_FOREACH( QgsFeatureId fid, mFeatureSelectionMgr->selectedFeaturesIds() )
+  Q_FOREACH ( QgsFeatureId fid, mFeatureSelectionMgr->selectedFeaturesIds() )
   {
     mRelation.referencingLayer()->deleteFeature( fid );
   }
@@ -238,14 +232,14 @@ void QgsRelationEditorWidget::deleteFeature()
 void QgsRelationEditorWidget::unlinkFeature()
 {
   QMap<int, QgsField> keyFields;
-  Q_FOREACH( const QgsRelation::FieldPair fieldPair, mRelation.fieldPairs() )
+  Q_FOREACH ( const QgsRelation::FieldPair fieldPair, mRelation.fieldPairs() )
   {
     int idx = mRelation.referencingLayer()->fieldNameIndex( fieldPair.referencingField() );
     QgsField fld = mRelation.referencingLayer()->pendingFields().at( idx );
     keyFields.insert( idx, fld );
   }
 
-  Q_FOREACH( QgsFeatureId fid, mFeatureSelectionMgr->selectedFeaturesIds() )
+  Q_FOREACH ( QgsFeatureId fid, mFeatureSelectionMgr->selectedFeaturesIds() )
   {
     QMapIterator<int, QgsField> it( keyFields );
     while ( it.hasNext() )
