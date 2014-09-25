@@ -793,7 +793,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @note this method was added in version 2.5
     */
     QVariant dataDefinedValue( QgsComposerObject::DataDefinedProperty property, const QgsFeature *feature, const QgsFields *fields,
-                               QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties );
+                               QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const;
 
 
     /**Prepares the expression for a data defined property, using the current atlas layer if set.

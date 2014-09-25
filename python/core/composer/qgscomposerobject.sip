@@ -37,6 +37,7 @@ class QgsComposerObject : QObject
       MapYMin, /*< map extent y minimum */
       MapXMax, /*< map extent x maximum */
       MapYMax, /*< map extent y maximum */
+      MapAtlasMargin, /*< map atlas margin*/
       //composer picture
       PictureSource /*< picture source url */
     };

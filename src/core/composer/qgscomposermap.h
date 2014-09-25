@@ -731,12 +731,15 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setAtlasScalingMode( AtlasScalingMode mode ) { mAtlasScalingMode = mode; }
 
     /**Returns the margin size (percentage) used when the map is in atlas mode.
+     * @param valueType controls whether the returned value is the user specified atlas margin,
+     * or the current evaluated atlas margin (which may be affected by data driven atlas margin
+     * settings).
      * @returns margin size in percentage to leave around the atlas feature's extent
      * @note this is only used if atlasScalingMode() is Auto.
      * @see atlasScalingMode
      * @see setAtlasMargin
     */
-    double atlasMargin() const { return mAtlasMargin; }
+    double atlasMargin( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue );
 
     /**Sets the margin size (percentage) used when the map is in atlas mode.
      * @param margin size in percentage to leave around the atlas feature's extent

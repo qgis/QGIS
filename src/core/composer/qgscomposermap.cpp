@@ -129,6 +129,7 @@ void QgsComposerMap::init()
   mDataDefinedNames.insert( QgsComposerObject::MapYMin, QString( "dataDefinedMapYMin" ) );
   mDataDefinedNames.insert( QgsComposerObject::MapXMax, QString( "dataDefinedMapXMax" ) );
   mDataDefinedNames.insert( QgsComposerObject::MapYMax, QString( "dataDefinedMapYMax" ) );
+  mDataDefinedNames.insert( QgsComposerObject::MapAtlasMargin, QString( "dataDefinedMapAtlasMargin" ) );
 }
 
 void QgsComposerMap::adjustExtentToItemShape( double itemWidth, double itemHeight, QgsRectangle& extent ) const
@@ -2017,6 +2018,7 @@ void QgsComposerMap::refreshDataDefinedProperty( const QgsComposerObject::DataDe
   if ( property == QgsComposerObject::MapRotation || property == QgsComposerObject::MapScale ||
        property == QgsComposerObject::MapXMin || property == QgsComposerObject::MapYMin ||
        property == QgsComposerObject::MapXMax || property == QgsComposerObject::MapYMax ||
+       property == QgsComposerObject::MapAtlasMargin ||
        property == QgsComposerObject::AllProperties )
   {
     refreshMapExtents();
@@ -2301,5 +2303,33 @@ void QgsComposerMap::setAtlasFixedScale( bool fixed )
 {
   // implicit : if set to false => auto scaling
   mAtlasScalingMode = fixed ? Fixed : Auto;
+}
+
+double QgsComposerMap::atlasMargin( const QgsComposerObject::PropertyValueType valueType )
+{
+  if ( valueType == QgsComposerObject::EvaluatedValue )
+  {
+    //evaluate data defined atlas margin
+
+    //start with user specified margin
+    double margin = mAtlasMargin;
+    QVariant exprVal;
+    if ( dataDefinedEvaluate( QgsComposerObject::MapAtlasMargin, exprVal ) )
+    {
+      bool ok;
+      double ddMargin = exprVal.toDouble( &ok );
+      QgsDebugMsg( QString( "exprVal Map Atlas Margin:%1" ).arg( ddMargin ) );
+      if ( ok )
+      {
+        //divide by 100 to convert to 0 -> 1.0 range
+        margin = ddMargin / 100;
+      }
+    }
+    return margin;
+  }
+  else
+  {
+    return mAtlasMargin;
+  }
 }
 

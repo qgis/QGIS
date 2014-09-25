@@ -162,6 +162,9 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
   connect( mYMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mYMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mYMaxLineEdit, SLOT( setDisabled( bool ) ) );
 
+  connect( mAtlasMarginDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mAtlasMarginDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+
   updateGuiElements();
   loadGridEntries();
   loadOverviewEntries();
@@ -183,6 +186,7 @@ void QgsComposerMapWidget::populateDataDefinedButtons()
   mYMinDDBtn->blockSignals( true );
   mXMaxDDBtn->blockSignals( true );
   mYMaxDDBtn->blockSignals( true );
+  mAtlasMarginDDBtn->blockSignals( true );
 
   //initialise buttons to use atlas coverage layer
   mScaleDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapScale ),
@@ -197,6 +201,8 @@ void QgsComposerMapWidget::populateDataDefinedButtons()
                     QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
   mYMaxDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapYMax ),
                     QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mAtlasMarginDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapAtlasMargin ),
+                           QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
 
   //initial state of controls - disable related controls when dd buttons are active
   mScaleLineEdit->setEnabled( !mScaleDDBtn->isActive() );
@@ -213,6 +219,7 @@ void QgsComposerMapWidget::populateDataDefinedButtons()
   mYMinDDBtn->blockSignals( false );
   mXMaxDDBtn->blockSignals( false );
   mYMaxDDBtn->blockSignals( false );
+  mAtlasMarginDDBtn->blockSignals( false );
 }
 
 QgsComposerObject::DataDefinedProperty QgsComposerMapWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )
@@ -240,6 +247,10 @@ QgsComposerObject::DataDefinedProperty QgsComposerMapWidget::ddPropertyForWidget
   else if ( widget == mYMaxDDBtn )
   {
     return QgsComposerObject::MapYMax;
+  }
+  else if ( widget == mAtlasMarginDDBtn )
+  {
+    return QgsComposerObject::MapAtlasMargin;
   }
 
   return QgsComposerObject::NoProperty;
@@ -640,7 +651,7 @@ void QgsComposerMapWidget::updateGuiElements()
 
   //atlas controls
   mAtlasCheckBox->setChecked( mComposerMap->atlasDriven() );
-  mAtlasMarginSpinBox->setValue( static_cast<int>( mComposerMap->atlasMargin() * 100 ) );
+  mAtlasMarginSpinBox->setValue( static_cast<int>( mComposerMap->atlasMargin( QgsComposerObject::OriginalValue ) * 100 ) );
 
   mAtlasFixedScaleRadio->setEnabled( mComposerMap->atlasDriven() );
   mAtlasFixedScaleRadio->setChecked( mComposerMap->atlasScalingMode() == QgsComposerMap::Fixed );
