@@ -25,6 +25,7 @@ from .connector import PostGisDBConnector
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from qgis.gui import QgsMessageBar
 
 from ..plugin import ConnectionError, InvalidDataException, DBPlugin, Database, Schema, Table, VectorTable, RasterTable, TableField, TableConstraint, TableIndex, TableTrigger, TableRule
 
@@ -168,7 +169,7 @@ class PGDatabase(Database):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, Table) or item.isView:
-				QMessageBox.information(parent, self.tr("Sorry"), self.tr("Select a TABLE for vacuum analyze."))
+				parent.infoBar().pushMessage(self.tr("Select a table for vacuum analyze."), QgsMessageBar.INFO, parent.iface.messageTimeout())
 				return
 		finally:
 			QApplication.setOverrideCursor(Qt.WaitCursor)

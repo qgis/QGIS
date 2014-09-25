@@ -270,8 +270,7 @@ class Database(DbItemObject):
 			self.deleteTableActionSlot(item, action, parent)
 		else:
 			QApplication.restoreOverrideCursor()
-			parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Sorry"),
-									QApplication.translate("DBManagerPlugin", "Cannot delete the selected item."),
+			parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Cannot delete the selected item."),
 									QgsMessageBar.INFO, parent.iface.messageTimeout())
 			QApplication.setOverrideCursor(Qt.WaitCursor)
 
@@ -280,8 +279,7 @@ class Database(DbItemObject):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, (DBPlugin, Schema, Table)) or item.database() == None:
-				parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Sorry"),
-									QApplication.translate("DBManagerPlugin", "No database selected or you are not connected to it."),
+				parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "No database selected or you are not connected to it."),
 									QgsMessageBar.INFO, parent.iface.messageTimeout())
 				return
 			(schema, ok) = QInputDialog.getText(parent, QApplication.translate("DBManagerPlugin", "New schema"), QApplication.translate("DBManagerPlugin", "Enter new schema name"))
@@ -296,8 +294,7 @@ class Database(DbItemObject):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, Schema):
-				parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Sorry"),
-									QApplication.translate("DBManagerPlugin", "Select an empty SCHEMA for deletion."),
+				parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select an empty schema for deletion."),
 									QgsMessageBar.INFO, parent.iface.messageTimeout())
 				return
 			res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"), QApplication.translate("DBManagerPlugin", "Really delete schema %s?") % item.name, QMessageBox.Yes | QMessageBox.No)
@@ -325,8 +322,7 @@ class Database(DbItemObject):
 	def createTableActionSlot(self, item, action, parent):
 		QApplication.restoreOverrideCursor()
 		if not hasattr(item, 'database') or item.database() == None:
-			parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Sorry"),
-									QApplication.translate("DBManagerPlugin", "No database selected or you are not connected to it."),
+			parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "No database selected or you are not connected to it."),
 									QgsMessageBar.INFO, parent.iface.messageTimeout())
 			return
 		from ..dlg_create_table import DlgCreateTable
@@ -337,8 +333,7 @@ class Database(DbItemObject):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, Table) or item.isView:
-				parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Sorry"),
-									QApplication.translate("DBManagerPlugin", "Select a TABLE for editation."),
+				parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table for editation."),
 									QgsMessageBar.INFO, parent.iface.messageTimeout())
 				return
 			from ..dlg_table_properties import DlgTableProperties
@@ -350,8 +345,7 @@ class Database(DbItemObject):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, Table):
-				parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Sorry"),
-									QApplication.translate("DBManagerPlugin", "Select a TABLE/VIEW for deletion."),
+				parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table/view for deletion."),
 									QgsMessageBar.INFO, parent.iface.messageTimeout())
 				return
 			res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"), QApplication.translate("DBManagerPlugin", "Really delete table/view %s?") % item.name, QMessageBox.Yes | QMessageBox.No)
@@ -366,8 +360,7 @@ class Database(DbItemObject):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, Table) or item.isView:
-				parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Sorry"),
-										QApplication.translate("DBManagerPlugin", "Select a TABLE to empty it."),
+				parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table to empty it."),
 										QgsMessageBar.INFO, parent.iface.messageTimeout())
 				return
 			res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"), QApplication.translate("DBManagerPlugin", "Really delete all items from table %s?") % item.name, QMessageBox.Yes | QMessageBox.No)
@@ -390,8 +383,7 @@ class Database(DbItemObject):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, Table):
-				parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Sorry"),
-									QApplication.translate("DBManagerPlugin", "Select a TABLE/VIEW."),
+				parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table/view."),
 									QgsMessageBar.INFO, parent.iface.messageTimeout())
 				return
 		finally:
