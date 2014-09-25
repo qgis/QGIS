@@ -116,7 +116,7 @@ class SLDatabase(Database):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, (DBPlugin, Table)) or item.database() == None:
-				QMessageBox.information(parent, self.tr("Sorry"), self.tr("No database selected or you are not connected to it."))
+				parent.infoBar.pushMessage(self.tr("No database selected or you are not connected to it."), QgsMessageBar.INFO, parent.iface.messageTimeout())
 				return
 		finally:
 			QApplication.setOverrideCursor(Qt.WaitCursor)

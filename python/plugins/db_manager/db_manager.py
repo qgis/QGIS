@@ -148,7 +148,7 @@ class DBManager(QMainWindow):
 	def importActionSlot(self):
 		db = self.tree.currentDatabase()
 		if db is None:
-			self.infoBar.pushMessage(self.tr("Sorry"), self.tr("No database selected or you are not connected to it."), QgsMessageBar.INFO, self.iface.messageTimeout())
+			self.infoBar.pushMessage(self.tr("No database selected or you are not connected to it."), QgsMessageBar.INFO, self.iface.messageTimeout())
 			return
 
 		outUri = db.uri()
@@ -163,7 +163,7 @@ class DBManager(QMainWindow):
 	def exportActionSlot(self):
 		table = self.tree.currentTable()
 		if table is None:
-			self.infoBar.pushMessage(self.tr("Sorry"), self.tr("Select the table you want export to file."), QgsMessageBar.INFO, self.iface.messageTimeout())
+			self.infoBar.pushMessage(self.tr("Select the table you want export to file."), QgsMessageBar.INFO, self.iface.messageTimeout())
 			return
 
 		inLayer = table.toMapLayer()

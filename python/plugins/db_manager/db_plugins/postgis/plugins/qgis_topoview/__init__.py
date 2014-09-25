@@ -24,6 +24,7 @@ Based on qgis_pgis_topoview by Sandro Santilli <strk@keybit.net>
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
+from qgis.gui import QgsMessageBar
 
 import os
 current_path = os.path.dirname(__file__)
@@ -68,19 +69,19 @@ def run(item, action, mainwindow):
         isTopoSchema = False
 
         if not hasattr(item, 'schema'):
-                QMessageBox.critical(mainwindow, "Invalid topology", u'Select a topology schema to continue.')
-                return False
+            mainwindow.infoBar.pushMessage("Invalid topology", u'Select a topology schema to continue.', QgsMessageBar.INFO, mainwindow.iface.messageTimeout())
+            return False
 
         if item.schema() != None:
-                sql = u"SELECT srid FROM topology.topology WHERE name = %s" % quoteStr(item.schema().name)
-                c = db.connector._get_cursor()
-                db.connector._execute( c, sql )
-                res = db.connector._fetchone( c )
-                isTopoSchema = res != None
+            sql = u"SELECT srid FROM topology.topology WHERE name = %s" % quoteStr(item.schema().name)
+            c = db.connector._get_cursor()
+            db.connector._execute( c, sql )
+            res = db.connector._fetchone( c )
+            isTopoSchema = res != None
 
         if not isTopoSchema:
-                QMessageBox.critical(mainwindow, "Invalid topology", u'Schema "%s" is not registered in topology.topology.' % item.schema().name)
-                return False
+            mainwindow.infoBar.pushMessage("Invalid topology", u'Schema "{0}" is not registered in topology.topology.'.format(item.schema().name), QgsMessageBar.WARNING, mainwindow.iface.messageTimeout())
+            return False
 
         toposrid = str(res[0])
 
