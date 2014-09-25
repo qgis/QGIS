@@ -21,6 +21,7 @@
 #include "qgscolorbuttonplugin.h"
 #include "qgscolorbuttonv2plugin.h"
 #include "qgsdatadefinedbuttonplugin.h"
+#include "qgsdatetimeeditplugin.h"
 #include "qgsdoublespinboxplugin.h"
 #include "qgsfieldcomboboxplugin.h"
 #include "qgsfieldexpressionwidgetplugin.h"
@@ -38,6 +39,7 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   mWidgets.append( new QgsColorButtonPlugin );
   mWidgets.append( new QgsColorButtonV2Plugin );
   mWidgets.append( new QgsDataDefinedButtonPlugin );
+  mWidgets.append( new QgsDateTimeEditPlugin );
   mWidgets.append( new QgsDoubleSpinBoxPlugin );
   mWidgets.append( new QgsFieldComboBoxPlugin );
   mWidgets.append( new QgsFieldExpressionWidgetPlugin );
