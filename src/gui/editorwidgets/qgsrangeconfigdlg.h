@@ -27,6 +27,9 @@ class GUI_EXPORT QgsRangeConfigDlg : public QgsEditorConfigWidget, private Ui::Q
     explicit QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
     virtual QgsEditorWidgetConfig config();
     virtual void setConfig( const QgsEditorWidgetConfig& config );
+
+  protected slots:
+    void rangeWidgetChanged( int index );
 };
 
 #endif // QGSRANGECONFIGDLG_H

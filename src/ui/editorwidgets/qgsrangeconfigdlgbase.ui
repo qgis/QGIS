@@ -25,19 +25,32 @@
     </widget>
    </item>
    <item row="4" column="0">
-    <widget class="QLabel" name="valuesLabel">
-     <property name="text">
-      <string>Local minimum/maximum = 0/0</string>
+    <widget class="QgsCollapsibleGroupBox" name="groupBox">
+     <property name="title">
+      <string>Advanced options</string>
      </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
+     <layout class="QFormLayout" name="formLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="suffixLabel">
+        <property name="text">
+         <string>Suffix</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="suffixLineEdit">
+        <property name="placeholderText">
+         <string>Inactive</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item row="1" column="0" colspan="2">
     <widget class="QComboBox" name="rangeWidget"/>
    </item>
-   <item row="5" column="0">
+   <item row="6" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -50,13 +63,26 @@
      </property>
     </spacer>
    </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="valuesLabel">
+     <property name="text">
+      <string>Local minimum/maximum = 0/0</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0">
     <widget class="QStackedWidget" name="rangeStackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="intPage">
       <layout class="QFormLayout" name="formLayout">
+       <property name="bottomMargin">
+        <number>3</number>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="minimumLabel">
          <property name="text">
@@ -115,6 +141,9 @@
      </widget>
      <widget class="QWidget" name="doublePage">
       <layout class="QFormLayout" name="formLayout_2">
+       <property name="bottomMargin">
+        <number>3</number>
+       </property>
        <item row="2" column="0">
         <widget class="QLabel" name="stepLabel_2">
          <property name="text">
@@ -174,26 +203,10 @@
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="QgsCollapsibleGroupBox" name="groupBox">
-     <property name="title">
-      <string>Advanced options</string>
+    <widget class="QCheckBox" name="allowNullCheckBox">
+     <property name="text">
+      <string>Allow NULL</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_3">
-      <item row="0" column="0">
-       <widget class="QLabel" name="suffixLabel">
-        <property name="text">
-         <string>Suffix</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="suffixLineEdit">
-        <property name="placeholderText">
-         <string>Inactive</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </widget>
    </item>
   </layout>

@@ -44,6 +44,7 @@ QgsEditorWidgetConfig QgsRangeWidgetFactory::readConfig( const QDomElement& conf
   cfg.insert( "Min", configElement.attribute( "Min" ).toInt() );
   cfg.insert( "Max", configElement.attribute( "Max" ).toInt() );
   cfg.insert( "Step", configElement.attribute( "Step" ).toInt() );
+  cfg.insert( "AllowNull", configElement.attribute( "AllowNull" ) == "1" );
 
   if ( configElement.hasAttribute( "Suffix" ) )
   {
@@ -63,6 +64,7 @@ void QgsRangeWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QD
   configElement.setAttribute( "Min", config["Min"].toInt() );
   configElement.setAttribute( "Max", config["Max"].toInt() );
   configElement.setAttribute( "Step", config["Step"].toInt() );
+  configElement.setAttribute( "AllowNull", config["AllowNull"].toBool() );
   if ( config.contains( "Suffix" ) )
   {
     configElement.setAttribute( "Suffix", config["Suffix"].toString() );
