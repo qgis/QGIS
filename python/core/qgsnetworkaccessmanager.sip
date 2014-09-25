@@ -62,6 +62,8 @@ class QgsNetworkAccessManager : QNetworkAccessManager
 
     bool useSystemProxy();
 
+    //! DO NOT ADD BINDING for access/set functions to the cache for hash/passphrases for private keys of PKI certificates
+
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );

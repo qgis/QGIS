@@ -62,14 +62,21 @@
 #include <QDir>
 #endif
 
-QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri ):
-    mUri( theUri ),
-    mCoverageCount( 0 ),
-    mCacheLoadControl( QNetworkRequest::PreferNetwork )
+QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri )
+    : mUri( theUri )
+    , mCoverageCount( 0 )
+    , mCacheLoadControl( QNetworkRequest::PreferNetwork )
+#ifndef QT_NO_OPENSSL
+    , mSslCert( QgsSslPkiSettings() )
+#endif
 {
   QgsDebugMsg( "uri = " + mUri.encodedUri() );
 
   parseUri();
+
+#ifndef QT_NO_OPENSSL
+  QgsSslPkiSettings::updateOwsCapabilities( mSslCert, mUri, mUri.param( "url" ) );
+#endif
 
   retrieveServerCapabilities();
 }
@@ -162,6 +169,10 @@ bool QgsWcsCapabilities::sendRequest( QString const & url )
 
   QgsDebugMsg( QString( "getcapabilities: %1" ).arg( url ) );
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+
+#ifndef QT_NO_OPENSSL
+  QgsSslPkiUtility::instance()->updateReplyExpectedSslErrors( mCapabilitiesReply, mSslCert );
+#endif
 
   connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
   connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
@@ -363,6 +374,10 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
       QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
       mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
 
+#ifndef QT_NO_OPENSSL
+      QgsSslPkiUtility::instance()->updateReplyExpectedSslErrors( mCapabilitiesReply, mSslCert );
+#endif
+
       connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
       connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
       return;
@@ -388,6 +403,11 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
       mCapabilitiesReply->deleteLater();
 
       mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+
+#ifndef QT_NO_OPENSSL
+      QgsSslPkiUtility::instance()->updateReplyExpectedSslErrors( mCapabilitiesReply, mSslCert );
+#endif
+
       connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
       connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
       return;
@@ -1166,6 +1186,10 @@ void QgsWcsCapabilities::setAuthorization( QNetworkRequest &request ) const
     QgsDebugMsg( "setAuthorization " + mUri.param( "username" ) );
     request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUri.param( "username" ) ).arg( mUri.param( "password" ) ).toAscii().toBase64() );
   }
+
+#ifndef QT_NO_OPENSSL
+  QgsSslPkiUtility::instance()->updateRequestSslConfiguration( request, mSslCert );
+#endif
 }
 
 void QgsWcsCapabilities::showMessageBox( const QString& title, const QString& text )

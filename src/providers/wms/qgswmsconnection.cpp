@@ -67,6 +67,10 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
     mUri.setParam( "password", password );
   }
 
+#ifndef QT_NO_OPENSSL
+  QgsSslPkiSettings::updateOwsConnection( settings, credentialsKey, mUri, mConnectionInfo );
+#endif
+
   QString referer = settings.value( key + "/referer" ).toString();
   if ( !referer.isEmpty() )
   {

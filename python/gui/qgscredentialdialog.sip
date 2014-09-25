@@ -13,4 +13,7 @@ class QgsCredentialDialog : QDialog, QgsCredentials
 
   protected:
     virtual bool request( QString realm, QString &username /In,Out/, QString &password /In,Out/, QString message = QString::null );
+
+    virtual bool requestSslKey( QString &password /In,Out/, QString &keypath /In,Out/, bool needskeypath,
+                                QString resource = QString::null, QString message = QString::null );
 };

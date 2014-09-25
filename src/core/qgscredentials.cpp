@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 
 #include <QTextStream>
+#include <QUrl>
 
 QgsCredentials *QgsCredentials::smInstance = 0;
 
@@ -77,6 +78,29 @@ void QgsCredentials::put( QString realm, QString username, QString password )
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
 }
 
+bool QgsCredentials::getSslKeyInfo( QString &password, QString &keypath, bool needskeypath,
+                                    QString accessurl, QString message )
+{
+  // shorten url of resource to keep any dialog from being too wide
+  QString resource = QObject::tr( "Unknown" );
+  if ( !accessurl.isEmpty() )
+  {
+    QUrl url( accessurl );
+    resource = QString( "%1://%2:%3" ).arg( url.scheme() ).arg( url.host() ).arg( url.port() );
+  }
+
+  if ( requestSslKey( password, keypath, needskeypath, resource, message ) )
+  {
+    QgsDebugMsg( "Retrieve SSL PKI key password/path succeeded" );
+    return true;
+  }
+  else
+  {
+    QgsDebugMsg( "Retrieve SSL PKI key password/path failed" );
+    return false;
+  }
+}
+
 void QgsCredentials::lock()
 {
   mMutex.lock();
@@ -106,6 +130,33 @@ bool QgsCredentialsConsole::request( QString realm, QString &username, QString &
     out << "message: " << message << endl;
   out << "username: ";
   in >> username;
+  out << "password: ";
+  in >> password;
+
+  return true;
+}
+
+bool QgsCredentialsConsole::requestSslKey( QString &password, QString &keypath, bool needskeypath,
+    QString resource, QString message )
+{
+  QTextStream in( stdin, QIODevice::ReadOnly );
+  QTextStream out( stdout, QIODevice::WriteOnly );
+
+  if ( !resource.isEmpty() )
+    out << "For resource: " << resource << endl;
+  if ( !message.isEmpty() )
+    out << "  message: " << message << endl;
+  if ( needskeypath )
+  {
+    out << "Enter file path for certificate key";
+    out << "keypath: ";
+    in >> keypath;
+    out << "Enter password for certificate key (optional)";
+  }
+  else
+  {
+    out << "Enter password for certificate key";
+  }
   out << "password: ";
   in >> password;
 

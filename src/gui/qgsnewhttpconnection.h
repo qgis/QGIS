@@ -19,6 +19,7 @@
 #include "ui_qgsnewhttpconnectionbase.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
+#include "qgssslcertificatewidget.h"
 /*!
  * \brief Dialog to allow the user to configure and save connection
  * information for an HTTP Server for WMS, etc.
@@ -46,6 +47,9 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     QString mBaseKey;
     QString mCredentialsBaseKey;
     QString mOriginalConnName; //store initial name to delete entry in case of rename
+#ifndef QT_NO_OPENSSL
+    QgsSslCertificateWidget * mCertWidget;
+#endif
 };
 
 #endif //  QGSNEWHTTPCONNECTION_H

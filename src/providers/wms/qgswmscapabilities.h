@@ -10,6 +10,10 @@
 #include "qgsraster.h"
 #include "qgsrectangle.h"
 
+#ifndef QT_NO_OPENSSL
+#include "qgssslutils.h"
+#endif
+
 class QNetworkReply;
 
 /*
@@ -432,10 +436,17 @@ struct QgsWmsParserSettings
   bool invertAxisOrientation;
 };
 
+
 struct QgsWmsAuthorization
 {
   QgsWmsAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& referer = QString() )
-      : mUserName( userName ), mPassword( password ), mReferer( referer ) {}
+      : mUserName( userName )
+      , mPassword( password )
+      , mReferer( referer )
+#ifndef QT_NO_OPENSSL
+      , mSslCert( QgsSslPkiSettings() )
+#endif
+  {}
 
   void setAuthorization( QNetworkRequest &request ) const
   {
@@ -448,6 +459,11 @@ struct QgsWmsAuthorization
     {
       request.setRawHeader( "Referer", QString( "%1" ).arg( mReferer ).toAscii() );
     }
+
+#ifndef QT_NO_OPENSSL
+    QgsSslPkiUtility::instance()->updateRequestSslConfiguration( request, mSslCert );
+#endif
+
   }
 
   //! Username for basic http authentication
@@ -459,7 +475,10 @@ struct QgsWmsAuthorization
   //! Referer for http requests
   QString mReferer;
 
-
+#ifndef QT_NO_OPENSSL
+  //! Client SSL certificate
+  QgsSslPkiSettings mSslCert;
+#endif
 };
 
 

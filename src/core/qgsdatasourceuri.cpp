@@ -277,6 +277,11 @@ QString QgsDataSourceURI::removePassword( const QString& aUri )
     QStringList strlist = aUri.split( "," );
     safeName = strlist[0] + "," + strlist[1] + "," + strlist[2] + "," + strlist[3];
   }
+  else if ( aUri.contains( ",keypass=" ) )
+  {
+    regexp.setPattern( ",keypass=.*," );
+    safeName.replace( regexp, "," );
+  }
   return safeName;
 }
 

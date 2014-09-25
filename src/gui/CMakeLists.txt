@@ -214,6 +214,7 @@ qgsscalerangewidget.cpp
 qgsscalevisibilitydialog.cpp
 qgssearchquerybuilder.cpp
 qgsslider.cpp
+qgssslcertificatewidget.cpp
 qgssublayersdialog.cpp
 qgssvgannotationitem.cpp
 qgstextannotationitem.cpp
@@ -408,6 +409,7 @@ qgsscalerangewidget.h
 qgsscalevisibilitydialog.h
 qgssearchquerybuilder.h
 qgsslider.h
+qgssslcertificatewidget.h
 qgssublayersdialog.h
 qgsunitselectionwidget.h
 )
@@ -486,6 +488,7 @@ qgsscalerangewidget.h
 qgsscalevisibilitydialog.h
 qgssearchquerybuilder.h
 qgsslider.h
+qgssslcertificatewidget.h
 qgssublayersdialog.h
 qgsvectorlayertools.h
 qgsvertexmarker.h

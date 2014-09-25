@@ -37,11 +37,20 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
   signals:
     void credentialsRequested( QString, QString *, QString *, QString, bool * );
 
+    void credentialsRequestedSslKey( QString *, QString *, bool, QString, QString, bool * );
+
   private slots:
     void requestCredentials( QString, QString *, QString *, QString, bool * );
 
+    void on_tbKeyPathSelect_clicked( bool chkd );
+
+    void requestCredentialsSslKey( QString *, QString *, bool, QString, QString, bool * );
+
   protected:
     virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null );
+
+    virtual bool requestSslKey( QString &password, QString &keypath, bool needskeypath,
+                                QString resource, QString message = QString::null );
 };
 
 #endif

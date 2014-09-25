@@ -47,6 +47,10 @@ bool QgsWmsSettings::parseUri( QString uriString )
   mAuth.mReferer = uri.param( "referer" );
   QgsDebugMsg( "set referer to " + mAuth.mReferer );
 
+#ifndef QT_NO_OPENSSL
+  QgsSslPkiSettings::updateOwsCapabilities( mAuth.mSslCert, uri, mHttpUri );
+#endif
+
   mActiveSubLayers = uri.params( "layers" );
   mActiveSubStyles = uri.params( "styles" );
   QgsDebugMsg( "Entering: layers:" + mActiveSubLayers.join( ", " ) + ", styles:" + mActiveSubStyles.join( ", " ) );
@@ -1866,6 +1870,10 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
 
   QgsDebugMsg( QString( "getcapabilities: %1" ).arg( url ) );
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+
+#ifndef QT_NO_OPENSSL
+  QgsSslPkiUtility::instance()->updateReplyExpectedSslErrors( mCapabilitiesReply, mAuth.mSslCert );
+#endif
 
   connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
   connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );

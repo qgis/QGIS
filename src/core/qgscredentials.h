@@ -43,6 +43,16 @@ class CORE_EXPORT QgsCredentials
     bool get( QString realm, QString &username, QString &password, QString message = QString::null );
     void put( QString realm, QString username, QString password );
 
+    /**
+     * @brief Get a passphrase for a private key for a client certificate to be used in an SSL PKI handshake.
+     * @param The passphrase for the key.
+     * @param URL shown in the private key's password input dialog, so user remembers what scheme://domain.tld:port the key was meant for.
+     * @param Optional short message to go below password field.
+     * @return
+     */
+    bool getSslKeyInfo( QString &password, QString &keypath, bool needskeypath,
+                        QString accessurl, QString message = QString::null );
+
     //! retrieves instance
     static QgsCredentials *instance();
 
@@ -71,6 +81,10 @@ class CORE_EXPORT QgsCredentials
 
     //! request a password
     virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null ) = 0;
+
+    //! request a password for an SSL key, and optionally its filepath
+    virtual bool requestSslKey( QString &password, QString &keypath, bool needskeypath,
+                                QString resource, QString message = QString::null ) = 0;
 
     //! register instance
     void setInstance( QgsCredentials *theInstance );
@@ -108,6 +122,9 @@ class CORE_EXPORT QgsCredentialsConsole : public QObject, public QgsCredentials
 
   protected:
     virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null );
+
+    virtual bool requestSslKey( QString &password, QString &keypath, bool needskeypath,
+                                QString resource, QString message = QString::null );
 };
 
 #endif
