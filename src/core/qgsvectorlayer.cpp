@@ -2119,6 +2119,12 @@ QString QgsVectorLayer::attributeDisplayName( int attributeIndex ) const
 
 bool QgsVectorLayer::deleteAttribute( int index )
 {
+  if ( mUpdatedFields.fieldOrigin( index ) == QgsFields::OriginExpression )
+  {
+    removeExpressionField( index );
+    return true;
+  }
+
   if ( !mEditBuffer || !mDataProvider )
     return false;
 
@@ -2134,7 +2140,7 @@ bool QgsVectorLayer::deleteAttributes( QList<int> attrs )
 
   qSort( attrs.begin(), attrs.end(), qGreater<int>() );
 
-  foreach ( int attr, attrs )
+  Q_FOREACH( int attr, attrs )
   {
     if ( deleteAttribute( attr ) )
     {
