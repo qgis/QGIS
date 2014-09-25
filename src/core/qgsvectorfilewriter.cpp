@@ -2157,7 +2157,7 @@ QString QgsVectorFileWriter::fileFilterString()
   QMap< QString, QString>::const_iterator it = driverFormatMap.constBegin();
   for ( ; it != driverFormatMap.constEnd(); ++it )
   {
-    if ( filterString.isEmpty() )
+    if ( !filterString.isEmpty() )
       filterString += ";;";
 
     filterString += it.key();
