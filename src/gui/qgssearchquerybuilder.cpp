@@ -173,7 +173,7 @@ void QgsSearchQueryBuilder::on_btnGetAllValues_clicked()
 
 void QgsSearchQueryBuilder::on_btnTest_clicked()
 {
-  long count = countRecords( txtSQL->toPlainText() );
+  long count = countRecords( txtSQL->text() );
 
   // error?
   if ( count == -1 )
@@ -239,14 +239,14 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
 void QgsSearchQueryBuilder::on_btnOk_clicked()
 {
   // if user hits Ok and there is no query, skip the validation
-  if ( txtSQL->toPlainText().trimmed().length() > 0 )
+  if ( txtSQL->text().trimmed().length() > 0 )
   {
     accept();
     return;
   }
 
   // test the query to see if it will result in a valid layer
-  long numRecs = countRecords( txtSQL->toPlainText() );
+  long numRecs = countRecords( txtSQL->text() );
   if ( numRecs == -1 )
   {
     // error shown in countRecords
@@ -264,87 +264,87 @@ void QgsSearchQueryBuilder::on_btnOk_clicked()
 
 void QgsSearchQueryBuilder::on_btnEqual_clicked()
 {
-  txtSQL->insertPlainText( " = " );
+  txtSQL->insertText( " = " );
 }
 
 void QgsSearchQueryBuilder::on_btnLessThan_clicked()
 {
-  txtSQL->insertPlainText( " < " );
+  txtSQL->insertText( " < " );
 }
 
 void QgsSearchQueryBuilder::on_btnGreaterThan_clicked()
 {
-  txtSQL->insertPlainText( " > " );
+  txtSQL->insertText( " > " );
 }
 
 void QgsSearchQueryBuilder::on_btnPct_clicked()
 {
-  txtSQL->insertPlainText( "%" );
+  txtSQL->insertText( "%" );
 }
 
 void QgsSearchQueryBuilder::on_btnIn_clicked()
 {
-  txtSQL->insertPlainText( " IN " );
+  txtSQL->insertText( " IN " );
 }
 
 void QgsSearchQueryBuilder::on_btnNotIn_clicked()
 {
-  txtSQL->insertPlainText( " NOT IN " );
+  txtSQL->insertText( " NOT IN " );
 }
 
 void QgsSearchQueryBuilder::on_btnLike_clicked()
 {
-  txtSQL->insertPlainText( " LIKE " );
+  txtSQL->insertText( " LIKE " );
 }
 
 QString QgsSearchQueryBuilder::searchString()
 {
-  return txtSQL->toPlainText();
+  return txtSQL->text();
 }
 
 void QgsSearchQueryBuilder::setSearchString( QString searchString )
 {
-  txtSQL->setPlainText( searchString );
+  txtSQL->setText( searchString );
 }
 
 void QgsSearchQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insertPlainText( QgsExpression::quotedColumnRef( mModelFields->data( index ).toString() ) );
+  txtSQL->insertText( QgsExpression::quotedColumnRef( mModelFields->data( index ).toString() ) );
 }
 
 void QgsSearchQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insertPlainText( mModelValues->data( index ).toString() );
+  txtSQL->insertText( mModelValues->data( index ).toString() );
 }
 
 void QgsSearchQueryBuilder::on_btnLessEqual_clicked()
 {
-  txtSQL->insertPlainText( " <= " );
+  txtSQL->insertText( " <= " );
 }
 
 void QgsSearchQueryBuilder::on_btnGreaterEqual_clicked()
 {
-  txtSQL->insertPlainText( " >= " );
+  txtSQL->insertText( " >= " );
 }
 
 void QgsSearchQueryBuilder::on_btnNotEqual_clicked()
 {
-  txtSQL->insertPlainText( " != " );
+  txtSQL->insertText( " != " );
 }
 
 void QgsSearchQueryBuilder::on_btnAnd_clicked()
 {
-  txtSQL->insertPlainText( " AND " );
+  txtSQL->insertText( " AND " );
 }
 
 void QgsSearchQueryBuilder::on_btnNot_clicked()
 {
-  txtSQL->insertPlainText( " NOT " );
+  txtSQL->insertText( " NOT " );
 }
 
 void QgsSearchQueryBuilder::on_btnOr_clicked()
 {
-  txtSQL->insertPlainText( " OR " );
+  txtSQL->insertText( " OR " );
 }
 
 void QgsSearchQueryBuilder::on_btnClear_clicked()
@@ -354,7 +354,7 @@ void QgsSearchQueryBuilder::on_btnClear_clicked()
 
 void QgsSearchQueryBuilder::on_btnILike_clicked()
 {
-  txtSQL->insertPlainText( " ILIKE " );
+  txtSQL->insertText( " ILIKE " );
 }
 
 void QgsSearchQueryBuilder::saveQuery()
@@ -382,7 +382,7 @@ void QgsSearchQueryBuilder::saveQuery()
 
   QDomDocument xmlDoc;
   QDomElement queryElem = xmlDoc.createElement( "Query" );
-  QDomText queryTextNode = xmlDoc.createTextNode( txtSQL->toPlainText() );
+  QDomText queryTextNode = xmlDoc.createTextNode( txtSQL->text() );
   queryElem.appendChild( queryTextNode );
   xmlDoc.appendChild( queryElem );
 
@@ -487,6 +487,6 @@ void QgsSearchQueryBuilder::loadQuery()
 #endif
 
   txtSQL->clear();
-  txtSQL->insertPlainText( newQueryText );
+  txtSQL->insertText( newQueryText );
 }
 
