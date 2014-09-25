@@ -77,10 +77,10 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
 		""" first check whether everything's fine """
 		fld = self.getField(True)	# don't change the original copy
 		if fld.name == "":
-			QMessageBox.critical(self, self.tr("Sorry"), self.tr("field name must not be empty"))
+			QMessageBox.critical(self, self.tr("DB Manager"), self.tr("field name must not be empty"))
 			return
 		if fld.dataType == "":
-			QMessageBox.critical(self, self.tr("Sorry"), self.tr("field type must not be empty"))
+			QMessageBox.critical(self, self.tr("DB Manager"), self.tr("field type must not be empty"))
 			return
 
 		self.accept()

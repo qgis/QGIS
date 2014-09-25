@@ -102,7 +102,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 		sel = self.viewFields.selectionModel()
 		indexes = sel.selectedRows()
 		if len(indexes) == 0:
-			QMessageBox.information(self, self.tr("Sorry"), self.tr("nothing selected"))
+			QMessageBox.information(self, self.tr("DB Manager"), self.tr("nothing selected"))
 			return -1
 		return indexes[0].row()
 
@@ -242,7 +242,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 		sel = self.viewConstraints.selectionModel()
 		indexes = sel.selectedRows()
 		if len(indexes) == 0:
-			QMessageBox.information(self, self.tr("Sorry"), self.tr("nothing selected"))
+			QMessageBox.information(self, self.tr("DB Manager"), self.tr("nothing selected"))
 			return -1
 		return indexes[0].row()
 
@@ -277,7 +277,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 	def createSpatialIndex(self):
 		""" create spatial index for the geometry column """
 		if self.table.type != self.table.VectorType:
-			QMessageBox.information(self, self.tr("Sorry"), self.tr("The selected table has no geometry"))
+			QMessageBox.information(self, self.tr("DB Manager"), self.tr("The selected table has no geometry"))
 			return
 
 		res = QMessageBox.question(self, self.tr("Create?"), self.tr("Create spatial index for field %s?") % self.table.geomColumn, QMessageBox.Yes | QMessageBox.No)
@@ -302,7 +302,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 		sel = self.viewIndexes.selectionModel()
 		indexes = sel.selectedRows()
 		if len(indexes) == 0:
-			QMessageBox.information(self, self.tr("Sorry"), self.tr("Nothing selected"))
+			QMessageBox.information(self, self.tr("DB Manager"), self.tr("Nothing selected"))
 			return -1
 		return indexes[0].row()
 
