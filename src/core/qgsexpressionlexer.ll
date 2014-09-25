@@ -18,6 +18,10 @@
 %option never-interactive
 %option nounput
 %option prefix="exp_"
+ // this makes flex generate lexer with context + init/destroy functions
+%option reentrant
+ // this makes Bison send yylex another argument to use instead of using the global variable yylval
+%option bison-bridge
 
  // ensure that lexer will be 8-bit (and not just 7-bit)
 %option 8bit
@@ -27,6 +31,7 @@
 #include <stdlib.h>  // atof()
 
 #include "qgsexpression.h"
+struct expression_parser_context;
 #include "qgsexpressionparser.hpp"
 #include <QRegExp>
 #include <QLocale>
@@ -43,10 +48,10 @@
 #define YY_NO_UNISTD_H
 #endif
 
-#define B_OP(x) exp_lval.b_op = QgsExpression::x
-#define U_OP(x) exp_lval.u_op = QgsExpression::x
-#define TEXT                   exp_lval.text = new QString(); *exp_lval.text = QString::fromUtf8(yytext);
-#define TEXT_FILTER(filter_fn) exp_lval.text = new QString(); *exp_lval.text = filter_fn( QString::fromUtf8(yytext) );
+#define B_OP(x) yylval->b_op = QgsExpression::x
+#define U_OP(x) yylval->u_op = QgsExpression::x
+#define TEXT                   yylval->text = new QString(); *yylval->text = QString::fromUtf8(yytext);
+#define TEXT_FILTER(filter_fn) yylval->text = new QString(); *yylval->text = filter_fn( QString::fromUtf8(yytext) );
 
 static QString stripText(QString text)
 {
@@ -154,14 +159,14 @@ string      "'"{str_char}*"'"
 
 ","   { return COMMA; }
 
-{num_float}  { exp_lval.numberFloat  = cLocale.toDouble( QString::fromAscii(yytext) ); return NUMBER_FLOAT; }
+{num_float}  { yylval->numberFloat  = cLocale.toDouble( QString::fromAscii(yytext) ); return NUMBER_FLOAT; }
 {num_int}  {
 	bool ok;
-	exp_lval.numberInt = cLocale.toInt( QString::fromAscii(yytext), &ok, 10 );
+  yylval->numberInt = cLocale.toInt( QString::fromAscii(yytext), &ok, 10 );
 	if( ok )
 		return NUMBER_INT;
 
-	exp_lval.numberFloat  = cLocale.toDouble( QString::fromAscii(yytext), &ok );
+  yylval->numberFloat  = cLocale.toDouble( QString::fromAscii(yytext), &ok );
 	if( ok )
 		return NUMBER_FLOAT;
 
@@ -172,7 +177,7 @@ string      "'"{str_char}*"'"
 
 {special_col}        { TEXT; return SPECIAL_COL; }
 
-{column_ref}         { TEXT; return QgsExpression::isFunctionName(*exp_lval.text) ? FUNCTION : COLUMN_REF; }
+{column_ref}         { TEXT; return QgsExpression::isFunctionName(*yylval->text) ? FUNCTION : COLUMN_REF; }
 
 {column_ref_quoted}  { TEXT_FILTER(stripColumnRef); return COLUMN_REF; }
 
@@ -181,9 +186,3 @@ string      "'"{str_char}*"'"
 .       { return Unknown_CHARACTER; }
 
 %%
-
-void exp_set_input_buffer(const char* buffer)
-{
-  exp__scan_string(buffer);
-}
-

@@ -27,9 +27,16 @@
 // don't redeclare malloc/free
 #define YYINCLUDED_STDLIB_H 1
 
+struct expression_parser_context;
+#include "qgsexpressionparser.hpp"
+
 //! from lexer
-extern int exp_lex();
-extern void exp_set_input_buffer(const char* buffer);
+typedef void* yyscan_t;
+typedef struct yy_buffer_state* YY_BUFFER_STATE;
+extern int exp_lex_init(yyscan_t* scanner);
+extern int exp_lex_destroy(yyscan_t scanner);
+extern int exp_lex(YYSTYPE* yylval_param, yyscan_t yyscanner);
+extern YY_BUFFER_STATE exp__scan_string(const char* buffer, yyscan_t scanner);
 
 /** returns parsed tree, otherwise returns NULL and sets parserErrorMsg
     (interface function to be called from QgsExpression)
@@ -37,12 +44,20 @@ extern void exp_set_input_buffer(const char* buffer);
 QgsExpression::Node* parseExpression(const QString& str, QString& parserErrorMsg);
 
 /** error handler for bison */
-void exp_error(const char* msg);
+void exp_error(expression_parser_context* parser_ctx, const char* msg);
 
-//! varible where the parser error will be stored
-QString gExpParserErrorMsg;
-QgsExpression::Node* gExpParserRootNode;
+struct expression_parser_context
+{
+  // lexer context
+  yyscan_t flex_scanner;
 
+  // varible where the parser error will be stored
+  QString errorMsg;
+  // root node of the expression
+  QgsExpression::Node* rootNode;
+};
+
+#define scanner parser_ctx->flex_scanner
 
 // we want verbose error messages
 #define YYERROR_VERBOSE 1
@@ -50,6 +65,11 @@ QgsExpression::Node* gExpParserRootNode;
 #define BINOP(x, y, z)  new QgsExpression::NodeBinaryOperator(x, y, z)
 
 %}
+
+// make the parser reentrant
+%define api.pure
+%lex-param {void * scanner}
+%parse-param {expression_parser_context* parser_ctx}
 
 %name-prefix "exp_"
 
@@ -130,7 +150,7 @@ QgsExpression::Node* gExpParserRootNode;
 
 %%
 
-root: expression { gExpParserRootNode = $1; }
+root: expression { parser_ctx->rootNode = $1; }
     ;
 
 expression:
@@ -162,13 +182,13 @@ expression:
           {
             // this should not actually happen because already in lexer we check whether an identifier is a known function
             // (if the name is not known the token is parsed as a column)
-            exp_error("Function is not known");
+            exp_error(parser_ctx, "Function is not known");
             YYERROR;
           }
           if ( QgsExpression::Functions()[fnIndex]->params() != -1
                && QgsExpression::Functions()[fnIndex]->params() != $3->count() )
           {
-            exp_error("Function is called with wrong number of arguments");
+            exp_error(parser_ctx, "Function is called with wrong number of arguments");
             YYERROR;
           }
           $$ = new QgsExpression::NodeFunction(fnIndex, $3);
@@ -195,7 +215,7 @@ expression:
           {
       if ( !QgsExpression::hasSpecialColumn( *$1 ) )
 	    {
-	      exp_error("Special column is not known");
+        exp_error(parser_ctx, "Special column is not known");
 	      YYERROR;
 	    }
 	    // $var is equivalent to _specialcol_( "$var" )
@@ -234,28 +254,33 @@ when_then_clause:
 
 %%
 
+
 // returns parsed tree, otherwise returns NULL and sets parserErrorMsg
 QgsExpression::Node* parseExpression(const QString& str, QString& parserErrorMsg)
 {
-  gExpParserRootNode = NULL;
-  exp_set_input_buffer(str.toUtf8().constData());
-  int res = exp_parse();
+  expression_parser_context ctx;
+  ctx.rootNode = 0;
+
+  exp_lex_init(&ctx.flex_scanner);
+  exp__scan_string(str.toUtf8().constData(), ctx.flex_scanner);
+  int res = exp_parse(&ctx);
+  exp_lex_destroy(ctx.flex_scanner);
 
   // list should be empty when parsing was OK
   if (res == 0) // success?
   {
-    return gExpParserRootNode;
+    return ctx.rootNode;
   }
   else // error?
   {
-    parserErrorMsg = gExpParserErrorMsg;
+    parserErrorMsg = ctx.errorMsg;
     return NULL;
   }
 }
 
 
-void exp_error(const char* msg)
+void exp_error(expression_parser_context* parser_ctx, const char* msg)
 {
-  gExpParserErrorMsg = msg;
+  parser_ctx->errorMsg = msg;
 }
 

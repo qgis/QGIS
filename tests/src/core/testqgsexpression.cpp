@@ -16,6 +16,8 @@
 #include <QObject>
 #include <QString>
 #include <QObject>
+#include <QtConcurrentMap>
+
 #include <qgsapplication.h>
 //header for class being tested
 #include <qgsexpression.h>
@@ -28,6 +30,16 @@
 // See http://hub.qgis.org/issues/4284
 Q_DECLARE_METATYPE( QVariant )
 #endif
+
+static void _parseAndEvalExpr( int arg )
+{
+  Q_UNUSED( arg );
+  for ( int i = 0; i < 100; ++i )
+  {
+    QgsExpression exp( "1 + 2 * 2" );
+    exp.evaluate();
+  }
+}
 
 class TestQgsExpression: public QObject
 {
@@ -946,6 +958,15 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::quotedString( "hello\\world" ), QString( "'hello\\\\world'" ) );
     }
 
+    void reentrant()
+    {
+      // this simply should not crash
+
+      QList<int> lst;
+      for ( int i = 0; i < 10; ++i )
+        lst << i;
+      QtConcurrent::blockingMap( lst, _parseAndEvalExpr );
+    }
 };
 
 QTEST_MAIN( TestQgsExpression )
