@@ -66,6 +66,8 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget 
   }
 
   valuesLabel->setText( text );
+
+  connect( rangeWidget, SIGNAL( currentIndexChanged( int ) ), this, SLOT( rangeWidgetChanged( int ) ) );
 }
 
 QgsEditorWidgetConfig QgsRangeConfigDlg::config()
@@ -92,6 +94,7 @@ QgsEditorWidgetConfig QgsRangeConfigDlg::config()
   }
 
   cfg.insert( "Style", rangeWidget->itemData( rangeWidget->currentIndex() ).toString() );
+  cfg.insert( "AllowNull", allowNullCheckBox->isChecked() );
 
   if ( suffixLineEdit->text() != "" )
   {
@@ -114,4 +117,12 @@ void QgsRangeConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
   rangeWidget->setCurrentIndex( rangeWidget->findData( config.value( "Style", "SpinBox" ) ) );
 
   suffixLineEdit->setText( config.value( "Suffix" ).toString() );
+
+  allowNullCheckBox->setChecked( config.value( "AllowNull", true ).toBool() );
+}
+
+void QgsRangeConfigDlg::rangeWidgetChanged( int index )
+{
+  QString style = rangeWidget->itemData( index ).toString();
+  allowNullCheckBox->setEnabled( style == "SpinBox" );
 }

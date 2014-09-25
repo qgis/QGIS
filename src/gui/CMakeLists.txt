@@ -68,6 +68,7 @@ editorwidgets/qgsdatetimeedit.cpp
 editorwidgets/qgsdatetimeeditfactory.cpp
 editorwidgets/qgsdatetimeeditconfig.cpp
 editorwidgets/qgsdatetimeeditwrapper.cpp
+editorwidgets/qgsdoublespinbox.cpp
 editorwidgets/qgsdummyconfigdlg.cpp
 editorwidgets/qgsenumerationwidgetwrapper.cpp
 editorwidgets/qgsenumerationwidgetfactory.cpp
@@ -81,6 +82,7 @@ editorwidgets/qgsphotowidgetfactory.cpp
 editorwidgets/qgsrangeconfigdlg.cpp
 editorwidgets/qgsrangewidgetwrapper.cpp
 editorwidgets/qgsrangewidgetfactory.cpp
+editorwidgets/qgsspinbox.cpp
 editorwidgets/qgsrelationwidgetwrapper.cpp
 editorwidgets/qgsrelationreferenceconfigdlg.cpp
 editorwidgets/qgsrelationreferencefactory.cpp
@@ -294,6 +296,7 @@ editorwidgets/qgscolorwidgetwrapper.h
 editorwidgets/qgsdatetimeedit.h
 editorwidgets/qgsdatetimeeditconfig.h
 editorwidgets/qgsdatetimeeditwrapper.h
+editorwidgets/qgsdoublespinbox.h
 editorwidgets/qgsdummyconfigdlg.h
 editorwidgets/qgsenumerationwidgetwrapper.h
 editorwidgets/qgsfilenamewidgetwrapper.h
@@ -306,6 +309,7 @@ editorwidgets/qgsrelationreferenceconfigdlg.h
 editorwidgets/qgsrelationreferencewidget.h
 editorwidgets/qgsrelationreferencewidgetwrapper.h
 editorwidgets/qgsrelationwidgetwrapper.h
+editorwidgets/qgsspinbox.h
 editorwidgets/qgstexteditconfigdlg.h
 editorwidgets/qgstexteditwrapper.h
 editorwidgets/qgsuniquevaluesconfigdlg.h
@@ -524,6 +528,7 @@ editorwidgets/qgsdatetimeedit.h
 editorwidgets/qgsdatetimeeditfactory.h
 editorwidgets/qgsdatetimeeditconfig.h
 editorwidgets/qgsdatetimeeditwrapper.h
+editorwidgets/qgsdoublespinbox.h
 editorwidgets/qgsdummyconfigdlg.h
 editorwidgets/qgsenumerationwidgetwrapper.h
 editorwidgets/qgsenumerationwidgetfactory.h
@@ -537,6 +542,7 @@ editorwidgets/qgsphotowidgetfactory.h
 editorwidgets/qgsrangeconfigdlg.h
 editorwidgets/qgsrangewidgetwrapper.h
 editorwidgets/qgsrangewidgetfactory.h
+editorwidgets/qgsspinbox.h
 editorwidgets/qgsrelationreferenceconfigdlg.h
 editorwidgets/qgsrelationreferencefactory.h
 editorwidgets/qgsrelationreferencewidget.h
