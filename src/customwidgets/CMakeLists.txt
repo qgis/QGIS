@@ -20,6 +20,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgscolorbuttonv2plugin.cpp
   qgsdatetimeeditplugin.cpp
   qgsdatadefinedbuttonplugin.cpp
+  qgsdoublespinboxplugin.cpp
   qgsfieldcomboboxplugin.cpp
   qgsfieldexpressionwidgetplugin.cpp
   qgsfilterlineeditplugin.cpp
@@ -27,6 +28,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgsrelationeditorwidgetplugin.cpp
   qgsrelationreferencewidgetplugin.cpp
   qgsscalerangewidgetplugin.cpp
+  qgsspinboxplugin.cpp
 )
 
 SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
@@ -36,6 +38,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgscolorbuttonv2plugin.h
   qgsdatetimeeditplugin.h
   qgsdatadefinedbuttonplugin.h
+  qgsdoublespinboxplugin.h
   qgsfieldcomboboxplugin.h
   qgsfieldexpressionwidgetplugin.h
   qgsfilterlineeditplugin.h
@@ -43,6 +46,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgsrelationeditorwidgetplugin.h
   qgsrelationreferencewidgetplugin.h
   qgsscalerangewidgetplugin.h
+  qgsspinboxplugin.h
 )
 
 QT4_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
@@ -60,6 +64,7 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgscolorbuttonv2plugin.h
   qgsdatetimeeditplugin.h
   qgsdatadefinedbuttonplugin.h
+  qgsdoublespinboxplugin.h
   qgsfieldcomboboxplugin.h
   qgsfieldexpressionwidgetplugin.h
   qgsfilterlineeditplugin.h
@@ -67,6 +72,7 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgsrelationeditorwidgetplugin.h
   qgsrelationreferencewidgetplugin.h
   qgsscalerangewidgetplugin.h
+  qgsspinboxplugin.h
 )
 
 # left commented as there is no UI file yet
