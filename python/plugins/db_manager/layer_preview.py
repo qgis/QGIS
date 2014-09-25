@@ -23,7 +23,7 @@ email                : brush.tyler@gmail.com
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from qgis.gui import QgsMapCanvas, QgsMapCanvasLayer
+from qgis.gui import QgsMapCanvas, QgsMapCanvasLayer, QgsMessageBar
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
 
 from .db_plugins.plugin import DbError, Table
@@ -31,6 +31,7 @@ from .db_plugins.plugin import DbError, Table
 class LayerPreview(QgsMapCanvas):
   def __init__(self, parent=None):
     QgsMapCanvas.__init__(self, parent)
+    self.parent = parent
     self.setCanvasColor(QColor(255,255,255))
 
     self.item = None
@@ -95,7 +96,9 @@ class LayerPreview(QgsMapCanvas):
       if limit and table.rowCount > 1000:
         uniqueField = table.getValidQGisUniqueFields(True)
         if uniqueField == None:
-          QMessageBox.warning(self, QApplication.translate("DBManagerPlugin", "Sorry"), QApplication.translate("DBManagerPlugin", "Unable to find a valid unique field"))
+          self.parent.tabs.setCurrentWidget(self.parent.info)
+          self.parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Unable to find a valid unique field"),
+                                          QgsMessageBar.WARNING, self.parent.iface.messageTimeout())
           return
 
         uri = table.database().uri()

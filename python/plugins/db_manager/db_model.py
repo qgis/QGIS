@@ -152,7 +152,7 @@ class ConnectionItem(TreeItem):
 					return False
 
 			except BaseError, e:
-				QMessageBox.warning( None, self.tr("Unable to connect"), unicode(e) )
+				DlgDbError.showError(unicode(e), None)
 				return False
 
 		database = connection.database()
