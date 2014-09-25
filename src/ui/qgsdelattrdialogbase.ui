@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>360</width>
-    <height>238</height>
+    <width>463</width>
+    <height>301</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,6 +26,13 @@
    <property name="bottomMargin">
     <number>3</number>
    </property>
+   <item row="3" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QListWidget" name="listBox2">
      <property name="frameShape">
@@ -37,9 +44,16 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+    <widget class="QLabel" name="mEditModeInfo">
+     <property name="text">
+      <string>Provider fields can only be deleted when the layer is in edit mode.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="mCanDeleteAttributesInfo">
+     <property name="text">
+      <string>Provider does not support deleting attributes.</string>
      </property>
     </widget>
    </item>

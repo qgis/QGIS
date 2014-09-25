@@ -150,7 +150,6 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void init();
     void apply();
 
-    void updateButtons();
     void loadRows();
     void setRow( int row, int idx, const QgsField &field );
 
@@ -162,7 +161,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
   signals:
     void toggleEditing();
 
-  public slots:
+  private slots:
     void on_mAddAttributeButton_clicked();
     void on_mDeleteAttributeButton_clicked();
     void on_mCalculateFieldButton_clicked();
@@ -182,11 +181,13 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
 
     void attributesListCellChanged( int row, int column );
 
-  protected slots:
+
     /** editing of layer was toggled */
     void editingToggled();
 
   protected:
+    void updateButtons();
+
     FieldConfig configForRow( int row );
     void setConfigForRow( int row, FieldConfig cfg );
 

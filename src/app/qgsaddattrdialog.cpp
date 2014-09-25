@@ -22,6 +22,7 @@
 #include "qgsexpressionbuilderdialog.h"
 
 #include <QMessageBox>
+#include <QLabel>
 
 QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
@@ -58,6 +59,12 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
     mNameEdit->setMaxLength( 10 );
 
   mExpressionWidget->setLayer( vlayer );
+
+  int cap = mLayer->dataProvider()->capabilities();
+
+  mButtonProviderField->setEnabled( cap & QgsVectorDataProvider::AddAttributes );
+
+  mInfoIcon->setPixmap( style()->standardPixmap( QStyle::SP_MessageBoxInformation ) );
 }
 
 void QgsAddAttrDialog::on_mTypeBox_currentIndexChanged( int idx )
@@ -87,6 +94,8 @@ void QgsAddAttrDialog::on_mFieldModeButtonGroup_buttonClicked( QAbstractButton* 
     mExpressionWidget->show();
     mExpressionLabel->show();
   }
+
+  mLayerEditableInfo->setVisible( !mLayer->isEditable() && button == mButtonProviderField );
 }
 
 void QgsAddAttrDialog::on_mLength_editingFinished()
@@ -125,6 +134,12 @@ void QgsAddAttrDialog::accept()
                           tr( "No expression specified. Please enter an expression that will be used to calculate the field values." ) );
     return;
   }
+
+  if ( !mLayer->isEditable() && mode() == ProviderField )
+  {
+    mLayer->startEditing();
+  }
+
   QDialog::accept();
 }
 

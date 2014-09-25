@@ -174,8 +174,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mSaveEditsButton->setEnabled( mToggleEditingButton->isEnabled() && mLayer->isEditable() );
   mOpenFieldCalculator->setEnabled(( canChangeAttributes || canAddAttributes ) && mLayer->isEditable() );
   mDeleteSelectedButton->setEnabled( canDeleteFeatures && mLayer->isEditable() );
-  mAddAttribute->setEnabled( canAddAttributes && mLayer->isEditable() );
-  mRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
   mAddFeature->setEnabled( canAddFeatures && mLayer->isEditable() && mLayer->geometryType() == QGis::NoGeometry );
   mAddFeature->setHidden( !canAddFeatures || mLayer->geometryType() != QGis::NoGeometry );
 
@@ -559,12 +557,9 @@ void QgsAttributeTableDialog::editingToggled()
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
   bool canDeleteFeatures = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures;
   bool canAddAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes;
-  bool canDeleteAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
   bool canAddFeatures = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures;
   mOpenFieldCalculator->setEnabled(( canChangeAttributes || canAddAttributes ) && mLayer->isEditable() );
   mDeleteSelectedButton->setEnabled( canDeleteFeatures && mLayer->isEditable() );
-  mAddAttribute->setEnabled( canAddAttributes && mLayer->isEditable() );
-  mRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
   mAddFeature->setEnabled( canAddFeatures && mLayer->isEditable() && mLayer->geometryType() == QGis::NoGeometry );
 
   mUpdateExpressionBox->setVisible( mLayer->isEditable() );
@@ -597,8 +592,8 @@ void QgsAttributeTableDialog::on_mAddAttribute_clicked()
       }
       else
       {
-        QMessageBox::critical( 0, tr( "Attribute Error" ), tr( "The attribute could not be added to the layer" ) );
         mLayer->destroyEditCommand();
+        QMessageBox::critical( this, tr( "Failed to add field" ), tr( "Failed to add field '%1' of type '%2'. Is the field name unique?" ).arg( dialog.field().name() ).arg( dialog.field().typeName() ) );
       }
     }
 

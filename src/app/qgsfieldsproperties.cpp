@@ -140,6 +140,8 @@ void QgsFieldsProperties::onAttributeSelectionChanged()
     if ( mDesignerTree->selectedItems()[0]->data( 0, DesignerTreeRole ).value<DesignerTreeItemData>().type() == DesignerTreeItemData::Container )
       isAddPossible = true;
   mAddItemButton->setEnabled( isAddPossible );
+
+  updateButtons();
 }
 
 QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent )
@@ -161,7 +163,7 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
 
       const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>( widgetDef );
 
-      Q_FOREACH ( QgsAttributeEditorElement* wdg, container->children() )
+      Q_FOREACH( QgsAttributeEditorElement* wdg, container->children() )
       {
         loadAttributeEditorTreeItem( wdg, newWidget );
       }
@@ -185,7 +187,7 @@ void QgsFieldsProperties::loadAttributeEditorTree()
   mDesignerTree->setAcceptDrops( true );
   mDesignerTree->setDragDropMode( QAbstractItemView::DragDrop );
 
-  Q_FOREACH ( QgsAttributeEditorElement* wdg, mLayer->attributeEditorElements() )
+  Q_FOREACH( QgsAttributeEditorElement* wdg, mLayer->attributeEditorElements() )
   {
     loadAttributeEditorTreeItem( wdg, mDesignerTree->invisibleRootItem() );
   }
@@ -270,7 +272,7 @@ void QgsFieldsProperties::loadRelations()
 
   int idx = 0;
 
-  Q_FOREACH ( const QgsRelation& relation, relations )
+  Q_FOREACH( const QgsRelation& relation, relations )
   {
     mRelationsList->insertRow( idx );
 
@@ -308,7 +310,7 @@ void QgsFieldsProperties::on_mAddItemButton_clicked()
   if ( parent->data( 0, DesignerTreeRole ).value<DesignerTreeItemData>().type() != DesignerTreeItemData::Container )
     return;
 
-  Q_FOREACH ( QTableWidgetItem* item, listItems )
+  Q_FOREACH( QTableWidgetItem* item, listItems )
   {
     if ( item->column() == 0 ) // Information is in the first column
       mDesignerTree->addItem( parent , item->data( DesignerTreeRole ).value<DesignerTreeItemData>() );
@@ -407,7 +409,7 @@ void QgsFieldsProperties::attributeTypeDialog()
   int index = -1;
   int row = -1;
 
-  Q_FOREACH ( QTableWidgetItem* wdg, mIndexedWidgets )
+  Q_FOREACH( QTableWidgetItem* wdg, mIndexedWidgets )
   {
     cfg = wdg->data( FieldConfigRole ).value<FieldConfig>();
     if ( cfg.mButton == pb )
@@ -486,6 +488,7 @@ bool QgsFieldsProperties::addAttribute( const QgsField &field )
   else
   {
     mLayer->destroyEditCommand();
+    QMessageBox::critical( this, tr( "Failed to add field" ), tr( "Failed to add field '%1' of type '%2'. Is the field name unique?" ).arg( field.name() ).arg( field.typeName() ) );
     return false;
   }
 }
@@ -536,34 +539,38 @@ void QgsFieldsProperties::on_mAddAttributeButton_clicked()
     }
     else
     {
-      mLayer->beginEditCommand( "Attribute added" );
-      if ( !addAttribute( dialog.field() ) )
-      {
-        mLayer->destroyEditCommand();
-        QMessageBox::information( this, tr( "Name conflict" ), tr( "The attribute could not be inserted. The name already exists in the table." ) );
-      }
-      else
-      {
-        mLayer->endEditCommand();
-      }
+      addAttribute( dialog.field() );
     }
   }
 }
 
 void QgsFieldsProperties::on_mDeleteAttributeButton_clicked()
 {
-  QSet<int> attrs;
-  foreach ( QTableWidgetItem* item, mFieldsList->selectedItems() )
+  QSet<int> providerFields;
+  QSet<int> expressionFields;
+  Q_FOREACH( QTableWidgetItem* item, mFieldsList->selectedItems() )
   {
     if ( item->column() == 0 )
     {
-      attrs << mIndexedWidgets.indexOf( item );
+      int idx = mIndexedWidgets.indexOf( item );
+      if ( mLayer->pendingFields().fieldOrigin( idx ) == QgsFields::OriginExpression )
+        expressionFields << idx;
+      else
+        providerFields << idx;
     }
   }
 
-  mLayer->beginEditCommand( tr( "Deleted attribute" ) );
-  mLayer->deleteAttributes( attrs.toList() );
-  mLayer->endEditCommand();
+  if ( expressionFields.count() )
+    mLayer->deleteAttributes( expressionFields.toList() );
+
+  if ( providerFields.count() )
+  {
+    mLayer->beginEditCommand( tr( "Deleted attributes" ) );
+    if ( mLayer->deleteAttributes( providerFields.toList() ) )
+      mLayer->endEditCommand();
+    else
+      mLayer->destroyEditCommand();
+  }
 }
 
 void QgsFieldsProperties::updateButtons()
@@ -574,17 +581,31 @@ void QgsFieldsProperties::updateButtons()
 
   if ( mLayer->isEditable() )
   {
-    mAddAttributeButton->setEnabled( cap & QgsVectorDataProvider::AddAttributes );
     mDeleteAttributeButton->setEnabled( cap & QgsVectorDataProvider::DeleteAttributes );
     mCalculateFieldButton->setEnabled( cap & ( QgsVectorDataProvider::ChangeAttributeValues | QgsVectorDataProvider::AddAttributes ) );
     mToggleEditingButton->setChecked( true );
   }
   else
   {
-    mAddAttributeButton->setEnabled( false );
-    mDeleteAttributeButton->setEnabled( false );
     mToggleEditingButton->setChecked( false );
     mCalculateFieldButton->setEnabled( false );
+
+    // Enable delete button if items are selected
+    mDeleteAttributeButton->setEnabled( mFieldsList->selectedItems().count() > 0 );
+
+    // and only if all selected items have their origin in an expression
+    Q_FOREACH( QTableWidgetItem* item, mFieldsList->selectedItems() )
+    {
+      if ( item->column() == 0 )
+      {
+        int idx = mIndexedWidgets.indexOf( item );
+        if ( mLayer->pendingFields().fieldOrigin( idx ) != QgsFields::OriginExpression )
+        {
+          mDeleteAttributeButton->setEnabled( false );
+          break;
+        }
+      }
+    }
   }
 }
 
@@ -826,7 +847,7 @@ QMimeData* QgsFieldsProperties::DragList::mimeData( const QList<QTableWidgetItem
   QByteArray encoded;
   QDataStream stream( &encoded, QIODevice::WriteOnly );
 
-  Q_FOREACH ( const QTableWidgetItem* item, items )
+  Q_FOREACH( const QTableWidgetItem* item, items )
   {
     // Relevant information is always in the UserRole of the first column
     if ( item && item->column() == 0 )
@@ -996,7 +1017,7 @@ QMimeData* QgsFieldsProperties::DesignerTree::mimeData( const QList<QTreeWidgetI
   QByteArray encoded;
   QDataStream stream( &encoded, QIODevice::WriteOnly );
 
-  Q_FOREACH ( const QTreeWidgetItem* item, items )
+  Q_FOREACH( const QTreeWidgetItem* item, items )
   {
     if ( item )
     {
