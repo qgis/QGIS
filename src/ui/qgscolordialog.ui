@@ -835,6 +835,14 @@
     <string>Create a new palette</string>
    </property>
   </action>
+  <action name="mActionCopyColors">
+   <property name="text">
+    <string>Copy Colors</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy selected colors</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

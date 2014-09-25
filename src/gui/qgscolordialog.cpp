@@ -84,19 +84,26 @@ QgsColorDialogV2::QgsColorDialogV2( QWidget *parent, Qt::WindowFlags fl, const Q
   //get schemes with ShowInColorDialog set
   refreshSchemeComboBox();
   QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
-  int activeScheme = settings.value( "/Windows/ColorDialog/activeScheme", 0 ).toInt();
-  if ( activeScheme < mSchemeComboBox->count() )
-  {
-    mSchemeList->setScheme( schemeList.at( activeScheme ) );
-    mSchemeComboBox->setCurrentIndex( activeScheme );
-    mActionImportColors->setEnabled( schemeList.at( activeScheme )->isEditable() );
-    mActionPasteColors->setEnabled( schemeList.at( activeScheme )->isEditable() );
-    mAddColorToSchemeButton->setEnabled( schemeList.at( activeScheme )->isEditable() );
-    mRemoveColorsFromSchemeButton->setEnabled( schemeList.at( activeScheme )->isEditable() );
-    QgsUserColorScheme* userScheme = dynamic_cast<QgsUserColorScheme*>( schemeList.at( activeScheme ) );
-    mActionRemovePalette->setEnabled( userScheme ? true : false );
-  }
 
+  //choose a reasonable starting scheme
+  int activeScheme = settings.value( "/Windows/ColorDialog/activeScheme", 0 ).toInt();
+  activeScheme = activeScheme >= mSchemeComboBox->count() ? 0 : activeScheme;
+
+  mSchemeList->setScheme( schemeList.at( activeScheme ) );
+  mSchemeComboBox->setCurrentIndex( activeScheme );
+  mActionImportColors->setEnabled( schemeList.at( activeScheme )->isEditable() );
+  mActionPasteColors->setEnabled( schemeList.at( activeScheme )->isEditable() );
+  mAddColorToSchemeButton->setEnabled( schemeList.at( activeScheme )->isEditable() );
+  mRemoveColorsFromSchemeButton->setEnabled( schemeList.at( activeScheme )->isEditable() );
+  QgsUserColorScheme* userScheme = dynamic_cast<QgsUserColorScheme*>( schemeList.at( activeScheme ) );
+  mActionRemovePalette->setEnabled( userScheme ? true : false );
+
+  //listen out for selection changes in list, so we can enable/disable the copy colors option
+  connect( mSchemeList->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( listSelectionChanged( QItemSelection, QItemSelection ) ) );
+  //copy action defaults to disabled
+  mActionCopyColors->setEnabled( false );
+
+  connect( mActionCopyColors, SIGNAL( triggered() ), mSchemeList, SLOT( copyColors() ) );
   connect( mActionPasteColors, SIGNAL( triggered() ), mSchemeList, SLOT( pasteColors() ) );
   connect( mActionExportColors, SIGNAL( triggered() ), this, SLOT( exportColors() ) );
   connect( mActionImportColors, SIGNAL( triggered() ), this, SLOT( importColors() ) );
@@ -106,7 +113,9 @@ QgsColorDialogV2::QgsColorDialogV2( QWidget *parent, Qt::WindowFlags fl, const Q
   connect( mRemoveColorsFromSchemeButton, SIGNAL( clicked() ), mSchemeList, SLOT( removeSelection() ) );
 
   QMenu* schemeMenu = new QMenu( mSchemeToolButton );
+  schemeMenu->addAction( mActionCopyColors );
   schemeMenu->addAction( mActionPasteColors );
+  schemeMenu->addSeparator();
   schemeMenu->addAction( mActionImportColors );
   schemeMenu->addAction( mActionExportColors );
   schemeMenu->addSeparator();
@@ -596,6 +605,15 @@ void QgsColorDialogV2::schemeIndexChanged( int index )
   mRemoveColorsFromSchemeButton->setEnabled( scheme->isEditable() );
   QgsUserColorScheme* userScheme = dynamic_cast<QgsUserColorScheme*>( scheme );
   mActionRemovePalette->setEnabled( userScheme ? true : false );
+
+  //copy action defaults to disabled
+  mActionCopyColors->setEnabled( false );
+}
+
+void QgsColorDialogV2::listSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+{
+  Q_UNUSED( deselected );
+  mActionCopyColors->setEnabled( selected.length() > 0 );
 }
 
 void QgsColorDialogV2::on_mAddCustomColorButton_clicked()

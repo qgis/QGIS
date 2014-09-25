@@ -165,6 +165,7 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
     void newPalette();
 
     void schemeIndexChanged( int index );
+    void listSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
     void on_mAddCustomColorButton_clicked();
 
