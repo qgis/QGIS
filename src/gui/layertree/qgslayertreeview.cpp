@@ -209,7 +209,7 @@ QgsMapLayer* QgsLayerTreeView::layerForIndex( const QModelIndex& index ) const
     // possibly a legend node
     QgsLayerTreeModelLegendNode* legendNode = layerTreeModel()->index2legendNode( index );
     if ( legendNode )
-      return legendNode->parent()->layer();
+      return legendNode->layerNode()->layer();
   }
 
   return 0;
@@ -234,7 +234,7 @@ QgsLayerTreeGroup* QgsLayerTreeView::currentGroupNode() const
 
   if ( QgsLayerTreeModelLegendNode* legendNode = layerTreeModel()->index2legendNode( selectionModel()->currentIndex() ) )
   {
-    QgsLayerTreeLayer* parent = legendNode->parent();
+    QgsLayerTreeLayer* parent = legendNode->layerNode();
     if ( QgsLayerTree::isGroup( parent->parent() ) )
       return QgsLayerTree::toGroup( parent->parent() );
   }

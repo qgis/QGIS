@@ -2333,6 +2333,14 @@ void QgisApp::initLayerTreeView()
   btnVisibilityPresets->setPopupMode( QToolButton::InstantPopup );
   btnVisibilityPresets->setMenu( QgsVisibilityPresets::instance()->menu() );
 
+  // filter legend tool button
+  mBtnFilterLegend = new QToolButton;
+  mBtnFilterLegend->setAutoRaise( true );
+  mBtnFilterLegend->setCheckable( true );
+  mBtnFilterLegend->setToolTip( tr( "Filter Legend By Map Content" ) );
+  mBtnFilterLegend->setIcon( QgsApplication::getThemeIcon( "/mActionFilter.png" ) );
+  connect( mBtnFilterLegend, SIGNAL( clicked() ), this,  SLOT( toggleFilterLegendByMap() ) );
+
   // expand / collapse tool buttons
   QToolButton* btnExpandAll = new QToolButton;
   btnExpandAll->setAutoRaise( true );
@@ -2353,6 +2361,7 @@ void QgisApp::initLayerTreeView()
   toolbarLayout->setContentsMargins( QMargins( 5, 0, 5, 0 ) );
   toolbarLayout->addWidget( btnAddGroup );
   toolbarLayout->addWidget( btnVisibilityPresets );
+  toolbarLayout->addWidget( mBtnFilterLegend );
   toolbarLayout->addWidget( btnExpandAll );
   toolbarLayout->addWidget( btnCollapseAll );
   toolbarLayout->addWidget( btnRemoveItem );
@@ -3817,6 +3826,8 @@ bool QgisApp::addProject( QString projectFile )
   mMapCanvas->updateScale();
   QgsDebugMsg( "Scale restored..." );
 
+  setFilterLegendByMapEnabled( QgsProject::instance()->readBoolEntry( "Legend", "filterByMap" ) );
+
   QSettings settings;
 
   // does the project have any macros?
@@ -4211,6 +4222,38 @@ void QgisApp::activateDeuteranopePreview()
 {
   mMapCanvas->setPreviewModeEnabled( true );
   mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewDeuteranope );
+}
+
+void QgisApp::toggleFilterLegendByMap()
+{
+  bool enabled = layerTreeView()->layerTreeModel()->legendFilterByMap();
+  setFilterLegendByMapEnabled( !enabled );
+}
+
+void QgisApp::setFilterLegendByMapEnabled( bool enabled )
+{
+  QgsLayerTreeModel* model = layerTreeView()->layerTreeModel();
+  bool wasEnabled = model->legendFilterByMap();
+  if ( wasEnabled == enabled )
+    return; // no change
+
+  mBtnFilterLegend->setChecked( enabled );
+
+  if ( enabled )
+  {
+    connect( mMapCanvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( updateFilterLegendByMap() ) );
+    model->setLegendFilterByMap( &mMapCanvas->mapSettings() );
+  }
+  else
+  {
+    disconnect( mMapCanvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( updateFilterLegendByMap() ) );
+    model->setLegendFilterByMap( 0 );
+  }
+}
+
+void QgisApp::updateFilterLegendByMap()
+{
+  layerTreeView()->layerTreeModel()->setLegendFilterByMap( &mMapCanvas->mapSettings() );
 }
 
 void QgisApp::saveMapAsImage()
@@ -7853,6 +7896,8 @@ void QgisApp::closeProject()
 
   mTrustedMacros = false;
 
+  setFilterLegendByMapEnabled( false );
+
   deletePrintComposers();
   removeAnnotationItems();
   // clear out any stuff from project
@@ -8595,6 +8640,9 @@ void QgisApp::layersWereAdded( QList<QgsMapLayer *> theLayers )
 
 void QgisApp::showExtents()
 {
+  // allow symbols in the legend update their preview if they use map units
+  mLayerTreeView->layerTreeModel()->setLegendMapViewData( mMapCanvas->mapUnitsPerPixel(), mMapCanvas->mapSettings().outputDpi(), mMapCanvas->scale() );
+
   if ( !mToggleExtentsViewButton->isChecked() )
   {
     return;
@@ -9709,6 +9757,8 @@ void QgisApp::writeProject( QDomDocument &doc )
                               mLayerTreeCanvasBridge->hasCustomLayerOrder(), mLayerTreeCanvasBridge->customLayerOrder() );
   delete clonedRoot;
   doc.firstChildElement( "qgis" ).appendChild( oldLegendElem );
+
+  QgsProject::instance()->writeEntry( "Legend", "filterByMap", (bool) layerTreeView()->layerTreeModel()->legendFilterByMap() );
 
   projectChanged( doc );
 }

@@ -47,6 +47,8 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
 
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature );
+
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
     virtual void stopRender( QgsRenderContext& context );

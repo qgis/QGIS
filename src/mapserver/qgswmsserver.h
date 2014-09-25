@@ -43,6 +43,7 @@ class QgsRectangle;
 class QgsRenderContext;
 class QgsVectorLayer;
 class QgsSymbol;
+class QgsSymbolV2;
 class QColor;
 class QFile;
 class QFont;
@@ -75,9 +76,14 @@ class QgsWMSServer: public QgsOWSServer
     /**Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership
     of the image object*/
     QImage* getLegendGraphics();
+
+    typedef QSet<QgsSymbolV2*> SymbolV2Set;
+    typedef QMap<QgsVectorLayer*, SymbolV2Set> HitTest;
+
     /**Returns the map as an image (or a null pointer in case of error). The caller takes ownership
-    of the image object)*/
-    QImage* getMap();
+    of the image object). If an instance to existing hit test structure is passed, instead of rendering
+    it will fill the structure with symbols that would be used for rendering */
+    QImage* getMap( HitTest* hitTest = 0 );
     /**Returns an SLD file with the style of the requested layer. Exception is raised in case of troubles :-)*/
     QDomDocument getStyle();
     /**Returns an SLD file with the styles of the requested layers. Exception is raised in case of troubles :-)*/
@@ -154,6 +160,11 @@ class QgsWMSServer: public QgsOWSServer
     /**Creates a layer set and returns a stringlist with layer ids that can be passed to a QgsMapRenderer. Usually used in conjunction with readLayersAndStyles
        @param scaleDenominator Filter out layer if scale based visibility does not match (or use -1 if no scale restriction)*/
     QStringList layerSet( const QStringList& layersList, const QStringList& stylesList, const QgsCoordinateReferenceSystem& destCRS, double scaleDenominator = -1 ) const;
+
+    /**Record which symbols would be used if the map was in the current configuration of mMapRenderer. This is useful for content-based legend*/
+    void runHitTest( QPainter* painter, HitTest& hitTest );
+    /**Record which symbols within one layer would be rendered with the given renderer context*/
+    void runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols, QgsRenderContext& context );
 
     /**Read legend parameter from the request or from the first print composer in the project*/
     void legendParameters( double& boxSpace, double& layerSpace, double& layerTitleSpace,

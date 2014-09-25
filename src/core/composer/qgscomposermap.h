@@ -151,6 +151,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** \brief Create cache image */
     void cache();
 
+    /** Return map settings that would be used for drawing of the map
+     *  @note added in 2.6 */
+    QgsMapSettings mapSettings( const QgsRectangle& extent, const QSizeF& size, int dpi ) const;
+
     /** \brief Get identification number*/
     int id() const {return mId;}
 
@@ -774,6 +778,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     Q_DECL_DEPRECATED void connectMapOverviewSignals();
 
+    /**Calculates the extent to request and the yShift of the top-left point in case of rotation.
+     * @note added in 2.6 */
+    void requestedExtent( QgsRectangle& extent ) const;
+
   signals:
     void extentChanged();
 
@@ -893,8 +901,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** mapPolygon variant using a given extent */
     void mapPolygon( const QgsRectangle& extent, QPolygonF& poly ) const;
 
-    /**Calculates the extent to request and the yShift of the top-left point in case of rotation.*/
-    void requestedExtent( QgsRectangle& extent );
     /**Scales a composer map shift (in MM) and rotates it by mRotation
         @param xShift in: shift in x direction (in item units), out: xShift in map units
         @param yShift in: shift in y direction (in item units), out: yShift in map units*/

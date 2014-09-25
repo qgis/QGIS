@@ -145,6 +145,7 @@ void QgsComposerLegendWidget::setGuiElements()
   blockAllSignals( true );
   mTitleLineEdit->setText( mLegend->title() );
   mTitleAlignCombo->setCurrentIndex( alignment );
+  mFilterByMapToolButton->setChecked( mLegend->legendFilterByMapEnabled() );
   mColumnCountSpinBox->setValue( mLegend->columnCount() );
   mSplitLayerCheckBox->setChecked( mLegend->splitLayer() );
   mEqualColumnWidthCheckBox->setChecked( mLegend->equalColumnWidth() );
@@ -531,8 +532,8 @@ void QgsComposerLegendWidget::on_mMoveDownToolButton_clicked()
   }
   else // legend node
   {
-    _moveLegendNode( legendNode->parent(), index.row(), 1 );
-    mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->parent() );
+    _moveLegendNode( legendNode->layerNode(), index.row(), 1 );
+    mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
   }
 
   mItemTreeView->setCurrentIndex( mItemTreeView->layerTreeModel()->index( index.row() + 1, 0, parentIndex ) );
@@ -568,8 +569,8 @@ void QgsComposerLegendWidget::on_mMoveUpToolButton_clicked()
   }
   else // legend node
   {
-    _moveLegendNode( legendNode->parent(), index.row(), -1 );
-    mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->parent() );
+    _moveLegendNode( legendNode->layerNode(), index.row(), -1 );
+    mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
   }
 
   mItemTreeView->setCurrentIndex( mItemTreeView->layerTreeModel()->index( index.row() - 1, 0, parentIndex ) );
@@ -689,7 +690,7 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
   {
     if ( QgsLayerTreeModelLegendNode* legendNode = mItemTreeView->layerTreeModel()->index2legendNode( index ) )
     {
-      QgsLayerTreeLayer* nodeLayer = legendNode->parent();
+      QgsLayerTreeLayer* nodeLayer = legendNode->layerNode();
       nodesWithRemoval[nodeLayer].append( index.row() );
     }
   }
@@ -773,10 +774,10 @@ void QgsComposerLegendWidget::on_mEditPushButton_clicked()
   }
   else if ( legendNode )
   {
-    QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( legendNode->parent() );
+    QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( legendNode->layerNode() );
     int originalIndex = ( idx.row() >= 0 && idx.row() < order.count() ? order[idx.row()] : -1 );
-    QgsMapLayerLegendUtils::setLegendNodeUserLabel( legendNode->parent(), originalIndex, newText );
-    model->refreshLayerLegend( legendNode->parent() );
+    QgsMapLayerLegendUtils::setLegendNodeUserLabel( legendNode->layerNode(), originalIndex, newText );
+    model->refreshLayerLegend( legendNode->layerNode() );
   }
 
   mLegend->adjustBoxSize();
@@ -806,7 +807,7 @@ void QgsComposerLegendWidget::resetLayerNodeToDefaults()
   }
   if ( QgsLayerTreeModelLegendNode* legendNode = mItemTreeView->layerTreeModel()->index2legendNode( currentIndex ) )
   {
-    nodeLayer = legendNode->parent();
+    nodeLayer = legendNode->layerNode();
   }
 
   if ( !nodeLayer )
@@ -853,6 +854,15 @@ void QgsComposerLegendWidget::on_mCountToolButton_clicked( bool checked )
   mLegend->endCommand();
 }
 
+void QgsComposerLegendWidget::on_mFilterByMapToolButton_clicked( bool checked )
+{
+  mLegend->beginCommand( tr( "Legend updated" ) );
+  mLegend->setLegendFilterByMapEnabled( checked );
+  mLegend->update();
+  mLegend->adjustBoxSize();
+  mLegend->endCommand();
+}
+
 void QgsComposerLegendWidget::on_mUpdateAllPushButton_clicked()
 {
   updateLegend();
@@ -891,6 +901,7 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mItemTreeView->blockSignals( b );
   mCheckBoxAutoUpdate->blockSignals( b );
   mMapComboBox->blockSignals( b );
+  mFilterByMapToolButton->blockSignals( b );
   mColumnCountSpinBox->blockSignals( b );
   mSplitLayerCheckBox->blockSignals( b );
   mEqualColumnWidthCheckBox->blockSignals( b );

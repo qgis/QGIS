@@ -527,6 +527,32 @@ static QgsLayerTreeModelLegendNode* _findLegendNodeForRule( QgsLayerTreeModel* l
 }
 
 
+static QgsRectangle _parseBBOX( const QString& bboxStr, bool* ok )
+{
+  *ok = false;
+  QgsRectangle bbox;
+
+  QStringList lst = bboxStr.split( "," );
+  if ( lst.count() != 4 )
+    return bbox;
+
+  bool convOk;
+  bbox.setXMinimum( lst[0].toDouble( &convOk ) );
+  if ( !convOk ) return bbox;
+  bbox.setYMinimum( lst[1].toDouble( &convOk ) );
+  if ( !convOk ) return bbox;
+  bbox.setXMaximum( lst[2].toDouble( &convOk ) );
+  if ( !convOk ) return bbox;
+  bbox.setYMaximum( lst[3].toDouble( &convOk ) );
+  if ( !convOk ) return bbox;
+
+  if ( bbox.isEmpty() ) return bbox;
+
+  *ok = true;
+  return bbox;
+}
+
+
 QImage* QgsWMSServer::getLegendGraphics()
 {
   if ( !mConfigParser || !mMapRenderer )
@@ -540,6 +566,22 @@ QImage* QgsWMSServer::getLegendGraphics()
   if ( !mParameters.contains( "FORMAT" ) )
   {
     throw QgsMapServiceException( "FormatNotSpecified", "FORMAT is mandatory for GetLegendGraphic operation" );
+  }
+
+  bool contentBasedLegend = false;
+  QgsRectangle contentBasedLegendExtent;
+
+  if ( mParameters.contains( "BBOX" ) )
+  {
+    contentBasedLegend = true;
+
+    bool bboxOk;
+    contentBasedLegendExtent = _parseBBOX( mParameters["BBOX"], &bboxOk );
+    if ( !bboxOk )
+      throw QgsMapServiceException( "InvalidParameterValue", "Invalid BBOX parameter" );
+
+    if ( mParameters.contains( "RULE" ) )
+      throw QgsMapServiceException( "InvalidParameterValue", "BBOX parameter cannot be combined with RULE" );
   }
 
   QStringList layersList, stylesList;
@@ -622,6 +664,41 @@ QImage* QgsWMSServer::getLegendGraphics()
   if ( scaleDenominator > 0 )
     legendModel.setLegendFilterByScale( scaleDenominator );
 
+  if ( contentBasedLegend )
+  {
+    HitTest hitTest;
+    getMap( &hitTest );
+
+    foreach ( QgsLayerTreeNode* node, rootGroup.children() )
+    {
+      Q_ASSERT( QgsLayerTree::isLayer( node ) );
+      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
+
+      QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( nodeLayer->layer() );
+      if ( !vl || !vl->rendererV2() )
+        continue;
+
+      const SymbolV2Set& usedSymbols = hitTest[vl];
+      QList<int> order;
+      int i = 0;
+      foreach ( const QgsLegendSymbolItemV2& legendItem, vl->rendererV2()->legendSymbolItemsV2() )
+      {
+        if ( usedSymbols.contains( legendItem.legacyRuleKey() ) )
+          order.append( i );
+        ++i;
+      }
+
+      // either remove the whole layer or just filter out some items
+      if ( order.isEmpty() )
+        rootGroup.removeChildNode( nodeLayer );
+      else
+      {
+        QgsMapLayerLegendUtils::setLegendNodeOrder( nodeLayer, order );
+        legendModel.refreshLayerLegend( nodeLayer );
+      }
+    }
+  }
+
   // find out DPI
   QImage* tmpImage = createImage( 1, 1 );
   if ( !tmpImage )
@@ -642,6 +719,13 @@ QImage* QgsWMSServer::getLegendGraphics()
   legendSettings.rstyle( QgsComposerLegendStyle::SymbolLabel ).setFont( itemFont );
   // TODO: not available: layer font color
   legendSettings.setFontColor( itemFontColor );
+
+  if ( contentBasedLegend )
+  {
+    legendSettings.setMapScale( mMapRenderer->scale() );
+    double scaleFactor = mMapRenderer->outputUnits() == QgsMapRenderer::Millimeters ? mMapRenderer->outputDpi() / 25.4 : 1.0;
+    legendSettings.setMmPerMapUnit( 1 / ( mMapRenderer->mapUnitsPerPixel() * scaleFactor ) );
+  }
 
   if ( !rule.isEmpty() )
   {
@@ -705,6 +789,69 @@ QImage* QgsWMSServer::getLegendGraphics()
   return paintImage;
 }
 
+
+void QgsWMSServer::runHitTest( QPainter* painter, HitTest& hitTest )
+{
+  QPaintDevice* thePaintDevice = painter->device();
+
+  // setup QgsRenderContext in the same way as QgsMapRenderer does
+  QgsRenderContext context;
+  context.setPainter( painter ); // we are not going to draw anything, but we still need a working painter
+  context.setRenderingStopped( false );
+  context.setRasterScaleFactor(( thePaintDevice->logicalDpiX() + thePaintDevice->logicalDpiY() ) / 2.0 / mMapRenderer->outputDpi() );
+  context.setScaleFactor( mMapRenderer->outputUnits() == QgsMapRenderer::Millimeters ? mMapRenderer->outputDpi() / 25.4 : 1.0 );
+  context.setRendererScale( mMapRenderer->scale() );
+  context.setMapToPixel( *mMapRenderer->coordinateTransform() );
+  context.setExtent( mMapRenderer->extent() );
+
+  foreach ( QString layerID, mMapRenderer->layerSet() )
+  {
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) );
+    if ( !vl || !vl->rendererV2() )
+      continue;
+
+    if ( vl->hasScaleBasedVisibility() && ( mMapRenderer->scale() < vl->minimumScale() || mMapRenderer->scale() > vl->maximumScale() ) )
+    {
+      hitTest[vl] = SymbolV2Set(); // no symbols -> will not be shown
+      continue;
+    }
+
+    if ( mMapRenderer->hasCrsTransformEnabled() )
+    {
+      QgsRectangle r1 = mMapRenderer->extent(), r2;
+      mMapRenderer->splitLayersExtent( vl, r1, r2 );
+      if ( !r1.isFinite() || !r2.isFinite() ) //there was a problem transforming the extent. Skip the layer
+        continue;
+      context.setCoordinateTransform( mMapRenderer->transformation( vl ) );
+      context.setExtent( r1 );
+    }
+
+    SymbolV2Set& usedSymbols = hitTest[vl];
+    runHitTestLayer( vl, usedSymbols, context );
+  }
+}
+
+void QgsWMSServer::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols, QgsRenderContext& context )
+{
+  QgsFeatureRendererV2* r = vl->rendererV2();
+  bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRendererV2::MoreSymbolsPerFeature;
+  r->startRender( context, vl->pendingFields() );
+  QgsFeature f;
+  QgsFeatureRequest request( context.extent() );
+  request.setFlags( QgsFeatureRequest::ExactIntersect );
+  QgsFeatureIterator fi = vl->getFeatures( request );
+  while ( fi.nextFeature( f ) )
+  {
+    if ( moreSymbolsPerFeature )
+    {
+      foreach ( QgsSymbolV2* s, r->originalSymbolsForFeature( f ) )
+        usedSymbols.insert( s );
+    }
+    else
+      usedSymbols.insert( r->originalSymbolForFeature( f ) );
+  }
+  r->stopRender( context );
+}
 
 
 void QgsWMSServer::legendParameters( double& boxSpace, double& layerSpace, double& layerTitleSpace,
@@ -961,7 +1108,7 @@ QImage* QgsWMSServer::printCompositionToImage( QgsComposition* c ) const
 }
 #endif
 
-QImage* QgsWMSServer::getMap()
+QImage* QgsWMSServer::getMap( HitTest* hitTest )
 {
   if ( !checkMaximumWidthHeight() )
   {
@@ -983,7 +1130,11 @@ QImage* QgsWMSServer::getMap()
 
   applyOpacities( layersList, bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
 
-  mMapRenderer->render( &thePainter );
+  if ( hitTest )
+    runHitTest( &thePainter, *hitTest );
+  else
+    mMapRenderer->render( &thePainter );
+
   if ( mConfigParser )
   {
     //draw configuration format specific overlay items

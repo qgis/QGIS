@@ -77,6 +77,8 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
 
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature );
+
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
     virtual void stopRender( QgsRenderContext& context );
@@ -205,7 +207,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     bool mCounting;
 
     //! temporary symbols, used for data-defined rotation and scaling
-    QHash<QString, QgsSymbolV2*> mTempSymbols;
+    QHash<QgsSymbolV2*, QgsSymbolV2*> mTempSymbols;
 
     void rebuildHash();
 

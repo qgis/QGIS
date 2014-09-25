@@ -324,6 +324,14 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! @note added in 2.4
     const QgsMapSettings& mapSettings();
 
+    /** Convenience function to project an extent into the layer source
+     * CRS, but also split it into two extents if it crosses
+     * the +/- 180 degree line. Modifies the given extent to be in the
+     * source CRS coordinates, and if it was split, returns true, and
+     * also sets the contents of the r2 parameter
+     */
+    bool splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent, QgsRectangle& r2 );
+
   signals:
 
     //! @deprecated in 2.4 - not emitted anymore
@@ -370,14 +378,6 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     //! adjust extent to fit the pixmap size
     void adjustExtentToSize();
-
-    /** Convenience function to project an extent into the layer source
-     * CRS, but also split it into two extents if it crosses
-     * the +/- 180 degree line. Modifies the given extent to be in the
-     * source CRS coordinates, and if it was split, returns true, and
-     * also sets the contents of the r2 parameter
-     */
-    bool splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent, QgsRectangle& r2 );
 
     //! indicates drawing in progress
     static bool mDrawing;
@@ -437,7 +437,6 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     QgsMapSettings mMapSettings;
 
     QHash< QString, QgsLayerCoordinateTransform > mLayerCoordinateTransformInfo;
-
 };
 
 #endif

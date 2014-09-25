@@ -58,6 +58,13 @@ class QgsComposerLegend : QgsComposerItem
     //! @note added in 2.6
     bool autoUpdateModel() const;
 
+    //! Set whether legend items should be filtered to show just the ones visible in the associated map
+    //! @note added in 2.6
+    void setLegendFilterByMapEnabled( bool enabled );
+    //! Find out whether legend items are filtered to show just the ones visible in the associated map
+    //! @note added in 2.6
+    bool legendFilterByMapEnabled() const;
+
     //setters and getters
     void setTitle( const QString& t );
     QString title() const;

@@ -197,6 +197,40 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( QVariant value )
 
 QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& feature )
 {
+  QgsSymbolV2* symbol = originalSymbolForFeature( feature );
+  if ( !symbol )
+    return 0;
+
+  if ( !mRotation.data() && !mSizeScale.data() )
+    return symbol; // no data-defined rotation/scaling - just return the symbol
+
+  // find out rotation, size scale
+  const double rotation = mRotation.data() ? mRotation->evaluate( feature ).toDouble() : 0;
+  const double sizeScale = mSizeScale.data() ? mSizeScale->evaluate( feature ).toDouble() : 1.;
+
+  // take a temporary symbol (or create it if doesn't exist)
+  QgsSymbolV2* tempSymbol = mTempSymbols[symbol];
+
+  // modify the temporary symbol and return it
+  if ( tempSymbol->type() == QgsSymbolV2::Marker )
+  {
+    QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( tempSymbol );
+    if ( mRotation.data() ) markerSymbol->setAngle( rotation );
+    markerSymbol->setSize( sizeScale * static_cast<QgsMarkerSymbolV2*>( symbol )->size() );
+    markerSymbol->setScaleMethod( mScaleMethod );
+  }
+  else if ( tempSymbol->type() == QgsSymbolV2::Line )
+  {
+    QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( tempSymbol );
+    lineSymbol->setWidth( sizeScale * static_cast<QgsLineSymbolV2*>( symbol )->width() );
+  }
+
+  return tempSymbol;
+}
+
+
+QgsSymbolV2* QgsCategorizedSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature )
+{
   const QgsAttributes& attrs = feature.attributes();
   QVariant value;
   if ( mAttrNum == -1 )
@@ -220,32 +254,9 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
     return symbolForValue( QVariant( "" ) );
   }
 
-  if ( !mRotation.data() && !mSizeScale.data() )
-    return symbol; // no data-defined rotation/scaling - just return the symbol
-
-  // find out rotation, size scale
-  const double rotation = mRotation.data() ? mRotation->evaluate( feature ).toDouble() : 0;
-  const double sizeScale = mSizeScale.data() ? mSizeScale->evaluate( feature ).toDouble() : 1.;
-
-  // take a temporary symbol (or create it if doesn't exist)
-  QgsSymbolV2* tempSymbol = mTempSymbols[value.toString()];
-
-  // modify the temporary symbol and return it
-  if ( tempSymbol->type() == QgsSymbolV2::Marker )
-  {
-    QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( tempSymbol );
-    if ( mRotation.data() ) markerSymbol->setAngle( rotation );
-    markerSymbol->setSize( sizeScale * static_cast<QgsMarkerSymbolV2*>( symbol )->size() );
-    markerSymbol->setScaleMethod( mScaleMethod );
-  }
-  else if ( tempSymbol->type() == QgsSymbolV2::Line )
-  {
-    QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( tempSymbol );
-    lineSymbol->setWidth( sizeScale * static_cast<QgsLineSymbolV2*>( symbol )->width() );
-  }
-
-  return tempSymbol;
+  return symbol;
 }
+
 
 int QgsCategorizedSymbolRendererV2::categoryIndexForValue( QVariant val )
 {
@@ -405,7 +416,7 @@ void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, con
       tempSymbol->setRenderHints(( mRotation.data() ? QgsSymbolV2::DataDefinedRotation : 0 ) |
                                  ( mSizeScale.data() ? QgsSymbolV2::DataDefinedSizeScale : 0 ) );
       tempSymbol->startRender( context, &fields );
-      mTempSymbols[ it->value().toString()] = tempSymbol;
+      mTempSymbols[ it->symbol()] = tempSymbol;
     }
   }
 }
@@ -417,7 +428,7 @@ void QgsCategorizedSymbolRendererV2::stopRender( QgsRenderContext& context )
     it->symbol()->stopRender( context );
 
   // cleanup mTempSymbols
-  QHash<QString, QgsSymbolV2*>::iterator it2 = mTempSymbols.begin();
+  QHash<QgsSymbolV2*, QgsSymbolV2*>::iterator it2 = mTempSymbols.begin();
   for ( ; it2 != mTempSymbols.end(); ++it2 )
   {
     it2.value()->stopRender( context );

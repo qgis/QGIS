@@ -24,7 +24,9 @@ class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
 class QgsLayerTreeModelLegendNode;
+class QgsMapHitTest;
 class QgsMapLayer;
+class QgsMapSettings;
 
 
 /**
@@ -105,7 +107,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Return legend node for given index. Returns null for invalid index
     //! @note added in 2.6
     static QgsLayerTreeModelLegendNode* index2legendNode( const QModelIndex& index );
-    //! Return index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined
+    //! Return index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
+    //! If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
     //! @note added in 2.6
     QModelIndex legendNode2index( QgsLayerTreeModelLegendNode* legendNode );
 
@@ -143,6 +146,22 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! @note added in 2.6
     void setLegendFilterByScale( double scaleDenominator );
     double legendFilterByScale() const { return mLegendFilterByScale; }
+
+    //! Force only display of legend nodes which are valid for given map settings.
+    //! Setting null pointer or invalid map settings will disable the functionality.
+    //! Ownership of map settings pointer does not change.
+    //! @note added in 2.6
+    void setLegendFilterByMap( const QgsMapSettings* settings );
+    const QgsMapSettings* legendFilterByMap() const { return mLegendFilterByMapSettings.data(); }
+
+    //! Give the layer tree model hints about the currently associated map view
+    //! so that legend nodes that use map units can be scaled currectly
+    //! @note added in 2.6
+    void setLegendMapViewData( double mapUnitsPerPixel, int dpi, double scale );
+    //! Get hints about map view - to be used in legend nodes. Arguments that are not null will receive values.
+    //! If there are no valid map view data (from previous call to setLegendMapViewData()), returned values are zeros.
+    //! @note added in 2.6
+    void legendMapViewData( double *mapUnitsPerPixel, int *dpi, double *scale );
 
     //! Return true if index represents a legend node (instead of layer node)
     //! @deprecated use index2legendNode()
@@ -218,6 +237,13 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     //! scale denominator for filtering of legend nodes (<= 0 means no filtering)
     double mLegendFilterByScale;
+
+    QScopedPointer<QgsMapSettings> mLegendFilterByMapSettings;
+    QScopedPointer<QgsMapHitTest> mLegendFilterByMapHitTest;
+
+    double mLegendMapViewMupp;
+    int mLegendMapViewDpi;
+    double mLegendMapViewScale;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayerTreeModel::Flags )

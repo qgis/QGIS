@@ -76,6 +76,7 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void on_mAddToolButton_clicked();
     void on_mEditPushButton_clicked();
     void on_mCountToolButton_clicked( bool checked );
+    void on_mFilterByMapToolButton_clicked( bool checked );
     void resetLayerNodeToDefaults();
     void on_mUpdateAllPushButton_clicked();
     void on_mAddGroupToolButton_clicked();

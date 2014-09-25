@@ -108,7 +108,8 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
 
     static void drawStippledBackround( QPainter* painter, QRect rect );
 
-    static QPixmap symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size );
+    //! @note customContext parameter added in 2.6
+    static QPixmap symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size, QgsRenderContext* customContext = 0 );
     static QPixmap colorRampPreviewPixmap( QgsVectorColorRampV2* ramp, QSize size );
 
     /**Returns the maximum estimated bleed for the symbol */

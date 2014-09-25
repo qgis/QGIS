@@ -81,7 +81,11 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     /** Proxy that will call this method on the embedded renderer. */
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
     /** Proxy that will call this method on the embedded renderer. */
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feat );
+    /** Proxy that will call this method on the embedded renderer. */
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
+    /** Proxy that will call this method on the embedded renderer. */
+    virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat );
     /** Proxy that will call this method on the embedded renderer. */
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
     /** Proxy that will call this method on the embedded renderer.

@@ -85,6 +85,13 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     //! @note added in 2.6
     bool autoUpdateModel() const;
 
+    //! Set whether legend items should be filtered to show just the ones visible in the associated map
+    //! @note added in 2.6
+    void setLegendFilterByMapEnabled( bool enabled );
+    //! Find out whether legend items are filtered to show just the ones visible in the associated map
+    //! @note added in 2.6
+    bool legendFilterByMapEnabled() const { return mLegendFilterByMap; }
+
     //setters and getters
     void setTitle( const QString& t );
     QString title() const;
@@ -176,6 +183,9 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     /**Sets mCompositionMap to 0 if the map is deleted*/
     void invalidateCurrentMap();
 
+  private slots:
+    void updateFilterByMap();
+
   private:
     QgsComposerLegend(); //forbidden
 
@@ -190,6 +200,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     QgsLegendSettings mSettings;
 
     const QgsComposerMap* mComposerMap;
+
+    bool mLegendFilterByMap;
 };
 
 #endif

@@ -216,6 +216,8 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     //! @note added in 1.9
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
 
+    virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat );
+
     //! returns bitwise OR-ed capabilities of the renderer
     //! \note added in 2.0
     virtual int capabilities();

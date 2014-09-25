@@ -287,6 +287,14 @@ class QgsMapRenderer : QObject
     //! @note added in 2.4
     const QgsMapSettings& mapSettings();
 
+    /** Convenience function to project an extent into the layer source
+     * CRS, but also split it into two extents if it crosses
+     * the +/- 180 degree line. Modifies the given extent to be in the
+     * source CRS coordinates, and if it was split, returns true, and
+     * also sets the contents of the r2 parameter
+     */
+    bool splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent /In,Out/, QgsRectangle& r2 /Out/ );
+
   signals:
 
     //! @deprecated in 2.4 - not emitted anymore
@@ -331,11 +339,4 @@ class QgsMapRenderer : QObject
     //! adjust extent to fit the pixmap size
     void adjustExtentToSize();
 
-    /** Convenience function to project an extent into the layer source
-     * CRS, but also split it into two extents if it crosses
-     * the +/- 180 degree line. Modifies the given extent to be in the
-     * source CRS coordinates, and if it was split, returns true, and
-     * also sets the contents of the r2 parameter
-     */
-    bool splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent, QgsRectangle& r2 );
 };

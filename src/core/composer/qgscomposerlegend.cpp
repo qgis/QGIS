@@ -35,6 +35,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     : QgsComposerItem( composition )
     , mCustomLayerTree( 0 )
     , mComposerMap( 0 )
+    , mLegendFilterByMap( false )
 {
   mLegendModel2 = new QgsLegendModelV2( QgsProject::instance()->layerTreeRoot() );
 
@@ -143,11 +144,18 @@ void QgsComposerLegend::setAutoUpdateModel( bool autoUpdate )
     return;
 
   setCustomLayerTree( autoUpdate ? 0 : QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() ) );
+  adjustBoxSize();
 }
 
 bool QgsComposerLegend::autoUpdateModel() const
 {
   return !mCustomLayerTree;
+}
+
+void QgsComposerLegend::setLegendFilterByMapEnabled( bool enabled )
+{
+  mLegendFilterByMap = enabled;
+  updateFilterByMap();
 }
 
 void QgsComposerLegend::setTitle( const QString& t )
@@ -271,6 +279,9 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
     mCustomLayerTree->writeXML( composerLegendElem );
   }
 
+  if ( mLegendFilterByMap )
+    composerLegendElem.setAttribute( "legendFilterByMap", "1" );
+
   return _writeXML( composerLegendElem, doc );
 }
 
@@ -344,6 +355,8 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
     _readXML( composerItemElem, doc );
   }
+
+  mLegendFilterByMap = itemElem.attribute( "legendFilterByMap", "0" ).toInt();
 
   // < 2.0 projects backward compatibility >>>>>
   //title font
@@ -420,7 +433,11 @@ void QgsComposerLegend::setComposerMap( const QgsComposerMap* map )
   if ( map )
   {
     QObject::connect( map, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+    QObject::connect( map, SIGNAL( itemChanged() ), this, SLOT( updateFilterByMap() ) );
+    QObject::connect( map, SIGNAL( extentChanged() ), this, SLOT( updateFilterByMap() ) );
   }
+
+  updateFilterByMap();
 }
 
 void QgsComposerLegend::invalidateCurrentMap()
@@ -428,8 +445,33 @@ void QgsComposerLegend::invalidateCurrentMap()
   if ( mComposerMap )
   {
     disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+    disconnect( mComposerMap, SIGNAL( itemChanged() ), this, SLOT( updateFilterByMap() ) );
+    disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateFilterByMap() ) );
   }
   mComposerMap = 0;
+}
+
+void QgsComposerLegend::updateFilterByMap()
+{
+  if ( mComposerMap && mLegendFilterByMap )
+  {
+    int dpi = mComposition->printResolution();
+
+    QgsRectangle requestRectangle;
+    mComposerMap->requestedExtent( requestRectangle );
+
+    QSizeF theSize( requestRectangle.width(), requestRectangle.height() );
+    theSize *= mComposerMap->mapUnitsToMM() * dpi / 25.4;
+
+    QgsMapSettings ms = mComposerMap->mapSettings( requestRectangle, theSize, dpi );
+
+    mLegendModel2->setLegendFilterByMap( &ms );
+  }
+  else
+    mLegendModel2->setLegendFilterByMap( 0 );
+
+  adjustBoxSize();
+  update();
 }
 
 // -------------------------------------------------------------------------

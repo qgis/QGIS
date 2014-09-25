@@ -111,6 +111,10 @@ class QgsComposerMap : QgsComposerItem
     /** \brief Create cache image */
     void cache();
 
+    /** Return map settings that would be used for drawing of the map
+     *  @note added in 2.6 */
+    QgsMapSettings mapSettings( const QgsRectangle& extent, const QSizeF& size, int dpi ) const;
+
     /** \brief Get identification number*/
     int id() const;
 
@@ -736,6 +740,10 @@ class QgsComposerMap : QgsComposerItem
     QPointF mapToItemCoords( const QPointF& mapCoords ) const;
 
     void connectMapOverviewSignals() /Deprecated/;
+
+    /**Calculates the extent to request and the yShift of the top-left point in case of rotation.
+     * @note added in 2.6 */
+    void requestedExtent( QgsRectangle& extent ) const;
 
   signals:
     void extentChanged();

@@ -769,7 +769,7 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    QgsSymbolV2List featureSymbolList = mRendererV2->symbolsForFeature( f );
+    QgsSymbolV2List featureSymbolList = mRendererV2->originalSymbolsForFeature( f );
     for ( QgsSymbolV2List::iterator symbolIt = featureSymbolList.begin(); symbolIt != featureSymbolList.end(); ++symbolIt )
     {
       mSymbolFeatureCountMap[*symbolIt] += 1;

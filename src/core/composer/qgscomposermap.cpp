@@ -176,6 +176,17 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
     return;
   }
 
+
+  // render
+  QgsMapRendererCustomPainterJob job( mapSettings( extent, size, dpi ), painter );
+  // Render the map in this thread. This is done because of problems
+  // with printing to printer on Windows (printing to PDF is fine though).
+  // Raster images were not displayed - see #10599
+  job.renderSynchronously();
+}
+
+QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, const QSizeF& size, int dpi ) const
+{
   const QgsMapSettings& ms = mComposition->mapSettings();
 
   QgsMapSettings jobMapSettings;
@@ -218,12 +229,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   jobMapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
   jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mComposition->useAdvancedEffects() ); // respect the composition's useAdvancedEffects flag
 
-  // render
-  QgsMapRendererCustomPainterJob job( jobMapSettings, painter );
-  // Render the map in this thread. This is done because of problems
-  // with printing to printer on Windows (printing to PDF is fine though).
-  // Raster images were not displayed - see #10599
-  job.renderSynchronously();
+  return jobMapSettings;
 }
 
 void QgsComposerMap::cache( void )
@@ -1964,7 +1970,7 @@ QString QgsComposerMap::displayName() const
   return tr( "Map %1" ).arg( mId );
 }
 
-void QgsComposerMap::requestedExtent( QgsRectangle& extent )
+void QgsComposerMap::requestedExtent( QgsRectangle& extent ) const
 {
   QgsRectangle newExtent = *currentMapExtent();
   if ( mEvaluatedMapRotation == 0 )

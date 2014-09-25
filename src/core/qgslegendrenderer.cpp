@@ -325,7 +325,7 @@ void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
     {
       if ( QgsLayerTreeModelLegendNode* legendNode = qobject_cast<QgsLayerTreeModelLegendNode*>( atom.nucleons[j].item ) )
       {
-        QString key = QString( "%1-%2" ).arg(( qulonglong )legendNode->parent() ).arg( atom.column );
+        QString key = QString( "%1-%2" ).arg(( qulonglong )legendNode->layerNode() ).arg( atom.column );
         maxSymbolWidth[key] = qMax( atom.nucleons[j].symbolSize.width(), maxSymbolWidth[key] );
       }
     }
@@ -337,7 +337,7 @@ void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
     {
       if ( QgsLayerTreeModelLegendNode* legendNode = qobject_cast<QgsLayerTreeModelLegendNode*>( atom.nucleons[j].item ) )
       {
-        QString key = QString( "%1-%2" ).arg(( qulonglong )legendNode->parent() ).arg( atom.column );
+        QString key = QString( "%1-%2" ).arg(( qulonglong )legendNode->layerNode() ).arg( atom.column );
         double space = mSettings.style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Right ) +
                        mSettings.style( QgsComposerLegendStyle::SymbolLabel ).margin( QgsComposerLegendStyle::Left );
         atom.nucleons[j].labelXOffset =  maxSymbolWidth[key] + space;

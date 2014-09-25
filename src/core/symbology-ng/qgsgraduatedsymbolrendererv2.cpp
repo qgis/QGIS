@@ -191,23 +191,7 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForValue( double value )
 
 QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature )
 {
-  const QgsAttributes& attrs = feature.attributes();
-  QVariant value;
-  if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
-  {
-    value = mExpression->evaluate( &feature );
-  }
-  else
-  {
-    value = attrs[mAttrNum];
-  }
-
-  // Null values should not be categorized
-  if ( value.isNull() )
-    return NULL;
-
-  // find the right category
-  QgsSymbolV2* symbol = symbolForValue( value.toDouble() );
+  QgsSymbolV2* symbol = originalSymbolForFeature( feature );
   if ( symbol == NULL )
     return NULL;
 
@@ -235,6 +219,27 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
     lineSymbol->setWidth( sizeScale * static_cast<QgsLineSymbolV2*>( symbol )->width() );
   }
   return tempSymbol;
+}
+
+QgsSymbolV2* QgsGraduatedSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature )
+{
+  const QgsAttributes& attrs = feature.attributes();
+  QVariant value;
+  if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
+  {
+    value = mExpression->evaluate( &feature );
+  }
+  else
+  {
+    value = attrs[mAttrNum];
+  }
+
+  // Null values should not be categorized
+  if ( value.isNull() )
+    return NULL;
+
+  // find the right category
+  return symbolForValue( value.toDouble() );
 }
 
 void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )

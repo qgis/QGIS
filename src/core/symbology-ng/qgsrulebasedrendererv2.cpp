@@ -1056,6 +1056,11 @@ QgsSymbolV2List QgsRuleBasedRendererV2::symbolsForFeature( QgsFeature& feat )
   return mRootRule->symbolsForFeature( feat );
 }
 
+QgsSymbolV2List QgsRuleBasedRendererV2::originalSymbolsForFeature( QgsFeature& feat )
+{
+  return mRootRule->symbolsForFeature( feat );
+}
+
 QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFeatureRendererV2* renderer )
 {
   if ( renderer->type() == "RuleRenderer" )

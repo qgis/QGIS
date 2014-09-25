@@ -69,6 +69,12 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature )
   return mTempSymbol.data();
 }
 
+QgsSymbolV2* QgsSingleSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature )
+{
+  Q_UNUSED( feature );
+  return mSymbol.data();
+}
+
 void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   if ( !mSymbol.data() ) return;

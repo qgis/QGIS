@@ -586,3 +586,11 @@ QgsSymbolV2List QgsFeatureRendererV2::symbolsForFeature( QgsFeature& feat )
   if ( s ) lst.append( s );
   return lst;
 }
+
+QgsSymbolV2List QgsFeatureRendererV2::originalSymbolsForFeature( QgsFeature& feat )
+{
+  QgsSymbolV2List lst;
+  QgsSymbolV2* s = originalSymbolForFeature( feat );
+  if ( s ) lst.append( s );
+  return lst;
+}
