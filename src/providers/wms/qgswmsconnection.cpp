@@ -68,8 +68,7 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
   }
 
 #ifndef QT_NO_OPENSSL
-  QgsDataSourceURI * wmsuri = &mUri;
-  QgsSslPkiSettings::updateOwsConnection( settings, credentialsKey, wmsuri, &mConnectionInfo );
+  QgsSslPkiSettings::updateOwsConnection( settings, credentialsKey, mUri, mConnectionInfo );
 #endif
 
   QString referer = settings.value( key + "/referer" ).toString();

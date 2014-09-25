@@ -71,8 +71,7 @@ QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & 
   }
 
 #ifndef QT_NO_OPENSSL
-  QgsDataSourceURI * owsuri = &mUri;
-  QgsSslPkiSettings::updateOwsConnection( settings, credentialsKey, owsuri, &mConnectionInfo );
+  QgsSslPkiSettings::updateOwsConnection( settings, credentialsKey, mUri, mConnectionInfo );
 #endif
 
   bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();

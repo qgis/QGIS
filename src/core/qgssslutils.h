@@ -143,10 +143,10 @@ class CORE_EXPORT QgsSslPkiSettings
 
     static void updateOwsConnection( const QSettings& settings,
                                      const QString& credentialsKey,
-                                     QgsDataSourceURI *uri,
-                                     QString *connectioninfo );
+                                     QgsDataSourceURI &uri,
+                                     QString &connectioninfo );
 
-    static void updateOwsCapabilities( QgsSslPkiSettings *pki,
+    static void updateOwsCapabilities( QgsSslPkiSettings &pki,
                                        const QgsDataSourceURI& uri,
                                        const QString& accessurl );
 

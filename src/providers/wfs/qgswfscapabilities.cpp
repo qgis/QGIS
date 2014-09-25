@@ -59,8 +59,7 @@ QgsWFSCapabilities::QgsWFSCapabilities( QString theUri )
 #endif
 
 #ifndef QT_NO_OPENSSL
-  QgsSslPkiSettings * owspki = &mSslCert;
-  QgsSslPkiSettings::updateOwsCapabilities( owspki, mUri, theUri );
+  QgsSslPkiSettings::updateOwsCapabilities( mSslCert, mUri, mBaseUrl );
 #endif
 }
 
@@ -210,6 +209,10 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
     mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+
+#ifndef QT_NO_OPENSSL
+    QgsSslPkiUtility::instance()->updateReplyExpectedSslErrors( mCapabilitiesReply, mSslCert );
+#endif
 
     connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
     return;

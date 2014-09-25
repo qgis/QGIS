@@ -48,8 +48,7 @@ bool QgsWmsSettings::parseUri( QString uriString )
   QgsDebugMsg( "set referer to " + mAuth.mReferer );
 
 #ifndef QT_NO_OPENSSL
-  QgsSslPkiSettings * wmspki = &mAuth.mSslCert;
-  QgsSslPkiSettings::updateOwsCapabilities( wmspki, uri, mHttpUri );
+  QgsSslPkiSettings::updateOwsCapabilities( mAuth.mSslCert, uri, mHttpUri );
 #endif
 
   mActiveSubLayers = uri.params( "layers" );

@@ -26,11 +26,13 @@
 #include <QRegExpValidator>
 
 QgsNewHttpConnection::QgsNewHttpConnection(
-  QWidget *parent, const QString& baseKey, const QString& connName, Qt::WindowFlags fl ):
-    QDialog( parent, fl ),
-    mBaseKey( baseKey ),
-    mOriginalConnName( connName ),
-    mCertWidget( 0 )
+  QWidget *parent, const QString& baseKey, const QString& connName, Qt::WindowFlags fl )
+    : QDialog( parent, fl )
+    , mBaseKey( baseKey )
+    , mOriginalConnName( connName )
+#ifndef QT_NO_OPENSSL
+    , mCertWidget( 0 )
+#endif
 {
   setupUi( this );
 

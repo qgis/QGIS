@@ -23,6 +23,10 @@
 #include "qgsdatasourceuri.h"
 #include "qgsrectangle.h"
 
+#ifndef QT_NO_OPENSSL
+#include "qgssslutils.h"
+#endif
+
 #include <QString>
 #include <QStringList>
 #include <QDomElement>
@@ -331,6 +335,11 @@ class QgsWcsCapabilities : public QObject
 
     //! Cache load control
     QNetworkRequest::CacheLoadControl mCacheLoadControl;
+
+#ifndef QT_NO_OPENSSL
+    //! Client SSL certificate
+    QgsSslPkiSettings mSslCert;
+#endif
 };
 
 
