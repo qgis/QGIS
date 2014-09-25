@@ -41,6 +41,10 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
 
   protected:
     virtual void resizeEvent( QResizeEvent* event );
+    virtual void changeEvent( QEvent* event );
+
+  private slots:
+    void changed( const int& value );
 
   private:
     int spinButtonWidth() const;

@@ -41,6 +41,10 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
 
   protected:
     virtual void resizeEvent( QResizeEvent* event );
+    virtual void changeEvent( QEvent* event );
+
+  private slots:
+    void changed( const double &value );
 
   private:
     int spinButtonWidth() const;

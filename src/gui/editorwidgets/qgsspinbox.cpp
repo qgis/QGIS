@@ -39,17 +39,30 @@ QgsSpinBox::QgsSpinBox( QWidget *parent )
   QSize msz = minimumSizeHint();
   setMinimumSize( qMax( msz.width(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ),
                   qMax( msz.height(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ) );
+
+  connect( this, SIGNAL( valueChanged( int ) ), this, SLOT( changed( int ) ) );
 }
 
 void QgsSpinBox::setAllowNull( bool allowNull )
 {
   mAllowNull = allowNull;
-  mClearButton->setVisible( mAllowNull );
+  mClearButton->setVisible( mAllowNull && isEnabled() && value() != minimum() );
+}
+
+void QgsSpinBox::changeEvent( QEvent *event )
+{
+  QSpinBox::changeEvent( event );
+  mClearButton->setVisible( mAllowNull && isEnabled() && value() != minimum() );
+}
+
+void QgsSpinBox::changed( const int& value )
+{
+  mClearButton->setVisible( mAllowNull && isEnabled() && value != minimum() );
 }
 
 void QgsSpinBox::clear()
 {
-  setValue(minimum());
+  setValue( minimum() );
 }
 
 int QgsSpinBox::frameWidth() const
