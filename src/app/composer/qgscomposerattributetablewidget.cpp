@@ -37,9 +37,6 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
     , mFrame( frame )
 {
   setupUi( this );
-  //add widget for general composer item properties
-  QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, mFrame );
-  mainLayout->addWidget( itemPropertiesWidget );
 
   blockAllSignals( true );
 
@@ -89,6 +86,14 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
                this, SLOT( updateRelationsCombo() ) );
       connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( atlasToggled() ) );
     }
+  }
+
+  //embed widget for general options
+  if ( mFrame )
+  {
+    //add widget for general composer item properties
+    QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, mFrame );
+    mainLayout->addWidget( itemPropertiesWidget );
   }
 }
 
@@ -509,6 +514,8 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
   mResizeModeComboBox->setCurrentIndex( mResizeModeComboBox->findData( mComposerTable->resizeMode() ) );
   mAddFramePushButton->setEnabled( mComposerTable->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
 
+  mEmptyFrameCheckBox->setChecked( mFrame->hidePageIfEmpty() );
+
   toggleSourceControls();
 
   blockAllSignals( false );
@@ -539,7 +546,7 @@ void QgsComposerAttributeTableWidget::updateRelationsCombo()
   if ( atlasLayer )
   {
     QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mComposerTable->composition()->atlasComposition().coverageLayer() );
-    Q_FOREACH( const QgsRelation& relation, relations )
+    Q_FOREACH ( const QgsRelation& relation, relations )
     {
       mRelationsComboBox->addItem( relation.name(), relation.id() );
     }
@@ -608,6 +615,7 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
   mRelationsComboBox->blockSignals( b );
   mEmptyModeComboBox->blockSignals( b );
   mEmptyMessageLineEdit->blockSignals( b );
+  mEmptyFrameCheckBox->blockSignals( b );
 }
 
 void QgsComposerAttributeTableWidget::setMaximumNumberOfFeatures( int n )
@@ -660,6 +668,19 @@ void QgsComposerAttributeTableWidget::on_mUniqueOnlyCheckBox_stateChanged( int s
   {
     composition->endMultiFrameCommand();
   }
+}
+
+
+void QgsComposerAttributeTableWidget::on_mEmptyFrameCheckBox_toggled( bool checked )
+{
+  if ( !mFrame )
+  {
+    return;
+  }
+
+  mFrame->beginCommand( tr( "Empty frame mode toggled" ) );
+  mFrame->setHidePageIfEmpty( checked );
+  mFrame->endCommand();
 }
 
 void QgsComposerAttributeTableWidget::on_mIntersectAtlasCheckBox_stateChanged( int state )

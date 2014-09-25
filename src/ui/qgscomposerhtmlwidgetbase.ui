@@ -45,9 +45,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-101</y>
+        <y>-10</y>
         <width>391</width>
-        <height>461</height>
+        <height>489</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -170,6 +170,13 @@
            <widget class="QPushButton" name="mAddFramePushButton">
             <property name="text">
              <string>Add Frame</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QCheckBox" name="mEmptyFrameCheckBox">
+            <property name="text">
+             <string>Don't export page if frame is empty</string>
             </property>
            </widget>
           </item>

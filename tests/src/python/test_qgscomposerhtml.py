@@ -93,11 +93,6 @@ class TestQgsComposerHtml(TestCase):
         myTestResult, myMessage = checker2.testComposition( myPage )
         assert myTestResult, myMessage
 
-        print "Checking page 3"
-        myPage = 2
-        checker3 = QgsCompositionChecker('composerhtml_multiframe3', self.mComposition)
-        myTestResult, myMessage = checker3.testComposition( myPage )
-
         self.mComposition.removeMultiFrame( composerHtml )
         composerHtml = None
 
@@ -126,11 +121,6 @@ class TestQgsComposerHtml(TestCase):
         checker2 = QgsCompositionChecker('composerhtml_smartbreaks2', self.mComposition)
         myTestResult, myMessage = checker2.testComposition( myPage )
         assert myTestResult, myMessage
-
-        print "Checking page 3"
-        myPage = 2
-        checker3 = QgsCompositionChecker('composerhtml_smartbreaks3', self.mComposition)
-        myTestResult, myMessage = checker3.testComposition( myPage )
 
         self.mComposition.removeMultiFrame( composerHtml )
         composerHtml = None

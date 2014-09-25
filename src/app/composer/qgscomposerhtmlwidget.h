@@ -47,6 +47,7 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     void on_mReloadPushButton_clicked();
     void on_mReloadPushButton2_clicked();
     void on_mAddFramePushButton_clicked();
+    void on_mEmptyFrameCheckBox_toggled( bool checked );
 
     /**Sets the GUI elements to the values of mHtmlItem*/
     void setGuiElementValues();

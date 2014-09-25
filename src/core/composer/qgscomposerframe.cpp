@@ -20,6 +20,7 @@
 QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height )
     : QgsComposerItem( x, y, width, height, c )
     , mMultiFrame( mf )
+    , mHidePageIfEmpty( false )
 {
   //repaint frame when multiframe content changes
   connect( mf, SIGNAL( contentsChanged() ), this, SLOT( repaint() ) );
@@ -33,6 +34,7 @@ QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf
 QgsComposerFrame::QgsComposerFrame()
     : QgsComposerItem( 0, 0, 0, 0, 0 )
     , mMultiFrame( 0 )
+    , mHidePageIfEmpty( false )
 {
 }
 
@@ -47,6 +49,8 @@ bool QgsComposerFrame::writeXML( QDomElement& elem, QDomDocument & doc ) const
   frameElem.setAttribute( "sectionY", QString::number( mSection.y() ) );
   frameElem.setAttribute( "sectionWidth", QString::number( mSection.width() ) );
   frameElem.setAttribute( "sectionHeight", QString::number( mSection.height() ) );
+  frameElem.setAttribute( "hidePageIfEmpty", mHidePageIfEmpty );
+
   elem.appendChild( frameElem );
 
   return _writeXML( frameElem, doc );
@@ -59,12 +63,36 @@ bool QgsComposerFrame::readXML( const QDomElement& itemElem, const QDomDocument&
   double width = itemElem.attribute( "sectionWidth" ).toDouble();
   double height = itemElem.attribute( "sectionHeight" ).toDouble();
   mSection = QRectF( x, y, width, height );
+  mHidePageIfEmpty = itemElem.attribute( "hidePageIfEmpty", "0" ).toInt();
   QDomElement composerItem = itemElem.firstChildElement( "ComposerItem" );
   if ( composerItem.isNull() )
   {
     return false;
   }
   return _readXML( composerItem, doc );
+}
+
+void QgsComposerFrame::setHidePageIfEmpty( const bool hidePageIfEmpty )
+{
+  mHidePageIfEmpty = hidePageIfEmpty;
+}
+
+bool QgsComposerFrame::isEmpty() const
+{
+  if ( !mMultiFrame )
+  {
+    return true;
+  }
+
+  double multiFrameHeight = mMultiFrame->totalSize().height();
+  if ( multiFrameHeight <= mSection.top() )
+  {
+    //multiframe height is less than top of this frame's visible portion
+    return true;
+  }
+
+  return false;
+
 }
 
 QString QgsComposerFrame::displayName() const

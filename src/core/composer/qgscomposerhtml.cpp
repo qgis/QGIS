@@ -173,6 +173,10 @@ void QgsComposerHtml::loadHtml()
   }
 
   mLoaded = false;
+
+  //reset page size. otherwise viewport size increases but never decreases again
+  mWebPage->setViewportSize( QSize( 0, 0 ) );
+
   //set html, using the specified url as base if in Url mode
   mWebPage->mainFrame()->setHtml( loadedHtml, mContentMode == QgsComposerHtml::Url ? QUrl( mActualFetchedUrl ) : QUrl() );
 

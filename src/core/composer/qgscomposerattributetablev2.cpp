@@ -780,7 +780,6 @@ void QgsComposerAttributeTableV2::addFrame( QgsComposerFrame *frame, bool recalc
 
   if ( recalcFrameSizes )
   {
-
     recalculateFrameSizes();
   }
 }

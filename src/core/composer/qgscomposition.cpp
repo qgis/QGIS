@@ -416,6 +416,30 @@ int QgsComposition::numPages() const
   return mPages.size();
 }
 
+bool QgsComposition::shouldExportPage( const int page ) const
+{
+  if ( page > numPages() || page < 1 )
+  {
+    //page number out of range
+    return false;
+  }
+
+  //check all frame items on page
+  QList<QgsComposerFrame*> frames;
+  //composerItemsOnPage uses 0 based page numbering
+  composerItemsOnPage( frames, page - 1 );
+  QList<QgsComposerFrame*>::const_iterator frameIt = frames.constBegin();
+  for ( ; frameIt != frames.constEnd(); ++frameIt )
+  {
+    if (( *frameIt )->hidePageIfEmpty() && ( *frameIt )->isEmpty() )
+    {
+      //frame is set to hide page if empty, and frame is empty, so we don't want to export this page
+      return false;
+    }
+  }
+  return true;
+}
+
 void QgsComposition::setPageStyleSymbol( QgsFillSymbolV2* symbol )
 {
   delete mPageStyleSymbol;
@@ -2545,11 +2569,16 @@ void QgsComposition::doPrint( QPrinter& printer, QPainter& p, bool startNewPage 
   int fromPage = ( printer.fromPage() < 1 ) ? 0 : printer.fromPage() - 1 ;
   int toPage = ( printer.toPage() < 1 ) ? numPages() - 1 : printer.toPage() - 1;
 
+  bool pageExported = false;
   if ( mPrintAsRaster )
   {
     for ( int i = fromPage; i <= toPage; ++i )
     {
-      if ( i > fromPage || startNewPage )
+      if ( !shouldExportPage( i + 1 ) )
+      {
+        continue;
+      }
+      if (( pageExported && i > fromPage ) || startNewPage )
       {
         printer.newPage();
       }
@@ -2560,6 +2589,7 @@ void QgsComposition::doPrint( QPrinter& printer, QPainter& p, bool startNewPage 
         QRectF targetArea( 0, 0, image.width(), image.height() );
         p.drawImage( targetArea, image, targetArea );
       }
+      pageExported = true;
     }
   }
 
@@ -2567,11 +2597,16 @@ void QgsComposition::doPrint( QPrinter& printer, QPainter& p, bool startNewPage 
   {
     for ( int i = fromPage; i <= toPage; ++i )
     {
-      if ( i > fromPage || startNewPage )
+      if ( !shouldExportPage( i + 1 ) )
+      {
+        continue;
+      }
+      if (( pageExported && i > fromPage ) || startNewPage )
       {
         printer.newPage();
       }
       renderPage( &p, i );
+      pageExported = true;
     }
   }
 }

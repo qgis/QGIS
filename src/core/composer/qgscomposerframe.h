@@ -64,10 +64,34 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
      */
     QRectF extent() const { return mSection; }
 
+    /**Returns whether the page should be hidden (ie, not included in composer exports) if this frame is empty
+     * @returns true if page should be hidden if frame is empty
+     * @note added in QGIS 2.5
+     * @see setHidePageIfEmpty
+     */
+    bool hidePageIfEmpty() const { return mHidePageIfEmpty; }
+
+    /**Sets whether the page should be hidden (ie, not included in composer exports) if this frame is empty
+     * @param hidePageIfEmpty set to true if page should be hidden if frame is empty
+     * @note added in QGIS 2.5
+     * @see hidePageIfEmpty
+     */
+    void setHidePageIfEmpty( const bool hidePageIfEmpty );
+
+    /**Returns whether the frame is empty
+     * @returns true if frame is empty
+     * @note added in QGIS 2.5
+     * @see hidePageIfEmpty
+     */
+    bool isEmpty() const;
+
   private:
     QgsComposerFrame(); //forbidden
     QgsComposerMultiFrame* mMultiFrame;
     QRectF mSection;
+
+    /**if true, composition will not export page if this frame is empty*/
+    bool mHidePageIfEmpty;
 };
 
 #endif // QGSCOMPOSERFRAME_H

@@ -1739,6 +1739,10 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
     for ( int i = 0; i < mComposition->numPages(); ++i )
     {
+      if ( !mComposition->shouldExportPage( i + 1 ) )
+      {
+        continue;
+      }
       QImage image = mComposition->printPageAsRaster( i );
       if ( image.isNull() )
       {
@@ -1912,6 +1916,10 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
       for ( int i = 0; i < mComposition->numPages(); ++i )
       {
+        if ( !mComposition->shouldExportPage( i + 1 ) )
+        {
+          continue;
+        }
         QImage image = mComposition->printPageAsRaster( i );
         QString imageFilename = filename;
 
@@ -2187,6 +2195,10 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     {
       for ( int i = 0; i < mComposition->numPages(); ++i )
       {
+        if ( !mComposition->shouldExportPage( i + 1 ) )
+        {
+          continue;
+        }
         QSvgGenerator generator;
         generator.setTitle( QgsProject::instance()->title() );
         QString currentFileName = outputFileName;
@@ -2234,6 +2246,10 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
 
       for ( int i = 0; i < mComposition->numPages(); ++i )
       {
+        if ( !mComposition->shouldExportPage( i + 1 ) )
+        {
+          continue;
+        }
         QDomDocument svg;
         QDomNode svgDocRoot;
         QgsPaperItem * paperItem = paperItems[i];

@@ -684,8 +684,10 @@ double QgsComposerTableV2::totalHeight() const
   double heightOfLastFrame = 0;
   for ( int idx = 0; idx < numberExistingFrames; ++idx )
   {
-    rowsVisibleInLastFrame = rowsVisible( idx );
+    bool hasHeader = (( mHeaderMode == QgsComposerTableV2::FirstFrame && idx == 0 )
+                      || ( mHeaderMode == QgsComposerTableV2::AllFrames ) );
     heightOfLastFrame = frame( idx )->rect().height();
+    rowsVisibleInLastFrame = rowsVisible( heightOfLastFrame, hasHeader );
     rowsAlreadyShown += rowsVisibleInLastFrame;
     height += heightOfLastFrame;
     if ( rowsAlreadyShown >= mTableContents.length() )

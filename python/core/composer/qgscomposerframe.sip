@@ -41,5 +41,26 @@ class QgsComposerFrame: QgsComposerItem
      * @see setContentSection
      */
     QRectF extent() const;
+    
+    /**Returns whether the page should be hidden (ie, not included in composer exports) if this frame is empty
+     * @returns true if page should be hidden if frame is empty
+     * @note added in QGIS 2.5
+     * @see setHidePageIfEmpty
+     */
+    bool hidePageIfEmpty() const;
+
+    /**Sets whether the page should be hidden (ie, not included in composer exports) if this frame is empty
+     * @param hidePageIfEmpty set to true if page should be hidden if frame is empty
+     * @note added in QGIS 2.5
+     * @see hidePageIfEmpty
+     */
+    void setHidePageIfEmpty( const bool hidePageIfEmpty );
+
+    /**Returns whether the frame is empty
+     * @returns true if frame is empty
+     * @note added in QGIS 2.5
+     * @see hidePageIfEmpty
+     */
+    bool isEmpty() const;
 
 };

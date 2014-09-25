@@ -56,21 +56,53 @@ class QgsComposition : QGraphicsScene
 
     /**Changes size of paper item. Also moves all items so that they retain
      * their same relative position to the top left corner of their current page.
+     * @param width page width in mm
+     * @param height page height in mm
+     * @see paperHeight
+     * @see paperWidth
     */
     void setPaperSize( const double width, const double height );
 
-    /**Returns height of paper item*/
+    /**Height of paper item
+     * @returns height in mm
+     * @see paperWidth
+     * @see setPaperSize
+    */
     double paperHeight() const;
 
-    /**Returns width of paper item*/
+    /**Width of paper item
+     * @returns width in mm
+     * @see paperHeight
+     * @see setPaperSize
+    */
     double paperWidth() const;
 
+    /**Returns the vertical space between pages in a composer view
+     * @returns space between pages in mm
+    */
     double spaceBetweenPages() const;
 
-    /**Note: added in version 1.9*/
+    /**Sets the number of pages for the composition.
+     * @param pages number of pages
+     * @note added in version 1.9
+     * @see numPages
+    */
     void setNumPages( const int pages );
-    /**Note: added in version 1.9*/
+
+    /**Returns the number of pages in the composition.
+     * @returns number of pages
+     * @note added in version 1.9
+     * @see setNumPages
+    */
     int numPages() const;
+
+    /**Returns whether a specified page number should be included in exports of the composition.
+     * @param page page number, starting with 1
+     * @returns true if page should be exported
+     * @note added in QGIS 2.5
+     * @see numPages
+    */
+    bool shouldExportPage( const int page ) const;
 
     /**Note: added in version 2.1*/
     void setPageStyleSymbol( QgsFillSymbolV2* symbol /Transfer/ );
@@ -220,6 +252,14 @@ class QgsComposition : QGraphicsScene
       @note not available in python bindings
      */
     // template<class T> void composerItems( QList<T*>& itemList );
+    
+    /**Return composer items of a specific type on a specified page
+     * @param itemList list of item type to store matching items in
+     * @param pageNumber page number (0 based)
+     * @note not available in python bindings
+     * @note added in QGIS 2.5
+     */
+    //template<class T> void composerItemsOnPage( QList<T*>& itemList, const int pageNumber );
 
     /**Returns the composer map with specified id
      @return QgsComposerMap or 0 pointer if the composer map item does not exist*/

@@ -100,6 +100,7 @@ void QgsComposerHtmlWidget::blockSignals( bool block )
   mRadioManualSource->blockSignals( block );
   mRadioUrlSource->blockSignals( block );
   mEvaluateExpressionsCheckbox->blockSignals( block );
+  mEmptyFrameCheckBox->blockSignals( block );
 }
 
 void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
@@ -263,6 +264,18 @@ void QgsComposerHtmlWidget::on_mUserStylesheetCheckBox_toggled( bool checked )
     composition->endMultiFrameCommand();
     blockSignals( false );
   }
+}
+
+void QgsComposerHtmlWidget::on_mEmptyFrameCheckBox_toggled( bool checked )
+{
+  if ( !mFrame )
+  {
+    return;
+  }
+
+  mFrame->beginCommand( tr( "Empty frame mode toggled" ) );
+  mFrame->setHidePageIfEmpty( checked );
+  mFrame->endCommand();
 }
 
 void QgsComposerHtmlWidget::on_mRadioManualSource_clicked( bool checked )
@@ -432,6 +445,8 @@ void QgsComposerHtmlWidget::setGuiElementValues()
 
   mUserStylesheetCheckBox->setChecked( mHtml->userStylesheetEnabled() );
   mStylesheetEditor->setText( mHtml->userStylesheet() );
+
+  mEmptyFrameCheckBox->setChecked( mFrame->hidePageIfEmpty() );
 
   populateDataDefinedButtons();
 
