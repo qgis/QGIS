@@ -43,7 +43,7 @@ QgsSpinBox::QgsSpinBox( QWidget *parent )
   connect( this, SIGNAL( valueChanged( int ) ), this, SLOT( changed( int ) ) );
 }
 
-void QgsSpinBox::setShowClearButton( bool showClearButton )
+void QgsSpinBox::setShowClearButton( const bool showClearButton )
 {
   mShowClearButton = showClearButton;
   mClearButton->setVisible( mShowClearButton && isEnabled() && value() != minimum() );
