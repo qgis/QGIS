@@ -21,6 +21,7 @@
 #include "qgscomposerattributetablemodelv2.h"
 #include "qgsvectorlayer.h"
 #include "qgsfieldexpressionwidget.h"
+#include "qgsdoublespinbox.h"
 #include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QGridLayout>
@@ -231,12 +232,13 @@ QWidget *QgsComposerColumnWidthDelegate::createEditor( QWidget *parent, const QS
 {
   Q_UNUSED( index );
   Q_UNUSED( option );
-  QDoubleSpinBox *editor = new QDoubleSpinBox( parent );
+  QgsDoubleSpinBox *editor = new QgsDoubleSpinBox( parent );
   editor->setMinimum( 0 );
   editor->setMaximum( 1000 );
   editor->setDecimals( 2 );
   editor->setSuffix( tr( " mm" ) );
   editor->setSpecialValueText( tr( "Automatic" ) );
+  editor->setShowClearButton( true );
   return editor;
 }
 
@@ -244,13 +246,13 @@ void QgsComposerColumnWidthDelegate::setEditorData( QWidget *editor, const QMode
 {
   int value = index.model()->data( index, Qt::EditRole ).toInt();
 
-  QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>( editor );
+  QgsDoubleSpinBox *spinBox = static_cast<QgsDoubleSpinBox*>( editor );
   spinBox->setValue( value );
 }
 
 void QgsComposerColumnWidthDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>( editor );
+  QgsDoubleSpinBox *spinBox = static_cast<QgsDoubleSpinBox*>( editor );
   spinBox->interpretText();
   int value = spinBox->value();
 
