@@ -55,10 +55,16 @@ class roughness(GdalAlgorithm):
     def processAlgorithm(self, progress):
         arguments = ['roughness']
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
-        arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
+        output = unicode(self.getOutputValue(self.OUTPUT))
+        arguments.append(output)
+
+        arguments.append('-of')
+        arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
 
         arguments.append('-b')
         arguments.append(str(self.getParameterValue(self.BAND)))
+
+
 
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')
