@@ -35,6 +35,12 @@ QgsMapCanvasMap::~QgsMapCanvasMap()
 void QgsMapCanvasMap::setContent( const QImage& image, const QgsRectangle& rect )
 {
   mImage = image;
+
+  // For true retro fans: this is approximately how the graphics looked like in 1990
+  if ( mMapCanvas->property( "retro" ).toBool() )
+    mImage = mImage.scaled( mImage.width() / 3, mImage.height() / 3 )
+                   .convertToFormat( QImage::Format_Indexed8, Qt::OrderedDither | Qt::OrderedAlphaDither );
+
   setRect( rect );
 }
 

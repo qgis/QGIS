@@ -6749,6 +6749,11 @@ void QgisApp::userCenter()
     else
       mDizzyTimer->start( 100 );
   }
+  else if ( mCoordsEdit->text() == "retro" )
+  {
+    mMapCanvas->setProperty( "retro", !mMapCanvas->property( "retro" ).toBool() );
+    refreshMapCanvas();
+  }
 
   QStringList parts = mCoordsEdit->text().split( ',' );
   if ( parts.size() != 2 )
