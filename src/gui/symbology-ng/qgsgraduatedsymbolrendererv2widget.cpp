@@ -581,6 +581,7 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
 
   mRenderer->setClassAttribute(attrName);
   mRenderer->setMode(mode);
+  mRenderer->setSourceColorRamp(ramp->clone());
   bool updateUiCount=true;
   QApplication::setOverrideCursor( Qt::WaitCursor );
   mRenderer->updateClasses(mLayer,mode,nclasses);

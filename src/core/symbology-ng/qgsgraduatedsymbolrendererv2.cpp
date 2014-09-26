@@ -1301,15 +1301,18 @@ void QgsGraduatedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2 *ramp, 
     this->setInvertedColorRamp( inverted );
   }
 
-  foreach ( QgsRendererRangeV2 range, mRanges )
+  if( mSourceColorRamp )
   {
-    QgsSymbolV2* symbol = range.symbol()->clone();
-    double colorValue;
-    if ( inverted ) colorValue = ( mRanges.count() > 1 ? ( double )( mRanges.count() - i - 1 ) / ( mRanges.count() - 1 ) : 0 );
-    else colorValue = ( mRanges.count() > 1 ? ( double ) i / ( mRanges.count() - 1 ) : 0 );
-    symbol->setColor( mSourceColorRamp->color( colorValue ) );
-    updateRangeSymbol( i, symbol );
-    ++i;
+    foreach ( QgsRendererRangeV2 range, mRanges )
+    {
+      QgsSymbolV2* symbol = range.symbol()->clone();
+      double colorValue;
+      if ( inverted ) colorValue = ( mRanges.count() > 1 ? ( double )( mRanges.count() - i - 1 ) / ( mRanges.count() - 1 ) : 0 );
+      else colorValue = ( mRanges.count() > 1 ? ( double ) i / ( mRanges.count() - 1 ) : 0 );
+      symbol->setColor( mSourceColorRamp->color( colorValue ) );
+      updateRangeSymbol( i, symbol );
+      ++i;
+    }
   }
 
 }
