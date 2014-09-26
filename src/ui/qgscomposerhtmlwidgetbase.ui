@@ -45,9 +45,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-10</y>
+        <y>-40</y>
         <width>391</width>
-        <height>489</height>
+        <height>517</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -146,16 +146,6 @@
           <string notr="true">composeritem</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="mResizeModeLabel">
-            <property name="text">
-             <string>Resize mode</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QComboBox" name="mResizeModeComboBox">
             <property name="sizePolicy">
@@ -166,6 +156,13 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QCheckBox" name="mEmptyFrameCheckBox">
+            <property name="text">
+             <string>Don't export page if frame is empty</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0" colspan="2">
            <widget class="QPushButton" name="mAddFramePushButton">
             <property name="text">
@@ -173,10 +170,20 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QCheckBox" name="mEmptyFrameCheckBox">
+          <item row="0" column="0">
+           <widget class="QLabel" name="mResizeModeLabel">
             <property name="text">
-             <string>Don't export page if frame is empty</string>
+             <string>Resize mode</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="mHideEmptyBgCheckBox">
+            <property name="text">
+             <string>Don't draw background if frame is empty</string>
             </property>
            </widget>
           </item>

@@ -78,6 +78,20 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
      */
     void setHidePageIfEmpty( const bool hidePageIfEmpty );
 
+    /**Returns whether the background and frame border should be hidden if this frame is empty
+     * @returns true if background and border should be hidden if frame is empty
+     * @note added in QGIS 2.5
+     * @see setHideBackgroundIfEmpty
+     */
+    bool hideBackgroundIfEmpty() const { return mHideBackgroundIfEmpty; }
+
+    /**Sets whether the background and frame border should be hidden if this frame is empty
+     * @param hideBackgroundIfEmpty set to true if background and border should be hidden if frame is empty
+     * @note added in QGIS 2.5
+     * @see hideBackgroundIfEmpty
+     */
+    void setHideBackgroundIfEmpty( const bool hideBackgroundIfEmpty );
+
     /**Returns whether the frame is empty
      * @returns true if frame is empty
      * @note added in QGIS 2.5
@@ -92,6 +106,9 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
 
     /**if true, composition will not export page if this frame is empty*/
     bool mHidePageIfEmpty;
+    /**if true, background and outside frame will not be drawn if frame is empty*/
+    bool mHideBackgroundIfEmpty;
+
 };
 
 #endif // QGSCOMPOSERFRAME_H

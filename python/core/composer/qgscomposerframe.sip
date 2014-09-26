@@ -55,6 +55,20 @@ class QgsComposerFrame: QgsComposerItem
      * @see hidePageIfEmpty
      */
     void setHidePageIfEmpty( const bool hidePageIfEmpty );
+    
+    /**Returns whether the background and frame border should be hidden if this frame is empty
+     * @returns true if background and border should be hidden if frame is empty
+     * @note added in QGIS 2.5
+     * @see setHideBackgroundIfEmpty
+     */
+    bool hideBackgroundIfEmpty() const;
+
+    /**Sets whether the background and frame border should be hidden if this frame is empty
+     * @param hideBackgroundIfEmpty set to true if background and border should be hidden if frame is empty
+     * @note added in QGIS 2.5
+     * @see hideBackgroundIfEmpty
+     */
+    void setHideBackgroundIfEmpty( const bool hideBackgroundIfEmpty );
 
     /**Returns whether the frame is empty
      * @returns true if frame is empty

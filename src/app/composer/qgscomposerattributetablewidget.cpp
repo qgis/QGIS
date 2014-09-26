@@ -515,6 +515,7 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
   mAddFramePushButton->setEnabled( mComposerTable->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
 
   mEmptyFrameCheckBox->setChecked( mFrame->hidePageIfEmpty() );
+  mHideEmptyBgCheckBox->setChecked( mFrame->hideBackgroundIfEmpty() );
 
   toggleSourceControls();
 
@@ -616,6 +617,7 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
   mEmptyModeComboBox->blockSignals( b );
   mEmptyMessageLineEdit->blockSignals( b );
   mEmptyFrameCheckBox->blockSignals( b );
+  mHideEmptyBgCheckBox->blockSignals( b );
 }
 
 void QgsComposerAttributeTableWidget::setMaximumNumberOfFeatures( int n )
@@ -670,7 +672,6 @@ void QgsComposerAttributeTableWidget::on_mUniqueOnlyCheckBox_stateChanged( int s
   }
 }
 
-
 void QgsComposerAttributeTableWidget::on_mEmptyFrameCheckBox_toggled( bool checked )
 {
   if ( !mFrame )
@@ -680,6 +681,18 @@ void QgsComposerAttributeTableWidget::on_mEmptyFrameCheckBox_toggled( bool check
 
   mFrame->beginCommand( tr( "Empty frame mode toggled" ) );
   mFrame->setHidePageIfEmpty( checked );
+  mFrame->endCommand();
+}
+
+void QgsComposerAttributeTableWidget::on_mHideEmptyBgCheckBox_toggled( bool checked )
+{
+  if ( !mFrame )
+  {
+    return;
+  }
+
+  mFrame->beginCommand( tr( "Hide background if empty toggled" ) );
+  mFrame->setHideBackgroundIfEmpty( checked );
   mFrame->endCommand();
 }
 

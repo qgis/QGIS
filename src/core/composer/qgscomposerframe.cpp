@@ -21,6 +21,7 @@ QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf
     : QgsComposerItem( x, y, width, height, c )
     , mMultiFrame( mf )
     , mHidePageIfEmpty( false )
+    , mHideBackgroundIfEmpty( false )
 {
   //repaint frame when multiframe content changes
   connect( mf, SIGNAL( contentsChanged() ), this, SLOT( repaint() ) );
@@ -35,6 +36,7 @@ QgsComposerFrame::QgsComposerFrame()
     : QgsComposerItem( 0, 0, 0, 0, 0 )
     , mMultiFrame( 0 )
     , mHidePageIfEmpty( false )
+    , mHideBackgroundIfEmpty( false )
 {
 }
 
@@ -50,7 +52,7 @@ bool QgsComposerFrame::writeXML( QDomElement& elem, QDomDocument & doc ) const
   frameElem.setAttribute( "sectionWidth", QString::number( mSection.width() ) );
   frameElem.setAttribute( "sectionHeight", QString::number( mSection.height() ) );
   frameElem.setAttribute( "hidePageIfEmpty", mHidePageIfEmpty );
-
+  frameElem.setAttribute( "hideBackgroundIfEmpty", mHideBackgroundIfEmpty );
   elem.appendChild( frameElem );
 
   return _writeXML( frameElem, doc );
@@ -64,6 +66,7 @@ bool QgsComposerFrame::readXML( const QDomElement& itemElem, const QDomDocument&
   double height = itemElem.attribute( "sectionHeight" ).toDouble();
   mSection = QRectF( x, y, width, height );
   mHidePageIfEmpty = itemElem.attribute( "hidePageIfEmpty", "0" ).toInt();
+  mHideBackgroundIfEmpty = itemElem.attribute( "hideBackgroundIfEmpty", "0" ).toInt();
   QDomElement composerItem = itemElem.firstChildElement( "ComposerItem" );
   if ( composerItem.isNull() )
   {
@@ -75,6 +78,17 @@ bool QgsComposerFrame::readXML( const QDomElement& itemElem, const QDomDocument&
 void QgsComposerFrame::setHidePageIfEmpty( const bool hidePageIfEmpty )
 {
   mHidePageIfEmpty = hidePageIfEmpty;
+}
+
+void QgsComposerFrame::setHideBackgroundIfEmpty( const bool hideBackgroundIfEmpty )
+{
+  if ( hideBackgroundIfEmpty == mHideBackgroundIfEmpty )
+  {
+    return;
+  }
+
+  mHideBackgroundIfEmpty = hideBackgroundIfEmpty;
+  update();
 }
 
 bool QgsComposerFrame::isEmpty() const
@@ -152,7 +166,12 @@ void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     return;
   }
 
-  drawBackground( painter );
+  bool empty = isEmpty();
+
+  if ( !empty || !mHideBackgroundIfEmpty )
+  {
+    drawBackground( painter );
+  }
   if ( mMultiFrame )
   {
     //calculate index of frame
@@ -160,7 +179,10 @@ void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     mMultiFrame->render( painter, mSection, frameIndex );
   }
 
-  drawFrame( painter );
+  if ( !empty || !mHideBackgroundIfEmpty )
+  {
+    drawFrame( painter );
+  }
   if ( isSelected() )
   {
     drawSelectionBoxes( painter );
