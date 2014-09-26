@@ -6,36 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>615</width>
+    <width>637</width>
     <height>339</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
     <layout class="QGridLayout">
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_7">
-       <property name="text">
-        <string>Color ramp</string>
-       </property>
-       <property name="buddy">
-        <cstring>cboGraduatedColorRamp</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="2">
+     <property name="rightMargin">
+      <number>6</number>
+     </property>
+     <item row="6" column="2">
       <widget class="QLabel" name="label_8">
        <property name="text">
         <string>Mode</string>
@@ -48,7 +32,17 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="3">
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Color ramp</string>
+       </property>
+       <property name="buddy">
+        <cstring>cboGraduatedColorRamp</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="3">
       <widget class="QComboBox" name="cboGraduatedMode">
        <item>
         <property name="text">
@@ -77,7 +71,7 @@
        </item>
       </widget>
      </item>
-     <item row="4" column="0">
+     <item row="5" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
         <string>Symbol</string>
@@ -87,7 +81,7 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
+     <item row="5" column="1">
       <widget class="QPushButton" name="btnChangeGraduatedSymbol">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -100,7 +94,7 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="3">
+     <item row="5" column="3">
       <widget class="QSpinBox" name="spinGraduatedClasses">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -119,7 +113,7 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="2">
+     <item row="5" column="2">
       <widget class="QLabel" name="label_5">
        <property name="text">
         <string>Classes</string>
@@ -132,14 +126,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Column</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
+     <item row="6" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QgsColorRampComboBox" name="cboGraduatedColorRamp"/>
@@ -153,13 +140,26 @@
        </item>
       </layout>
      </item>
-     <item row="0" column="1" colspan="3">
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Column</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" colspan="2">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <property name="topMargin">
         <number>0</number>
        </property>
        <item>
         <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>500</width>
@@ -180,6 +180,104 @@
           </size>
          </property>
         </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Label </string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>txtPrefix</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLineEdit" name="txtPrefix">
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>#.##</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="txtSeparator">
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_17">
+         <property name="text">
+          <string>#.##</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="txtSuffix">
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="2">
+      <widget class="QLabel" name="label_16">
+       <property name="text">
+        <string>Decimal places</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>spinDecimalPlaces</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <item>
+        <widget class="QSpinBox" name="spinDecimalPlaces">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>4</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="cbxTrimTrailingZeroes">
+         <property name="text">
+          <string>Trim</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -243,7 +341,7 @@
      <item>
       <widget class="QCheckBox" name="cbxLinkBoundaries">
        <property name="text">
-        <string>Link classes boundaries</string>
+        <string>Link class boundaries</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -288,14 +386,32 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>txtPrefix</tabstop>
+  <tabstop>txtSeparator</tabstop>
+  <tabstop>txtSuffix</tabstop>
+  <tabstop>spinDecimalPlaces</tabstop>
+  <tabstop>cbxTrimTrailingZeroes</tabstop>
   <tabstop>btnChangeGraduatedSymbol</tabstop>
+  <tabstop>spinGraduatedClasses</tabstop>
   <tabstop>cboGraduatedColorRamp</tabstop>
   <tabstop>cbxInvertedColorRamp</tabstop>
-  <tabstop>spinGraduatedClasses</tabstop>
   <tabstop>cboGraduatedMode</tabstop>
   <tabstop>viewGraduated</tabstop>
   <tabstop>btnGraduatedClassify</tabstop>
+  <tabstop>btnGraduatedAdd</tabstop>
   <tabstop>btnGraduatedDelete</tabstop>
+  <tabstop>btnDeleteAllClasses</tabstop>
+  <tabstop>cbxLinkBoundaries</tabstop>
+  <tabstop>btnAdvanced</tabstop>
+  <tabstop>cboGraduatedMode_2</tabstop>
+  <tabstop>btnChangeGraduatedSymbol_2</tabstop>
+  <tabstop>spinGraduatedClasses_2</tabstop>
+  <tabstop>cboGraduatedColorRamp_2</tabstop>
+  <tabstop>cbxInvertedColorRamp_2</tabstop>
+  <tabstop>spinDecimalPlaces_2</tabstop>
+  <tabstop>txtPrefix_4</tabstop>
+  <tabstop>txtPrefix_5</tabstop>
+  <tabstop>txtPrefix_6</tabstop>
  </tabstops>
  <resources/>
  <connections/>

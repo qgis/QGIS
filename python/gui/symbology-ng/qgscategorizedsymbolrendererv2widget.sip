@@ -18,6 +18,7 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
     void categoriesDoubleClicked( const QModelIndex & idx );
     void addCategory();
     void addCategories();
+    void applyColorRamp();
     void deleteCategories();
     void deleteAllCategories();
 
@@ -48,6 +49,8 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
     void changeSelectedSymbols();
 
     void changeCategorySymbol();
+
+    QgsVectorColorRampV2* getColorRamp();
 
     QList<QgsSymbolV2*> selectedSymbols();
     QgsCategoryList selectedCategoryList();

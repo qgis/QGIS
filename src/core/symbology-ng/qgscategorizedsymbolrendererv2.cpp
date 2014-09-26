@@ -168,7 +168,7 @@ void QgsCategorizedSymbolRendererV2::rebuildHash()
 {
   mSymbolHash.clear();
 
-  for ( int i = 0; i < mCategories.count(); ++i )
+  for ( int i = 0; i < mCategories.size(); ++i )
   {
     QgsRendererCategoryV2& cat = mCategories[i];
     mSymbolHash.insert( cat.value().toString(), ( cat.renderState() || mCounting ) ? cat.symbol() : &sSkipRender );
@@ -181,7 +181,7 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( QVariant value )
   QHash<QString, QgsSymbolV2*>::iterator it = mSymbolHash.find( value.toString() );
   if ( it == mSymbolHash.end() )
   {
-    if ( mSymbolHash.count() == 0 )
+    if ( mSymbolHash.size() == 0 )
     {
       QgsDebugMsg( "there are no hashed symbols!!!" );
     }
@@ -700,9 +700,25 @@ QgsVectorColorRampV2* QgsCategorizedSymbolRendererV2::sourceColorRamp()
 {
   return mSourceColorRamp.data();
 }
+
 void QgsCategorizedSymbolRendererV2::setSourceColorRamp( QgsVectorColorRampV2* ramp )
 {
   mSourceColorRamp.reset( ramp );
+}
+
+void QgsCategorizedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2* ramp, bool inverted )
+{
+  setSourceColorRamp(ramp);
+  setInvertedColorRamp(inverted);
+  double num=mCategories.count()-1;
+  double count = 0;
+  foreach ( const QgsRendererCategoryV2 &cat, mCategories )
+  {
+    double value=count/num;
+    if( mInvertedColorRamp ) value=1.0-value;
+    cat.symbol()->setColor(mSourceColorRamp->color(value));
+    count += 1;
+  }
 }
 
 void QgsCategorizedSymbolRendererV2::setRotationField( QString fieldOrExpression )
@@ -788,5 +804,16 @@ QgsCategorizedSymbolRendererV2* QgsCategorizedSymbolRendererV2::convertFromRende
     const QgsInvertedPolygonRenderer* invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer*>( renderer );
     return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
   }
-  return 0;
+
+  // If not one of the specifically handled renderers, then just grab the symbol from the renderer
+  // Could have applied this to specific renderer types (singleSymbol, graduatedSymbo)
+
+  QgsCategorizedSymbolRendererV2* r =new QgsCategorizedSymbolRendererV2( "", QgsCategoryList() );
+  QgsSymbolV2List symbols=const_cast<QgsFeatureRendererV2 *>(renderer)->symbols();
+  if( symbols.size() > 0 )
+  {
+    r->setSourceSymbol(symbols.at(0)->clone());
+  }
+  return r;
+
 }

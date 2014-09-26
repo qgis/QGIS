@@ -122,6 +122,10 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     bool invertedColorRamp();
     void setInvertedColorRamp( bool inverted );
 
+    // Update the color ramp used and all symbols colors.
+    //! @note added in 2.5
+    void updateColorRamp( QgsVectorColorRampV2* ramp, bool inverted = false );
+
     //! @note added in 1.6
     void setRotationField( QString fieldOrExpression );
     //! @note added in 1.6
@@ -148,6 +152,10 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     //! item in symbology was checked
     // @note added in 2.5
     virtual void checkLegendSymbolItem( QString key, bool state = true );
+
+    //! If supported by the renderer, return classification attribute for the use in legend
+    //! @note added in 2.6
+    virtual QString legendClassificationAttribute() const; 
 
     //! creates a QgsCategorizedSymbolRendererV2 from an existing renderer.
     //! @note added in 2.5

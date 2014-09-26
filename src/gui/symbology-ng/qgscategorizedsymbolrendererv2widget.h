@@ -50,6 +50,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Model : public QAbstractItemModel
     void deleteRows( QList<int> rows );
     void removeAllRows( );
     void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+    void updateSymbology();
 
   signals:
     void rowsMoved();
@@ -85,6 +86,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     void categoriesDoubleClicked( const QModelIndex & idx );
     void addCategory();
     void addCategories();
+    void applyColorRamp();
     void deleteCategories();
     void deleteAllCategories();
 
@@ -115,6 +117,8 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     void changeSelectedSymbols();
 
     void changeCategorySymbol();
+
+    QgsVectorColorRampV2* getColorRamp();
 
     QList<QgsSymbolV2*> selectedSymbols();
     QgsCategoryList selectedCategoryList();

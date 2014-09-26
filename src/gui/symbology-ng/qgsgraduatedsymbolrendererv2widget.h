@@ -49,6 +49,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Model : public QAbstractItemModel
     void deleteRows( QList<int> rows );
     void removeAllRows( );
     void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+    void updateSymbology();
+    void updateLabels();
 
   signals:
     void rowsMoved();
@@ -100,13 +102,18 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
+    void labelFormatChanged();
 
     void showSymbolLevels();
 
     void rowsMoved();
+    void modelDataChanged();
 
   protected:
-    void updateUiFromRenderer();
+    void updateUiFromRenderer( bool updateCount=true );
+    void connectUpdateHandlers();
+    void disconnectUpdateHandlers();
+    bool rowsOrdered();
 
     void updateGraduatedSymbolIcon();
 
@@ -116,8 +123,6 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
 
     void changeRangeSymbol( int rangeIdx );
     void changeRange( int rangeIdx );
-
-    QString createLabel( double lowerValue, double upperValue );
 
     void changeSelectedSymbols();
 
