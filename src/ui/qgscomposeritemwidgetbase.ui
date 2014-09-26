@@ -553,6 +553,24 @@
         </item>
        </layout>
       </item>
+      <item row="2" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QCheckBox" name="mExcludeFromPrintsCheckBox">
+          <property name="text">
+           <string>Exclude item from exports</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsDataDefinedButton" name="mExcludePrintsDDBtn">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
     </widget>
    </item>

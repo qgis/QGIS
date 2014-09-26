@@ -112,6 +112,7 @@ class QgsComposerItemWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     void on_mTransparencySlider_valueChanged( int value );
 
     void on_mItemRotationSpinBox_valueChanged( double val );
+    void on_mExcludeFromPrintsCheckBox_toggled( bool checked );
 
     void setValuesForGuiElements();
     //sets the values for all position related (x, y, width, height) elements

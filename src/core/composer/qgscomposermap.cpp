@@ -309,6 +309,10 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
   {
     return;
   }
+  if ( !shouldDrawItem() )
+  {
+    return;
+  }
 
   QRectF thisPaintRect = QRectF( 0, 0, QGraphicsRectItem::rect().width(), QGraphicsRectItem::rect().height() );
   painter->save();

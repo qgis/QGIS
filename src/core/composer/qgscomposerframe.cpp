@@ -147,6 +147,10 @@ void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   {
     return;
   }
+  if ( !shouldDrawItem() )
+  {
+    return;
+  }
 
   drawBackground( painter );
   if ( mMultiFrame )

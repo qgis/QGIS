@@ -179,6 +179,9 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   connect( mBlendModeDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mBlendModeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mBlendModeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mBlendModeCombo, SLOT( setDisabled( bool ) ) );
+
+  connect( mExcludePrintsDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mExcludePrintsDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
 }
 
 QgsComposerItemWidget::QgsComposerItemWidget(): QgsComposerItemBaseWidget( 0, 0 )
@@ -504,6 +507,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mFrameJoinStyleCombo->blockSignals( true );
   mBackgroundColorButton->blockSignals( true );
   mItemRotationSpinBox->blockSignals( true );
+  mExcludeFromPrintsCheckBox->blockSignals( true );
 
   mBackgroundColorButton->setColor( mItem->brush().color() );
   mFrameColorButton->setColor( mItem->pen().color() );
@@ -516,6 +520,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mTransparencySlider->setValue( mItem->transparency() );
   mTransparencySpnBx->setValue( mItem->transparency() );
   mItemRotationSpinBox->setValue( mItem->itemRotation( QgsComposerObject::OriginalValue ) );
+  mExcludeFromPrintsCheckBox->setChecked( mItem->excludeFromExports( QgsComposerObject::OriginalValue ) );
 
   mBackgroundColorButton->blockSignals( false );
   mFrameColorButton->blockSignals( false );
@@ -528,6 +533,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mTransparencySlider->blockSignals( false );
   mTransparencySpnBx->blockSignals( false );
   mItemRotationSpinBox->blockSignals( false );
+  mExcludeFromPrintsCheckBox->blockSignals( false );
 }
 
 void QgsComposerItemWidget::populateDataDefinedButtons()
@@ -542,6 +548,7 @@ void QgsComposerItemWidget::populateDataDefinedButtons()
   mItemRotationDDBtn->blockSignals( true );
   mTransparencyDDBtn->blockSignals( true );
   mBlendModeDDBtn->blockSignals( true );
+  mExcludePrintsDDBtn->blockSignals( true );
 
   //initialise buttons to use atlas coverage layer
   mXPositionDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::PositionX ),
@@ -558,6 +565,8 @@ void QgsComposerItemWidget::populateDataDefinedButtons()
                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::intTranspDesc() );
   mBlendModeDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::BlendMode ),
                          QgsDataDefinedButton::String, QgsDataDefinedButton::blendModesDesc() );
+  mExcludePrintsDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::ExcludeFromExports ),
+                             QgsDataDefinedButton::String, QgsDataDefinedButton::boolDesc() );
 
   //initial state of controls - disable related controls when dd buttons are active
   mXLineEdit->setEnabled( !mXPositionDDBtn->isActive() );
@@ -578,6 +587,7 @@ void QgsComposerItemWidget::populateDataDefinedButtons()
   mItemRotationDDBtn->blockSignals( false );
   mTransparencyDDBtn->blockSignals( false );
   mBlendModeDDBtn->blockSignals( false );
+  mExcludePrintsDDBtn->blockSignals( false );
 }
 
 QgsComposerObject::DataDefinedProperty QgsComposerItemWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )
@@ -609,6 +619,10 @@ QgsComposerObject::DataDefinedProperty QgsComposerItemWidget::ddPropertyForWidge
   else if ( widget == mBlendModeDDBtn )
   {
     return QgsComposerObject::BlendMode;
+  }
+  else if ( widget == mExcludePrintsDDBtn )
+  {
+    return QgsComposerObject::ExcludeFromExports;
   }
 
   return QgsComposerObject::NoProperty;
@@ -779,6 +793,16 @@ void QgsComposerItemWidget::on_mItemRotationSpinBox_valueChanged( double val )
     mItem->beginCommand( tr( "Item rotation changed" ), QgsComposerMergeCommand::ItemRotation );
     mItem->setItemRotation( val, true );
     mItem->update();
+    mItem->endCommand();
+  }
+}
+
+void QgsComposerItemWidget::on_mExcludeFromPrintsCheckBox_toggled( bool checked )
+{
+  if ( mItem )
+  {
+    mItem->beginCommand( tr( "Exclude from exports changed" ) );
+    mItem->setExcludeFromExports( checked );
     mItem->endCommand();
   }
 }

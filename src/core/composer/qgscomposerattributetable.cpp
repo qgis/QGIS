@@ -138,6 +138,10 @@ void QgsComposerAttributeTable::paint( QPainter* painter, const QStyleOptionGrap
   {
     return;
   }
+  if ( !shouldDrawItem() )
+  {
+    return;
+  }
   QgsComposerTable::paint( painter, itemStyle, pWidget );
 }
 

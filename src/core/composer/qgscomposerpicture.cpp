@@ -97,6 +97,10 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
   {
     return;
   }
+  if ( !shouldDrawItem() )
+  {
+    return;
+  }
 
   drawBackground( painter );
 

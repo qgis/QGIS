@@ -67,6 +67,11 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
   if ( !painter )
     return;
 
+  if ( !shouldDrawItem() )
+  {
+    return;
+  }
+
   int dpi = painter->device()->logicalDpiX();
   double dotsPerMM = dpi / 25.4;
 

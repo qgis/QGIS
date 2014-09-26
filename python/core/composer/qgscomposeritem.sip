@@ -543,6 +543,22 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @note added in version 2.5
     */
     virtual void setVisibility( const bool visible );
+    
+    /**Returns whether the item should be excluded from composer exports and prints
+     * @param valueType controls whether the returned value is the user specified vaule,
+     * or the current evaluated value (which may be affected by data driven settings).
+     * @returns true if item should be excluded
+     * @note added in version 2.5
+     * @see setExcludeFromExports
+     */
+    bool excludeFromExports( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue );
+
+    /**Sets whether the item should be excluded from composer exports and prints
+     * @param exclude set to true to exclude the item from exports
+     * @note added in version 2.5
+     * @see excludeFromExports
+     */
+    virtual void setExcludeFromExports( const bool exclude );    
 
     /**Returns whether this item is part of a group
      * @returns true if item is in a group
@@ -700,6 +716,12 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
 
     /**Update an item rect to consider data defined position and size of item*/
     QRectF evalItemRect( const QRectF &newRect );
+    
+    /**Returns whether the item should be drawn in the current context
+     * @returns true if item should be drawn
+     * @note added in QGIS 2.5
+    */
+    bool shouldDrawItem() const;
 
   signals:
     /**Is emitted on item rotation change*/

@@ -57,6 +57,7 @@ class CORE_EXPORT QgsComposerObject: public QObject
       ItemRotation, /*< rotation of item */
       Transparency, /*< item transparency */
       BlendMode, /*< item blend mode */
+      ExcludeFromExports, /*< exclude item from exports */
       //composer map
       MapRotation, /*< map rotation */
       MapScale, /*< map scale */

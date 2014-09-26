@@ -67,6 +67,8 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mBlendMode( QPainter::CompositionMode_SourceOver )
     , mEffectsEnabled( true )
     , mTransparency( 0 )
+    , mExcludeFromExports( false )
+    , mEvaluatedExcludeFromExports( false )
     , mLastUsedPositionMode( UpperLeft )
     , mIsGroupMember( false )
     , mCurrentExportLayer( -1 )
@@ -94,6 +96,8 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mBlendMode( QPainter::CompositionMode_SourceOver )
     , mEffectsEnabled( true )
     , mTransparency( 0 )
+    , mExcludeFromExports( false )
+    , mEvaluatedExcludeFromExports( false )
     , mLastUsedPositionMode( UpperLeft )
     , mIsGroupMember( false )
     , mCurrentExportLayer( -1 )
@@ -137,6 +141,7 @@ void QgsComposerItem::init( const bool manageZValue )
   mDataDefinedNames.insert( QgsComposerObject::ItemRotation, QString( "dataDefinedRotation" ) );
   mDataDefinedNames.insert( QgsComposerObject::Transparency, QString( "dataDefinedTransparency" ) );
   mDataDefinedNames.insert( QgsComposerObject::BlendMode, QString( "dataDefinedBlendMode" ) );
+  mDataDefinedNames.insert( QgsComposerObject::ExcludeFromExports, QString( "dataDefinedExcludeExports" ) );
 
   if ( mComposition )
   {
@@ -260,6 +265,8 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
 
   //transparency
   composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
+
+  composerItemElem.setAttribute( "excludeFromExports", mExcludeFromExports );
 
   QgsComposerObject::writeXML( composerItemElem, doc );
   itemElem.appendChild( composerItemElem );
@@ -408,6 +415,9 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
 
   //transparency
   setTransparency( itemElem.attribute( "transparency" , "0" ).toInt() );
+
+  mExcludeFromExports = itemElem.attribute( "excludeFromExports", "0" ).toInt();
+  mEvaluatedExcludeFromExports = mExcludeFromExports;
 
   QRectF evaluatedRect = evalItemRect( QRectF( x, y, width, height ) );
   setSceneRect( evaluatedRect );
@@ -795,6 +805,18 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect )
   result.moveTop( y );
 
   return result;
+}
+
+bool QgsComposerItem::shouldDrawItem() const
+{
+  if (( mComposition && mComposition->plotStyle() == QgsComposition::Preview ) || !mComposition )
+  {
+    //preview mode or no composition, so ok to draw item
+    return true;
+  }
+
+  //exporting composition, so check if item is excluded from exports
+  return !mEvaluatedExcludeFromExports;
 }
 
 void QgsComposerItem::drawBackground( QPainter* p )
@@ -1305,6 +1327,17 @@ void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataD
   {
     refreshBlendMode();
   }
+  if ( property == QgsComposerObject::ExcludeFromExports || property == QgsComposerObject::AllProperties )
+  {
+    bool exclude = mExcludeFromExports;
+    //data defined exclude from exports set?
+    QVariant exprVal;
+    if ( dataDefinedEvaluate( QgsComposerObject::ExcludeFromExports, exprVal ) )
+    {
+      exclude = exprVal.toBool();
+    }
+    mEvaluatedExcludeFromExports = exclude;
+  }
 
   update();
 }
@@ -1390,4 +1423,15 @@ void QgsComposerItem::setVisibility( const bool visible )
   {
     mComposition->itemsModel()->updateItemVisibility( this );
   }
+}
+
+bool QgsComposerItem::excludeFromExports( const QgsComposerObject::PropertyValueType valueType )
+{
+  return valueType == QgsComposerObject::EvaluatedValue ? mEvaluatedExcludeFromExports : mExcludeFromExports;
+}
+
+void QgsComposerItem::setExcludeFromExports( const bool exclude )
+{
+  mExcludeFromExports = exclude;
+  refreshDataDefinedProperty( QgsComposerObject::ExcludeFromExports );
 }
