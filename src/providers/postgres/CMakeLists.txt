@@ -34,6 +34,7 @@ INCLUDE_DIRECTORIES(
   ../../core
   ${POSTGRES_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
+  ${QSCINTILLA_INCLUDE_DIR}
   ../../core
   ../../gui
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
