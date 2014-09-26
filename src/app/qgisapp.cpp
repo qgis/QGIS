@@ -7714,8 +7714,8 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
   }
   else
   {
-    QMessageBox::critical( this, tr( "Layer is not valid" ),
-                           tr( "The layer %1 is not a valid layer and can not be added to the map" ).arg( vectorLayerPath ) );
+    QString msg = tr( "The layer %1 is not a valid layer and can not be added to the map" ).arg( vectorLayerPath );
+    messageBar()->pushMessage( tr( "Layer is not valid" ), msg, QgsMessageBar::CRITICAL, messageTimeout() );
 
     delete layer;
     mMapCanvas->freeze( false );
@@ -7757,8 +7757,8 @@ void QgisApp::addMapLayer( QgsMapLayer *theMapLayer )
   }
   else
   {
-    QMessageBox::critical( this, tr( "Layer is not valid" ),
-                           tr( "The layer is not a valid layer and can not be added to the map" ) );
+    QString msg = tr( "The layer is not a valid layer and can not be added to the map" );
+    messageBar()->pushMessage( tr( "Layer is not valid" ), msg, QgsMessageBar::CRITICAL, messageTimeout() );
   }
 
   // draw the map
