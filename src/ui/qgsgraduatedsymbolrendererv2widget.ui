@@ -403,15 +403,6 @@
   <tabstop>btnDeleteAllClasses</tabstop>
   <tabstop>cbxLinkBoundaries</tabstop>
   <tabstop>btnAdvanced</tabstop>
-  <tabstop>cboGraduatedMode_2</tabstop>
-  <tabstop>btnChangeGraduatedSymbol_2</tabstop>
-  <tabstop>spinGraduatedClasses_2</tabstop>
-  <tabstop>cboGraduatedColorRamp_2</tabstop>
-  <tabstop>cbxInvertedColorRamp_2</tabstop>
-  <tabstop>spinDecimalPlaces_2</tabstop>
-  <tabstop>txtPrefix_4</tabstop>
-  <tabstop>txtPrefix_5</tabstop>
-  <tabstop>txtPrefix_6</tabstop>
  </tabstops>
  <resources/>
  <connections/>
