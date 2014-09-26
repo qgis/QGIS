@@ -86,19 +86,19 @@ void QgsMapToolAddRing::canvasReleaseEvent( QMouseEvent * e )
       }
       else if ( addRingReturnCode == 2 )
       {
-        errorMessage = tr( "the inserted Ring is not closed" );
+        errorMessage = tr( "the inserted ring is not closed" );
       }
       else if ( addRingReturnCode == 3 )
       {
-        errorMessage = tr( "the inserted Ring is not a valid geometry" );
+        errorMessage = tr( "the inserted ring is not a valid geometry" );
       }
       else if ( addRingReturnCode == 4 )
       {
-        errorMessage = tr( "the inserted Ring crosses existing rings" );
+        errorMessage = tr( "the inserted ring crosses existing rings" );
       }
       else if ( addRingReturnCode == 5 )
       {
-        errorMessage = tr( "the inserted Ring is not contained in a feature" );
+        errorMessage = tr( "the inserted ring is not contained in a feature" );
       }
       else
       {
