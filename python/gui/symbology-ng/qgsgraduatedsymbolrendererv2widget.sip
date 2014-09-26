@@ -32,17 +32,18 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
     void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
-    void decimalPlacesChanged();
-    void unitsChanged( QString units );
+    void labelFormatChanged();
 
     void showSymbolLevels();
 
     void rowsMoved();
+    void modelDataChanged();
 
   protected:
     void updateUiFromRenderer( bool updateCount=true );
     void connectUpdateHandlers();
     void disconnectUpdateHandlers();
+    bool rowsOrdered();
 
     void updateGraduatedSymbolIcon();
 

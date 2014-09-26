@@ -19,6 +19,7 @@
 #include "qgsrendererv2.h"
 #include "qgsexpression.h"
 #include <QScopedPointer>
+#include <QRegExp>
 
 class CORE_EXPORT QgsRendererRangeV2
 {
@@ -29,6 +30,8 @@ class CORE_EXPORT QgsRendererRangeV2
 
     // default dtor is ok
     QgsRendererRangeV2& operator=( QgsRendererRangeV2 range );
+
+    bool operator<( const QgsRendererRangeV2 &other ) const;
 
     double lowerValue() const;
     double upperValue() const;
@@ -61,6 +64,48 @@ class CORE_EXPORT QgsRendererRangeV2
 };
 
 typedef QList<QgsRendererRangeV2> QgsRangeList;
+
+
+// @note added in 2.6
+class CORE_EXPORT QgsRendererRangeV2LabelFormat
+{
+  public:
+    QgsRendererRangeV2LabelFormat();
+    QgsRendererRangeV2LabelFormat( QString prefix, QString separator, QString suffix, int decimalPlaces=4, bool trimTrailingZeroes=false );
+
+    bool operator==( const QgsRendererRangeV2LabelFormat & other ) const;
+    bool operator!=( const QgsRendererRangeV2LabelFormat & other ) const;
+
+    QString prefix() const { return mPrefix; }
+    void setPrefix( QString prefix ) { mPrefix=prefix; }
+
+    QString separator() const { return mSeparator; }
+    void setSeparator( QString separator ) { mSeparator=separator; }
+
+    QString suffix() const { return mSuffix; }
+    void setSuffix( QString suffix ){ mSuffix=suffix; }
+
+    int decimalPlaces() const { return mDecimalPlaces; }
+    void setDecimalPlaces( int decimalPlaces );
+
+    bool trimTrailingZeroes() const { return mTrimTrailingZeroes; }
+    void setTrimTrailingZeroes( bool trimTrailingZeroes ){ mTrimTrailingZeroes=trimTrailingZeroes; }
+
+    //! @note labelForLowerUpper in python bindings
+    QString labelForRange( double lower, double upper ) const;
+    QString labelForRange( const QgsRendererRangeV2 &range ) const;
+
+    void setFromDomElement( QDomElement &element );
+    void saveToDomElement( QDomElement &element );
+
+  protected:
+    QString mPrefix;
+    QString mSeparator;
+    QString mSuffix;
+    int mDecimalPlaces;
+    bool mTrimTrailingZeroes;
+    QRegExp mReTrailingZeroes;
+};
 
 class QgsVectorLayer;
 class QgsVectorColorRampV2;
@@ -104,12 +149,12 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     bool updateRangeLowerValue( int rangeIndex, double value );
     //! @note added in 2.5
     bool updateRangeRenderState( int rangeIndex, bool render );
-    QString defaultRangeLabel( const QgsRendererRangeV2 &range );
-
 
     void addClass( QgsSymbolV2* symbol );
     //! @note available in python bindings as addClassRange
     void addClass( QgsRendererRangeV2 range );
+    //! @note available in python bindings as addClassLowerUpper
+    void addClass( double lower, double upper );
     void deleteClass( int idx );
     void deleteAllClasses();
 
@@ -142,27 +187,19 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note Added in 2.6
     QList<double> getDataValues( QgsVectorLayer *vlayer );
 
-    //! Return the units string used to generate default classification labels
+    //! Return the label format used to generate default classification labels
     //! @note Added in 2.6
-    QString units() const { return mUnits; }
-    //! Set the units string used to generate default classification labels
-    //! @param units The string appended to classification labels
+    const QgsRendererRangeV2LabelFormat &labelFormat() const { return mLabelFormat; }
+    //! Set the label format used to generate default classification labels
+    //! @param labelFormat The string appended to classification labels
     //! @param updateRanges If true then ranges ending with the old unit string are updated to the new.
     //! @note Added in 2.6
-    void setUnits( QString units, bool updateRanges=true );
+    void setLabelFormat( const QgsRendererRangeV2LabelFormat &labelFormat, bool updateRanges=true );
 
-    //! Return the number of decimal places used to generate labels
-    //! @note Added in 2.6
-    int decimalPlaces() const { return mDecimalPlaces; }
-    //! Reset the number of decimal places used to generate labels
-    //! @param decimalPlaces the number of decimal places
+    //! Reset the label decimal places to a numberbased on the minimum class interval
     //! @param updateRanges if true then ranges currently using the default label will be updated
     //! @note Added in 2.6
-    void setDecimalPlaces( int decimalPlaces, bool updateRanges=true );
-    //! Determine an appropriate number of decimal places based on the minimum class interval
-    //! @param updateRanges if true then ranges currently using the default label will be updated
-    //! @note Added in 2.6
-    void calculateDecimalPlaces( bool updateRanges=true );
+    void calculateLabelDecimalPlaces( bool updateRanges=true );
 
     static QgsGraduatedSymbolRendererV2* createRenderer(
       QgsVectorLayer* vlayer,
@@ -172,8 +209,8 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
       QgsSymbolV2* symbol,
       QgsVectorColorRampV2* ramp,
       bool inverted = false,
-      QString units = "",
-      int decimalPlaces = 4);
+      QgsRendererRangeV2LabelFormat labelFormat=QgsRendererRangeV2LabelFormat()
+      );
 
     //! create renderer from XML element
     static QgsFeatureRendererV2* create( QDomElement& element );
@@ -249,8 +286,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     QScopedPointer<QgsSymbolV2> mSourceSymbol;
     QScopedPointer<QgsVectorColorRampV2> mSourceColorRamp;
     bool mInvertedColorRamp;
-    QString mUnits;
-    int mDecimalPlaces;
+    QgsRendererRangeV2LabelFormat mLabelFormat;
     QScopedPointer<QgsExpression> mRotation;
     QScopedPointer<QgsExpression> mSizeScale;
     QgsSymbolV2::ScaleMethod mScaleMethod;

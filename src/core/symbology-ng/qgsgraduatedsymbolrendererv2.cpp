@@ -1,3 +1,4 @@
+
 /***************************************************************************
     qgsgraduatedsymbolrendererv2.cpp
     ---------------------
@@ -61,6 +62,14 @@ QgsRendererRangeV2& QgsRendererRangeV2::operator=( QgsRendererRangeV2 range )
   swap( range );
   return *this;
 }
+
+bool QgsRendererRangeV2::operator<( const QgsRendererRangeV2 &other ) const
+{
+  return
+      lowerValue() < other.lowerValue() ||
+      (lowerValue() == other.lowerValue() && upperValue() < other.upperValue());
+}
+
 
 void QgsRendererRangeV2::swap( QgsRendererRangeV2 & other )
 {
@@ -157,14 +166,95 @@ void QgsRendererRangeV2::toSld( QDomDocument &doc, QDomElement &element, QgsStri
 
 ///////////
 
+QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat():
+  mPrefix(""),
+  mSeparator(" - "),
+  mSuffix(""),
+  mDecimalPlaces(4),
+  mTrimTrailingZeroes(false),
+  mReTrailingZeroes("\\.?0*$")
+{
+}
+
+QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat( QString prefix, QString separator, QString suffix, int decimalPlaces, bool trimTrailingZeroes ):
+  mReTrailingZeroes("\\.?0*$")
+{
+  setPrefix(prefix);
+  setSeparator(separator);
+  setSuffix(suffix);
+  setDecimalPlaces(decimalPlaces);
+  setTrimTrailingZeroes(trimTrailingZeroes);
+}
+
+
+bool QgsRendererRangeV2LabelFormat::operator==( const QgsRendererRangeV2LabelFormat &other ) const
+{
+  return
+      prefix()==other.prefix() &&
+      separator()==other.separator() &&
+      suffix()==other.suffix() &&
+      decimalPlaces()==other.decimalPlaces() &&
+      trimTrailingZeroes()==other.trimTrailingZeroes();
+}
+
+bool QgsRendererRangeV2LabelFormat::operator!=( const QgsRendererRangeV2LabelFormat &other ) const
+{
+  return ! (*this == other);
+}
+
+void QgsRendererRangeV2LabelFormat::setDecimalPlaces( int decimalPlaces )
+{
+  // Limit the range of decimal places to a reasonable range
+  if( decimalPlaces < 0 ) decimalPlaces=0;
+  if( decimalPlaces > 15 ) decimalPlaces=15;
+  mDecimalPlaces=decimalPlaces;
+}
+
+QString QgsRendererRangeV2LabelFormat::labelForRange( const QgsRendererRangeV2 &range ) const
+{
+  return labelForRange(range.lowerValue(),range.upperValue());
+}
+
+QString QgsRendererRangeV2LabelFormat::labelForRange( double lower, double upper) const
+{
+  QString lowerStr=QString::number(lower,'f',mDecimalPlaces);
+  QString upperStr=QString::number(upper,'f',mDecimalPlaces);
+
+  if(mTrimTrailingZeroes)
+  {
+    if( lowerStr.contains('.')) lowerStr=lowerStr.replace(mReTrailingZeroes,"");
+    if( upperStr.contains('.')) upperStr=upperStr.replace(mReTrailingZeroes,"");
+  }
+
+  return mPrefix+lowerStr+ mSeparator+upperStr+mSuffix;
+}
+
+void QgsRendererRangeV2LabelFormat::setFromDomElement( QDomElement &element )
+{
+  mPrefix=element.attribute("prefix","");
+  mSeparator=element.attribute("separator"," - ");
+  mSuffix=element.attribute("suffix","");
+  mDecimalPlaces=element.attribute("decimalplaces","4").toInt();
+  mTrimTrailingZeroes=element.attribute("trimtrailingzeroes","false") == "true";
+}
+
+void QgsRendererRangeV2LabelFormat::saveToDomElement( QDomElement &element )
+{
+  element.setAttribute("prefix",mPrefix);
+  element.setAttribute("separator",mSeparator);
+  element.setAttribute("suffix",mSuffix);
+  element.setAttribute("decimalplaces",mDecimalPlaces);
+  element.setAttribute("trimtrailingzeroes",mTrimTrailingZeroes ? "true" : "false" );
+}
+
+///////////
+
 QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( QString attrName, QgsRangeList ranges )
     : QgsFeatureRendererV2( "graduatedSymbol" ),
     mAttrName( attrName ),
     mRanges( ranges ),
     mMode( Custom ),
     mInvertedColorRamp( false ),
-    mUnits(""),
-    mDecimalPlaces(4),
     mScaleMethod( DEFAULT_SCALE_METHOD )
 {
   // TODO: check ranges for sanity (NULL symbols, invalid ranges)
@@ -334,9 +424,9 @@ bool QgsGraduatedSymbolRendererV2::updateRangeUpperValue( int rangeIndex, double
   if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
     return false;
   QgsRendererRangeV2 &range=mRanges[rangeIndex];
-  bool isDefaultLabel= range.label() == defaultRangeLabel(range);
+  bool isDefaultLabel= range.label() == mLabelFormat.labelForRange(range);
   range.setUpperValue( value );
-  if( isDefaultLabel ) range.setLabel(defaultRangeLabel(range));
+  if( isDefaultLabel ) range.setLabel(mLabelFormat.labelForRange(range));
   return true;
 }
 
@@ -345,9 +435,9 @@ bool QgsGraduatedSymbolRendererV2::updateRangeLowerValue( int rangeIndex, double
   if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
     return false;
   QgsRendererRangeV2 &range=mRanges[rangeIndex];
-  bool isDefaultLabel= range.label() == defaultRangeLabel(range);
+  bool isDefaultLabel= range.label() == mLabelFormat.labelForRange(range);
   range.setLowerValue( value );
-  if( isDefaultLabel ) range.setLabel(defaultRangeLabel(range));
+  if( isDefaultLabel ) range.setLabel(mLabelFormat.labelForRange(range));
   return true;
 }
 
@@ -357,12 +447,6 @@ bool QgsGraduatedSymbolRendererV2::updateRangeRenderState( int rangeIndex, bool 
     return false;
   mRanges[rangeIndex].setRenderState( value );
   return true;
-}
-
-QString QgsGraduatedSymbolRendererV2::defaultRangeLabel(const QgsRendererRangeV2 & range )
-{
-  return QString::number( range.lowerValue(), 'f', mDecimalPlaces )
-      + " - " + QString::number( range.upperValue(), 'f', mDecimalPlaces ) + mUnits;
 }
 
 QString QgsGraduatedSymbolRendererV2::dump() const
@@ -388,8 +472,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone() const
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
   r->setScaleMethod( scaleMethod() );
-  r->setUnits( units(), false );
-  r->setDecimalPlaces( decimalPlaces(), false );
+  r->setLabelFormat( labelFormat() );
   return r;
 }
 
@@ -817,8 +900,8 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   QgsSymbolV2* symbol,
   QgsVectorColorRampV2* ramp,
   bool inverted,
-  QString units,
-  int decimalPlaces )
+  QgsRendererRangeV2LabelFormat labelFormat
+  )
 {
   QgsRangeList ranges;
   QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( attrName, ranges );
@@ -826,10 +909,8 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   r->setSourceColorRamp( ramp->clone() );
   r->setInvertedColorRamp( inverted );
   r->setMode( mode );
-  r->setUnits( units );
+  r->setLabelFormat(labelFormat,false);
   r->updateClasses(vlayer,mode,classes);
-  r->setDecimalPlaces( decimalPlaces );
-
   return r;
 }
 
@@ -948,10 +1029,6 @@ void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode m
     lower = upper; // upper border from last interval
     upper = *it;
 
-    // Symbol based on range
-    QgsSymbolV2* newSymbol = mSourceSymbol->clone();
-    QgsRendererRangeV2 range = QgsRendererRangeV2( lower, upper, newSymbol, "" );
-
     // Label - either StdDev label or default label for a range
     if ( mode == StdDev )
     {
@@ -970,11 +1047,10 @@ void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode m
     }
     else
     {
-      label=defaultRangeLabel(range);
+      label=mLabelFormat.labelForRange(lower,upper);
     }
-    range.setLabel(label);
-
-    addClass( range );
+    QgsSymbolV2* newSymbol = mSourceSymbol->clone();
+    addClass( QgsRendererRangeV2( lower, upper, newSymbol, label ) );
   }
   updateColorRamp(0,mInvertedColorRamp);
 
@@ -1068,13 +1144,12 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
     r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
   r->setScaleMethod( QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) );
 
-  QDomElement labelSettingsElem = element.firstChildElement( "labelsettings" );
-  if( ! labelSettingsElem.isNull() )
+  QDomElement labelFormatElem = element.firstChildElement( "labelformat" );
+  if( ! labelFormatElem.isNull() )
   {
-    QString unitString=labelSettingsElem.attribute("units");
-    r->setUnits(unitString, false);
-    int decimalPlaces=labelSettingsElem.attribute("decimalplaces").toInt();
-    r->setDecimalPlaces(decimalPlaces,false);
+    QgsRendererRangeV2LabelFormat labelFormat;
+    labelFormat.setFromDomElement( labelFormatElem );
+    r->setLabelFormat( labelFormat );
   }
   // TODO: symbol levels
   return r;
@@ -1163,10 +1238,9 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
   sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 
-  QDomElement labelSettingsElem=doc.createElement("labelsettings");
-  labelSettingsElem.setAttribute("units",mUnits);
-  labelSettingsElem.setAttribute("decimalplaces",mDecimalPlaces);
-  rendererElem.appendChild( labelSettingsElem );
+  QDomElement labelFormatElem=doc.createElement("labelformat");
+  mLabelFormat.saveToDomElement(labelFormatElem);
+  rendererElem.appendChild( labelFormatElem );
 
   return rendererElem;
 }
@@ -1313,6 +1387,13 @@ void QgsGraduatedSymbolRendererV2::addClass( QgsSymbolV2* symbol )
   mRanges.insert( 0, QgsRendererRangeV2( 0.0, 0.0, newSymbol, label ) );
 }
 
+void QgsGraduatedSymbolRendererV2::addClass( double lower, double upper )
+{
+    QgsSymbolV2* newSymbol = mSourceSymbol->clone();
+    QString label=mLabelFormat.labelForRange( lower, upper );
+    mRanges.append( QgsRendererRangeV2( lower, upper, newSymbol, label ));
+}
+
 void QgsGraduatedSymbolRendererV2::addClass( QgsRendererRangeV2 range )
 {
   mRanges.append( range );
@@ -1328,47 +1409,20 @@ void QgsGraduatedSymbolRendererV2::deleteAllClasses()
   mRanges.clear();
 }
 
-void QgsGraduatedSymbolRendererV2::setUnits( QString units, bool updateRanges )
+void QgsGraduatedSymbolRendererV2::setLabelFormat( const QgsRendererRangeV2LabelFormat &labelFormat, bool updateRanges )
 {
-  if( updateRanges && units != mUnits )
+  if( updateRanges && labelFormat != mLabelFormat)
   {
     for ( QgsRangeList::iterator it = mRanges.begin(); it != mRanges.end(); ++it )
     {
-      QString label=it->label();
-      if( label.endsWith(mUnits))
-      {
-        label=label.left(label.length()-mUnits.length())+units;
-        it->setLabel(label);
-      }
+      it->setLabel( labelFormat.labelForRange(*it));
     }
   }
-  mUnits=units;
+  mLabelFormat=labelFormat;
 }
 
-void QgsGraduatedSymbolRendererV2::setDecimalPlaces( int decimalPlaces, bool updateRanges )
-{
-  if( decimalPlaces < 0 ) decimalPlaces=0;
-  if( decimalPlaces > 10 ) decimalPlaces=10;
 
-  if( updateRanges && decimalPlaces != mDecimalPlaces )
-  {
-    int saveDecimalPlaces=mDecimalPlaces;
-    for ( QgsRangeList::iterator it = mRanges.begin(); it != mRanges.end(); ++it )
-    {
-      QString label=it->label();
-      QString defaultLabel=defaultRangeLabel(*it);
-      if( label == defaultLabel )
-      {
-        mDecimalPlaces=decimalPlaces;
-        it->setLabel(defaultRangeLabel(*it));
-        mDecimalPlaces=saveDecimalPlaces;
-      }
-    }
-  }
-  mDecimalPlaces=decimalPlaces;
-}
-
-void QgsGraduatedSymbolRendererV2::calculateDecimalPlaces( bool updateRanges )
+void QgsGraduatedSymbolRendererV2::calculateLabelDecimalPlaces( bool updateRanges )
 {
   // Find the minimum size of a class
   double minClassRange=0.0;
@@ -1390,8 +1444,8 @@ void QgsGraduatedSymbolRendererV2::calculateDecimalPlaces( bool updateRanges )
     ndp--;
     nextDpMinRange *= 10.0;
   }
-
-  setDecimalPlaces(ndp,updateRanges);
+  mLabelFormat.setDecimalPlaces(ndp);
+  if( updateRanges ) setLabelFormat( mLabelFormat, true );
 }
 
 void QgsGraduatedSymbolRendererV2::moveClass( int from, int to )
@@ -1402,7 +1456,7 @@ void QgsGraduatedSymbolRendererV2::moveClass( int from, int to )
 
 bool valueLessThan( const QgsRendererRangeV2 &r1, const QgsRendererRangeV2 &r2 )
 {
-  return r1.lowerValue() < r2.lowerValue();
+  return r1 < r2;
 }
 
 bool valueGreaterThan( const QgsRendererRangeV2 &r1, const QgsRendererRangeV2 &r2 )

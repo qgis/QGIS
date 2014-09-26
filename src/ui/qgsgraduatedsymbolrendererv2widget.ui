@@ -147,58 +147,6 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="2">
-      <widget class="QLabel" name="label_9">
-       <property name="text">
-        <string>Decimal places</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="buddy">
-        <cstring>spinDecimalPlaces</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="3">
-      <widget class="QSpinBox" name="spinDecimalPlaces">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimum">
-        <number>0</number>
-       </property>
-       <property name="maximum">
-        <number>10</number>
-       </property>
-       <property name="value">
-        <number>4</number>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="txtUnits">
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Label units</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="buddy">
-        <cstring>txtUnits</cstring>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="1" colspan="2">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <property name="topMargin">
@@ -232,6 +180,104 @@
           </size>
          </property>
         </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Label </string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>txtPrefix</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLineEdit" name="txtPrefix">
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>#.##</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="txtSeparator">
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_17">
+         <property name="text">
+          <string>#.##</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="txtSuffix">
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="2">
+      <widget class="QLabel" name="label_16">
+       <property name="text">
+        <string>Decimal places</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>spinDecimalPlaces</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <item>
+        <widget class="QSpinBox" name="spinDecimalPlaces">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>4</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="cbxTrimTrailingZeroes">
+         <property name="text">
+          <string>Trim</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -295,7 +341,7 @@
      <item>
       <widget class="QCheckBox" name="cbxLinkBoundaries">
        <property name="text">
-        <string>Link classes boundaries</string>
+        <string>Link class boundaries</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -340,8 +386,11 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>txtUnits</tabstop>
+  <tabstop>txtPrefix</tabstop>
+  <tabstop>txtSeparator</tabstop>
+  <tabstop>txtSuffix</tabstop>
   <tabstop>spinDecimalPlaces</tabstop>
+  <tabstop>cbxTrimTrailingZeroes</tabstop>
   <tabstop>btnChangeGraduatedSymbol</tabstop>
   <tabstop>spinGraduatedClasses</tabstop>
   <tabstop>cboGraduatedColorRamp</tabstop>
@@ -354,6 +403,15 @@
   <tabstop>btnDeleteAllClasses</tabstop>
   <tabstop>cbxLinkBoundaries</tabstop>
   <tabstop>btnAdvanced</tabstop>
+  <tabstop>cboGraduatedMode_2</tabstop>
+  <tabstop>btnChangeGraduatedSymbol_2</tabstop>
+  <tabstop>spinGraduatedClasses_2</tabstop>
+  <tabstop>cboGraduatedColorRamp_2</tabstop>
+  <tabstop>cbxInvertedColorRamp_2</tabstop>
+  <tabstop>spinDecimalPlaces_2</tabstop>
+  <tabstop>txtPrefix_4</tabstop>
+  <tabstop>txtPrefix_5</tabstop>
+  <tabstop>txtPrefix_6</tabstop>
  </tabstops>
  <resources/>
  <connections/>

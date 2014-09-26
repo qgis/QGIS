@@ -411,8 +411,6 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   connect( viewGraduated, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( rangesClicked( const QModelIndex & ) ) );
   connect( viewGraduated, SIGNAL( customContextMenuRequested( const QPoint& ) ),  this, SLOT( contextMenuViewCategories( const QPoint& ) ) );
 
-  connect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
-
   connect( btnGraduatedClassify, SIGNAL( clicked() ), this, SLOT( classifyGraduated() ) );
   connect( btnChangeGraduatedSymbol, SIGNAL( clicked() ), this, SLOT( changeGraduatedSymbol() ) );
   connect( btnGraduatedDelete, SIGNAL( clicked() ), this, SLOT( deleteClasses() ) );
@@ -457,8 +455,14 @@ void QgsGraduatedSymbolRendererV2Widget::connectUpdateHandlers()
   connect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( classifyGraduated() ) );
   connect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( reapplyColorRamp() ) );
   connect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ) , this, SLOT( reapplyColorRamp() ) );
-  connect( spinDecimalPlaces, SIGNAL(valueChanged(int)), this, SLOT(decimalPlacesChanged()));
-  connect( txtUnits, SIGNAL( textChanged(QString)), this, SLOT(unitsChanged(QString)));
+  connect( spinDecimalPlaces, SIGNAL(valueChanged(int)), this, SLOT(labelFormatChanged()));
+  connect( cbxTrimTrailingZeroes, SIGNAL(toggled(bool)),this,SLOT(labelFormatChanged()));
+  connect( txtPrefix, SIGNAL( textChanged(QString)), this, SLOT(labelFormatChanged()));
+  connect( txtSeparator, SIGNAL( textChanged(QString)), this, SLOT(labelFormatChanged()));
+  connect( txtSuffix, SIGNAL( textChanged(QString)), this, SLOT(labelFormatChanged()));
+
+  connect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
+  connect( mModel, SIGNAL( dataChanged(QModelIndex,QModelIndex)), this, SLOT( modelDataChanged( )) );
 }
 
 // Connect/disconnect event handlers which trigger updating renderer
@@ -469,8 +473,14 @@ void QgsGraduatedSymbolRendererV2Widget::disconnectUpdateHandlers()
   disconnect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( classifyGraduated() ) );
   disconnect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( reapplyColorRamp() ) );
   disconnect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ) , this, SLOT( reapplyColorRamp() ) );
-  disconnect( spinDecimalPlaces, SIGNAL(valueChanged(int)), this, SLOT(decimalPlacesChanged()));
-  disconnect( txtUnits, SIGNAL( textChanged(QString)), this, SLOT(unitsChanged(QString)));
+  disconnect( spinDecimalPlaces, SIGNAL(valueChanged(int)), this, SLOT(labelFormatChanged()));
+  disconnect( cbxTrimTrailingZeroes, SIGNAL(toggled(bool)),this,SLOT(labelFormatChanged()));
+  disconnect( txtPrefix, SIGNAL( textChanged(QString)), this, SLOT(labelFormatChanged()));
+  disconnect( txtSeparator, SIGNAL( textChanged(QString)), this, SLOT(labelFormatChanged()));
+  disconnect( txtSuffix, SIGNAL( textChanged(QString)), this, SLOT(labelFormatChanged()));
+
+  disconnect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
+  disconnect( mModel, SIGNAL( dataChanged(QModelIndex,QModelIndex)), this, SLOT( modelDataChanged( )) );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount )
@@ -507,8 +517,12 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
     cbxInvertedColorRamp->setChecked( mRenderer->invertedColorRamp() );
   }
 
-  spinDecimalPlaces->setValue( mRenderer->decimalPlaces());
-  txtUnits->setText( mRenderer->units() );
+  QgsRendererRangeV2LabelFormat labelFormat=mRenderer->labelFormat();
+  txtPrefix->setText( labelFormat.prefix());
+  txtSeparator->setText( labelFormat.separator() );
+  txtSuffix->setText( labelFormat.suffix() );
+  spinDecimalPlaces->setValue( labelFormat.decimalPlaces());
+  cbxTrimTrailingZeroes->setChecked( labelFormat.trimTrailingZeroes());
 
   mModel = new QgsGraduatedSymbolRendererV2Model( this );
   mModel->setRenderer( mRenderer );
@@ -570,7 +584,7 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   bool updateUiCount=true;
   QApplication::setOverrideCursor( Qt::WaitCursor );
   mRenderer->updateClasses(mLayer,mode,nclasses);
-  mRenderer->calculateDecimalPlaces();
+  mRenderer->calculateLabelDecimalPlaces();
   QApplication::restoreOverrideCursor();
   // PrettyBreaks and StdDev calculation don't generate exact
   // number of classes - leave user interface unchanged for these
@@ -676,8 +690,6 @@ void QgsGraduatedSymbolRendererV2Widget::rangesClicked( const QModelIndex & idx 
     mRowSelected = idx.row();
 }
 
-
-
 void QgsGraduatedSymbolRendererV2Widget::changeSelectedSymbols()
 {
   QItemSelectionModel* m = viewGraduated->selectionModel();
@@ -727,8 +739,9 @@ void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
   const QgsRendererRangeV2& range = mRenderer->ranges()[rangeIdx];
   // Add arbitrary 3 to number of decimal places to retain a bit extra accuracy in
   // case we want to??
-  dialog.setLowerValue( QString::number( range.lowerValue(), 'f', mRenderer->decimalPlaces()+3 ) );
-  dialog.setUpperValue( QString::number( range.upperValue(), 'f', mRenderer->decimalPlaces()+3 ) );
+  int decimalPlaces=mRenderer->labelFormat().decimalPlaces();
+  dialog.setLowerValue( QString::number( range.lowerValue(), 'f', decimalPlaces+3 ) );
+  dialog.setUpperValue( QString::number( range.upperValue(), 'f', decimalPlaces+3 ) );
 
   if ( dialog.exec() == QDialog::Accepted )
   {
@@ -769,12 +782,46 @@ void QgsGraduatedSymbolRendererV2Widget::deleteAllClasses()
   mModel->removeAllRows();
 }
 
+bool QgsGraduatedSymbolRendererV2Widget::rowsOrdered()
+{
+  const QgsRangeList &ranges = mRenderer->ranges();
+  bool ordered=true;
+  for ( int i = 1;i < ranges.size();++i )
+  {
+    if( ranges[i] < ranges[i-1] )
+    {
+      ordered=false;
+      break;
+    }
+  }
+  return ordered;
+}
+
 void QgsGraduatedSymbolRendererV2Widget::toggleBoundariesLink( bool linked )
 {
   //If the checkbox controlling the link between boundaries was unchecked and we check it, we have to link the boundaries
   //This is done by updating all lower ranges to the upper value of the range above
   if ( linked )
   {
+    // Cannot link ranges if they are not sorted - results will be crazy
+    // qSort( mRenderer->ranges() );
+    // Could not get qSort to work with copy/swap idiom on QgsVectorRange
+
+    if( ! rowsOrdered() )
+    {
+      int result=QMessageBox::warning(
+            this,
+            tr("Linked range warning"),
+            tr("Linking ranges that are not ordered may produced unexpected results. Proceed?"),
+            QMessageBox::Ok | QMessageBox::Cancel );
+      if( result != QMessageBox::Ok )
+      {
+        cbxLinkBoundaries->setChecked( false );
+        return;
+      }
+    }
+
+    // Ok to proceed
     for ( int i = 1;i < mRenderer->ranges().size();++i )
     {
       mRenderer->updateRangeLowerValue( i, mRenderer->ranges()[i-1].upperValue() );
@@ -808,17 +855,18 @@ void QgsGraduatedSymbolRendererV2Widget::scaleMethodChanged( QgsSymbolV2::ScaleM
   mRenderer->setScaleMethod( scaleMethod );
 }
 
-void QgsGraduatedSymbolRendererV2Widget::decimalPlacesChanged()
+void QgsGraduatedSymbolRendererV2Widget::labelFormatChanged()
 {
-  mRenderer->setDecimalPlaces( spinDecimalPlaces->value() );
+  QgsRendererRangeV2LabelFormat labelFormat=QgsRendererRangeV2LabelFormat(
+        txtPrefix->text(),
+        txtSeparator->text(),
+        txtSuffix->text(),
+        spinDecimalPlaces->value(),
+       cbxTrimTrailingZeroes->isChecked());
+  mRenderer->setLabelFormat(labelFormat,true);
   mModel->updateLabels();
 }
 
-void QgsGraduatedSymbolRendererV2Widget::unitsChanged(QString units)
-{
-  mRenderer->setUnits(units);
-  mModel->updateLabels();
-}
 
 QList<QgsSymbolV2*> QgsGraduatedSymbolRendererV2Widget::selectedSymbols()
 {
@@ -879,6 +927,14 @@ void QgsGraduatedSymbolRendererV2Widget::showSymbolLevels()
 void QgsGraduatedSymbolRendererV2Widget::rowsMoved()
 {
   viewGraduated->selectionModel()->clear();
+}
+
+void QgsGraduatedSymbolRendererV2Widget::modelDataChanged()
+{
+  if( ! rowsOrdered() )
+  {
+    cbxLinkBoundaries->setChecked(false);
+  }
 }
 
 void QgsGraduatedSymbolRendererV2Widget::keyPressEvent( QKeyEvent* event )
