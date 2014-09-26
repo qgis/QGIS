@@ -105,9 +105,11 @@ class GdalUtils:
                 continue
             shortName = driver.ShortName
             metadata = driver.GetMetadata()
-            if gdal.DCAP_CREATE not in metadata \
-                    or metadata[gdal.DCAP_CREATE] != 'YES':
-                continue
+            #===================================================================
+            # if gdal.DCAP_CREATE not in metadata \
+            #         or metadata[gdal.DCAP_CREATE] != 'YES':
+            #     continue
+            #===================================================================
             if gdal.DMD_EXTENSION in metadata:
                 extensions = metadata[gdal.DMD_EXTENSION].split('/')
                 if extensions:
