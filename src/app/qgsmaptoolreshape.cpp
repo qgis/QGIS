@@ -17,7 +17,6 @@
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
-#include <QMessageBox>
 #include <QMouseEvent>
 
 QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas* canvas ): QgsMapToolCapture( canvas, QgsMapToolCapture::CaptureLine )
@@ -59,8 +58,7 @@ void QgsMapToolReshape::canvasReleaseEvent( QMouseEvent * e )
     else if ( error == 2 )
     {
       //problem with coordinate transformation
-      QMessageBox::information( 0, tr( "Coordinate transform error" ),
-                                tr( "Cannot transform the point to the layers coordinate system" ) );
+      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), QgsMessageBar::WARNING );
       return;
     }
 

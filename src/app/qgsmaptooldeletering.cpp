@@ -20,7 +20,6 @@
 #include "qgsvectorlayer.h"
 
 #include <QMouseEvent>
-#include <QMessageBox>
 #include <limits>
 
 QgsMapToolDeleteRing::QgsMapToolDeleteRing( QgsMapCanvas* canvas )

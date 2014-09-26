@@ -32,7 +32,6 @@
 #include "qgisapp.h"
 
 #include <QSettings>
-#include <QMessageBox>
 #include <QMouseEvent>
 #include <QStatusBar>
 
@@ -61,9 +60,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QMouseEvent *e )
 
   if ( !layer || layer->type() != QgsMapLayer::VectorLayer )
   {
-    QMessageBox::warning( mCanvas,
-                          tr( "No active vector layer" ),
-                          tr( "To run an action, you must choose a vector layer by clicking on its name in the legend" ) );
+    emit messageEmitted( tr( "To run an action, you must choose an active vector layer." ), QgsMessageBar::INFO );
     return;
   }
 
@@ -76,9 +73,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QMouseEvent *e )
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( vlayer->actions()->size() == 0 && QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).size() == 0 )
   {
-    QMessageBox::warning( mCanvas,
-                          tr( "No actions available" ),
-                          tr( "The active vector layer has no defined actions" ) );
+    emit messageEmitted( tr( "The active vector layer has no defined actions" ), QgsMessageBar::INFO );
     return;
   }
 

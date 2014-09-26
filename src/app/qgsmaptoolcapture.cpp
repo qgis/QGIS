@@ -28,7 +28,6 @@
 
 #include <QCursor>
 #include <QPixmap>
-#include <QMessageBox>
 #include <QMouseEvent>
 #include <QStatusBar>
 

@@ -20,7 +20,6 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 
-#include <QMessageBox>
 #include <QMouseEvent>
 
 QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas* canvas )

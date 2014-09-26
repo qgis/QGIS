@@ -21,7 +21,6 @@
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
 #include <QGraphicsPixmapItem>
-#include <QMessageBox>
 #include <QMouseEvent>
 
 QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ),
@@ -96,7 +95,7 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
   QList<QgsSnappingResult> snapResults;
   if ( canvasSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToVertex, -1 ) != 0 || snapResults.size() < 1 )
   {
-    QMessageBox::critical( 0, tr( "No point feature" ), tr( "No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings->Options->Digitizing->Serch radius for vertex edits" ) );
+    emit messageEmitted( tr( "No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings->Options->Digitizing->Serch radius for vertex edits" ), QgsMessageBar::CRITICAL );
     return; //error during snapping
   }
 
@@ -110,7 +109,7 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
 
   if ( mCurrentRotationAttributes.size() < 1 )
   {
-    QMessageBox::critical( 0, tr( "No rotation Attributes" ), tr( "The active point layer does not have a rotation attribute" ) );
+emit messageEmitted( tr( "The active point layer does not have a rotation attribute." ), QgsMessageBar::CRITICAL );
     return;
   }
 

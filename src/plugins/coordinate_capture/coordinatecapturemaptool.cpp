@@ -21,7 +21,7 @@
 #include "qgscoordinatereferencesystem.h"
 
 #include <QSettings>
-#include <QMessageBox>
+
 #include <QMouseEvent>
 #include <QCursor>
 #include <QPixmap>

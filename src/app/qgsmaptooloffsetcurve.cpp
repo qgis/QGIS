@@ -21,7 +21,6 @@
 #include "qgsvertexmarker.h"
 #include <QDoubleSpinBox>
 #include <QGraphicsProxyWidget>
-#include <QMessageBox>
 #include <QMouseEvent>
 #include "qgisapp.h"
 
@@ -376,7 +375,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset, bool leftSide
       mForceCopy = false;
       mGeometryModified = false;
       deleteDistanceItem();
-      QMessageBox::critical( 0, tr( "Geometry error" ), tr( "Creating offset geometry failed" ) );
+      emit messageEmitted( tr( "Creating offset geometry failed" ), QgsMessageBar::CRITICAL );
       return;
     }
 

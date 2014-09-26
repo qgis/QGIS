@@ -37,7 +37,6 @@
 #include "qgsrendererv2.h"
 
 #include <QSettings>
-#include <QMessageBox>
 #include <QMouseEvent>
 #include <QCursor>
 #include <QPixmap>

@@ -21,7 +21,6 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgstolerance.h"
-#include <QMessageBox>
 #include <QMouseEvent>
 #include <QSettings>
 #include <limits>

@@ -22,7 +22,6 @@
 #include "qgstolerance.h"
 
 #include <QMouseEvent>
-#include <QMessageBox>
 
 #include <cmath>
 #include <cfloat>
@@ -293,7 +292,7 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
   {
     if ( mSelectedFeature.geometry()->isMultipart() )
     {
-      QMessageBox::critical( 0, tr( "Unsupported operation" ), tr( "Multipart features are not supported for simplification." ) );
+      emit messageEmitted( tr( "Multipart features are not supported for simplification." ), QgsMessageBar::CRITICAL );
       return;
     }
 
@@ -310,7 +309,7 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
     }
     else
     {
-      QMessageBox::warning( 0, tr( "Unsupported operation" ), tr( "This feature cannot be simplified. Check if feature has enough vertices to be simplified." ) );
+      emit messageEmitted( tr( "This feature cannot be simplified. Check if feature has enough vertices to be simplified." ), QgsMessageBar::WARNING );
     }
   }
 }
