@@ -412,7 +412,7 @@ void QgsDxfExport::writeDouble( double d )
 
 void QgsDxfExport::writeString( const QString& s )
 {
-  mTextStream << s.toLatin1() << "\n";
+  mTextStream << s << "\n";
 }
 
 int QgsDxfExport::writeToFile( QIODevice* d )
@@ -428,6 +428,7 @@ int QgsDxfExport::writeToFile( QIODevice* d )
   }
 
   mTextStream.setDevice( d );
+  mTextStream.setCodec( "Windows-1252" );
 
   writeHeader();
   writeTables();
@@ -485,10 +486,10 @@ void QgsDxfExport::writeHeader()
 
 int QgsDxfExport::writeHandle( int code, int handle )
 {
-  if( handle == 0 )
+  if ( handle == 0 )
     handle = mNextHandleId++;
 
-  Q_ASSERT( ( "DXF handle too large", handle < DXF_HANDMAX ) );
+  Q_ASSERT(( "DXF handle too large", handle < DXF_HANDMAX ) );
 
   writeGroup( code, QString( "%1" ).arg( handle, 0, 16 ) );
   return handle;
@@ -624,29 +625,21 @@ void QgsDxfExport::writeTables()
     if ( !layerIsScaleBasedVisible( layerIt->first ) )
       continue;
 
-    QgsDebugMsg( QString( "first:%1 second:%2" ).arg( layerIt->first->name() ).arg( layerIt->second ) );
-
     if ( layerIt->first )
     {
       if ( layerIt->second < 0 )
       {
-        QgsDebugMsg( QString( "new layer value:%1" ).arg( layerIt->first->name() ) );
         layerNames << dxfLayerName( layerIt->first->name() );
       }
       else
       {
         QList<QVariant> values;
         layerIt->first->uniqueValues( layerIt->second, values );
-        foreach( QVariant v, values )
-	{
-          QgsDebugMsg( QString( "new attribute value:%1" ).arg( v.toString() ) );
-	  layerNames << dxfLayerName( v.toString() );
-	}
+        foreach ( QVariant v, values )
+        {
+          layerNames << dxfLayerName( v.toString() );
+        }
       }
-    }
-    else
-    {
-      layerNames << dxfLayerName( "" );
     }
   }
 
@@ -668,9 +661,8 @@ void QgsDxfExport::writeTables()
   writeGroup( 6, "CONTINUOUS" );
   writeHandle( 390, DXF_HANDPLOTSTYLE );
 
-  foreach( QString layerName, layerNames )
+  foreach ( QString layerName, layerNames )
   {
-    QgsDebugMsg( QString( "LAYER:%1" ).arg( layerName ) );
     writeGroup( 0, "LAYER" );
     writeHandle();
     writeGroup( 100, "AcDbSymbolTableRecord" );
@@ -837,7 +829,6 @@ void QgsDxfExport::writeEntities()
     QgsVectorLayer* vl = layerIt->first;
     if ( !vl || !layerIsScaleBasedVisible( vl ) )
     {
-      QgsDebugMsg( "Layer skipped" );
       continue;
     }
 
@@ -846,10 +837,10 @@ void QgsDxfExport::writeEntities()
     renderer->startRender( ctx, vl->pendingFields() );
 
     QStringList attributes = renderer->usedAttributes();
-    if( vl->pendingFields().exists( layerIt->second ) )
+    if ( vl->pendingFields().exists( layerIt->second ) )
     {
       QString layerAttr = vl->pendingFields().at( layerIt->second ).name();
-      if( !attributes.contains( layerAttr ) )
+      if ( !attributes.contains( layerAttr ) )
         attributes << layerAttr;
     }
 
@@ -918,14 +909,12 @@ void QgsDxfExport::writeEntities()
 
         if ( labelLayer )
         {
-          labelEngine.registerFeature( vl->id(), fet, ctx );
+          labelEngine.registerFeature( vl->id(), fet, ctx, layerName );
         }
       }
     }
 
     renderer->stopRender( ctx );
-
-    QgsDebugMsg( "feating features done" );
   }
 
   labelEngine.drawLabeling( ctx );
@@ -3900,6 +3889,9 @@ QString QgsDxfExport::lineNameFromPenStyle( Qt::PenStyle style )
 
 QString QgsDxfExport::dxfLayerName( const QString& name )
 {
+  if ( name.isEmpty() )
+    return "0";
+
   //dxf layers can be max 255 characters long
   QString layerName = name.left( 255 );
 
@@ -3925,17 +3917,13 @@ QString QgsDxfExport::dxfLayerName( const QString& name )
 bool QgsDxfExport::layerIsScaleBasedVisible( const QgsMapLayer* layer ) const
 {
   if ( !layer )
-  {
     return false;
-  }
 
   if ( mSymbologyExport == QgsDxfExport::NoSymbology || !layer->hasScaleBasedVisibility() )
-  {
     return true;
-  }
 
-  return ( layer->minimumScale() < mSymbologyScaleDenominator &&
-           layer->maximumScale() > mSymbologyScaleDenominator );
+  return layer->minimumScale() < mSymbologyScaleDenominator &&
+         layer->maximumScale() > mSymbologyScaleDenominator;
 }
 
 QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const
@@ -3943,7 +3931,7 @@ QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const
   QList< QPair<QgsVectorLayer*, int> >::const_iterator layerIt = mLayers.constBegin();
   for ( ; layerIt != mLayers.constEnd(); ++layerIt )
   {
-    if( layerIt->first && layerIt->first->id() == id )
+    if ( layerIt->first && layerIt->first->id() == id )
       return dxfLayerName( layerIt->second < 0 ? layerIt->first->name() : f.attribute( layerIt->second ).toString() );
   }
 

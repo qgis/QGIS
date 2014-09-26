@@ -40,7 +40,7 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
   Q_UNUSED( option );
 
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( reinterpret_cast<QObject*>( index.internalPointer() ) );
-  if( !vl )
+  if ( !vl )
     return 0;
 
   QgsFieldComboBox *w = new QgsFieldComboBox( parent );
@@ -52,19 +52,19 @@ void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &i
 {
   QgsDebugCall;
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( reinterpret_cast<QObject*>( index.internalPointer() ) );
-  if( !vl )
+  if ( !vl )
     return;
 
   const QgsVectorLayerAndAttributeModel *model = dynamic_cast< const QgsVectorLayerAndAttributeModel *>( index.model() );
-  if( !model )
+  if ( !model )
     return;
 
   QgsFieldComboBox *fcb = qobject_cast<QgsFieldComboBox *>( editor );
-  if( !fcb )
+  if ( !fcb )
     return;
 
   int idx = model->mAttributeIdx.value( vl, -1 );
-  if( vl->pendingFields().exists( idx ) )
+  if ( vl->pendingFields().exists( idx ) )
     fcb->setField( vl->pendingFields()[ idx ].name() );
 }
 
@@ -72,11 +72,11 @@ void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *m
 {
   QgsDebugCall;
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( reinterpret_cast<QObject*>( index.internalPointer() ) );
-  if( !vl )
+  if ( !vl )
     return;
 
   QgsFieldComboBox *fcb = qobject_cast<QgsFieldComboBox *>( editor );
-  if( !fcb )
+  if ( !fcb )
     return;
 
   model->setData( index, vl->fieldNameIndex( fcb->currentField() ) );
@@ -84,7 +84,7 @@ void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *m
 #endif
 
 QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup* rootNode, QObject *parent )
-  : QgsLayerTreeModel( rootNode, parent )
+    : QgsLayerTreeModel( rootNode, parent )
 {
 }
 
@@ -95,10 +95,10 @@ QgsVectorLayerAndAttributeModel::~QgsVectorLayerAndAttributeModel()
 QModelIndex QgsVectorLayerAndAttributeModel::index( int row, int column, const QModelIndex &parent ) const
 {
   QgsLayerTreeNode *n = index2node( parent );
-  if( !QgsLayerTree::isLayer( n ) )
+  if ( !QgsLayerTree::isLayer( n ) )
     return QgsLayerTreeModel::index( row, column, parent );
 
-  if( row != 0 || column != 0 )
+  if ( row != 0 || column != 0 )
     return QModelIndex();
 
   return createIndex( 0, 0, QgsLayerTree::toLayer( n )->layer() );
@@ -107,7 +107,7 @@ QModelIndex QgsVectorLayerAndAttributeModel::index( int row, int column, const Q
 QModelIndex QgsVectorLayerAndAttributeModel::parent( const QModelIndex &child ) const
 {
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( reinterpret_cast<QObject*>( child.internalPointer() ) );
-  if( !vl )
+  if ( !vl )
     return QgsLayerTreeModel::parent( child );
 
   QgsLayerTreeLayer *layer = rootGroup()->findLayer( vl->id() );
@@ -124,11 +124,11 @@ QModelIndex QgsVectorLayerAndAttributeModel::parent( const QModelIndex &child ) 
 int QgsVectorLayerAndAttributeModel::rowCount( const QModelIndex &index ) const
 {
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( reinterpret_cast<QObject*>( index.internalPointer() ) );
-  if( vl )
+  if ( vl )
     return 0;
 
   QgsLayerTreeNode *n = index2node( index );
-  if( QgsLayerTree::isLayer( n ) )
+  if ( QgsLayerTree::isLayer( n ) )
     return 1;
 
   return QgsLayerTreeModel::rowCount( index );
@@ -137,7 +137,7 @@ int QgsVectorLayerAndAttributeModel::rowCount( const QModelIndex &index ) const
 Qt::ItemFlags QgsVectorLayerAndAttributeModel::flags( const QModelIndex &index ) const
 {
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( reinterpret_cast<QObject*>( index.internalPointer() ) );
-  if( !vl )
+  if ( !vl )
     return QgsLayerTreeModel::flags( index );
 
   return Qt::ItemIsEnabled /* | Qt::ItemIsEditable */;
@@ -147,17 +147,17 @@ Qt::ItemFlags QgsVectorLayerAndAttributeModel::flags( const QModelIndex &index )
 QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex& index, int role ) const
 {
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( reinterpret_cast<QObject*>( index.internalPointer() ) );
-  if( !vl )
+  if ( !vl )
     return QgsLayerTreeModel::data( index, role );
 
   int idx = mAttributeIdx.value( vl, -1 );
-  if( role == Qt::EditRole )
+  if ( role == Qt::EditRole )
     return idx;
 
-  if( role != Qt::DisplayRole )
+  if ( role != Qt::DisplayRole )
     return QVariant();
 
-  if( vl->pendingFields().exists( idx ) )
+  if ( vl->pendingFields().exists( idx ) )
     return vl->pendingFields()[ idx ].name();
 
   return vl->name();
@@ -166,11 +166,11 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex& index, int ro
 
 bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if( role != Qt::EditRole )
+  if ( role != Qt::EditRole )
     return false;
 
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( reinterpret_cast<QObject*>( index.internalPointer() ) );
-  if( !vl )
+  if ( !vl )
     return QgsLayerTreeModel::setData( index, value, role );
 
   mAttributeIdx[ vl ] = value.toInt();
@@ -182,23 +182,23 @@ QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers( c
 {
   QList< QPair<QgsVectorLayer *, int> > layers;
 
-  foreach( const QModelIndex &idx, selectedIndexes )
+  foreach ( const QModelIndex &idx, selectedIndexes )
   {
     QgsLayerTreeNode *node = index2node( idx );
-    if( QgsLayerTree::isGroup( node ) )
+    if ( QgsLayerTree::isGroup( node ) )
     {
-      foreach( QgsLayerTreeLayer *treeLayer, QgsLayerTree::toGroup( node )->findLayers() )
+      foreach ( QgsLayerTreeLayer *treeLayer, QgsLayerTree::toGroup( node )->findLayers() )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( treeLayer->layer() );
-	Q_ASSERT( vl );
+        Q_ASSERT( vl );
         layers << qMakePair<QgsVectorLayer *, int>( vl, mAttributeIdx.value( vl, -1 ) );
       }
     }
-    else if( QgsLayerTree::isLayer( node ) )
+    else if ( QgsLayerTree::isLayer( node ) )
     {
       QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
       Q_ASSERT( vl );
-      layers << qMakePair<QgsVectorLayer *, int>( vl,mAttributeIdx.value( vl, -1 ) );
+      layers << qMakePair<QgsVectorLayer *, int>( vl, mAttributeIdx.value( vl, -1 ) );
     }
   }
 
@@ -235,6 +235,8 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget* parent, Qt::WindowFlags f ): QD
 #endif
 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+
+  restoreGeometry( s.value( "/Windows/DxfExport/geometry" ).toByteArray() );
 }
 
 QgsDxfExportDialog::~QgsDxfExportDialog()
@@ -243,15 +245,16 @@ QgsDxfExportDialog::~QgsDxfExportDialog()
 #if 0
   delete mFieldSelectorDelegate;
 #endif
+
+  QSettings().setValue( "/Windows/DxfExport/geometry", saveGeometry() );
 }
 
 void QgsDxfExportDialog::on_mTreeView_clicked( const QModelIndex & current )
 {
   QgsDebugCall;
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( reinterpret_cast<QObject*>( current.internalPointer() ) );
-  if( !vl )
+  if ( !vl )
   {
-    QgsDebugMsg( "No vector layer" );
     mLayerAttributeComboBox->setDisabled( true );
     return;
   }
@@ -261,7 +264,7 @@ void QgsDxfExportDialog::on_mTreeView_clicked( const QModelIndex & current )
   int idx = mTreeView->model()->data( current, Qt::EditRole ).toInt();
 
   mLayerAttributeComboBox->setLayer( vl );
-  if( vl->pendingFields().exists( idx ) )
+  if ( vl->pendingFields().exists( idx ) )
     mLayerAttributeComboBox->setField( vl->pendingFields()[ idx ].name() );
 }
 
@@ -274,13 +277,13 @@ void QgsDxfExportDialog::on_mLayerAttributeComboBox_fieldChanged( QString fieldN
 void QgsDxfExportDialog::cleanGroup( QgsLayerTreeNode *node )
 {
   QgsLayerTreeGroup *group = QgsLayerTree::toGroup( node );
-  if( !group )
+  if ( !group )
     return;
 
   QList<QgsLayerTreeNode *> toRemove;
-  foreach( QgsLayerTreeNode *child, node->children() )
+  foreach ( QgsLayerTreeNode *child, node->children() )
   {
-    if( QgsLayerTree::isLayer( child ) && QgsLayerTree::toLayer( child )->layer()->type() != QgsMapLayer::VectorLayer )
+    if ( QgsLayerTree::isLayer( child ) && QgsLayerTree::toLayer( child )->layer()->type() != QgsMapLayer::VectorLayer )
     {
       toRemove << child;
       continue;
@@ -288,11 +291,11 @@ void QgsDxfExportDialog::cleanGroup( QgsLayerTreeNode *node )
 
     cleanGroup( child );
 
-    if( QgsLayerTree::isGroup( child ) && child->children().isEmpty() )
+    if ( QgsLayerTree::isGroup( child ) && child->children().isEmpty() )
       toRemove << child;
   }
 
-  foreach( QgsLayerTreeNode *child, toRemove )
+  foreach ( QgsLayerTreeNode *child, toRemove )
     group->removeChildNode( child );
 }
 
@@ -348,14 +351,6 @@ void QgsDxfExportDialog::on_mFileSelectionButton_clicked()
 
 void QgsDxfExportDialog::setOkEnabled()
 {
-  QModelIndex idx = mTreeView->currentIndex();
-  QgsDebugMsg( QString( "current index:%1" ).arg( idx.isValid() ) );
-  while( idx.isValid() )
-  {
-    QgsDebugMsg( QString( " row=%1 column=%2" ).arg( idx.row() ).arg( idx.column() ) );
-    idx = idx.parent();
-  }
-
   QPushButton* btn = buttonBox->button( QDialogButtonBox::Ok );
 
   QString filePath = mFileLineEdit->text();

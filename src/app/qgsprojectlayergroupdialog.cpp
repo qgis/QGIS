@@ -28,9 +28,9 @@
 #include <QSettings>
 
 QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget * parent, const QString& projectFile, Qt::WindowFlags f )
-  : QDialog( parent, f )
-  , mShowEmbeddedContent( false )
-  , mRootGroup( new QgsLayerTreeGroup )
+    : QDialog( parent, f )
+    , mShowEmbeddedContent( false )
+    , mRootGroup( new QgsLayerTreeGroup )
 {
   setupUi( this );
 

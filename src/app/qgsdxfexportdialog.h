@@ -31,11 +31,11 @@ class QgsLayerTreeNode;
 #if 0
 #include <QItemDelegate>
 class FieldSelectorDelegate : public QItemDelegate
-{   
+{
     Q_OBJECT
   public:
     FieldSelectorDelegate( QObject *parent = 0 );
-    
+
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
@@ -51,7 +51,7 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
 
     QModelIndex index( int row, int column, const QModelIndex &parent ) const;
     QModelIndex parent( const QModelIndex &child ) const;
-    int rowCount( const QModelIndex &index ) const; 
+    int rowCount( const QModelIndex &index ) const;
     Qt::ItemFlags flags( const QModelIndex &index ) const;
     QVariant data( const QModelIndex& index, int role ) const;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
