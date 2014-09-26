@@ -9762,7 +9762,7 @@ void QgisApp::writeProject( QDomDocument &doc )
   delete clonedRoot;
   doc.firstChildElement( "qgis" ).appendChild( oldLegendElem );
 
-  QgsProject::instance()->writeEntry( "Legend", "filterByMap", (bool) layerTreeView()->layerTreeModel()->legendFilterByMap() );
+  QgsProject::instance()->writeEntry( "Legend", "filterByMap", ( bool ) layerTreeView()->layerTreeModel()->legendFilterByMap() );
 
   projectChanged( doc );
 }

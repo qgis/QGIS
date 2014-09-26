@@ -17,22 +17,22 @@ class QgsVectorLayer;
  */
 class CORE_EXPORT QgsMapHitTest
 {
-public:
-  QgsMapHitTest( const QgsMapSettings& settings );
+  public:
+    QgsMapHitTest( const QgsMapSettings& settings );
 
-  void run();
+    void run();
 
-  QSet<QgsSymbolV2*> symbolsForLayer( QgsVectorLayer* layer ) const { return mHitTest[layer]; }
+    QSet<QgsSymbolV2*> symbolsForLayer( QgsVectorLayer* layer ) const { return mHitTest[layer]; }
 
-protected:
+  protected:
 
-  typedef QSet<QgsSymbolV2*> SymbolV2Set;
-  typedef QMap<QgsVectorLayer*, SymbolV2Set> HitTest;
+    typedef QSet<QgsSymbolV2*> SymbolV2Set;
+    typedef QMap<QgsVectorLayer*, SymbolV2Set> HitTest;
 
-  void runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols, QgsRenderContext& context );
+    void runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols, QgsRenderContext& context );
 
-  QgsMapSettings mSettings;
-  HitTest mHitTest;
+    QgsMapSettings mSettings;
+    HitTest mHitTest;
 
 };
 

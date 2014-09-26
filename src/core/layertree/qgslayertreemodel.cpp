@@ -96,7 +96,7 @@ int QgsLayerTreeModel::rowCount( const QModelIndex &parent ) const
 
   if ( QgsLayerTree::isLayer( n ) )
   {
-    if( !testFlag( ShowLegend ) )
+    if ( !testFlag( ShowLegend ) )
       return 0;
 
     QgsLayerTreeLayer* nL = QgsLayerTree::toLayer( n );

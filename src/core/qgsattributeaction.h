@@ -126,7 +126,7 @@ class  CORE_EXPORT QgsAttributeAction
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */
-    void addAction(QgsAction::ActionType type, QString name, QString action, const QString& icon, bool capture = false );
+    void addAction( QgsAction::ActionType type, QString name, QString action, const QString& icon, bool capture = false );
 
     //! Remove an action at given index
     void removeAction( int index );

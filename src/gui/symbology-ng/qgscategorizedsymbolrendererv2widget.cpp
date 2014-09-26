@@ -437,8 +437,8 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   connect( btnDeleteCategories, SIGNAL( clicked() ), this, SLOT( deleteCategories() ) );
   connect( btnDeleteAllCategories, SIGNAL( clicked() ), this, SLOT( deleteAllCategories() ) );
   connect( btnAddCategory, SIGNAL( clicked() ), this, SLOT( addCategory() ) );
-  connect( cbxInvertedColorRamp, SIGNAL( toggled(bool)), this, SLOT( applyColorRamp()));
-  connect( cboCategorizedColorRamp, SIGNAL(currentIndexChanged(int)), this, SLOT( applyColorRamp()));
+  connect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ), this, SLOT( applyColorRamp() ) );
+  connect( cboCategorizedColorRamp, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
 
   // menus for data-defined rotation/size
   QMenu* advMenu = new QMenu;
@@ -704,11 +704,11 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   }
 
   // First element to apply coloring to
-  bool keepExistingColors=false;
+  bool keepExistingColors = false;
   if ( !deleteExisting )
   {
     QgsCategoryList prevCats = mRenderer->categories();
-    keepExistingColors=prevCats.size() > 0;
+    keepExistingColors = prevCats.size() > 0;
     for ( int i = 0; i < cats.size(); ++i )
     {
       bool contains = false;
@@ -752,7 +752,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   r->setRotationField( mRenderer->rotationField() );
   r->setInvertedColorRamp( cbxInvertedColorRamp->isChecked() );
   QgsVectorColorRampV2* ramp = getColorRamp();
-  if( ramp ) r->setSourceColorRamp(ramp->clone());
+  if ( ramp ) r->setSourceColorRamp( ramp->clone() );
 
   if ( mModel )
   {
@@ -760,15 +760,15 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   }
   delete mRenderer;
   mRenderer = r;
-  if( ! keepExistingColors && ramp ) applyColorRamp();
+  if ( ! keepExistingColors && ramp ) applyColorRamp();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::applyColorRamp()
 {
   QgsVectorColorRampV2* ramp = getColorRamp();
-  if( ramp )
+  if ( ramp )
   {
-    mRenderer->updateColorRamp(ramp->clone(),cbxInvertedColorRamp->isChecked());
+    mRenderer->updateColorRamp( ramp->clone(), cbxInvertedColorRamp->isChecked() );
   }
   mModel->updateSymbology();
 }

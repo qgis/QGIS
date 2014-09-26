@@ -62,7 +62,7 @@ class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttrib
 
   private:
 
-    void insertRow(int row, QgsAction::ActionType type, const QString &name, const QString &action, const QString& iconPath, bool capture );
+    void insertRow( int row, QgsAction::ActionType type, const QString &name, const QString &action, const QString& iconPath, bool capture );
     void swapRows( int row1, int row2 );
 
     void insert( int pos );

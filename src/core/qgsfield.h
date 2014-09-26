@@ -246,7 +246,7 @@ class CORE_EXPORT QgsFields
     //! @note added in 2.6
     bool operator==( const QgsFields& other ) const { return mFields == other.mFields; }
     //! @note added in 2.6
-    bool operator!=( const QgsFields& other ) const { return ! ( *this == other ); }
+    bool operator!=( const QgsFields& other ) const { return !( *this == other ); }
 
   protected:
     //! internal storage of the container

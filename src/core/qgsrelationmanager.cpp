@@ -182,7 +182,7 @@ void QgsRelationManager::writeProject( QDomDocument & doc )
 void QgsRelationManager::layersRemoved( const QStringList& layers )
 {
   bool relationsChanged = false;
-  Q_FOREACH( const QString& layer, layers )
+  Q_FOREACH ( const QString& layer, layers )
   {
     QMapIterator<QString, QgsRelation> it( mRelations );
 

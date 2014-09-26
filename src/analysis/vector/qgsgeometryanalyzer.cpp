@@ -1108,29 +1108,29 @@ bool QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, QgsGeometry* 
       //geos 3.3 needed for line offsets
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
       ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
-      GEOSGeometry* offsetGeom = GEOSOffsetCurve_r(geosctxt, ( *inputGeomIt )->asGeos(), -offset, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ );
-      if ( !offsetGeom || !GEOSisValid_r(geosctxt, offsetGeom ) )
+      GEOSGeometry* offsetGeom = GEOSOffsetCurve_r( geosctxt, ( *inputGeomIt )->asGeos(), -offset, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ );
+      if ( !offsetGeom || !GEOSisValid_r( geosctxt, offsetGeom ) )
       {
         return false;
       }
-      if ( !GEOSisValid_r(geosctxt, offsetGeom ) || GEOSGeomTypeId_r(geosctxt, offsetGeom ) != GEOS_LINESTRING || GEOSGeomGetNumPoints_r(geosctxt, offsetGeom ) < 1 )
+      if ( !GEOSisValid_r( geosctxt, offsetGeom ) || GEOSGeomTypeId_r( geosctxt, offsetGeom ) != GEOS_LINESTRING || GEOSGeomGetNumPoints_r( geosctxt, offsetGeom ) < 1 )
       {
-        GEOSGeom_destroy_r(geosctxt, offsetGeom );
+        GEOSGeom_destroy_r( geosctxt, offsetGeom );
         return false;
       }
       outputGeomList.push_back( offsetGeom );
 #else
-      outputGeomList.push_back( GEOSGeom_clone_r(geosctxt, ( *inputGeomIt )->asGeos() ) );
+      outputGeomList.push_back( GEOSGeom_clone_r( geosctxt, ( *inputGeomIt )->asGeos() ) );
 #endif
     }
     else if ( geom->type() == QGis::Point )
     {
       QgsPoint p = ( *inputGeomIt )->asPoint();
       p = createPointOffset( p.x(), p.y(), offset, lineGeom );
-      GEOSCoordSequence* ptSeq = GEOSCoordSeq_create_r(geosctxt, 1, 2 );
-      GEOSCoordSeq_setX_r(geosctxt, ptSeq, 0, p.x() );
-      GEOSCoordSeq_setY_r(geosctxt, ptSeq, 0, p.y() );
-      GEOSGeometry* geosPt = GEOSGeom_createPoint_r(geosctxt, ptSeq );
+      GEOSCoordSequence* ptSeq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
+      GEOSCoordSeq_setX_r( geosctxt, ptSeq, 0, p.x() );
+      GEOSCoordSeq_setY_r( geosctxt, ptSeq, 0, p.y() );
+      GEOSGeometry* geosPt = GEOSGeom_createPoint_r( geosctxt, ptSeq );
       outputGeomList.push_back( geosPt );
     }
   }
@@ -1153,11 +1153,11 @@ bool QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, QgsGeometry* 
     GEOSGeometry* collection = 0;
     if ( geom->type() == QGis::Point )
     {
-      collection = GEOSGeom_createCollection_r(geosctxt, GEOS_MULTIPOINT, geomArray, outputGeomList.size() );
+      collection = GEOSGeom_createCollection_r( geosctxt, GEOS_MULTIPOINT, geomArray, outputGeomList.size() );
     }
     else if ( geom->type() == QGis::Line )
     {
-      collection = GEOSGeom_createCollection_r(geosctxt, GEOS_MULTILINESTRING, geomArray, outputGeomList.size() );
+      collection = GEOSGeom_createCollection_r( geosctxt, GEOS_MULTILINESTRING, geomArray, outputGeomList.size() );
     }
     geom->fromGeos( collection );
     delete[] geomArray;

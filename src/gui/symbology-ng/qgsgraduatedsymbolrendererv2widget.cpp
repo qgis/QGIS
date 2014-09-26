@@ -455,14 +455,14 @@ void QgsGraduatedSymbolRendererV2Widget::connectUpdateHandlers()
   connect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( classifyGraduated() ) );
   connect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( reapplyColorRamp() ) );
   connect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ) , this, SLOT( reapplyColorRamp() ) );
-  connect( spinDecimalPlaces, SIGNAL(valueChanged(int)), this, SLOT(labelFormatChanged()));
-  connect( cbxTrimTrailingZeroes, SIGNAL(toggled(bool)),this,SLOT(labelFormatChanged()));
-  connect( txtPrefix, SIGNAL( textChanged(QString)), this, SLOT(labelFormatChanged()));
-  connect( txtSeparator, SIGNAL( textChanged(QString)), this, SLOT(labelFormatChanged()));
-  connect( txtSuffix, SIGNAL( textChanged(QString)), this, SLOT(labelFormatChanged()));
+  connect( spinDecimalPlaces, SIGNAL( valueChanged( int ) ), this, SLOT( labelFormatChanged() ) );
+  connect( cbxTrimTrailingZeroes, SIGNAL( toggled( bool ) ), this, SLOT( labelFormatChanged() ) );
+  connect( txtPrefix, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
+  connect( txtSeparator, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
+  connect( txtSuffix, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
 
   connect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
-  connect( mModel, SIGNAL( dataChanged(QModelIndex,QModelIndex)), this, SLOT( modelDataChanged( )) );
+  connect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SLOT( modelDataChanged( ) ) );
 }
 
 // Connect/disconnect event handlers which trigger updating renderer
@@ -473,14 +473,14 @@ void QgsGraduatedSymbolRendererV2Widget::disconnectUpdateHandlers()
   disconnect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( classifyGraduated() ) );
   disconnect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( reapplyColorRamp() ) );
   disconnect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ) , this, SLOT( reapplyColorRamp() ) );
-  disconnect( spinDecimalPlaces, SIGNAL(valueChanged(int)), this, SLOT(labelFormatChanged()));
-  disconnect( cbxTrimTrailingZeroes, SIGNAL(toggled(bool)),this,SLOT(labelFormatChanged()));
-  disconnect( txtPrefix, SIGNAL( textChanged(QString)), this, SLOT(labelFormatChanged()));
-  disconnect( txtSeparator, SIGNAL( textChanged(QString)), this, SLOT(labelFormatChanged()));
-  disconnect( txtSuffix, SIGNAL( textChanged(QString)), this, SLOT(labelFormatChanged()));
+  disconnect( spinDecimalPlaces, SIGNAL( valueChanged( int ) ), this, SLOT( labelFormatChanged() ) );
+  disconnect( cbxTrimTrailingZeroes, SIGNAL( toggled( bool ) ), this, SLOT( labelFormatChanged() ) );
+  disconnect( txtPrefix, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
+  disconnect( txtSeparator, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
+  disconnect( txtSuffix, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
 
   disconnect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
-  disconnect( mModel, SIGNAL( dataChanged(QModelIndex,QModelIndex)), this, SLOT( modelDataChanged( )) );
+  disconnect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SLOT( modelDataChanged( ) ) );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount )
@@ -494,7 +494,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
     cboGraduatedMode->setCurrentIndex( mRenderer->mode() );
 
   // Only update class count if different - otherwise typing value gets very messy
-  int nclasses=mRenderer->ranges().count();
+  int nclasses = mRenderer->ranges().count();
   if ( nclasses && updateCount )
     spinGraduatedClasses->setValue( mRenderer->ranges().count() );
 
@@ -517,12 +517,12 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
     cbxInvertedColorRamp->setChecked( mRenderer->invertedColorRamp() );
   }
 
-  QgsRendererRangeV2LabelFormat labelFormat=mRenderer->labelFormat();
-  txtPrefix->setText( labelFormat.prefix());
+  QgsRendererRangeV2LabelFormat labelFormat = mRenderer->labelFormat();
+  txtPrefix->setText( labelFormat.prefix() );
   txtSeparator->setText( labelFormat.separator() );
   txtSuffix->setText( labelFormat.suffix() );
-  spinDecimalPlaces->setValue( labelFormat.decimalPlaces());
-  cbxTrimTrailingZeroes->setChecked( labelFormat.trimTrailingZeroes());
+  spinDecimalPlaces->setValue( labelFormat.decimalPlaces() );
+  cbxTrimTrailingZeroes->setChecked( labelFormat.trimTrailingZeroes() );
 
   mModel = new QgsGraduatedSymbolRendererV2Model( this );
   mModel->setRenderer( mRenderer );
@@ -579,17 +579,17 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
 
   // create and set new renderer
 
-  mRenderer->setClassAttribute(attrName);
-  mRenderer->setMode(mode);
-  mRenderer->setSourceColorRamp(ramp->clone());
-  bool updateUiCount=true;
+  mRenderer->setClassAttribute( attrName );
+  mRenderer->setMode( mode );
+  mRenderer->setSourceColorRamp( ramp->clone() );
+  bool updateUiCount = true;
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  mRenderer->updateClasses(mLayer,mode,nclasses);
+  mRenderer->updateClasses( mLayer, mode, nclasses );
   mRenderer->calculateLabelDecimalPlaces();
   QApplication::restoreOverrideCursor();
   // PrettyBreaks and StdDev calculation don't generate exact
   // number of classes - leave user interface unchanged for these
-  updateUiCount=false;
+  updateUiCount = false;
   updateUiFromRenderer( updateUiCount );
 }
 
@@ -740,9 +740,9 @@ void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
   const QgsRendererRangeV2& range = mRenderer->ranges()[rangeIdx];
   // Add arbitrary 3 to number of decimal places to retain a bit extra accuracy in
   // case we want to??
-  int decimalPlaces=mRenderer->labelFormat().decimalPlaces();
-  dialog.setLowerValue( QString::number( range.lowerValue(), 'f', decimalPlaces+3 ) );
-  dialog.setUpperValue( QString::number( range.upperValue(), 'f', decimalPlaces+3 ) );
+  int decimalPlaces = mRenderer->labelFormat().decimalPlaces();
+  dialog.setLowerValue( QString::number( range.lowerValue(), 'f', decimalPlaces + 3 ) );
+  dialog.setUpperValue( QString::number( range.upperValue(), 'f', decimalPlaces + 3 ) );
 
   if ( dialog.exec() == QDialog::Accepted )
   {
@@ -786,12 +786,12 @@ void QgsGraduatedSymbolRendererV2Widget::deleteAllClasses()
 bool QgsGraduatedSymbolRendererV2Widget::rowsOrdered()
 {
   const QgsRangeList &ranges = mRenderer->ranges();
-  bool ordered=true;
+  bool ordered = true;
   for ( int i = 1;i < ranges.size();++i )
   {
-    if( ranges[i] < ranges[i-1] )
+    if ( ranges[i] < ranges[i-1] )
     {
-      ordered=false;
+      ordered = false;
       break;
     }
   }
@@ -808,14 +808,14 @@ void QgsGraduatedSymbolRendererV2Widget::toggleBoundariesLink( bool linked )
     // qSort( mRenderer->ranges() );
     // Could not get qSort to work with copy/swap idiom on QgsVectorRange
 
-    if( ! rowsOrdered() )
+    if ( ! rowsOrdered() )
     {
-      int result=QMessageBox::warning(
-            this,
-            tr("Linked range warning"),
-            tr("Linking ranges that are not ordered may produced unexpected results. Proceed?"),
-            QMessageBox::Ok | QMessageBox::Cancel );
-      if( result != QMessageBox::Ok )
+      int result = QMessageBox::warning(
+                     this,
+                     tr( "Linked range warning" ),
+                     tr( "Linking ranges that are not ordered may produced unexpected results. Proceed?" ),
+                     QMessageBox::Ok | QMessageBox::Cancel );
+      if ( result != QMessageBox::Ok )
       {
         cbxLinkBoundaries->setChecked( false );
         return;
@@ -858,13 +858,13 @@ void QgsGraduatedSymbolRendererV2Widget::scaleMethodChanged( QgsSymbolV2::ScaleM
 
 void QgsGraduatedSymbolRendererV2Widget::labelFormatChanged()
 {
-  QgsRendererRangeV2LabelFormat labelFormat=QgsRendererRangeV2LabelFormat(
+  QgsRendererRangeV2LabelFormat labelFormat = QgsRendererRangeV2LabelFormat(
         txtPrefix->text(),
         txtSeparator->text(),
         txtSuffix->text(),
         spinDecimalPlaces->value(),
-       cbxTrimTrailingZeroes->isChecked());
-  mRenderer->setLabelFormat(labelFormat,true);
+        cbxTrimTrailingZeroes->isChecked() );
+  mRenderer->setLabelFormat( labelFormat, true );
   mModel->updateLabels();
 }
 
@@ -914,7 +914,7 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2Widget::findSymbolForRange( double lowe
 
 void QgsGraduatedSymbolRendererV2Widget::refreshSymbolView()
 {
-  if( mModel )
+  if ( mModel )
   {
     mModel->updateSymbology();
   }
@@ -932,9 +932,9 @@ void QgsGraduatedSymbolRendererV2Widget::rowsMoved()
 
 void QgsGraduatedSymbolRendererV2Widget::modelDataChanged()
 {
-  if( ! rowsOrdered() )
+  if ( ! rowsOrdered() )
   {
-    cbxLinkBoundaries->setChecked(false);
+    cbxLinkBoundaries->setChecked( false );
   }
 }
 

@@ -51,7 +51,7 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
 
   if ( renderer )
   {
-    mRenderer = QgsRuleBasedRendererV2::convertFromRenderer(renderer);
+    mRenderer = QgsRuleBasedRendererV2::convertFromRenderer( renderer );
   }
   if ( !mRenderer )
   {

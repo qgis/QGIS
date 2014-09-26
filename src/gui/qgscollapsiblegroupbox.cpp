@@ -452,7 +452,7 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
 
   if ( mCollapsed )
   {
-    Q_FOREACH( QObject* child, children() )
+    Q_FOREACH ( QObject* child, children() )
     {
       QWidget* w = qobject_cast<QWidget*>( child );
       if ( w && w != mCollapseButton )
@@ -464,7 +464,7 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
   }
   else // on expand
   {
-    Q_FOREACH( QObject* child, children() )
+    Q_FOREACH ( QObject* child, children() )
     {
       QWidget* w = qobject_cast<QWidget*>( child );
       if ( w && w != mCollapseButton )

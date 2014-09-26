@@ -45,7 +45,7 @@ void QgsAttributeAction::addAction( QgsAction::ActionType type, QString name, QS
   mActions << QgsAction( type, name, action, capture );
 }
 
-void QgsAttributeAction::addAction(QgsAction::ActionType type, QString name, QString action, const QString& icon, bool capture)
+void QgsAttributeAction::addAction( QgsAction::ActionType type, QString name, QString action, const QString& icon, bool capture )
 {
   mActions << QgsAction( type, name, action, icon, capture );
 }

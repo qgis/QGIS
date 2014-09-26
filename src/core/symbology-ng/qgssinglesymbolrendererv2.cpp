@@ -400,10 +400,10 @@ QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::convertFromRenderer( const
 
   }
 
-  QgsSymbolV2List symbols=const_cast<QgsFeatureRendererV2 *>(renderer)->symbols();
-  if( symbols.size() > 0 )
+  QgsSymbolV2List symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols();
+  if ( symbols.size() > 0 )
   {
-    return new QgsSingleSymbolRendererV2(symbols.at(0)->clone());
+    return new QgsSingleSymbolRendererV2( symbols.at( 0 )->clone() );
   }
   return 0;
 }

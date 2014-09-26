@@ -62,7 +62,7 @@ QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
   connect( insertFieldButton, SIGNAL( clicked() ), this, SLOT( insertField() ) );
   connect( insertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertExpression() ) );
 
-  connect( chooseIconButton, SIGNAL(clicked()), this, SLOT( chooseIcon() ) );
+  connect( chooseIconButton, SIGNAL( clicked() ), this, SLOT( chooseIcon() ) );
 
   init();
   // Populate the combo box with the field names. Will the field names
@@ -312,7 +312,7 @@ void QgsAttributeActionDialog::chooseIcon()
 {
   QList<QByteArray> list = QImageWriter::supportedImageFormats();
   QStringList formatList;
-  Q_FOREACH( const QByteArray& format, list )
+  Q_FOREACH ( const QByteArray& format, list )
     formatList << QString( "*.%1" ).arg( QString( format ) );
 
   QString filter = QString( "Images( %1 ); All( *.* )" ).arg( formatList.join( " " ) );

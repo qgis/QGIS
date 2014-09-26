@@ -100,7 +100,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
       hasFeature = true;
 
     if ( mSubsetExpression && !mSubsetExpression->evaluate( mSource->mFeatures[*mFeatureIdListIterator] ).toBool() )
-        hasFeature = false;
+      hasFeature = false;
 
     if ( hasFeature )
       break;
@@ -153,7 +153,7 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature& feature )
     }
 
     if ( mSubsetExpression && !mSubsetExpression->evaluate( *mSelectIterator ).toBool() )
-        hasFeature = false;
+      hasFeature = false;
 
     if ( hasFeature )
       break;

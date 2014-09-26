@@ -23,7 +23,7 @@
 #include <QDomElement>
 
 QgsVectorLayerJoinBuffer::QgsVectorLayerJoinBuffer( QgsVectorLayer* layer )
- : mLayer( layer )
+    : mLayer( layer )
 {
 }
 
@@ -49,7 +49,7 @@ static bool _hasCycleDFS( QgsVectorLayer* n, QHash<QgsVectorLayer*, int>& mark )
   if ( mark.value( n ) == 0 ) // not visited
   {
     mark[n] = 1; // temporary
-    foreach ( QgsVectorLayer* m, _outEdges(n) )
+    foreach ( QgsVectorLayer* m, _outEdges( n ) )
     {
       if ( _hasCycleDFS( m, mark ) )
         return true;

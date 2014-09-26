@@ -52,7 +52,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
 
   if ( renderer )
   {
-    mRenderer = QgsPointDisplacementRenderer::convertFromRenderer(renderer);
+    mRenderer = QgsPointDisplacementRenderer::convertFromRenderer( renderer );
   }
   if ( !mRenderer )
   {

@@ -19,7 +19,7 @@
 #include "qgscomposermap.h"
 #include <QUuid>
 
-QgsComposerMapItem::QgsComposerMapItem(const QString &name, QgsComposerMap *map )
+QgsComposerMapItem::QgsComposerMapItem( const QString &name, QgsComposerMap *map )
     : QgsComposerObject( map->composition() )
     , mName( name )
     , mComposerMap( map )

@@ -172,28 +172,28 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
     {
       continue;
     }
-    
+
     if ( currentLegend->autoUpdateModel() || currentLegend->legendFilterByMapEnabled() )
     {
-	  // the legend has an auto-update model or 
-	  // has to be filter by map
-	  // we will update it with map's layers
+      // the legend has an auto-update model or
+      // has to be filter by map
+      // we will update it with map's layers
       const QgsComposerMap* map = currentLegend->composerMap();
       if ( !map )
       {
         continue;
       }
-      
+
       // get model and layer tree root of the legend
       QgsLegendModelV2* model = currentLegend->modelV2();
       QgsLayerTreeGroup* root = model->rootGroup();
-      
-      
+
+
       // get layerIds find in the layer tree root
       QStringList layerIds = root->findLayerIds();
       // get map layerIds
       QStringList layerSet = map->layerSet();
-      
+
       // get map scale
       double scale = map->scale();
 
@@ -202,24 +202,25 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
       foreach ( QString layerId, layerIds )
       {
         QgsLayerTreeLayer* nodeLayer = root->findLayer( layerId );
-        if ( !nodeLayer ) {
-		  continue;
-		}
+        if ( !nodeLayer )
+        {
+          continue;
+        }
         if ( !layerSet.contains( layerId ) )
         {
           qobject_cast<QgsLayerTreeGroup*>( nodeLayer->parent() )->removeChildNode( nodeLayer );
         }
         else
         {
-		  QgsMapLayer* layer = nodeLayer->layer();
-		  if ( layer->hasScaleBasedVisibility() )
-		  {
-			if ( layer->minimumScale() > scale )
+          QgsMapLayer* layer = nodeLayer->layer();
+          if ( layer->hasScaleBasedVisibility() )
+          {
+            if ( layer->minimumScale() > scale )
               qobject_cast<QgsLayerTreeGroup*>( nodeLayer->parent() )->removeChildNode( nodeLayer );
-			else if ( layer->maximumScale() < scale )
+            else if ( layer->maximumScale() < scale )
               qobject_cast<QgsLayerTreeGroup*>( nodeLayer->parent() )->removeChildNode( nodeLayer );
-		  }
-		}
+          }
+        }
       }
       root->removeChildrenGroupWithoutLayers();
     }

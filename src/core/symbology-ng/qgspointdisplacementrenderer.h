@@ -99,7 +99,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     //! creates a QgsPointDisplacementRenderer from an existing renderer.
     //! @note added in 2.5
     //! @returns a new renderer if the conversion was possible, otherwise 0.
-    static QgsPointDisplacementRenderer* convertFromRenderer(const QgsFeatureRendererV2 *renderer );
+    static QgsPointDisplacementRenderer* convertFromRenderer( const QgsFeatureRendererV2 *renderer );
 
   private:
 

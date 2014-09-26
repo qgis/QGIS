@@ -129,7 +129,7 @@ class GEOSInit
 
     ~GEOSInit()
     {
-      finishGEOS_r(ctxt);
+      finishGEOS_r( ctxt );
     }
 };
 
@@ -137,7 +137,7 @@ static GEOSInit geosinit;
 
 GEOSContextHandle_t QgsGeometry::getGEOSHandler()
 {
-    return geosinit.ctxt;
+  return geosinit.ctxt;
 }
 
 QgsGeometry::QgsGeometry()
@@ -193,7 +193,7 @@ static GEOSGeometry *createGeosPoint( const QgsPoint &point )
   GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosinit.ctxt, 1, 2 );
   GEOSCoordSeq_setX_r( geosinit.ctxt, coord, 0, point.x() );
   GEOSCoordSeq_setY_r( geosinit.ctxt, coord, 0, point.y() );
-  return GEOSGeom_createPoint_r(geosinit.ctxt, coord );
+  return GEOSGeom_createPoint_r( geosinit.ctxt, coord );
 }
 
 static GEOSCoordSequence *createGeosCoordSequence( const QgsPolyline& points )
@@ -305,7 +305,7 @@ static GEOSGeometry *createGeosPolygon( const QVector<GEOSGeometry*> &rings )
   {
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
     ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
-    return GEOSGeom_createEmptyPolygon_r(geosinit.ctxt);
+    return GEOSGeom_createEmptyPolygon_r( geosinit.ctxt );
 #else
     shell = GEOSGeom_createLinearRing_r( geosinit.ctxt, GEOSCoordSeq_create_r( geosinit.ctxt, 0, 2 ) );
 #endif
@@ -379,7 +379,7 @@ QgsGeometry* QgsGeometry::fromWkt( QString wkt )
 {
   try
   {
-    GEOSWKTReader *reader = GEOSWKTReader_create_r(geosinit.ctxt);
+    GEOSWKTReader *reader = GEOSWKTReader_create_r( geosinit.ctxt );
     QgsGeometry *g = fromGeosGeom( GEOSWKTReader_read_r( geosinit.ctxt, reader, wkt.toLocal8Bit().data() ) );
     GEOSWKTReader_destroy_r( geosinit.ctxt, reader );
     return g;

@@ -7,7 +7,7 @@
 
 
 QgsMapHitTest::QgsMapHitTest( const QgsMapSettings& settings )
-  : mSettings( settings )
+    : mSettings( settings )
 {
 }
 

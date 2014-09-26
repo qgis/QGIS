@@ -109,7 +109,7 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
 
   if ( mCurrentRotationAttributes.size() < 1 )
   {
-emit messageEmitted( tr( "The active point layer does not have a rotation attribute." ), QgsMessageBar::CRITICAL );
+    emit messageEmitted( tr( "The active point layer does not have a rotation attribute." ), QgsMessageBar::CRITICAL );
     return;
   }
 

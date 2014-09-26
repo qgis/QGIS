@@ -708,15 +708,15 @@ void QgsCategorizedSymbolRendererV2::setSourceColorRamp( QgsVectorColorRampV2* r
 
 void QgsCategorizedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2* ramp, bool inverted )
 {
-  setSourceColorRamp(ramp);
-  setInvertedColorRamp(inverted);
-  double num=mCategories.count()-1;
+  setSourceColorRamp( ramp );
+  setInvertedColorRamp( inverted );
+  double num = mCategories.count() - 1;
   double count = 0;
   foreach ( const QgsRendererCategoryV2 &cat, mCategories )
   {
-    double value=count/num;
-    if( mInvertedColorRamp ) value=1.0-value;
-    cat.symbol()->setColor(mSourceColorRamp->color(value));
+    double value = count / num;
+    if ( mInvertedColorRamp ) value = 1.0 - value;
+    cat.symbol()->setColor( mSourceColorRamp->color( value ) );
     count += 1;
   }
 }
@@ -808,11 +808,11 @@ QgsCategorizedSymbolRendererV2* QgsCategorizedSymbolRendererV2::convertFromRende
   // If not one of the specifically handled renderers, then just grab the symbol from the renderer
   // Could have applied this to specific renderer types (singleSymbol, graduatedSymbo)
 
-  QgsCategorizedSymbolRendererV2* r =new QgsCategorizedSymbolRendererV2( "", QgsCategoryList() );
-  QgsSymbolV2List symbols=const_cast<QgsFeatureRendererV2 *>(renderer)->symbols();
-  if( symbols.size() > 0 )
+  QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2( "", QgsCategoryList() );
+  QgsSymbolV2List symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols();
+  if ( symbols.size() > 0 )
   {
-    r->setSourceSymbol(symbols.at(0)->clone());
+    r->setSourceSymbol( symbols.at( 0 )->clone() );
   }
   return r;
 

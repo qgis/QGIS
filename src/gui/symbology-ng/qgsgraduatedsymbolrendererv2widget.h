@@ -110,7 +110,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void modelDataChanged();
 
   protected:
-    void updateUiFromRenderer( bool updateCount=true );
+    void updateUiFromRenderer( bool updateCount = true );
     void connectUpdateHandlers();
     void disconnectUpdateHandlers();
     bool rowsOrdered();
