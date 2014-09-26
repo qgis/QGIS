@@ -34,6 +34,7 @@
 #include "qgscomposerpicture.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
+#include "qgslayertreegroup.h"
 
 #include <QFileInfo>
 #include <QTextDocument>
@@ -368,7 +369,7 @@ int QgsWMSProjectParser::WMSPrecision() const
   return WMSPrecision;
 }
 
-QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlList ) const
+QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlList ) const
 {
   //Create composition from xml
   QDomElement composerElem = composerByName( composerTemplate );
@@ -394,6 +395,7 @@ QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTem
 
   labelList.clear();
   mapList.clear();
+  legendList.clear();
   htmlList.clear();
 
   QList<QgsComposerItem* > itemList;
@@ -411,6 +413,23 @@ QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTem
     if ( map )
     {
       mapList.push_back( map );
+      continue;
+    }
+    QgsComposerLegend* legend = dynamic_cast< QgsComposerLegend *>( *itemIt );
+    if ( legend )
+    {
+      /*
+      QgsLegendModelV2* model = legend->modelV2();
+      QgsLayerTreeGroup* root = model->rootGroup();
+      QStringList layerIds = root->findLayerIds();
+      throw QgsMapServiceException( "Error", "Composer legend layerIds "+layerIds.join(" ,") );
+      */
+      if ( legend->autoUpdateModel() )
+      {
+        QgsLegendModelV2* model = legend->modelV2();
+        model->setRootGroup( projectLayerTreeGroup() );
+      }
+      legendList.push_back( legend );
       continue;
     }
     QgsComposerPicture* pic = dynamic_cast< QgsComposerPicture *>( *itemIt );
@@ -1911,6 +1930,27 @@ QDomElement QgsWMSProjectParser::composerByName( const QString& composerName ) c
   }
 
   return composerElem;
+}
+
+QgsLayerTreeGroup* QgsWMSProjectParser::projectLayerTreeGroup() const
+{
+  const QDomDocument* projectDoc = mProjectParser.xmlDocument();
+  if ( !projectDoc )
+  {
+    return 0;
+  }
+
+  QDomElement qgisElem = projectDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+    return 0;
+  }
+  QDomElement layerTreeElem = qgisElem.firstChildElement( "layer-tree-group" );
+  if ( layerTreeElem.isNull() )
+  {
+    return 0;
+  }
+  return QgsLayerTreeGroup::readXML( layerTreeElem );
 }
 
 bool QgsWMSProjectParser::annotationPosition( const QDomElement& elem, double scaleFactor, double& xPos, double& yPos )

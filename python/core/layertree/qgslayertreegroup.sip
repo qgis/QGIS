@@ -41,6 +41,8 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
     void removeLayer( QgsMapLayer* layer );
     //! Remove child nodes from index "from". The nodes will be deleted.
     void removeChildren( int from, int count );
+    //! Remove all child group nodes without layers. The groupnodes will be deleted.
+    void removeChildrenGroupWithoutLayers();
     //! Remove all child nodes. The nodes will be deleted.
     void removeAllChildren();
 

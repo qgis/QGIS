@@ -98,7 +98,6 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   if ( mHtmlState )
   {
     painter->scale( 1.0 / mHtmlUnitsToMM / 10.0, 1.0 / mHtmlUnitsToMM / 10.0 );
-
     QWebPage *webPage = new QWebPage();
     webPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
 
@@ -149,7 +148,6 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
       // Pause until html is loaded
       loop.exec();
     }
-
     webPage->mainFrame()->render( painter );//DELETE WEBPAGE ?
   }
   else

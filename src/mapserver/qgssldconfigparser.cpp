@@ -696,11 +696,11 @@ QgsComposition* QgsSLDConfigParser::createPrintComposition( const QString& compo
   return 0;
 }
 
-QgsComposition* QgsSLDConfigParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const
+QgsComposition* QgsSLDConfigParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const
 {
   if ( mFallbackParser )
   {
-    return mFallbackParser->initComposition( composerTemplate, mapRenderer, mapList, labelList, htmlFrameList );
+    return mFallbackParser->initComposition( composerTemplate, mapRenderer, mapList, legendList, labelList, htmlFrameList );
   }
   return 0;
 }
