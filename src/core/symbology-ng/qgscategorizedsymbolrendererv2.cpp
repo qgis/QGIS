@@ -712,6 +712,15 @@ void QgsCategorizedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2* ramp
   setInvertedColorRamp( inverted );
   double num = mCategories.count() - 1;
   double count = 0;
+
+  QgsRandomColorsV2* randomRamp = dynamic_cast<QgsRandomColorsV2*>( ramp );
+  if ( randomRamp )
+  {
+    //ramp is a random colors ramp, so inform it of the total number of required colors
+    //this allows the ramp to pregenerate a set of visually distinctive colors
+    randomRamp->setTotalColorCount( mCategories.count() );
+  }
+
   foreach ( const QgsRendererCategoryV2 &cat, mCategories )
   {
     double value = count / num;
