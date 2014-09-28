@@ -170,8 +170,7 @@ saga:analyticalhierarchyprocess,USE_ORIGINAL_NAME,Raster/Miscellaneous
 saga:basicterrainanalysis,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:bsplineapproximation,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
 saga:burnstreamnetworkintodem,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:catchmentareaparallel,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:catchmentarearecursive,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:catchmentarea,USE_ORIGINAL_NAME,Domain specific/Hydrology
 saga:cellbalance,USE_ORIGINAL_NAME,Domain specific/Hydrology
 saga:changedateformat,USE_ORIGINAL_NAME,Vector/Table tools
 saga:changedetection,USE_ORIGINAL_NAME,Raster/Analysis
