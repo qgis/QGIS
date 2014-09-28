@@ -67,6 +67,7 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
 
     void connected( QgsGPSConnection * );
     void timedout();
+    void updateOldLayer( QStringList lst );
 
   private:
     enum FixStatus  //GPS status
