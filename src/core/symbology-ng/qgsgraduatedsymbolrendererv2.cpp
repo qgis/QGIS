@@ -954,8 +954,10 @@ QList<double> QgsGraduatedSymbolRendererV2::getDataValues( QgsVectorLayer *vlaye
 
 void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses )
 {
-  // Custom classes are not recalculated
+  if ( mAttrName.isEmpty() ) return;
+
   setMode( mode );
+  // Custom classes are not recalculated
   if ( mode == Custom ) return;
 
   if ( nclasses < 1 ) nclasses = 1;
@@ -964,6 +966,7 @@ void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode m
   bool valuesLoaded = false;
   double minimum;
   double maximum;
+
 
   int attrNum = vlayer->fieldNameIndex( mAttrName );
 
