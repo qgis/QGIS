@@ -46,19 +46,13 @@ class QgsRendererRangeV2LabelFormat
 %End
   public:
     QgsRendererRangeV2LabelFormat();
-    QgsRendererRangeV2LabelFormat( QString prefix, QString separator, QString suffix, int decimalPlaces=4, bool trimTrailingZeroes=false );
+    QgsRendererRangeV2LabelFormat( QString format, int decimalPlaces=4, bool trimTrailingZeroes=false );
 
     bool operator==( const QgsRendererRangeV2LabelFormat & other ) const;
     bool operator!=( const QgsRendererRangeV2LabelFormat & other ) const;
 
-        QString prefix() const;
-    void setPrefix( QString prefix );
-
-    QString separator() const;
-    void setSeparator( QString separator );
-
-    QString suffix() const;
-    void setSuffix( QString suffix );
+    QString format() const;
+    void setFormat( QString format );
 
     int decimalPlaces() const;
     void setDecimalPlaces( int decimalPlaces );

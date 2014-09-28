@@ -167,21 +167,17 @@ void QgsRendererRangeV2::toSld( QDomDocument &doc, QDomElement &element, QgsStri
 ///////////
 
 QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat():
-    mPrefix( "" ),
-    mSeparator( " - " ),
-    mSuffix( "" ),
+    mFormat( " %1 - %2 " ),
     mDecimalPlaces( 4 ),
     mTrimTrailingZeroes( false ),
     mReTrailingZeroes( "\\.?0*$" )
 {
 }
 
-QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat( QString prefix, QString separator, QString suffix, int decimalPlaces, bool trimTrailingZeroes ):
+QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat( QString format, int decimalPlaces, bool trimTrailingZeroes ):
     mReTrailingZeroes( "\\.?0*$" )
 {
-  setPrefix( prefix );
-  setSeparator( separator );
-  setSuffix( suffix );
+  setFormat( format );
   setDecimalPlaces( decimalPlaces );
   setTrimTrailingZeroes( trimTrailingZeroes );
 }
@@ -190,9 +186,7 @@ QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat( QString prefix, QS
 bool QgsRendererRangeV2LabelFormat::operator==( const QgsRendererRangeV2LabelFormat &other ) const
 {
   return
-    prefix() == other.prefix() &&
-    separator() == other.separator() &&
-    suffix() == other.suffix() &&
+    format() == other.format() &&
     decimalPlaces() == other.decimalPlaces() &&
     trimTrailingZeroes() == other.trimTrailingZeroes();
 }
@@ -226,23 +220,19 @@ QString QgsRendererRangeV2LabelFormat::labelForRange( double lower, double upper
     if ( upperStr.contains( '.' ) ) upperStr = upperStr.replace( mReTrailingZeroes, "" );
   }
 
-  return mPrefix + lowerStr + mSeparator + upperStr + mSuffix;
+  return mFormat.arg(lowerStr, upperStr);
 }
 
 void QgsRendererRangeV2LabelFormat::setFromDomElement( QDomElement &element )
 {
-  mPrefix = element.attribute( "prefix", "" );
-  mSeparator = element.attribute( "separator", " - " );
-  mSuffix = element.attribute( "suffix", "" );
+  mFormat = element.attribute( "format", " %1 - %2" );
   mDecimalPlaces = element.attribute( "decimalplaces", "4" ).toInt();
   mTrimTrailingZeroes = element.attribute( "trimtrailingzeroes", "false" ) == "true";
 }
 
 void QgsRendererRangeV2LabelFormat::saveToDomElement( QDomElement &element )
 {
-  element.setAttribute( "prefix", mPrefix );
-  element.setAttribute( "separator", mSeparator );
-  element.setAttribute( "suffix", mSuffix );
+  element.setAttribute( "format", mFormat );
   element.setAttribute( "decimalplaces", mDecimalPlaces );
   element.setAttribute( "trimtrailingzeroes", mTrimTrailingZeroes ? "true" : "false" );
 }

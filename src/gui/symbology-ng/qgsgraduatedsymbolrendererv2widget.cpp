@@ -457,9 +457,7 @@ void QgsGraduatedSymbolRendererV2Widget::connectUpdateHandlers()
   connect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ) , this, SLOT( reapplyColorRamp() ) );
   connect( spinDecimalPlaces, SIGNAL( valueChanged( int ) ), this, SLOT( labelFormatChanged() ) );
   connect( cbxTrimTrailingZeroes, SIGNAL( toggled( bool ) ), this, SLOT( labelFormatChanged() ) );
-  connect( txtPrefix, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
-  connect( txtSeparator, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
-  connect( txtSuffix, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
+  connect( txtFormat, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
 
   connect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
   connect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SLOT( modelDataChanged( ) ) );
@@ -475,9 +473,7 @@ void QgsGraduatedSymbolRendererV2Widget::disconnectUpdateHandlers()
   disconnect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ) , this, SLOT( reapplyColorRamp() ) );
   disconnect( spinDecimalPlaces, SIGNAL( valueChanged( int ) ), this, SLOT( labelFormatChanged() ) );
   disconnect( cbxTrimTrailingZeroes, SIGNAL( toggled( bool ) ), this, SLOT( labelFormatChanged() ) );
-  disconnect( txtPrefix, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
-  disconnect( txtSeparator, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
-  disconnect( txtSuffix, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
+  disconnect( txtFormat, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
 
   disconnect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
   disconnect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SLOT( modelDataChanged( ) ) );
@@ -518,9 +514,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
   }
 
   QgsRendererRangeV2LabelFormat labelFormat = mRenderer->labelFormat();
-  txtPrefix->setText( labelFormat.prefix() );
-  txtSeparator->setText( labelFormat.separator() );
-  txtSuffix->setText( labelFormat.suffix() );
+  txtFormat->setText( labelFormat.format() );
   spinDecimalPlaces->setValue( labelFormat.decimalPlaces() );
   cbxTrimTrailingZeroes->setChecked( labelFormat.trimTrailingZeroes() );
 
@@ -859,9 +853,7 @@ void QgsGraduatedSymbolRendererV2Widget::scaleMethodChanged( QgsSymbolV2::ScaleM
 void QgsGraduatedSymbolRendererV2Widget::labelFormatChanged()
 {
   QgsRendererRangeV2LabelFormat labelFormat = QgsRendererRangeV2LabelFormat(
-        txtPrefix->text(),
-        txtSeparator->text(),
-        txtSuffix->text(),
+        txtFormat->text(),
         spinDecimalPlaces->value(),
         cbxTrimTrailingZeroes->isChecked() );
   mRenderer->setLabelFormat( labelFormat, true );

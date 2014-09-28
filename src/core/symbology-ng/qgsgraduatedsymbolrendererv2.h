@@ -71,19 +71,13 @@ class CORE_EXPORT QgsRendererRangeV2LabelFormat
 {
   public:
     QgsRendererRangeV2LabelFormat();
-    QgsRendererRangeV2LabelFormat( QString prefix, QString separator, QString suffix, int decimalPlaces = 4, bool trimTrailingZeroes = false );
+    QgsRendererRangeV2LabelFormat( QString format, int decimalPlaces = 4, bool trimTrailingZeroes = false );
 
     bool operator==( const QgsRendererRangeV2LabelFormat & other ) const;
     bool operator!=( const QgsRendererRangeV2LabelFormat & other ) const;
 
-    QString prefix() const { return mPrefix; }
-    void setPrefix( QString prefix ) { mPrefix = prefix; }
-
-    QString separator() const { return mSeparator; }
-    void setSeparator( QString separator ) { mSeparator = separator; }
-
-    QString suffix() const { return mSuffix; }
-    void setSuffix( QString suffix ) { mSuffix = suffix; }
+    QString format() const { return mFormat; }
+    void setFormat( QString format ) { mFormat = format; }
 
     int decimalPlaces() const { return mDecimalPlaces; }
     void setDecimalPlaces( int decimalPlaces );
@@ -99,9 +93,7 @@ class CORE_EXPORT QgsRendererRangeV2LabelFormat
     void saveToDomElement( QDomElement &element );
 
   protected:
-    QString mPrefix;
-    QString mSeparator;
-    QString mSuffix;
+    QString mFormat;
     int mDecimalPlaces;
     bool mTrimTrailingZeroes;
     QRegExp mReTrailingZeroes;
