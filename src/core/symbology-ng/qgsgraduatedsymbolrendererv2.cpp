@@ -34,7 +34,10 @@
 #include <ctime>
 
 QgsRendererRangeV2::QgsRendererRangeV2()
-    : mLowerValue( 0 ), mUpperValue( 0 ), mSymbol( 0 ), mLabel()
+    : mLowerValue( 0 )
+    , mUpperValue( 0 )
+    , mSymbol( 0 )
+    , mLabel()
 {
 }
 
@@ -220,12 +223,16 @@ QString QgsRendererRangeV2LabelFormat::labelForRange( double lower, double upper
     if ( upperStr.contains( '.' ) ) upperStr = upperStr.replace( mReTrailingZeroes, "" );
   }
 
-  return mFormat.arg(lowerStr, upperStr);
+  return mFormat.arg( lowerStr, upperStr );
 }
 
 void QgsRendererRangeV2LabelFormat::setFromDomElement( QDomElement &element )
 {
-  mFormat = element.attribute( "format", " %1 - %2" );
+  mFormat = element.attribute( "format",
+                               element.attribute( "prefix", " " ) + "%1" +
+                               element.attribute( "separator", " - " ) + "%2" +
+                               element.attribute( "suffix", " " )
+                             );
   mDecimalPlaces = element.attribute( "decimalplaces", "4" ).toInt();
   mTrimTrailingZeroes = element.attribute( "trimtrailingzeroes", "false" ) == "true";
 }
