@@ -131,7 +131,7 @@ class ModelerParametersDialog(QDialog):
             if isinstance(output, (OutputRaster, OutputVector, OutputTable,
                           OutputHTML, OutputFile, OutputDirectory)):
                 label = QLabel(output.description + '<'
-                                     + output.__module__.split('.')[-1] + '>')
+                                     + output.__class__.__name__ + '>')
                 item = QLineEdit()
                 if hasattr(item, 'setPlaceholderText'):
                     item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
@@ -376,10 +376,7 @@ class ModelerParametersDialog(QDialog):
     def setComboBoxValue(self, combo, value, param):
         if isinstance(value, list):
             value = value[0]
-        print param.name
-        print value
         items = [combo.itemData(i) for i in range(combo.count())]
-        print items
         try:
             idx = items.index(value)
             combo.setCurrentIndex(idx)

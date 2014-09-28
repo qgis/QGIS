@@ -43,7 +43,6 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         super(ModelerGraphicItem, self).__init__(None, None)
         self.model = model
         self.element = element
-        print element.__class__
         if isinstance(element, ModelerParameter):
             icon = QtGui.QIcon(os.path.dirname(__file__)
                                + '/../images/input.png')

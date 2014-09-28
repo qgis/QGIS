@@ -120,7 +120,6 @@ class GeoAlgorithm:
         """
         name = self.commandLineName().split(':')[1].lower()
         filename = os.path.join(os.path.dirname(inspect.getfile(self.__class__)), 'help', name + '.rst')
-        print filename
         try:
             html = getHtmlFromRstFile(filename)
             return True, html
