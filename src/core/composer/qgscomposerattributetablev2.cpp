@@ -103,7 +103,7 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* compos
     , mVectorLayer( 0 )
     , mCurrentAtlasLayer( 0 )
     , mComposerMap( 0 )
-    , mMaximumNumberOfFeatures( 5 )
+    , mMaximumNumberOfFeatures( 30 )
     , mShowUniqueRowsOnly( false )
     , mShowOnlyVisibleFeatures( false )
     , mFilterToAtlasIntersection( false )

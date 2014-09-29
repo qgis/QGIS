@@ -45,7 +45,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-340</y>
+        <y>0</y>
         <width>392</width>
         <height>1132</height>
        </rect>
@@ -154,7 +154,7 @@
           <item row="0" column="1">
            <widget class="QSpinBox" name="mMaximumRowsSpinBox">
             <property name="maximum">
-             <number>999</number>
+             <number>99999</number>
             </property>
            </widget>
           </item>
