@@ -331,7 +331,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     // feature title
     QString featureTitle = result.mFeature.attribute( layer->displayField() ).toString();
     if ( featureTitle.isEmpty() )
-      featureTitle = result.mFeature.id();
+      featureTitle = QString( "%1" ).arg( result.mFeature.id() );
 
     if ( !customFeatureActions.count() && ( !featureActionMenu || !featureActionMenu->actions().count() ) )
     {
