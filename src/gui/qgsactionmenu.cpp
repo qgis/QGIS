@@ -125,6 +125,7 @@ void QgsActionMenu::reloadActions()
 
     QAction* action = new QAction( qaction.icon(), qaction.name(), this );
     action->setData( QVariant::fromValue<ActionData>( ActionData( idx, mFeatureId, mLayer ) ) );
+    action->setIcon( qaction.icon() );
 
     // Only enable items on supported platforms
     if ( !qaction.runable() )
