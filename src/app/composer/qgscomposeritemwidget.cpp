@@ -152,33 +152,24 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   //connect data defined buttons
   connect( mXPositionDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mXPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mXPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mXLineEdit, SLOT( setDisabled( bool ) ) );
 
   connect( mYPositionDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mYPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mYPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mYLineEdit, SLOT( setDisabled( bool ) ) );
-  connect( mYPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPageSpinBox, SLOT( setDisabled( bool ) ) );
 
   connect( mWidthDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mWidthLineEdit, SLOT( setDisabled( bool ) ) );
 
   connect( mHeightDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mHeightDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mHeightDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mHeightLineEdit, SLOT( setDisabled( bool ) ) );
 
   connect( mItemRotationDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mItemRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mItemRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mItemRotationSpinBox, SLOT( setDisabled( bool ) ) );
 
   connect( mTransparencyDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mTransparencyDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mTransparencyDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mTransparencySlider, SLOT( setDisabled( bool ) ) );
-  connect( mTransparencyDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mTransparencySpnBx, SLOT( setDisabled( bool ) ) );
 
   connect( mBlendModeDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mBlendModeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mBlendModeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mBlendModeCombo, SLOT( setDisabled( bool ) ) );
 
   connect( mExcludePrintsDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mExcludePrintsDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
@@ -567,17 +558,6 @@ void QgsComposerItemWidget::populateDataDefinedButtons()
                          QgsDataDefinedButton::String, QgsDataDefinedButton::blendModesDesc() );
   mExcludePrintsDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::ExcludeFromExports ),
                              QgsDataDefinedButton::String, QgsDataDefinedButton::boolDesc() );
-
-  //initial state of controls - disable related controls when dd buttons are active
-  mXLineEdit->setEnabled( !mXPositionDDBtn->isActive() );
-  mYLineEdit->setEnabled( !mYPositionDDBtn->isActive() );
-  mPageSpinBox->setEnabled( !mYPositionDDBtn->isActive() );
-  mWidthLineEdit->setEnabled( !mWidthDDBtn->isActive() );
-  mHeightLineEdit->setEnabled( !mHeightDDBtn->isActive() );
-  mItemRotationSpinBox->setEnabled( !mItemRotationDDBtn->isActive() );
-  mTransparencySlider->setEnabled( !mTransparencyDDBtn->isActive() );
-  mTransparencySpnBx->setEnabled( !mTransparencyDDBtn->isActive() );
-  mBlendModeCombo->setEnabled( !mBlendModeDDBtn->isActive() );
 
   //unblock signals from data defined buttons
   mXPositionDDBtn->blockSignals( false );

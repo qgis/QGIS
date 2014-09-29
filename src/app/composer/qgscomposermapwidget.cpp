@@ -140,27 +140,21 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
   //connections for data defined buttons
   connect( mScaleDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mScaleDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mScaleDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mScaleLineEdit, SLOT( setDisabled( bool ) ) );
 
   connect( mMapRotationDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mMapRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mMapRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mMapRotationSpinBox, SLOT( setDisabled( bool ) ) );
 
   connect( mXMinDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mXMinDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mXMinDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mXMinLineEdit, SLOT( setDisabled( bool ) ) );
 
   connect( mYMinDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mYMinDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mYMinDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mYMinLineEdit, SLOT( setDisabled( bool ) ) );
 
   connect( mXMaxDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mXMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mXMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mXMaxLineEdit, SLOT( setDisabled( bool ) ) );
 
   connect( mYMaxDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mYMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mYMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mYMaxLineEdit, SLOT( setDisabled( bool ) ) );
 
   connect( mAtlasMarginDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mAtlasMarginDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
@@ -203,14 +197,6 @@ void QgsComposerMapWidget::populateDataDefinedButtons()
                     QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
   mAtlasMarginDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapAtlasMargin ),
                            QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-
-  //initial state of controls - disable related controls when dd buttons are active
-  mScaleLineEdit->setEnabled( !mScaleDDBtn->isActive() );
-  mMapRotationSpinBox->setEnabled( !mMapRotationDDBtn->isActive() );
-  mXMinLineEdit->setEnabled( !mXMinDDBtn->isActive() );
-  mYMinLineEdit->setEnabled( !mYMinDDBtn->isActive() );
-  mXMaxLineEdit->setEnabled( !mXMaxDDBtn->isActive() );
-  mYMaxLineEdit->setEnabled( !mYMaxDDBtn->isActive() );
 
   //unblock signals from data defined buttons
   mScaleDDBtn->blockSignals( false );
