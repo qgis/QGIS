@@ -429,11 +429,11 @@ QString QgsComposerLabel::displayName() const
   }
   if ( text.length() > 25 )
   {
-    return QString( tr( "%1..." ) ).arg( text.left( 25 ) );
+    return QString( tr( "%1..." ) ).arg( text.left( 25 ).simplified() );
   }
   else
   {
-    return text;
+    return text.simplified();
   }
 }
 
