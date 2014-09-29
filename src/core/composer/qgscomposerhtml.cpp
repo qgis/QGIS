@@ -245,6 +245,10 @@ void QgsComposerHtml::renderCachedImage()
     delete mRenderedPage;
   }
   mRenderedPage = new QImage( mWebPage->viewportSize(), QImage::Format_ARGB32 );
+  if ( mRenderedPage->isNull() )
+  {
+    return;
+  }
   QPainter painter;
   painter.begin( mRenderedPage );
   mWebPage->mainFrame()->render( &painter );
