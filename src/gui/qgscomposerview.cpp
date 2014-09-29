@@ -304,13 +304,13 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         return;
       }
 
-      //find highest QgsComposerItem at clicked position
+      //find highest non-locked QgsComposerItem at clicked position
       //(other graphics items may be higher, eg selection handles)
       QList<QGraphicsItem*>::iterator itemIter = itemsAtCursorPos.begin();
       for ( ; itemIter != itemsAtCursorPos.end(); ++itemIter )
       {
         QgsComposerItem* item = dynamic_cast<QgsComposerItem *>(( *itemIter ) );
-        if ( item )
+        if ( item && !item->positionLock() )
         {
           //we've found the highest QgsComposerItem
           mMoveContentStartPos = scenePoint;
