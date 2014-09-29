@@ -95,10 +95,11 @@ class QgsComposerMultiFrame: QgsComposerObject
     /**Removes a frame from the multiframe. This method automatically removes the frame from the
      * composition.
      * @param i index of frame to remove
+     * @param removeEmptyPages set to true to remove pages which are empty after the frame is removed
      * @see addFrame
      * @see deleteFrames
     */
-    void removeFrame( int i );
+    void removeFrame( int i, const bool removeEmptyPages = false );
     
     /**Removes and deletes all child frames.
      * @see removeFrame

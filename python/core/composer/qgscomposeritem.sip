@@ -209,7 +209,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom );
 
     /**Gets the page the item is currently on.
-     * @returns page number for item
+     * @returns page number for item, beginning on page 1
      * @see pagePos
      * @see updatePagePos
      * @note this method was added in version 2.4

@@ -167,7 +167,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom ) { Q_UNUSED( factor ); Q_UNUSED( point ); Q_UNUSED( mode ); }
 
     /**Gets the page the item is currently on.
-     * @returns page number for item
+     * @returns page number for item, beginning on page 1
      * @see pagePos
      * @see updatePagePos
      * @note this method was added in version 2.4

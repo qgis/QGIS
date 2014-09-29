@@ -91,9 +91,13 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
     {
       if ( mResizeMode == RepeatUntilFinished || mResizeMode == ExtendToNextPage ) //remove unneeded frames in extent mode
       {
+        bool removingPages = true;
         for ( int j = mFrameItems.size(); j > i; --j )
         {
-          removeFrame( j - 1 );
+          int numPagesBefore = mComposition->numPages();
+          removeFrame( j - 1, removingPages );
+          //if removing the frame didn't also remove the page, then stop removing pages
+          removingPages = removingPages && ( mComposition->numPages() < numPagesBefore );
         }
         return;
       }
@@ -243,8 +247,8 @@ void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
       //otherwise the frame may not actually be removed, leading to confusing ui behaviour
       mResizeMode = QgsComposerMultiFrame::UseExistingFrames;
       emit changed();
+      recalculateFrameSizes();
     }
-    recalculateFrameSizes();
   }
 }
 
@@ -289,7 +293,7 @@ void QgsComposerMultiFrame::handlePageChange()
   update();
 }
 
-void QgsComposerMultiFrame::removeFrame( int i )
+void QgsComposerMultiFrame::removeFrame( int i, const bool removeEmptyPages )
 {
   if ( i >= mFrameItems.count() )
   {
@@ -300,7 +304,13 @@ void QgsComposerMultiFrame::removeFrame( int i )
   if ( mComposition )
   {
     mIsRecalculatingSize = true;
+    int pageNumber = frameItem->page();
     mComposition->removeComposerItem( frameItem );
+    //if frame was the only item on the page, remove the page
+    if ( removeEmptyPages && mComposition->pageIsEmpty( pageNumber ) )
+    {
+      mComposition->setNumPages( mComposition->numPages() - 1 );
+    }
     mIsRecalculatingSize = false;
   }
   mFrameItems.removeAt( i );

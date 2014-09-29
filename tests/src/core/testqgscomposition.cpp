@@ -39,6 +39,7 @@ class TestQgsComposition: public QObject
 
     void itemsOnPage(); //test fetching matching items on a set page
     void shouldExportPage(); //test the shouldExportPage method
+    void pageIsEmpty(); //test the pageIsEmpty method
 
   private:
     QgsComposition* mComposition;
@@ -209,6 +210,35 @@ void TestQgsComposition::shouldExportPage()
 
   mComposition->removeMultiFrame( htmlItem );
   delete htmlItem;
+}
+
+void TestQgsComposition::pageIsEmpty()
+{
+  //add some items to the composition
+  QgsComposerLabel* label1 = new QgsComposerLabel( mComposition );
+  mComposition->addComposerLabel( label1 );
+  label1->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 1 );
+  QgsComposerLabel* label2 = new QgsComposerLabel( mComposition );
+  mComposition->addComposerLabel( label2 );
+  label2->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 1 );
+  QgsComposerLabel* label3 = new QgsComposerLabel( mComposition );
+  mComposition->addComposerLabel( label3 );
+  label3->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 3 );
+
+  //only page 2 should be empty
+  QCOMPARE( mComposition->pageIsEmpty( 1 ), false );
+  QCOMPARE( mComposition->pageIsEmpty( 2 ), true );
+  QCOMPARE( mComposition->pageIsEmpty( 3 ), false );
+
+  //remove the items
+  mComposition->removeComposerItem( label1 );
+  mComposition->removeComposerItem( label2 );
+  mComposition->removeComposerItem( label3 );
+
+  //expect everything to be empty now
+  QCOMPARE( mComposition->pageIsEmpty( 1 ), true );
+  QCOMPARE( mComposition->pageIsEmpty( 2 ), true );
+  QCOMPARE( mComposition->pageIsEmpty( 3 ), true );
 }
 
 QTEST_MAIN( TestQgsComposition )

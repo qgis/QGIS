@@ -95,12 +95,24 @@ class QgsComposition : QGraphicsScene
      * @see setNumPages
     */
     int numPages() const;
+    
+    /**Returns whether a page is empty, ie, it contains no items except for the background
+     * paper item.
+     * @param page page number, starting with 1
+     * @returns true if page is empty
+     * @note added in QGIS 2.5
+     * @see numPages
+     * @see setNumPages
+     * @see shouldExportPage
+    */
+    bool pageIsEmpty( const int page ) const;
 
     /**Returns whether a specified page number should be included in exports of the composition.
      * @param page page number, starting with 1
      * @returns true if page should be exported
      * @note added in QGIS 2.5
      * @see numPages
+     * @see pageIsEmpty
     */
     bool shouldExportPage( const int page ) const;
 

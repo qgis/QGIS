@@ -416,6 +416,29 @@ int QgsComposition::numPages() const
   return mPages.size();
 }
 
+bool QgsComposition::pageIsEmpty( const int page ) const
+{
+  //get all items on page
+  QList<QgsComposerItem*> items;
+  //composerItemsOnPage uses 0-based page numbering
+  composerItemsOnPage( items, page - 1 );
+
+  //loop through and check for non-paper items
+  QList<QgsComposerItem*>::const_iterator itemIt = items.constBegin();
+  for ( ; itemIt != items.constEnd(); ++itemIt )
+  {
+    //is item a paper item?
+    QgsPaperItem* paper = dynamic_cast<QgsPaperItem*>( *itemIt );
+    if ( !paper )
+    {
+      //item is not a paper item, so we have other items on the page
+      return false;
+    }
+  }
+  //no non-paper items
+  return true;
+}
+
 bool QgsComposition::shouldExportPage( const int page ) const
 {
   if ( page > numPages() || page < 1 )

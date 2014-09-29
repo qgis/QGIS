@@ -17,6 +17,7 @@
 
 #include "qgscomposerhtml.h"
 #include "qgscomposerframe.h"
+#include "qgscomposerlabel.h"
 #include "qgscomposition.h"
 #include "qgscompositionchecker.h"
 #include <QObject>
@@ -31,6 +32,7 @@ class TestQgsComposerMultiFrame: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void frameIsEmpty(); //test if frame is empty works
+    void addRemovePage(); //test if page is added and removed for RepeatUntilFinished mode
 
   private:
     QgsComposition* mComposition;
@@ -102,6 +104,61 @@ void TestQgsComposerMultiFrame::frameIsEmpty()
   mComposition->removeMultiFrame( htmlItem );
   delete htmlItem;
 }
+
+void TestQgsComposerMultiFrame::addRemovePage()
+{
+  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame* frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  htmlItem->addFrame( frame1 );
+  htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
+  htmlItem->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
+
+  //short content, so should fit in one frame
+  htmlItem->setHtml( QString( "<p><i>Test manual <b>html</b></i></p>" ) );
+  htmlItem->loadHtml();
+
+  //should be one page
+  QCOMPARE( htmlItem->frameCount(), 1 );
+  QCOMPARE( mComposition->numPages(), 1 );
+
+  //long content, so we require 3 frames
+  htmlItem->setHtml( QString( "<p style=\"height: 2000px\"><i>Test manual <b>html</b></i></p>" ) );
+  htmlItem->loadHtml();
+
+  QCOMPARE( htmlItem->frameCount(), 3 );
+  QCOMPARE( mComposition->numPages(), 3 );
+
+  //..and back again..
+  htmlItem->setHtml( QString( "<p><i>Test manual <b>html</b></i></p>" ) );
+  htmlItem->loadHtml();
+
+  QCOMPARE( htmlItem->frameCount(), 1 );
+  QCOMPARE( mComposition->numPages(), 1 );
+
+
+  //get a bit more complicated - add another item to page 3
+  QgsComposerLabel* label1 = new QgsComposerLabel( mComposition );
+  mComposition->addComposerLabel( label1 );
+  label1->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 3 );
+
+  //long content, so we require 4 pages
+  htmlItem->setHtml( QString( "<p style=\"height: 3000px\"><i>Test manual <b>html</b></i></p>" ) );
+  htmlItem->loadHtml();
+
+  QCOMPARE( htmlItem->frameCount(), 4 );
+  QCOMPARE( mComposition->numPages(), 4 );
+
+  //..and back again. Since there's an item on page 3, only page 4 should be removed
+  htmlItem->setHtml( QString( "<p><i>Test manual <b>html</b></i></p>" ) );
+  htmlItem->loadHtml();
+
+  QCOMPARE( htmlItem->frameCount(), 1 );
+  QCOMPARE( mComposition->numPages(), 3 );
+
+  mComposition->removeMultiFrame( htmlItem );
+  delete htmlItem;
+}
+
 
 QTEST_MAIN( TestQgsComposerMultiFrame )
 #include "moc_testqgscomposermultiframe.cxx"
