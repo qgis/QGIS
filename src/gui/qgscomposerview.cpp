@@ -1558,9 +1558,26 @@ void QgsComposerView::wheelEvent( QWheelEvent* event )
     {
       if ( theItem->isSelected() )
       {
+        QSettings settings;
+        //read zoom mode
+        QgsComposerItem::ZoomMode zoomMode = ( QgsComposerItem::ZoomMode )settings.value( "/qgis/wheel_action", 2 ).toInt();
+        if ( zoomMode == QgsComposerItem::NoZoom )
+        {
+          //do nothing
+          return;
+        }
+
+        double zoomFactor = settings.value( "/qgis/zoom_factor", 2.0 ).toDouble();
+        if ( event->modifiers() & Qt::ControlModifier )
+        {
+          //holding ctrl while wheel zooming results in a finer zoom
+          zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 20.0;
+        }
+        zoomFactor = event->delta() > 0 ? zoomFactor : 1 / zoomFactor;
+
         QPointF itemPoint = theItem->mapFromScene( scenePoint );
-        theItem->beginCommand( tr( "Zoom item content" ) );
-        theItem->zoomContent( event->delta(), itemPoint.x(), itemPoint.y() );
+        theItem->beginCommand( tr( "Zoom item content" ), QgsComposerMergeCommand::ItemZoomContent );
+        theItem->zoomContent( zoomFactor, itemPoint, zoomMode );
         theItem->endCommand();
       }
     }

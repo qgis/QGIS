@@ -119,7 +119,8 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       ItemOutlineWidth,
       ItemMove,
       ItemRotation,
-      ItemTransparency
+      ItemTransparency,
+      ItemZoomContent
     };
 
     QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text );

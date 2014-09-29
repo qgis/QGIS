@@ -605,55 +605,63 @@ void QgsComposerMap::moveContent( double dx, double dy )
 
 void QgsComposerMap::zoomContent( int delta, double x, double y )
 {
+  QSettings settings;
+
+  //read zoom mode
+  QgsComposerItem::ZoomMode zoomMode = ( QgsComposerItem::ZoomMode )settings.value( "/qgis/wheel_action", 2 ).toInt();
+  if ( zoomMode == QgsComposerItem::NoZoom )
+  {
+    //do nothing
+    return;
+  }
+
+  double zoomFactor = settings.value( "/qgis/zoom_factor", 2.0 ).toDouble();
+  zoomFactor = delta > 0 ? zoomFactor : 1 / zoomFactor;
+
+  zoomContent( zoomFactor, QPointF( x, y ), zoomMode );
+}
+
+void QgsComposerMap::zoomContent( const double factor, const QPointF point, const ZoomMode mode )
+{
   if ( mDrawing )
   {
     return;
   }
 
-  QSettings settings;
-
-  //read zoom mode
-  //0: zoom, 1: zoom and recenter, 2: zoom to cursor, 3: nothing
-  int zoomMode = settings.value( "/qgis/wheel_action", 2 ).toInt();
-  if ( zoomMode == 3 ) //do nothing
+  if ( mode == QgsComposerItem::NoZoom )
   {
+    //do nothing
     return;
   }
 
-  double zoomFactor = settings.value( "/qgis/zoom_factor", 2.0 ).toDouble();
+  //find out map coordinates of position
+  double mapX = currentMapExtent()->xMinimum() + ( point.x() / rect().width() ) * ( currentMapExtent()->xMaximum() - currentMapExtent()->xMinimum() );
+  double mapY = currentMapExtent()->yMinimum() + ( 1 - ( point.y() / rect().height() ) ) * ( currentMapExtent()->yMaximum() - currentMapExtent()->yMinimum() );
 
   //find out new center point
   double centerX = ( currentMapExtent()->xMaximum() + currentMapExtent()->xMinimum() ) / 2;
   double centerY = ( currentMapExtent()->yMaximum() + currentMapExtent()->yMinimum() ) / 2;
 
-  if ( zoomMode != 0 )
+  if ( mode != QgsComposerItem::Zoom )
   {
-    //find out map coordinates of mouse position
-    double mapMouseX = currentMapExtent()->xMinimum() + ( x / rect().width() ) * ( currentMapExtent()->xMaximum() - currentMapExtent()->xMinimum() );
-    double mapMouseY = currentMapExtent()->yMinimum() + ( 1 - ( y / rect().height() ) ) * ( currentMapExtent()->yMaximum() - currentMapExtent()->yMinimum() );
-    if ( zoomMode == 1 ) //zoom and recenter
+    if ( mode == QgsComposerItem::ZoomRecenter )
     {
-      centerX = mapMouseX;
-      centerY = mapMouseY;
+      centerX = mapX;
+      centerY = mapY;
     }
-    else if ( zoomMode == 2 ) //zoom to cursor
+    else if ( mode == QgsComposerItem::ZoomToPoint )
     {
-      centerX = mapMouseX + ( centerX - mapMouseX ) * ( 1.0 / zoomFactor );
-      centerY = mapMouseY + ( centerY - mapMouseY ) * ( 1.0 / zoomFactor );
+      centerX = mapX + ( centerX - mapX ) * ( 1.0 / factor );
+      centerY = mapY + ( centerY - mapY ) * ( 1.0 / factor );
     }
   }
 
   double newIntervalX, newIntervalY;
 
-  if ( delta > 0 )
+  if ( factor > 0 )
   {
-    newIntervalX = ( currentMapExtent()->xMaximum() - currentMapExtent()->xMinimum() ) / zoomFactor;
-    newIntervalY = ( currentMapExtent()->yMaximum() - currentMapExtent()->yMinimum() ) / zoomFactor;
-  }
-  else if ( delta < 0 )
-  {
-    newIntervalX = ( currentMapExtent()->xMaximum() - currentMapExtent()->xMinimum() ) * zoomFactor;
-    newIntervalY = ( currentMapExtent()->yMaximum() - currentMapExtent()->yMinimum() ) * zoomFactor;
+    newIntervalX = ( currentMapExtent()->xMaximum() - currentMapExtent()->xMinimum() ) / factor;
+    newIntervalY = ( currentMapExtent()->yMaximum() - currentMapExtent()->yMinimum() ) / factor;
   }
   else //no need to zoom
   {

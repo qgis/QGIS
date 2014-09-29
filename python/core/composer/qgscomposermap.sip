@@ -130,10 +130,20 @@ class QgsComposerMap : QgsComposerItem
     void moveContent( double dx, double dy );
 
     /**Zoom content of map
-     @param delta value from wheel event that describes magnitude and direction (positive /negative number)
-    @param x x-coordinate of mouse position in item coordinates
-    @param y y-coordinate of mouse position in item coordinates*/
-    void zoomContent( int delta, double x, double y );
+     * @param delta value from wheel event that describes direction (positive /negative number)
+     * @param x x-position of mouse cursor (in item coordinates)
+     * @param y y-position of mouse cursor (in item coordinates)
+     * @deprecated use zoomContent( double, QPointF, ZoomMode ) instead
+    */
+    void zoomContent( int delta, double x, double y ) /Deprecated/;
+
+    /**Zoom content of item. Does nothing per default (but implemented in composer map)
+     * @param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
+     * @param point item point for zoom center
+     * @param mode zoom mode
+     * @note added in QGIS 2.5
+    */
+    virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom );
 
     /**Sets new scene rectangle bounds and recalculates hight and extent*/
     void setSceneRect( const QRectF& rectangle );

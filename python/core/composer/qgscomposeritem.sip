@@ -133,6 +133,16 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
       LowerRight
     };
 
+    /** Modes for zooming item content
+     */
+    enum ZoomMode
+    {
+      Zoom = 0, /*< Zoom to center of content */
+      ZoomRecenter, /*< Zoom and recenter content to point */
+      ZoomToPoint, /*< Zoom while maintaining relative position of point */
+      NoZoom /*< No zoom */
+    };
+
     /**Constructor
      @param composition parent composition
      @param manageZValue true if the z-Value of this object should be managed by mComposition*/
@@ -183,10 +193,20 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     virtual void moveContent( double dx, double dy );
 
     /**Zoom content of item. Does nothing per default (but implemented in composer map)
-      @param delta value from wheel event that describes magnitude and direction (positive /negative number)
-      @param x x-position of mouse cursor (in item coordinates)
-      @param y y-position of mouse cursor (in item coordinates)*/
-    virtual void zoomContent( int delta, double x, double y );
+     * @param delta value from wheel event that describes direction (positive /negative number)
+     * @param x x-position of mouse cursor (in item coordinates)
+     * @param y y-position of mouse cursor (in item coordinates)
+     * @deprecated use zoomContent( double, QPointF, ZoomMode ) instead
+    */
+    virtual void zoomContent( int delta, double x, double y ) /Deprecated/;
+
+    /**Zoom content of item. Does nothing per default (but implemented in composer map)
+     * @param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
+     * @param point item point for zoom center
+     * @param mode zoom mode
+     * @note added in QGIS 2.5
+    */
+    virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom );
 
     /**Gets the page the item is currently on.
      * @returns page number for item
