@@ -237,6 +237,14 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      */
     void setSelected( const QModelIndex &index );
 
+  protected:
+
+    /**Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)*/
+    QList<QgsComposerItem*> mItemZList;
+
+    /**Cached list of items from mItemZList which are currently in the scene*/
+    QList<QgsComposerItem*> mItemsInScene;
+
   private:
 
     enum Columns
@@ -248,12 +256,6 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
     /**Parent composition*/
     QgsComposition* mComposition;
-
-    /**Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)*/
-    QList<QgsComposerItem*> mItemZList;
-
-    /**Cached list of items from mItemZList which are currently in the scene*/
-    QList<QgsComposerItem*> mItemsInScene;
 
     /**Returns the QgsComposerItem corresponding to a QModelIndex, if possible
      * @param index QModelIndex for item
@@ -283,6 +285,8 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see refreshItemsInScene
     */
     void rebuildSceneItemList();
+
+    friend class TestQgsComposerModel;
 };
 
 #endif //QGSCOMPOSERMODEL

@@ -61,10 +61,12 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
     setExpressionContext( mComposition->atlasComposition().currentFeature(), mComposition->atlasComposition().coverageLayer() );
   }
 
-  //connect to atlas feature changes
-  //to update the expression context
-  connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshExpressionContext() ) );
-
+  if ( mComposition )
+  {
+    //connect to atlas feature changes
+    //to update the expression context
+    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshExpressionContext() ) );
+  }
 }
 
 QgsComposerLabel::~QgsComposerLabel()

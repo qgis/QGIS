@@ -693,6 +693,11 @@ void QgsComposerModel::updateItemSelectStatus( QgsComposerItem *item )
 
 bool QgsComposerModel::reorderItemUp( QgsComposerItem *item )
 {
+  if ( !item )
+  {
+    return false;
+  }
+
   if ( mItemsInScene.first() == item )
   {
     //item is already topmost item present in scene, nothing to do
@@ -738,6 +743,11 @@ bool QgsComposerModel::reorderItemUp( QgsComposerItem *item )
 
 bool QgsComposerModel::reorderItemDown( QgsComposerItem *item )
 {
+  if ( !item )
+  {
+    return false;
+  }
+
   if ( mItemsInScene.last() == item )
   {
     //item is already lowest item present in scene, nothing to do
@@ -783,6 +793,11 @@ bool QgsComposerModel::reorderItemDown( QgsComposerItem *item )
 
 bool QgsComposerModel::reorderItemToTop( QgsComposerItem *item )
 {
+  if ( !item || !mItemsInScene.contains( item ) )
+  {
+    return false;
+  }
+
   if ( mItemsInScene.first() == item )
   {
     //item is already topmost item present in scene, nothing to do
@@ -814,6 +829,11 @@ bool QgsComposerModel::reorderItemToTop( QgsComposerItem *item )
 
 bool QgsComposerModel::reorderItemToBottom( QgsComposerItem *item )
 {
+  if ( !item || !mItemsInScene.contains( item ) )
+  {
+    return false;
+  }
+
   if ( mItemsInScene.last() == item )
   {
     //item is already lowest item present in scene, nothing to do
