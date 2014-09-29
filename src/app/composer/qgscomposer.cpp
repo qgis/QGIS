@@ -3607,7 +3607,9 @@ void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer )
 
   if ( coverageLayer )
   {
-    mAtlasFeatureAction = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ), this, coverageLayer, QgsMapLayerAction::SingleFeature );
+    mAtlasFeatureAction = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ),
+        this, coverageLayer, QgsMapLayerAction::SingleFeature ,
+        QgsApplication::getThemeIcon( "/mIconAtlas.svg" ) );
     QgsMapLayerActionRegistry::instance()->addMapLayerAction( mAtlasFeatureAction );
     connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, const QgsFeature& ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, const QgsFeature& ) ) );
   }
@@ -3652,7 +3654,9 @@ void QgsComposer::updateAtlasMapLayerAction( bool atlasEnabled )
   if ( atlasEnabled )
   {
     QgsAtlasComposition& atlas = mComposition->atlasComposition();
-    mAtlasFeatureAction = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ), this, atlas.coverageLayer(), QgsMapLayerAction::SingleFeature );
+    mAtlasFeatureAction = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ),
+        this, atlas.coverageLayer(), QgsMapLayerAction::SingleFeature ,
+        QgsApplication::getThemeIcon( "/mIconAtlas.svg" ) );
     QgsMapLayerActionRegistry::instance()->addMapLayerAction( mAtlasFeatureAction );
     connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, const QgsFeature& ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, const QgsFeature& ) ) );
   }
