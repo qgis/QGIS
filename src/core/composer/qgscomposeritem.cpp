@@ -722,7 +722,7 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect )
     bool ok;
     double width = exprVal.toDouble( &ok );
     QgsDebugMsg( QString( "exprVal Width:%1" ).arg( width ) );
-    if ( ok )
+    if ( ok && !exprVal.isNull() )
     {
       result.setWidth( width );
     }
@@ -732,7 +732,7 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect )
     bool ok;
     double height = exprVal.toDouble( &ok );
     QgsDebugMsg( QString( "exprVal Height:%1" ).arg( height ) );
-    if ( ok )
+    if ( ok && !exprVal.isNull() )
     {
       result.setHeight( height );
     }
@@ -753,7 +753,7 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect )
     bool ok;
     double positionX = exprVal.toDouble( &ok );
     QgsDebugMsg( QString( "exprVal Position X:%1" ).arg( positionX ) );
-    if ( ok )
+    if ( ok && !exprVal.isNull() )
     {
       x = positionX;
     }
@@ -775,7 +775,7 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect )
     bool ok;
     double positionY = exprVal.toDouble( &ok );
     QgsDebugMsg( QString( "exprVal Position Y:%1" ).arg( positionY ) );
-    if ( ok )
+    if ( ok && !exprVal.isNull() )
     {
       y = positionY;
     }
@@ -861,7 +861,7 @@ void QgsComposerItem::refreshBlendMode()
 
   //data defined blend mode set?
   QVariant exprVal;
-  if ( dataDefinedEvaluate( QgsComposerObject::BlendMode, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::BlendMode, exprVal ) && !exprVal.isNull() )
   {
     QString blendstr = exprVal.toString().trimmed();
     QPainter::CompositionMode blendModeD = QgsSymbolLayerV2Utils::decodeBlendMode( blendstr );
@@ -891,7 +891,7 @@ void QgsComposerItem::refreshTransparency( const bool updateItem )
     bool ok;
     int transparencyD = exprVal.toInt( &ok );
     QgsDebugMsg( QString( "exprVal Transparency:%1" ).arg( transparencyD ) );
-    if ( ok )
+    if ( ok && !exprVal.isNull() )
     {
       transparency = transparencyD;
     }
@@ -1041,7 +1041,7 @@ void QgsComposerItem::refreshRotation( const bool updateItem , const bool adjust
     bool ok;
     double rotD = exprVal.toDouble( &ok );
     QgsDebugMsg( QString( "exprVal Rotation:%1" ).arg( rotD ) );
-    if ( ok )
+    if ( ok && !exprVal.isNull() )
     {
       rotation = rotD;
     }
@@ -1332,7 +1332,7 @@ void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataD
     bool exclude = mExcludeFromExports;
     //data defined exclude from exports set?
     QVariant exprVal;
-    if ( dataDefinedEvaluate( QgsComposerObject::ExcludeFromExports, exprVal ) )
+    if ( dataDefinedEvaluate( QgsComposerObject::ExcludeFromExports, exprVal ) && !exprVal.isNull() )
     {
       exclude = exprVal.toBool();
     }

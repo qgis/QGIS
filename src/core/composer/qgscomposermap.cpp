@@ -944,7 +944,7 @@ void QgsComposerMap::refreshMapExtents()
     bool ok;
     minXD = exprVal.toDouble( &ok );
     QgsDebugMsg( QString( "exprVal Map XMin:%1" ).arg( minXD ) );
-    if ( ok )
+    if ( ok && !exprVal.isNull() )
     {
       useDdXMin = true;
       newExtent.setXMinimum( minXD );
@@ -955,7 +955,7 @@ void QgsComposerMap::refreshMapExtents()
     bool ok;
     minYD = exprVal.toDouble( &ok );
     QgsDebugMsg( QString( "exprVal Map YMin:%1" ).arg( minYD ) );
-    if ( ok )
+    if ( ok && !exprVal.isNull() )
     {
       useDdYMin = true;
       newExtent.setYMinimum( minYD );
@@ -966,7 +966,7 @@ void QgsComposerMap::refreshMapExtents()
     bool ok;
     maxXD = exprVal.toDouble( &ok );
     QgsDebugMsg( QString( "exprVal Map XMax:%1" ).arg( maxXD ) );
-    if ( ok )
+    if ( ok && !exprVal.isNull() )
     {
       useDdXMax = true;
       newExtent.setXMaximum( maxXD );
@@ -977,7 +977,7 @@ void QgsComposerMap::refreshMapExtents()
     bool ok;
     maxYD = exprVal.toDouble( &ok );
     QgsDebugMsg( QString( "exprVal Map YMax:%1" ).arg( maxYD ) );
-    if ( ok )
+    if ( ok && !exprVal.isNull() )
     {
       useDdYMax = true;
       newExtent.setYMaximum( maxYD );
@@ -1021,7 +1021,7 @@ void QgsComposerMap::refreshMapExtents()
     bool ok;
     double scaleD = exprVal.toDouble( &ok );
     QgsDebugMsg( QString( "exprVal Map Scale:%1" ).arg( scaleD ) );
-    if ( ok )
+    if ( ok && !exprVal.isNull() )
     {
       setNewScale( scaleD, false );
       newExtent = *currentMapExtent();
@@ -1072,7 +1072,7 @@ void QgsComposerMap::refreshMapExtents()
     bool ok;
     double rotationD = exprVal.toDouble( &ok );
     QgsDebugMsg( QString( "exprVal Map Rotation:%1" ).arg( rotationD ) );
-    if ( ok )
+    if ( ok && !exprVal.isNull() )
     {
       mapRotation = rotationD;
     }
@@ -2331,7 +2331,7 @@ double QgsComposerMap::atlasMargin( const QgsComposerObject::PropertyValueType v
       bool ok;
       double ddMargin = exprVal.toDouble( &ok );
       QgsDebugMsg( QString( "exprVal Map Atlas Margin:%1" ).arg( ddMargin ) );
-      if ( ok )
+      if ( ok && !exprVal.isNull() )
       {
         //divide by 100 to convert to 0 -> 1.0 range
         margin = ddMargin / 100;
