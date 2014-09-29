@@ -99,7 +99,7 @@
     <name>ConnectionItem</name>
     <message>
         <source>Unable to connect</source>
-        <translation>No se puede conectar</translation>
+        <translation type="obsolete">No se puede conectar</translation>
     </message>
 </context>
 <context>
@@ -157,7 +157,7 @@
     <name>DBManager</name>
     <message>
         <source>Sorry</source>
-        <translation>Lo siento</translation>
+        <translation type="obsolete">Lo siento</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
@@ -220,7 +220,7 @@
     <name>DBManagerPlugin</name>
     <message>
         <source>Sorry</source>
-        <translation>Lo siento</translation>
+        <translation type="obsolete">Lo siento</translation>
     </message>
     <message>
         <source>Unable to find a valid unique field</source>
@@ -594,7 +594,7 @@ Consulta:
     </message>
     <message>
         <source>Select an empty SCHEMA for deletion.</source>
-        <translation>Seleccione un ESQUEMA vacía para borrar.</translation>
+        <translation type="obsolete">Seleccione un ESQUEMA vacía para borrar.</translation>
     </message>
     <message>
         <source>hey!</source>
@@ -606,11 +606,11 @@ Consulta:
     </message>
     <message>
         <source>Select a TABLE for editation.</source>
-        <translation>Seleccione una TABLA para editar.</translation>
+        <translation type="obsolete">Seleccione una TABLA para editar.</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW for deletion.</source>
-        <translation>Seleccione una TABLA/VISTA para borrar.</translation>
+        <translation type="obsolete">Seleccione una TABLA/VISTA para borrar.</translation>
     </message>
     <message>
         <source>Really delete table/view %s?</source>
@@ -618,7 +618,7 @@ Consulta:
     </message>
     <message>
         <source>Select a TABLE to empty it.</source>
-        <translation>Seleccione una TABLA para vaciarla.</translation>
+        <translation type="obsolete">Seleccione una TABLA para vaciarla.</translation>
     </message>
     <message>
         <source>Really delete all items from table %s?</source>
@@ -626,7 +626,7 @@ Consulta:
     </message>
     <message>
         <source>Select a TABLE/VIEW.</source>
-        <translation>Seleccionar una TABLA/VISTA.</translation>
+        <translation type="obsolete">Seleccionar una TABLA/VISTA.</translation>
     </message>
     <message>
         <source>Do you want to %s all triggers?</source>
@@ -679,6 +679,26 @@ Consulta:
     <message>
         <source>&quot;{0}&quot; not found</source>
         <translation>No se ha encontrado &quot;{0}&quot;</translation>
+    </message>
+    <message>
+        <source>Select an empty schema for deletion.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a table for editation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a table/view for deletion.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a table to empty it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a table/view.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2676,11 +2696,15 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     </message>
     <message>
         <source>Sorry</source>
-        <translation>Lo siento</translation>
+        <translation type="obsolete">Lo siento</translation>
     </message>
     <message>
         <source>field name must not be empty</source>
         <translation>el nombre de campo no debe estar vacío</translation>
+    </message>
+    <message>
+        <source>DB Manager</source>
+        <translation type="unfinished">Administrador de BBDD</translation>
     </message>
 </context>
 <context>
@@ -2867,7 +2891,7 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     </message>
     <message>
         <source>Sorry</source>
-        <translation>Lo siento</translation>
+        <translation type="obsolete">Lo siento</translation>
     </message>
     <message>
         <source>no field selected</source>
@@ -2908,6 +2932,10 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     <message>
         <source>everything went fine</source>
         <translation>todo fue bien</translation>
+    </message>
+    <message>
+        <source>DB Manager</source>
+        <translation type="unfinished">Administrador de BBDD</translation>
     </message>
 </context>
 <context>
@@ -2994,7 +3022,7 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     </message>
     <message>
         <source>Sorry</source>
-        <translation>Lo siento</translation>
+        <translation type="obsolete">Lo siento</translation>
     </message>
     <message>
         <source>field name must not be empty</source>
@@ -3003,6 +3031,10 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     <message>
         <source>field type must not be empty</source>
         <translation>el tipo de campo no debe estar vacío</translation>
+    </message>
+    <message>
+        <source>DB Manager</source>
+        <translation type="unfinished">Administrador de BBDD</translation>
     </message>
 </context>
 <context>
@@ -3361,7 +3393,7 @@ columnas</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation>Lo siento</translation>
+        <translation type="obsolete">Lo siento</translation>
     </message>
     <message>
         <source>You must fill the required fields: 
@@ -3380,6 +3412,10 @@ columna de geometría - columna con valores enteros únicos</translation>
     <message>
         <source>%d rows, %.1f seconds</source>
         <translation>%d filas, %.1f segundos</translation>
+    </message>
+    <message>
+        <source>DB Manager</source>
+        <translation type="unfinished">Administrador de BBDD</translation>
     </message>
 </context>
 <context>
@@ -3497,7 +3533,7 @@ columna de geometría - columna con valores enteros únicos</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation>Lo siento</translation>
+        <translation type="obsolete">Lo siento</translation>
     </message>
     <message>
         <source>nothing selected</source>
@@ -3534,6 +3570,10 @@ columna de geometría - columna con valores enteros únicos</translation>
     <message>
         <source>really delete index &apos;%s&apos;?</source>
         <translation>realmente borrar el índice &apos;%s&apos;?</translation>
+    </message>
+    <message>
+        <source>DB Manager</source>
+        <translation type="unfinished">Administrador de BBDD</translation>
     </message>
 </context>
 <context>
@@ -6217,6 +6257,34 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
         <source>Advanced options cannot be enabled.</source>
         <translation>No se pueden activar las opciones avanzadas.</translation>
     </message>
+    <message>
+        <source>Quartic (biweight)</source>
+        <translation type="unfinished">Cuártica (biponderada)</translation>
+    </message>
+    <message>
+        <source>Triangular</source>
+        <translation type="unfinished">Triangular</translation>
+    </message>
+    <message>
+        <source>Uniform</source>
+        <translation type="unfinished">Uniforme</translation>
+    </message>
+    <message>
+        <source>Triweight</source>
+        <translation type="unfinished">Triponderada</translation>
+    </message>
+    <message>
+        <source>Epanechnikov</source>
+        <translation type="unfinished">Epanechnikov</translation>
+    </message>
+    <message>
+        <source>Raw values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scaled by kernel size</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>HeatmapGuiBase</name>
@@ -6338,23 +6406,23 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Quartic (biweight)</source>
-        <translation>Cuártica (biponderada)</translation>
+        <translation type="obsolete">Cuártica (biponderada)</translation>
     </message>
     <message>
         <source>Triangular</source>
-        <translation>Triangular</translation>
+        <translation type="obsolete">Triangular</translation>
     </message>
     <message>
         <source>Uniform</source>
-        <translation>Uniforme</translation>
+        <translation type="obsolete">Uniforme</translation>
     </message>
     <message>
         <source>Triweight</source>
-        <translation>Triponderada</translation>
+        <translation type="obsolete">Triponderada</translation>
     </message>
     <message>
         <source>Epanechnikov</source>
-        <translation>Epanechnikov</translation>
+        <translation type="obsolete">Epanechnikov</translation>
     </message>
     <message>
         <source>Kernel shape</source>
@@ -6371,6 +6439,10 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     <message>
         <source>Add generated file to map</source>
         <translation>Añadir archivo generado al mapa</translation>
+    </message>
+    <message>
+        <source>Output values</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6408,6 +6480,18 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     <message>
         <source>Are you sure you want to clear log?</source>
         <translation>¿Está seguro de querer borrar el registro?</translation>
+    </message>
+    <message>
+        <source>Save As...</source>
+        <translation type="unfinished">Guardar como...</translation>
+    </message>
+    <message>
+        <source>Save history and log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save file</source>
+        <translation type="unfinished">Guardar archivo</translation>
     </message>
 </context>
 <context>
@@ -9280,11 +9364,15 @@ Por favor, cambie esta situación primero, porque el complemento de OSM no sabe 
     </message>
     <message>
         <source>Sorry</source>
-        <translation>Lo siento</translation>
+        <translation type="obsolete">Lo siento</translation>
     </message>
     <message>
         <source>Select a TABLE for vacuum analyze.</source>
-        <translation>Seleccionar una TABLA para el análisis de vacío.</translation>
+        <translation type="obsolete">Seleccionar una TABLA para el análisis de vacío.</translation>
+    </message>
+    <message>
+        <source>Select a table for vacuum analyze.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11120,7 +11208,7 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     </message>
     <message>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
-        <translation>La selección se extiende más allá del sistema de coordenadas de la capa.</translation>
+        <translation type="obsolete">La selección se extiende más allá del sistema de coordenadas de la capa.</translation>
     </message>
     <message>
         <source>Raster Histogram</source>
@@ -12877,6 +12965,10 @@ La respuesta fue:
     </message>
     <message>
         <source>Empty filename given</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection extends beyond layer&apos;s coordinate system</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16311,6 +16403,10 @@ Por favor, contacte con los desarrolladores.</translation>
         <source>Collapse All</source>
         <translation type="unfinished">Comprimir todo</translation>
     </message>
+    <message>
+        <source>Filter Legend By Map Content</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -17853,7 +17949,7 @@ Error del analizador:
     </message>
     <message>
         <source>mMainViewButtonGroup</source>
-        <translation>mMainViewButtonGroup</translation>
+        <translation type="obsolete">mMainViewButtonGroup</translation>
     </message>
     <message>
         <source>=</source>
@@ -17884,6 +17980,14 @@ Error del analizador:
     <message>
         <source>[update field expression]</source>
         <translation type="obsolete">[expresión de actualización de campo]</translation>
+    </message>
+    <message>
+        <source>Switch to form view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Switch to table view</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19162,6 +19266,14 @@ Should the existing classes be deleted before classification?</source>
         <source>Create a new palette</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Copy Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy selected colors</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsColorDialogV2</name>
@@ -20174,6 +20286,14 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>Empty table message changed</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Empty frame mode toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide background if empty toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerAttributeTableWidgetBase</name>
@@ -20340,6 +20460,14 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Add Frame</source>
         <translation type="unfinished">Añadir marco</translation>
+    </message>
+    <message>
+        <source>Don&apos;t export page if frame is empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t draw background if frame is empty</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -21226,6 +21354,14 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>url string</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Empty frame mode toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide background if empty toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerHtmlWidgetBase</name>
@@ -21311,6 +21447,14 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Update HTML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t export page if frame is empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t draw background if frame is empty</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -21430,6 +21574,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Item transparency changed</source>
         <translation>cambiada la transparencia del elemento</translation>
+    </message>
+    <message>
+        <source>Exclude from exports changed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -21565,6 +21713,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Background color</source>
         <translation type="unfinished">Color de fondo</translation>
+    </message>
+    <message>
+        <source>Exclude item from exports</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22228,6 +22380,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Font color</source>
         <translation type="unfinished">Color de letras</translation>
+    </message>
+    <message>
+        <source>Filter Legend By Map Content</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -28237,6 +28393,10 @@ Error del analizador:
         <source>Export features intersecting the current map extent</source>
         <translation>Exportar objetos espaciales que intersecten con la extensión actual del mapa</translation>
     </message>
+    <message>
+        <source>Layerattribute</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsEditorWidgetRegistry</name>
@@ -31765,7 +31925,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Renderer creation has failed.</source>
-        <translation>La creación del renderizador ha fallado.</translation>
+        <translation type="obsolete">La creación del renderizador ha fallado.</translation>
     </message>
     <message>
         <source>Symbol levels...</source>
@@ -31802,7 +31962,27 @@ Press cancel to abort breaks calculation or OK to continue.</source>
 Presione Cancelar para abortar el cálculo de ruptura u OK para continuar.</translation>
     </message>
     <message>
-        <source>Link classes boundaries</source>
+        <source>Label Format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trim</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decimal places</source>
+        <translation type="unfinished">Lugares decimales</translation>
+    </message>
+    <message>
+        <source>Link class boundaries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linked range warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linking ranges that are not ordered may produced unexpected results. Proceed?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -37195,7 +37375,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>Layer cannot be added to</source>
-        <translation>La capa no se puede añadir a</translation>
+        <translation type="obsolete">La capa no se puede añadir a</translation>
     </message>
     <message>
         <source>The data provider for this layer does not support the addition of features.</source>
@@ -37211,15 +37391,15 @@ no se muestran</translation>
     </message>
     <message>
         <source>Wrong editing tool</source>
-        <translation>Herramienta de edición incorrecta</translation>
+        <translation type="obsolete">Herramienta de edición incorrecta</translation>
     </message>
     <message>
         <source>Cannot apply the &apos;capture point&apos; tool on this vector layer</source>
-        <translation>No se puede aplicar la herramienta &apos;Crear punto&apos; en esta capa vectorial</translation>
+        <translation type="obsolete">No se puede aplicar la herramienta &apos;Crear punto&apos; en esta capa vectorial</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation>Error de transformación de coordenadas</translation>
+        <translation type="obsolete">Error de transformación de coordenadas</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
@@ -37231,15 +37411,15 @@ no se muestran</translation>
     </message>
     <message>
         <source>Cannot apply the &apos;capture line&apos; tool on this vector layer</source>
-        <translation>No se puede aplicar la herramienta &apos;Crear línea&apos; en esta capa vectorial</translation>
+        <translation type="obsolete">No se puede aplicar la herramienta &apos;Crear línea&apos; en esta capa vectorial</translation>
     </message>
     <message>
         <source>Cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
-        <translation>No se puede aplicar la herramienta &apos;Crear polígono&apos; en esta capa vectorial</translation>
+        <translation type="obsolete">No se puede aplicar la herramienta &apos;Crear polígono&apos; en esta capa vectorial</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation type="obsolete">Error</translation>
     </message>
     <message>
         <source>Cannot add feature. Unknown WKB type</source>
@@ -37260,6 +37440,18 @@ no se muestran</translation>
     <message>
         <source>The feature cannot be added because it&apos;s geometry collapsed due to intersection avoidance</source>
         <translation>El objeto espacial no se puede añadir porque su geometría colapsó debido a evitar intersecciones</translation>
+    </message>
+    <message>
+        <source>Wrong editing tool, cannot apply the &apos;capture point&apos; tool on this vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong editing tool, cannot apply the &apos;capture line&apos; tool on this vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong editing tool, cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37416,7 +37608,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation>Error de transformación de coordenadas</translation>
+        <translation type="obsolete">Error de transformación de coordenadas</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
@@ -37428,31 +37620,59 @@ no se muestran</translation>
     </message>
     <message>
         <source>A problem with geometry type occured</source>
-        <translation>Ocurrió un problema con el tipo de geometría</translation>
+        <translation type="obsolete">Ocurrió un problema con el tipo de geometría</translation>
     </message>
     <message>
         <source>The inserted Ring is not closed</source>
-        <translation>El anillo insertado no está cerrado</translation>
+        <translation type="obsolete">El anillo insertado no está cerrado</translation>
     </message>
     <message>
         <source>The inserted Ring is not a valid geometry</source>
-        <translation>El anillo insertado no es una geometría válida</translation>
+        <translation type="obsolete">El anillo insertado no es una geometría válida</translation>
     </message>
     <message>
         <source>The inserted Ring crosses existing rings</source>
-        <translation>El anillo insertado cruza anillos existentes</translation>
+        <translation type="obsolete">El anillo insertado cruza anillos existentes</translation>
     </message>
     <message>
         <source>The inserted Ring is not contained in a feature</source>
-        <translation>El anillo insertado no está contenido en un objeto espacial</translation>
+        <translation type="obsolete">El anillo insertado no está contenido en un objeto espacial</translation>
     </message>
     <message>
         <source>An unknown error occured</source>
-        <translation>Ocurrió un error desconocido</translation>
+        <translation type="obsolete">Ocurrió un error desconocido</translation>
     </message>
     <message>
         <source>Error, could not add ring</source>
-        <translation>Error, no se pudo añadir el anillo</translation>
+        <translation type="obsolete">Error, no se pudo añadir el anillo</translation>
+    </message>
+    <message>
+        <source>a problem with geometry type occured</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the inserted ring is not closed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the inserted ring is not a valid geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the inserted ring crosses existing rings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the inserted ring is not contained in a feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>an unknown error occured</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>could not add ring since %1.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37548,15 +37768,15 @@ no se muestran</translation>
     <name>QgsMapToolFeatureAction</name>
     <message>
         <source>No active vector layer</source>
-        <translation>Ninguna capa vectorial activa</translation>
+        <translation type="obsolete">Ninguna capa vectorial activa</translation>
     </message>
     <message>
         <source>To run an action, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation>Para ejecutar una acción, debe seleccionar una capa vectorial haciendo clic en su nombre en el panel capas</translation>
+        <translation type="obsolete">Para ejecutar una acción, debe seleccionar una capa vectorial haciendo clic en su nombre en el panel capas</translation>
     </message>
     <message>
         <source>No actions available</source>
-        <translation>Ninguna acción disponible</translation>
+        <translation type="obsolete">Ninguna acción disponible</translation>
     </message>
     <message>
         <source>The active vector layer has no defined actions</source>
@@ -37566,12 +37786,16 @@ no se muestran</translation>
         <source>No features at this position found.</source>
         <translation>No se han encontrado objetos espaciales en esta posición.</translation>
     </message>
+    <message>
+        <source>To run an action, you must choose an active vector layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolFillRing</name>
     <message>
         <source>Coordinate transform error</source>
-        <translation>Error de transformación de coordenadas</translation>
+        <translation type="obsolete">Error de transformación de coordenadas</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
@@ -37583,31 +37807,59 @@ no se muestran</translation>
     </message>
     <message>
         <source>A problem with geometry type occured</source>
-        <translation>Ocurrió un problema con el tipo de geometría</translation>
+        <translation type="obsolete">Ocurrió un problema con el tipo de geometría</translation>
     </message>
     <message>
         <source>The inserted Ring is not closed</source>
-        <translation>El anillo insertado no está cerrado</translation>
+        <translation type="obsolete">El anillo insertado no está cerrado</translation>
     </message>
     <message>
         <source>The inserted Ring is not a valid geometry</source>
-        <translation>El anillo insertado no es una geometría válida</translation>
+        <translation type="obsolete">El anillo insertado no es una geometría válida</translation>
     </message>
     <message>
         <source>The inserted Ring crosses existing rings</source>
-        <translation>El anillo insertado cruza anillos existentes</translation>
+        <translation type="obsolete">El anillo insertado cruza anillos existentes</translation>
     </message>
     <message>
         <source>The inserted Ring is not contained in a feature</source>
-        <translation>El anillo insertado no está contenido en un objeto espacial</translation>
+        <translation type="obsolete">El anillo insertado no está contenido en un objeto espacial</translation>
     </message>
     <message>
         <source>An unknown error occured</source>
-        <translation>Ocurrió un error desconocido</translation>
+        <translation type="obsolete">Ocurrió un error desconocido</translation>
     </message>
     <message>
         <source>Error, could not add ring</source>
-        <translation>Error, no se pudo añadir el anillo</translation>
+        <translation type="obsolete">Error, no se pudo añadir el anillo</translation>
+    </message>
+    <message>
+        <source>a problem with geometry type occured</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the inserted Ring is not closed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the inserted Ring is not a valid geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the inserted Ring crosses existing rings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the inserted Ring is not contained in a feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>an unknown error occured</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>could not add ring since %1.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37788,7 +38040,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>Geometry error</source>
-        <translation>Error de geometría</translation>
+        <translation type="obsolete">Error de geometría</translation>
     </message>
     <message>
         <source>Creating offset geometry failed</source>
@@ -37834,7 +38086,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation>Error de transformación de coordenadas</translation>
+        <translation type="obsolete">Error de transformación de coordenadas</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
@@ -37867,7 +38119,7 @@ no se muestran</translation>
     <name>QgsMapToolRotatePointSymbols</name>
     <message>
         <source>No point feature</source>
-        <translation>Ningún objeto espacial de tipo punto</translation>
+        <translation type="obsolete">Ningún objeto espacial de tipo punto</translation>
     </message>
     <message>
         <source>No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings-&gt;Options-&gt;Digitizing-&gt;Serch radius for vertex edits</source>
@@ -37875,15 +38127,19 @@ no se muestran</translation>
     </message>
     <message>
         <source>No rotation Attributes</source>
-        <translation>Ningún atributo de rotación</translation>
+        <translation type="obsolete">Ningún atributo de rotación</translation>
     </message>
     <message>
         <source>The active point layer does not have a rotation attribute</source>
-        <translation>La capa actual de puntos no tiene un atributo de rotación</translation>
+        <translation type="obsolete">La capa actual de puntos no tiene un atributo de rotación</translation>
     </message>
     <message>
         <source>Rotate symbol</source>
         <translation>Rotar símbolo</translation>
+    </message>
+    <message>
+        <source>The active point layer does not have a rotation attribute.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37923,6 +38179,10 @@ no se muestran</translation>
         <source>Showed labels</source>
         <translation>Etiquetas mostradas</translation>
     </message>
+    <message>
+        <source>CRS Exception: selection extends beyond layer&apos;s coordinate system.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolSimplify</name>
@@ -37932,7 +38192,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>Unsupported operation</source>
-        <translation>Operación no admitida</translation>
+        <translation type="obsolete">Operación no admitida</translation>
     </message>
     <message>
         <source>Multipart features are not supported for simplification.</source>
@@ -47875,6 +48135,10 @@ p, li { white-space: pre-wrap; }
         <source>Inactive</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Allow NULL</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterCalcDialog</name>
@@ -57650,6 +57914,10 @@ El error fue: %2</translation>
         <source>Save only selected features</source>
         <translation>Guardar sólo los objetos espaciales seleccionados</translation>
     </message>
+    <message>
+        <source>Change...</source>
+        <translation type="unfinished">Cambiar...</translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorRandomColorRampV2DialogBase</name>
@@ -60391,7 +60659,7 @@ Frase de motivo: %2</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation>Lo siento</translation>
+        <translation type="obsolete">Lo siento</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>

@@ -52,7 +52,7 @@
     <name>ConnectionItem</name>
     <message>
         <source>Unable to connect</source>
-        <translation>Nav iespējams pieslēgties</translation>
+        <translation type="obsolete">Nav iespējams pieslēgties</translation>
     </message>
 </context>
 <context>
@@ -110,7 +110,7 @@
     <name>DBManager</name>
     <message>
         <source>Sorry</source>
-        <translation>Atvainojiet</translation>
+        <translation type="obsolete">Atvainojiet</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
@@ -173,7 +173,7 @@
     <name>DBManagerPlugin</name>
     <message>
         <source>Sorry</source>
-        <translation>Atvainojiet</translation>
+        <translation type="obsolete">Atvainojiet</translation>
     </message>
     <message>
         <source>Unable to find a valid unique field</source>
@@ -546,7 +546,7 @@ Vaicājums:
     </message>
     <message>
         <source>Select an empty SCHEMA for deletion.</source>
-        <translation>Izvēlies tukšu SHĒMU dzēsanai.</translation>
+        <translation type="obsolete">Izvēlies tukšu SHĒMU dzēsanai.</translation>
     </message>
     <message>
         <source>hey!</source>
@@ -558,11 +558,11 @@ Vaicājums:
     </message>
     <message>
         <source>Select a TABLE for editation.</source>
-        <translation>Izvēlies TABULU rediģēšanai.</translation>
+        <translation type="obsolete">Izvēlies TABULU rediģēšanai.</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW for deletion.</source>
-        <translation>Izvēlies TABULU/SKATU dzēsanai.</translation>
+        <translation type="obsolete">Izvēlies TABULU/SKATU dzēsanai.</translation>
     </message>
     <message>
         <source>Really delete table/view %s?</source>
@@ -570,7 +570,7 @@ Vaicājums:
     </message>
     <message>
         <source>Select a TABLE to empty it.</source>
-        <translation>Izvēlies TABULU iztīrīšanai.</translation>
+        <translation type="obsolete">Izvēlies TABULU iztīrīšanai.</translation>
     </message>
     <message>
         <source>Really delete all items from table %s?</source>
@@ -578,7 +578,7 @@ Vaicājums:
     </message>
     <message>
         <source>Select a TABLE/VIEW.</source>
-        <translation>Izvēlies TABULU/SKATU.</translation>
+        <translation type="obsolete">Izvēlies TABULU/SKATU.</translation>
     </message>
     <message>
         <source>Do you want to %s all triggers?</source>
@@ -631,6 +631,26 @@ Vaicājums:
     <message>
         <source>&quot;{0}&quot; not found</source>
         <translation>&quot;{0}&quot; nav atrasts</translation>
+    </message>
+    <message>
+        <source>Select an empty schema for deletion.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a table for editation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a table/view for deletion.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a table to empty it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a table/view.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2449,11 +2469,15 @@ vienkāršošanas samazinājās uz %s virsotnēm</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation>Atvainojiet</translation>
+        <translation type="obsolete">Atvainojiet</translation>
     </message>
     <message>
         <source>field name must not be empty</source>
         <translation>lauka nosaukums nedrīkst būt tukšs</translation>
+    </message>
+    <message>
+        <source>DB Manager</source>
+        <translation type="unfinished">DB Pārvaldnieks</translation>
     </message>
 </context>
 <context>
@@ -2620,7 +2644,7 @@ vienkāršošanas samazinājās uz %s virsotnēm</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation>Atvainojiet</translation>
+        <translation type="obsolete">Atvainojiet</translation>
     </message>
     <message>
         <source>no field selected</source>
@@ -2661,6 +2685,10 @@ vienkāršošanas samazinājās uz %s virsotnēm</translation>
     <message>
         <source>everything went fine</source>
         <translation>viss noritēja labi</translation>
+    </message>
+    <message>
+        <source>DB Manager</source>
+        <translation type="unfinished">DB Pārvaldnieks</translation>
     </message>
 </context>
 <context>
@@ -2747,7 +2775,7 @@ vienkāršošanas samazinājās uz %s virsotnēm</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation>Atvainojiet</translation>
+        <translation type="obsolete">Atvainojiet</translation>
     </message>
     <message>
         <source>field name must not be empty</source>
@@ -2756,6 +2784,10 @@ vienkāršošanas samazinājās uz %s virsotnēm</translation>
     <message>
         <source>field type must not be empty</source>
         <translation>lauka tips nedrīkst būt tukšs</translation>
+    </message>
+    <message>
+        <source>DB Manager</source>
+        <translation type="unfinished">DB Pārvaldnieks</translation>
     </message>
 </context>
 <context>
@@ -3110,7 +3142,7 @@ kolonnas</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation>Atvainojiet</translation>
+        <translation type="obsolete">Atvainojiet</translation>
     </message>
     <message>
         <source>You must fill the required fields: 
@@ -3121,6 +3153,10 @@ geometry column - column with unique integer values</source>
     <message>
         <source>%d rows, %.1f seconds</source>
         <translation>%d sindas, %.1f sekundes</translation>
+    </message>
+    <message>
+        <source>DB Manager</source>
+        <translation type="unfinished">DB Pārvaldnieks</translation>
     </message>
 </context>
 <context>
@@ -3234,7 +3270,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Sorry</source>
-        <translation>Atvainojiet</translation>
+        <translation type="obsolete">Atvainojiet</translation>
     </message>
     <message>
         <source>nothing selected</source>
@@ -3271,6 +3307,10 @@ geometry column - column with unique integer values</source>
     <message>
         <source>really delete index &apos;%s&apos;?</source>
         <translation>Tiešām dzēst indeksu &apos;%s&apos;?</translation>
+    </message>
+    <message>
+        <source>DB Manager</source>
+        <translation type="unfinished">DB Pārvaldnieks</translation>
     </message>
 </context>
 <context>
@@ -5575,6 +5615,34 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
         <source>Please enter a valid output file path and name.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Quartic (biweight)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Triangular</source>
+        <translation type="unfinished">Trīsstūrains</translation>
+    </message>
+    <message>
+        <source>Uniform</source>
+        <translation type="unfinished">Vienmērīgs</translation>
+    </message>
+    <message>
+        <source>Triweight</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Epanechnikov</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raw values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scaled by kernel size</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>HeatmapGuiBase</name>
@@ -5679,24 +5747,12 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
         <translation>Samazinājuma koeficients </translation>
     </message>
     <message>
-        <source>Quartic (biweight)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Triangular</source>
-        <translation>Trīsstūrains</translation>
+        <translation type="obsolete">Trīsstūrains</translation>
     </message>
     <message>
         <source>Uniform</source>
-        <translation>Vienmērīgs</translation>
-    </message>
-    <message>
-        <source>Triweight</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Epanechnikov</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Vienmērīgs</translation>
     </message>
     <message>
         <source>Kernel shape</source>
@@ -5712,6 +5768,10 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Add generated file to map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output values</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5754,6 +5814,18 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     <message>
         <source>Are you sure you want to clear log?</source>
         <translation>Droši zini, ka gribi dzēst žurnālu?</translation>
+    </message>
+    <message>
+        <source>Save As...</source>
+        <translation type="unfinished">Saglabāt kā...</translation>
+    </message>
+    <message>
+        <source>Save history and log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save file</source>
+        <translation type="unfinished">Saglabāt failu</translation>
     </message>
 </context>
 <context>
@@ -8390,11 +8462,15 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Sorry</source>
-        <translation>Atvainojiet</translation>
+        <translation type="obsolete">Atvainojiet</translation>
     </message>
     <message>
         <source>Select a TABLE for vacuum analyze.</source>
-        <translation>Izvēlies TABULU vacumm analīze veikšanai</translation>
+        <translation type="obsolete">Izvēlies TABULU vacumm analīze veikšanai</translation>
+    </message>
+    <message>
+        <source>Select a table for vacuum analyze.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9982,7 +10058,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     </message>
     <message>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
-        <translation>Izvēle iziet ārpus slāņa koordinātu sistēmas.</translation>
+        <translation type="obsolete">Izvēle iziet ārpus slāņa koordinātu sistēmas.</translation>
     </message>
     <message>
         <source>created field %1 not found (OGR error: %2)</source>
@@ -11721,6 +11797,10 @@ Response was:
     </message>
     <message>
         <source>Empty filename given</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection extends beyond layer&apos;s coordinate system</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14180,6 +14260,10 @@ Please contact the developers.
         <source>Collapse All</source>
         <translation type="unfinished">Sakļaut visu</translation>
     </message>
+    <message>
+        <source>Filter Legend By Map Content</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -15576,10 +15660,6 @@ Parser error:
         <translation type="unfinished">Formas skats</translation>
     </message>
     <message>
-        <source>mMainViewButtonGroup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>=</source>
         <translation type="unfinished">=</translation>
     </message>
@@ -15598,6 +15678,14 @@ Parser error:
     <message>
         <source>An error occured while evaluating the calculation string:
 %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Switch to form view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Switch to table view</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16730,6 +16818,14 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <source>Create a new palette</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Copy Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy selected colors</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsColorDialogV2</name>
@@ -17727,6 +17823,14 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Empty table message changed</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Empty frame mode toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide background if empty toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerAttributeTableWidgetBase</name>
@@ -17892,6 +17996,14 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Add Frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t export page if frame is empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t draw background if frame is empty</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -18767,6 +18879,14 @@ Please try a lower resolution or a smaller papersize</source>
         <source>url string</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Empty frame mode toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide background if empty toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerHtmlWidgetBase</name>
@@ -18848,6 +18968,14 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Update HTML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t export page if frame is empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t draw background if frame is empty</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -18966,6 +19094,10 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Item transparency changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exclude from exports changed</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19098,6 +19230,10 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Background color</source>
         <translation type="unfinished">Fona krāsa</translation>
+    </message>
+    <message>
+        <source>Exclude item from exports</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19733,6 +19869,10 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Font color</source>
         <translation type="unfinished">Fonta krasa</translation>
+    </message>
+    <message>
+        <source>Filter Legend By Map Content</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -25560,6 +25700,10 @@ Parser error:
         <source>Export features intersecting the current map extent</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Layerattribute</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsEditorWidgetRegistry</name>
@@ -28923,10 +29067,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Simbolu slāņi...</translation>
     </message>
     <message>
-        <source>Renderer creation has failed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Change...</source>
         <translation>Mainīt...</translation>
     </message>
@@ -28956,7 +29096,27 @@ Press cancel to abort breaks calculation or OK to continue.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Link classes boundaries</source>
+        <source>Label Format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trim</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decimal places</source>
+        <translation type="unfinished">Decimālās vietas</translation>
+    </message>
+    <message>
+        <source>Link class boundaries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linked range warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linking ranges that are not ordered may produced unexpected results. Proceed?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -34146,7 +34306,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Layer cannot be added to</source>
-        <translation>Nav iespējams pievienot slāni</translation>
+        <translation type="obsolete">Nav iespējams pievienot slāni</translation>
     </message>
     <message>
         <source>The data provider for this layer does not support the addition of features.</source>
@@ -34158,15 +34318,15 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Wrong editing tool</source>
-        <translation>Nepareizs rediģēšanas rīks</translation>
+        <translation type="obsolete">Nepareizs rediģēšanas rīks</translation>
     </message>
     <message>
         <source>Cannot apply the &apos;capture point&apos; tool on this vector layer</source>
-        <translation>Nevar pielietot &apos;punkta tveršanas&apos; rīku šim vektoru slānim</translation>
+        <translation type="obsolete">Nevar pielietot &apos;punkta tveršanas&apos; rīku šim vektoru slānim</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation>Koordinātu pārrēķina kļūda</translation>
+        <translation type="obsolete">Koordinātu pārrēķina kļūda</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
@@ -34178,15 +34338,15 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Cannot apply the &apos;capture line&apos; tool on this vector layer</source>
-        <translation>Nevar pielietot &apos;līnijas tveršanas&apos; rīku šim vektoru slānim</translation>
+        <translation type="obsolete">Nevar pielietot &apos;līnijas tveršanas&apos; rīku šim vektoru slānim</translation>
     </message>
     <message>
         <source>Cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
-        <translation>Nevar pielietot &apos;poligonu tveršanas&apos; rīku šim vektoru slānim</translation>
+        <translation type="obsolete">Nevar pielietot &apos;poligonu tveršanas&apos; rīku šim vektoru slānim</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Kļūda</translation>
+        <translation type="obsolete">Kļūda</translation>
     </message>
     <message>
         <source>Cannot add feature. Unknown WKB type</source>
@@ -34214,6 +34374,18 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>The feature cannot be added because it&apos;s geometry collapsed due to intersection avoidance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong editing tool, cannot apply the &apos;capture point&apos; tool on this vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong editing tool, cannot apply the &apos;capture line&apos; tool on this vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong editing tool, cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -34347,7 +34519,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation>Koordinātu pārrēķina kļūda</translation>
+        <translation type="obsolete">Koordinātu pārrēķina kļūda</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
@@ -34359,35 +34531,63 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>A problem with geometry type occured</source>
-        <translation>Gadījās problēma ar ģeometrijas tipu</translation>
+        <translation type="obsolete">Gadījās problēma ar ģeometrijas tipu</translation>
     </message>
     <message>
         <source>The inserted Ring is not closed</source>
-        <translation>Ievietotais riņķis nav noslēgts</translation>
+        <translation type="obsolete">Ievietotais riņķis nav noslēgts</translation>
     </message>
     <message>
         <source>The inserted Ring is not a valid geometry</source>
-        <translation>Ievietotais riņķis nav derīga ģeometrija</translation>
+        <translation type="obsolete">Ievietotais riņķis nav derīga ģeometrija</translation>
     </message>
     <message>
         <source>The inserted Ring crosses existing rings</source>
-        <translation>Ievietotais riņķis šķēso eksistējošu riņķi</translation>
+        <translation type="obsolete">Ievietotais riņķis šķēso eksistējošu riņķi</translation>
     </message>
     <message>
         <source>The inserted Ring is not contained in a feature</source>
-        <translation>Ievietotais riņķis neatrodas objektā</translation>
+        <translation type="obsolete">Ievietotais riņķis neatrodas objektā</translation>
     </message>
     <message>
         <source>An unknown error occured</source>
-        <translation>Konstatēta neatpazīta kļūda</translation>
+        <translation type="obsolete">Konstatēta neatpazīta kļūda</translation>
     </message>
     <message>
         <source>Error, could not add ring</source>
-        <translation>Kļūda, nevar pievienot riņķi</translation>
+        <translation type="obsolete">Kļūda, nevar pievienot riņķi</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
         <translation type="obsolete">Nevar rediģēt vektoru slāni. Slāņa rediģēšanas uzsākšanai lieto &apos;Pārslēgt rediģēšanu&apos;.</translation>
+    </message>
+    <message>
+        <source>a problem with geometry type occured</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the inserted ring is not closed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the inserted ring is not a valid geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the inserted ring crosses existing rings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the inserted ring is not contained in a feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>an unknown error occured</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>could not add ring since %1.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -34483,15 +34683,11 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     <name>QgsMapToolFeatureAction</name>
     <message>
         <source>No active vector layer</source>
-        <translation>Nav aktīva vektoru slāņa</translation>
-    </message>
-    <message>
-        <source>To run an action, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Nav aktīva vektoru slāņa</translation>
     </message>
     <message>
         <source>No actions available</source>
-        <translation>Nav pieejamas darbības</translation>
+        <translation type="obsolete">Nav pieejamas darbības</translation>
     </message>
     <message>
         <source>The active vector layer has no defined actions</source>
@@ -34501,12 +34697,16 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
         <source>No features at this position found.</source>
         <translation>Norādītajā vietā nekas nav atrasts.</translation>
     </message>
+    <message>
+        <source>To run an action, you must choose an active vector layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolFillRing</name>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Koordinātu pārrēķina kļūda</translation>
+        <translation type="obsolete">Koordinātu pārrēķina kļūda</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
@@ -34518,31 +34718,59 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>A problem with geometry type occured</source>
-        <translation type="unfinished">Gadījās problēma ar ģeometrijas tipu</translation>
+        <translation type="obsolete">Gadījās problēma ar ģeometrijas tipu</translation>
     </message>
     <message>
         <source>The inserted Ring is not closed</source>
-        <translation type="unfinished">Ievietotais riņķis nav noslēgts</translation>
+        <translation type="obsolete">Ievietotais riņķis nav noslēgts</translation>
     </message>
     <message>
         <source>The inserted Ring is not a valid geometry</source>
-        <translation type="unfinished">Ievietotais riņķis nav derīga ģeometrija</translation>
+        <translation type="obsolete">Ievietotais riņķis nav derīga ģeometrija</translation>
     </message>
     <message>
         <source>The inserted Ring crosses existing rings</source>
-        <translation type="unfinished">Ievietotais riņķis šķēso eksistējošu riņķi</translation>
+        <translation type="obsolete">Ievietotais riņķis šķēso eksistējošu riņķi</translation>
     </message>
     <message>
         <source>The inserted Ring is not contained in a feature</source>
-        <translation type="unfinished">Ievietotais riņķis neatrodas objektā</translation>
+        <translation type="obsolete">Ievietotais riņķis neatrodas objektā</translation>
     </message>
     <message>
         <source>An unknown error occured</source>
-        <translation type="unfinished">Konstatēta neatpazīta kļūda</translation>
+        <translation type="obsolete">Konstatēta neatpazīta kļūda</translation>
     </message>
     <message>
         <source>Error, could not add ring</source>
-        <translation type="unfinished">Kļūda, nevar pievienot riņķi</translation>
+        <translation type="obsolete">Kļūda, nevar pievienot riņķi</translation>
+    </message>
+    <message>
+        <source>a problem with geometry type occured</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the inserted Ring is not closed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the inserted Ring is not a valid geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the inserted Ring crosses existing rings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the inserted Ring is not contained in a feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>an unknown error occured</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>could not add ring since %1.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -34719,7 +34947,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Geometry error</source>
-        <translation>Ģeometrijas kļūdas</translation>
+        <translation type="obsolete">Ģeometrijas kļūdas</translation>
     </message>
     <message>
         <source>Creating offset geometry failed</source>
@@ -34753,7 +34981,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation>Koordinātu pārrēķina kļūda</translation>
+        <translation type="obsolete">Koordinātu pārrēķina kļūda</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
@@ -34790,7 +35018,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     <name>QgsMapToolRotatePointSymbols</name>
     <message>
         <source>No point feature</source>
-        <translation>Nav punktveida objekts</translation>
+        <translation type="obsolete">Nav punktveida objekts</translation>
     </message>
     <message>
         <source>No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings-&gt;Options-&gt;Digitizing-&gt;Serch radius for vertex edits</source>
@@ -34798,15 +35026,19 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>No rotation Attributes</source>
-        <translation>Nav rotācijas atribūts</translation>
+        <translation type="obsolete">Nav rotācijas atribūts</translation>
     </message>
     <message>
         <source>The active point layer does not have a rotation attribute</source>
-        <translation>Aktīvais punktu slānis nesatur rotācijas atribūtu</translation>
+        <translation type="obsolete">Aktīvais punktu slānis nesatur rotācijas atribūtu</translation>
     </message>
     <message>
         <source>Rotate symbol</source>
         <translation>Rotēt simbolu</translation>
+    </message>
+    <message>
+        <source>The active point layer does not have a rotation attribute.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -34838,6 +35070,10 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
         <source>Showed labels</source>
         <translation>Redzamās birkas</translation>
     </message>
+    <message>
+        <source>CRS Exception: selection extends beyond layer&apos;s coordinate system.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolSimplify</name>
@@ -34847,7 +35083,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Unsupported operation</source>
-        <translation>Neatbalstīta darbība</translation>
+        <translation type="obsolete">Neatbalstīta darbība</translation>
     </message>
     <message>
         <source>Multipart features are not supported for simplification.</source>
@@ -44088,6 +44324,10 @@ p, li { white-space: pre-wrap; }
         <source>Inactive</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Allow NULL</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterCalcDialog</name>
@@ -53091,6 +53331,10 @@ Kļūda bija %2</translation>
         <source>Save only selected features</source>
         <translation>Saglabāt tikai izvēlētos objektus</translation>
     </message>
+    <message>
+        <source>Change...</source>
+        <translation type="unfinished">Mainīt...</translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorRandomColorRampV2DialogBase</name>
@@ -55497,7 +55741,7 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>Sorry</source>
-        <translation>Atvainojiet</translation>
+        <translation type="obsolete">Atvainojiet</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
