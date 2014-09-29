@@ -125,7 +125,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
   if ( !singleLayer && mAllowMultipleReturn && idResults.count() > 1 )
   {
     addSeparator();
-    QAction* allAction = new QAction( tr( "%1 for all (%2)" ).arg( mDefaultActionName ).arg( idResults.count() ), this );
+    QAction* allAction = new QAction( QgsApplication::getThemeIcon( "/mActionIdentify.svg" ), tr( "%1 all (%2)" ).arg( mDefaultActionName ).arg( idResults.count() ), this );
     allAction->setData( QVariant::fromValue<ActionData>( ActionData( 0 ) ) );
     connect( allAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
     addAction( allAction );
@@ -365,7 +365,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
       continue;
 
     // add default identify action
-    QAction* identifyFeatureAction = new QAction( mDefaultActionName, featureMenu );
+    QAction* identifyFeatureAction = new QAction( QgsApplication::getThemeIcon( "/mActionIdentify.svg" ), mDefaultActionName, featureMenu );
     connect( identifyFeatureAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
     identifyFeatureAction->setData( QVariant::fromValue<ActionData>( ActionData( layer, result.mFeature.id() ) ) );
     featureMenu->addAction( identifyFeatureAction );
@@ -397,7 +397,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
   if ( mAllowMultipleReturn && results.count() > 1 )
   {
     layerMenu->addSeparator();
-    QAction* allAction = new QAction( tr( "%1 for all (%2)" ).arg( mDefaultActionName ).arg( results.count() ), layerMenu );
+    QAction* allAction = new QAction( QgsApplication::getThemeIcon( "/mActionIdentify.svg" ), tr( "%1 all (%2)" ).arg( mDefaultActionName ).arg( results.count() ), layerMenu );
     allAction->setData( QVariant::fromValue<ActionData>( ActionData( layer ) ) );
     connect( allAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
     layerMenu->addAction( allAction );
