@@ -21,6 +21,7 @@
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
 #include <QNetworkReply>
+#include <QTextCodec>
 
 QgsNetworkContentFetcher::QgsNetworkContentFetcher()
     : mReply( 0 )
@@ -64,7 +65,10 @@ QString QgsNetworkContentFetcher::contentAsString() const
   }
 
   QByteArray array = mReply->readAll();
-  return QString( array );
+
+  //correctly encode reply as unicode
+  QString content = QTextCodec::codecForHtml( array )->toUnicode( array );
+  return content;
 }
 
 void QgsNetworkContentFetcher::contentLoaded( bool ok )
