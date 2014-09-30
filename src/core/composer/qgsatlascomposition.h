@@ -204,9 +204,11 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     int numFeatures() const;
 
     /**Prepare the atlas map for the given feature. Sets the extent and context variables
+     * @param i feature number
+     * @param updateMaps set to true to redraw maps and recalculate their extent
      * @returns true if feature was successfully prepared
     */
-    bool prepareForFeature( const int i );
+    bool prepareForFeature( const int i, const bool updateMaps = true );
 
     /**Prepare the atlas map for the given feature. Sets the extent and context variables
      * @returns true if feature was successfully prepared
@@ -241,16 +243,23 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
       number of matching features. Must be called after prepareForFeature( i ) */
     int updateFeatures();
 
-    void nextFeature();
-    void prevFeature();
-    void lastFeature();
-    void firstFeature();
-
     /** Returns the current atlas feature. Must be called after prepareForFeature( i ). */
     QgsFeature* currentFeature() { return &mCurrentFeature; }
 
     /** Recalculates the bounds of an atlas driven map */
     void prepareMap( QgsComposerMap* map );
+
+  public slots:
+
+    /**Refreshes the current atlas feature, by refetching its attributes from the vector layer provider
+     * @note added in QGIS 2.5
+    */
+    void refreshFeature();
+
+    void nextFeature();
+    void prevFeature();
+    void lastFeature();
+    void firstFeature();
 
   signals:
     /** emitted when one of the parameters changes */

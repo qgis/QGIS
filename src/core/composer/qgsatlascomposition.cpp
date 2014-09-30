@@ -378,7 +378,12 @@ bool QgsAtlasComposition::prepareForFeature( const QgsFeature * feat )
   return prepareForFeature( featureI );
 }
 
-bool QgsAtlasComposition::prepareForFeature( const int featureI )
+void QgsAtlasComposition::refreshFeature()
+{
+  prepareForFeature( mCurrentFeatureNo, false );
+}
+
+bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool updateMaps )
 {
   if ( !mCoverageLayer )
   {
@@ -414,6 +419,12 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI )
   if ( !mCurrentFeature.isValid() )
   {
     //bad feature
+    return true;
+  }
+
+  if ( !updateMaps )
+  {
+    //nothing more to do
     return true;
   }
 

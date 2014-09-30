@@ -1119,16 +1119,14 @@ void QgsComposer::on_mActionRefreshView_triggered()
     return;
   }
 
-  //refresh preview of all composer maps
-  QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.begin();
-  for ( ; it != mItemWidgetMap.end(); ++it )
+  //refresh atlas feature first, to update attributes
+  if ( mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
-    QgsComposerMap* map = dynamic_cast<QgsComposerMap*>( it.key() );
-    if ( map && !map->isDrawing() )
-    {
-      map->cache();
-      map->update();
-    }
+    //block signals from atlas, since the later call to mComposition->refreshItems() will
+    //also trigger items to refresh atlas dependant properties
+    mComposition->atlasComposition().blockSignals( true );
+    mComposition->atlasComposition().refreshFeature();
+    mComposition->atlasComposition().blockSignals( false );
   }
 
   mComposition->refreshItems();
