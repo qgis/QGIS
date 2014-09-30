@@ -142,21 +142,6 @@ void QgsComposerItem::init( const bool manageZValue )
   mDataDefinedNames.insert( QgsComposerObject::Transparency, QString( "dataDefinedTransparency" ) );
   mDataDefinedNames.insert( QgsComposerObject::BlendMode, QString( "dataDefinedBlendMode" ) );
   mDataDefinedNames.insert( QgsComposerObject::ExcludeFromExports, QString( "dataDefinedExcludeExports" ) );
-
-  if ( mComposition )
-  {
-    //connect to atlas toggling on/off and coverage layer and feature changes
-    //to update data defined values
-    connect( &mComposition->atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( refreshDataDefinedProperty() ) );
-    connect( &mComposition->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( refreshDataDefinedProperty() ) );
-    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshDataDefinedProperty() ) );
-    //also, refreshing composition triggers a recalculation of data defined properties
-    connect( mComposition, SIGNAL( refreshItemsTriggered() ), this, SLOT( refreshDataDefinedProperty() ) );
-
-    //toggling atlas or changing coverage layer requires data defined expressions to be reprepared
-    connect( &mComposition->atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( prepareDataDefinedExpressions() ) );
-    connect( &mComposition->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( prepareDataDefinedExpressions() ) );
-  }
 }
 
 QgsComposerItem::~QgsComposerItem()
