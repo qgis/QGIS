@@ -88,6 +88,9 @@ class QgsSLDParser: public QgsConfigParser
     /**Adds print capabilities to xml document. Delegated to fallback parser*/
     void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
+    /**Adds project settings to xml document. Delegated to fallback parser*/
+    void projectSettings( QDomElement& parentElement, QDomDocument& doc ) const;
+
     /**True if the feature info response should contain the wkt geometry for vector features*/
     virtual bool featureInfoWithWktGeometry() const;
 

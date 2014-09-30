@@ -52,6 +52,7 @@ QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePat
   mOutputUnits = QgsMapRenderer::Millimeters;
   setLegendParametersFromProject();
   setSelectionColor();
+  setCanvasColor();
   setMaxWidthHeight();
 
   //accelerate the search for layers, groups and the creation of annotation items
@@ -1549,12 +1550,34 @@ void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocu
     return;
   }
 
-  if ( currentLayer->type() == QgsMapLayer::VectorLayer )
+  QgsMapLayer::LayerType layerType = currentLayer->type();
+  if (layerType  == QgsMapLayer::VectorLayer )
   {
     QgsVectorLayer* vLayer = static_cast<QgsVectorLayer*>( currentLayer );
     const QSet<QString>& excludedAttributes = vLayer->excludeAttributesWMS();
     QString displayField = vLayer->displayField();
 
+
+    layerElem.setAttribute( "transparency", vLayer->layerTransparency() );
+    layerElem.setAttribute( "layerType", "vector" );
+    layerElem.setAttribute( "providerType", vLayer->providerType() );
+    if ( vLayer->hasGeometryType () )
+    {
+      QString geomType;
+      switch ( vLayer->geometryType() )
+      {
+        case QGis::Point:
+          geomType = QString( "POINT" );
+          break;
+        case QGis::Line:
+          geomType = QString( "LINE" );
+          break;
+        case QGis::Polygon:
+          geomType = QString( "POLYGON" );
+          break;
+      }
+      layerElem.setAttribute( "geomType", geomType );
+    }
     //attributes
     QDomElement attributesElem = doc.createElement( "Attributes" );
     const QgsFields& layerFields = vLayer->pendingFields();
@@ -1571,8 +1594,13 @@ void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocu
         displayField = vLayer->attributeDisplayName( idx );
       }
       QDomElement attributeElem = doc.createElement( "Attribute" );
-      attributeElem.setAttribute( "name", vLayer->attributeDisplayName( idx ) );
+      attributeElem.setAttribute( "name", field.name() );
       attributeElem.setAttribute( "type", QVariant::typeToName( field.type() ) );
+      QString alias = vLayer->attributeAlias( idx );
+      if ( !alias.isEmpty() )
+      {
+        attributeElem.setAttribute( "alias", alias );
+      }
 
       //edit type to text
       QgsVectorLayer::EditType typeEnum = vLayer->editType( idx );
@@ -1585,6 +1613,38 @@ void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocu
     //displayfield
     layerElem.setAttribute( "displayField", displayField );
     layerElem.appendChild( attributesElem );
+
+    //primary key
+    QStringList pkFieldsList;
+    const QgsFields& fields = vLayer->dataProvider()->fields();
+    foreach ( int pkIndex, vLayer->dataProvider()->pkAttributeIndexes() )
+    {
+        QgsField field = fields[pkIndex];
+        pkFieldsList << field.name();
+    }
+    layerElem.setAttribute( "pk", pkFieldsList.join( "," ) );
+  }
+  else if ( layerType  == QgsMapLayer::RasterLayer )
+  {
+    QgsRasterLayer* rLayer = static_cast<QgsRasterLayer*>( currentLayer );
+    layerElem.setAttribute( "layerType", "raster" );
+    layerElem.setAttribute( "providerType", rLayer->providerType() );
+
+    QString dataSource = rLayer->source(); //rProvider->dataSourceUri()
+    if ( rLayer->providerType() == "wms" )
+    {
+       QUrl urlSource;
+       urlSource.setEncodedQuery( dataSource.toAscii() );
+
+       if ( urlSource.hasQueryItem( "url" ) )
+       {
+         layerElem.setAttribute( "url", urlSource.queryItemValue ("url") );
+       }
+       if ( urlSource.hasQueryItem( "format" ) )
+       {
+         layerElem.setAttribute( "imageFormat", urlSource.queryItemValue ("format") );
+       }
+    }
   }
 }
 
@@ -2757,6 +2817,111 @@ void QgsProjectParser::printCapabilities( QDomElement& parentElement, QDomDocume
   parentElement.appendChild( composerTemplatesElem );
 }
 
+void QgsProjectParser::projectSettings( QDomElement& parentElement, QDomDocument& doc ) const
+{
+  if ( mXMLDoc )
+  {
+    QDomElement projectSettingsElem = doc.createElement( "ProjectSettings" );
+    QDomElement qgisElem = mXMLDoc->documentElement();
+    if ( !qgisElem.isNull() )
+    {
+      // Title
+      QDomElement titleSettingsElem = qgisElem.firstChildElement( "title" );
+      if ( !titleSettingsElem.isNull() )
+      {
+        QDomElement titleElem = doc.createElement( "Title" );
+        titleElem.appendChild( doc.createTextNode( titleSettingsElem.text() ) );
+        projectSettingsElem.appendChild( titleElem );
+      }
+
+      QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+      if ( !propertiesElem.isNull() )
+      {
+        // Selection color
+        QDomElement selectionColorElem = doc.createElement( "SelectionColor" );
+        QString colorHexValue;
+        colorHexValue.sprintf( "#%02x%02x%02x%02x", mSelectionColor.red(), mSelectionColor.green(), mSelectionColor.blue(), mSelectionColor.alpha() );
+        QDomText selectionColorText = doc.createTextNode( colorHexValue );
+        selectionColorElem.appendChild( selectionColorText );
+        projectSettingsElem.appendChild( selectionColorElem );
+
+        // Canvas (Background) color
+        QDomElement canvasColorElem = doc.createElement( "CanvasColor" );
+        QDomText canvasColorText = doc.createTextNode( mCanvasColor.name() );
+        canvasColorElem.appendChild( canvasColorText );
+        projectSettingsElem.appendChild( canvasColorElem );
+
+        // Measure ellipsoid
+        QDomElement measureSettingsElem = propertiesElem.firstChildElement( "Measure" );
+        if ( !measureSettingsElem.isNull() )
+        {
+          QDomElement ellipsoidElem = measureSettingsElem.firstChildElement( "Ellipsoid" );
+          if ( !ellipsoidElem.isNull() )
+          {
+            QDomElement measureEllipsoidElem = doc.createElement( "MeasureEllipsoid" );
+            measureEllipsoidElem.appendChild( doc.createTextNode( ellipsoidElem.text() ) );
+            projectSettingsElem.appendChild( measureEllipsoidElem );
+          }
+        }
+        // Position precision
+        QDomElement precisionSettingsElem = propertiesElem.firstChildElement( "PositionPrecision" );
+        if ( !precisionSettingsElem.isNull() )
+        {
+          QDomElement precisionElem = doc.createElement( "Precision" );
+          QDomElement automaticSettingsElem = precisionSettingsElem.firstChildElement( "Automatic" );
+          QDomElement decimalPlacesSettingsElem = precisionSettingsElem.firstChildElement( "DecimalPlaces" );
+          if ( !automaticSettingsElem.isNull() )
+          {
+            QDomElement automaticElem = doc.createElement( "Automatic" );
+            automaticElem.appendChild( doc.createTextNode( automaticSettingsElem.text() ) );
+            precisionElem.appendChild( automaticElem );
+          }
+          if ( !decimalPlacesSettingsElem.isNull() )
+          {
+            QDomElement decimalPlacesElem = doc.createElement( "DecimalPlaces" );
+            decimalPlacesElem.appendChild( doc.createTextNode( decimalPlacesSettingsElem.text() ) );
+            precisionElem.appendChild( decimalPlacesElem );
+          }
+          projectSettingsElem.appendChild( precisionElem );
+        }
+        // Scales
+        QDomElement scalesSettingsElem = propertiesElem.firstChildElement( "Scales" );
+        if ( !scalesSettingsElem.isNull() )
+        {
+          QDomElement useProjectScalesElem = scalesSettingsElem.firstChildElement( "useProjectScales" );
+          if ( !useProjectScalesElem.isNull() &&  useProjectScalesElem.text().compare( "true", Qt::CaseInsensitive ) == 0 )
+          {
+            //QDomElement scalesListElem = scalesSettingsElem.firstChildElement( "ScalesList" );
+            QDomNodeList scalesListElem = scalesSettingsElem.firstChildElement( "ScalesList" ).elementsByTagName( "value" );
+            QStringList scales;
+            for ( unsigned int i = 0; i < scalesListElem.length(); ++i )
+            {
+              QString scale = scalesListElem.at( i ).toElement().text();
+              scales << scale.replace( "1:", "" );
+            }
+            QDomElement scalesElem = doc.createElement( "Scales" );
+            scalesElem.appendChild( doc.createTextNode( scales.join(",") ) );
+            projectSettingsElem.appendChild( scalesElem );
+          }
+        }
+      }
+      // Canvas units
+      QDomElement mapcanvasElem = qgisElem.firstChildElement( "mapcanvas" );
+      if ( !mapcanvasElem.isNull() )
+      {
+        QDomElement unitsElem = mapcanvasElem.firstChildElement( "units" );
+        if ( !unitsElem.isNull() )
+        {
+          QDomElement canvasUnitsElem = doc.createElement( "CanvasUnits" );
+          canvasUnitsElem.appendChild( doc.createTextNode( unitsElem.text() ) );
+          projectSettingsElem.appendChild( canvasUnitsElem );
+        }
+      }
+    }
+    parentElement.appendChild( projectSettingsElem );
+  }
+}
+
 QDomElement QgsProjectParser::composerByName( const QString& composerName ) const
 {
   QDomElement composerElem;
@@ -3532,6 +3697,47 @@ void QgsProjectParser::setSelectionColor()
   }
 
   mSelectionColor = QColor( red, green, blue, alpha );
+}
+
+void QgsProjectParser::setCanvasColor()
+{
+  int red = 255;
+  int green = 255;
+  int blue = 255;
+
+  //overwrite default selection color with settings from the project
+  if ( mXMLDoc )
+  {
+    QDomElement qgisElem = mXMLDoc->documentElement();
+    if ( !qgisElem.isNull() )
+    {
+      QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+      if ( !propertiesElem.isNull() )
+      {
+        QDomElement guiElem = propertiesElem.firstChildElement( "Gui" );
+        if ( !guiElem.isNull() )
+        {
+          QDomElement redElem = guiElem.firstChildElement( "CanvasColorRedPart" );
+          if ( !redElem.isNull() )
+          {
+            red = redElem.text().toInt();
+          }
+          QDomElement greenElem = guiElem.firstChildElement( "CanvasColorGreenPart" );
+          if ( !greenElem.isNull() )
+          {
+            green = greenElem.text().toInt();
+          }
+          QDomElement blueElem = guiElem.firstChildElement( "CanvasColorBluePart" );
+          if ( !blueElem.isNull() )
+          {
+            blue = blueElem.text().toInt();
+          }
+        }
+      }
+    }
+  }
+
+  mCanvasColor = QColor( red, green, blue );
 }
 
 void QgsProjectParser::setMaxWidthHeight()

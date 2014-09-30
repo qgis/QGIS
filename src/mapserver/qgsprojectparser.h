@@ -126,6 +126,9 @@ class QgsProjectParser: public QgsConfigParser
     /**Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
+    /**Adds project settings to xml document. ParentElem usually is the <Capabilities> element*/
+    void projectSettings( QDomElement& parentElement, QDomDocument& doc ) const;
+
     /**Reads service metadata from projectfile or falls back to parent class method if not there*/
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
@@ -244,6 +247,8 @@ class QgsProjectParser: public QgsConfigParser
 
     /**Reads selection color from project and sets it to QgsConfigParser::mSelectionColor*/
     void setSelectionColor();
+    /**Reads canvas color from project and sets it to QgsConfigParser::mCanvasColor*/
+    void setCanvasColor();
     /**Reads maxWidth / maxHeight from project and sets it to QgsConfigParser::mMaxWidth / mMaxHeight*/
     void setMaxWidthHeight();
     /**Reads layer drawing order from the legend section of the project file and appends it to the parent elemen (usually the <Capability> element)*/

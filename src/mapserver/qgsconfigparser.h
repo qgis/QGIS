@@ -144,6 +144,9 @@ class QgsConfigParser
     /**Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     virtual void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
+    /**Adds project settings to xml document. ParentElem usually is the <Capabilities> element*/
+    virtual void projectSettings( QDomElement& parentElement, QDomDocument& doc ) const = 0;
+
     /**Appends service metadata to the capabilities document*/
     virtual void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
@@ -154,6 +157,8 @@ class QgsConfigParser
 
     QColor selectionColor() const { return mSelectionColor; }
     void setSelectionColor( const QColor& c ) { mSelectionColor = c; }
+    QColor canvasColor() const { return mCanvasColor; }
+    void setCanvasColor( const QColor& c ) { mCanvasColor = c; }
 
     int maxWidth() const { return mMaxWidth; }
     int maxHeight() const { return mMaxHeight; }
@@ -221,6 +226,7 @@ class QgsConfigParser
     double mLegendSymbolHeight;
 
     QColor mSelectionColor;
+    QColor mCanvasColor;
 
     //maximum width/height for the GetMap request. Disabled by default (-1)
     int mMaxWidth;

@@ -1568,6 +1568,14 @@ void QgsSLDParser::printCapabilities( QDomElement& parentElement, QDomDocument& 
   }
 }
 
+void QgsSLDParser::projectSettings( QDomElement& parentElement, QDomDocument& doc ) const
+{
+  if ( mFallbackParser )
+  {
+    mFallbackParser->projectSettings( parentElement, doc );
+  }
+}
+
 bool QgsSLDParser::featureInfoWithWktGeometry() const
 {
   if ( mFallbackParser )

@@ -582,6 +582,11 @@ bool QgsWmsProvider::setImageCrs( QString const & crs )
       {
         resolutions << key;
       }
+      if ( !mTileMatrixSet->tileMatrices.empty() )
+      {
+        setProperty( "tileWidth", mTileMatrixSet->tileMatrices.values().first().tileWidth );
+        setProperty( "tileHeight", mTileMatrixSet->tileMatrices.values().first().tileHeight );
+      }
     }
     else
     {
