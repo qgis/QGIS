@@ -632,6 +632,9 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     //reimplemented to allow dragging colors
     void mousePressEvent( QMouseEvent* e );
 
+    //reimplemented to click colors
+    void mouseReleaseEvent( QMouseEvent* e );
+
     //reimplemented to allow dragging colors
     void mouseMoveEvent( QMouseEvent *e );
 

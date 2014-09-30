@@ -1591,6 +1591,30 @@ void QgsColorPreviewWidget::mousePressEvent( QMouseEvent *e )
   QWidget::mousePressEvent( e );
 }
 
+void QgsColorPreviewWidget::mouseReleaseEvent( QMouseEvent *e )
+{
+  if (( e->pos() - mDragStartPosition ).manhattanLength() >= QApplication::startDragDistance() )
+  {
+    //mouse moved, so a drag. nothing to do here
+    QWidget::mouseReleaseEvent( e );
+    return;
+  }
+
+  //work out which color was clicked
+  QColor clickedColor = mCurrentColor;
+  if ( mColor2.isValid() )
+  {
+    //two color sections, check if dragged color was the second color
+    int verticalSplit = qRound( height() / 2.0 );
+    if ( mDragStartPosition.y() >= verticalSplit )
+    {
+      clickedColor = mColor2;
+    }
+  }
+  emit colorChanged( clickedColor );
+
+}
+
 void QgsColorPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 {
   //handle dragging colors from button
