@@ -1264,7 +1264,8 @@ void QgsComposerMouseHandles::collectAlignCoordinates( QMap< double, const QgsCo
       const QgsComposerItem* currentItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
       //don't snap to selected items, since they're the ones that will be snapping to something else
       //also ignore group members - only snap to bounds of group itself
-      if ( !currentItem || currentItem->selected() || currentItem->isGroupMember() )
+      //also ignore hidden items
+      if ( !currentItem || currentItem->selected() || currentItem->isGroupMember() || !currentItem->isVisible() )
       {
         continue;
       }
