@@ -22,12 +22,17 @@
      <item row="6" column="3">
       <layout class="QHBoxLayout" name="horizontalLayout_7">
        <item>
-        <widget class="QSpinBox" name="spinDecimalPlaces">
+        <widget class="QSpinBox" name="spinPrecision">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Precision of upper and lower values in label text.
+Positive is number of decimal places
+Negative rounds to powers of 10</string>
          </property>
          <property name="minimum">
           <number>0</number>
@@ -42,6 +47,9 @@
        </item>
        <item>
         <widget class="QCheckBox" name="cbxTrimTrailingZeroes">
+         <property name="toolTip">
+          <string>Check to remove trailing zeroes after the decimal point from the upper and lower values in the legend.</string>
+         </property>
          <property name="text">
           <string>Trim</string>
          </property>
@@ -240,13 +248,13 @@ Use &quot;%1&quot; for the lower bound of the classification, and &quot;%2&quot;
      <item row="6" column="2">
       <widget class="QLabel" name="label_16">
        <property name="text">
-        <string>Decimal places</string>
+        <string>Precision</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
        <property name="buddy">
-        <cstring>spinDecimalPlaces</cstring>
+        <cstring>spinPrecision</cstring>
        </property>
       </widget>
      </item>
@@ -361,7 +369,7 @@ Use &quot;%1&quot; for the lower bound of the classification, and &quot;%2&quot;
   <tabstop>cbxInvertedColorRamp</tabstop>
   <tabstop>cboGraduatedMode</tabstop>
   <tabstop>txtFormat</tabstop>
-  <tabstop>spinDecimalPlaces</tabstop>
+  <tabstop>spinPrecision</tabstop>
   <tabstop>cbxTrimTrailingZeroes</tabstop>
   <tabstop>viewGraduated</tabstop>
   <tabstop>btnGraduatedClassify</tabstop>

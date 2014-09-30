@@ -118,7 +118,6 @@ QVariant QgsGraduatedSymbolRendererV2Model::data( const QModelIndex &index, int 
   if ( !index.isValid() || !mRenderer ) return QVariant();
 
   const QgsRendererRangeV2 range = mRenderer->ranges().value( index.row() );
-  QString rangeStr = QString::number( range.lowerValue(), 'f', 4 ) + " - " + QString::number( range.upperValue(), 'f', 4 );
 
   if ( role == Qt::CheckStateRole && index.column() == 0 )
   {
@@ -128,7 +127,12 @@ QVariant QgsGraduatedSymbolRendererV2Model::data( const QModelIndex &index, int 
   {
     switch ( index.column() )
     {
-      case 1: return rangeStr;
+      case 1:
+        {
+          int decimalPlaces=mRenderer->labelFormat().precision()+2;
+          if( decimalPlaces < 0 ) decimalPlaces=0;
+          return QString::number( range.lowerValue(), 'f', decimalPlaces ) + " - " + QString::number( range.upperValue(), 'f', decimalPlaces );
+        }
       case 2: return range.label();
       default: return QVariant();
     }
@@ -145,7 +149,7 @@ QVariant QgsGraduatedSymbolRendererV2Model::data( const QModelIndex &index, int 
   {
     switch ( index.column() )
     {
-      case 1: return rangeStr;
+      // case 1: return rangeStr;
       case 2: return range.label();
       default: return QVariant();
     }
@@ -393,6 +397,9 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
 
   cboGraduatedColorRamp->populate( mStyle );
 
+  spinPrecision->setMinimum( QgsRendererRangeV2LabelFormat::MinPrecision);
+  spinPrecision->setMaximum( QgsRendererRangeV2LabelFormat::MaxPrecision);
+
   // set project default color ramp
   QString defaultColorRamp = QgsProject::instance()->readEntry( "DefaultStyles", "/ColorRamp", "" );
   if ( defaultColorRamp != "" )
@@ -456,7 +463,7 @@ void QgsGraduatedSymbolRendererV2Widget::connectUpdateHandlers()
   connect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( classifyGraduated() ) );
   connect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( reapplyColorRamp() ) );
   connect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ) , this, SLOT( reapplyColorRamp() ) );
-  connect( spinDecimalPlaces, SIGNAL( valueChanged( int ) ), this, SLOT( labelFormatChanged() ) );
+  connect( spinPrecision, SIGNAL( valueChanged( int ) ), this, SLOT( labelFormatChanged() ) );
   connect( cbxTrimTrailingZeroes, SIGNAL( toggled( bool ) ), this, SLOT( labelFormatChanged() ) );
   connect( txtFormat, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
 
@@ -472,7 +479,7 @@ void QgsGraduatedSymbolRendererV2Widget::disconnectUpdateHandlers()
   disconnect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( classifyGraduated() ) );
   disconnect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( reapplyColorRamp() ) );
   disconnect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ) , this, SLOT( reapplyColorRamp() ) );
-  disconnect( spinDecimalPlaces, SIGNAL( valueChanged( int ) ), this, SLOT( labelFormatChanged() ) );
+  disconnect( spinPrecision, SIGNAL( valueChanged( int ) ), this, SLOT( labelFormatChanged() ) );
   disconnect( cbxTrimTrailingZeroes, SIGNAL( toggled( bool ) ), this, SLOT( labelFormatChanged() ) );
   disconnect( txtFormat, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
 
@@ -516,7 +523,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
 
   QgsRendererRangeV2LabelFormat labelFormat = mRenderer->labelFormat();
   txtFormat->setText( labelFormat.format() );
-  spinDecimalPlaces->setValue( labelFormat.decimalPlaces() );
+  spinPrecision->setValue( labelFormat.precision() );
   cbxTrimTrailingZeroes->setChecked( labelFormat.trimTrailingZeroes() );
 
   mModel = new QgsGraduatedSymbolRendererV2Model( this );
@@ -733,11 +740,12 @@ void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
   QgsLUDialog dialog( this );
 
   const QgsRendererRangeV2& range = mRenderer->ranges()[rangeIdx];
-  // Add arbitrary 3 to number of decimal places to retain a bit extra accuracy in
-  // case we want to??
-  int decimalPlaces = mRenderer->labelFormat().decimalPlaces();
-  dialog.setLowerValue( QString::number( range.lowerValue(), 'f', decimalPlaces + 3 ) );
-  dialog.setUpperValue( QString::number( range.upperValue(), 'f', decimalPlaces + 3 ) );
+  // Add arbitrary 2 to number of decimal places to retain a bit extra.
+  // Ensures users can see if legend is not completely honest!
+  int decimalPlaces = mRenderer->labelFormat().precision()+2;
+  if( decimalPlaces < 0 ) decimalPlaces=0;
+  dialog.setLowerValue( QString::number( range.lowerValue(), 'f', decimalPlaces ) );
+  dialog.setUpperValue( QString::number( range.upperValue(), 'f', decimalPlaces ) );
 
   if ( dialog.exec() == QDialog::Accepted )
   {
@@ -852,7 +860,7 @@ void QgsGraduatedSymbolRendererV2Widget::labelFormatChanged()
 {
   QgsRendererRangeV2LabelFormat labelFormat = QgsRendererRangeV2LabelFormat(
         txtFormat->text(),
-        spinDecimalPlaces->value(),
+        spinPrecision->value(),
         cbxTrimTrailingZeroes->isChecked() );
   mRenderer->setLabelFormat( labelFormat, true );
   mModel->updateLabels();

@@ -54,8 +54,8 @@ class QgsRendererRangeV2LabelFormat
     QString format() const;
     void setFormat( QString format );
 
-    int decimalPlaces() const;
-    void setDecimalPlaces( int decimalPlaces );
+    int precision();
+    void setPrecision( int precision );
 
     bool trimTrailingZeroes() const;
     void setTrimTrailingZeroes( bool trimTrailingZeroes );

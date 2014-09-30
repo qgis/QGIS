@@ -169,19 +169,24 @@ void QgsRendererRangeV2::toSld( QDomDocument &doc, QDomElement &element, QgsStri
 
 ///////////
 
+int QgsRendererRangeV2LabelFormat::MaxPrecision=15;
+int QgsRendererRangeV2LabelFormat::MinPrecision=-6;
+
 QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat():
     mFormat( " %1 - %2 " ),
-    mDecimalPlaces( 4 ),
+    mPrecision( 4 ),
     mTrimTrailingZeroes( false ),
-    mReTrailingZeroes( "\\.?0*$" )
+    mNumberScale( 1.0 ),
+    mNumberSuffix( "" ),
+    mReTrailingZeroes( "[.,]?0*$" )
 {
 }
 
-QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat( QString format, int decimalPlaces, bool trimTrailingZeroes ):
-    mReTrailingZeroes( "\\.?0*$" )
+QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat( QString format, int precision, bool trimTrailingZeroes ):
+    mReTrailingZeroes( "[.,]?0*$" )
 {
   setFormat( format );
-  setDecimalPlaces( decimalPlaces );
+  setPrecision( precision );
   setTrimTrailingZeroes( trimTrailingZeroes );
 }
 
@@ -190,7 +195,7 @@ bool QgsRendererRangeV2LabelFormat::operator==( const QgsRendererRangeV2LabelFor
 {
   return
     format() == other.format() &&
-    decimalPlaces() == other.decimalPlaces() &&
+    precision() == other.precision() &&
     trimTrailingZeroes() == other.trimTrailingZeroes();
 }
 
@@ -199,12 +204,20 @@ bool QgsRendererRangeV2LabelFormat::operator!=( const QgsRendererRangeV2LabelFor
   return !( *this == other );
 }
 
-void QgsRendererRangeV2LabelFormat::setDecimalPlaces( int decimalPlaces )
+void QgsRendererRangeV2LabelFormat::setPrecision( int precision )
 {
   // Limit the range of decimal places to a reasonable range
-  if ( decimalPlaces < 0 ) decimalPlaces = 0;
-  if ( decimalPlaces > 15 ) decimalPlaces = 15;
-  mDecimalPlaces = decimalPlaces;
+  if ( precision < MinPrecision ) precision = MinPrecision;
+  if ( precision > MaxPrecision ) precision = MaxPrecision;
+  mPrecision = precision;
+  mNumberScale=1.0;
+  mNumberSuffix="";
+  while( precision < 0 )
+  {
+    precision++;
+    mNumberScale /= 10.0;
+    mNumberSuffix.append('0');
+  }
 }
 
 QString QgsRendererRangeV2LabelFormat::labelForRange( const QgsRendererRangeV2 &range ) const
@@ -212,19 +225,28 @@ QString QgsRendererRangeV2LabelFormat::labelForRange( const QgsRendererRangeV2 &
   return labelForRange( range.lowerValue(), range.upperValue() );
 }
 
+QString QgsRendererRangeV2LabelFormat::formatNumber( double value ) const
+{
+  if( mPrecision > 0 )
+  {
+    QString valueStr=QString::number( value, 'f', mPrecision );
+    if( mTrimTrailingZeroes ) valueStr=valueStr.replace(mReTrailingZeroes,"");
+    return valueStr;
+  }
+  else
+  {
+    QString valueStr=QString::number( value*mNumberScale, 'f', 0 );
+    if( valueStr != "0" ) valueStr=valueStr+mNumberSuffix;
+    return valueStr;
+  }
+}
+
 QString QgsRendererRangeV2LabelFormat::labelForRange( double lower, double upper ) const
 {
-  QString lowerStr = QString::number( lower, 'f', mDecimalPlaces );
-  QString upperStr = QString::number( upper, 'f', mDecimalPlaces );
-
-  if ( mTrimTrailingZeroes )
-  {
-    if ( lowerStr.contains( '.' ) ) lowerStr = lowerStr.replace( mReTrailingZeroes, "" );
-    if ( upperStr.contains( '.' ) ) upperStr = upperStr.replace( mReTrailingZeroes, "" );
-  }
+  QString lowerStr=formatNumber(lower);
+  QString upperStr=formatNumber(upper);
 
   QString legend(mFormat);
-
   return legend.replace( "%1",lowerStr).replace("%2",upperStr );
 }
 
@@ -235,14 +257,14 @@ void QgsRendererRangeV2LabelFormat::setFromDomElement( QDomElement &element )
                                element.attribute( "separator", " - " ) + "%2" +
                                element.attribute( "suffix", " " )
                              );
-  mDecimalPlaces = element.attribute( "decimalplaces", "4" ).toInt();
+  setPrecision( element.attribute( "decimalplaces", "4" ).toInt());
   mTrimTrailingZeroes = element.attribute( "trimtrailingzeroes", "false" ) == "true";
 }
 
 void QgsRendererRangeV2LabelFormat::saveToDomElement( QDomElement &element )
 {
   element.setAttribute( "format", mFormat );
-  element.setAttribute( "decimalplaces", mDecimalPlaces );
+  element.setAttribute( "decimalplaces", mPrecision );
   element.setAttribute( "trimtrailingzeroes", mTrimTrailingZeroes ? "true" : "false" );
 }
 
@@ -1454,7 +1476,7 @@ void QgsGraduatedSymbolRendererV2::calculateLabelDecimalPlaces( bool updateRange
     ndp--;
     nextDpMinRange *= 10.0;
   }
-  mLabelFormat.setDecimalPlaces( ndp );
+  mLabelFormat.setPrecision( ndp );
   if ( updateRanges ) setLabelFormat( mLabelFormat, true );
 }
 
