@@ -93,10 +93,10 @@ class QgsComposerItemWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
 
     //adjust coordinates in line edits
     void on_mPageSpinBox_valueChanged( int ) { changeItemPosition(); }
-    void on_mXLineEdit_editingFinished() { changeItemPosition(); }
-    void on_mYLineEdit_editingFinished() { changeItemPosition(); }
-    void on_mWidthLineEdit_editingFinished() { changeItemPosition(); }
-    void on_mHeightLineEdit_editingFinished() { changeItemPosition(); }
+    void on_mXPosSpin_valueChanged( double ) { changeItemPosition(); }
+    void on_mYPosSpin_valueChanged( double ) { changeItemPosition(); }
+    void on_mWidthSpin_valueChanged( double ) { changeItemPosition(); }
+    void on_mHeightSpin_valueChanged( double ) { changeItemPosition(); }
 
     void on_mUpperLeftCheckBox_stateChanged( int state );
     void on_mUpperMiddleCheckBox_stateChanged( int state );
