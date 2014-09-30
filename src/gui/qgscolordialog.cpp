@@ -687,6 +687,18 @@ void QgsColorDialogV2::on_mSampleButton_clicked()
   setMouseTracking( true );
 }
 
+void QgsColorDialogV2::on_mTabWidget_currentChanged( int index )
+{
+  //disable radio buttons if not using the first tab, as they have no meaning for other tabs
+  bool enabled = index == 0;
+  mRedRadio->setEnabled( enabled );
+  mBlueRadio->setEnabled( enabled );
+  mGreenRadio->setEnabled( enabled );
+  mHueRadio->setEnabled( enabled );
+  mSaturationRadio->setEnabled( enabled );
+  mValueRadio->setEnabled( enabled );
+}
+
 void QgsColorDialogV2::saveSettings()
 {
   //save changes to scheme

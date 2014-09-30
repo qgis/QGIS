@@ -25,9 +25,16 @@
      <item row="0" column="1">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,1">
          <item>
           <widget class="QRadioButton" name="mHueRadio">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_5">
            <property name="text">
             <string>H</string>
            </property>
@@ -39,9 +46,16 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0,1">
          <item>
           <widget class="QRadioButton" name="mSaturationRadio">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_6">
            <property name="text">
             <string>S</string>
            </property>
@@ -53,9 +67,16 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="0,0,1">
          <item>
           <widget class="QRadioButton" name="mValueRadio">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_7">
            <property name="text">
             <string>V</string>
            </property>
@@ -67,9 +88,16 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
+        <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,1">
          <item>
           <widget class="QRadioButton" name="mRedRadio">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_8">
            <property name="text">
             <string>R</string>
            </property>
@@ -81,9 +109,16 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,1">
          <item>
           <widget class="QRadioButton" name="mGreenRadio">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_9">
            <property name="text">
             <string>G</string>
            </property>
@@ -95,9 +130,16 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,1">
          <item>
           <widget class="QRadioButton" name="mBlueRadio">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_10">
            <property name="text">
             <string>B</string>
            </property>

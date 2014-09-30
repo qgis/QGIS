@@ -170,6 +170,7 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
     void on_mAddCustomColorButton_clicked();
 
     void on_mSampleButton_clicked();
+    void on_mTabWidget_currentChanged( int index );
 
   private:
 
