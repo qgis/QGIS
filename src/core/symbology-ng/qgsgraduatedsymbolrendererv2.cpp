@@ -223,7 +223,9 @@ QString QgsRendererRangeV2LabelFormat::labelForRange( double lower, double upper
     if ( upperStr.contains( '.' ) ) upperStr = upperStr.replace( mReTrailingZeroes, "" );
   }
 
-  return mFormat.arg( lowerStr, upperStr );
+  QString legend(mFormat);
+
+  return legend.replace( "%1",lowerStr).replace("%2",upperStr );
 }
 
 void QgsRendererRangeV2LabelFormat::setFromDomElement( QDomElement &element )
