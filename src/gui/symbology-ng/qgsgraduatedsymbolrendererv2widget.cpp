@@ -326,6 +326,7 @@ void QgsGraduatedSymbolRendererV2Model::sort( int column, Qt::SortOrder order )
   {
     mRenderer->sortByLabel( order );
   }
+  emit rowsMoved();
   emit dataChanged( createIndex( 0, 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
   QgsDebugMsg( "Done" );
 }
@@ -798,22 +799,19 @@ void QgsGraduatedSymbolRendererV2Widget::toggleBoundariesLink( bool linked )
   //This is done by updating all lower ranges to the upper value of the range above
   if ( linked )
   {
-    // Cannot link ranges if they are not sorted - results will be crazy
-    // qSort( mRenderer->ranges() );
-    // Could not get qSort to work with copy/swap idiom on QgsVectorRange
-
     if ( ! rowsOrdered() )
     {
       int result = QMessageBox::warning(
                      this,
                      tr( "Linked range warning" ),
-                     tr( "Linking ranges that are not ordered may produced unexpected results. Proceed?" ),
+                     tr( "Rows will be reordered before linking boundaries. Continue?" ),
                      QMessageBox::Ok | QMessageBox::Cancel );
       if ( result != QMessageBox::Ok )
       {
         cbxLinkBoundaries->setChecked( false );
         return;
       }
+      mRenderer->sortByValue();
     }
 
     // Ok to proceed
@@ -920,14 +918,14 @@ void QgsGraduatedSymbolRendererV2Widget::showSymbolLevels()
 void QgsGraduatedSymbolRendererV2Widget::rowsMoved()
 {
   viewGraduated->selectionModel()->clear();
-}
-
-void QgsGraduatedSymbolRendererV2Widget::modelDataChanged()
-{
   if ( ! rowsOrdered() )
   {
     cbxLinkBoundaries->setChecked( false );
   }
+}
+
+void QgsGraduatedSymbolRendererV2Widget::modelDataChanged()
+{
 }
 
 void QgsGraduatedSymbolRendererV2Widget::keyPressEvent( QKeyEvent* event )
