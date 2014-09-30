@@ -129,7 +129,7 @@ QVariant QgsGraduatedSymbolRendererV2Model::data( const QModelIndex &index, int 
     {
       case 1:
         {
-          int decimalPlaces=mRenderer->labelFormat().precision()+2;
+          int decimalPlaces=mRenderer->legendFormat().precision()+2;
           if( decimalPlaces < 0 ) decimalPlaces=0;
           return QString::number( range.lowerValue(), 'f', decimalPlaces ) + " - " + QString::number( range.upperValue(), 'f', decimalPlaces );
         }
@@ -193,7 +193,7 @@ QVariant QgsGraduatedSymbolRendererV2Model::headerData( int section, Qt::Orienta
 {
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 3 )
   {
-    QStringList lst; lst << tr( "Symbol" ) << tr( "Value" ) << tr( "Label" );
+    QStringList lst; lst << tr( "Symbol" ) << tr( "Values" ) << tr( "Legend" );
     return lst.value( section );
   }
   return QVariant();
@@ -397,8 +397,8 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
 
   cboGraduatedColorRamp->populate( mStyle );
 
-  spinPrecision->setMinimum( QgsRendererRangeV2LabelFormat::MinPrecision);
-  spinPrecision->setMaximum( QgsRendererRangeV2LabelFormat::MaxPrecision);
+  spinPrecision->setMinimum( QgsRendererRangeV2LegendFormat::MinPrecision);
+  spinPrecision->setMaximum( QgsRendererRangeV2LegendFormat::MaxPrecision);
 
   // set project default color ramp
   QString defaultColorRamp = QgsProject::instance()->readEntry( "DefaultStyles", "/ColorRamp", "" );
@@ -521,7 +521,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
     cbxInvertedColorRamp->setChecked( mRenderer->invertedColorRamp() );
   }
 
-  QgsRendererRangeV2LabelFormat labelFormat = mRenderer->labelFormat();
+  QgsRendererRangeV2LegendFormat labelFormat = mRenderer->legendFormat();
   txtFormat->setText( labelFormat.format() );
   spinPrecision->setValue( labelFormat.precision() );
   cbxTrimTrailingZeroes->setChecked( labelFormat.trimTrailingZeroes() );
@@ -587,7 +587,7 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   bool updateUiCount = true;
   QApplication::setOverrideCursor( Qt::WaitCursor );
   mRenderer->updateClasses( mLayer, mode, nclasses );
-  mRenderer->calculateLabelDecimalPlaces();
+  mRenderer->calculateLabelPrecision();
   QApplication::restoreOverrideCursor();
   // PrettyBreaks and StdDev calculation don't generate exact
   // number of classes - leave user interface unchanged for these
@@ -742,7 +742,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
   const QgsRendererRangeV2& range = mRenderer->ranges()[rangeIdx];
   // Add arbitrary 2 to number of decimal places to retain a bit extra.
   // Ensures users can see if legend is not completely honest!
-  int decimalPlaces = mRenderer->labelFormat().precision()+2;
+  int decimalPlaces = mRenderer->legendFormat().precision()+2;
   if( decimalPlaces < 0 ) decimalPlaces=0;
   dialog.setLowerValue( QString::number( range.lowerValue(), 'f', decimalPlaces ) );
   dialog.setUpperValue( QString::number( range.upperValue(), 'f', decimalPlaces ) );
@@ -858,11 +858,11 @@ void QgsGraduatedSymbolRendererV2Widget::scaleMethodChanged( QgsSymbolV2::ScaleM
 
 void QgsGraduatedSymbolRendererV2Widget::labelFormatChanged()
 {
-  QgsRendererRangeV2LabelFormat labelFormat = QgsRendererRangeV2LabelFormat(
+  QgsRendererRangeV2LegendFormat labelFormat = QgsRendererRangeV2LegendFormat(
         txtFormat->text(),
         spinPrecision->value(),
         cbxTrimTrailingZeroes->isChecked() );
-  mRenderer->setLabelFormat( labelFormat, true );
+  mRenderer->setLegendFormat( labelFormat, true );
   mModel->updateLabels();
 }
 

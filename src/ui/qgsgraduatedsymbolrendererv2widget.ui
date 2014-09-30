@@ -235,7 +235,7 @@ Use &quot;%1&quot; for the lower bound of the classification, and &quot;%2&quot;
      <item row="6" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Label Format</string>
+        <string>Legend Format</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
