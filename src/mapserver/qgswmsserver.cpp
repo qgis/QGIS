@@ -1662,10 +1662,16 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
   if ( infoFormat == "application/vnd.ogc.gml" )
   {
     QgsFeature feature;
+    QgsFields fields;
+    feature.initAttributes( attributes.count() );
+
+    int index = 0;
     for ( QMap<int, QVariant>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )
     {
-      feature.setAttribute( layer->bandName( it.key() ), QString::number( it.value().toDouble() ) );
+      fields.append( QgsField( layer->bandName( it.key() ), QVariant::Double ) );
+      feature.setAttribute( index++, QString::number( it.value().toDouble() ) );
     }
+    feature.setFields( &fields );
 
     QgsCoordinateReferenceSystem layerCrs = layer->crs();
     int version = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;
@@ -2639,7 +2645,6 @@ QDomElement QgsWMSServer::createFeatureGML(
     }
   }
 
-  const QSet<QString>& excludedAttributes = layer->excludeAttributesWMS();
   //read all attribute values from the feature
   QgsAttributes featureAttributes = feat->attributes();
   const QgsFields* fields = feat->fields();
@@ -2647,7 +2652,7 @@ QDomElement QgsWMSServer::createFeatureGML(
   {
     QString attributeName = fields->at( i ).name();
     //skip attribute if it is explicitly excluded from WMS publication
-    if ( excludedAttributes.contains( attributeName ) )
+    if ( layer && layer->excludeAttributesWMS().contains( attributeName ) )
     {
       continue;
     }
