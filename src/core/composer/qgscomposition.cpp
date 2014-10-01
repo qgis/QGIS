@@ -96,6 +96,7 @@ void QgsComposition::init()
   mGuidesVisible = true;
   mSmartGuides = true;
   mSnapTolerance = 0;
+  mBoundingBoxesVisible = true;
   mSelectionHandles = 0;
   mActiveItemCommand = 0;
   mActiveMultiFrameCommand = 0;
@@ -215,6 +216,7 @@ void QgsComposition::loadDefaults()
   mSnapGridOffsetX = settings.value( "/Composer/defaultSnapGridOffsetX", 0 ).toDouble();
   mSnapGridOffsetY = settings.value( "/Composer/defaultSnapGridOffsetY", 0 ).toDouble();
   mSnapTolerance = settings.value( "/Composer/defaultSnapTolerancePixels", 5 ).toInt();
+  mBoundingBoxesVisible = settings.value( "/Composer/showBoundingBoxes", true ).toBool();
 }
 
 void QgsComposition::updateBounds()
@@ -2081,6 +2083,20 @@ void QgsComposition::setGridStyle( const GridStyle s )
 {
   mGridStyle = s;
   updatePaperItems();
+}
+
+void QgsComposition::setBoundingBoxesVisible( const bool boundsVisible )
+{
+  mBoundingBoxesVisible = boundsVisible;
+
+  //save to settings
+  QSettings settings;
+  settings.setValue( "/Composer/showBoundingBoxes", mBoundingBoxesVisible );
+
+  if ( mSelectionHandles )
+  {
+    mSelectionHandles->update();
+  }
 }
 
 void QgsComposition::updateSettings()

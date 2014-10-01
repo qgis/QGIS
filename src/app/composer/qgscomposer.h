@@ -321,6 +321,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //!Enable or disable smart guides
     void on_mActionSmartGuides_triggered( bool checked );
 
+    //!Show/hide bounding boxes
+    void on_mActionShowBoxes_triggered( bool checked );
+
     //!Show/hide rulers
     void toggleRulers( bool checked );
 

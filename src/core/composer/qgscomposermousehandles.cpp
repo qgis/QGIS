@@ -89,12 +89,18 @@ void QgsComposerMouseHandles::paint( QPainter* painter, const QStyleOptionGraphi
     return;
   }
 
-  //draw resize handles around bounds of entire selection
-  double rectHandlerSize = rectHandlerBorderTolerance();
-  drawHandles( painter, rectHandlerSize );
+  if ( mComposition->boundingBoxesVisible() )
+  {
+    //draw resize handles around bounds of entire selection
+    double rectHandlerSize = rectHandlerBorderTolerance();
+    drawHandles( painter, rectHandlerSize );
+  }
 
-  //draw dotted boxes around selected items
-  drawSelectedItemBounds( painter );
+  if ( mIsResizing || mIsDragging || mComposition->boundingBoxesVisible() )
+  {
+    //draw dotted boxes around selected items
+    drawSelectedItemBounds( painter );
+  }
 }
 
 void QgsComposerMouseHandles::drawHandles( QPainter* painter, double rectHandlerSize )
@@ -589,6 +595,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
   {
     mIsDragging = false;
     mIsResizing = false;
+    update();
     return;
   }
 

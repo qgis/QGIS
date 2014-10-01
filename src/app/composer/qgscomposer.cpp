@@ -189,6 +189,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionSnapGuides->setCheckable( true );
   mActionSmartGuides->setCheckable( true );
   mActionShowRulers->setCheckable( true );
+  mActionShowBoxes->setCheckable( true );
 
   mActionAtlasPreview->setCheckable( true );
 
@@ -331,6 +332,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   viewMenu->addAction( mActionSmartGuides );
   viewMenu->addAction( mActionClearGuides );
   viewMenu->addSeparator();
+  viewMenu->addAction( mActionShowBoxes );
   viewMenu->addAction( mActionShowRulers );
 
   // Panel and toolbar submenus
@@ -1173,6 +1175,15 @@ void QgsComposer::on_mActionSmartGuides_triggered( bool checked )
   if ( mComposition )
   {
     mComposition->setSmartGuidesEnabled( checked );
+  }
+}
+
+void QgsComposer::on_mActionShowBoxes_triggered( bool checked )
+{
+  //show or hide bounding boxes
+  if ( mComposition )
+  {
+    mComposition->setBoundingBoxesVisible( checked );
   }
 }
 
@@ -3135,6 +3146,8 @@ void QgsComposer::restoreGridSettings()
   mActionShowGuides->setChecked( mComposition->snapLinesVisible() );
   mActionSnapGuides->setChecked( mComposition->alignmentSnap() );
   mActionSmartGuides->setChecked( mComposition->smartGuidesEnabled() );
+  //general view settings
+  mActionShowBoxes->setChecked( mComposition->boundingBoxesVisible() );
 }
 
 void QgsComposer::deleteItemWidgets()
