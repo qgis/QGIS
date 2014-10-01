@@ -114,9 +114,11 @@ class QgsCoordinateTransform : QObject
      * returned rectangle.
      * @param theRect rect to transform
      * @param direction TransformDirection (defaults to ForwardTransform)
+     * @param handle180Crossover set to true if destination crs is geographic and handling of extents crossing the 180 degree
+     * longitude line is required
      * @return QgsRectangle in Destination Coordinate System
      */
-    QgsRectangle transformBoundingBox( const QgsRectangle theRect, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
+    QgsRectangle transformBoundingBox( const QgsRectangle theRect, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const throw (QgsCsException);
 
     // Same as for the other transform() functions, but alters the x
     // and y variables in place. The second one works with good old-fashioned

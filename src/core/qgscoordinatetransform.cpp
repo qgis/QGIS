@@ -520,7 +520,7 @@ void QgsCoordinateTransform::transformInPlace(
 #endif //ANDROID
 
 
-QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle rect, TransformDirection direction ) const
+QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle rect, TransformDirection direction, const bool handle180Crossover ) const
 {
   // Calculate the bounding box of a QgsRectangle in the source CRS
   // when projected to the destination CRS (or the inverse).
@@ -592,8 +592,29 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle re
 
   for ( int i = 0; i < numP * numP; i++ )
   {
-    if ( qIsFinite( x[i] ) && qIsFinite( y[i] ) )
+    if ( !qIsFinite( x[i] ) || !qIsFinite( y[i] ) )
+    {
+      continue;
+    }
+
+    if ( handle180Crossover )
+    {
+      //if crossing the date line, temporarily add 360 degrees to -ve longitudes
+      bb_rect.combineExtentWith( x[i] >= 0.0 ? x[i] : x[i] + 360.0, y[i] );
+    }
+    else
+    {
       bb_rect.combineExtentWith( x[i], y[i] );
+    }
+  }
+
+  if ( handle180Crossover )
+  {
+    //subtract temporary addition of 360 degrees from longitudes
+    if ( bb_rect.xMinimum() > 180.0 )
+      bb_rect.setXMinimum( bb_rect.xMinimum() - 360.0 );
+    if ( bb_rect.xMaximum() > 180.0 )
+      bb_rect.setXMaximum( bb_rect.xMaximum() - 360.0 );
   }
 
   QgsDebugMsg( "Projected extent: " + bb_rect.toString() );

@@ -25,6 +25,7 @@
 #include "qgsrendercontext.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QPainter>
 #include <QPen>
@@ -1356,6 +1357,15 @@ int QgsComposerMapGrid::xGridLinesCRSTransform( const QgsRectangle& bbox, const 
   double maxX = bbox.xMaximum();
   double step = ( maxX - minX ) / 20;
 
+  bool crosses180 = false;
+  bool crossed180 = false;
+  if ( mCRS.geographicFlag() && ( minX > maxX ) )
+  {
+    //handle 180 degree longitude crossover
+    crosses180 = true;
+    step = ( maxX + 360.0 - minX ) / 20;
+  }
+
   int gridLineCount = 0;
   while ( currentLevel >= bbox.yMinimum() && gridLineCount < MAX_GRID_LINES )
   {
@@ -1364,7 +1374,7 @@ int QgsComposerMapGrid::xGridLinesCRSTransform( const QgsRectangle& bbox, const 
     bool cont = true;
     while ( cont )
     {
-      if ( currentX > maxX )
+      if (( !crosses180 || crossed180 ) && ( currentX > maxX ) )
       {
         cont = false;
       }
@@ -1372,7 +1382,13 @@ int QgsComposerMapGrid::xGridLinesCRSTransform( const QgsRectangle& bbox, const 
       QgsPoint mapPoint = t.transform( currentX, currentLevel ); //transform back to map crs
       gridLine.append( mComposerMap->mapToItemCoords( QPointF( mapPoint.x(), mapPoint.y() ) ) ); //transform back to composer coords
       currentX += step;
+      if ( crosses180 && currentX > 180.0 )
+      {
+        currentX -= 360.0;
+        crossed180 = true;
+      }
     }
+    crossed180 = false;
 
     gridLine = trimLineToMap( gridLine, QgsRectangle( mComposerMap->rect() ) );
     if ( gridLine.size() > 0 )
@@ -1401,8 +1417,16 @@ int QgsComposerMapGrid::yGridLinesCRSTransform( const QgsRectangle& bbox, const 
   double maxY = bbox.yMaximum();
   double step = ( maxY - minY ) / 20;
 
+  bool crosses180 = false;
+  bool crossed180 = false;
+  if ( mCRS.geographicFlag() && ( bbox.xMinimum() > bbox.xMaximum() ) )
+  {
+    //handle 180 degree longitude crossover
+    crosses180 = true;
+  }
+
   int gridLineCount = 0;
-  while ( currentLevel <= bbox.xMaximum() && gridLineCount < MAX_GRID_LINES )
+  while (( currentLevel <= bbox.xMaximum() || ( crosses180 && !crossed180 ) ) && gridLineCount < MAX_GRID_LINES )
   {
     QPolygonF gridLine;
     double currentY = minY;
@@ -1427,6 +1451,11 @@ int QgsComposerMapGrid::yGridLinesCRSTransform( const QgsRectangle& bbox, const 
       gridLineCount++;
     }
     currentLevel += mGridIntervalX;
+    if ( crosses180 && currentLevel > 180.0 )
+    {
+      currentLevel -= 360.0;
+      crossed180 = true;
+    }
   }
 
   return 0;
@@ -1735,7 +1764,33 @@ int QgsComposerMapGrid::crsGridParams( QgsRectangle& crsRect, QgsCoordinateTrans
   QPolygonF mapPolygon = mComposerMap->transformedMapPolygon();
   QRectF mbr = mapPolygon.boundingRect();
   QgsRectangle mapBoundingRect( mbr.left(), mbr.bottom(), mbr.right(), mbr.top() );
-  crsRect = tr.transformBoundingBox( mapBoundingRect );
+
+
+  if ( mCRS.geographicFlag() )
+  {
+    //handle crossing the 180 degree longitude line
+    QgsPoint lowerLeft( mapBoundingRect.xMinimum(), mapBoundingRect.yMinimum() );
+    QgsPoint upperRight( mapBoundingRect.xMaximum(), mapBoundingRect.yMaximum() );
+
+    lowerLeft = tr.transform( lowerLeft.x(), lowerLeft.y() );
+    upperRight = tr.transform( upperRight.x(), upperRight.y() );
+
+    if ( lowerLeft.x() > upperRight.x() )
+    {
+      //we've crossed the line
+      crsRect = tr.transformBoundingBox( mapBoundingRect, QgsCoordinateTransform::ForwardTransform, true );
+    }
+    else
+    {
+      //didn't cross the line
+      crsRect = tr.transformBoundingBox( mapBoundingRect );
+    }
+  }
+  else
+  {
+    crsRect = tr.transformBoundingBox( mapBoundingRect );
+  }
+
   inverseTransform.setSourceCrs( mCRS );
   inverseTransform.setDestCRS( mComposerMap->composition()->mapSettings().destinationCrs() );
   return 0;
