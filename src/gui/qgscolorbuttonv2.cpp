@@ -571,7 +571,7 @@ void QgsColorButtonV2::setButtonBackground( const QColor color )
 #endif
   }
 
-  if ( !currentIconSize.isValid() )
+  if ( !currentIconSize.isValid() || currentIconSize.width() <= 0 || currentIconSize.height() <= 0 )
   {
     return;
   }
