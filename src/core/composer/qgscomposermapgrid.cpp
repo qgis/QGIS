@@ -1508,7 +1508,7 @@ QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( const QPo
     return QgsComposerMapGrid::Left;
   }
 
-  double framePenWidth = mComposerMap->hasFrame() ? mComposerMap->pen().widthF() : 0;
+  double framePenWidth = mComposerMap->hasFrame() ? mComposerMap->pen().widthF() : 0.000000001;
   if ( p.y() <= framePenWidth )
   {
     return QgsComposerMapGrid::Top;
