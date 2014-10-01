@@ -45,6 +45,8 @@
 QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsComposerItemBaseWidget( 0, composerMap ), mComposerMap( composerMap )
 {
   setupUi( this );
+  
+  mLabel->setText( tr( "Map %1" ).arg( composerMap->id() ) );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerMap );
