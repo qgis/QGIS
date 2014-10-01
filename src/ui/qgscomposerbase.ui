@@ -295,6 +295,9 @@
    <property name="toolTip">
     <string>Select/Move item</string>
    </property>
+   <property name="shortcut">
+    <string>V</string>
+   </property>
   </action>
   <action name="mActionExportAsImage">
    <property name="icon">
@@ -348,6 +351,9 @@
    </property>
    <property name="toolTip">
     <string>Refresh view</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
    </property>
   </action>
   <action name="mActionShowGrid">
@@ -896,6 +902,9 @@
    <property name="text">
     <string>First Feature</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+&lt;</string>
+   </property>
   </action>
   <action name="mActionAtlasPrev">
    <property name="icon">
@@ -904,6 +913,9 @@
    </property>
    <property name="text">
     <string>Previous Feature</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+,</string>
    </property>
   </action>
   <action name="mActionAtlasNext">
@@ -914,6 +926,9 @@
    <property name="text">
     <string>Next Feature</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+.</string>
+   </property>
   </action>
   <action name="mActionAtlasLast">
    <property name="icon">
@@ -923,6 +938,9 @@
    <property name="text">
     <string>Last Feature</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+&gt;</string>
+   </property>
   </action>
   <action name="mActionAtlasPreview">
    <property name="icon">
@@ -931,6 +949,9 @@
    </property>
    <property name="text">
     <string>Preview Atlas</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+/</string>
    </property>
   </action>
   <action name="mActionPrintAtlas">
