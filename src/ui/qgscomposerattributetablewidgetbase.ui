@@ -17,7 +17,16 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -46,8 +55,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>392</width>
-        <height>1132</height>
+        <width>391</width>
+        <height>968</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -62,13 +71,7 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-          </property>
-          <property name="labelAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
+         <layout class="QGridLayout" name="gridLayout_4">
           <item row="0" column="0">
            <widget class="QLabel" name="label_8">
             <property name="text">
@@ -109,14 +112,14 @@
           <item row="2" column="1">
            <widget class="QComboBox" name="mRelationsComboBox"/>
           </item>
-          <item row="4" column="0" colspan="2">
+          <item row="3" column="0" colspan="2">
            <widget class="QPushButton" name="mRefreshPushButton">
             <property name="text">
              <string>Refresh table data</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="0" colspan="2">
+          <item row="4" column="0" colspan="2">
            <widget class="QPushButton" name="mAttributesPushButton">
             <property name="text">
              <string>Attributes...</string>
@@ -137,7 +140,7 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout_3">
+         <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
            <widget class="QLabel" name="mMaxNumFeaturesLabel">
             <property name="text">
@@ -155,6 +158,13 @@
            <widget class="QSpinBox" name="mMaximumRowsSpinBox">
             <property name="maximum">
              <number>99999</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="mUniqueOnlyCheckBox">
+            <property name="text">
+             <string>Remove duplicate rows from table</string>
             </property>
            </widget>
           </item>
@@ -181,6 +191,13 @@
           <item row="3" column="1">
            <widget class="QComboBox" name="mComposerMapComboBox"/>
           </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="QCheckBox" name="mIntersectAtlasCheckBox">
+            <property name="text">
+             <string>Show only features intersecting atlas feature</string>
+            </property>
+           </widget>
+          </item>
           <item row="5" column="0">
            <widget class="QCheckBox" name="mFeatureFilterCheckBox">
             <property name="text">
@@ -206,20 +223,6 @@
             </item>
            </layout>
           </item>
-          <item row="4" column="0" colspan="2">
-           <widget class="QCheckBox" name="mIntersectAtlasCheckBox">
-            <property name="text">
-             <string>Show only features intersecting atlas feature</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QCheckBox" name="mUniqueOnlyCheckBox">
-            <property name="text">
-             <string>Remove duplicate rows from table</string>
-            </property>
-           </widget>
-          </item>
          </layout>
          <zorder>mShowOnlyVisibleFeaturesCheckBox</zorder>
          <zorder>mComposerMapLabel</zorder>
@@ -242,7 +245,7 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout_4">
+         <layout class="QGridLayout" name="gridLayout_6">
           <item row="0" column="0">
            <widget class="QLabel" name="mMarginLabel">
             <property name="text">
@@ -326,7 +329,7 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout_2">
+         <layout class="QGridLayout" name="gridLayout_7">
           <item row="0" column="0">
            <widget class="QLabel" name="mGridStrokeWidthLabel">
             <property name="text">
@@ -355,23 +358,40 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QgsColorButtonV2" name="mGridColorButton">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>120</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QgsColorButtonV2" name="mGridColorButton">
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>120</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -394,7 +414,71 @@
              <string>Table heading</string>
             </property>
             <layout class="QGridLayout" name="gridLayout">
-             <item row="5" column="1" colspan="2">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_5">
+               <property name="text">
+                <string>Font</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QPushButton" name="mHeaderFontPushButton">
+               <property name="text">
+                <string>Choose font...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Color</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <widget class="QgsColorButtonV2" name="mHeaderFontColorButton">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>120</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Alignment</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
               <widget class="QComboBox" name="mHeaderHAlignmentComboBox">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -424,53 +508,6 @@
                </item>
               </widget>
              </item>
-             <item row="5" column="0">
-              <widget class="QLabel" name="label_2">
-               <property name="text">
-                <string>Alignment</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QLabel" name="label_3">
-               <property name="text">
-                <string>Color</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_5">
-               <property name="text">
-                <string>Font</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1" colspan="2">
-              <widget class="QPushButton" name="mHeaderFontPushButton">
-               <property name="text">
-                <string>Choose font...</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1" colspan="2">
-              <widget class="QgsColorButtonV2" name="mHeaderFontColorButton">
-               <property name="minimumSize">
-                <size>
-                 <width>120</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>120</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
             </layout>
            </widget>
           </item>
@@ -480,6 +517,20 @@
              <string>Table contents</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
+             <item row="0" column="0">
+              <widget class="QLabel" name="lblContentsFont">
+               <property name="text">
+                <string>Font</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QPushButton" name="mContentFontPushButton">
+               <property name="text">
+                <string>Choose font...</string>
+               </property>
+              </widget>
+             </item>
              <item row="1" column="0">
               <widget class="QLabel" name="label_4">
                <property name="text">
@@ -487,38 +538,41 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="1" colspan="2">
-              <widget class="QgsColorButtonV2" name="mContentFontColorButton">
-               <property name="minimumSize">
-                <size>
-                 <width>120</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>120</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1" colspan="2">
-              <widget class="QPushButton" name="mContentFontPushButton">
-               <property name="text">
-                <string>Choose font...</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="lblContentsFont">
-               <property name="text">
-                <string>Font</string>
-               </property>
-              </widget>
+             <item row="1" column="1">
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <item>
+                <widget class="QgsColorButtonV2" name="mContentFontColorButton">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>120</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_3">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
              </item>
             </layout>
            </widget>
@@ -595,7 +649,7 @@
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

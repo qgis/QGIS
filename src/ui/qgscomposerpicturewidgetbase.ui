@@ -23,7 +23,16 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -52,8 +61,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>314</width>
-        <height>554</height>
+        <width>330</width>
+        <height>553</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -317,13 +326,7 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-          </property>
-          <property name="labelAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
+         <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
           <item row="1" column="0">
            <widget class="QCheckBox" name="mRotationFromComposerMapCheckBox">
             <property name="text">

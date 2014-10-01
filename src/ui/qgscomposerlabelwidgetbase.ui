@@ -23,7 +23,16 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -53,7 +62,7 @@
         <x>0</x>
         <y>0</y>
         <width>302</width>
-        <height>682</height>
+        <height>686</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -71,29 +80,29 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
            <widget class="QPlainTextEdit" name="mTextEdit">
             <property name="tabStopWidth">
              <number>10</number>
             </property>
            </widget>
           </item>
-          <item>
+          <item row="1" column="0">
            <widget class="QCheckBox" name="mHtmlCheckBox">
             <property name="text">
              <string>Render as HTML</string>
             </property>
            </widget>
           </item>
-          <item>
+          <item row="2" column="0">
            <widget class="QPushButton" name="mInsertExpressionButton">
             <property name="text">
              <string>Insert an expression...</string>
             </property>
            </widget>
           </item>
-          <item>
+          <item row="3" column="0">
            <widget class="QPushButton" name="mFontButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -106,7 +115,7 @@
             </property>
            </widget>
           </item>
-          <item>
+          <item row="4" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QLabel" name="label_2">
@@ -311,13 +320,7 @@
          <property name="collapsed" stdset="0">
           <bool>true</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout_2">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-          </property>
-          <property name="labelAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
+         <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1">
           <item row="0" column="0">
            <widget class="QLabel" name="mMarginLabel">
             <property name="text">
