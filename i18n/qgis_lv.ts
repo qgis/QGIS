@@ -5,7 +5,7 @@
     <name>APIsDialogPythonConsole</name>
     <message>
         <source>Generating prepared API file (please wait)...</source>
-        <translation>Ģenerē sagatavoto API datni (lūdzu uzgaidi)...</translation>
+        <translation>Ģenerē sagatavoto API datni (lūdzu, uzgaidi)...</translation>
     </message>
 </context>
 <context>
@@ -83,11 +83,11 @@
     </message>
     <message>
         <source>Copy to clipboard</source>
-        <translation>Kopēt stapliktuvē</translation>
+        <translation>Kopēt starpliktuvē</translation>
     </message>
     <message>
         <source>Click to enable mouse tracking. Click the canvas to stop</source>
-        <translation>Klikšķiniet, lai iedarbinātu peles sekošanu. Klikšķināt uz skata, lai apturētu</translation>
+        <translation>Klikšķiniet, lai iedarbinātu peles sekošanu. Klikšķiniet uz skata, lai apturētu</translation>
     </message>
     <message>
         <source>Start capture</source>
@@ -99,7 +99,7 @@
     </message>
     <message>
         <source>Coordinate in your selected CRS (lat,lon or east,north)</source>
-        <translation>Koordinātes tevis izvēlētajā CRS (platums, garums vai austrumi, ziemeļi) </translation>
+        <translation>Koordinātas tevis izvēlētajā CRS (platums, garums vai austrumi, ziemeļi) </translation>
     </message>
     <message>
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
@@ -114,11 +114,11 @@
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation>Nav izvēlēta datubāze vai arī neesi tai pieslēdzies.</translation>
+        <translation>Nav izvēlēta datubāze vai arī neesat tai pieslēdzies.</translation>
     </message>
     <message>
         <source>Select the table you want export to file.</source>
-        <translation>Izvēlies tabulu, kuru vēlies eksportēt uz failu.</translation>
+        <translation>Izvēlieties tabulu, kuru vēlaties eksportēt uz failu.</translation>
     </message>
     <message>
         <source>DB Manager</source>
@@ -189,7 +189,7 @@
     </message>
     <message>
         <source>Server version: </source>
-        <translation>Servera versija</translation>
+        <translation>Servera versija: </translation>
     </message>
     <message>
         <source>Host:</source>
@@ -235,7 +235,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>&lt;warning&gt; This user has no privileges!</source>
-        <translation>&lt;warning&gt; Šim lietotājam nav tiesības!</translation>
+        <translation>&lt;warning&gt; Šim lietotājam nav tiesību!</translation>
     </message>
     <message>
         <source>User has privileges:</source>
@@ -267,7 +267,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>&lt;warning&gt; This user has no privileges to access this schema!</source>
-        <translation>&lt;warning&gt; Šim lietotājam nav tiesības piekļūt šai shēmai!</translation>
+        <translation>&lt;warning&gt; Šim lietotājam nav tiesību piekļūt šai shēmai!</translation>
     </message>
     <message>
         <source>Relation type:</source>
@@ -299,15 +299,15 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Null</source>
-        <translation></translation>
+        <translation>Null</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation>Noklusēts</translation>
+        <translation>Noklusējuma</translation>
     </message>
     <message>
         <source>Column(s)</source>
-        <translation>Kolonna(s)</translation>
+        <translation>Kolona(s)</translation>
     </message>
     <message>
         <source>Function</source>
@@ -339,7 +339,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Column:</source>
-        <translation>Kolonna:</translation>
+        <translation>Kolona:</translation>
     </message>
     <message>
         <source>Geometry:</source>
@@ -691,7 +691,7 @@ Vaicājums:
     <name>DbManagerDlgAddGeometryColumn</name>
     <message>
         <source>Add geometry column</source>
-        <translation>Pievienot ģeometrijas kolonnu</translation>
+        <translation>Pievienot ģeometrijas kolonu</translation>
     </message>
     <message>
         <source>Name</source>
@@ -718,7 +718,7 @@ Vaicājums:
     </message>
     <message>
         <source>Column</source>
-        <translation>Kolonna</translation>
+        <translation>Kolona</translation>
     </message>
     <message>
         <source>Primary key</source>
@@ -737,7 +737,7 @@ Vaicājums:
     </message>
     <message>
         <source>Column</source>
-        <translation>Kolonna</translation>
+        <translation>Kolona</translation>
     </message>
     <message>
         <source>Name</source>
@@ -780,7 +780,7 @@ Vaicājums:
     </message>
     <message>
         <source>Create geometry column</source>
-        <translation>Izveidot ģeometrijas kolonnu</translation>
+        <translation>Izveidot ģeometrijas kolonu</translation>
     </message>
     <message>
         <source>Dimensions</source>
@@ -944,7 +944,7 @@ Vaicājums:
     </message>
     <message>
         <source>Geometry column</source>
-        <translation>Ģeometrijas kolonna</translation>
+        <translation>Ģeometrijas kolona</translation>
     </message>
     <message>
         <source>Source SRID</source>
@@ -1000,18 +1000,18 @@ Vaicājums:
     <message>
         <source>Column with unique 
 integer values</source>
-        <translation>Kolonna ar vienreizējām 
+        <translation>Kolona ar vienreizējām 
 veselu skaitļu vērtībām</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation>Ģeometrijas kolonna</translation>
+        <translation>Ģeometrijas kolona</translation>
     </message>
     <message>
         <source>Retrieve 
 columns</source>
         <translation>Atgūt 
-kolonnas</translation>
+kolonas</translation>
     </message>
     <message>
         <source>Layer name (prefix)</source>
@@ -1058,27 +1058,27 @@ kolonnas</translation>
     </message>
     <message>
         <source>Columns</source>
-        <translation>Kolonnas</translation>
+        <translation>Kolonas</translation>
     </message>
     <message>
         <source>Table columns:</source>
-        <translation>Tabulas kolonnas:</translation>
+        <translation>Tabulas kolonas:</translation>
     </message>
     <message>
         <source>Add column</source>
-        <translation>Pievienot kolonnu</translation>
+        <translation>Pievienot kolonu</translation>
     </message>
     <message>
         <source>Add geometry column</source>
-        <translation>Pievienot ģeometrijas kolonnu</translation>
+        <translation>Pievienot ģeometrijas kolonu</translation>
     </message>
     <message>
         <source>Edit column</source>
-        <translation>Rediģēt kolonnu</translation>
+        <translation>Rediģēt kolonu</translation>
     </message>
     <message>
         <source>Delete column</source>
-        <translation>Dzēst kolonnu</translation>
+        <translation>Dzēst kolonu</translation>
     </message>
     <message>
         <source>Constraints</source>
@@ -2530,7 +2530,7 @@ vienkāršošanas samazinājās uz %s virsotnēm</translation>
     </message>
     <message>
         <source>Column</source>
-        <translation type="obsolete">Kolonna</translation>
+        <translation type="obsolete">Kolona</translation>
     </message>
     <message>
         <source>Primary key</source>
@@ -2549,7 +2549,7 @@ vienkāršošanas samazinājās uz %s virsotnēm</translation>
     </message>
     <message>
         <source>Column</source>
-        <translation type="obsolete">Kolonna</translation>
+        <translation type="obsolete">Kolona</translation>
     </message>
     <message>
         <source>Name</source>
@@ -2600,7 +2600,7 @@ vienkāršošanas samazinājās uz %s virsotnēm</translation>
     </message>
     <message>
         <source>Create geometry column</source>
-        <translation type="obsolete">Izveidot ģeometrijas kolonnu</translation>
+        <translation type="obsolete">Izveidot ģeometrijas kolonu</translation>
     </message>
     <message>
         <source>POINT</source>
@@ -2676,7 +2676,7 @@ vienkāršošanas samazinājās uz %s virsotnēm</translation>
     </message>
     <message>
         <source>set geometry column name</source>
-        <translation>noteikt ģeometrijas kolonnas nosaukumu</translation>
+        <translation>noteikt ģeometrijas kolonas nosaukumu</translation>
     </message>
     <message>
         <source>Good</source>
@@ -2867,7 +2867,7 @@ vienkāršošanas samazinājās uz %s virsotnēm</translation>
     </message>
     <message>
         <source>Geometry column:</source>
-        <translation type="obsolete">Ģeometrijas kolonna:</translation>
+        <translation type="obsolete">Ģeometrijas kolona:</translation>
     </message>
     <message>
         <source>Source SRID:</source>
@@ -3107,18 +3107,18 @@ vienkāršošanas samazinājās uz %s virsotnēm</translation>
     <message>
         <source>Column with unique 
 integer values</source>
-        <translation type="obsolete">Kolonna ar vienreizējām 
+        <translation type="obsolete">Kolona ar vienreizējām 
 veselu skaitļu vērtībām</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="obsolete">Ģeometrijas kolonna</translation>
+        <translation type="obsolete">Ģeometrijas kolona</translation>
     </message>
     <message>
         <source>Retrieve 
 columns</source>
         <translation type="obsolete">Atgūt 
-kolonnas</translation>
+kolonas</translation>
     </message>
     <message>
         <source>Layer name (prefix)</source>
@@ -3148,7 +3148,7 @@ kolonnas</translation>
         <source>You must fill the required fields: 
 geometry column - column with unique integer values</source>
         <translation>Jāaizpilda prasītie lauki:
-ģeometrijas kolonna - kolonna ar unikālām skatliskām vērtībām</translation>
+ģeometrijas kolona - kolona ar unikālām skatliskām vērtībām</translation>
     </message>
     <message>
         <source>%d rows, %.1f seconds</source>
@@ -3214,27 +3214,27 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Columns</source>
-        <translation type="obsolete">Kolonnas</translation>
+        <translation type="obsolete">Kolonas</translation>
     </message>
     <message>
         <source>Table columns:</source>
-        <translation type="obsolete">Tabulas kolonnas:</translation>
+        <translation type="obsolete">Tabulas kolonas:</translation>
     </message>
     <message>
         <source>Add column</source>
-        <translation type="obsolete">Pievienot kolonnu</translation>
+        <translation type="obsolete">Pievienot kolonu</translation>
     </message>
     <message>
         <source>Add geometry column</source>
-        <translation type="obsolete">Pievienot ģeometrijas kolonnu</translation>
+        <translation type="obsolete">Pievienot ģeometrijas kolonu</translation>
     </message>
     <message>
         <source>Edit column</source>
-        <translation type="obsolete">Rediģēt kolonnu</translation>
+        <translation type="obsolete">Rediģēt kolonu</translation>
     </message>
     <message>
         <source>Delete column</source>
-        <translation type="obsolete">Dzēst kolonnu</translation>
+        <translation type="obsolete">Dzēst kolonu</translation>
     </message>
     <message>
         <source>Constraints</source>
@@ -3282,7 +3282,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>really delete column &apos;%s&apos;?</source>
-        <translation>Tiešām dzēst kolonnu &apos;%s&apos;?</translation>
+        <translation>Tiešām dzēst kolonu &apos;%s&apos;?</translation>
     </message>
     <message>
         <source>really delete constraint &apos;%s&apos;?</source>
@@ -3337,7 +3337,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>New columns</source>
-        <translation>Jaunas kolonnas</translation>
+        <translation>Jaunas kolonas</translation>
     </message>
     <message>
         <source>Prim. key</source>
@@ -5149,7 +5149,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation>Eksportēt/pievienot ģeometrijas kolonnas</translation>
+        <translation>Eksportēt/pievienot ģeometrijas kolonas</translation>
     </message>
     <message>
         <source>Input vector layer</source>
@@ -5696,7 +5696,7 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Column</source>
-        <translation type="obsolete">Kolonna</translation>
+        <translation type="obsolete">Kolona</translation>
     </message>
     <message>
         <source>Cell Size Y</source>
@@ -5764,7 +5764,7 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Columns</source>
-        <translation>Kolonnas</translation>
+        <translation>Kolonas</translation>
     </message>
     <message>
         <source>Add generated file to map</source>
@@ -8136,7 +8136,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Add columns for tags:</source>
-        <translation type="obsolete">Pievienot kolonnas priekš tagiem:</translation>
+        <translation type="obsolete">Pievienot kolonas priekš tagiem:</translation>
     </message>
     <message>
         <source>Use custom renderer</source>
@@ -9117,7 +9117,7 @@ Use iface to access QGIS API interface or Type help(iface) for more info</source
     </message>
     <message>
         <source>No data provider plugins are available. No vector layers can be loaded</source>
-        <translation>Nav datu sniedzēju spraudņu. Vektordatu slāņi nevar tikt ielādēti</translation>
+        <translation>Nav datu sniedzēju spraudņu. Vektordatu slāņus nevar ielādēt</translation>
     </message>
     <message>
         <source>Expected operator, got scalar value!</source>
@@ -9331,7 +9331,7 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
     </message>
     <message>
         <source>Regular expressions on numeric values don&apos;t make sense. Use comparison instead.</source>
-        <translation type="obsolete">Regulārās izteksmes priekš skaitļiem ir bezjēdzīgas. Izmantojiet to vietā salīdzināšanu.</translation>
+        <translation type="obsolete">Regulārās izteksmes skaitļiem ir bezjēdzīgas. To vietā izmantojiet salīdzināšanu.</translation>
     </message>
     <message>
         <source>Geoprocessing functions for working with PostgreSQL/PostGIS layers</source>
@@ -9351,7 +9351,7 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
     </message>
     <message>
         <source>Columns</source>
-        <translation>Kolonnas</translation>
+        <translation>Kolonas</translation>
     </message>
     <message>
         <source>N-S resolution</source>
@@ -9483,7 +9483,7 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
     </message>
     <message>
         <source>Key column</source>
-        <translation>Atslēgas kolonna</translation>
+        <translation>Atslēgas kolona</translation>
     </message>
     <message>
         <source>&lt;b&gt;Region&lt;/b&gt;</source>
@@ -9523,7 +9523,7 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
     </message>
     <message>
         <source>3D Cols</source>
-        <translation>3D kolonnas</translation>
+        <translation>3D kolonas</translation>
     </message>
     <message>
         <source>3D Rows</source>
@@ -9583,7 +9583,7 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
     </message>
     <message>
         <source>Quick Print is a plugin to quickly print a map with minimal effort.</source>
-        <translation type="obsolete">Ātrās drukas spraudnis ļauj izdrukāt karti pieliekot tam minimālas pūles.</translation>
+        <translation type="obsolete">Ātrās drukas spraudnis ļauj izdrukāt karti ar minimālām pūlēm.</translation>
     </message>
     <message>
         <source>Abort</source>
@@ -9667,12 +9667,12 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
     </message>
     <message>
         <source>Error Loading Plugin</source>
-        <translation>Kļūda ielādējot spraudni</translation>
+        <translation>Kļūda, ielādējot spraudni</translation>
     </message>
     <message>
         <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
 %1.</source>
-        <translation>Kļūda ielādējot spraudni. Sekojošā diagnostikas informācija var palīdzēt QGIS izstradātājiem atrisināt šo problēmu:
+        <translation>Kļūda, ielādējot spraudni. Šī diagnostikas informācija var palīdzēt QGIS izstradātājiem atrisināt šo problēmu:
 %1.</translation>
     </message>
     <message>
@@ -9681,7 +9681,7 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
     </message>
     <message>
         <source>Error when reading metadata of plugin %1</source>
-        <translation>Kļūda nolasot %1 spraudņa metadatus</translation>
+        <translation>Kļūda, nolasot %1 spraudņa metadatus</translation>
     </message>
     <message>
         <source>No QGIS data provider plugins found in:
@@ -9693,7 +9693,7 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
     </message>
     <message>
         <source>Referenced column wasn&apos;t found: %1</source>
-        <translation type="obsolete">Atskaites kolonna netika atrasta: %1</translation>
+        <translation type="obsolete">Atskaites kolona netika atrasta: %1</translation>
     </message>
     <message>
         <source>Location: %1</source>
@@ -12550,7 +12550,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
     </message>
     <message>
         <source>Checking provider plugins</source>
-        <translation>Pārbaudam izplatītāja spraudņus</translation>
+        <translation>Pārbaudām izplatītāja spraudņus</translation>
     </message>
     <message>
         <source>Starting Python</source>
@@ -14496,7 +14496,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add column</source>
-        <translation>Pievienot kolonnu</translation>
+        <translation>Pievienot kolonu</translation>
     </message>
     <message>
         <source>Provider Field</source>
@@ -15252,7 +15252,7 @@ Parser error:
     </message>
     <message>
         <source>Column</source>
-        <translation type="obsolete">Kolonna</translation>
+        <translation type="obsolete">Kolona</translation>
     </message>
     <message>
         <source>Ascending</source>
@@ -15260,7 +15260,7 @@ Parser error:
     </message>
     <message>
         <source>Columns</source>
-        <translation type="unfinished">Kolonnas</translation>
+        <translation type="unfinished">Kolonas</translation>
     </message>
     <message>
         <source>Reset</source>
@@ -15363,11 +15363,11 @@ Parser error:
     </message>
     <message>
         <source>New column</source>
-        <translation type="obsolete">Jauna kolonna</translation>
+        <translation type="obsolete">Jauna kolona</translation>
     </message>
     <message>
         <source>Delete column</source>
-        <translation type="obsolete">Dzēst kolonnu</translation>
+        <translation type="obsolete">Dzēst kolonu</translation>
     </message>
     <message>
         <source>Open field calculator</source>
@@ -15411,7 +15411,7 @@ Parser error:
     </message>
     <message>
         <source>Looks for the given value in the given attribute column</source>
-        <translation type="obsolete">Meklē atbilstošu vērtību norādītā atribūta kolonnā</translation>
+        <translation type="obsolete">Meklē atbilstošu vērtību norādītā atribūta kolonā</translation>
     </message>
     <message>
         <source>Help</source>
@@ -15497,7 +15497,7 @@ Parser error:
     </message>
     <message>
         <source>New column (Ctrl+W)</source>
-        <translation>Jauna kolonna (Ctrl+W)</translation>
+        <translation>Jauna kolona (Ctrl+W)</translation>
     </message>
     <message>
         <source>Ctrl+W</source>
@@ -15505,7 +15505,7 @@ Parser error:
     </message>
     <message>
         <source>Delete column (Ctrl+L)</source>
-        <translation>Dzēst kolonnu (Ctrl+L)</translation>
+        <translation>Dzēst kolonu (Ctrl+L)</translation>
     </message>
     <message>
         <source>Ctrl+L</source>
@@ -15877,7 +15877,7 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <source>Key column</source>
-        <translation type="obsolete">Atslēgas kolonna</translation>
+        <translation type="obsolete">Atslēgas kolona</translation>
     </message>
     <message>
         <source>Color</source>
@@ -16474,7 +16474,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>Column</source>
-        <translation>Kolonna</translation>
+        <translation>Kolona</translation>
     </message>
     <message>
         <source>Symbol</source>
@@ -17721,7 +17721,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Table maximum columns</source>
-        <translation type="unfinished">Tabulā maksimāli kolonnas</translation>
+        <translation type="unfinished">Tabulā maksimāli kolonas</translation>
     </message>
     <message>
         <source>Table margin changed</source>
@@ -19720,7 +19720,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Columns</source>
-        <translation type="unfinished">Kolonnas</translation>
+        <translation type="unfinished">Kolonas</translation>
     </message>
     <message>
         <source>Count</source>
@@ -21668,7 +21668,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Table maximum columns</source>
-        <translation>Tabulā maksimāli kolonnas</translation>
+        <translation>Tabulā maksimāli kolonas</translation>
     </message>
     <message>
         <source>Table header font</source>
@@ -22549,7 +22549,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Parse error at line %1, column %2:
 %3</source>
-        <translation>Parsēšanas kļūda rindā %1, kolonnā %2:
+        <translation>Parsēšanas kļūda rindā %1, kolonā %2:
 %3</translation>
     </message>
     <message>
@@ -23648,7 +23648,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Search in columns</source>
-        <translation>Meklēt kolonnās</translation>
+        <translation>Meklēt kolonās</translation>
     </message>
     <message>
         <source>Load</source>
@@ -23696,11 +23696,11 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="obsolete">Ģeometrijas kolonna</translation>
+        <translation type="obsolete">Ģeometrijas kolona</translation>
     </message>
     <message>
         <source>Primary key column</source>
-        <translation type="obsolete">Primārās atslēgas kolonna</translation>
+        <translation type="obsolete">Primārās atslēgas kolona</translation>
     </message>
     <message>
         <source>Sql</source>
@@ -24407,11 +24407,11 @@ not displayed</source>
     </message>
     <message>
         <source>The delimiter is a regular expression</source>
-        <translation type="obsolete">Atdalītājs ir regulāra izteiksme</translation>
+        <translation type="obsolete">Atdalītājs ir regulārā izteiksme</translation>
     </message>
     <message>
         <source>Regular expression</source>
-        <translation type="obsolete">Regulāra izteiksme</translation>
+        <translation type="obsolete">Regulārā izteiksme</translation>
     </message>
     <message>
         <source>File Name</source>
@@ -24689,11 +24689,11 @@ not displayed</source>
     </message>
     <message>
         <source>The delimiter is a regular expression</source>
-        <translation type="obsolete">Atdalītājs ir regulāra izteiksme</translation>
+        <translation type="obsolete">Atdalītājs ir regulārā izteiksme</translation>
     </message>
     <message>
         <source>Regular expression</source>
-        <translation type="obsolete">Regulāra izteiksme</translation>
+        <translation type="obsolete">Regulārā izteiksme</translation>
     </message>
     <message>
         <source>The delimiter is taken as is</source>
@@ -25541,7 +25541,7 @@ Leave empty to automatically apply the maximum value.</source>
     </message>
     <message>
         <source>Geometry column:</source>
-        <translation type="obsolete">Ģeometrijas kolonna:</translation>
+        <translation type="obsolete">Ģeometrijas kolona:</translation>
     </message>
     <message>
         <source>Spatial reference ID:</source>
@@ -25629,7 +25629,7 @@ Parser error:
     </message>
     <message>
         <source>Column Preview</source>
-        <translation>Kolonnas priekšapskate</translation>
+        <translation>Kolonas priekšapskate</translation>
     </message>
 </context>
 <context>
@@ -26682,7 +26682,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>New column</source>
-        <translation type="unfinished">Jauna kolonna</translation>
+        <translation type="unfinished">Jauna kolona</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
@@ -26690,7 +26690,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Delete column</source>
-        <translation type="unfinished">Dzēst kolonnu</translation>
+        <translation type="unfinished">Dzēst kolonu</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
@@ -27981,7 +27981,7 @@ Lūdzu izvēlēties derīgu.</translation>
     </message>
     <message>
         <source>Scanning column %1.%2.%3...</source>
-        <translation>Pēta kolonnu %1 %2 %3</translation>
+        <translation>Pēta kolonu %1 %2 %3</translation>
     </message>
     <message>
         <source>Table retrieval finished.</source>
@@ -28826,7 +28826,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Error: %1 on line %2, column %3</source>
-        <translation>Kļūda: %1 rindā %2, kolonnā %3</translation>
+        <translation>Kļūda: %1 rindā %2, kolonā %3</translation>
     </message>
     <message>
         <source>WFS</source>
@@ -29000,7 +29000,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Column</source>
-        <translation>Kolonna</translation>
+        <translation>Kolona</translation>
     </message>
     <message>
         <source>Symbol</source>
@@ -29128,7 +29128,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     </message>
     <message>
         <source>Column</source>
-        <translation>Kolonna</translation>
+        <translation>Kolona</translation>
     </message>
     <message>
         <source>Value</source>
@@ -29510,7 +29510,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     </message>
     <message>
         <source>Add Column</source>
-        <translation>Pievienot kolonnu</translation>
+        <translation>Pievienot kolonu</translation>
     </message>
     <message>
         <source>Create / Alter Table</source>
@@ -29546,7 +29546,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     </message>
     <message>
         <source>Column</source>
-        <translation>Kolonna</translation>
+        <translation>Kolona</translation>
     </message>
     <message>
         <source>Length</source>
@@ -29801,7 +29801,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     </message>
     <message>
         <source>Current column of moving window (starts with 1)</source>
-        <translation>Pašreizējā kolonna kustīgajā logā (sākas ar 1)</translation>
+        <translation>Pašreizējā kolona kustīgajā logā (sākas ar 1)</translation>
     </message>
     <message>
         <source>Cosine of x (x is in degrees)</source>
@@ -29996,7 +29996,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
 at line %2 column %3</source>
         <translation>
 %1
-rindā %2 kolonnā %3</translation>
+rindā %2 kolonā %3</translation>
     </message>
 </context>
 <context>
@@ -30070,7 +30070,7 @@ rindā %2 kolonnā %3</translation>
 at line %2 column %3</source>
         <translation>
 %1
-rindā %2 kolonnā %3</translation>
+rindā %2 kolonā %3</translation>
     </message>
     <message>
         <source>Module %1 not found</source>
@@ -30338,7 +30338,7 @@ rindā %2 kolonnā %3</translation>
 at line %2 column %3</source>
         <translation>
 %1
-rindā %2 kolonnā %3</translation>
+rindā %2 kolonā %3</translation>
     </message>
     <message>
         <source>Cannot find key %1</source>
@@ -30533,7 +30533,7 @@ rindā %2 kolonnā %3</translation>
 at line %2 column %3</source>
         <translation>
 %1
-rindā %2 kolonnā %3</translation>
+rindā %2 kolonā %3</translation>
     </message>
     <message>
         <source>Cannot create new location: %1</source>
@@ -30989,7 +30989,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cols</source>
-        <translation type="obsolete">Kolonnas</translation>
+        <translation type="obsolete">Kolonas</translation>
     </message>
     <message>
         <source>E-W Res</source>
@@ -31050,7 +31050,7 @@ or change the following values</source>
     </message>
     <message>
         <source>Columns</source>
-        <translation>Kolonnas</translation>
+        <translation>Kolonas</translation>
     </message>
     <message>
         <source>Border</source>
@@ -31222,7 +31222,7 @@ or change the following values</source>
 at line %2 column %3</source>
         <translation>
 %1
-rindā %2 kolonnā %3</translation>
+rindā %2 kolonā %3</translation>
     </message>
     <message>
         <source>Cannot start command shell (%1)</source>
@@ -32136,7 +32136,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Number of columns</source>
-        <translation>Kolonnu skaits</translation>
+        <translation>Kolonu skaits</translation>
     </message>
     <message>
         <source>Number of rows</source>
@@ -32544,11 +32544,11 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>X Coordinate</source>
-        <translation>X koordināte</translation>
+        <translation>X koordināta</translation>
     </message>
     <message>
         <source>Y Coordinate</source>
-        <translation>Y koordināte</translation>
+        <translation>Y koordināta</translation>
     </message>
     <message>
         <source>Horizontal alignment</source>
@@ -33953,7 +33953,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     <name>QgsLoadStyleFromDBDialogLayout</name>
     <message>
         <source>Add column</source>
-        <translation type="obsolete">Pievienot kolonnu</translation>
+        <translation type="obsolete">Pievienot kolonu</translation>
     </message>
     <message>
         <source>Styles related to the layer</source>
@@ -34025,7 +34025,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     <message>
         <source>Parse error at line %1, column %2:
 %3</source>
-        <translation>Parsēšanas kļūda rindā %1, kolonnā %2:
+        <translation>Parsēšanas kļūda rindā %1, kolonā %2:
 %3</translation>
     </message>
     <message>
@@ -34182,7 +34182,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     <name>QgsMapLayer</name>
     <message>
         <source>%1 at line %2 column %3</source>
-        <translation>%1 līnijā %2 kolonnā %3</translation>
+        <translation>%1 līnijā %2 kolonā %3</translation>
     </message>
     <message>
         <source>Error: qgis element could not be found in %1</source>
@@ -35938,7 +35938,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>RegExp</source>
-        <translation type="unfinished">Regulāra izteiksme</translation>
+        <translation type="unfinished">Regulārā izteiksme</translation>
     </message>
     <message>
         <source>All</source>
@@ -35958,11 +35958,11 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="unfinished">Ģeometrijas kolonna</translation>
+        <translation type="unfinished">Ģeometrijas kolona</translation>
     </message>
     <message>
         <source>Primary key column</source>
-        <translation type="unfinished">Primārās atslēgas kolonna</translation>
+        <translation type="unfinished">Primārās atslēgas kolona</translation>
     </message>
     <message>
         <source>SRID</source>
@@ -36044,7 +36044,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="unfinished">Ģeometrijas kolonna</translation>
+        <translation type="unfinished">Ģeometrijas kolona</translation>
     </message>
     <message>
         <source>SRID</source>
@@ -36052,7 +36052,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Primary key column</source>
-        <translation type="unfinished">Primārās atslēgas kolonna</translation>
+        <translation type="unfinished">Primārās atslēgas kolona</translation>
     </message>
     <message>
         <source>Select at id</source>
@@ -36577,7 +36577,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Geometry column</source>
-        <translation>Ģeometrijas kolonna</translation>
+        <translation>Ģeometrijas kolona</translation>
     </message>
     <message>
         <source>geometry</source>
@@ -37223,7 +37223,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>parse error at row %1, column %2: %3</source>
-        <translation type="unfinished">parsēšanas kļūda rindā %1, kolonnā %2: %3</translation>
+        <translation type="unfinished">parsēšanas kļūda rindā %1, kolonā %2: %3</translation>
     </message>
     <message>
         <source>network error: %1</source>
@@ -39539,7 +39539,7 @@ Trūkst daži ui paraugu objekti:</translation>
     </message>
     <message>
         <source>Scanning column %1.%2.%3...</source>
-        <translation>Pēta kolonnu %1 %2 %3</translation>
+        <translation>Pēta kolonu %1 %2 %3</translation>
     </message>
     <message>
         <source>Table retrieval finished.</source>
@@ -40260,7 +40260,7 @@ Error: %4</source>
     </message>
     <message>
         <source>RegExp</source>
-        <translation type="unfinished">Regulāra izteiksme</translation>
+        <translation type="unfinished">Regulārā izteiksme</translation>
     </message>
     <message>
         <source>All</source>
@@ -40280,11 +40280,11 @@ Error: %4</source>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="unfinished">Ģeometrijas kolonna</translation>
+        <translation type="unfinished">Ģeometrijas kolona</translation>
     </message>
     <message>
         <source>Primary key column</source>
-        <translation type="unfinished">Primārās atslēgas kolonna</translation>
+        <translation type="unfinished">Primārās atslēgas kolona</translation>
     </message>
     <message>
         <source>SRID</source>
@@ -40362,7 +40362,7 @@ Error: %4</source>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="unfinished">Ģeometrijas kolonna</translation>
+        <translation type="unfinished">Ģeometrijas kolona</translation>
     </message>
     <message>
         <source>SRID</source>
@@ -40370,7 +40370,7 @@ Error: %4</source>
     </message>
     <message>
         <source>Primary key column</source>
-        <translation type="unfinished">Primārās atslēgas kolonna</translation>
+        <translation type="unfinished">Primārās atslēgas kolona</translation>
     </message>
     <message>
         <source>Select at id</source>
@@ -40614,7 +40614,7 @@ Error: %4</source>
     </message>
     <message>
         <source>Unable to add geometry column</source>
-        <translation type="obsolete">Nav iespējams pievienot ģeometrijas kolonnu</translation>
+        <translation type="obsolete">Nav iespējams pievienot ģeometrijas kolonu</translation>
     </message>
     <message>
         <source>Unable to create table</source>
@@ -40861,7 +40861,7 @@ Papildus kļūdas informācija:
     </message>
     <message>
         <source>RegExp</source>
-        <translation>Regulāra izteiksme</translation>
+        <translation>Regulārā izteiksme</translation>
     </message>
     <message>
         <source>All</source>
@@ -40881,11 +40881,11 @@ Papildus kļūdas informācija:
     </message>
     <message>
         <source>Geometry column</source>
-        <translation>Ģeometrijas kolonna</translation>
+        <translation>Ģeometrijas kolona</translation>
     </message>
     <message>
         <source>Primary key column</source>
-        <translation>Primārās atslēgas kolonna</translation>
+        <translation>Primārās atslēgas kolona</translation>
     </message>
     <message>
         <source>Sql</source>
@@ -41035,7 +41035,7 @@ Pārliecinieties, ka jums ir SELECT tiesības tai tabulai, kas satur PostGIS ģe
     </message>
     <message>
         <source>Search in columns</source>
-        <translation type="obsolete">Meklēt kolonnās</translation>
+        <translation type="obsolete">Meklēt kolonās</translation>
     </message>
     <message>
         <source>Build query</source>
@@ -41069,7 +41069,7 @@ Pārliecinieties, ka jums ir SELECT tiesības tai tabulai, kas satur PostGIS ģe
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="obsolete">Ģeometrijas kolonna</translation>
+        <translation type="obsolete">Ģeometrijas kolona</translation>
     </message>
     <message>
         <source>SRID</source>
@@ -41077,7 +41077,7 @@ Pārliecinieties, ka jums ir SELECT tiesības tai tabulai, kas satur PostGIS ģe
     </message>
     <message>
         <source>Primary key column</source>
-        <translation type="obsolete">Primārās atslēgas kolonna</translation>
+        <translation type="obsolete">Primārās atslēgas kolona</translation>
     </message>
     <message>
         <source>Select at id</source>
@@ -41101,7 +41101,7 @@ Pārliecinieties, ka jums ir SELECT tiesības tai tabulai, kas satur PostGIS ģe
     </message>
     <message>
         <source>Column</source>
-        <translation>Kolonna</translation>
+        <translation>Kolona</translation>
     </message>
     <message>
         <source>Data Type</source>
@@ -42819,7 +42819,7 @@ Result: %3 (%4)</source>
     </message>
     <message>
         <source>No suitable key column in table</source>
-        <translation type="obsolete">Tabulai nav derīgas atslēgas kolonnas</translation>
+        <translation type="obsolete">Tabulai nav derīgas atslēgas kolonas</translation>
     </message>
     <message>
         <source>and </source>
@@ -42827,7 +42827,7 @@ Result: %3 (%4)</source>
     </message>
     <message>
         <source>Unable to find a key column</source>
-        <translation type="obsolete">Nav iespējams atrast atslēgas kolonnu</translation>
+        <translation type="obsolete">Nav iespējams atrast atslēgas kolonu</translation>
     </message>
     <message>
         <source>and is suitable.</source>
@@ -42843,7 +42843,7 @@ Result: %3 (%4)</source>
     </message>
     <message>
         <source>No suitable key column in view</source>
-        <translation type="obsolete">Skatam nav derīgas atslēgas kolonnas</translation>
+        <translation type="obsolete">Skatam nav derīgas atslēgas kolonas</translation>
     </message>
     <message>
         <source>Unknown geometry type</source>
@@ -42851,12 +42851,12 @@ Result: %3 (%4)</source>
     </message>
     <message>
         <source>Column %1 in %2 has a geometry type of %3, which Quantum GIS does not currently support.</source>
-        <translation type="obsolete">Kolonna %1 iekš %2 satur ģeometrijas tipu %3, ko QGIS pagaidām vēl neatbalsta.</translation>
+        <translation type="obsolete">Kolona %1 iekš %2 satur ģeometrijas tipu %3, ko QGIS pagaidām vēl neatbalsta.</translation>
     </message>
     <message>
         <source>Quantum GIS was unable to determine the type and srid of column %1 in %2. The database communication log was:
 %3</source>
-        <translation type="obsolete">QGIS nespēja noskaidrot tipu un SRID kolonnai %1 iekš %2. Datu bāzes komunikācijas žurnāls:
+        <translation type="obsolete">QGIS nespēja noskaidrot tipu un SRID kolonai %1 iekš %2. Datu bāzes komunikācijas žurnāls:
 %3</translation>
     </message>
     <message>
@@ -43173,7 +43173,7 @@ Lūdzu instalējiet PostGIS ar GEOS atbalstu (http://geos.refractions.net)</tran
     </message>
     <message>
         <source>Project file read error: %1 at line %2 column %3</source>
-        <translation>Projekta faila nolasīšanas kļūda: %1 rindā %2 kolonnā %3</translation>
+        <translation>Projekta faila nolasīšanas kļūda: %1 rindā %2 kolonā %3</translation>
     </message>
     <message>
         <source>%1 for file %2</source>
@@ -43197,7 +43197,7 @@ Lūdzu instalējiet PostGIS ar GEOS atbalstu (http://geos.refractions.net)</tran
     </message>
     <message>
         <source>%1 at line %2 column %3</source>
-        <translation>%1 līnijā %2 kolonnā %3</translation>
+        <translation>%1 līnijā %2 kolonā %3</translation>
     </message>
     <message>
         <source>Loading layer %1</source>
@@ -44388,7 +44388,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Columns</source>
-        <translation>Kolonnas</translation>
+        <translation>Kolonas</translation>
     </message>
     <message>
         <source>Rows</source>
@@ -45136,7 +45136,7 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <source>Columns: </source>
-        <translation>Kolonnas: </translation>
+        <translation>Kolonas: </translation>
     </message>
     <message>
         <source>Rows: </source>
@@ -45371,7 +45371,7 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <source>Columns: %1</source>
-        <translation>Kolonnas: %1</translation>
+        <translation>Kolonas: %1</translation>
     </message>
     <message>
         <source>Rows: %1</source>
@@ -45806,7 +45806,7 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <source>Column count</source>
-        <translation type="obsolete">Kolonnu skaits</translation>
+        <translation type="obsolete">Kolonu skaits</translation>
     </message>
     <message>
         <source>Out of range OK?</source>
@@ -45862,7 +45862,7 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <source>Columns</source>
-        <translation>Kolonnas</translation>
+        <translation>Kolonas</translation>
     </message>
     <message>
         <source>Rows</source>
@@ -46293,7 +46293,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Columns</source>
-        <translation type="unfinished">Kolonnas</translation>
+        <translation type="unfinished">Kolonas</translation>
     </message>
     <message>
         <source>Rows</source>
@@ -47730,7 +47730,7 @@ standard deviation ×</source>
     <name>QgsSaveToDBDialog</name>
     <message>
         <source>Add column</source>
-        <translation type="obsolete">Pievienot kolonnu</translation>
+        <translation type="obsolete">Pievienot kolonu</translation>
     </message>
     <message>
         <source>Description</source>
@@ -48994,7 +48994,7 @@ SQL: %1</translation>
     </message>
     <message>
         <source>RegExp</source>
-        <translation>Regulāra izteiksme</translation>
+        <translation>Regulārā izteiksme</translation>
     </message>
     <message>
         <source>All</source>
@@ -49010,7 +49010,7 @@ SQL: %1</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation>Ģeometrijas kolonna</translation>
+        <translation>Ģeometrijas kolona</translation>
     </message>
     <message>
         <source>SpatiaLite DB Open Error</source>
@@ -49182,7 +49182,7 @@ but implies better performance thereafter.</source>
     </message>
     <message>
         <source>Search in columns</source>
-        <translation type="obsolete">Meklēt kolonnās</translation>
+        <translation type="obsolete">Meklēt kolonās</translation>
     </message>
 </context>
 <context>
@@ -49197,7 +49197,7 @@ but implies better performance thereafter.</source>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation>Ģeometrijas kolonna</translation>
+        <translation>Ģeometrijas kolona</translation>
     </message>
     <message>
         <source>Point</source>
@@ -49653,11 +49653,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>[Geometry Column Name] - name of the geometry column in the database</source>
-        <translation>[Ģeometrijas kolonnas nosaukums] - iestata ģeometrijas kolonnas nosaukumu</translation>
+        <translation>[Ģeometrijas kolonas nosaukums] - iestata ģeometrijas kolonas nosaukumu</translation>
     </message>
     <message>
         <source>[Use Default (Geometry Column Name)] - set column name to &apos;the_geom&apos;</source>
-        <translation>[Lietot noklusējuma (ģeometrijas kolonnas nosaukumu)] - iestata kolonnas nosaukumu uz &apos;the_geom&apos;</translation>
+        <translation>[Lietot noklusējuma (ģeometrijas kolonas nosaukumu)] - iestata kolonas nosaukumu uz &apos;the_geom&apos;</translation>
     </message>
     <message>
         <source>[Import] - import the current shapefiles in the list</source>
@@ -49837,11 +49837,11 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>Geometry column name</source>
-        <translation>Ģeometrijas kolonna nosaukums</translation>
+        <translation>Ģeometrijas kolona nosaukums</translation>
     </message>
     <message>
         <source>Use default geometry column name</source>
-        <translation>Lietot noklusējuma ģeometrijas kolonnas nosaukumu</translation>
+        <translation>Lietot noklusējuma ģeometrijas kolonas nosaukumu</translation>
     </message>
     <message>
         <source>SRID</source>
@@ -49853,7 +49853,7 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>Primary key column name</source>
-        <translation>Primārās atslēgas kolonnas nosaukums</translation>
+        <translation>Primārās atslēgas kolonas nosaukums</translation>
     </message>
     <message>
         <source>Global schema</source>
@@ -49877,7 +49877,7 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>Set the geometry column name to the default value</source>
-        <translation>Iestatīt ģeometrijas kolonnas nosaukumu uz noklusējuma vērtību</translation>
+        <translation>Iestatīt ģeometrijas kolonas nosaukumu uz noklusējuma vērtību</translation>
     </message>
     <message>
         <source>New</source>
@@ -49971,7 +49971,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No suitable key column</source>
-        <translation type="obsolete">Nav derīgas atslēgas kolonnas</translation>
+        <translation type="obsolete">Nav derīgas atslēgas kolonas</translation>
     </message>
     <message>
         <source>Error loading attributes</source>
@@ -50021,7 +50021,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Error verifying geometry column %1</source>
-        <translation type="obsolete">Kļūda pārbaudot ģeometrijas kolonnu %1</translation>
+        <translation type="obsolete">Kļūda pārbaudot ģeometrijas kolonu %1</translation>
     </message>
     <message>
         <source>Unknown geometry type</source>
@@ -50029,7 +50029,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Column %1 has a geometry type of %2, which Quantum GIS does not currently support.</source>
-        <translation type="obsolete">Kolonnai %1 ir ģeometrijas veids %2, kuru QGIS šobrīd neatbalsta.</translation>
+        <translation type="obsolete">Kolonai %1 ir ģeometrijas veids %2, kuru QGIS šobrīd neatbalsta.</translation>
     </message>
     <message>
         <source>Mixed Spatial Reference Systems</source>
@@ -50144,7 +50144,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Error when saving selected symbols to file:
 %1</source>
-        <translation>Kļūda saglabājot izvēlētos simbolus failā:
+        <translation>Kļūda, saglabājot izvēlētos simbolus failā:
 %1</translation>
     </message>
     <message>
@@ -51631,7 +51631,7 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <source>Key column</source>
-        <translation type="unfinished">Atslēgas kolonna</translation>
+        <translation type="unfinished">Atslēgas kolona</translation>
     </message>
     <message>
         <source>Value column</source>
@@ -52863,7 +52863,7 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <source>New column</source>
-        <translation type="obsolete">Jauna kolonna</translation>
+        <translation type="obsolete">Jauna kolona</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
@@ -52871,7 +52871,7 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <source>Delete column</source>
-        <translation type="obsolete">Dzēst kolonnu</translation>
+        <translation type="obsolete">Dzēst kolonu</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
@@ -53870,7 +53870,7 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <source>parse error at row %1, column %2: %3</source>
-        <translation>parsēšanas kļūda rindā %1, kolonnā %2: %3</translation>
+        <translation>parsēšanas kļūda rindā %1, kolonā %2: %3</translation>
     </message>
     <message>
         <source>network error: %1</source>
@@ -54598,7 +54598,7 @@ Response was:
     </message>
     <message>
         <source>Could not get WMS Service Exception at %1: %2 at line %3 column %4</source>
-        <translation type="obsolete">Nebija iespējams saņemt WMS servisa izņēmumu. %1: %2 līnijā %3 kolonnā %4</translation>
+        <translation type="obsolete">Nebija iespējams saņemt WMS servisa izņēmumu. %1: %2 līnijā %3 kolonā %4</translation>
     </message>
     <message>
         <source>Request contains a Format not offered by the server.</source>
@@ -54897,7 +54897,7 @@ Tika mēģināts URL: %1</translation>
     <message>
         <source>Could not get WMS capabilities: %1 at line %2 column %3
 </source>
-        <translation type="obsolete">Nebija iespējams saņemt WMS iespējas: %1 rindā %2 kolonnā %3
+        <translation type="obsolete">Nebija iespējams saņemt WMS iespējas: %1 rindā %2 kolonā %3
 </translation>
     </message>
     <message>
@@ -55357,7 +55357,7 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>Output column prefix:</source>
-        <translation>Izvades kolonnas prefikss:</translation>
+        <translation>Izvades kolonas prefikss:</translation>
     </message>
 </context>
 <context>
@@ -55772,7 +55772,7 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="obsolete">Ģeometrijas kolonna</translation>
+        <translation type="obsolete">Ģeometrijas kolona</translation>
     </message>
     <message>
         <source>Sql</source>
@@ -55964,7 +55964,7 @@ Apraksts: %2</translation>
     </message>
     <message>
         <source>RegExp</source>
-        <translation type="obsolete">Regulāra izteiksme</translation>
+        <translation type="obsolete">Regulārā izteiksme</translation>
     </message>
     <message>
         <source>All</source>
@@ -55992,7 +55992,7 @@ Apraksts: %2</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="obsolete">Ģeometrijas kolonna</translation>
+        <translation type="obsolete">Ģeometrijas kolona</translation>
     </message>
     <message>
         <source>Sql</source>
@@ -56038,7 +56038,7 @@ Apraksts: %3</translation>
     </message>
     <message>
         <source>Database connection was successful, but no tables containing geometry columns were %1.</source>
-        <translation type="obsolete">Datubāzes savienojums bija sekmīgs, bet netika atrasta neviena tabula ar ģeometrijas kolonnu %1.</translation>
+        <translation type="obsolete">Datubāzes savienojums bija sekmīgs, bet netika atrasta neviena tabula ar ģeometrijas kolonu %1.</translation>
     </message>
     <message>
         <source>found</source>
@@ -56101,7 +56101,7 @@ Apraksts: %3</translation>
     </message>
     <message>
         <source>Search in columns</source>
-        <translation type="obsolete">Meklēt kolonnās</translation>
+        <translation type="obsolete">Meklēt kolonās</translation>
     </message>
 </context>
 <context>
@@ -59558,7 +59558,7 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>Error: Parse error at line %1, column %2: %3</source>
-        <translation>Kļūda: Parsēšanas kļūda rindā %1, kolonnā %2: %3</translation>
+        <translation>Kļūda: Parsēšanas kļūda rindā %1, kolonā %2: %3</translation>
     </message>
     <message>
         <source>Error: A database connection is not currently established</source>
@@ -60376,7 +60376,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation>Eksportēt/pievienot ģeometrijas kolonnas</translation>
+        <translation>Eksportēt/pievienot ģeometrijas kolonas</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
@@ -63102,7 +63102,7 @@ Returns the first feature of a layer matching a given attribute value
     </message>
     <message>
         <source>Add one or more columns to attribute table</source>
-        <translation>Pievienot vienu vai vairākas atribūtu tabulas kolonnas</translation>
+        <translation>Pievienot vienu vai vairākas atribūtu tabulas kolonas</translation>
     </message>
     <message>
         <source>Allocate network</source>
@@ -63286,7 +63286,7 @@ Returns the first feature of a layer matching a given attribute value
     </message>
     <message>
         <source>Columns management</source>
-        <translation>Kolonnu pārvaldība</translation>
+        <translation>Kolonu pārvaldība</translation>
     </message>
     <message>
         <source>Compares bit patterns with raster</source>
@@ -63690,7 +63690,7 @@ Returns the first feature of a layer matching a given attribute value
     </message>
     <message>
         <source>Drop column from attribute table</source>
-        <translation>Dzēst atribūtu tabulas kolonnu</translation>
+        <translation>Dzēst atribūtu tabulas kolonu</translation>
     </message>
     <message>
         <source>E00 vector layer</source>
