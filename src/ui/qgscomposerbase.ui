@@ -741,14 +741,6 @@
     <string>Duplicate composer</string>
    </property>
   </action>
-  <action name="mActionNewFromTemplate">
-   <property name="text">
-    <string>New from Template</string>
-   </property>
-   <property name="toolTip">
-    <string>New from template</string>
-   </property>
-  </action>
   <action name="mActionLockItems">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -1004,8 +996,8 @@
   </action>
  </widget>
  <resources>
-  <include location="../../python/plugins/fTools/resources.qrc"/>
   <include location="../../images/images.qrc"/>
+  <include location="../../python/plugins/fTools/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

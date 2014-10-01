@@ -213,7 +213,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   composerMenu->addMenu( mPrintComposersMenu );
 
   composerMenu->addSeparator();
-  composerMenu->addAction( mActionNewFromTemplate );
   composerMenu->addAction( mActionLoadFromTemplate );
   composerMenu->addAction( mActionSaveAsTemplate );
   composerMenu->addSeparator();
@@ -646,7 +645,6 @@ void QgsComposer::setupTheme()
   mActionNewComposer->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.svg" ) );
   mActionDuplicateComposer->setIcon( QgsApplication::getThemeIcon( "/mActionDuplicateComposer.svg" ) );
   mActionComposerManager->setIcon( QgsApplication::getThemeIcon( "/mActionComposerManager.svg" ) );
-  mActionNewFromTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.svg" ) );
   mActionLoadFromTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.svg" ) );
   mActionSaveAsTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionFileSaveAs.svg" ) );
   mActionExportAsImage->setIcon( QgsApplication::getThemeIcon( "/mActionSaveMapAsImage.png" ) );
@@ -2555,11 +2553,6 @@ void QgsComposer::on_mActionSaveAsTemplate_triggered()
   {
     QMessageBox::warning( 0, tr( "Save error" ), tr( "Error, could not save file" ) );
   }
-}
-
-void QgsComposer::on_mActionNewFromTemplate_triggered()
-{
-  loadTemplate( true );
 }
 
 void QgsComposer::on_mActionLoadFromTemplate_triggered()

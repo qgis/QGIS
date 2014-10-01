@@ -217,10 +217,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Save composer as template
     void on_mActionSaveAsTemplate_triggered();
 
-    //! Load template into blank composer
-    //! @note added in 1.9
-    void on_mActionNewFromTemplate_triggered();
-
     void on_mActionLoadFromTemplate_triggered();
 
     //! Set tool to move item content
