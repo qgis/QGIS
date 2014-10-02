@@ -111,6 +111,7 @@ void TestQgsComposerTableV2::initTestCase()
   mComposerAttributeTable->setMaximumNumberOfFeatures( 10 );
   mComposerAttributeTable->setContentFont( QgsFontUtils::getStandardTestFont() );
   mComposerAttributeTable->setHeaderFont( QgsFontUtils::getStandardTestFont() );
+  mComposerAttributeTable->setBackgroundColor( Qt::yellow );
 
   mReport = "<h1>Composer TableV2 Tests</h1>\n";
 }

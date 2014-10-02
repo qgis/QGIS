@@ -237,6 +237,20 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @see gridStrokeWidth
      */
     QColor gridColor() const;
+    
+    /**Sets color used for background of table.
+     * @param color table background color
+     * @see backgroundColor
+     * @see setGridColor
+     */
+    void setBackgroundColor( const QColor& color );
+
+    /**Returns the color used for the background of the table.
+     * @returns table background color
+     * @see setBackgroundColor
+     * @see gridColor
+     */
+    QColor backgroundColor() const;
 
     /**Returns a pointer to the list of QgsComposerTableColumns shown in the table
      * @returns pointer to list of columns in table

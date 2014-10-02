@@ -54,6 +54,7 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
     void on_mMarginSpinBox_valueChanged( double d );
     void on_mGridStrokeWidthSpinBox_valueChanged( double d );
     void on_mGridColorButton_colorChanged( const QColor& newColor );
+    void on_mBackgroundColorButton_colorChanged( const QColor &newColor );
     void on_mHeaderFontPushButton_clicked();
     void on_mHeaderFontColorButton_colorChanged( const QColor& newColor );
     void on_mContentFontPushButton_clicked();
@@ -86,6 +87,7 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
     void atlasToggled();
 
     void updateRelationsCombo();
+
 };
 
 #endif // QGSCOMPOSERATTRIBUTETABLEWIDGET_H

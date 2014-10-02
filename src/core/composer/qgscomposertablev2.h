@@ -263,6 +263,20 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      */
     QColor gridColor() const { return mGridColor; }
 
+    /**Sets color used for background of table.
+     * @param color table background color
+     * @see backgroundColor
+     * @see setGridColor
+     */
+    void setBackgroundColor( const QColor& color );
+
+    /**Returns the color used for the background of the table.
+     * @returns table background color
+     * @see setBackgroundColor
+     * @see gridColor
+     */
+    QColor backgroundColor() const { return mBackgroundColor; }
+
     /**Returns a pointer to the list of QgsComposerTableColumns shown in the table
      * @returns pointer to list of columns in table
      * @see setColumns
@@ -352,6 +366,9 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
 
     /**Color for grid lines*/
     QColor mGridColor;
+
+    /**Color for table background*/
+    QColor mBackgroundColor;
 
     /**Columns to show in table*/
     QgsComposerTableColumns mColumns;

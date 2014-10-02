@@ -70,6 +70,12 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
   mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
   mGridColorButton->setAllowAlpha( true );
   mGridColorButton->setContext( "composer" );
+  mGridColorButton->setDefaultColor( Qt::black );
+  mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
+  mBackgroundColorButton->setAllowAlpha( true );
+  mBackgroundColorButton->setContext( "composer" );
+  mBackgroundColorButton->setShowNoColor( true );
+  mBackgroundColorButton->setNoColorString( tr( "No background" ) );
 
   updateGuiElements();
   on_mComposerMapComboBox_activated( mComposerMapComboBox->currentIndex() );
@@ -428,6 +434,25 @@ void QgsComposerAttributeTableWidget::on_mShowGridGroupCheckBox_toggled( bool st
   }
 }
 
+void QgsComposerAttributeTableWidget::on_mBackgroundColorButton_colorChanged( const QColor& newColor )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mComposerTable->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table background color" ) );
+  }
+  mComposerTable->setBackgroundColor( newColor );
+  mComposerTable->update();
+  if ( composition )
+  {
+    composition->endMultiFrameCommand();
+  }
+}
 
 void QgsComposerAttributeTableWidget::updateGuiElements()
 {
@@ -479,6 +504,7 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
   {
     mShowGridGroupCheckBox->setChecked( false );
   }
+  mBackgroundColorButton->setColor( mComposerTable->backgroundColor() );
 
   mHeaderFontColorButton->setColor( mComposerTable->headerFontColor() );
   mContentFontColorButton->setColor( mComposerTable->contentFontColor() );
@@ -547,7 +573,7 @@ void QgsComposerAttributeTableWidget::updateRelationsCombo()
   if ( atlasLayer )
   {
     QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mComposerTable->composition()->atlasComposition().coverageLayer() );
-    Q_FOREACH ( const QgsRelation& relation, relations )
+    Q_FOREACH( const QgsRelation& relation, relations )
     {
       mRelationsComboBox->addItem( relation.name(), relation.id() );
     }
@@ -602,6 +628,7 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
   mMarginSpinBox->blockSignals( b );
   mGridColorButton->blockSignals( b );
   mGridStrokeWidthSpinBox->blockSignals( b );
+  mBackgroundColorButton->blockSignals( b );
   mShowGridGroupCheckBox->blockSignals( b );
   mShowOnlyVisibleFeaturesCheckBox->blockSignals( b );
   mUniqueOnlyCheckBox->blockSignals( b );

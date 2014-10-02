@@ -32,6 +32,7 @@ QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool create
     , mShowGrid( true )
     , mGridStrokeWidth( 0.5 )
     , mGridColor( Qt::black )
+    , mBackgroundColor( Qt::white )
 {
 
   if ( mComposition )
@@ -75,6 +76,7 @@ bool QgsComposerTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool i
   elem.setAttribute( "gridStrokeWidth", QString::number( mGridStrokeWidth ) );
   elem.setAttribute( "gridColor", QgsSymbolLayerV2Utils::encodeColor( mGridColor ) );
   elem.setAttribute( "showGrid", mShowGrid );
+  elem.setAttribute( "backgroundColor", QgsSymbolLayerV2Utils::encodeColor( mBackgroundColor ) );
 
   //columns
   QDomElement displayColumnsElem = doc.createElement( "displayColumns" );
@@ -118,6 +120,7 @@ bool QgsComposerTableV2::readXML( const QDomElement &itemElem, const QDomDocumen
   mGridStrokeWidth = itemElem.attribute( "gridStrokeWidth", "0.5" ).toDouble();
   mShowGrid = itemElem.attribute( "showGrid", "1" ).toInt();
   mGridColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "gridColor", "0,0,0,255" ) );
+  mBackgroundColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "backgroundColor", "255,255,255,0" ) );
 
   //restore column specifications
   qDeleteAll( mColumns );
@@ -252,16 +255,7 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
     refreshAttributes();
   }
 
-  p->save();
-  //antialiasing on
-  p->setRenderHint( QPainter::Antialiasing, true );
-
-  p->setPen( Qt::SolidLine );
-
-  //now draw the text
-  double currentX = ( mShowGrid ? mGridStrokeWidth : 0 );
-  double currentY;
-
+  double gridSize = mShowGrid ? mGridStrokeWidth : 0;
   QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();
 
   int col = 0;
@@ -275,9 +269,48 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
   //calculate whether drawing table contents is required
   bool drawContents = !( emptyTable && mEmptyTableMode == QgsComposerTableV2::ShowMessage );
 
+  int numberRowsToDraw = rowsToShow.second - rowsToShow.first;
+  if ( mEmptyTableMode == QgsComposerTableV2::DrawEmptyCells )
+  {
+    numberRowsToDraw = rowsVisible( frameIndex );
+  }
+  bool mergeCells = false;
+  if ( emptyTable && mEmptyTableMode == QgsComposerTableV2::ShowMessage )
+  {
+    //draw a merged row for the empty table message
+    numberRowsToDraw++;
+    mergeCells = true;
+  }
+
+  p->save();
+  //antialiasing on
+  p->setRenderHint( QPainter::Antialiasing, true );
+
+  //draw table background
+  if ( mBackgroundColor.alpha() > 0 )
+  {
+    p->save();
+    p->setPen( Qt::NoPen );
+    p->setBrush( QBrush( mBackgroundColor ) );
+    double totalHeight = ( drawHeader || ( numberRowsToDraw > 0 ) ? gridSize : 0 ) +
+                         ( drawHeader ? cellHeaderHeight + gridSize : 0.0 ) +
+                         ( drawContents ? numberRowsToDraw : 1 ) * ( cellBodyHeight + gridSize );
+
+    if ( totalHeight > 0 )
+    {
+      QRectF backgroundRect( 0, 0, mTableSize.width(),  totalHeight );
+      p->drawRect( backgroundRect );
+    }
+    p->restore();
+  }
+
+  //now draw the text
+  double currentX = gridSize;
+  double currentY;
+  p->setPen( Qt::SolidLine );
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
-    currentY = ( mShowGrid ? mGridStrokeWidth : 0 );
+    currentY = gridSize;
     currentX += mCellMargin;
 
     Qt::TextFlag textFlag = ( Qt::TextFlag )0;
@@ -315,7 +348,7 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
       QgsComposerUtils::drawText( p, cell, ( *columnIt )->heading(), mHeaderFont, mHeaderFontColor, headerAlign, Qt::AlignVCenter, textFlag );
 
       currentY += cellHeaderHeight;
-      currentY += ( mShowGrid ? mGridStrokeWidth : 0 );
+      currentY += gridSize;
     }
 
     if ( drawContents )
@@ -331,32 +364,19 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
         QgsComposerUtils::drawText( p, cell, str, mContentFont, mContentFontColor, ( *columnIt )->hAlignment(), Qt::AlignVCenter, textFlag );
 
         currentY += cellBodyHeight;
-        currentY += ( mShowGrid ? mGridStrokeWidth : 0 );
+        currentY += gridSize;
       }
     }
 
     currentX += mMaxColumnWidthMap[ col ];
     currentX += mCellMargin;
-    currentX += ( mShowGrid ? mGridStrokeWidth : 0 );
+    currentX += gridSize;
     col++;
   }
 
   //and the borders
   if ( mShowGrid )
   {
-    int numberRowsToDraw = rowsToShow.second - rowsToShow.first;
-    if ( mEmptyTableMode == QgsComposerTableV2::DrawEmptyCells )
-    {
-      numberRowsToDraw = rowsVisible( frameIndex );
-    }
-    bool mergeCells = false;
-    if ( emptyTable && mEmptyTableMode == QgsComposerTableV2::ShowMessage )
-    {
-      //draw a merged row for the empty table message
-      numberRowsToDraw++;
-      mergeCells = true;
-    }
-
     QPen gridPen;
     gridPen.setWidthF( mGridStrokeWidth );
     gridPen.setColor( mGridColor );
@@ -369,9 +389,8 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
   //special case - no records and table is set to ShowMessage mode
   if ( emptyTable && mEmptyTableMode == QgsComposerTableV2::ShowMessage )
   {
-    double messageX = ( mShowGrid ? mGridStrokeWidth : 0 ) + mCellMargin;
-    double messageY = ( mShowGrid ? mGridStrokeWidth : 0 ) +
-                      ( drawHeader ? cellHeaderHeight + ( mShowGrid ? mGridStrokeWidth : 0 ) : 0 );
+    double messageX = gridSize + mCellMargin;
+    double messageY = gridSize + ( drawHeader ? cellHeaderHeight + gridSize : 0 );
     cell = QRectF( messageX, messageY, mTableSize.width() - messageX, cellBodyHeight );
     QgsComposerUtils::drawText( p, cell, mEmptyTableMessage, mContentFont, mContentFontColor, Qt::AlignHCenter, Qt::AlignVCenter, ( Qt::TextFlag )0 );
   }
@@ -541,6 +560,19 @@ void QgsComposerTableV2::setGridColor( const QColor &color )
   }
 
   mGridColor = color;
+  repaint();
+
+  emit changed();
+}
+
+void QgsComposerTableV2::setBackgroundColor( const QColor &color )
+{
+  if ( color == mBackgroundColor )
+  {
+    return;
+  }
+
+  mBackgroundColor = color;
   repaint();
 
   emit changed();
