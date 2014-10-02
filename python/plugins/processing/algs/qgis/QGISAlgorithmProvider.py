@@ -73,7 +73,8 @@ from ftools.DensifyGeometriesInterval import DensifyGeometriesInterval
 from ftools.Eliminate import Eliminate
 from ftools.SpatialJoin import SpatialJoin
 
-from mmqgisx.MMQGISXAlgorithms import *
+from mmqgisx.DeleteColumn import DeleteColumn
+from mmqgisx.DeleteDuplicateGeometries import DeleteDuplicateGeometries
 
 from ConcaveHull import ConcaveHull
 from Polygonize import Polygonize
@@ -138,17 +139,17 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RandomExtractWithinSubsets(), ExtractByLocation(),
                         SpatialJoin(),
                         # ------ mmqgisx ------
-                        mmqgisx_delete_columns_algorithm(),
-                        mmqgisx_delete_duplicate_geometries_algorithm(),
-                        mmqgisx_geometry_convert_algorithm(),
-                        mmqgisx_grid_algorithm(),
-                        mmqgisx_gridify_algorithm(),
-                        mmqgisx_hub_distance_algorithm(),
-                        mmqgisx_hub_lines_algorithm(),
-                        mmqgisx_merge_algorithm(),
-                        mmqgisx_select_algorithm(),
-                        mmqgisx_extract_algorithm(),
-                        mmqgisx_text_to_float_algorithm(),
+                        DeleteColumn(), DeleteDuplicateGeometries(),
+                        #mmqgisx_delete_duplicate_geometries_algorithm(),
+                        #mmqgisx_geometry_convert_algorithm(),
+                        #mmqgisx_grid_algorithm(),
+                        #mmqgisx_gridify_algorithm(),
+                        #mmqgisx_hub_distance_algorithm(),
+                        #mmqgisx_hub_lines_algorithm(),
+                        #mmqgisx_merge_algorithm(),
+                        #mmqgisx_select_algorithm(),
+                        #mmqgisx_extract_algorithm(),
+                        #mmqgisx_text_to_float_algorithm(),
                         # ------ native algs ------
                         AddTableField(), FieldsCalculator(),
                         SaveSelectedFeatures(), JoinAttributes(),
