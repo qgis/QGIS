@@ -66,6 +66,8 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     QgsComposerAttributeTableV2( QgsComposition* composition, bool createUndoCommands );
     ~QgsComposerAttributeTableV2();
 
+    virtual QString displayName() const;
+
     /**Writes properties specific to attribute tables
      * @param elem an existing QDomElement in which to store the attribute table's properties.
      * @param doc QDomDocument for the destination xml.

@@ -44,6 +44,8 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
 
     QgsComposerAttributeTableV2( QgsComposition* composition /TransferThis/, bool createUndoCommands );
     ~QgsComposerAttributeTableV2();
+    
+    virtual QString displayName() const;
 
     /**Writes properties specific to attribute tables
      * @param elem an existing QDomElement in which to store the attribute table's properties.

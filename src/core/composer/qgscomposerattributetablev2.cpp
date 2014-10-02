@@ -148,6 +148,11 @@ QgsComposerAttributeTableV2::~QgsComposerAttributeTableV2()
 {
 }
 
+QString QgsComposerAttributeTableV2::displayName() const
+{
+  return tr( "<attribute table>" );
+}
+
 void QgsComposerAttributeTableV2::setVectorLayer( QgsVectorLayer* layer )
 {
   if ( layer == mVectorLayer )
