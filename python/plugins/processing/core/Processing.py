@@ -323,8 +323,6 @@ class Processing:
             print 'Warning: Not all input layers use the same CRS.\n' \
                 + 'This can cause unexpected results.'
 
-        ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM, alg.getAsCommand())
-
         # Don't set the wait cursor twice, because then when you
         # restore it, it will still be a wait cursor.
         cursor = QApplication.overrideCursor()
