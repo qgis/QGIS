@@ -387,7 +387,7 @@ class Grass7Utils:
                     running GRASS GIS 7 algorithms.'
         except:
             return 'Error while checking GRASS GIS 7 installation. GRASS GIS 7 might not \
-                be correctly configured.\n' + s
+                be correctly configured.\n'
 
         Grass7Utils.isGrass7Installed = True
 
