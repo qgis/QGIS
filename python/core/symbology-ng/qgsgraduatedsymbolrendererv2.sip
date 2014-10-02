@@ -69,6 +69,10 @@ class QgsRendererRangeV2LegendFormat
 
     void setFromDomElement( QDomElement &element );
     void saveToDomElement( QDomElement &element );
+
+    static int MaxPrecision;
+    static int MinPrecision;
+
 };
 
 
