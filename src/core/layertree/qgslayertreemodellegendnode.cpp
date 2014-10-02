@@ -454,7 +454,7 @@ QVariant QgsRasterSymbolLegendNode::data( int role ) const
     return QIcon( pix );
   }
   else if ( role == Qt::DisplayRole || role == Qt::EditRole )
-    return mLabel;
+    return mUserLabel.isEmpty() ? mLabel : mUserLabel;
   else
     return QVariant();
 }
