@@ -76,6 +76,7 @@ from ftools.SpatialJoin import SpatialJoin
 from mmqgisx.DeleteColumn import DeleteColumn
 from mmqgisx.DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from mmqgisx.TextToFloat import TextToFloat
+from mmqgisx.ExtractByAttribute import ExtractByAttribute
 
 from ConcaveHull import ConcaveHull
 from Polygonize import Polygonize
@@ -141,7 +142,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SpatialJoin(),
                         # ------ mmqgisx ------
                         DeleteColumn(), DeleteDuplicateGeometries(),
-                        TextToFloat(),
+                        TextToFloat(), ExtractByAttribute(),
                         #mmqgisx_delete_duplicate_geometries_algorithm(),
                         #mmqgisx_geometry_convert_algorithm(),
                         #mmqgisx_grid_algorithm(),
