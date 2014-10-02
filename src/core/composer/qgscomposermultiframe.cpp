@@ -214,6 +214,7 @@ QgsComposerFrame* QgsComposerMultiFrame::createNewFrame( QgsComposerFrame* curre
   newFrame->setFrameJoinStyle( currentFrame->frameJoinStyle() );
   newFrame->setFrameOutlineWidth( currentFrame->frameOutlineWidth() );
   newFrame->setOpacity( currentFrame->opacity() );
+  newFrame->setHideBackgroundIfEmpty( currentFrame->hideBackgroundIfEmpty() );
 
   addFrame( newFrame, false );
 
