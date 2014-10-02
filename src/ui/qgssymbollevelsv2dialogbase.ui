@@ -32,7 +32,14 @@
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QTableWidget" name="tableLevels"/>
+    <widget class="QTableWidget" name="tableLevels">
+     <property name="horizontalScrollMode">
+      <enum>QAbstractItemView::ScrollPerPixel</enum>
+     </property>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+    </widget>
    </item>
    <item row="3" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">

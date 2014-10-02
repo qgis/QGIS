@@ -30,6 +30,8 @@ class GUI_EXPORT QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbol
     // @note not available in python bindings
     QgsSymbolLevelsV2Dialog( QgsLegendSymbolList list, bool usingSymbolLevels, QWidget* parent = NULL );
 
+    ~QgsSymbolLevelsV2Dialog();
+
     bool usingLevels() const;
 
     // used by rule-based renderer (to hide checkbox to enable/disable ordering)
