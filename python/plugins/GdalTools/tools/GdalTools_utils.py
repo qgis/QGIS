@@ -476,6 +476,11 @@ class FileFilter:
 
   @classmethod
   def getFilterName(self, aFilter):
+    if isinstance(aFilter, list):
+      if len(aFilter):
+        aFilter = aFilter[0]
+      else:
+        aFilter = ""
     return string.strip(re.sub('\ \(.*$', '', aFilter))
 
   @classmethod
