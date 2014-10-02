@@ -128,7 +128,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
   return true;
 }
 
-bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes )
+bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, bool showModal )
 {
   if ( !mLayer || !mLayer->isEditable() )
     return false;
@@ -194,7 +194,15 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes )
 
     connect( dialog->attributeForm(), SIGNAL( featureSaved( QgsFeature ) ), this, SLOT( onFeatureSaved( QgsFeature ) ) );
 
-    dialog->exec();
+    if ( showModal )
+    {
+      dialog->exec();
+    }
+    else
+    {
+      dialog->show();
+      return true;
+    }
   }
 
   // Will be set in the onFeatureSaved SLOT

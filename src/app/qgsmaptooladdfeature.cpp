@@ -38,10 +38,10 @@ QgsMapToolAddFeature::~QgsMapToolAddFeature()
 {
 }
 
-bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f )
+bool QgsMapToolAddFeature::addFeature(QgsVectorLayer *vlayer, QgsFeature *f, bool showModal )
 {
   QgsFeatureAction action( tr( "add feature" ), *f, vlayer, -1, -1, this );
-  return action.addFeature();
+  return action.addFeature( QgsAttributeMap(), showModal );
 }
 
 void QgsMapToolAddFeature::activate()
@@ -50,7 +50,7 @@ void QgsMapToolAddFeature::activate()
   if ( vlayer && vlayer->geometryType() == QGis::NoGeometry )
   {
     QgsFeature f;
-    addFeature( vlayer, &f );
+    addFeature( vlayer, &f, false );
     return;
   }
 
@@ -138,7 +138,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 
       f.setGeometry( g );
 
-      addFeature( vlayer, &f );
+      addFeature( vlayer, &f, false );
 
       mCanvas->refresh();
     }
@@ -285,7 +285,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         }
       }
 
-      if ( addFeature( vlayer, f ) )
+      if ( addFeature( vlayer, f, false ) )
       {
         //add points to other features to keep topology up-to-date
         int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
