@@ -382,8 +382,8 @@ class PythonConsoleWidget(QWidget):
             bordercl = ['155', '155', '155']
 
         self.toolBarEditor = QToolBar()
-        self.toolBarEditor.setStyleSheet('QToolBar{background-color: rgb(%s, %s, %s' % tuple(bkgrcolor) + ');\
-                                          border-right: 1px solid rgb(%s, %s, %s' % tuple(bordercl) + ');}')
+        # self.toolBarEditor.setStyleSheet('QToolBar{background-color: rgb(%s, %s, %s' % tuple(bkgrcolor) + ');\
+        #                                   border-right: 1px solid rgb(%s, %s, %s' % tuple(bordercl) + ');}')
         self.toolBarEditor.setEnabled(False)
         self.toolBarEditor.setFocusPolicy(Qt.NoFocus)
         self.toolBarEditor.setContextMenuPolicy(Qt.DefaultContextMenu)
