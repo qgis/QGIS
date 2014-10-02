@@ -23,6 +23,10 @@ QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf
     , mHidePageIfEmpty( false )
     , mHideBackgroundIfEmpty( false )
 {
+
+  //default to no background
+  setBackgroundEnabled( false );
+
   //repaint frame when multiframe content changes
   connect( mf, SIGNAL( contentsChanged() ), this, SLOT( repaint() ) );
   if ( mf )
@@ -38,6 +42,8 @@ QgsComposerFrame::QgsComposerFrame()
     , mHidePageIfEmpty( false )
     , mHideBackgroundIfEmpty( false )
 {
+  //default to no background
+  setBackgroundEnabled( false );
 }
 
 QgsComposerFrame::~QgsComposerFrame()
