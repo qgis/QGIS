@@ -103,7 +103,7 @@ class RUtils:
             command,
             shell=True,
             stdout=subprocess.PIPE,
-            stdin=subprocess.PIPE,
+            stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
             )
@@ -171,7 +171,7 @@ class RUtils:
             command,
             shell=True,
             stdout=subprocess.PIPE,
-            stdin=subprocess.PIPE,
+            stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
             ).stdout

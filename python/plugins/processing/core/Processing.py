@@ -323,13 +323,14 @@ class Processing:
             print 'Warning: Not all input layers use the same CRS.\n' \
                 + 'This can cause unexpected results.'
 
-        # Don't set the wait cursor twice, because then when you
-        # restore it, it will still be a wait cursor.
-        cursor = QApplication.overrideCursor()
-        if cursor is None or cursor == 0:
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        elif cursor.shape() != Qt.WaitCursor:
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        if iface is not None:
+          # Don't set the wait cursor twice, because then when you
+          # restore it, it will still be a wait cursor.
+          cursor = QApplication.overrideCursor()
+          if cursor is None or cursor == 0:
+              QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+          elif cursor.shape() != Qt.WaitCursor:
+              QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
         progress = None
         if iface is not None :
@@ -337,6 +338,8 @@ class Processing:
         ret = runalg(alg, progress)
         if onFinish is not None and ret:
             onFinish(alg, progress)
-        QApplication.restoreOverrideCursor()
-        progress.close()
+
+        if iface is not None:
+          QApplication.restoreOverrideCursor()
+          progress.close()
         return alg

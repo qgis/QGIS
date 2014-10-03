@@ -131,7 +131,7 @@ class OTBUtils:
         loglines.append("OTB execution console output")
         os.putenv('ITK_AUTOLOAD_PATH', OTBUtils.otbLibPath())
         fused_command = ''.join(['"%s" ' % c for c in commands])
-        proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
+        proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=open(os.devnull),stderr=subprocess.STDOUT, universal_newlines=True).stdout
         for line in iter(proc.readline, ""):
             if "[*" in line:
                 idx = line.find("[*")
