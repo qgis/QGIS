@@ -36,23 +36,28 @@ from processing.modeler.ModelerUtils import ModelerUtils
 class AddModelFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name = "Add model from file"
-        self.group = 'Tools'
+        self.name = self.tr('Add model from file', 'AddModelFromFileAction')
+        self.group = self.tr('Tools', 'AddModelFromFileAction')
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + '/../images/model.png')
 
     def execute(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self.toolbox, 'model files', None,
-                '*.model')
+        filename = QtGui.QFileDialog.getOpenFileName(self.toolbox,
+            self.tr('Open model', 'AddModelFromFileAction'), None,
+            self.tr('Processing model files (*.model *.MODEL)', 'AddModelFromFileAction'))
         if filename:
             try:
                 ModelerAlgorithm.fromFile(filename)
             except WrongModelException:
-                QtGui.QMessageBox.warning(self.toolbox, "Error reading model", "The selected file does not contain a valid model")
+                QtGui.QMessageBox.warning(self.toolbox,
+                   self.tr('Error reading model', 'AddModelFromFileAction'),
+                   self.tr('The selected file does not contain a valid model', 'AddModelFromFileAction'))
                 return
             except:
-                QtGui.QMessageBox.warning(self.toolbox, "Error reading model", "Cannot read file")
+                QtGui.QMessageBox.warning(self.toolbox,
+                    self.tr('Error reading model', 'AddModelFromFileAction'),
+                    self.tr('Cannot read file', 'AddModelFromFileAction'))
             destFilename = os.path.join(ModelerUtils.modelsFolder(), os.path.basename(filename))
             shutil.copyfile(filename,destFilename)
-            self.toolbox.updateProvider('script')
+            self.toolbox.updateProvider('model')

@@ -62,11 +62,11 @@ class BatchInputSelectionPanel(QtGui.QWidget):
         popupmenu = QtGui.QMenu()
         if not (isinstance(self.param, ParameterMultipleInput)
                     and self.param.datatype == ParameterMultipleInput.TYPE_FILE):
-            selectLayerAction = QtGui.QAction('Select from open layers',
+            selectLayerAction = QtGui.QAction(self.tr('Select from open layers'),
                 self.pushButton)
             selectLayerAction.triggered.connect(self.showLayerSelectionDialog)
             popupmenu.addAction(selectLayerAction)
-        selectFileAction = QtGui.QAction('Select from filesystem',
+        selectFileAction = QtGui.QAction(self.tr('Select from filesystem'),
                 self.pushButton)
         selectFileAction.triggered.connect(self.showFileSelectionDialog)
         popupmenu.addAction(selectFileAction)
@@ -114,8 +114,8 @@ class BatchInputSelectionPanel(QtGui.QWidget):
         else:
             path = ''
 
-        ret = QtGui.QFileDialog.getOpenFileNames(self, 'Open file', path,
-                'All files(*.*);;' + self.param.getFileFilter())
+        ret = QtGui.QFileDialog.getOpenFileNames(self, self.tr('Open file'), path,
+                self.tr('All files(*.*);;') + self.param.getFileFilter())
         if ret:
             files = list(ret)
             if len(files) == 1:

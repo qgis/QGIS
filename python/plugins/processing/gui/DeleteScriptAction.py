@@ -53,7 +53,8 @@ class DeleteScriptAction(ContextAction):
     def execute(self, alg):
         reply = QMessageBox.question(None,
             self.tr('Confirmation', 'DeleteScriptAction'),
-            self.tr('Are you sure you want to delete this script?', 'DeleteScriptAction'),
+            self.tr('Are you sure you want to delete this script?',
+                    'DeleteScriptAction'),
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No)
         if reply == QMessageBox.Yes:

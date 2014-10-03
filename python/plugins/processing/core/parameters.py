@@ -364,7 +364,7 @@ class ParameterMultipleInput(ParameterDataObject):
         else:
             exts = dataobjects.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = self.tr('%s files(*.%s', 'ParameterMultipleInput') % (exts[i].upper(), exts[i].lower())
+            exts[i] = self.tr('%s files(*.%s)', 'ParameterMultipleInput') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
 
@@ -495,7 +495,7 @@ class ParameterRaster(ParameterDataObject):
     def getFileFilter(self):
         exts = dataobjects.getSupportedOutputRasterLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = self.tr('%s files(*.%s', 'ParameterRaster') % (exts[i].upper(), exts[i].lower())
+            exts[i] = self.tr('%s files(*.%s)', 'ParameterRaster') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
 
@@ -612,7 +612,7 @@ class ParameterTable(ParameterDataObject):
     def getFileFilter(self):
         exts = ['csv', 'dbf']
         for i in range(len(exts)):
-            exts[i] = self.tr('%s files(*.%s', 'ParameterTable') % (exts[i].upper(), exts[i].lower())
+            exts[i] = self.tr('%s files(*.%s)', 'ParameterTable') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
 
@@ -721,5 +721,5 @@ class ParameterVector(ParameterDataObject):
     def getFileFilter(self):
         exts = dataobjects.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = self.tr('%s files(*.%s', 'ParameterVector') % (exts[i].upper(), exts[i].lower())
+            exts[i] = self.tr('%s files(*.%s)', 'ParameterVector') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)

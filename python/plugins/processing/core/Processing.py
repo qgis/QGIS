@@ -95,8 +95,8 @@ class Processing:
                 Processing.updateAlgsList()
         except:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                   self.tr('Could not load provider: %s\n%s')
-                                   % (provider.getDescription(), unicode(sys.exc_info()[1])))
+                self.tr('Could not load provider: %s\n%s')
+                % (provider.getDescription(), unicode(sys.exc_info()[1])))
             Processing.removeProvider(provider)
 
     @staticmethod
@@ -284,16 +284,16 @@ class Processing:
                 print 'Error: Wrong parameter value %s for parameter %s.' \
                     % (value, name)
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                    self.tr("Error in %s. Wrong parameter value %s for parameter %s.") \
+                    self.tr('Error in %s. Wrong parameter value %s for parameter %s.') \
                     % (alg.name, value, name))
                 return
             # fill any missing parameters with default values if allowed
             for param in alg.parameters:
                 if param.name not in setParams:
                     if not param.setValue(None):
-                        print ("Error: Missing parameter value for parameter %s." % (param.name))
+                        print ('Error: Missing parameter value for parameter %s.' % (param.name))
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            self.tr("Error in %s. Missing parameter value for parameter %s.") \
+                            self.tr('Error in %s. Missing parameter value for parameter %s.') \
                             % (alg.name, param.name))
                         return
         else:

@@ -34,14 +34,15 @@ from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 class DeleteModelAction(ContextAction):
 
     def __init__(self):
-        self.name = 'Delete model'
+        self.name = self.tr('Delete model', 'DeleteModelAction')
 
     def isEnabled(self):
         return isinstance(self.alg, ModelerAlgorithm)
 
     def execute(self):
-        reply = QtGui.QMessageBox.question(None, 'Confirmation',
-                'Are you sure you want to delete this model?',
+        reply = QtGui.QMessageBox.question(None,
+           self.tr('Confirmation', 'DeleteModelAction'),
+           self.tr('Are you sure you want to delete this model?', 'DeleteModelAction'),
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.No)
         if reply == QtGui.QMessageBox.Yes:

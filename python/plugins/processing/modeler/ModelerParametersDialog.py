@@ -82,7 +82,7 @@ class ModelerParametersDialog(QDialog):
         hLayout = QHBoxLayout()
         hLayout.setSpacing(5)
         hLayout.setMargin(0)
-        descriptionLabel = QLabel("Description")
+        descriptionLabel = QLabel(self.tr("Description"))
         self.descriptionBox = QLineEdit()
         self.descriptionBox.setText(self._alg.name)
         hLayout.addWidget(descriptionLabel)
@@ -96,7 +96,7 @@ class ModelerParametersDialog(QDialog):
         for param in self._alg.parameters:
             if param.isAdvanced:
                 self.advancedButton = QPushButton()
-                self.advancedButton.setText('Show advanced parameters')
+                self.advancedButton.setText(self.tr('Show advanced parameters'))
                 self.advancedButton.setMaximumWidth(150)
                 self.advancedButton.clicked.connect(
                     self.showAdvancedParametersClicked)
@@ -141,7 +141,7 @@ class ModelerParametersDialog(QDialog):
 
         label = QLabel(' ')
         self.verticalLayout.addWidget(label)
-        label = QLabel('Parent algorithms')
+        label = QLabel(self.tr('Parent algorithms'))
         self.dependenciesPanel = self.getDependenciesPanel()
         self.verticalLayout.addWidget(label)
         self.verticalLayout.addWidget(self.dependenciesPanel)
@@ -161,7 +161,7 @@ class ModelerParametersDialog(QDialog):
         self.scrollArea = QScrollArea()
         self.scrollArea.setWidget(self.paramPanel)
         self.scrollArea.setWidgetResizable(True)
-        self.tabWidget.addTab(self.scrollArea, 'Parameters')
+        self.tabWidget.addTab(self.scrollArea, self.tr('Parameters'))
         self.webView = QWebView()
 
         html = None
@@ -173,15 +173,15 @@ class ModelerParametersDialog(QDialog):
             else:
                 url = QUrl(help)
         else:
-            html = '<h2>Sorry, no help is available for this \
-                    algorithm.</h2>'
+            html = self.tr('<h2>Sorry, no help is available for this '
+                           'algorithm.</h2>')
         try:
             if html:
                 self.webView.setHtml(html)
             elif url:
                 self.webView.load(url)
         except:
-            self.webView.setHtml('<h2>Could not open help file :-( </h2>')
+            self.webView.setHtml(self.tr('<h2>Could not open help file :-( </h2>'))
         self.tabWidget.addTab(self.webView, 'Help')
         self.verticalLayout2.addWidget(self.tabWidget)
         self.verticalLayout2.addWidget(self.buttonBox)
@@ -207,9 +207,9 @@ class ModelerParametersDialog(QDialog):
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
         if self.showAdvanced:
-            self.advancedButton.setText('Hide advanced parameters')
+            self.advancedButton.setText(self.tr('Hide advanced parameters'))
         else:
-            self.advancedButton.setText('Show advanced parameters')
+            self.advancedButton.setText(self.tr('Show advanced parameters'))
         for param in self._alg.parameters:
             if param.isAdvanced:
                 self.labels[param.name].setVisible(self.showAdvanced)
@@ -241,7 +241,7 @@ class ModelerParametersDialog(QDialog):
             return self.model.inputs[value.name].param.description
         else:
             alg = self.model.algs[value.alg]
-            return "'%s' from algorithm '%s'" % (alg.algorithm.getOutputFromName(value.output).description, alg.description)
+            return self.tr("'%s' from algorithm '%s'") % (alg.algorithm.getOutputFromName(value.output).description, alg.description)
 
 
     def getWidgetFromParameter(self, param):
@@ -628,8 +628,8 @@ class ModelerParametersDialog(QDialog):
         if self.alg is not None:
             self.close()
         else:
-            QMessageBox.warning(self, 'Unable to add algorithm',
-                                 'Wrong or missing parameter values')
+            QMessageBox.warning(self, self.tr('Unable to add algorithm'),
+                                self.tr('Wrong or missing parameter values'))
 
     def cancelPressed(self):
         self.alg = None

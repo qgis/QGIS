@@ -521,7 +521,7 @@ class GeoAlgorithm:
         for layer in wrongLayers:
             html += self.tr('<li>%s: <font size=3 face="Courier New" '
                             'color="#ff0000">%s</font></li>\n') % \
-                    (layer.description, layer.value)
+                        (layer.description, layer.value)
         html += self.tr('</ul><p>The above files could not be opened, which '
                         'probably indicates that they were not correctly '
                         'produced by the executed algorithm</p>'
@@ -532,4 +532,4 @@ class GeoAlgorithm:
     def tr(self, string, context=''):
         if context == '':
             context = 'GeoAlgorithm'
-        return QtCore.QCoreApplication.translate(context, string)
+        return QCoreApplication.translate(context, string)

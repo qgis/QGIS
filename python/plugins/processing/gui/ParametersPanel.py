@@ -71,7 +71,7 @@ from processing.tools import dataobjects
 
 class ParametersPanel(QWidget):
 
-    NOT_SELECTED = '[Not selected]'
+    NOT_SELECTED = QCoreApplication.translate('ParametersPanel', '[Not selected]')
 
     def __init__(self, parent, alg):
         super(ParametersPanel, self).__init__(None)
@@ -96,7 +96,7 @@ class ParametersPanel(QWidget):
         for param in self.alg.parameters:
             if param.isAdvanced:
                 self.advancedButton = QPushButton()
-                self.advancedButton.setText('Show advanced parameters')
+                self.advancedButton.setText(self.tr('Show advanced parameters'))
                 self.advancedButton.setMaximumWidth(250)
                 self.advancedButton.clicked.connect(
                     self.showAdvancedParametersClicked)
@@ -110,7 +110,7 @@ class ParametersPanel(QWidget):
                 desc += ' (xmin, xmax, ymin, ymax)'
             try:
                 if param.optional:
-                    desc += ' [optional]'
+                    desc += self.tr(' [optional]')
             except:
                 pass
             widget = self.getWidgetFromParameter(param)
@@ -126,7 +126,7 @@ class ParametersPanel(QWidget):
                 icon = QIcon(os.path.dirname(__file__)
                                    + '/../images/iterate.png')
                 button.setIcon(icon)
-                button.setToolTip('Iterate over this layer')
+                button.setToolTip(self.tr('Iterate over this layer'))
                 button.setCheckable(True)
                 button.setMaximumWidth(30)
                 button.setMaximumHeight(30)
@@ -169,7 +169,7 @@ class ParametersPanel(QWidget):
             self.verticalLayout.addWidget(widget)
             if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
                 check = QCheckBox()
-                check.setText('Open output file after running algorithm')
+                check.setText(self.tr('Open output file after running algorithm'))
                 check.setChecked(True)
                 self.verticalLayout.addWidget(check)
                 self.checkBoxes[output.name] = check
@@ -181,9 +181,9 @@ class ParametersPanel(QWidget):
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
         if self.showAdvanced:
-            self.advancedButton.setText('Hide advanced parameters')
+            self.advancedButton.setText(self.tr('Hide advanced parameters'))
         else:
-            self.advancedButton.setText('Show advanced parameters')
+            self.advancedButton.setText(self.tr('Show advanced parameters'))
         for param in self.alg.parameters:
             if param.isAdvanced:
                 self.labels[param.name].setVisible(self.showAdvanced)
@@ -280,7 +280,7 @@ class ParametersPanel(QWidget):
                 layers = dataobjects.getTables()
             if len(layers) > 0:
                 if param.optional:
-                    item.addItem("[not set]")
+                    item.addItem(self.tr("[not set]"))
                 item.addItems(self.getFields(layers[0], param.datatype))
         elif isinstance(param, ParameterSelection):
             item = QComboBox()
@@ -343,7 +343,7 @@ class ParametersPanel(QWidget):
             widget = self.valueItems[child]
             widget.clear()
             if self.alg.getParameterFromName(child).optional:
-                widget.addItem("[not set]")
+                widget.addItem(self.tr("[not set]"))
             widget.addItems(self.getFields(layer,
                             self.alg.getParameterFromName(child).datatype))
 

@@ -39,11 +39,11 @@ class MultipleFileInputPanel(QtGui.QWidget):
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
         self.label = QtGui.QLabel()
-        self.label.setText("0 elements selected")
+        self.label.setText(self.tr('0 elements selected'))
         self.label.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.label)
         self.pushButton = QtGui.QPushButton()
-        self.pushButton.setText("...")
+        self.pushButton.setText(self.tr('...'))
         self.pushButton.clicked.connect(self.showSelectionDialog)
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)
@@ -51,11 +51,11 @@ class MultipleFileInputPanel(QtGui.QWidget):
     def setSelectedItems(self, selected):
         #no checking is performed!
         self.selectedoptions = selected
-        self.label.setText(str(len(self.selectedoptions)) + " elements selected")
+        self.label.setText(self.tr('%d elements selected') % len(self.selectedoptions))
 
     def showSelectionDialog(self):
         dlg = MultipleFileInputDialog(self.selectedoptions)
         dlg.exec_()
         if dlg.selectedoptions != None:
             self.selectedoptions = dlg.selectedoptions
-            self.label.setText(str(len(self.selectedoptions)) + " elements selected")
+            self.label.setText(self.tr('%d elements selected') % len(self.selectedoptions))

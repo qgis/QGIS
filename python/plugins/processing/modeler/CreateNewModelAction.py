@@ -33,8 +33,8 @@ from processing.modeler.ModelerDialog import ModelerDialog
 class CreateNewModelAction(ToolboxAction):
 
     def __init__(self):
-        self.name = 'Create new model'
-        self.group = 'Tools'
+        self.name = self.tr('Create new model', 'CreateNewModelAction')
+        self.group = self.tr('Tools', 'CreateNewModelAction')
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + '/../images/model.png')

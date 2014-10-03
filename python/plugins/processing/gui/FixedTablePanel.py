@@ -43,13 +43,12 @@ class FixedTablePanel(QtGui.QWidget):
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
         self.label = QtGui.QLabel()
-        self.label.setText('Fixed table ' + str(len(param.cols)) + ' X '
-                           + str(param.numRows))
+        self.label.setText(self.tr('Fixed table %dx%d' % (len(param.cols), param.numRows)))
         self.label.setSizePolicy(QtGui.QSizePolicy.Expanding,
                                  QtGui.QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.label)
         self.pushButton = QtGui.QPushButton()
-        self.pushButton.setText('...')
+        self.pushButton.setText(self.tr('...'))
         self.pushButton.clicked.connect(self.showFixedTableDialog)
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)

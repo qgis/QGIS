@@ -87,7 +87,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         self.silentOutputs = []
         filename = os.path.basename(self.descriptionFile)
         self.name = filename[:filename.rfind('.')].replace('_', ' ')
-        self.group = 'User scripts'
+        self.group = self.tr('User scripts', 'ScriptAlgorithm')
         lines = open(self.descriptionFile)
         line = lines.readline()
         while line != '':
@@ -95,21 +95,21 @@ class ScriptAlgorithm(GeoAlgorithm):
                 try:
                     self.processParameterLine(line.strip('\n'))
                 except:
-                    raise WrongScriptException('Could not load script: '
-                            + self.descriptionFile + '\n'
-                            + 'Problem with line: ' + line)
+                    raise WrongScriptException(
+                        self.tr('Could not load script: %s\n'
+                                'Problem with line: %d', 'ScriptAlgorithm') % (self.descriptionFile, line))
             self.script += line
             line = lines.readline()
         lines.close()
-        if self.group == '[Test scripts]':
+        if self.group == self.tr('[Test scripts]', 'ScriptAlgorithm'):
             self.showInModeler = False
             self.showInToolbox = False
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
         self.silentOutputs = []
-        self.name = '[Unnamed algorithm]'
-        self.group = 'User scripts'
+        self.name = self.tr('[Unnamed algorithm]', 'ScriptAlgorithm')
+        self.group = self.tr('User scripts', 'ScriptAlgorithm')
         for line in lines:
             if line.startswith('##'):
                 try:
@@ -228,10 +228,9 @@ class ScriptAlgorithm(GeoAlgorithm):
             out.description = desc
             self.addOutput(out)
         else:
-            raise WrongScriptException('Could not load script:'
-                                       + self.descriptionFile or ''
-                                       + '.\n Problem with line "' + line + '"'
-                                       )
+            raise WrongScriptException(
+                self.tr('Could not load script: %s.\n'
+                        'Problem with line %d', 'ScriptAlgorithm') % (self.descriptionFile or '', line))
 
     def processDescriptionParameterLine(self, line):
         try:
@@ -244,10 +243,9 @@ class ScriptAlgorithm(GeoAlgorithm):
             else:
                 self.addOutput(getOutputFromString(line))
         except Exception:
-            raise WrongScriptException('Could not load script:'
-                                       + self.descriptionFile or ''
-                                       + '.\n Problem with line "' + line + '"'
-                                       )
+            raise WrongScriptException(
+                self.tr('Could not load script: %s.\n'
+                        'Problem with line %d', 'ScriptAlgorithm') % (self.descriptionFile or '', line))
 
     def processAlgorithm(self, progress):
 

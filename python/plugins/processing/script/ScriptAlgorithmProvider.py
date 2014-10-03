@@ -42,7 +42,7 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.actions.extend([CreateNewScriptAction('Create new script',
+        self.actions.extend([CreateNewScriptAction(self.tr('Create new script', 'ScriptAlgorithmProvider'),
                             CreateNewScriptAction.SCRIPT_PYTHON),
                             AddScriptFromFileAction(),
                             GetScriptsAction()])
@@ -54,7 +54,7 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.initializeSettings(self)
         ProcessingConfig.addSetting(Setting(self.getDescription(),
                                     ScriptUtils.SCRIPTS_FOLDER,
-                                    'Scripts folder',
+                                    self.tr('Scripts folder', 'ScriptAlgorithmProvider'),
                                     ScriptUtils.scriptsFolder()))
 
     def unload(self):
@@ -68,10 +68,8 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         return 'script'
 
     def getDescription(self):
-        return 'Scripts'
+        return self.tr('Scripts', 'ScriptAlgorithmProvider')
 
     def _loadAlgorithms(self):
         folder = ScriptUtils.scriptsFolder()
         self.algs = ScriptUtils.loadFromFolder(folder)
-
-

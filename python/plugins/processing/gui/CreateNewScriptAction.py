@@ -37,7 +37,7 @@ class CreateNewScriptAction(ToolboxAction):
 
     def __init__(self, actionName, scriptType):
         self.name = actionName
-        self.group = 'Tools'
+        self.group = self.tr('Tools', 'CreateNewScriptAction')
         self.scriptType = scriptType
 
     def getIcon(self):

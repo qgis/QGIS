@@ -42,7 +42,7 @@ class MultipleFileInputDialog(QtGui.QDialog):
 
     def setupUi(self):
         self.resize(381, 320)
-        self.setWindowTitle("Multiple selection")
+        self.setWindowTitle(self.tr("Multiple selection"))
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
@@ -92,7 +92,8 @@ class MultipleFileInputDialog(QtGui.QDialog):
         else :
             path = QtCore.QDir.currentPath()
 
-        filesOpened = QtGui.QFileDialog.getOpenFileNames( None, "Select the file(s) to use", path, "All files (*.*)" )
+        filesOpened = QtGui.QFileDialog.getOpenFileNames(None,
+            self.tr('Select the file(s) to use'), path, self.tr('All files (*.*)'))
 
         lastfile = ""
         for item in filesOpened:

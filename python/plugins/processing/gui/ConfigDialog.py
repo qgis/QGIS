@@ -74,7 +74,7 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
         settings = ProcessingConfig.getSettings()
 
         rootItem = self.model.invisibleRootItem()
-        priorityKeys = ['General', 'Models', 'Scripts']
+        priorityKeys = [self.tr('General'), self.tr('Models'), self.tr('Scripts')]
         for group in priorityKeys:
             groupItem = QStandardItem(group)
             icon = ProcessingConfig.getGroupIcon(group)
@@ -141,7 +141,7 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
                     setting.value = value
                 except ValueError:
                     QMessageBox.critical(self, self.tr('Wrong value'),
-                            self.tr('Wrong parameter value:\n%1').arg(value))
+                            self.tr('Wrong parameter value:\n%1') % value)
                     return
             else:
                 setting.value = unicode(self.items[setting].text())
