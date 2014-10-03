@@ -29,62 +29,61 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtGui import *
-from ftools.RandomExtract import RandomExtract
-from ftools.RandomExtractWithinSubsets import RandomExtractWithinSubsets
-from ftools.ExtractByLocation import ExtractByLocation
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
-from ftools.PointsInPolygon import PointsInPolygon
-from ftools.PointsInPolygonUnique import PointsInPolygonUnique
-from ftools.PointsInPolygonWeighted import PointsInPolygonWeighted
-from ftools.SumLines import SumLines
-from ftools.BasicStatisticsNumbers import BasicStatisticsNumbers
-from ftools.BasicStatisticsStrings import BasicStatisticsStrings
-from ftools.NearestNeighbourAnalysis import NearestNeighbourAnalysis
-from ftools.LinesIntersection import LinesIntersection
-from ftools.MeanCoords import MeanCoords
-from ftools.PointDistance import PointDistance
-from ftools.UniqueValues import UniqueValues
-from ftools.ReprojectLayer import ReprojectLayer
-from ftools.ExportGeometryInfo import ExportGeometryInfo
-from ftools.Centroids import Centroids
-from ftools.Delaunay import Delaunay
-from ftools.VoronoiPolygons import VoronoiPolygons
-from ftools.DensifyGeometries import DensifyGeometries
-from ftools.MultipartToSingleparts import MultipartToSingleparts
-from ftools.SimplifyGeometries import SimplifyGeometries
-from ftools.LinesToPolygons import LinesToPolygons
-from ftools.PolygonsToLines import PolygonsToLines
-from ftools.SinglePartsToMultiparts import SinglePartsToMultiparts
-from ftools.ExtractNodes import ExtractNodes
-from ftools.ConvexHull import ConvexHull
-from ftools.FixedDistanceBuffer import FixedDistanceBuffer
-from ftools.VariableDistanceBuffer import VariableDistanceBuffer
-from ftools.Clip import Clip
-from ftools.Difference import Difference
-from ftools.Dissolve import Dissolve
-from ftools.Intersection import Intersection
-from ftools.ExtentFromLayer import ExtentFromLayer
-from ftools.RandomSelection import RandomSelection
-from ftools.RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
-from ftools.SelectByLocation import SelectByLocation
-from ftools.Union import Union
-from ftools.DensifyGeometriesInterval import DensifyGeometriesInterval
-from ftools.Eliminate import Eliminate
-from ftools.SpatialJoin import SpatialJoin
 
-from mmqgisx.DeleteColumn import DeleteColumn
-from mmqgisx.DeleteDuplicateGeometries import DeleteDuplicateGeometries
-from mmqgisx.TextToFloat import TextToFloat
-from mmqgisx.ExtractByAttribute import ExtractByAttribute
-from mmqgisx.SelectByAttribute import SelectByAttribute
-from mmqgisx.Grid import Grid
-from mmqgisx.Gridify import Gridify
-from mmqgisx.HubDistance import HubDistance
-from mmqgisx.HubLines import HubLines
-from mmqgisx.Merge import Merge
-from mmqgisx.GeometryConvert import GeometryConvert
-
+from RandomExtract import RandomExtract
+from RandomExtractWithinSubsets import RandomExtractWithinSubsets
+from ExtractByLocation import ExtractByLocation
+from PointsInPolygon import PointsInPolygon
+from PointsInPolygonUnique import PointsInPolygonUnique
+from PointsInPolygonWeighted import PointsInPolygonWeighted
+from SumLines import SumLines
+from BasicStatisticsNumbers import BasicStatisticsNumbers
+from BasicStatisticsStrings import BasicStatisticsStrings
+from NearestNeighbourAnalysis import NearestNeighbourAnalysis
+from LinesIntersection import LinesIntersection
+from MeanCoords import MeanCoords
+from PointDistance import PointDistance
+from UniqueValues import UniqueValues
+from ReprojectLayer import ReprojectLayer
+from ExportGeometryInfo import ExportGeometryInfo
+from Centroids import Centroids
+from Delaunay import Delaunay
+from VoronoiPolygons import VoronoiPolygons
+from DensifyGeometries import DensifyGeometries
+from MultipartToSingleparts import MultipartToSingleparts
+from SimplifyGeometries import SimplifyGeometries
+from LinesToPolygons import LinesToPolygons
+from PolygonsToLines import PolygonsToLines
+from SinglePartsToMultiparts import SinglePartsToMultiparts
+from ExtractNodes import ExtractNodes
+from ConvexHull import ConvexHull
+from FixedDistanceBuffer import FixedDistanceBuffer
+from VariableDistanceBuffer import VariableDistanceBuffer
+from Clip import Clip
+from Difference import Difference
+from Dissolve import Dissolve
+from Intersection import Intersection
+from ExtentFromLayer import ExtentFromLayer
+from RandomSelection import RandomSelection
+from RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
+from SelectByLocation import SelectByLocation
+from Union import Union
+from DensifyGeometriesInterval import DensifyGeometriesInterval
+from Eliminate import Eliminate
+from SpatialJoin import SpatialJoin
+from DeleteColumn import DeleteColumn
+from DeleteDuplicateGeometries import DeleteDuplicateGeometries
+from TextToFloat import TextToFloat
+from ExtractByAttribute import ExtractByAttribute
+from SelectByAttribute import SelectByAttribute
+from Grid import Grid
+from Gridify import Gridify
+from HubDistance import HubDistance
+from HubLines import HubLines
+from Merge import Merge
+from GeometryConvert import GeometryConvert
 from ConcaveHull import ConcaveHull
 from Polygonize import Polygonize
 from RasterLayerStatistics import RasterLayerStatistics
@@ -146,14 +145,11 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RandomSelection(), RandomSelectionWithinSubsets(),
                         SelectByLocation(), RandomExtract(),
                         RandomExtractWithinSubsets(), ExtractByLocation(),
-                        SpatialJoin(),
-                        # ------ mmqgisx ------
-                        DeleteColumn(), DeleteDuplicateGeometries(),
-                        TextToFloat(), ExtractByAttribute(),
-                        SelectByAttribute(), Grid(), Gridify(), HubDistance(),
-                        HubLines(), Merge(), GeometryConvert(),
-                        # ------ native algs ------
-                        AddTableField(), FieldsCalculator(),
+                        SpatialJoin(), DeleteColumn(),
+                        DeleteDuplicateGeometries(), TextToFloat(),
+                        ExtractByAttribute(), SelectByAttribute(), Grid(),
+                        Gridify(), HubDistance(), HubLines(), Merge(),
+                        GeometryConvert(), AddTableField(), FieldsCalculator(),
                         SaveSelectedFeatures(), JoinAttributes(),
                         AutoincrementalField(), Explode(), FieldsPyculator(),
                         EquivalentNumField(), PointsLayerFromTable(),
