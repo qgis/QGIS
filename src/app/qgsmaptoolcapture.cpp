@@ -149,18 +149,6 @@ int QgsMapToolCapture::nextPoint( const QPoint &p, QgsPoint &layerPoint, QgsPoin
     return 1;
   }
 
-  QgsPoint digitisedPoint;
-  try
-  {
-    digitisedPoint = toLayerCoordinates( vlayer, p );
-  }
-  catch ( QgsCsException &cse )
-  {
-    Q_UNUSED( cse );
-    QgsDebugMsg( "transformation to layer coordinate failed" );
-    return 2;
-  }
-
   QList<QgsSnappingResult> snapResults;
   if ( mSnapper.snapToBackgroundLayers( p, snapResults ) == 0 )
   {
