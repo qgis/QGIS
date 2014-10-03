@@ -33,7 +33,7 @@ QgsMapToolSplitFeatures::~QgsMapToolSplitFeatures()
 
 }
 
-void QgsMapToolSplitFeatures::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolSplitFeatures::canvasMapReleaseEvent( QgsMapMouseEvent * e )
 {
   //check if we operate on a vector layer
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -70,7 +70,7 @@ void QgsMapToolSplitFeatures::canvasReleaseEvent( QMouseEvent * e )
       }
     }
 
-    int error = addVertex( e->pos() );
+    int error = addVertex( e->mapPoint() );
     if ( error == 1 )
     {
       //current layer is not a vector layer

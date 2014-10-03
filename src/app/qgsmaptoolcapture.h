@@ -16,7 +16,7 @@
 #ifndef QGSMAPTOOLCAPTURE_H
 #define QGSMAPTOOLCAPTURE_H
 
-#include "qgsmapcanvassnapper.h"
+
 #include "qgsmaptooledit.h"
 #include "qgspoint.h"
 #include "qgsgeometry.h"
@@ -34,15 +34,6 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
     Q_OBJECT
 
   public:
-
-    enum CaptureMode
-    {
-      CaptureNone,
-      CapturePoint,
-      CaptureLine,
-      CapturePolygon
-    };
-
     //! constructor
     QgsMapToolCapture( QgsMapCanvas* canvas, CaptureMode mode = CaptureNone );
 
@@ -50,15 +41,13 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
     virtual ~QgsMapToolCapture();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMapMoveEvent( QgsMapMouseEvent* e );
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasMapPressEvent( QgsMapMouseEvent * e );
 
-    //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e ) = 0;
-
-    virtual void keyPressEvent( QKeyEvent* e );
+    //! Overridden key press event
+    virtual void canvasKeyPressEvent( QKeyEvent* e );
 
     //! deactive the tool
     virtual void deactivate();
@@ -69,11 +58,11 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
     void validationFinished();
 
   protected:
-    int nextPoint( const QPoint &p, QgsPoint &layerPoint, QgsPoint &mapPoint );
+    int nextPoint( const QgsPoint& mapPoint, QgsPoint& layerPoint );
 
-    /**Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
+    /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
      @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
-    int addVertex( const QPoint& p );
+    int addVertex( const QgsPoint& point );
 
     /**Removes the last vertex from mRubberBand and mCaptureList*/
     void undo();
@@ -83,8 +72,6 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
     void stopCapturing();
     void deleteTempRubberBand();
 
-    CaptureMode mode() { return mCaptureMode; }
-
     int size() { return mCaptureList.size(); }
     QList<QgsPoint>::iterator begin() { return mCaptureList.begin(); }
     QList<QgsPoint>::iterator end() { return mCaptureList.end(); }
@@ -93,9 +80,6 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
     void closePolygon();
 
   private:
-    /** which capturing tool is being used */
-    enum CaptureMode mCaptureMode;
-
     /** Flag to indicate a map canvas capture operation is taking place */
     bool mCapturing;
 

@@ -32,7 +32,7 @@ QgsMapToolAddPart::~QgsMapToolAddPart()
 {
 }
 
-void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolAddPart::canvasMapReleaseEvent( QgsMapMouseEvent * e )
 {
   //check if we operate on a vector layer
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -75,7 +75,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
       QgsPoint layerPoint;
       QgsPoint mapPoint;
 
-      if ( nextPoint( e->pos(), layerPoint, mapPoint ) != 0 )
+      if ( nextPoint( mapPoint, layerPoint ) != 0 )
       {
         QgsDebugMsg( "nextPoint failed" );
         return;
@@ -92,7 +92,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
       //add point to list and to rubber band
       if ( e->button() == Qt::LeftButton )
       {
-        int error = addVertex( e->pos() );
+        int error = addVertex( e->mapPoint() );
         if ( error == 1 )
         {
           QgsDebugMsg( "current layer is not a vector layer" );

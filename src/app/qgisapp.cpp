@@ -104,6 +104,7 @@
 #include "qgsattributetabledialog.h"
 #include "qgsbookmarks.h"
 #include "qgsbrowserdockwidget.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsclipboard.h"
 #include "qgscomposer.h"
 #include "qgscomposermanager.h"
@@ -582,6 +583,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas );
   mUndoWidget->setObjectName( "Undo" );
 
+  // Advanced Digitizing dock
+  mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
+  mAdvancedDigitizingDockWidget->setObjectName( "Cad" );
+
   createActions();
   createActionGroups();
   createMenus();
@@ -617,6 +622,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mBrowserWidget2->setObjectName( "Browser2" );
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget2 );
   mBrowserWidget2->hide();
+
+  addDockWidget( Qt::LeftDockWidgetArea, mAdvancedDigitizingDockWidget );
+  mAdvancedDigitizingDockWidget->hide();
 
   // create the GPS tool on starting QGIS - this is like the browser
   mpGpsWidget = new QgsGPSInformationWidget( mMapCanvas );
@@ -1627,6 +1635,11 @@ void QgisApp::createToolBars()
   actionWhatsThis->setIcon( QgsApplication::getThemeIcon( "/mActionWhatsThis.svg" ) );
   mHelpToolBar->addAction( actionWhatsThis );
 
+  // Cad toolbar
+  QAction* cadAction = mAdvancedDigitizingDockWidget->toggleViewAction();
+  cadAction->setText( tr( "Show CAD tools" ) );
+  cadAction->setIcon( QgsApplication::getThemeIcon( "/cadtools/cad.png" ) );
+  mAdvancedDigitizeToolBar->insertAction( mActionUndo, cadAction );
 }
 
 void QgisApp::createStatusBar()
@@ -4787,6 +4800,11 @@ void QgisApp::labeling()
   delete dlg;
 
   activateDeactivateLayerRelatedActions( vlayer );
+}
+
+void QgisApp::setCadDockVisible( bool visible )
+{
+  mAdvancedDigitizingDockWidget->setVisible( visible );
 }
 
 void QgisApp::fieldCalculator()

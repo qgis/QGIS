@@ -21,15 +21,13 @@
 
 QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas* canvas ): QgsMapToolCapture( canvas, QgsMapToolCapture::CaptureLine )
 {
-
 }
 
 QgsMapToolReshape::~QgsMapToolReshape()
 {
-
 }
 
-void QgsMapToolReshape::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolReshape::canvasMapReleaseEvent( QgsMapMouseEvent * e )
 {
   //check if we operate on a vector layer //todo: move this to a function in parent class to avoid duplication
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -49,7 +47,7 @@ void QgsMapToolReshape::canvasReleaseEvent( QMouseEvent * e )
   //add point to list and to rubber band
   if ( e->button() == Qt::LeftButton )
   {
-    int error = addVertex( e->pos() );
+    int error = addVertex( e->mapPoint() );
     if ( error == 1 )
     {
       //current layer is not a vector layer

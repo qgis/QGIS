@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolcapture.h"
+#include "qgsmapmouseevent.h"
 
 /**A map tool that adds new parts to multipart features*/
 class APP_EXPORT QgsMapToolAddPart : public QgsMapToolCapture
@@ -22,5 +23,5 @@ class APP_EXPORT QgsMapToolAddPart : public QgsMapToolCapture
   public:
     QgsMapToolAddPart( QgsMapCanvas* canvas );
     virtual ~QgsMapToolAddPart();
-    void canvasReleaseEvent( QMouseEvent * e );
+    void canvasMapReleaseEvent( QgsMapMouseEvent * e );
 };

@@ -22,16 +22,14 @@
 #include <QKeyEvent>
 #include <QSettings>
 
-QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-{
-  mSnapper.setMapCanvas( canvas );
-}
 
+QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas* canvas )
+    : QgsMapToolAdvancedDigitizing( canvas )
+{
+}
 
 QgsMapToolEdit::~QgsMapToolEdit()
 {
-
 }
 
 int QgsMapToolEdit::insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults, QgsVectorLayer* editedLayer )
