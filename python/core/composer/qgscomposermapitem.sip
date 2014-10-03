@@ -21,7 +21,7 @@ class QgsComposerMapItem : QgsComposerObject
     /**Draws the item on to a painter
      * @param painter destination QPainter
      */
-    virtual void draw( QPainter* painter ) const = 0;
+    virtual void draw( QPainter* painter ) = 0;
 
     /**Stores map item state in DOM element
      * @param elem is DOM element corresponding to a 'ComposerMap' tag

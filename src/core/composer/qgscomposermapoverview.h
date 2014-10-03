@@ -149,7 +149,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
     /**Draws an overview
      * @param painter destination QPainter
      */
-    void draw( QPainter* painter ) const;
+    void draw( QPainter* painter );
 
     /**Stores overview state in DOM element
      * @param elem is DOM element corresponding to a 'ComposerMap' tag

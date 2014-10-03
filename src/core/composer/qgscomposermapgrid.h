@@ -258,7 +258,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /**Draws a grid
      * @param painter destination QPainter
      */
-    void draw( QPainter* painter ) const;
+    void draw( QPainter* painter );
 
     /**Stores grid state in DOM element
      * @param elem is DOM element corresponding to a 'ComposerMap' tag
@@ -278,7 +278,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @param crs coordinate reference system for grid
      * @see crs
     */
-    void setCrs( const QgsCoordinateReferenceSystem& crs ) { mCRS = crs; }
+    void setCrs( const QgsCoordinateReferenceSystem& crs );
 
     /**Retrieves the CRS for the grid.
      * @returns coordinate reference system for grid
@@ -315,7 +315,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @param unit unit for grid measurements
      * @see units
     */
-    void setUnits( const GridUnit unit ) { mGridUnit = unit; }
+    void setUnits( const GridUnit unit );
 
     /**Gets the units used for grid measurements such as the interval
      * and offset for grid lines.
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see setIntervalY
      * @see intervalX
     */
-    void setIntervalX( const double interval ) { mGridIntervalX = interval; }
+    void setIntervalX( const double interval );
 
     /**Gets the interval between grid lines in the x-direction. The units
      * are retrieved through the units() method.
@@ -346,7 +346,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see setIntervalX
      * @see intervalY
     */
-    void setIntervalY( const double interval ) { mGridIntervalY = interval; }
+    void setIntervalY( const double interval );
 
     /**Gets the interval between grid lines in the y-direction. The units
      * are retrieved through the units() method.
@@ -362,7 +362,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see setOffsetY
      * @see offsetX
     */
-    void setOffsetX( const double offset ) { mGridOffsetX = offset; }
+    void setOffsetX( const double offset );
 
     /**Gets the offset for grid lines in the x-direction. The units
      * are retrieved through the units() method.
@@ -378,7 +378,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see setOffsetX
      * @see offsetY
     */
-    void setOffsetY( const double offset ) { mGridOffsetY = offset; }
+    void setOffsetY( const double offset );
 
     /**Gets the offset for grid lines in the y-direction. The units
      * are retrieved through the units() method.
@@ -397,7 +397,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @param style desired grid style
      * @see style
     */
-    void setStyle( const GridStyle style ) { mGridStyle = style; }
+    void setStyle( const GridStyle style );
 
     /**Gets the grid's style, which controls how the grid is drawn
      * over the map's contents
@@ -741,6 +741,9 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     QgsComposerMapGrid(); //forbidden
 
+    /*True if a re-transformation of grid lines is required*/
+    bool mTransformDirty;
+
     /**Solid or crosses*/
     GridStyle mGridStyle;
     /**Grid line interval in x-direction (map units)*/
@@ -799,6 +802,12 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     QPainter::CompositionMode mBlendMode;
 
+    QList< QPair< double, QPolygonF > > mTransformedXLines;
+    QList< QPair< double, QPolygonF > > mTransformedYLines;
+    QList< QgsPoint > mTransformedIntersections;
+    QRectF mPrevPaintRect;
+    QPolygonF mPrevMapPolygon;
+
     /**Draws the map grid*/
     void drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines ) const;
 
@@ -852,7 +861,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     /**Draws grid if CRS is different to map CRS*/
     void drawGridCRSTransform( QgsRenderContext &context , double dotsPerMM, QList< QPair< double, QLineF > > &horizontalLines,
-                               QList< QPair< double, QLineF > > &verticalLines ) const;
+                               QList< QPair< double, QLineF > > &verticalLines );
 
     void drawGridNoTransform( QgsRenderContext &context, double dotsPerMM, QList<QPair<double, QLineF> > &horizontalLines, QList<QPair<double, QLineF> > &verticalLines ) const;
 
@@ -868,6 +877,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     void drawGridFrameLineBorder( QPainter *p, BorderSide border ) const;
 
+    void calculateCRSTransformLines();
 };
 
 #endif // QGSCOMPOSERMAPGRID_H

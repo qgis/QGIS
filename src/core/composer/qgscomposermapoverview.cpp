@@ -55,7 +55,7 @@ QgsComposerMapOverview::~QgsComposerMapOverview()
   delete mFrameSymbol;
 }
 
-void QgsComposerMapOverview::draw( QPainter *painter ) const
+void QgsComposerMapOverview::draw( QPainter *painter )
 {
   if ( !mEnabled || mFrameMapId == -1 || !mComposerMap || !mComposerMap->composition() )
   {

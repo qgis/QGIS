@@ -223,7 +223,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     /**Draws a grid
      * @param painter destination QPainter
      */
-    void draw( QPainter* painter ) const;
+    void draw( QPainter* painter );
 
     /**Stores grid state in DOM element
      * @param elem is DOM element corresponding to a 'ComposerMap' tag
