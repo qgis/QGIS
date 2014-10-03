@@ -100,7 +100,7 @@ void QgsAttributeDialog::show( bool autoDelete )
 
 void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, QgsAttributeEditorContext& context, QWidget* parent )
 {
-  setWindowTitle( tr( "Feature Attributes" ) );
+  setWindowTitle( tr( "%1 - Feature Attributes" ).arg( layer->name() ) );
   setLayout( new QGridLayout() );
   layout()->setMargin( 0 );
   mAttributeForm = new QgsAttributeForm( layer, *feature, context, parent );
