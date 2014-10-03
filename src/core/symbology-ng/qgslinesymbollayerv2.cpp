@@ -452,6 +452,9 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::createFromSld( QDomElement &elemen
 
 void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QPen& pen, QPen& selPen, double& offset )
 {
+  if ( mDataDefinedProperties.isEmpty() )
+    return; // shortcut
+
   //data defined properties
   double scaledWidth = 0;
   QgsExpression* strokeWidthExpression = expression( "width" );
