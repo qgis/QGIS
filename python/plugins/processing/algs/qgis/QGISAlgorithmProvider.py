@@ -78,6 +78,7 @@ from mmqgisx.DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from mmqgisx.TextToFloat import TextToFloat
 from mmqgisx.ExtractByAttribute import ExtractByAttribute
 from mmqgisx.SelectByAttribute import SelectByAttribute
+from mmqgisx.Grid import Grid
 
 from ConcaveHull import ConcaveHull
 from Polygonize import Polygonize
@@ -144,7 +145,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         # ------ mmqgisx ------
                         DeleteColumn(), DeleteDuplicateGeometries(),
                         TextToFloat(), ExtractByAttribute(),
-                        SelectByAttribute(),
+                        SelectByAttribute(), Grid(),
                         #mmqgisx_delete_duplicate_geometries_algorithm(),
                         #mmqgisx_geometry_convert_algorithm(),
                         #mmqgisx_grid_algorithm(),
