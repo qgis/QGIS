@@ -96,6 +96,8 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
 
   prepareExpressions();
 
+  mHasVirtualAttributes = !mFetchJoinInfo.isEmpty() || !mExpressionFieldInfo.isEmpty();
+
   // by default provider's request is the same
   mProviderRequest = mRequest;
 
@@ -211,9 +213,11 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature& f )
     f.setFields( &mSource->mFields );
 
     // update attributes
-    updateChangedAttributes( f );
+    if ( mSource->mHasEditBuffer )
+      updateChangedAttributes( f );
 
-    addVirtualAttributes( f );
+    if ( mHasVirtualAttributes )
+      addVirtualAttributes( f );
 
     // update geometry
     // TODO[MK]: FilterRect check after updating the geometry
@@ -311,7 +315,8 @@ void QgsVectorLayerFeatureIterator::useAddedFeature( const QgsFeature& src, QgsF
 
   f.setAttributes( src.attributes() );
 
-  addVirtualAttributes( f );
+  if ( mHasVirtualAttributes )
+    addVirtualAttributes( f );
 }
 
 
@@ -351,7 +356,8 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedAttributeFeature( QgsFeature
 
     updateChangedAttributes( f );
 
-    addVirtualAttributes( f );
+    if ( mHasVirtualAttributes )
+      addVirtualAttributes( f );
 
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
     {
@@ -404,7 +410,8 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
     QgsFeatureIterator fi = mSource->mProviderFeatureSource->getFeatures( request );
     if ( fi.nextFeature( tmp ) )
     {
-      updateChangedAttributes( tmp );
+      if ( mHasVirtualAttributes )
+        updateChangedAttributes( tmp );
       f.setAttributes( tmp.attributes() );
     }
   }
@@ -732,9 +739,11 @@ bool QgsVectorLayerFeatureIterator::nextFeatureFid( QgsFeature& f )
   QgsFeatureIterator fi = mSource->mProviderFeatureSource->getFeatures( mProviderRequest );
   if ( fi.nextFeature( f ) )
   {
-    updateChangedAttributes( f );
+    if ( mSource->mHasEditBuffer )
+      updateChangedAttributes( f );
 
-    addVirtualAttributes( f );
+    if ( mHasVirtualAttributes )
+      addVirtualAttributes( f );
 
     return true;
   }

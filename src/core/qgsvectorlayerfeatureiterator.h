@@ -152,6 +152,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     QMap<int, QgsExpression*> mExpressionFieldInfo;
 
+    bool mHasVirtualAttributes;
+
   private:
     //! optional object to locally simplify edited (changed or added) geometries fetched by this feature iterator
     QgsAbstractGeometrySimplifier* mEditGeometrySimplifier;
