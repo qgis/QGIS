@@ -169,10 +169,10 @@ void QgsRendererRangeV2::toSld( QDomDocument &doc, QDomElement &element, QgsStri
 
 ///////////
 
-int QgsRendererRangeV2LegendFormat::MaxPrecision=15;
-int QgsRendererRangeV2LegendFormat::MinPrecision=-6;
+int QgsRendererRangeV2LabelFormat::MaxPrecision=15;
+int QgsRendererRangeV2LabelFormat::MinPrecision=-6;
 
-QgsRendererRangeV2LegendFormat::QgsRendererRangeV2LegendFormat():
+QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat():
     mFormat( " %1 - %2 " ),
     mPrecision( 4 ),
     mTrimTrailingZeroes( false ),
@@ -182,7 +182,7 @@ QgsRendererRangeV2LegendFormat::QgsRendererRangeV2LegendFormat():
 {
 }
 
-QgsRendererRangeV2LegendFormat::QgsRendererRangeV2LegendFormat( QString format, int precision, bool trimTrailingZeroes ):
+QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat( QString format, int precision, bool trimTrailingZeroes ):
     mReTrailingZeroes( "[.,]?0*$" )
 {
   setFormat( format );
@@ -191,7 +191,7 @@ QgsRendererRangeV2LegendFormat::QgsRendererRangeV2LegendFormat( QString format, 
 }
 
 
-bool QgsRendererRangeV2LegendFormat::operator==( const QgsRendererRangeV2LegendFormat &other ) const
+bool QgsRendererRangeV2LabelFormat::operator==( const QgsRendererRangeV2LabelFormat &other ) const
 {
   return
     format() == other.format() &&
@@ -199,12 +199,12 @@ bool QgsRendererRangeV2LegendFormat::operator==( const QgsRendererRangeV2LegendF
     trimTrailingZeroes() == other.trimTrailingZeroes();
 }
 
-bool QgsRendererRangeV2LegendFormat::operator!=( const QgsRendererRangeV2LegendFormat &other ) const
+bool QgsRendererRangeV2LabelFormat::operator!=( const QgsRendererRangeV2LabelFormat &other ) const
 {
   return !( *this == other );
 }
 
-void QgsRendererRangeV2LegendFormat::setPrecision( int precision )
+void QgsRendererRangeV2LabelFormat::setPrecision( int precision )
 {
   // Limit the range of decimal places to a reasonable range
   if ( precision < MinPrecision ) precision = MinPrecision;
@@ -220,12 +220,12 @@ void QgsRendererRangeV2LegendFormat::setPrecision( int precision )
   }
 }
 
-QString QgsRendererRangeV2LegendFormat::legendForRange( const QgsRendererRangeV2 &range ) const
+QString QgsRendererRangeV2LabelFormat::labelForRange( const QgsRendererRangeV2 &range ) const
 {
-  return legendForRange( range.lowerValue(), range.upperValue() );
+  return labelForRange( range.lowerValue(), range.upperValue() );
 }
 
-QString QgsRendererRangeV2LegendFormat::formatNumber( double value ) const
+QString QgsRendererRangeV2LabelFormat::formatNumber( double value ) const
 {
   if( mPrecision > 0 )
   {
@@ -241,7 +241,7 @@ QString QgsRendererRangeV2LegendFormat::formatNumber( double value ) const
   }
 }
 
-QString QgsRendererRangeV2LegendFormat::legendForRange( double lower, double upper ) const
+QString QgsRendererRangeV2LabelFormat::labelForRange( double lower, double upper ) const
 {
   QString lowerStr=formatNumber(lower);
   QString upperStr=formatNumber(upper);
@@ -250,7 +250,7 @@ QString QgsRendererRangeV2LegendFormat::legendForRange( double lower, double upp
   return legend.replace( "%1",lowerStr).replace("%2",upperStr );
 }
 
-void QgsRendererRangeV2LegendFormat::setFromDomElement( QDomElement &element )
+void QgsRendererRangeV2LabelFormat::setFromDomElement( QDomElement &element )
 {
   mFormat = element.attribute( "format",
                                element.attribute( "prefix", " " ) + "%1" +
@@ -261,7 +261,7 @@ void QgsRendererRangeV2LegendFormat::setFromDomElement( QDomElement &element )
   mTrimTrailingZeroes = element.attribute( "trimtrailingzeroes", "false" ) == "true";
 }
 
-void QgsRendererRangeV2LegendFormat::saveToDomElement( QDomElement &element )
+void QgsRendererRangeV2LabelFormat::saveToDomElement( QDomElement &element )
 {
   element.setAttribute( "format", mFormat );
   element.setAttribute( "decimalplaces", mPrecision );
@@ -450,9 +450,9 @@ bool QgsGraduatedSymbolRendererV2::updateRangeUpperValue( int rangeIndex, double
   if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
     return false;
   QgsRendererRangeV2 &range = mRanges[rangeIndex];
-  bool isDefaultLabel = range.label() == mLabelFormat.legendForRange( range );
+  bool isDefaultLabel = range.label() == mLabelFormat.labelForRange( range );
   range.setUpperValue( value );
-  if ( isDefaultLabel ) range.setLabel( mLabelFormat.legendForRange( range ) );
+  if ( isDefaultLabel ) range.setLabel( mLabelFormat.labelForRange( range ) );
   return true;
 }
 
@@ -461,9 +461,9 @@ bool QgsGraduatedSymbolRendererV2::updateRangeLowerValue( int rangeIndex, double
   if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
     return false;
   QgsRendererRangeV2 &range = mRanges[rangeIndex];
-  bool isDefaultLabel = range.label() == mLabelFormat.legendForRange( range );
+  bool isDefaultLabel = range.label() == mLabelFormat.labelForRange( range );
   range.setLowerValue( value );
-  if ( isDefaultLabel ) range.setLabel( mLabelFormat.legendForRange( range ) );
+  if ( isDefaultLabel ) range.setLabel( mLabelFormat.labelForRange( range ) );
   return true;
 }
 
@@ -498,7 +498,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone() const
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
   r->setScaleMethod( scaleMethod() );
-  r->setLegendFormat( legendFormat() );
+  r->setLabelFormat( labelFormat() );
   return r;
 }
 
@@ -926,7 +926,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   QgsSymbolV2* symbol,
   QgsVectorColorRampV2* ramp,
   bool inverted,
-  QgsRendererRangeV2LegendFormat labelFormat
+  QgsRendererRangeV2LabelFormat labelFormat
 )
 {
   QgsRangeList ranges;
@@ -935,7 +935,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   r->setSourceColorRamp( ramp->clone() );
   r->setInvertedColorRamp( inverted );
   r->setMode( mode );
-  r->setLegendFormat( labelFormat, false );
+  r->setLabelFormat( labelFormat, false );
   r->updateClasses( vlayer, mode, classes );
   return r;
 }
@@ -1076,7 +1076,7 @@ void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode m
     }
     else
     {
-      label = mLabelFormat.legendForRange( lower, upper );
+      label = mLabelFormat.labelForRange( lower, upper );
     }
     QgsSymbolV2* newSymbol = mSourceSymbol->clone();
     addClass( QgsRendererRangeV2( lower, upper, newSymbol, label ) );
@@ -1176,9 +1176,9 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
   QDomElement labelFormatElem = element.firstChildElement( "labelformat" );
   if ( ! labelFormatElem.isNull() )
   {
-    QgsRendererRangeV2LegendFormat labelFormat;
+    QgsRendererRangeV2LabelFormat labelFormat;
     labelFormat.setFromDomElement( labelFormatElem );
-    r->setLegendFormat( labelFormat );
+    r->setLabelFormat( labelFormat );
   }
   // TODO: symbol levels
   return r;
@@ -1422,7 +1422,7 @@ void QgsGraduatedSymbolRendererV2::addClass( QgsSymbolV2* symbol )
 void QgsGraduatedSymbolRendererV2::addClass( double lower, double upper )
 {
   QgsSymbolV2* newSymbol = mSourceSymbol->clone();
-  QString label = mLabelFormat.legendForRange( lower, upper );
+  QString label = mLabelFormat.labelForRange( lower, upper );
   mRanges.append( QgsRendererRangeV2( lower, upper, newSymbol, label ) );
 }
 
@@ -1441,13 +1441,13 @@ void QgsGraduatedSymbolRendererV2::deleteAllClasses()
   mRanges.clear();
 }
 
-void QgsGraduatedSymbolRendererV2::setLegendFormat( const QgsRendererRangeV2LegendFormat &labelFormat, bool updateRanges )
+void QgsGraduatedSymbolRendererV2::setLabelFormat( const QgsRendererRangeV2LabelFormat &labelFormat, bool updateRanges )
 {
   if ( updateRanges && labelFormat != mLabelFormat )
   {
     for ( QgsRangeList::iterator it = mRanges.begin(); it != mRanges.end(); ++it )
     {
-      it->setLabel( labelFormat.legendForRange( *it ) );
+      it->setLabel( labelFormat.labelForRange( *it ) );
     }
   }
   mLabelFormat = labelFormat;
@@ -1477,7 +1477,7 @@ void QgsGraduatedSymbolRendererV2::calculateLabelPrecision( bool updateRanges )
     nextDpMinRange *= 10.0;
   }
   mLabelFormat.setPrecision( ndp );
-  if ( updateRanges ) setLegendFormat( mLabelFormat, true );
+  if ( updateRanges ) setLabelFormat( mLabelFormat, true );
 }
 
 void QgsGraduatedSymbolRendererV2::moveClass( int from, int to )
