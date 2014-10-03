@@ -71,7 +71,7 @@ class CORE_EXPORT QgsRendererRangeV2LabelFormat
 {
   public:
     QgsRendererRangeV2LabelFormat();
-    QgsRendererRangeV2LabelFormat( QString format, int decimalPlaces = 4, bool trimTrailingZeroes = false );
+    QgsRendererRangeV2LabelFormat( QString format, int precision = 4, bool trimTrailingZeroes = false );
 
     bool operator==( const QgsRendererRangeV2LabelFormat & other ) const;
     bool operator!=( const QgsRendererRangeV2LabelFormat & other ) const;
@@ -79,8 +79,8 @@ class CORE_EXPORT QgsRendererRangeV2LabelFormat
     QString format() const { return mFormat; }
     void setFormat( QString format ) { mFormat = format; }
 
-    int decimalPlaces() const { return mDecimalPlaces; }
-    void setDecimalPlaces( int decimalPlaces );
+    int precision() const { return mPrecision; }
+    void setPrecision( int precision );
 
     bool trimTrailingZeroes() const { return mTrimTrailingZeroes; }
     void setTrimTrailingZeroes( bool trimTrailingZeroes ) { mTrimTrailingZeroes = trimTrailingZeroes; }
@@ -88,14 +88,21 @@ class CORE_EXPORT QgsRendererRangeV2LabelFormat
     //! @note labelForLowerUpper in python bindings
     QString labelForRange( double lower, double upper ) const;
     QString labelForRange( const QgsRendererRangeV2 &range ) const;
+    QString formatNumber( double value ) const;
 
     void setFromDomElement( QDomElement &element );
     void saveToDomElement( QDomElement &element );
 
+    static int MaxPrecision;
+    static int MinPrecision;
+
   protected:
     QString mFormat;
-    int mDecimalPlaces;
+    int mPrecision;
     bool mTrimTrailingZeroes;
+    // values used to manage number formatting - precision and trailing zeroes
+    double mNumberScale;
+    QString mNumberSuffix;
     QRegExp mReTrailingZeroes;
 };
 
@@ -193,7 +200,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! Reset the label decimal places to a numberbased on the minimum class interval
     //! @param updateRanges if true then ranges currently using the default label will be updated
     //! @note Added in 2.6
-    void calculateLabelDecimalPlaces( bool updateRanges = true );
+    void calculateLabelPrecision( bool updateRanges = true );
 
     static QgsGraduatedSymbolRendererV2* createRenderer(
       QgsVectorLayer* vlayer,
@@ -203,7 +210,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
       QgsSymbolV2* symbol,
       QgsVectorColorRampV2* ramp,
       bool inverted = false,
-      QgsRendererRangeV2LabelFormat labelFormat = QgsRendererRangeV2LabelFormat()
+      QgsRendererRangeV2LabelFormat legendFormat = QgsRendererRangeV2LabelFormat()
     );
 
     //! create renderer from XML element

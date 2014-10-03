@@ -197,7 +197,7 @@ QVariant QgsCategorizedSymbolRendererV2Model::headerData( int section, Qt::Orien
 {
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 3 )
   {
-    QStringList lst; lst << tr( "Symbol" ) << tr( "Value" ) << tr( "Label" );
+    QStringList lst; lst << tr( "Symbol" ) << tr( "Value" ) << tr( "Legend" );
     return lst.value( section );
   }
   return QVariant();

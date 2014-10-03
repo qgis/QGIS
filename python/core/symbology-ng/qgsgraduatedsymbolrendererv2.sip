@@ -39,6 +39,8 @@ class QgsRendererRangeV2
 
 typedef QList<QgsRendererRangeV2> QgsRangeList;
 
+
+// @note added in 2.6
 class QgsRendererRangeV2LabelFormat
 {
 %TypeHeaderCode
@@ -46,7 +48,7 @@ class QgsRendererRangeV2LabelFormat
 %End
   public:
     QgsRendererRangeV2LabelFormat();
-    QgsRendererRangeV2LabelFormat( QString format, int decimalPlaces=4, bool trimTrailingZeroes=false );
+    QgsRendererRangeV2LabelFormat( QString format, int precision = 4, bool trimTrailingZeroes = false );
 
     bool operator==( const QgsRendererRangeV2LabelFormat & other ) const;
     bool operator!=( const QgsRendererRangeV2LabelFormat & other ) const;
@@ -54,18 +56,23 @@ class QgsRendererRangeV2LabelFormat
     QString format() const;
     void setFormat( QString format );
 
-    int decimalPlaces() const;
-    void setDecimalPlaces( int decimalPlaces );
+    int precision();
+    void setPrecision( int precision );
 
     bool trimTrailingZeroes() const;
     void setTrimTrailingZeroes( bool trimTrailingZeroes );
 
     //! @note labelForLowerUpper in python bindings
-    QString labelForRange( double lower, double upper ) /PyName=labelForLowerUpper/;
-    QString labelForRange( const QgsRendererRangeV2 &range );
+    QString labelForRange( double lower, double upper ) const;
+    QString labelForRange( const QgsRendererRangeV2 &range ) const;
+    QString formatNumber( double value ) const;
 
     void setFromDomElement( QDomElement &element );
     void saveToDomElement( QDomElement &element );
+
+    static int MaxPrecision;
+    static int MinPrecision;
+
 };
 
 
@@ -153,17 +160,17 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     //! Return the label format used to generate default classification labels
     //! @note Added in 2.6
-    const QgsRendererRangeV2LabelFormat &labelFormat();
+    const QgsRendererRangeV2LabelFormat &labelFormat() const;
     //! Set the label format used to generate default classification labels
     //! @param labelFormat The string appended to classification labels
     //! @param updateRanges If true then ranges ending with the old unit string are updated to the new.
     //! @note Added in 2.6
-    void setLabelFormat( const QgsRendererRangeV2LabelFormat &labelFormat, bool updateRanges=true );
+    void setLabelFormat( const QgsRendererRangeV2LabelFormat &labelFormat, bool updateRanges = true );
 
     //! Reset the label decimal places to a numberbased on the minimum class interval
     //! @param updateRanges if true then ranges currently using the default label will be updated
     //! @note Added in 2.6
-    void calculateLabelDecimalPlaces( bool updateRanges=true );
+    void calculateLabelPrecision( bool updateRanges = true );
 
     static QgsGraduatedSymbolRendererV2* createRenderer(
       QgsVectorLayer* vlayer,
