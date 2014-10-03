@@ -41,7 +41,7 @@ class SagaDescriptionCreator:
                 command,
                 shell=True,
                 stdout=f2,
-                stdin=subprocess.PIPE,
+                stdin=open(os.devnull),
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
                 )
@@ -77,7 +77,7 @@ class SagaDescriptionCreator:
                     command,
                     shell=True,
                     stdout=f,
-                    stdin=subprocess.PIPE,
+                    stdin=open(os.devnull),
                     stderr=f,
                     universal_newlines=True,
                     )

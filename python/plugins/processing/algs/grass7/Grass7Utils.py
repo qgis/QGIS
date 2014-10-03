@@ -272,7 +272,7 @@ class Grass7Utils:
             command,
             shell=True,
             stdout=subprocess.PIPE,
-            stdin=subprocess.PIPE,
+            stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
             ).stdout
@@ -301,7 +301,7 @@ class Grass7Utils:
                 command,
                 shell=True,
                 stdout=subprocess.PIPE,
-                stdin=subprocess.PIPE,
+                stdin=open(os.devnull),
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
                 ).stdout

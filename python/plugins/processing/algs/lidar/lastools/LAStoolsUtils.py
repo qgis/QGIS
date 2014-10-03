@@ -46,7 +46,7 @@ class LAStoolsUtils:
         loglines = []
         loglines.append("LAStools console output")
         commandline = " ".join(commands)
-        proc = subprocess.Popen(commandline, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,
+        proc = subprocess.Popen(commandline, shell=True, stdout=subprocess.PIPE, stdin=open(os.devnull),
                                 stderr=subprocess.STDOUT, universal_newlines=False).stdout
         for line in iter(proc.readline, ""):
             loglines.append(line)
