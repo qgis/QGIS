@@ -31,6 +31,7 @@ class TestQgsNetworkContentFetcher: public QObject
     void fetchEmptyUrl(); //test fetching blank url
     void fetchBadUrl(); //test fetching bad url
     void fetchUrlContent(); //test fetching url content
+    void fetchEncodedContent(); //test fetching url content encoded as utf-8
 
     void contentLoaded();
 
@@ -105,6 +106,24 @@ void TestQgsNetworkContentFetcher::fetchUrlContent()
   //test retrieved content
   QString mFetchedHtml = fetcher.contentAsString();
   QVERIFY( mFetchedHtml.contains( QString( "QGIS" ) ) );
+}
+
+void TestQgsNetworkContentFetcher::fetchEncodedContent()
+{
+  QgsNetworkContentFetcher fetcher;
+  //test fetching content from the QGIS homepage
+  mLoaded = false;
+  fetcher.fetchContent( QUrl::fromLocalFile( QString( TEST_DATA_DIR ) + QDir::separator() +  "encoded_html.html" ) );
+  connect( &fetcher, SIGNAL( finished() ), this, SLOT( contentLoaded() ) );
+  while ( !mLoaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( fetcher.reply()->error() == QNetworkReply::NoError );
+
+  //test retrieved content and check for correct detection of encoding
+  QString mFetchedHtml = fetcher.contentAsString();
+  QVERIFY( mFetchedHtml.contains( QChar( 6040 ) ) );
 }
 
 void TestQgsNetworkContentFetcher::contentLoaded()

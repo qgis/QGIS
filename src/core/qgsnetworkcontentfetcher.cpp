@@ -67,8 +67,47 @@ QString QgsNetworkContentFetcher::contentAsString() const
   QByteArray array = mReply->readAll();
 
   //correctly encode reply as unicode
-  QString content = QTextCodec::codecForHtml( array )->toUnicode( array );
-  return content;
+  QTextCodec* codec = codecForHtml( array );
+  return codec->toUnicode( array );
+}
+
+QTextCodec* QgsNetworkContentFetcher::codecForHtml( QByteArray& array ) const
+{
+  //QTextCodec::codecForHtml fails to detect "<meta charset="utf-8"/>" type tags
+  //see https://bugreports.qt-project.org/browse/QTBUG-41011
+  //so test for that ourselves
+
+  //basic check
+  QTextCodec* codec = QTextCodec::codecForUtfText( array, 0 );
+  if ( codec )
+  {
+    return codec;
+  }
+
+  //check for meta charset tag
+  QByteArray header = array.left( 1024 ).toLower();
+  int pos = header.indexOf( "meta charset=" );
+  if ( pos != -1 )
+  {
+    pos += int( strlen( "meta charset=" ) ) + 1;
+    int pos2 = header.indexOf( '\"', pos );
+    QByteArray cs = header.mid( pos, pos2 - pos );
+    codec = QTextCodec::codecForName( cs );
+    if ( codec )
+    {
+      return codec;
+    }
+  }
+
+  //fallback to QTextCodec::codecForHtml
+  codec = QTextCodec::codecForHtml( array, codec );
+  if ( codec )
+  {
+    return codec;
+  }
+
+  //no luck, default to utf-8
+  return QTextCodec::codecForName( "UTF-8" );
 }
 
 void QgsNetworkContentFetcher::contentLoaded( bool ok )
