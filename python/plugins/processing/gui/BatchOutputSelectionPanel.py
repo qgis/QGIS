@@ -92,7 +92,7 @@ class BatchOutputSelectionPanel(QtGui.QWidget):
                                     ParameterMultipleInput)):
                                 s = unicode(widget.getText())
                                 s = os.path.basename(s)
-                                s = s[:s.rfind('.')]
+                                s = os.path.splitext()[0]
                             elif isinstance(param, ParameterBoolean):
                                 s = str(widget.currentIndex() == 0)
                             elif isinstance(param, ParameterSelection):
