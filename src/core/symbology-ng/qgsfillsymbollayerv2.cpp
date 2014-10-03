@@ -77,6 +77,9 @@ QgsMapUnitScale QgsSimpleFillSymbolLayerV2::mapUnitScale() const
 
 void QgsSimpleFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QBrush& brush, QPen& pen, QPen& selPen )
 {
+  if ( mDataDefinedProperties.isEmpty() )
+    return; // shortcut
+
   QgsExpression* colorExpression = expression( "color" );
   if ( colorExpression )
   {
