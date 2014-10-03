@@ -204,14 +204,14 @@ class GeometryConvert(GeoAlgorithm):
                         feat.setGeometry(QgsGeometry.fromPolyline(polygon))
                         writer.addFeature(feat)
                 elif newType == QGis.WKBPolygon:
-                    polugons = geom.asMultiPolygon()
-                    for polygons in polygons:
+                    polygons = geom.asMultiPolygon()
+                    for polygon in polygons:
                         feat = QgsFeature()
                         feat.setAttributes(f.attributes())
                         feat.setGeometry(QgsGeometry.fromPolygon(polygon))
                         writer.addFeature(feat)
                 elif newType in [QGis.WKBMultiLineString, QGis.WKBMultiPolygon]:
-                     writer.addFeature(f)
+                    writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(
                         'Cannot convert from %s to %s', geomType, newType)
