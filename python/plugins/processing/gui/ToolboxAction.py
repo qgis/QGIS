@@ -27,9 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 from PyQt4 import QtGui
+from PyQt4 import QtCore
 
 
-class ToolboxAction(object):
+class ToolboxAction:
 
     def __init__(self):
         # This should be true if the action should be shown even if
@@ -42,3 +43,8 @@ class ToolboxAction(object):
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'ToolboxAction'
+        return QtCore.QCoreApplication.translate(context, string)

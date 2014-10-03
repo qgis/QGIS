@@ -26,6 +26,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 
+from PyQt4 import QtCore
+
 class ContextAction:
 
     def setData(self, alg, toolbox):
@@ -39,3 +41,8 @@ class ContextAction:
         To be called after the action is executed, if needed
         '''
         self.toolbox.updateProvider(self.alg.provider.getName())
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'ContextAction'
+        return QtCore.QCoreApplication.translate(context, string)

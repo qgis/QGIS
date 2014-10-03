@@ -69,8 +69,6 @@ class ModelerOutput():
         return self.__dict__
 
 
-
-
 class Algorithm():
 
     def __init__(self, consoleName=""):
@@ -118,6 +116,7 @@ class Algorithm():
                 name = self.consoleName + "_" + str(i)
             self.name = name
 
+
 class ValueFromInput():
 
     def __init__(self, name=""):
@@ -134,6 +133,7 @@ class ValueFromInput():
             return self.name == other.name
         except:
             return False
+
 
 class ValueFromOutput():
 
@@ -152,6 +152,7 @@ class ValueFromOutput():
 
     def __str__(self):
         return self.alg + "," + self.output
+
 
 class ModelerAlgorithm(GeoAlgorithm):
 
@@ -634,6 +635,3 @@ class ModelerAlgorithm(GeoAlgorithm):
             else:
                 raise WrongModelException('Error in model definition line:'
                         + line.strip() + ' : ' + traceback.format_exc())
-
-
-

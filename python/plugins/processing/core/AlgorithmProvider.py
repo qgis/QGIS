@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 from qgis.core import *
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 
@@ -77,7 +77,7 @@ class AlgorithmProvider:
         ProcessingConfig.settingIcons[self.getDescription()] = self.getIcon()
         name = 'ACTIVATE_' + self.getName().upper().replace(' ', '_')
         ProcessingConfig.addSetting(Setting(self.getDescription(), name,
-                                    'Activate', self.activate))
+                                    self.tr('Activate'), self.activate))
 
     def unload(self):
         """Do here anything that you want to be done when the provider
@@ -98,7 +98,7 @@ class AlgorithmProvider:
     def getDescription(self):
         """Returns the full name of the provider.
         """
-        return 'Generic algorithm provider'
+        return self.tr('Generic algorithm provider')
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + '/../images/alg.png')
@@ -122,3 +122,8 @@ class AlgorithmProvider:
 
     def supportsNonFileBasedOutput(self):
         return False
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'AlgorithmProvider'
+        return QtCore.QCoreApplication.translate(context, string)

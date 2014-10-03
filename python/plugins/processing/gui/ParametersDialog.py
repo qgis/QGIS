@@ -26,13 +26,14 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4 import QtGui
+from PyQt4 import QtCore
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.AlgorithmExecutionDialog import AlgorithmExecutionDialog
 
 
 class ParametersDialog(AlgorithmExecutionDialog):
 
-    NOT_SELECTED = '[Not selected]'
+    NOT_SELECTED = QtCore.QCoreApplication.translate('ParametersDialog', '[Not selected]')
 
     def __init__(self, alg):
         self.paramTable = ParametersPanel(self, alg)

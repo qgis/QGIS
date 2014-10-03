@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.modeler.WrongModelException import WrongModelException
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -32,6 +31,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
@@ -40,7 +40,7 @@ from processing.modeler.ModelerAlgorithm import ModelerAlgorithm, ModelerParamet
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
-from processing.core.ProcessingLog import ProcessingLog
+from processing.modeler.WrongModelException import WrongModelException
 from processing.tools.system import *
 
 from processing.ui.ui_DlgModeler import Ui_DlgModeler

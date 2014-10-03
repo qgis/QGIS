@@ -110,8 +110,6 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
                                self.cancelPressed)
         QtCore.QMetaObject.connectSlotsByName(self)
 
-
-
     def createAlgorithm(self):
         alg = Algorithm('modelertools:calculator')
         alg.setName(self.model)
@@ -136,6 +134,3 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
 
         #TODO check formula is correct
         return alg
-
-
-

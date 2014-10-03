@@ -60,6 +60,7 @@ class GetScriptsAction(ToolboxAction):
         except HTTPError:
             QMessageBox.critical(iface.mainWindow(), "Connection problem", "Could not connect to scripts/models repository")
 
+
 class GetModelsAction(ToolboxAction):
 
     def __init__(self):
@@ -89,12 +90,17 @@ def readUrl(url):
 
 class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
 
-    HELP_TEXT = ("<h3> Processing resources manager </h3>"
-                "<p>Check/uncheck algorithms in the tree to select the ones that you want to install or remove</p>"
-                "<p>Algorithms are divided in 3 groups:</p>"
-                "<ul><li><b>Installed:</b> Algorithms already in your system, with the latest version available</li>"
-                "<li><b>Upgradable:</b> Algorithms already in your system, but with a newer version available in the server</li>"
-                "<li><b>Not installed:</b> Algorithms not installed in your system</li></ul>")
+    HELP_TEXT = QCoreApplication.translate('GetScriptsAndModelsDialog',
+        '<h3> Processing resources manager </h3>'
+        '<p>Check/uncheck algorithms in the tree to select the ones that you '
+        'want to install or remove</p>'
+        '<p>Algorithms are divided in 3 groups:</p>'
+        '<ul><li><b>Installed:</b> Algorithms already in your system, with '
+        'the latest version available</li>'
+        '<li><b>Upgradable:</b> Algorithms already in your system, but with '
+        'a newer version available in the server</li>'
+        '<li><b>Not installed:</b> Algorithms not installed in your '
+        'system</li></ul>')
     MODELS = 0
     SCRIPTS = 1
 
@@ -228,9 +234,3 @@ class TreeItem(QTreeWidgetItem):
         self.setText(0, name)
         self.setIcon(0, icon)
         self.setCheckState(0, Qt.Unchecked)
-
-
-
-
-
-

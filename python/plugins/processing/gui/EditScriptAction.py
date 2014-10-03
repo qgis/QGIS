@@ -37,7 +37,7 @@ class EditScriptAction(ContextAction):
     SCRIPT_R = 1
 
     def __init__(self, scriptType):
-        self.name = 'Edit script'
+        self.name = self.tr('Edit script', 'EditScriptAction')
         self.scriptType = scriptType
 
     def isEnabled(self):

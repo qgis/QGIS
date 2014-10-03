@@ -54,6 +54,7 @@ def getHtmlFromRstFile(rst):
         s = p.sub(replace, s)
     return s
 
+
 def getHtmlFromHelpFile(alg, helpFile):
     if not os.path.exists(helpFile):
         return None
@@ -63,6 +64,7 @@ def getHtmlFromHelpFile(alg, helpFile):
             return getHtmlFromDescriptionsDict(descriptions)
     except:
         return None
+
 
 def getHtmlFromDescriptionsDict(alg, descriptions):
 
@@ -82,6 +84,7 @@ def getHtmlFromDescriptionsDict(alg, descriptions):
     s += '<p align="right">Algorithm version: ' + getDescription(ALG_VERSION, descriptions) + '</p>'
     s += '</body></html>'
     return s
+
 
 def getDescription(name, descriptions):
     if name in descriptions:
