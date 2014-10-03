@@ -411,25 +411,97 @@ void QgsComposerMapGrid::drawGridCRSTransform( QgsRenderContext &context, double
   //x grid lines
   QList< QPair< double, QPolygonF > > xGridLines;
   xGridLinesCRSTransform( crsBoundingRect, inverseTr, xGridLines );
-  QList< QPair< double, QPolygonF > >::const_iterator xGridIt = xGridLines.constBegin();
-  if ( mGridStyle != QgsComposerMapGrid::FrameAnnotationsOnly )
-  {
-    for ( ; xGridIt != xGridLines.constEnd(); ++xGridIt )
-    {
-      drawGridLine( scalePolygon( xGridIt->second, dotsPerMM ), context );
-    }
-  }
 
   //y grid lines
   QList< QPair< double, QPolygonF > > yGridLines;
   yGridLinesCRSTransform( crsBoundingRect, inverseTr, yGridLines );
-  QList< QPair< double, QPolygonF > >::const_iterator yGridIt = yGridLines.constBegin();
-  if ( mGridStyle != QgsComposerMapGrid::FrameAnnotationsOnly )
+
+  if ( mGridStyle == QgsComposerMapGrid::Solid )
   {
+    QList< QPair< double, QPolygonF > >::const_iterator xGridIt = xGridLines.constBegin();
+    for ( ; xGridIt != xGridLines.constEnd(); ++xGridIt )
+    {
+      drawGridLine( scalePolygon( xGridIt->second, dotsPerMM ), context );
+    }
+
+    QList< QPair< double, QPolygonF > >::const_iterator yGridIt = yGridLines.constBegin();
     for ( ; yGridIt != yGridLines.constEnd(); ++yGridIt )
     {
       drawGridLine( scalePolygon( yGridIt->second, dotsPerMM ), context );
     }
+  }
+  else if ( mGridStyle != QgsComposerMapGrid::FrameAnnotationsOnly ) //cross or markers
+  {
+    //convert lines to QgsGeometry
+    QList< QgsGeometry* > yLines;
+    QList< QPair< double, QPolygonF > >::const_iterator yGridIt = yGridLines.constBegin();
+    for ( ; yGridIt != yGridLines.constEnd(); ++yGridIt )
+    {
+      QgsPolyline yLine;
+      for ( int i = 0; i < ( *yGridIt ).second.size(); ++i )
+      {
+        yLine.append( QgsPoint(( *yGridIt ).second.at( i ).x(), ( *yGridIt ).second.at( i ).y() ) );
+      }
+      yLines << QgsGeometry::fromPolyline( yLine );
+    }
+    QList< QgsGeometry* > xLines;
+    QList< QPair< double, QPolygonF > >::const_iterator xGridIt = xGridLines.constBegin();
+    for ( ; xGridIt != xGridLines.constEnd(); ++xGridIt )
+    {
+      QgsPolyline xLine;
+      for ( int i = 0; i < ( *xGridIt ).second.size(); ++i )
+      {
+        xLine.append( QgsPoint(( *xGridIt ).second.at( i ).x(), ( *xGridIt ).second.at( i ).y() ) );
+      }
+      xLines << QgsGeometry::fromPolyline( xLine );
+    }
+
+    double maxX = mComposerMap->rect().width();
+    double maxY = mComposerMap->rect().height();
+
+    QList< QgsGeometry* >::const_iterator yLineIt = yLines.constBegin();
+    for ( ; yLineIt != yLines.constEnd(); ++yLineIt )
+    {
+      QList< QgsGeometry* >::const_iterator xLineIt = xLines.constBegin();
+      for ( ; xLineIt != xLines.constEnd(); ++xLineIt )
+      {
+        //look for intersections between lines
+        QgsGeometry* intersects = ( *yLineIt )->intersection(( *xLineIt ) );
+
+        //go through all intersections and draw grid markers/crosses
+        int i = 0;
+        QgsPoint vertex = intersects->vertexAt( i );
+        while ( vertex != QgsPoint( 0, 0 ) )
+        {
+          if ( mGridStyle == QgsComposerMapGrid::Cross )
+          {
+            //ensure that crosses don't overshoot the map item bounds
+            QLineF line1 = QLineF( vertex.x() - mCrossLength, vertex.y(), vertex.x() + mCrossLength, vertex.y() );
+            line1.p1().rx() = line1.p1().x() < 0 ? 0 : line1.p1().x();
+            line1.p2().rx() = line1.p2().x() > maxX ? maxX : line1.p2().x();
+            QLineF line2 = QLineF( vertex.x() , vertex.y() - mCrossLength, vertex.x(), vertex.y() + mCrossLength );
+            line2.p1().ry() = line2.p1().y() < 0 ? 0 : line2.p1().y();
+            line2.p2().ry() = line2.p2().y() > maxY ? maxY : line2.p2().y();
+
+            //draw line using coordinates scaled to dots
+            drawGridLine( QLineF( line1.p1() * dotsPerMM, line1.p2() * dotsPerMM ), context );
+            drawGridLine( QLineF( line2.p1() * dotsPerMM, line2.p2() * dotsPerMM ), context );
+          }
+          else if ( mGridStyle == QgsComposerMapGrid::Markers )
+          {
+            drawGridMarker( QPointF( vertex.x(), vertex.y() ) * dotsPerMM , context );
+          }
+
+          i = i + 1;
+          vertex = intersects->vertexAt( i );
+        }
+      }
+    }
+
+    qDeleteAll( yLines );
+    yLines.clear();
+    qDeleteAll( xLines );
+    xLines.clear();
   }
 
   //convert QPolygonF to QLineF to draw grid frames and annotations
