@@ -104,8 +104,10 @@ class Grid(GeoAlgorithm):
         else:
             geometryType = QGis.WKBLineString
 
-        fields = [QgsField('lon', QVariant.Double, '', 24, 16),
-                  QgsField('lat', QVariant.Double, '', 24, 16)
+        fields = [QgsField('left', QVariant.Double, '', 24, 16),
+                  QgsField('top', QVariant.Double, '', 24, 16),
+                  QgsField('right', QVariant.Double, '', 24, 16),
+                  QgsField('bottom', QVariant.Double, '', 24, 16)
                  ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
@@ -126,113 +128,143 @@ class Grid(GeoAlgorithm):
 
         del writer
 
-    def _rectangleGridLine(self, writer, width, height, originX, originY, hSpacing, vSpacing):
+    def _rectangleGridLine(self, writer, width, height, originX, originY,
+                           hSpacing, vSpacing):
         ft = QgsFeature()
 
-        x = originX
-        while x <= originX + width:
-            polyline = []
+        columns = int(floor(float(width) / hSpacing))
+        rows = int(floor(float(height) / vSpacing))
 
-            y = originY
-            while y <= originY + height:
+        # Longitude lines
+        for col in xrange(0, columns + 1):
+            polyline = []
+            x = originX + (col * hSpacing)
+            for row in xrange(0, rows + 1):
+                y = originY + (row * vSpacing)
                 polyline.append(QgsPoint(x, y))
-                y += vSpacing
 
             ft.setGeometry(QgsGeometry.fromPolyline(polyline))
-            ft.setAttributes([x, 0])
+            ft.setAttributes([x, originY, x, originY + (rows * vSpacing)])
             writer.addFeature(ft)
 
-            x += hSpacing
-
-        y = originY
-        while y <= originY + height:
+        # Latitude lines
+        for row in xrange(0, rows + 1):
             polyline = []
-
-            x = originX
-            while x <= originX + width:
+            y = originY + (row * vSpacing)
+            for col in xrange(0, columns + 1):
+                x = originX + (col * hSpacing)
                 polyline.append(QgsPoint(x, y))
-                x += hSpacing
 
             ft.setGeometry(QgsGeometry.fromPolyline(polyline))
-            ft.setAttributes([0, y])
-            writer.addFeature(ft)
+            ft.setAttributes([originX, y, originX + (col * hSpacing), y])
+            writer.addFeature(feature)
 
-            y += hSpacing
-
-    def _rectangleGridPoly(self, writer, width, height, originX, originY, hSpacing, vSpacing):
+    def _rectangleGridPoly(self, writer, width, height, originX, originY,
+                           hSpacing, vSpacing):
         ft = QgsFeature()
 
-        x = originX
-        while x < originX + width:
-            y = originY
-            while y < originY + height:
+        columns = int(floor(float(width) / hSpacing))
+        rows = int(floor(float(height) / vSpacing))
+
+        for col in xrange(0, columns):
+            # (column + 1) and (row + 1) calculation is used to maintain
+            # topology between adjacent shapes and avoid overlaps/holes
+            # due to rounding errors
+            x1 = originX + (col * hSpacing)
+            x2 = originX + ((col + 1) * hSpacing)
+            for row in xrange(0, rows):
+                y1 = originY + (row * vSpacing)
+                y2 = originY + ((row + 1) * vSpacing)
+
                 polyline = []
-                polyline.append(QgsPoint(x, y))
-                polyline.append(QgsPoint(x + hSpacing, y))
-                polyline.append(QgsPoint(x + hSpacing, y + vSpacing))
-                polyline.append(QgsPoint(x, y + vSpacing))
+                polyline.append(QgsPoint(x1, y1))
+                polyline.append(QgsPoint(x2, y1))
+                polyline.append(QgsPoint(x2, y2))
+                polyline.append(QgsPoint(x1, y2))
+                polyline.append(QgsPoint(x1, y1))
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
-                ft.setAttributes([x + hSpacing / 2.0, y + vSpacing / 2.0])
+                ft.setAttributes([x1, y1, x2, y2])
                 writer.addFeature(ft)
-                y += vSpacing
 
-            x += hSpacing
-
-    def _diamondGrid(self, writer, width, height, originX, originY, hSpacing, vSpacing):
+    def _diamondGrid(self, writer, width, height, originX, originY,
+                     hSpacing, vSpacing):
         ft = QgsFeature()
 
-        x = originX
-        colNum = 0
-        while x < originX + width:
-            if colNum % 2 == 0:
-                y = originY
-            else:
-                y = originY + vSpacing / 2.0
+        halfHSpacing = hSpacing / 2
+        halfVSpacing = vSpacing / 2
 
-            while y < originY + height:
+        columns = int(floor(float(width) / halfHSpacing))
+        rows = int(floor(float(height) / vSpacing))
+
+        for col in xrange(0, columns):
+            x1 = originX + ((col + 0) * halfHSpacing)
+            x2 = originX + ((col + 1) * halfHSpacing)
+            x3 = originX + ((col + 2) * halfHSpacing)
+
+            for row in xrange(0, rows):
+                if (col % 2) == 0:
+                    y1 = originY + (((row * 2) + 0) * halfVSpacing)
+                    y2 = originY + (((row * 2) + 1) * halfVSpacing)
+                    y3 = originY + (((row * 2) + 2) * halfVSpacing)
+                else:
+                    y1 = originY + (((row * 2) + 1) * halfVSpacing)
+                    y2 = originY + (((row * 2) + 2) * halfVSpacing)
+                    y3 = originY + (((row * 2) + 3) * halfVSpacing)
+
                 polyline = []
-                polyline.append(QgsPoint(x + hSpacing / 2.0, y))
-                polyline.append(QgsPoint(x + hSpacing, y + vSpacing / 2.0))
-                polyline.append(QgsPoint(x + hSpacing / 2.0, y + vSpacing))
-                polyline.append(QgsPoint(x, y + vSpacing / 2.0))
+                polyline.append(QgsPoint(x1,  y2))
+                polyline.append(QgsPoint(x2,  y1))
+                polyline.append(QgsPoint(x3,  y2))
+                polyline.append(QgsPoint(x2,  y3))
+                polyline.append(QgsPoint(x1,  y2))
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
-                ft.setAttributes([x + hSpacing / 2.0, y + vSpacing / 2.0])
+                ft.setAttributes([x1, y1, x3, y3])
                 writer.addFeature(ft)
-                y += vSpacing
 
-            x += hSpacing / 2.0
-            colNum += 1
-
-    def _hexagonGrid(self, writer, width, height, originX, originY, hSpacing, vSpacing):
+    def _hexagonGrid(self, writer, width, height, originX, originY,
+                     hSpacing, vSpacing):
         ft = QgsFeature()
 
-        xVertexLo = 0.288675134594813 * vSpacing
-        xVertexHi = 0.577350269189626 * vSpacing
+        # To preserve symmetry, hspacing is fixed relative to vspacing
+        xXertexLo = 0.288675134594813 * vSpacing;
+        xXertexHi = 0.577350269189626 * vSpacing;
         hSpacing = xVertexLo + xVertexHi
-        x = originX + xVertexHi
 
-        colNum = 0
-        while x < originX + width:
-            if colNum % 2 == 0:
-                y = originY + vSpacing / 2.0
-            else:
-                y = originY + vSpacing
+        halfVSpacing = vSpacing / 2
 
-            while y < originY + height:
+        columns = int(floor(float(width) / hSpacing))
+        rows = int(floor(float(height) / vSpacing))
+
+        for col in xrange(0, columns):
+            # (column + 1) and (row + 1) calculation is used to maintain
+            # topology between adjacent shapes and avoid overlaps/holes
+            # due to rounding errors
+            x1 = originX + (col * hSpacing)         # far left
+            x2 = x1 + (xVertexHi - xVertexLo)       # left
+            x3 = originX + ((col + 1) * hSpacing)   # right
+            x4 = x3 + (xVertexHi - xVertexLo)       # far right
+
+            for row in xrange(0, rows):
+                if (col % 2) == 0:
+                    y1 = originY + (((row * 2) + 0) * halfVSpacing) # hi
+                    y2 = originY + (((row * 2) + 1) * halfVSpacing) # mid
+                    y3 = originY + (((row * 2) + 2) * halfVSpacing) # lo
+                else:
+                    y1 = originY + (((row * 2) + 1) * halfVSpacing) # hi
+                    y2 = originY + (((row * 2) + 2) * halfVSpacing) # mid
+                    y3 = originY + (((row * 2) + 3) * halfVSpacing) # lo
+
                 polyline = []
-                polyline.append(QgsPoint(x + xVertexHi, y))
-                polyline.append(QgsPoint(x + xVertexLo, y + vSpacing / 2.0))
-                polyline.append(QgsPoint(x - xVertexLo, y + vSpacing / 2.0))
-                polyline.append(QgsPoint(x - xVertexHi, y))
-                polyline.append(QgsPoint(x - xVertexLo, y - vSpacing / 2.0))
-                polyline.append(QgsPoint(x + xVertexLo, y - vSpacing / 2.0))
+                polyline.append(QgsPoint(x1, y2))
+                polyline.append(QgsPoint(x2, y1))
+                polyline.append(QgsPoint(x3, y1))
+                polyline.append(QgsPoint(x4, y2))
+                polyline.append(QgsPoint(x3, y3))
+                polyline.append(QgsPoint(x2, y3))
+                polyline.append(QgsPoint(x1, y2))
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
-                ft.setAttributes([x, y])
+                ft.setAttributes([x1, y1, x4, y3])
                 writer.addFeature(ft)
-                y += vSpacing
-
-            x += hSpacing
-            colNum += 1
