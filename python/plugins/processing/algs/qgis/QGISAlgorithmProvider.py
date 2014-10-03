@@ -80,6 +80,7 @@ from mmqgisx.ExtractByAttribute import ExtractByAttribute
 from mmqgisx.SelectByAttribute import SelectByAttribute
 from mmqgisx.Grid import Grid
 from mmqgisx.Gridify import Gridify
+from mmqgisx.HubDistance import HubDistance
 
 from ConcaveHull import ConcaveHull
 from Polygonize import Polygonize
@@ -146,7 +147,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         # ------ mmqgisx ------
                         DeleteColumn(), DeleteDuplicateGeometries(),
                         TextToFloat(), ExtractByAttribute(),
-                        SelectByAttribute(), Grid(), Gridify(),
+                        SelectByAttribute(), Grid(), Gridify(), HubDistance(),
                         #mmqgisx_delete_duplicate_geometries_algorithm(),
                         #mmqgisx_geometry_convert_algorithm(),
                         #mmqgisx_grid_algorithm(),
