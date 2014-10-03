@@ -997,6 +997,11 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
     {
       QgsSymbolV2LevelItem& item = level[i];
       QHash< QgsSymbolV2*, QList<QgsFeature> >::iterator levelIt = features.find( item.symbol() );
+      if( levelIt == features.end() )
+      {
+        QgsDebugMsg( QString( "No feature found for symbol on %1 %2.%3" ).arg( layer->id() ).arg( l ).arg( i ) );
+        continue;
+      }
 
       int llayer = item.layer();
       QList<QgsFeature>& featureList = levelIt.value();
@@ -3727,7 +3732,6 @@ void QgsDxfExport::writeDefaultLinetypes()
     writeGroup( 40, 0.0 );
   }
 
-#if 0
   double das = dashSize();
   double dss = dashSeparatorSize();
   double dos = dotSize();
@@ -3757,7 +3761,6 @@ void QgsDxfExport::writeDefaultLinetypes()
   dashDotDotVector[4] = dos;
   dashDotDotVector[5] = dss;
   writeLinetype( "DASHDOTDOT", dashDotDotVector, QgsSymbolV2::MapUnit );
-#endif
 }
 
 void QgsDxfExport::writeSymbolLayerLinetype( const QgsSymbolLayerV2* symbolLayer )
