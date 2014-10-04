@@ -193,14 +193,6 @@ QgsTipFactory::QgsTipFactory() : QObject()
                       ) );
   addGenericTip( myTip );
   // by yjacolin
-  myTip.setTitle(tr("QGIS makes me dizzy!"));
-  myTip.setContent(tr("QGIS has easter eggs hidden inside. Write 'dizzy' without the quote in"
-                      "coordinate input in the status bar and see what happen in the map "
-                      "canvas. You can also try 'retro'. To stop it, just write 'dizzy' or "
-                      "'retro' again."
-        ));
-  addGuiTip(myTip);
-  // by yjacolin
   myTip.setTitle(tr("Add an action to layer"));
   myTip.setContent(tr("Action in a layer allow user to trigger action when clicking on a geometry"
                       " with 'Run Feature Action' tools."
