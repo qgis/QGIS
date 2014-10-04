@@ -297,11 +297,11 @@ class ParametersPanel(QWidget):
                 item = MultipleFileInputPanel()
             else:
                 if param.datatype == ParameterMultipleInput.TYPE_RASTER:
-                    options = dataobjects.getRasterLayers()
+                    options = dataobjects.getRasterLayers(sorting=False)
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-                    options = dataobjects.getVectorLayers()
+                    options = dataobjects.getVectorLayers(sorting=False)
                 else:
-                    options = dataobjects.getVectorLayers([param.datatype])
+                    options = dataobjects.getVectorLayers([param.datatype], sorting=False)
                 opts = []
                 for opt in options:
                     opts.append(self.getExtendedLayerName(opt))
