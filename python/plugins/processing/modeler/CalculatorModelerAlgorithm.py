@@ -85,7 +85,7 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
                 | QtGui.QDialogButtonBox.Ok)
         self.infoText = QtGui.QTextEdit()
         numbers = self.getAvailableValuesOfType(ParameterNumber, OutputNumber)
-        text = self.tr('You can refer to model values in you formula, using '
+        text = self.tr('You can refer to model values in your formula, using '
             'single-letter variables, as follows:\n', 'CalculatorModelerParametersDialog')
         ichar = 97
         if numbers:
