@@ -525,7 +525,7 @@ class GeoAlgorithm:
         html += self.tr('</ul><p>The above files could not be opened, which '
                         'probably indicates that they were not correctly '
                         'produced by the executed algorithm</p>'
-                        '<p>Checking the log information might help you see'
+                        '<p>Checking the log information might help you see '
                         'why those layers were not created as expected</p>')
         return html
 
