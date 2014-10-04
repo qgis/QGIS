@@ -33,6 +33,9 @@ from qgis.gui import *
 
 class RectangleMapTool(QgsMapToolEmitPoint):
 
+    rectangleCreated = pyqtSignal()
+    deactovated = pyqtSignal()
+
     def __init__(self, canvas):
         self.canvas = canvas
         QgsMapToolEmitPoint.__init__(self, self.canvas)
@@ -58,7 +61,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
     def canvasReleaseEvent(self, e):
         self.isEmittingPoint = False
         if self.rectangle() is not None:
-            self.emit(SIGNAL('rectangleCreated()'))
+            self.rectangleCreated.emit()
 
     def canvasMoveEvent(self, e):
         if not self.isEmittingPoint:
@@ -107,4 +110,4 @@ class RectangleMapTool(QgsMapToolEmitPoint):
 
     def deactivate(self):
         QgsMapTool.deactivate(self)
-        self.emit(SIGNAL('deactivated()'))
+        self.deactivated.emit()
