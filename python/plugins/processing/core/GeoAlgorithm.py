@@ -383,7 +383,7 @@ class GeoAlgorithm:
                         crs = dataobjects.getObject(item).crs()
                         if crs not in crsList:
                             crsList.append(crs)
-        return len(crsList) == 1
+        return len(crsList) < 2
 
     def addOutput(self, output):
         # TODO: check that name does not exist
