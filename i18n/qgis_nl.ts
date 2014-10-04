@@ -179,7 +179,7 @@ Kijk voor meer informatie in de log</translation>
     </message>
     <message>
         <source>&lt;b&gt;Missing parameter value: %s (row %d)&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Onbeschikbare parameterwaarde: %s (regel %d)&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Ontbrekende parameterwaarde: %s (regel %d)&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Wrong or missing parameter value: %s (row %d)&lt;/b&gt;</source>
@@ -244,7 +244,7 @@ Kijk voor meer informatie in de log</translation>
 <context>
     <name>CalculatorModelerParametersDialog</name>
     <message>
-        <source>You can refer to model values in you formula, using single-letter variables, as follows:
+        <source>You can refer to model values in your formula, using single-letter variables, as follows:
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -3504,11 +3504,11 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Add row</source>
-        <translation type="unfinished">Regel toevoegen</translation>
+        <translation>Regel toevoegen</translation>
     </message>
     <message>
         <source>Remove row</source>
-        <translation type="unfinished"></translation>
+        <translation>Regel verwijderen</translation>
     </message>
 </context>
 <context>
@@ -3519,7 +3519,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -5231,30 +5231,34 @@ De &apos;grijze&apos; waarde (van GDAL 1.7.0) maakt het mogelijk om een dataset 
     <name>GeoAlgorithm</name>
     <message>
         <source>Uncaught error while executing algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Onverwachte fout tijdens het uitvoeren van het algoritme</translation>
     </message>
     <message>
         <source>
 See log for more details</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Bekijk log voor details</translation>
     </message>
     <message>
         <source>Converting outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer converteren</translation>
     </message>
     <message>
         <source>&lt;p&gt;Oooops! The following output layers could not be open&lt;/p&gt;&lt;ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Oeps! De volgende uitvoerlagen kunnen niet worden geopend&lt;/p&gt;&lt;ul&gt;
+</translation>
     </message>
     <message>
         <source>&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you see why those layers were not created as expected&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;/ul&gt;&lt;p&gt;Bovenstaande bestanden kunnen niet worden geopend, waarschijnlijk omdat ze niet correct zijn aangemaakt door het uitgevoerde algoritme&lt;/p&gt;&lt;p&gt;De log-informatie kan helpen bij het oplossen van het probleem&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -5595,81 +5599,85 @@ GEOS fout: een of meer invoerobjecten hebben een ongeldige geometrie.</translati
     <name>GetModelsAction</name>
     <message>
         <source>Get models from on-line scripts collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Model verkrijgen uit online scriptcollectie</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Gereedschap</translation>
     </message>
     <message>
         <source>Connection problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbindingsprobleem</translation>
     </message>
     <message>
         <source>Could not connect to scripts/models repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbinding maken met script/modellen-verzameling mislukt</translation>
     </message>
 </context>
 <context>
     <name>GetScriptsAction</name>
     <message>
         <source>Get scripts from on-line scripts collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Scripts verkrijgen uit online scriptcollectie</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Gereedschap</translation>
     </message>
     <message>
         <source>Connection problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbindingsprobleem</translation>
     </message>
     <message>
         <source>Could not connect to scripts/models repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbinding maken met script/modellen-collectie mislukt</translation>
     </message>
 </context>
 <context>
     <name>GetScriptsAndModelsDialog</name>
     <message>
         <source>&lt;h3&gt; Processing resources manager &lt;/h3&gt;&lt;p&gt;Check/uncheck algorithms in the tree to select the ones that you want to install or remove&lt;/p&gt;&lt;p&gt;Algorithms are divided in 3 groups:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Installed:&lt;/b&gt; Algorithms already in your system, with the latest version available&lt;/li&gt;&lt;li&gt;&lt;b&gt;Upgradable:&lt;/b&gt; Algorithms already in your system, but with a newer version available in the server&lt;/li&gt;&lt;li&gt;&lt;b&gt;Not installed:&lt;/b&gt; Algorithms not installed in your system&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt; Procesbeheer &lt;/h3&gt;&lt;p&gt;Algoritmes aan-/uitvinken om te kiezen welke moeten worden toegevoegd of verwijderd&lt;/p&gt;&lt;p&gt;Algoritmes zijn verdeeld in 3 groepen:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Geïnstalleerd:&lt;/b&gt; Algoritmes zijn beschikbaar in je systeem in de meest recente versie&lt;/li&gt;&lt;li&gt;&lt;b&gt;Verouderd:&lt;/b&gt; Algoritmes zijn beschikbaar maar er bestaan nieuwere versies op de server&lt;/li&gt;&lt;li&gt;&lt;b&gt;Niet geïnstalleerd:&lt;/b&gt; Algoritmes zijn niet beschikbaar op je systeem&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>Installed</source>
-        <translation type="unfinished">Geïnstalleerd</translation>
+        <translation>Geïnstalleerd</translation>
     </message>
     <message>
         <source>Upgradable</source>
+        <translation type="obsolete">Verouderd</translation>
+    </message>
+    <message>
+        <source>Updatable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Not installed</source>
-        <translation type="unfinished">Niet geïnstalleerd</translation>
+        <translation>Niet geïnstalleerd</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Description:&lt;/b&gt;%s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Beschrijving:&lt;/b&gt;%s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Created by:&lt;/b&gt;%s</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Gemaakt door:&lt;/b&gt;%s</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Version:&lt;/b&gt;%s</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Versie:&lt;/b&gt;%s</translation>
     </message>
     <message>
         <source>&lt;h2&gt;No detailed description available for this script&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Geen detailbeschrijving beschikbaar voor dit script&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Connection problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbindingsprobleem</translation>
     </message>
     <message>
         <source>Could not download file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand %s kan niet worden gedownload</translation>
     </message>
 </context>
 <context>
@@ -5961,11 +5969,11 @@ GEOS fout: een of meer invoerobjecten hebben een ongeldige geometrie.</translati
     <name>HelpEditionDialog</name>
     <message>
         <source>Cannot open help file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Hulpbestand %s kan niet worden geopend</translation>
     </message>
     <message>
         <source>Error saving help file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het opslaan van het hulpbestand</translation>
     </message>
     <message>
         <source>Help file could not be saved.
@@ -5973,32 +5981,36 @@ Check that you have permission to modify the help
 file. You might not have permission if you are 
 editing an example model or script, since they 
 are stored on the installation folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Hulpbestand kan niet worden opgeslagen.
+Controleer of je bevoegd bent om het hulpbestand te
+wijzigen. Je zou geen toestemming kunnen hebben
+wanneer je  een voorbeeldmodel of -script wijzigt, omdat deze zijn opgeslagen in de installatie-map</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Algorithm description&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Algoritmebeschrijving&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Input parameters&lt;/h2&gt;
 </source>
-        <translation type="unfinished">&lt;h2&gt;Invoerparameters&lt;/h2&gt;
+        <translation>&lt;h2&gt;Invoerparameters&lt;/h2&gt;
 </translation>
     </message>
     <message>
         <source>&lt;h2&gt;Outputs&lt;/h2&gt;
 </source>
-        <translation type="unfinished">&lt;h2&gt;Uitvoer&lt;/h2&gt;
+        <translation>&lt;h2&gt;Uitvoer&lt;/h2&gt;
 </translation>
     </message>
     <message>
         <source>Algorithm description</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritmebeschrijving</translation>
     </message>
     <message>
         <source>Input parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Invoerparameters</translation>
     </message>
     <message>
         <source>Outputs</source>
@@ -6006,15 +6018,15 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Algorithm created by</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritme gemaakt door</translation>
     </message>
     <message>
         <source>Algorithm help written by</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritme-hulp gemaakt door</translation>
     </message>
     <message>
         <source>Algorithm version</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritmeversie</translation>
     </message>
 </context>
 <context>
@@ -6049,7 +6061,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Log files (*.log *.LOG)</source>
-        <translation type="unfinished"></translation>
+        <translation>Log-bestanden (*.log *.LOG)</translation>
     </message>
     <message>
         <source>Create test</source>
@@ -6085,64 +6097,66 @@ are stored on the installation folder</source>
     <name>InputLayerSelectorPanel</name>
     <message>
         <source>All files(*.*);;</source>
-        <translation type="unfinished">Alle bestanden(*.*);</translation>
+        <translation>Alle bestanden (*.*);;</translation>
     </message>
 </context>
 <context>
     <name>InvalidParameterValue</name>
     <message>
         <source>Run</source>
-        <translation type="unfinished">Uitvoeren</translation>
+        <translation>Uitvoeren</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">Parameters</translation>
+        <translation>Parameters</translation>
     </message>
     <message>
         <source>Log</source>
-        <translation type="unfinished"></translation>
+        <translation>Log</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Sorry, no help is available for this algorithm.&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Sorry, er is geen hulp beschikbaar voor dit algoritme.&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Could not open help file :-( &lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Hulpbestand kan niet worden geopend :-( &lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Unmatching CRS&apos;s</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschillende CRS-en</translation>
     </message>
     <message>
         <source>Layers do not all use the same CRS. This can cause unexpected results.
 Do you want tocontinue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaartlagen zijn niet allemaal in hetzelfde CRS. Dit kan onverwachte resultaten opleveren.
+Doorgaan?</translation>
     </message>
     <message>
         <source>Unable to execute algorithm</source>
-        <translation type="unfinished">Algoritme kan niet worden uitgevoerd</translation>
+        <translation>Algoritme uitvoeren mislukt</translation>
     </message>
     <message>
         <source>Processing algorithm...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoeren van algoritme...</translation>
     </message>
     <message>
         <source>&lt;b&gt;Algorithm %s starting...&lt;/b&gt;</source>
-        <translation type="unfinished">&lt;b&gt;Algoritme %s start...&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Algoritme %s start...&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Missing parameter value: %s&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Ontbrekende parameterwaarde: %s&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished">Foute of ontbrekende parameterwaarden</translation>
+        <translation>Foute of ontbrekende parameterwaarden</translation>
     </message>
     <message>
         <source>HTML output has been generated by this algorithm.
 Open the results dialog to check it.</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML-uitvoer is gegenereerd door dit algoritme.
+Bekijk het in het resultaatvenster.</translation>
     </message>
 </context>
 <context>
@@ -7541,11 +7555,11 @@ Werkt voor huidige actieve bewerkbare laag</translation>
     <name>MessageBarProgress</name>
     <message>
         <source>Executing algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritme uitvoeren</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Fout</translation>
+        <translation>Fout</translation>
     </message>
 </context>
 <context>
@@ -7876,80 +7890,84 @@ Werkt voor huidige actieve bewerkbare laag</translation>
     <message>
         <source>&lt;h3&gt;Missing dependency.This algorithm cannot be run :-( &lt;/h3&gt;
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Ontbrekend hulpprogramma. Algoritme kan niet worden uitgevoerd :-( &lt;/h3&gt;
+%s</translation>
     </message>
     <message>
         <source>Missing dependency</source>
-        <translation type="unfinished"></translation>
+        <translation>Ontbrekend hulpprogramma</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Sluiten</translation>
+        <translation>Sluiten</translation>
     </message>
 </context>
 <context>
     <name>ModelerAlgorithm</name>
     <message>
         <source>Model</source>
-        <translation type="unfinished">Model</translation>
+        <translation>Model</translation>
     </message>
     <message>
         <source>Wrong value: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige waarde: %s</translation>
     </message>
     <message>
         <source>Prepare algorithm: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritme voorbereiden: %s</translation>
     </message>
     <message>
         <source>Running %s [%i/%i]</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoeren %s [%i/%i]</translation>
     </message>
     <message>
         <source>OK. Execution took %0.3f ms (%i outputs).</source>
-        <translation type="unfinished"></translation>
+        <translation>OK. Uitvoering duurde %0.3f ms (%i uitvoeren).</translation>
     </message>
     <message>
         <source>Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Mislukt</translation>
     </message>
     <message>
         <source>Error executing algorithm %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout tijdens uitvoeren van algoritme %s
+%s</translation>
     </message>
     <message>
         <source>Model processed ok. Executed %i algorithms total</source>
-        <translation type="unfinished"></translation>
+        <translation>Model uitgevoerd. Totaal aantal algoritmes %i</translation>
     </message>
     <message>
         <source>Error in parameter line: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout in parameter regel: %s</translation>
     </message>
     <message>
         <source>Error in algorithm name: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout in algoritmenaam: %s</translation>
     </message>
     <message>
         <source>Error in model definition line: %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout in modeldefinitie regel: %s
+%s</translation>
     </message>
 </context>
 <context>
     <name>ModelerAlgorithmProvider</name>
     <message>
         <source>Models folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Modellenmap</translation>
     </message>
     <message>
         <source>Models</source>
-        <translation type="unfinished">Modellen</translation>
+        <translation>Modellen</translation>
     </message>
     <message>
         <source>Could not load model %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Model %s kan niet worden geladen
+%s</translation>
     </message>
 </context>
 <context>
@@ -7960,11 +7978,11 @@ Werkt voor huidige actieve bewerkbare laag</translation>
     </message>
     <message>
         <source>[Enter model name here]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Modelnaam hier invoeren]</translation>
     </message>
     <message>
         <source>[Enter group name here]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Groepnaam hier invoeren]</translation>
     </message>
     <message>
         <source>Message</source>
@@ -8018,12 +8036,13 @@ Werkt voor huidige actieve bewerkbare laag</translation>
     </message>
     <message>
         <source>Processing models (*.model *.MODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Procesmodellen (*.model *.MODEL)</translation>
     </message>
     <message>
         <source>Could not load model %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Model %s kan niet worden geladen
+%s</translation>
     </message>
     <message>
         <source>The selected model could not be loaded.
@@ -8033,7 +8052,7 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>Geoalgorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>Geo-algoritmes</translation>
     </message>
     <message>
         <source>Model doesn&apos;t contains any algorithms and/or parameters and can&apos;t be executed</source>
@@ -8068,22 +8087,22 @@ Bekijk het log voor meer informatie.</translation>
     <name>ModelerOnlyAlgorithmProvider</name>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished">Specifiek modelleergereedschap</translation>
+        <translation>Specifiek modelleergereedschap</translation>
     </message>
 </context>
 <context>
     <name>ModelerParameterDefinitionDialog</name>
     <message>
         <source>Parameter definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameterdefinitie</translation>
     </message>
     <message>
         <source>Parameter name</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameternaam</translation>
     </message>
     <message>
         <source>Checked</source>
-        <translation type="unfinished"></translation>
+        <translation>Aangevinkt</translation>
     </message>
     <message>
         <source>Parent layer</source>
@@ -8187,7 +8206,7 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished">Foute of ontbrekende parameterwaarden</translation>
+        <translation>Foute of ontbrekende parameterwaarden</translation>
     </message>
 </context>
 <context>
@@ -8210,11 +8229,11 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Sorry, no help is available for this algorithm.&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h2&gt;Sorry, er is geen hulp beschikbaar voor dit algoritme.&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Could not open help file :-( &lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h2&gt;Hulpbestand kan niet worden geopend :-( &lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
@@ -8230,7 +8249,7 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished">Foute of ontbrekende parameterwaarden</translation>
+        <translation>Foute of ontbrekende parameterwaarden</translation>
     </message>
 </context>
 <context>
@@ -8655,7 +8674,7 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>Error in %s. Missing parameter value for parameter %s.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout in %s. Ontbrekende waarde voor parameter %s.</translation>
     </message>
 </context>
 <context>
@@ -15320,10 +15339,6 @@ Parser fout:
 </context>
 <context>
     <name>QgsAttributeDialog</name>
-    <message>
-        <source>Feature Attributes</source>
-        <translation type="obsolete">Object-attributen</translation>
-    </message>
     <message>
         <location filename="../src/gui/qgsattributedialog.cpp" line="103"/>
         <source>%1 - Feature Attributes</source>
@@ -26131,10 +26146,6 @@ Parser fout:
         <translation>Symbologie symboollaag</translation>
     </message>
     <message>
-        <source>Layerattribute</source>
-        <translation type="obsolete">Laag-aatribuut</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="139"/>
         <source>Select all</source>
         <translation>Alles selecteren</translation>
@@ -26441,7 +26452,7 @@ p, li { white-space: pre-wrap; }
         <translation>&apos;Dia&apos; || Diameter</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="107"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="108"/>
         <source>Search</source>
         <translation>Zoek</translation>
     </message>
@@ -26506,37 +26517,37 @@ p, li { white-space: pre-wrap; }
         <translation>Groter-dan-of-gelijk-aan operator</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="271"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="272"/>
         <source>Recent (%1)</source>
         <translation>Recent (%1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="357"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="358"/>
         <source>Parser Error</source>
         <translation>Parseer fout</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="359"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="360"/>
         <source>Eval Error</source>
         <translation>Eval fout</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="361"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="362"/>
         <source>Expression is invalid &lt;a href=more&gt;(more info)&lt;/a&gt;</source>
         <translation>Expressie is niet geldig &lt;a href=more&gt;(more info)&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="390"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="391"/>
         <source>More info on expression error</source>
         <translation>Meer info over de expressiefout</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="422"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="423"/>
         <source>Load top 10 unique values</source>
         <translation>Laad top 10 unieke warden</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="423"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="424"/>
         <source>Load all unique values</source>
         <translation>Laad alle unieke waarden</translation>
     </message>
@@ -32976,93 +32987,93 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
         <translation>Identificatieresultaten</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="336"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="266"/>
         <source>Layer</source>
         <translation>Kaartlaag</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="341"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="271"/>
         <source>FID</source>
         <translation>FID</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="346"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="276"/>
         <source>Attribute</source>
         <translation>Attribuut</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="351"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="281"/>
         <source>Value</source>
         <translation>Waarde</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="59"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="41"/>
         <source>Expand tree.</source>
         <translation>Boom uitklappen.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="62"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="79"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="96"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="113"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="130"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="150"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="173"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="44"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="61"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="78"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="95"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="112"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="132"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="155"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="127"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="109"/>
         <source>Clear Results</source>
         <translation>Wis Resultaat</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="298"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="331"/>
         <source>Help</source>
         <translation>Help</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="225"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="207"/>
         <source>Select identify mode</source>
         <translation>Selecteer modus objecten identificeren</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="228"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="210"/>
         <source>Mode</source>
         <translation>Modus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="269"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="302"/>
         <source>Select view mode for raster layers</source>
         <translation>Selecteer weergavemodus voor rasterlagen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="272"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="305"/>
         <source>View</source>
         <translation>Weergave</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="258"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="240"/>
         <source>Auto open form</source>
         <translation>Auto openen formulier</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="76"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="58"/>
         <source>Collapse tree.</source>
         <translation>Boom inklappen.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="93"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="75"/>
         <source>New results will be expanded by default.</source>
         <translation>Nieuwe resultaten zullen standaard worden uitgebreid.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="147"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="129"/>
         <source>Copy selected feature to clipboard.</source>
         <translation>Kopiëer geselecteerde objecten naar clipboard.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="170"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="152"/>
         <source>Print selected HTML response.</source>
         <translation>Geselecteerde HTML antwoord afdrukken.</translation>
     </message>
@@ -62489,7 +62500,7 @@ Plugin wordt niet geladen.</translation>
 <context>
     <name>function_help</name>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2033"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2047"/>
         <source>&lt;h3&gt;week() function&lt;/h3&gt;
 Extract the week number from a date, or the number of weeks
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -62593,7 +62604,7 @@ die een resultaat geeft.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1657"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1671"/>
         <source>&lt;h3&gt;right() function&lt;/h3&gt;
 Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters of the string.
 
@@ -62639,7 +62650,7 @@ Deze groep bevat functies om kleuren te manipuleren
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1364"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1378"/>
         <source>&lt;h3&gt;length() function&lt;/h3&gt;
 Returns the length of a string.
 
@@ -62670,7 +62681,7 @@ Geeft de lengte van een string.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2019"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2033"/>
         <source>&lt;h3&gt;upper() function&lt;/h3&gt;
 Converts a string to upper case letters.
 
@@ -62701,7 +62712,7 @@ Converteert een tekenreeks naar hoofdletters.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="606"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="620"/>
         <source>&lt;h3&gt;bbox function&lt;/h3&gt;
 Returns 1 if the geometries spatially intersect the bounding box defined and 0 if they don&apos;t.
 
@@ -62732,7 +62743,7 @@ b &amp;rarr; geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1348"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1362"/>
         <source>&lt;h3&gt;left() function&lt;/h3&gt;
 Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters of the string.
 
@@ -62796,7 +62807,7 @@ NB: Deze functie is alleen beschikbaar in sommige contexten en zal anders 0 zijn
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="673"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="687"/>
         <source>&lt;h3&gt;ceil() function&lt;/h3&gt;
 Rounds a number upwards.
 
@@ -62829,7 +62840,7 @@ Rond een getal naar boven af.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1937"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1951"/>
         <source>&lt;h3&gt;toreal() function&lt;/h3&gt;
 Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
 
@@ -62860,7 +62871,7 @@ Zet een tekststring om naar een reëel getal. Er veranderd niets wanneer een waa
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2084"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2098"/>
         <source>&lt;h3&gt;xat() function&lt;/h3&gt;
 Retrieves a x coordinate of the current feature
 
@@ -62916,7 +62927,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1809"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1823"/>
         <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
 Return the index of a regular expression in a string.
 
@@ -62955,7 +62966,7 @@ Retourneert -1 wanneer de expressie niet is gevonden.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1561"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1575"/>
         <source>&lt;h3&gt;rand() function&lt;/h3&gt;
 Returns a random integer within the range specified by the minimum and 
 maximum argument (inclusive).
@@ -63059,7 +63070,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="646"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="660"/>
         <source>&lt;h3&gt;bounds_width function&lt;/h3&gt;
 Returns the width of the bounding box of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -63088,7 +63099,7 @@ geom &amp;rarr; a geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1034"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1048"/>
         <source>&lt;h3&gt;floor() function&lt;/h3&gt;
 Rounds a number downwards.
 
@@ -63121,7 +63132,7 @@ Rondt een getal naar beneden af.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="633"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="647"/>
         <source>&lt;h3&gt;bounds_height function&lt;/h3&gt;
 Returns the height of the bounding box of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -63150,7 +63161,7 @@ geom &amp;rarr; een geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1910"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1924"/>
         <source>&lt;h3&gt;toint() function&lt;/h3&gt;
 Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
 
@@ -63181,7 +63192,7 @@ Converteert tekst naar een integer (geheel getal). Zet deze tekst niet om wannee
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2122"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2136"/>
         <source>&lt;h3&gt;yat() function&lt;/h3&gt;
 Retrieves a y coordinate of the current feature
 
@@ -63208,7 +63219,7 @@ Geeft de y-coördinaat van een punt van de huidige geometrie terug
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1951"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1965"/>
         <source>&lt;h3&gt;tostring() function&lt;/h3&gt;
 Converts a number to string.
 
@@ -63268,7 +63279,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="576"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="590"/>
         <source>&lt;h3&gt;atan2() function&lt;/h3&gt;
 Returns arcustangens of y/x using the signs of the two 
 arguments to determine the quadrant of the result
@@ -63303,7 +63314,7 @@ argumenten worden gebruikt om het quadrant van het resultaat te bepalen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1783"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1797"/>
         <source>&lt;h3&gt;sin() function&lt;/h3&gt;
 Returns sinus of an angle.
 
@@ -63332,7 +63343,7 @@ Geeft de sinus van een hoek.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1506"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1520"/>
         <source>&lt;h3&gt;month() function&lt;/h3&gt;
 Extract the month part from a date, or the number of months
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -63404,7 +63415,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="961"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="975"/>
         <source>&lt;h3&gt;day() function&lt;/h3&gt;
 Extract the day from a date, or the number of days
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -63447,7 +63458,7 @@ uit een &lt;code&gt;Interval&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1884"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1898"/>
         <source>&lt;h3&gt;todate() function&lt;/h3&gt;
 Convert a string into Qt data type.
 
@@ -63476,7 +63487,7 @@ Converteert een tekenreeks naar een Qt datatype.
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1439"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1453"/>
         <source>&lt;h3&gt;lpad() function&lt;/h3&gt;
 Returns a string with supplied width padded
 using the fill character.
@@ -63514,7 +63525,7 @@ Zet een string om naar een nieuwe string van de gevraagde lengte, opgevuld met e
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="504"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="518"/>
         <source>&lt;h3&gt;acos() function&lt;/h3&gt;
 Returns arcuscosinus of a value in radians.
 
@@ -63565,7 +63576,7 @@ Het laden van veldwaarden van WFS lagen wordt niet ondersteund, voordat de kaart
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1394"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1408"/>
         <source>&lt;h3&gt;log() function&lt;/h3&gt;
 Returns the value of the logarithm of the passed value and base.
 &lt;br&gt;
@@ -63662,7 +63673,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1021"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1035"/>
         <source>&lt;h3&gt;exp() function&lt;/h3&gt;
 Returns exponential of an value.
 
@@ -63690,7 +63701,7 @@ Geeft de exponent van een waarde
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1694"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1708"/>
         <source>&lt;h3&gt;rpad() function&lt;/h3&gt;
 Returns a string with supplied width padded
 using the fill character.
@@ -63728,7 +63739,7 @@ Zet een string om naar een nieuwe string van de gevraagde lengte, opgevuld met e
 &lt;code&gt;rpad(&apos;Hallo&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHallo&apos;&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1673"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1687"/>
         <source>&lt;h3&gt;round() function&lt;/h3&gt;
 Rounds a number to number of decimal places.
 &lt;br&gt;
@@ -63802,7 +63813,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="778"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="792"/>
         <source>&lt;h3&gt;color_hsl() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, and lightness attributes
 
@@ -63837,7 +63848,7 @@ Geeft een tekstwaarde van een kleur terug gebaseerd op de attributen tint, satur
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1713"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1727"/>
         <source>&lt;h3&gt;scale_exp() function&lt;/h3&gt;
 Transforms a given value from an input domain to an output range using an exponential curve. This function can be used to ease values in or out 
 of the specified output range.   
@@ -63897,7 +63908,7 @@ accelererend als de invoerwaarden het maximum van het domein naderen. Kleinere e
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="921"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="935"/>
         <source>&lt;h3&gt;convexHull function&lt;/h3&gt;
 Returns the convex hull of a geometry. It represents the minimum convex geometry that encloses all geometries within the set.
 
@@ -63926,7 +63937,7 @@ b &amp;rarr; geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2006"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2020"/>
         <source>&lt;h3&gt;union function&lt;/h3&gt;
 Returns a geometry that represents the point set union of the geometries.
 
@@ -63955,7 +63966,7 @@ b &amp;rarr; geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2096"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2110"/>
         <source>&lt;h3&gt;xmax function&lt;/h3&gt;
 Returns the maximum x coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -63984,7 +63995,7 @@ geom &amp;rarr; een geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="620"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="634"/>
         <source>&lt;h3&gt;bounds function&lt;/h3&gt;
 Returns a geometry which represents the bounding box of an input geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -64013,7 +64024,7 @@ geom &amp;rarr; een geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2154"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2168"/>
         <source>&lt;h3&gt;ymax function&lt;/h3&gt;
 Returns the maximum y coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -64043,7 +64054,7 @@ geom &amp;rarr; een geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="907"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="921"/>
         <source>&lt;h3&gt;contains function&lt;/h3&gt;
 Returns true if and only if no points of b lie in the exterior of a, and at least one point of the interior of b lies in the interior of a. 
 
@@ -64074,7 +64085,7 @@ geometry &amp;rarr; geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2067"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2081"/>
         <source>&lt;h3&gt;wordwrap() function&lt;/h3&gt;
 Returns a string wrapped to a maximum/minimum number of characters.
 
@@ -64111,7 +64122,7 @@ Geeft een tekenreeks terug die is afgebroken tot een maximum/minimum aantal teke
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="844"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="858"/>
         <source>
 &lt;h3&gt;color_rgb() function&lt;/h3&gt;
 Returns a string representation of a color based on its red, green, and blue components
@@ -64148,7 +64159,7 @@ Geeft een tekenreeks terug die een kleur weergeeft, gebaseerd op zijn componente
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="741"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="755"/>
         <source>
 &lt;h3&gt;color_cmyk() function&lt;/h3&gt;
 Returns a string representation of a color based on its cyan, magenta, yellow and black components
@@ -64186,7 +64197,7 @@ Geeft een tekstwaarde terug die een kleur weergeeft, gebaseerd op de componenten
  color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1321"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1335"/>
         <source>&lt;h3&gt;intersection function&lt;/h3&gt;
 Returns a geometry that represents the shared portion of geometry a and geometry b.
 
@@ -64215,7 +64226,7 @@ geometry &amp;rarr; geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1540"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1554"/>
         <source>
 &lt;h3&gt;ramp_color() function&lt;/h3&gt;
 Returns a string representing a color from a color ramp. 
@@ -64259,7 +64270,7 @@ De beschikbare kleurverlopen variëren tussen installaties van QGIS.  Deze funct
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="418"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="432"/>
         <source>&lt;h3&gt;IS expression&lt;/h3&gt;
 Returns 1 if a is the same as b.
 
@@ -64298,7 +64309,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="811"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="825"/>
         <source>&lt;h3&gt;color_hsv() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, and value attributes
 
@@ -64363,7 +64374,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="436"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="450"/>
         <source>&lt;h3&gt;LIKE expression&lt;/h3&gt;
 Returns 1 if the first parameter matches the supplied pattern. Works with numbers also.
 
@@ -64394,7 +64405,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2167"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2181"/>
         <source>&lt;h3&gt;ymin function&lt;/h3&gt;
 Returns the minimum y coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -64424,7 +64435,7 @@ geom &amp;rarr; een geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1255"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1269"/>
         <source>&lt;h3&gt;geomFromGML function&lt;/h3&gt;
 Returns a geometry from a GML representation of geometry
 
@@ -64462,7 +64473,7 @@ Deze groep bevat functies voor gebruik van datum en tijddata.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="879"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="893"/>
         <source>&lt;h3&gt;combine function&lt;/h3&gt;
 Returns the combination of geometry a and geometry b.
 
@@ -64493,7 +64504,7 @@ geometry &amp;rarr; geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1334"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1348"/>
         <source>&lt;h3&gt;intersects function&lt;/h3&gt;
 Returns 1 if the geometries spatially intersect (share any portion of space) and 0 if they don&apos;t.
 
@@ -64524,7 +64535,7 @@ b &amp;rarr; geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="701"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="715"/>
         <source>&lt;h3&gt;clamp() function&lt;/h3&gt;
 Restricts an input value to a specified range.
 
@@ -64567,7 +64578,7 @@ Beperkt een inputwaarde tot een specifiek bereik.
  </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="994"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1008"/>
         <source>&lt;h3&gt;disjoint function&lt;/h3&gt;
 Returns 1 if the geometries do not &quot;spatially intersect&quot; - if they do not share any space together. 
 
@@ -64598,7 +64609,7 @@ b &amp;rarr; geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1268"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1282"/>
         <source>&lt;h3&gt;geomFromWKT function&lt;/h3&gt;
 Returns a geometry created from a Well-Known Text (WKT) representation.
 
@@ -64627,7 +64638,7 @@ tekst &amp;rarr; weergave van een geometrie in Well-Known Text (WKT)
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="659"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="673"/>
         <source>&lt;h3&gt;buffer function&lt;/h3&gt;
 Returns a geometry that represents all points whose distance from this geometry is less than or equal to distance. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -64777,7 +64788,25 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="592"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="418"/>
+        <source>&lt;h3&gt;IN expression&lt;/h3&gt;
+Returns 1 if value is found within a list of values
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;&apos;a&apos; IN (&apos;a&apos;, &apos;b&apos;)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; IN (&apos;A&apos;,&apos;B&quot;) &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IN (&apos;C&apos;,&apos;B&quot;) &amp;rarr; returns 0 &lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="606"/>
         <source>&lt;h3&gt;attribute function&lt;/h3&gt;
 Returns the value of a specified attribute from a feature.
 
@@ -64807,7 +64836,7 @@ feature &amp;rarr; a feature&lt;br /&gt; attribute_name &amp;rarr; naam van attr
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="947"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="961"/>
         <source>&lt;h3&gt;crosses function&lt;/h3&gt;
 Returns 1 if the supplied geometries have some, but not all, interior points in common.
 
@@ -64838,7 +64867,7 @@ geometry &amp;rarr; geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1281"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1295"/>
         <source>&lt;h3&gt;geomToWKT function&lt;/h3&gt;
 Returns the Well-Known Text (WKT) representation of the geometry without SRID metadata.
 
@@ -64865,7 +64894,7 @@ a &amp;rarr; geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1293"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1307"/>
         <source>&lt;h3&gt;getFeature function&lt;/h3&gt;
 Returns the first feature of a layer matching a given attribute value
 
@@ -64882,7 +64911,7 @@ Geeft het eerste object terug van een laag die overeenkomt met de opgegeven waar
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1978"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1992"/>
         <source>&lt;h3&gt;touches function&lt;/h3&gt;
 Returns 1 if the geometries have at least one point in common, but their interiors do not intersect.
 
@@ -64913,7 +64942,7 @@ b &amp;rarr; geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1526"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1540"/>
         <source>&lt;h3&gt;overlaps function&lt;/h3&gt;
 Returns 1 if the geometries share space, are of the same dimension, but are not completely contained by each other.
 
@@ -65003,7 +65032,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="468"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="482"/>
         <source>&lt;h3&gt;OR logical operator&lt;/h3&gt;
 Returns 1 when condition a or b is true.
 
@@ -65034,7 +65063,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="688"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="702"/>
         <source>&lt;h3&gt;centroid function&lt;/h3&gt;
 Returns the geometric center of a geometry.
 
@@ -65063,7 +65092,7 @@ b &amp;rarr; geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2053"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2067"/>
         <source>&lt;h3&gt;within function&lt;/h3&gt;
 Returns 1 if the geometry a is completely inside geometry b
 
@@ -65130,7 +65159,7 @@ $map &amp;rarr; &quot;canvas&quot; (binnen het hoofdvenster van QGIS)&lt;/pre&gt
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1008"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1022"/>
         <source>&lt;h3&gt;distance function&lt;/h3&gt;
  Returns the minimum distance (based on spatial ref) between two geometries in projected units.
 
@@ -65159,7 +65188,7 @@ b &amp;rarr; geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="981"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="995"/>
         <source>&lt;h3&gt;difference function&lt;/h3&gt;
 Returns a geometry that represents that part of geometry a that does not intersect with geometry b.
 
@@ -65188,7 +65217,7 @@ geometry &amp;rarr; geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="453"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="467"/>
         <source>&lt;h3&gt;NOT&lt;/h3&gt;
 Returns 1 if a is not the same as b.
 
@@ -65221,7 +65250,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1843"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1857"/>
         <source>&lt;h3&gt;symDifference function&lt;/h3&gt;
 Returns a geometry that represents the portions of a and b that do not intersect.
 
@@ -65279,7 +65308,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1924"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1938"/>
         <source>&lt;h3&gt;tointerval() function&lt;/h3&gt;
 Converts a string to a interval type.  Can be used to take days, hours, month, etc off a date. 
 
@@ -65308,7 +65337,7 @@ Converteert en tekenreeks naar een type interval.  Kan worden gebruikt om dagen,
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1300"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1314"/>
         <source>&lt;h3&gt;hour() function&lt;/h3&gt;
 Extract the hour from a datetime or time, or the number of hours
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -65352,7 +65381,7 @@ Geeft het uur uit een datumtijd of tijd terug, of het aantal uren uit een &lt;co
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="794"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="808"/>
         <source>&lt;h3&gt;color_hsla() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, lightness and alpha (transparency) attributes
 
@@ -65415,7 +65444,7 @@ Geen
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="485"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="499"/>
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
@@ -65423,7 +65452,7 @@ This group contains functions that operate on record identifiers.
 Deze groep bevat functies met betrekking tot rijnummers.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1965"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1979"/>
         <source>&lt;h3&gt;totime() function&lt;/h3&gt;
 Convert a string into Qt time type.
 
@@ -65452,7 +65481,7 @@ Converteert een tekenreeks naar Qt time-indeling.
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1641"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1655"/>
         <source>&lt;h3&gt;replace() function&lt;/h3&gt;
 Returns a string with the the supplied string replaced.
 
@@ -65495,7 +65524,7 @@ This group contains functions to handle conditional checks in expressions.
 Deze groep bevat functies om conditionele voorwaarden in expressies in te bouwen.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="491"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="505"/>
         <source>&lt;h3&gt;abs() function&lt;/h3&gt;
 Returns the absolute value of a number.&lt;br&gt;
 
@@ -65523,7 +65552,7 @@ abs(&lt;i&gt;waarde&lt;/i&gt;)&lt;br&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1457"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1471"/>
         <source>&lt;h3&gt;max() function&lt;/h3&gt;
 Returns the largest value in a set of values.
 
@@ -65554,7 +65583,7 @@ Geeft de maximum waarde van een set.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1796"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1810"/>
         <source>&lt;h3&gt;sqrt() function&lt;/h3&gt;
 Returns square root of a value
 
@@ -65591,7 +65620,7 @@ Deze groep bevat functies die werken met voorwaardelijke condities.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="759"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="773"/>
         <source>
 &lt;h3&gt;color_cmyka() function&lt;/h3&gt;
 Returns a string representation of a color based on its cyan, magenta, yellow, black and alpha (transparency) components
@@ -65632,7 +65661,7 @@ Geeft een tekstwaarde van een kleur, gebaseerd op de cyaan, magenta, geel, zwart
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1238"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1252"/>
         <source>&lt;h3&gt;format_number() function&lt;/h3&gt;
 Returns a number formatted with the locale separator for thousands. 
 Also truncates the number to the number of supplied places. 
@@ -65668,7 +65697,7 @@ De functie rondt het getal ook af op het opgegeven aantal decimalen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2134"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2148"/>
         <source>&lt;h3&gt;year() function&lt;/h3&gt;
 Extract the year part from a date, or the number of years
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -65766,7 +65795,7 @@ Componten tussen [ ] zijn optioneel
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1578"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1592"/>
         <source>&lt;h3&gt;randf() function&lt;/h3&gt;
 Returns a random float within the range specified by the minimum and 
 maximum argument (inclusive).
@@ -65801,7 +65830,7 @@ De functie heeft twee argumenten.
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2109"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2123"/>
         <source>&lt;h3&gt;xmin function&lt;/h3&gt;
 Returns the minimum x coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -65830,7 +65859,7 @@ geom &amp;rarr; een geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1742"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1756"/>
         <source>&lt;h3&gt;scale_linear() function&lt;/h3&gt;
 Transforms a given value from an input domain to an output range using linear interpolation. 
 
@@ -65873,7 +65902,7 @@ scale_linear(&lt;i&gt;val&lt;/i&gt;,&lt;i&gt;domain_min&lt;/i&gt;,&lt;i&gt;domai
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1992"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2006"/>
         <source>&lt;h3&gt;trim() function&lt;/h3&gt;
 Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 
@@ -65903,7 +65932,7 @@ Verwijdert alle spaties en tabs aan het begin en aan het eind van een tekst
      trim(&apos;   hallo wereld    &apos;) &amp;rarr; &apos;hallo wereld&apos;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1485"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1499"/>
         <source>&lt;h3&gt;minute() function&lt;/h3&gt;
 Extract the minute from a datetime or time, or the number of minutes
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -65945,7 +65974,7 @@ Geeft de minuut uit een datumtijd of tijd terug, of het aantal minuten uit een &
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="517"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="531"/>
         <source>&lt;h3&gt;age() function&lt;/h3&gt;
 Returns the difference between two dates.
 &lt;br&gt;&lt;br&gt;
@@ -66011,7 +66040,7 @@ gebruik &lt;code&gt;day&lt;/code&gt; om het aantal dagen terug te krijgen&lt;br&
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1411"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1425"/>
         <source>&lt;h3&gt;log10() function&lt;/h3&gt;
 Returns the value of the base 10 logarithm of the passed expression.
 &lt;br&gt;
@@ -66055,7 +66084,7 @@ This group contains functions to convert on data type to another e.g string to i
 Deze groep bevat functies om gegevens te converteren naar een ander type, bijvoorbeeld tekst naar getallen, of getallen naar tekst.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="934"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="948"/>
         <source>&lt;h3&gt;cos() function&lt;/h3&gt;
 Returns cosinus of an angle.
 
@@ -66084,7 +66113,7 @@ Geeft de cosinus van een hoek terug.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="482"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="496"/>
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
@@ -66093,7 +66122,7 @@ Deze groep bevat operatoren, bijvoorbeeld +, - en *
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1762"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1776"/>
         <source>&lt;h3&gt;second() function&lt;/h3&gt;
 Extract the seconds from a datetime or time, or the number of seconds
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -66136,7 +66165,7 @@ Geeft de seconde uit een datumtijd of tijd terug, of het aantal seconden uit een
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="563"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="577"/>
         <source>&lt;h3&gt;atan() function&lt;/h3&gt;
 Returns arcustanget of a value in radians.
 
@@ -66192,7 +66221,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1869"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1883"/>
         <source>&lt;h3&gt;title() function&lt;/h3&gt;
 Converts all words of a string to title case (all words lower case with leading
 capital letter).
@@ -66224,7 +66253,7 @@ Zet een tekst om naar titelformaat (alle woorden in kleine letters, met hoofdlet
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1595"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1609"/>
         <source>&lt;h3&gt;regexp_match() function&lt;/h3&gt;
 Returns true if any part of a string matches the supplied regular expression.
 
@@ -66257,7 +66286,7 @@ Geeft true terug als enig deel van een tekenreeks overeenkomt met de opgegeven r
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1827"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1841"/>
         <source>&lt;h3&gt;substr() function&lt;/h3&gt;
 Return a part of a string
 
@@ -66292,7 +66321,7 @@ Geeft een deel van een tekst terug
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1049"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1063"/>
         <source>&lt;h3&gt;format() function&lt;/h3&gt;
 Format a string using supplied arguments. 
 
@@ -66323,7 +66352,7 @@ Formatteert een tekst met opgegeven argumenten.
 &lt;code&gt;format(&apos;Dit %1 een %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; Dit is een test&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1610"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1624"/>
         <source>&lt;h3&gt;regexp_replace() function&lt;/h3&gt;
 Returns a string with the supplied regular expression replaced.
 
@@ -66358,7 +66387,7 @@ Geeft een tekenreeks terug waarin de opgegeven reguliere expressie is vervangen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1626"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1640"/>
         <source>&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
 Returns the portion of a string which matches a supplied regular expression.
 
@@ -66420,7 +66449,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="861"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="875"/>
         <source>
 &lt;h3&gt;color_rgba() function&lt;/h3&gt;
 Returns a string representation of a color based on its red, green, blue, and alpha (transparency) components
@@ -66487,7 +66516,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="450"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="464"/>
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
@@ -66495,7 +66524,7 @@ This group contains math functions e.g square root, sin and cos
 Deze groep bevat wiskundige functies zoals wortel, sinus en cosinus</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1471"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1485"/>
         <source>&lt;h3&gt;min() function&lt;/h3&gt;
 Returns the smallest value in a set of values.
 
@@ -66526,7 +66555,7 @@ Geeft de minimum waarde van een set.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1427"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1441"/>
         <source>&lt;h3&gt;lower() function&lt;/h3&gt;
 Converts a string to lower case letters.
 
@@ -66581,7 +66610,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="488"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="502"/>
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
@@ -66589,7 +66618,7 @@ This group contains functions that operate on strings e.g replace, convert to up
 Deze groep bevat functies voor het bewerken van tekst, bijvoorbeeld &apos;zoek en vervang&apos; en omzetten naar hoofdletters.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="893"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="907"/>
         <source>&lt;h3&gt;concat() function&lt;/h3&gt;
 Concatenates several strings to one.
 
@@ -66620,7 +66649,7 @@ Voegt meerdere tekst-strings samen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="721"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="735"/>
         <source>&lt;h3&gt;coalesce() function&lt;/h3&gt;
 Returns the first non-NULL value from the expression list.
 &lt;br&gt;
@@ -66662,7 +66691,7 @@ Deze functie kan meerdere argumenten meekrijgen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="550"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="564"/>
         <source>&lt;h3&gt;asin() function&lt;/h3&gt;
 Returns arcussinus of a value in radians.
 
@@ -66691,7 +66720,7 @@ Geeft de arcsinus van een waarde in radialen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1897"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1911"/>
         <source>&lt;h3&gt;todatetime() function&lt;/h3&gt;
 Convert a string into Qt data time type.
 
@@ -66720,7 +66749,7 @@ Converteert een tekst naar Qt data time type.
 &lt;code&gt;todatetime(&apos;2014-02-14 12:50:00&apos;) &amp;rarr; 2014-02-14T12:50:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1063"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1077"/>
         <source>&lt;h3&gt;format_date() function&lt;/h3&gt;
 Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
 
@@ -67074,7 +67103,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1856"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1870"/>
         <source>&lt;h3&gt;tan() function&lt;/h3&gt;
 Returns tangent of an angle.
 
@@ -67132,7 +67161,7 @@ Geen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1378"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1392"/>
         <source>&lt;h3&gt;ln() function&lt;/h3&gt;
 Returns the value of the natural logarithm of the passed expression.
 &lt;br&gt;
@@ -67168,7 +67197,7 @@ Deze functie heeft één argument.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="827"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="841"/>
         <source>&lt;h3&gt;color_hsva() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, value and alpha (transparency) attributes
 

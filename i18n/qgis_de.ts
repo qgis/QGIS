@@ -5,47 +5,48 @@
     <name>@default</name>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Fehler</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <source>Cannot create unit test for that algorithm execution. The output cannot be a temporary file</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Unit Test für diesen Algorithmus verfügbar. Ausgabe in temporäre Datei nicht möglich</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;body&gt;&lt;h2&gt;Algorithm description&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;&lt;h2&gt;Algorithmus Beschreibung&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Input parameters&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Eingangsparameter&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Outputs&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Ausgabe&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Algorithm author: %s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;Algorithmus Author: %s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Help author: %s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;Hilfe Author: %s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Algorithm version: %s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;Algorithmus Version: %s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Uncaught error executing %s.
 See log for more information</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht abgefangener Fehler beim Ausführen von %s.
+Das Logfile hat mehr Information darüber</translation>
     </message>
     <message>
         <source>Executing iteration %s/%s...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausführung von Schleife %s/%s...</translation>
     </message>
 </context>
 <context>
@@ -60,202 +61,206 @@ See log for more information</source>
     <name>AddModelFromFileAction</name>
     <message>
         <source>Add model from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Füge Model aus Datei hinzu</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Werkzeuge</translation>
+        <translation>Werkzeuge</translation>
     </message>
     <message>
         <source>Open model</source>
-        <translation type="unfinished">Modell öffnen</translation>
+        <translation>Modell öffnen</translation>
     </message>
     <message>
         <source>Processing model files (*.model *.MODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Prozessiere Model Dateien (*.model *.MODEL)</translation>
     </message>
     <message>
         <source>Error reading model</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Lesen des Modells</translation>
     </message>
     <message>
         <source>The selected file does not contain a valid model</source>
-        <translation type="unfinished"></translation>
+        <translation>Die gewählte Datei enthält kein gültiges Modell</translation>
     </message>
     <message>
         <source>Cannot read file</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann Datei nicht lesen</translation>
     </message>
 </context>
 <context>
     <name>AddScriptFromFileAction</name>
     <message>
         <source>Add script from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Füge Script aus Datei hinzu</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Werkzeuge</translation>
+        <translation>Werkzeuge</translation>
     </message>
     <message>
         <source>Script files</source>
-        <translation type="unfinished"></translation>
+        <translation>Script Dateien</translation>
     </message>
     <message>
         <source>Script files (*.py *.PY)</source>
-        <translation type="unfinished"></translation>
+        <translation>Skript Dateien (*.py *.PY)</translation>
+    </message>
+    <message>
+        <source>Script filesÂ (*.py *.PY)</source>
+        <translation type="obsolete">Skript Dateien (*.py *.PY)</translation>
     </message>
     <message>
         <source>Error reading script</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Lesen des Skripts</translation>
     </message>
     <message>
         <source>The selected file does not contain a valid script</source>
-        <translation type="unfinished"></translation>
+        <translation>Die gewählte Datei enthält kein gültiges Skript</translation>
     </message>
 </context>
 <context>
     <name>AlgorithmProvider</name>
     <message>
         <source>Activate</source>
-        <translation type="unfinished">Einschalten</translation>
+        <translation>Einschalten</translation>
     </message>
     <message>
         <source>Generic algorithm provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Generischer Algorithmus Anbieter</translation>
     </message>
 </context>
 <context>
     <name>BatchInputSelectionPanel</name>
     <message>
         <source>Select from open layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle aus geöffneten Layern</translation>
     </message>
     <message>
         <source>Select from filesystem</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle vom Dateisystem</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation type="unfinished">Datei öffnen</translation>
+        <translation>Datei öffnen</translation>
     </message>
     <message>
         <source>All files(*.*);;</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Dateien (*.*);;</translation>
     </message>
 </context>
 <context>
     <name>BatchOutputSelectionPanel</name>
     <message>
         <source>Save file</source>
-        <translation type="unfinished">Datei speichern</translation>
+        <translation>Datei speichern</translation>
     </message>
 </context>
 <context>
     <name>BatchProcessingDialog</name>
     <message>
         <source>Batch Processing - %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Stapelverarbeitung - %s</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeige fortgeschrittene Parameter</translation>
     </message>
     <message>
         <source>Add row</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeile hinzufügen</translation>
     </message>
     <message>
         <source>Delete row</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeile löschen</translation>
     </message>
     <message>
         <source>Load in QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Lade in QGIS</translation>
     </message>
     <message>
         <source>&lt;b&gt;Missing parameter value: %s (row %d)&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Fehlender Parameterwert: %s (Zeile %d)&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Wrong or missing parameter value: %s (row %d)&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Falscher oder fehlender Parameterwert: %s (Zeile %d)&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Processing algorithm %d/%d...</source>
-        <translation type="unfinished"></translation>
+        <translation>Verarbeitungsalgorithmus %d/%d...</translation>
     </message>
     <message>
         <source>&lt;b&gt;Algorithm %s starting...&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Algorithmus %s startet...&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Algorithm %s correctly executed...</source>
-        <translation type="unfinished"></translation>
+        <translation>Algorithmus %s korrekt ausgeführt...</translation>
     </message>
     <message>
         <source>Batch processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Stapelverarbeitung</translation>
     </message>
     <message>
         <source>Batch processing successfully completed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Stapelverarbeitung erfolgreich durchgeführt!</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Ja</translation>
+        <translation>Ja</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Nein</translation>
+        <translation>Nein</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Verstecke fortgeschrittene Parameter</translation>
     </message>
 </context>
 <context>
     <name>CalculatorModelerAlgorithm</name>
     <message>
         <source>Calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechner</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Modeler Werkzeuge</translation>
     </message>
     <message>
         <source>Formula</source>
-        <translation type="unfinished"></translation>
+        <translation>Formel</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation type="unfinished"></translation>
+        <translation>Ergebnis</translation>
     </message>
     <message>
         <source>Wrong formula: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Falsche Formel: %s</translation>
     </message>
 </context>
 <context>
     <name>CalculatorModelerParametersDialog</name>
     <message>
-        <source>You can refer to model values in you formula, using single-letter variables, as follows:
+        <source>You can refer to model values in your formula, using single-letter variables, as follows:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Es kann bezug auf die Modell-Werte innerhalb der Formeln mit Hilfe von Variablen wie folgt genommen werden:</translation>
     </message>
     <message>
         <source>
  - No numerical variables are available.</source>
-        <translation type="unfinished"></translation>
+        <translation> - Keine numerischen Variablen verfügbar.</translation>
     </message>
     <message>
         <source>[Enter your formula here]</source>
-        <translation type="unfinished">[Formel hier eingeben]</translation>
+        <translation>[Formel hier eingeben]</translation>
     </message>
     <message>
         <source>Calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechner</translation>
     </message>
 </context>
 <context>
@@ -282,15 +287,15 @@ See log for more information</source>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Allgemein</translation>
+        <translation>Allgemein</translation>
     </message>
     <message>
         <source>Models</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelle</translation>
     </message>
     <message>
         <source>Scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Skripte</translation>
     </message>
     <message>
         <source>Providers</source>
@@ -367,29 +372,29 @@ See log for more information</source>
     <name>CouldNotLoadResultsDialog</name>
     <message>
         <source>Problem loading output layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Problem beim Laden der Ausgabelayer</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Schließen</translation>
+        <translation>Schließen</translation>
     </message>
 </context>
 <context>
     <name>CreateNewModelAction</name>
     <message>
         <source>Create new model</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge neues Modell</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Werkzeuge</translation>
+        <translation>Werkzeuge</translation>
     </message>
 </context>
 <context>
     <name>CreateNewScriptAction</name>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Werkzeuge</translation>
+        <translation>Werkzeuge</translation>
     </message>
 </context>
 <context>
@@ -1479,30 +1484,30 @@ laden</translation>
     <name>DeleteModelAction</name>
     <message>
         <source>Delete model</source>
-        <translation type="unfinished"></translation>
+        <translation>Lösche Modell</translation>
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished">Bestätigung</translation>
+        <translation>Bestätigung</translation>
     </message>
     <message>
         <source>Are you sure you want to delete this model?</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Modell wirklich löschen?</translation>
     </message>
 </context>
 <context>
     <name>DeleteScriptAction</name>
     <message>
         <source>Delete script</source>
-        <translation type="unfinished"></translation>
+        <translation>Lösche Skript</translation>
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished">Bestätigung</translation>
+        <translation>Bestätigung</translation>
     </message>
     <message>
         <source>Are you sure you want to delete this script?</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Skript sicher löschen?</translation>
     </message>
 </context>
 <context>
@@ -3352,33 +3357,33 @@ Geometriespate - Spalte mit eindeutigen ganzahligen Werden</translation>
     <name>EditModelAction</name>
     <message>
         <source>Edit model</source>
-        <translation type="unfinished"></translation>
+        <translation>Editiere Modell</translation>
     </message>
 </context>
 <context>
     <name>EditScriptAction</name>
     <message>
         <source>Edit script</source>
-        <translation type="unfinished"></translation>
+        <translation>Editiere Skript</translation>
     </message>
 </context>
 <context>
     <name>ExtentSelectionPanel</name>
     <message>
         <source>[Leave blank to use min covering extent]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Freilassen, um min Abdeckungsumfang zu nutzen]</translation>
     </message>
     <message>
         <source>Use layer/canvas extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutze Layer/Leinwand Ausdehnung</translation>
     </message>
     <message>
         <source>Select extent on canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle Ausdehnung auf Leinwand</translation>
     </message>
     <message>
         <source>Use min covering extent from input layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutze minimale Abdeckungsausmasse von Eingangslayern</translation>
     </message>
 </context>
 <context>
@@ -3481,41 +3486,41 @@ Geometriespate - Spalte mit eindeutigen ganzahligen Werden</translation>
     <name>FileSelectionPanel</name>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Select folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle Ordner</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation type="unfinished">Datei öffnen</translation>
+        <translation>Datei öffnen</translation>
     </message>
 </context>
 <context>
     <name>FixedTableDialog</name>
     <message>
         <source>Fixed Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixe Tabelle</translation>
     </message>
     <message>
         <source>Add row</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeile hinzufügen</translation>
     </message>
     <message>
         <source>Remove row</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeile entfernen</translation>
     </message>
 </context>
 <context>
     <name>FixedTablePanel</name>
     <message>
         <source>Fixed table %dx%d</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixe Tabelle %dx%d</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -5226,30 +5231,34 @@ Der &apos;Grau&apos;-wert (aus GDAL 1.7) ermöglicht Datensätze mit einer Farbt
     <name>GeoAlgorithm</name>
     <message>
         <source>Uncaught error while executing algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht erfasste Fehler bei der Ausführung von Algorithmus</translation>
     </message>
     <message>
         <source>
 See log for more details</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Logdatei enthält mehr Details</translation>
     </message>
     <message>
         <source>Converting outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Konvertierung der Ausgabe</translation>
     </message>
     <message>
         <source>&lt;p&gt;Oooops! The following output layers could not be open&lt;/p&gt;&lt;ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Uuuuuups! Die folgenden Ausgabelayer konnten nicht geöffnet werden&lt;/p&gt;&lt;ul&gt;</translation>
     </message>
     <message>
         <source>&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;</translation>
     </message>
     <message>
         <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you see why those layers were not created as expected&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;/ul&gt;&lt;p&gt;Diese Dateien konnten nicht geöffnet werden was möglicherweise auf eine falsche Erzeugung durch die Algorithmen hinweist&lt;/p&gt;&lt;p&gt;In der Logdatei stehen möglicherweise Hinweise um das Problem zu beheben&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you seewhy those layers were not created as expected&lt;/p&gt;</source>
+        <translation type="obsolete">&lt;/ul&gt;&lt;p&gt;Diese Dateien konnten nicht geöffnet werden weil sie möglicherweise nicht korrekt erzeugt wurde&lt;/p&gt;&lt;p&gt;Die Logdatei hilft beim Überprüfen und finden des Fehlers&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -5589,81 +5598,81 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <name>GetModelsAction</name>
     <message>
         <source>Get models from on-line scripts collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Hole Modelle aus der Online Auswahl</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Werkzeuge</translation>
+        <translation>Werkzeuge</translation>
     </message>
     <message>
         <source>Connection problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbindungsproblem</translation>
     </message>
     <message>
         <source>Could not connect to scripts/models repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte nicht zum Skript/Modell Repository verbinden</translation>
     </message>
 </context>
 <context>
     <name>GetScriptsAction</name>
     <message>
         <source>Get scripts from on-line scripts collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Hole Skripte aus der Online Auswahl</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Werkzeuge</translation>
+        <translation>Werkzeuge</translation>
     </message>
     <message>
         <source>Connection problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbindungsproblem</translation>
     </message>
     <message>
         <source>Could not connect to scripts/models repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte nicht zum Skript/Modell Repository verbinden</translation>
     </message>
 </context>
 <context>
     <name>GetScriptsAndModelsDialog</name>
     <message>
         <source>&lt;h3&gt; Processing resources manager &lt;/h3&gt;&lt;p&gt;Check/uncheck algorithms in the tree to select the ones that you want to install or remove&lt;/p&gt;&lt;p&gt;Algorithms are divided in 3 groups:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Installed:&lt;/b&gt; Algorithms already in your system, with the latest version available&lt;/li&gt;&lt;li&gt;&lt;b&gt;Upgradable:&lt;/b&gt; Algorithms already in your system, but with a newer version available in the server&lt;/li&gt;&lt;li&gt;&lt;b&gt;Not installed:&lt;/b&gt; Algorithms not installed in your system&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt; Prozessierungsressourcen Manager&lt;/h3&gt;&lt;p&gt;Selektiere/Deselektiere Algorithmen im Baun um jene auszuwählen die installiert oder entfernt werden sollen&lt;/p&gt;&lt;p&gt;Algorithmen sind in 3 Gruppen aufgeteilt:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Installierte:&lt;/b&gt; Algorithmen die sich bereits in der letzten verfügbaren Version im System befinden&lt;/li&gt;&lt;li&gt;&lt;b&gt;Aktualisierbare:&lt;/b&gt; Algorithmen die sich bereits auf dem System befinden, aber in aktualisierbarer Version auf dem Server verfügbar sind&lt;/li&gt;&lt;li&gt;&lt;b&gt;Nicht installierte:&lt;/b&gt; Algorithmen die nicht am System installiert sind&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>Installed</source>
-        <translation type="unfinished">Installiert</translation>
+        <translation>Installiert</translation>
     </message>
     <message>
-        <source>Upgradable</source>
-        <translation type="unfinished"></translation>
+        <source>Updatable</source>
+        <translation>Aktualisierbar</translation>
     </message>
     <message>
         <source>Not installed</source>
-        <translation type="unfinished">Nicht installiert</translation>
+        <translation>Nicht installiert</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Description:&lt;/b&gt;%s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Beschreibung:&lt;/b&gt;%s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Created by:&lt;/b&gt;%s</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Erstellt von:&lt;/b&gt;%s</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Version:&lt;/b&gt;%s</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Version:&lt;/b&gt;%s</translation>
     </message>
     <message>
         <source>&lt;h2&gt;No detailed description available for this script&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Keine detaillierte Beschreibung für dieses Skript verfügbar&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Connection problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbindungsproblem</translation>
     </message>
     <message>
         <source>Could not download file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei %s konnte nicht runtergeladen werden.</translation>
     </message>
 </context>
 <context>
@@ -5955,11 +5964,11 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <name>HelpEditionDialog</name>
     <message>
         <source>Cannot open help file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Hilfe-Datei %s konnte nicht geöffnet werden</translation>
     </message>
     <message>
         <source>Error saving help file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Speichern der Hilfe-Datei</translation>
     </message>
     <message>
         <source>Help file could not be saved.
@@ -5967,30 +5976,34 @@ Check that you have permission to modify the help
 file. You might not have permission if you are 
 editing an example model or script, since they 
 are stored on the installation folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilfe Datei konnte nicht gespeichert werden.
+Bitte die Berechtigungen überprüfen. Möglicherweise 
+wurde die Hilfe eines Beispielskripts verändert und 
+versucht zu Speichern was aufgrund der Berechtigungen 
+im Installationsverzeichnis nicht erlaubt ist.</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Algorithm description&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Algorithmus Beschreibung&lt;/h2</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Input parameters&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Eingangsparameter&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Outputs&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Ausgabe&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Algorithm description</source>
-        <translation type="unfinished"></translation>
+        <translation>Algorithmus Beschreibung</translation>
     </message>
     <message>
         <source>Input parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingangs Parameter</translation>
     </message>
     <message>
         <source>Outputs</source>
@@ -5998,15 +6011,15 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Algorithm created by</source>
-        <translation type="unfinished"></translation>
+        <translation>Algorithmus erstellt von</translation>
     </message>
     <message>
         <source>Algorithm help written by</source>
-        <translation type="unfinished"></translation>
+        <translation>Algorithmus Hilfe Datei geschrieben von</translation>
     </message>
     <message>
         <source>Algorithm version</source>
-        <translation type="unfinished"></translation>
+        <translation>Alorithmus Version</translation>
     </message>
 </context>
 <context>
@@ -6041,7 +6054,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Log files (*.log *.LOG)</source>
-        <translation type="unfinished"></translation>
+        <translation>Log Dateien (*.log *.LOG)</translation>
     </message>
     <message>
         <source>Create test</source>
@@ -6077,64 +6090,67 @@ are stored on the installation folder</source>
     <name>InputLayerSelectorPanel</name>
     <message>
         <source>All files(*.*);;</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Dateien (*.*);;</translation>
     </message>
 </context>
 <context>
     <name>InvalidParameterValue</name>
     <message>
         <source>Run</source>
-        <translation type="unfinished"></translation>
+        <translation>Starte</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">Parameter</translation>
+        <translation>Parameter</translation>
     </message>
     <message>
         <source>Log</source>
-        <translation type="unfinished"></translation>
+        <translation>Log</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Sorry, no help is available for this algorithm.&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Sorry, keine Hilfe für diesen Algorithmus verfügbar.&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Could not open help file :-( &lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Die Hilfe Datei konnte nicht geöffnet werden :-( &lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Unmatching CRS&apos;s</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht übereinstimmende CRS&apos;s</translation>
     </message>
     <message>
         <source>Layers do not all use the same CRS. This can cause unexpected results.
 Do you want tocontinue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Layer verwenden nicht alle dasselbe Koordinatensystem. Dies kann zu unerwarteten Ergebnissen führen.
+Fortfahren?
+</translation>
     </message>
     <message>
         <source>Unable to execute algorithm</source>
-        <translation type="unfinished">Konnte Anweisung nicht ausführen</translation>
+        <translation>Konnte Anweisung nicht ausführen</translation>
     </message>
     <message>
         <source>Processing algorithm...</source>
-        <translation type="unfinished"></translation>
+        <translation>Verarbeite Algorithmus...</translation>
     </message>
     <message>
         <source>&lt;b&gt;Algorithm %s starting...&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Algorithmus %s startet...&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Missing parameter value: %s&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Fehlender Parameterwert: %s&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished">Falsche oder fehlende Parameterwerte</translation>
+        <translation>Falsche oder fehlende Parameterwerte</translation>
     </message>
     <message>
         <source>HTML output has been generated by this algorithm.
 Open the results dialog to check it.</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML Ausgabe wurde vom Algorithmus erzeugt.
+Zum Überprüfen Ergebnis Dialog öffnen.</translation>
     </message>
 </context>
 <context>
@@ -7533,11 +7549,11 @@ Funktioniert auf allen ändernbaren Layern</translation>
     <name>MessageBarProgress</name>
     <message>
         <source>Executing algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Führe Algorithmus aus</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Fehler</translation>
+        <translation>Fehler</translation>
     </message>
 </context>
 <context>
@@ -7868,80 +7884,84 @@ Funktioniert auf allen ändernbaren Layern</translation>
     <message>
         <source>&lt;h3&gt;Missing dependency.This algorithm cannot be run :-( &lt;/h3&gt;
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Fehlende Abhängigkeiten. Dieser Algorithmus kann nicht ausgeführt werden :-( &lt;/h3&gt;
+%s</translation>
     </message>
     <message>
         <source>Missing dependency</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehlende Abhängigkeit</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Schließen</translation>
+        <translation>Schließen</translation>
     </message>
 </context>
 <context>
     <name>ModelerAlgorithm</name>
     <message>
         <source>Model</source>
-        <translation type="unfinished">Modell</translation>
+        <translation>Modell</translation>
     </message>
     <message>
         <source>Wrong value: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Falscher Wert: %s</translation>
     </message>
     <message>
         <source>Prepare algorithm: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Bereite Algorithmus vor: %s</translation>
     </message>
     <message>
         <source>Running %s [%i/%i]</source>
-        <translation type="unfinished"></translation>
+        <translation>Verarbeite %s [%i/%i]</translation>
     </message>
     <message>
         <source>OK. Execution took %0.3f ms (%i outputs).</source>
-        <translation type="unfinished"></translation>
+        <translation>OK. Ausführung dauerte %0.3f ms (%i Ausgaben).</translation>
     </message>
     <message>
         <source>Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehlgeschlagen</translation>
     </message>
     <message>
         <source>Error executing algorithm %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler in Algorithmusausführung %s
+%s</translation>
     </message>
     <message>
         <source>Model processed ok. Executed %i algorithms total</source>
-        <translation type="unfinished"></translation>
+        <translation>Modellverarbeitung OK. Ausgeführte Anzahl der Algorithmen: %i</translation>
     </message>
     <message>
         <source>Error in parameter line: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler in Parameterzeile: %s</translation>
     </message>
     <message>
         <source>Error in algorithm name: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler in Algorithmusname: %s</translation>
     </message>
     <message>
         <source>Error in model definition line: %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler in Modelldefinition Zeile: %s
+%s</translation>
     </message>
 </context>
 <context>
     <name>ModelerAlgorithmProvider</name>
     <message>
         <source>Models folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Modellverzeichnis</translation>
     </message>
     <message>
         <source>Models</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelle</translation>
     </message>
     <message>
         <source>Could not load model %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Modell nicht laden %s
+%s</translation>
     </message>
 </context>
 <context>
@@ -7952,11 +7972,11 @@ Funktioniert auf allen ändernbaren Layern</translation>
     </message>
     <message>
         <source>[Enter model name here]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Modellname]</translation>
     </message>
     <message>
         <source>[Enter group name here]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Gruppenname]</translation>
     </message>
     <message>
         <source>Message</source>
@@ -8010,12 +8030,13 @@ Funktioniert auf allen ändernbaren Layern</translation>
     </message>
     <message>
         <source>Processing models (*.model *.MODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Auswertungsmodelle (*.model *.MODEL)</translation>
     </message>
     <message>
         <source>Could not load model %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Modell %s nicht laden
+%s</translation>
     </message>
     <message>
         <source>The selected model could not be loaded.
@@ -8025,7 +8046,7 @@ Mehr Informationen.im Protokoll.</translation>
     </message>
     <message>
         <source>Geoalgorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>Geoalgorithmen</translation>
     </message>
     <message>
         <source>Model doesn&apos;t contains any algorithms and/or parameters and can&apos;t be executed</source>
@@ -8060,206 +8081,206 @@ Mehr Informationen.im Protokoll.</translation>
     <name>ModelerOnlyAlgorithmProvider</name>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Modell Werkzeuge</translation>
     </message>
 </context>
 <context>
     <name>ModelerParameterDefinitionDialog</name>
     <message>
         <source>Parameter definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameter Definitionen</translation>
     </message>
     <message>
         <source>Parameter name</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameter Namen</translation>
     </message>
     <message>
         <source>Checked</source>
-        <translation type="unfinished"></translation>
+        <translation>Überprüft</translation>
     </message>
     <message>
         <source>Parent layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Übergeordneter Layer</translation>
     </message>
     <message>
         <source>Required</source>
-        <translation type="unfinished"></translation>
+        <translation>Erforderlich</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Ja</translation>
+        <translation>Ja</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Nein</translation>
+        <translation>Nein</translation>
     </message>
     <message>
         <source>Shape type</source>
-        <translation type="unfinished"></translation>
+        <translation>Shape Typ</translation>
     </message>
     <message>
         <source>Any</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeder</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Linie</translation>
+        <translation>Linie</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">Polygon</translation>
+        <translation>Polygon</translation>
     </message>
     <message>
         <source>Mandatory</source>
-        <translation type="unfinished"></translation>
+        <translation>Erforderlich</translation>
     </message>
     <message>
         <source>Data type</source>
-        <translation type="unfinished"></translation>
+        <translation>Daten Typ</translation>
     </message>
     <message>
         <source>Vector (any)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector (jeder)</translation>
     </message>
     <message>
         <source>Vector (point)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector (Punkt)</translation>
     </message>
     <message>
         <source>Vector (line)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektor (Linie)</translation>
     </message>
     <message>
         <source>Vector (polygon)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektor (Polygon)</translation>
     </message>
     <message>
         <source>Raster</source>
-        <translation type="unfinished">Raster</translation>
+        <translation>Raster</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Tabelle</translation>
+        <translation>Tabelle</translation>
     </message>
     <message>
         <source>Min/Max values</source>
-        <translation type="unfinished"></translation>
+        <translation>Min/Max Werte</translation>
     </message>
     <message>
         <source>Default value</source>
-        <translation type="unfinished">Vorgabewert</translation>
+        <translation>Vorgabewert</translation>
     </message>
     <message>
         <source>0</source>
-        <translation type="unfinished">0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished">Datei</translation>
+        <translation>Datei</translation>
     </message>
     <message>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner</translation>
     </message>
     <message>
         <source>Unable to define parameter</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht in der Lage Parameter zu definieren</translation>
     </message>
     <message>
         <source>Invalid parameter name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültiger Parameter Name</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished">Falsche oder fehlende Parameterwerte</translation>
+        <translation>Falsche oder fehlende Parameterwerte</translation>
     </message>
 </context>
 <context>
     <name>ModelerParametersDialog</name>
     <message>
         <source>Description</source>
-        <translation type="unfinished">Beschreibung</translation>
+        <translation>Beschreibung</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeige erweiterte Parameter</translation>
     </message>
     <message>
         <source>Parent algorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>Übergeordneter Algorithmus</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">Parameter</translation>
+        <translation>Parameter</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Sorry, no help is available for this algorithm.&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Sorry, keine Hilfe für diesen Algorithmus verfügbar.&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Could not open help file :-( &lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Hilfe Datei konnte nicht geöffnet werden :-( &lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Verstecke erweiterte Parameter</translation>
     </message>
     <message>
         <source>&apos;%s&apos; from algorithm &apos;%s&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%s&apos; von Algorithmus &apos;%s&apos;</translation>
     </message>
     <message>
         <source>Unable to add algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht in der Lage Algorithmus hinzuzufügen</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished">Falsche oder fehlende Parameterwerte</translation>
+        <translation>Falsche oder fehlende Parameterwerte</translation>
     </message>
 </context>
 <context>
     <name>MultilineTextPanel</name>
     <message>
         <source>[Use text below]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Benutze Text unterhalb]</translation>
     </message>
 </context>
 <context>
     <name>MultipleFileInputDialog</name>
     <message>
         <source>Multiple selection</source>
-        <translation type="unfinished">Mehrfachauswahl</translation>
+        <translation>Mehrfachauswahl</translation>
     </message>
     <message>
         <source>Select the file(s) to use</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle zu benutzende Dateien</translation>
     </message>
     <message>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Alle Dateien (*.*)</translation>
+        <translation>Alle Dateien (*.*)</translation>
     </message>
 </context>
 <context>
     <name>MultipleFileInputPanel</name>
     <message>
         <source>0 elements selected</source>
-        <translation type="unfinished"></translation>
+        <translation>0 Elemente ausgewählt</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>%d elements selected</source>
-        <translation type="unfinished"></translation>
+        <translation>%d Elemente ausgewählt</translation>
     </message>
 </context>
 <context>
@@ -8427,25 +8448,25 @@ Mehr Informationen.im Protokoll.</translation>
     <name>OutputFile</name>
     <message>
         <source>All files(*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Dateien (*.*)</translation>
     </message>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s Dateien(*.%s)</translation>
     </message>
 </context>
 <context>
     <name>OutputHTML</name>
     <message>
         <source>HTML files(*.html)</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML Dateien (*.html)</translation>
     </message>
 </context>
 <context>
     <name>OutputRaster</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s Dateien (*.%s)</translation>
     </message>
 </context>
 <context>
@@ -8479,7 +8500,7 @@ Mehr Informationen.im Protokoll.</translation>
     <name>OutputVector</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s Dateien (*.%s)</translation>
     </message>
 </context>
 <context>
@@ -8508,70 +8529,70 @@ Mehr Informationen.im Protokoll.</translation>
     <name>ParameterMultipleInput</name>
     <message>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Alle Dateien (*.*)</translation>
+        <translation>Alle Dateien (*.*)</translation>
     </message>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s Dateien (*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParameterRaster</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s Dateien (*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParameterTable</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s Dateien (*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParameterVector</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s Dateien (*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParametersDialog</name>
     <message>
         <source>[Not selected]</source>
-        <translation type="unfinished"></translation>
+        <translation>[nicht gewählt]</translation>
     </message>
 </context>
 <context>
     <name>ParametersPanel</name>
     <message>
         <source>[Not selected]</source>
-        <translation type="unfinished"></translation>
+        <translation>[nicht gewählt]</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeige fortgeschrittene Parameter</translation>
     </message>
     <message>
         <source> [optional]</source>
-        <translation type="unfinished"></translation>
+        <translation> [optional]</translation>
     </message>
     <message>
         <source>Iterate over this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Iteriere über diesen Layer</translation>
     </message>
     <message>
         <source>Open output file after running algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Öffne Ausgabedatei nach erfolgreicher Ausführung</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Verstecke erweiterte Parameter</translation>
     </message>
     <message>
         <source>[not set]</source>
-        <translation type="unfinished"></translation>
+        <translation>[nicht gesetzt]</translation>
     </message>
 </context>
 <context>
@@ -8592,7 +8613,7 @@ Mehr Informationen.im Protokoll.</translation>
     <name>Postprocessing</name>
     <message>
         <source>Loading resulting layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Lade Ergebnis Layer</translation>
     </message>
 </context>
 <context>
@@ -8639,15 +8660,16 @@ Mehr Informationen.im Protokoll.</translation>
     <message>
         <source>Could not load provider: %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Serviceanbieter nicht laden: %s
+%s</translation>
     </message>
     <message>
         <source>Error in %s. Wrong parameter value %s for parameter %s.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler in %s. Falscher Parameterwert %s für Parameter %s.</translation>
     </message>
     <message>
         <source>Error in %s. Missing parameter value for parameter %s.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler in %s. Fehlender Parameterwert for Parameter %s.</translation>
     </message>
 </context>
 <context>
@@ -15315,7 +15337,7 @@ Ausdruckfehler:
     <message>
         <location filename="../src/gui/qgsattributedialog.cpp" line="103"/>
         <source>%1 - Feature Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 - Feature-Attribute</translation>
     </message>
 </context>
 <context>
@@ -26243,7 +26265,7 @@ Parser-Fehler:
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="95"/>
         <source>Layer attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Layer Attribute</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="148"/>
@@ -26537,7 +26559,7 @@ p, li { white-space: pre-wrap; }
         <translation>&apos;Durchmesser&apos; || Durchmesser</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="107"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="108"/>
         <source>Search</source>
         <translation>Suchen</translation>
     </message>
@@ -26602,37 +26624,37 @@ p, li { white-space: pre-wrap; }
         <translation>Größer-Gleich-Operator</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="271"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="272"/>
         <source>Recent (%1)</source>
         <translation>Letztes (%1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="357"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="358"/>
         <source>Parser Error</source>
         <translation>Parsingfehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="359"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="360"/>
         <source>Eval Error</source>
         <translation>Auswertungsfehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="361"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="362"/>
         <source>Expression is invalid &lt;a href=more&gt;(more info)&lt;/a&gt;</source>
         <translation>Ausdruck ist ungültig &lt;a href=more&gt;(mehr Information)&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="390"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="391"/>
         <source>More info on expression error</source>
         <translation>Mehr Informations zum Ausdrucksfehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="422"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="423"/>
         <source>Load top 10 unique values</source>
         <translation>Die ersten zehn eindeutigen Werte laden</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="423"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="424"/>
         <source>Load all unique values</source>
         <translation>Alle eindeutigen Werte laden</translation>
     </message>
@@ -33108,93 +33130,93 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
         <translation>Identifikationsergebnis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="336"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="266"/>
         <source>Layer</source>
         <translation>Layer</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="341"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="271"/>
         <source>FID</source>
         <translation>FID</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="346"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="276"/>
         <source>Attribute</source>
         <translation>Attribut</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="351"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="281"/>
         <source>Value</source>
         <translation>Wert</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="59"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="41"/>
         <source>Expand tree.</source>
         <translation>Baum ausklappen.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="62"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="79"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="96"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="113"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="130"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="150"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="173"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="44"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="61"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="78"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="95"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="112"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="132"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="155"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="127"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="109"/>
         <source>Clear Results</source>
         <translation>Ergebnisse löschen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="298"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="331"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="225"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="207"/>
         <source>Select identify mode</source>
         <translation>Abfragemodus wählen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="228"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="210"/>
         <source>Mode</source>
         <translation>Modus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="269"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="302"/>
         <source>Select view mode for raster layers</source>
         <translation>Rasteranzeigemodus wählen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="272"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="305"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="258"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="240"/>
         <source>Auto open form</source>
         <translation>Formular autom. öffnen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="76"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="58"/>
         <source>Collapse tree.</source>
         <translation>Baum einklappen.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="93"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="75"/>
         <source>New results will be expanded by default.</source>
         <translation>Neue Ergebnisse erscheinen automatisch ausgeklappt.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="147"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="129"/>
         <source>Copy selected feature to clipboard.</source>
         <translation>Gewählte Objekte in Zwischenablage kopieren.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="170"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="152"/>
         <source>Print selected HTML response.</source>
         <translation>Gewählte HTML-Antwort drucken.</translation>
     </message>
@@ -46934,7 +46956,11 @@ Auf Hilfeknopf klicken um die gültigen Erzeugungsoptionen diese Formats zu erfa
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1676"/>
@@ -56553,46 +56579,46 @@ Grund: %2</translation>
     <name>RangePanel</name>
     <message>
         <source>Min</source>
-        <translation type="unfinished">Min</translation>
+        <translation>Min</translation>
     </message>
     <message>
         <source>Max</source>
-        <translation type="unfinished">Max</translation>
+        <translation>Max</translation>
     </message>
 </context>
 <context>
     <name>RasterLayerBoundsAlgorithm</name>
     <message>
         <source>Raster layer bounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterlayer Grenzen</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Modell Werkzeuge</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Layer</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <source>min X</source>
-        <translation type="unfinished"></translation>
+        <translation>min X</translation>
     </message>
     <message>
         <source>max X</source>
-        <translation type="unfinished"></translation>
+        <translation>max X</translation>
     </message>
     <message>
         <source>min Y</source>
-        <translation type="unfinished"></translation>
+        <translation>min Y</translation>
     </message>
     <message>
         <source>max Y</source>
-        <translation type="unfinished"></translation>
+        <translation>max Y</translation>
     </message>
     <message>
         <source>Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Umfang</translation>
     </message>
 </context>
 <context>
@@ -56607,11 +56633,11 @@ Grund: %2</translation>
     <name>RenderingStyleFilePanel</name>
     <message>
         <source>Select style file</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle Style Datei</translation>
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml *.QML)</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS Layer Style Datei (*.qml *.QML)</translation>
     </message>
 </context>
 <context>
@@ -56913,40 +56939,42 @@ Grund: %2</translation>
     <name>ScriptAlgorithm</name>
     <message>
         <source>User scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzer Skripte</translation>
     </message>
     <message>
         <source>Could not load script: %s
 Problem with line: %d</source>
-        <translation type="unfinished"></translation>
+        <translation>Skript konnte nicht geladen werden: %s
+Fehler in Zeile: %d</translation>
     </message>
     <message>
         <source>[Test scripts]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Test Skripte]</translation>
     </message>
     <message>
         <source>[Unnamed algorithm]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Unbenannte Algorithmen]</translation>
     </message>
     <message>
         <source>Could not load script: %s.
 Problem with line %d</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Skript nicht laden: %s.
+Fehler in Zeile %d</translation>
     </message>
 </context>
 <context>
     <name>ScriptAlgorithmProvider</name>
     <message>
         <source>Create new script</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge neues Skript</translation>
     </message>
     <message>
         <source>Scripts folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Skript Verzeichnis</translation>
     </message>
     <message>
         <source>Scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Skripte</translation>
     </message>
 </context>
 <context>
@@ -57263,7 +57291,7 @@ Problem with line %d</source>
     <name>ShowTestDialog</name>
     <message>
         <source>Unit test</source>
-        <translation type="unfinished"></translation>
+        <translation>Unit-Test</translation>
     </message>
 </context>
 <context>
@@ -57449,35 +57477,35 @@ Problem with line %d</source>
     <name>VectorLayerBoundsAlgorithm</name>
     <message>
         <source>Vector layer bounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektorlayer Grenzen</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Modell Werkzeuge</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Layer</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <source>min X</source>
-        <translation type="unfinished"></translation>
+        <translation>min X</translation>
     </message>
     <message>
         <source>max X</source>
-        <translation type="unfinished"></translation>
+        <translation>max X</translation>
     </message>
     <message>
         <source>min Y</source>
-        <translation type="unfinished"></translation>
+        <translation>min Y</translation>
     </message>
     <message>
         <source>max Y</source>
-        <translation type="unfinished"></translation>
+        <translation>max Y</translation>
     </message>
     <message>
         <source>Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Umfang</translation>
     </message>
 </context>
 <context>
@@ -62558,7 +62586,7 @@ Erweiterung wird nicht aktiviert.</translation>
 <context>
     <name>function_help</name>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2033"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2047"/>
         <source>&lt;h3&gt;week() function&lt;/h3&gt;
 Extract the week number from a date, or the number of weeks
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -62662,7 +62690,7 @@ Ergebnis zur&amp;uuml;ckgegeben werden kann.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1657"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1671"/>
         <source>&lt;h3&gt;right() function&lt;/h3&gt;
 Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters of the string.
 
@@ -62706,7 +62734,7 @@ Diese Gruppe enthält Funktionen zur Farbmanipulation
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1364"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1378"/>
         <source>&lt;h3&gt;length() function&lt;/h3&gt;
 Returns the length of a string.
 
@@ -62737,7 +62765,7 @@ Liefert die L&amp;auml;nge einer Zeichenkette.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2019"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2033"/>
         <source>&lt;h3&gt;upper() function&lt;/h3&gt;
 Converts a string to upper case letters.
 
@@ -62768,7 +62796,7 @@ Wandelt eine Zeichenkette in Gro&amp;szlig;buchstaben.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="606"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="620"/>
         <source>&lt;h3&gt;bbox function&lt;/h3&gt;
 Returns 1 if the geometries spatially intersect the bounding box defined and 0 if they don&apos;t.
 
@@ -62798,7 +62826,7 @@ b &amp;rarr; geometrie
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; ergibt 0&lt;/pre</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1348"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1362"/>
         <source>&lt;h3&gt;left() function&lt;/h3&gt;
 Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters of the string.
 
@@ -62862,7 +62890,7 @@ Hinweis: Die Funktion ist nur in einigen Zusammenh&amp;auml;ngen verf&amp;uuml;g
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="673"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="687"/>
         <source>&lt;h3&gt;ceil() function&lt;/h3&gt;
 Rounds a number upwards.
 
@@ -62894,7 +62922,7 @@ Rundet eine Zahl auf.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1937"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1951"/>
         <source>&lt;h3&gt;toreal() function&lt;/h3&gt;
 Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
 
@@ -62928,7 +62956,7 @@ als des Umwandlungsergebnis ist.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2084"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2098"/>
         <source>&lt;h3&gt;xat() function&lt;/h3&gt;
 Retrieves a x coordinate of the current feature
 
@@ -62984,7 +63012,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1809"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1823"/>
         <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
 Return the index of a regular expression in a string.
 
@@ -63023,7 +63051,7 @@ Gibt -1 zur&amp;uuml;ck, wenn der Ausdruck nicht gefunden wurde.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1561"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1575"/>
         <source>&lt;h3&gt;rand() function&lt;/h3&gt;
 Returns a random integer within the range specified by the minimum and 
 maximum argument (inclusive).
@@ -63125,7 +63153,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="646"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="660"/>
         <source>&lt;h3&gt;bounds_width function&lt;/h3&gt;
 Returns the width of the bounding box of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -63154,7 +63182,7 @@ geom &amp;rarr; eine Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1034"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1048"/>
         <source>&lt;h3&gt;floor() function&lt;/h3&gt;
 Rounds a number downwards.
 
@@ -63187,7 +63215,7 @@ Rundet eine Zahl ab.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="633"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="647"/>
         <source>&lt;h3&gt;bounds_height function&lt;/h3&gt;
 Returns the height of the bounding box of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -63216,7 +63244,7 @@ geom &amp;rarr; eine Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1910"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1924"/>
         <source>&lt;h3&gt;toint() function&lt;/h3&gt;
 Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
 
@@ -63247,7 +63275,7 @@ Wandelt eine Zeichenkette in eine ganze Zahl um.  Bricht ab, wenn die Zeichenket
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2122"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2136"/>
         <source>&lt;h3&gt;yat() function&lt;/h3&gt;
 Retrieves a y coordinate of the current feature
 
@@ -63274,7 +63302,7 @@ Liefert eine Y-Koordinate der Geometrie der aktuellen Geometrie.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1951"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1965"/>
         <source>&lt;h3&gt;tostring() function&lt;/h3&gt;
 Converts a number to string.
 
@@ -63333,7 +63361,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="576"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="590"/>
         <source>&lt;h3&gt;atan2() function&lt;/h3&gt;
 Returns arcustangens of y/x using the signs of the two 
 arguments to determine the quadrant of the result
@@ -63366,7 +63394,7 @@ Argumente zur&amp;uuml;ck, um den den Quadranten des Ergebnisses zu bestimmen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1783"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1797"/>
         <source>&lt;h3&gt;sin() function&lt;/h3&gt;
 Returns sinus of an angle.
 
@@ -63395,7 +63423,7 @@ Gibt den Sinus eines Winkels zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1506"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1520"/>
         <source>&lt;h3&gt;month() function&lt;/h3&gt;
 Extract the month part from a date, or the number of months
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -63466,7 +63494,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="961"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="975"/>
         <source>&lt;h3&gt;day() function&lt;/h3&gt;
 Extract the day from a date, or the number of days
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -63507,7 +63535,7 @@ Tag eines Datum oder Anzahl der Tage eines &lt;code&gt;Intervalls&lt;/code&gt;.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1884"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1898"/>
         <source>&lt;h3&gt;todate() function&lt;/h3&gt;
 Convert a string into Qt data type.
 
@@ -63537,7 +63565,7 @@ Wandelt eine Zeichenkette in eine Qt-Datumstyp um.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1439"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1453"/>
         <source>&lt;h3&gt;lpad() function&lt;/h3&gt;
 Returns a string with supplied width padded
 using the fill character.
@@ -63574,7 +63602,7 @@ Ergibt eine mit einem am Ende mit einem Zeichen auf eine bestimmte L&amp;auml;ng
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="504"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="518"/>
         <source>&lt;h3&gt;acos() function&lt;/h3&gt;
 Returns arcuscosinus of a value in radians.
 
@@ -63626,7 +63654,7 @@ Feldwerte aus WFS-Layern zu laden bevor die Layer tatsächlich geladen wurde, wi
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1394"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1408"/>
         <source>&lt;h3&gt;log() function&lt;/h3&gt;
 Returns the value of the logarithm of the passed value and base.
 &lt;br&gt;
@@ -63722,7 +63750,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1021"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1035"/>
         <source>&lt;h3&gt;exp() function&lt;/h3&gt;
 Returns exponential of an value.
 
@@ -63750,7 +63778,7 @@ Gibt die Exponentialfunktion eines Wert zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1694"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1708"/>
         <source>&lt;h3&gt;rpad() function&lt;/h3&gt;
 Returns a string with supplied width padded
 using the fill character.
@@ -63788,7 +63816,7 @@ Ergibt eine mit einem am Anfang mit einem Zeichen auf eine bestimmte L&amp;auml;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1673"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1687"/>
         <source>&lt;h3&gt;round() function&lt;/h3&gt;
 Rounds a number to number of decimal places.
 &lt;br&gt;
@@ -63861,7 +63889,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="778"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="792"/>
         <source>&lt;h3&gt;color_hsl() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, and lightness attributes
 
@@ -63893,7 +63921,7 @@ Gibt eine Farbe als Zeichenkette basierend auf ihrem Farbton, ihrer S&amp;auml;t
      color_hsl(100,50,70) &amp;rarr; &apos;166,217,140&apos;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1713"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1727"/>
         <source>&lt;h3&gt;scale_exp() function&lt;/h3&gt;
 Transforms a given value from an input domain to an output range using an exponential curve. This function can be used to ease values in or out 
 of the specified output range.   
@@ -63949,7 +63977,7 @@ Formt einen gegebenen Wert aus einem Ausgangsbereich mittels einer exponentielle
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="921"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="935"/>
         <source>&lt;h3&gt;convexHull function&lt;/h3&gt;
 Returns the convex hull of a geometry. It represents the minimum convex geometry that encloses all geometries within the set.
 
@@ -63977,7 +64005,7 @@ b &amp;rarr; geometry
 &lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; ergibt POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2006"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2020"/>
         <source>&lt;h3&gt;union function&lt;/h3&gt;
 Returns a geometry that represents the point set union of the geometries.
 
@@ -64005,7 +64033,7 @@ geometry &amp;rarr; Geometrie
 &lt;pre&gt; geomToWKT( union( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))  )   &amp;rarr; ergibt MULTIPOINT(4 4, 5 5)&lt;/pre</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2096"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2110"/>
         <source>&lt;h3&gt;xmax function&lt;/h3&gt;
 Returns the maximum x coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -64034,7 +64062,7 @@ Gibt die größte X-Koordinate einer Geometrie zurück. Berechnung erfolgt im r�
 &lt;pre&gt;xmax($geometry) &amp;rarr; ergibt die maximale X-Koordinate von $geometry&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="620"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="634"/>
         <source>&lt;h3&gt;bounds function&lt;/h3&gt;
 Returns a geometry which represents the bounding box of an input geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -64063,7 +64091,7 @@ geom &amp;rarr; eine Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2154"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2168"/>
         <source>&lt;h3&gt;ymax function&lt;/h3&gt;
 Returns the maximum y coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -64092,7 +64120,7 @@ Gibt den größten Y-Koordinate einer Geometrie zurück. Berechnung erfolgt im r
 &lt;pre&gt;ymax($geometry) &amp;rarr; ergibt die maximale Y-Koordinate von $geometry&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="907"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="921"/>
         <source>&lt;h3&gt;contains function&lt;/h3&gt;
 Returns true if and only if no points of b lie in the exterior of a, and at least one point of the interior of b lies in the interior of a. 
 
@@ -64123,7 +64151,7 @@ b &amp;rarr; Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2067"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2081"/>
         <source>&lt;h3&gt;wordwrap() function&lt;/h3&gt;
 Returns a string wrapped to a maximum/minimum number of characters.
 
@@ -64160,7 +64188,7 @@ Gibt eine auf eine maximal/minimale Länge umgebrochene Zeichenkette zurück.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="844"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="858"/>
         <source>
 &lt;h3&gt;color_rgb() function&lt;/h3&gt;
 Returns a string representation of a color based on its red, green, and blue components
@@ -64194,7 +64222,7 @@ Gibt eine Farbe als Zeichenkette basierend auf ihrem Rot-, Gr&amp;uuml;n-, Blaua
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="741"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="755"/>
         <source>
 &lt;h3&gt;color_cmyk() function&lt;/h3&gt;
 Returns a string representation of a color based on its cyan, magenta, yellow and black components
@@ -64230,7 +64258,7 @@ Gibt eine Farbe als Zeichenkette basierend auf ihrem Cyan-, Magenta- Gelb- und S
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1321"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1335"/>
         <source>&lt;h3&gt;intersection function&lt;/h3&gt;
 Returns a geometry that represents the shared portion of geometry a and geometry b.
 
@@ -64258,7 +64286,7 @@ b &amp;rarr; Geometrie
 &lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; ergibt LINESTRING(3 3, 4 4)&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1540"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1554"/>
         <source>
 &lt;h3&gt;ramp_color() function&lt;/h3&gt;
 Returns a string representing a color from a color ramp. 
@@ -64302,7 +64330,7 @@ unterscheiden.  Diese Funktion kann daher unterschiedliche Ergebnisse liefern.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="418"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="432"/>
         <source>&lt;h3&gt;IS expression&lt;/h3&gt;
 Returns 1 if a is the same as b.
 
@@ -64340,7 +64368,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="811"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="825"/>
         <source>&lt;h3&gt;color_hsv() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, and value attributes
 
@@ -64402,7 +64430,7 @@ keine
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; ergibt 0 &lt;/pre</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="436"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="450"/>
         <source>&lt;h3&gt;LIKE expression&lt;/h3&gt;
 Returns 1 if the first parameter matches the supplied pattern. Works with numbers also.
 
@@ -64433,7 +64461,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2167"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2181"/>
         <source>&lt;h3&gt;ymin function&lt;/h3&gt;
 Returns the minimum y coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -64462,7 +64490,7 @@ Gibt den kleinste Y-Koordinate einer Geometrie zurück. Berechnung erfolgt im r�
 &lt;pre&gt;ymin($geometry) &amp;rarr; ergibt die minimale Y-Koordinate von $geometry&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1255"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1269"/>
         <source>&lt;h3&gt;geomFromGML function&lt;/h3&gt;
 Returns a geometry from a GML representation of geometry
 
@@ -64499,7 +64527,7 @@ Diese Gruppe enth&amp;auml;lt Funktionen zur Verarbeitung von Daten und Zeiten.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="879"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="893"/>
         <source>&lt;h3&gt;combine function&lt;/h3&gt;
 Returns the combination of geometry a and geometry b.
 
@@ -64529,7 +64557,7 @@ geometry &amp;rarr; Geometrie
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; ergibt LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1334"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1348"/>
         <source>&lt;h3&gt;intersects function&lt;/h3&gt;
 Returns 1 if the geometries spatially intersect (share any portion of space) and 0 if they don&apos;t.
 
@@ -64560,7 +64588,7 @@ b &amp;rarr; Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="701"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="715"/>
         <source>&lt;h3&gt;clamp() function&lt;/h3&gt;
 Restricts an input value to a specified range.
 
@@ -64602,7 +64630,7 @@ Eingabewert auf eine gegebenen Bereich beschränken.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="994"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1008"/>
         <source>&lt;h3&gt;disjoint function&lt;/h3&gt;
 Returns 1 if the geometries do not &quot;spatially intersect&quot; - if they do not share any space together. 
 
@@ -64633,7 +64661,7 @@ b &amp;rarr; geometry
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1268"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1282"/>
         <source>&lt;h3&gt;geomFromWKT function&lt;/h3&gt;
 Returns a geometry created from a Well-Known Text (WKT) representation.
 
@@ -64661,7 +64689,7 @@ text &amp;rarr; Well-Known Text-Repräsentation (WKT) einer Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="659"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="673"/>
         <source>&lt;h3&gt;buffer function&lt;/h3&gt;
 Returns a geometry that represents all points whose distance from this geometry is less than or equal to distance. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -64806,7 +64834,37 @@ Keine
 &lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="592"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="418"/>
+        <source>&lt;h3&gt;IN expression&lt;/h3&gt;
+Returns 1 if value is found within a list of values
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;&apos;a&apos; IN (&apos;a&apos;, &apos;b&apos;)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; IN (&apos;A&apos;,&apos;B&quot;) &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IN (&apos;C&apos;,&apos;B&quot;) &amp;rarr; returns 0 &lt;/pre&gt;
+
+</source>
+        <translation>&lt;h3&gt;IN Asudruck&lt;/h3&gt;
+Gibt 1 zurück wenn der Wert in einer Liste von Werten gefunden wird
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;&apos;a&apos; IN (&apos;a&apos;, &apos;b&apos;)&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiele&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; IN (&apos;A&apos;,&apos;B&quot;) &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IN (&apos;C&apos;,&apos;B&quot;) &amp;rarr; returns 0 &lt;/pre&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="606"/>
         <source>&lt;h3&gt;attribute function&lt;/h3&gt;
 Returns the value of a specified attribute from a feature.
 
@@ -64835,7 +64893,7 @@ attribute_name &amp;rarr; Name des zurückzugebenden Attributs
 &lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; gibt den Wert des Attributs &apos;name&apos; des aktuellen Objekts zurück&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="947"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="961"/>
         <source>&lt;h3&gt;crosses function&lt;/h3&gt;
 Returns 1 if the supplied geometries have some, but not all, interior points in common.
 
@@ -64866,7 +64924,7 @@ geometry &amp;rarr; Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1281"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1295"/>
         <source>&lt;h3&gt;geomToWKT function&lt;/h3&gt;
 Returns the Well-Known Text (WKT) representation of the geometry without SRID metadata.
 
@@ -64893,7 +64951,7 @@ a &amp;rarr;  Geometriee
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1293"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1307"/>
         <source>&lt;h3&gt;getFeature function&lt;/h3&gt;
 Returns the first feature of a layer matching a given attribute value
 
@@ -64910,7 +64968,7 @@ Gibt des erste Objekt des Layers zurück, das denn gegebenen Attribute entsprich
  </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1978"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1992"/>
         <source>&lt;h3&gt;touches function&lt;/h3&gt;
 Returns 1 if the geometries have at least one point in common, but their interiors do not intersect.
 
@@ -64940,7 +64998,7 @@ geometry &amp;rarr; Geometrie
 &lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; ergibt 0&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1526"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1540"/>
         <source>&lt;h3&gt;overlaps function&lt;/h3&gt;
 Returns 1 if the geometries share space, are of the same dimension, but are not completely contained by each other.
 
@@ -65029,7 +65087,7 @@ Keine
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="468"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="482"/>
         <source>&lt;h3&gt;OR logical operator&lt;/h3&gt;
 Returns 1 when condition a or b is true.
 
@@ -65060,7 +65118,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="688"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="702"/>
         <source>&lt;h3&gt;centroid function&lt;/h3&gt;
 Returns the geometric center of a geometry.
 
@@ -65088,7 +65146,7 @@ a &amp;rarr; geometry
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2053"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2067"/>
         <source>&lt;h3&gt;within function&lt;/h3&gt;
 Returns 1 if the geometry a is completely inside geometry b
 
@@ -65155,7 +65213,7 @@ $map &amp;rarr; &quot;canvas&quot; (im QGIS-Kartenfenster)&lt;/pre&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1008"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1022"/>
         <source>&lt;h3&gt;distance function&lt;/h3&gt;
  Returns the minimum distance (based on spatial ref) between two geometries in projected units.
 
@@ -65184,7 +65242,7 @@ b &amp;rarr; geometry
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="981"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="995"/>
         <source>&lt;h3&gt;difference function&lt;/h3&gt;
 Returns a geometry that represents that part of geometry a that does not intersect with geometry b.
 
@@ -65213,7 +65271,7 @@ b &amp;rarr; Geometrie
 &lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="453"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="467"/>
         <source>&lt;h3&gt;NOT&lt;/h3&gt;
 Returns 1 if a is not the same as b.
 
@@ -65246,7 +65304,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1843"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1857"/>
         <source>&lt;h3&gt;symDifference function&lt;/h3&gt;
 Returns a geometry that represents the portions of a and b that do not intersect.
 
@@ -65304,7 +65362,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1924"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1938"/>
         <source>&lt;h3&gt;tointerval() function&lt;/h3&gt;
 Converts a string to a interval type.  Can be used to take days, hours, month, etc off a date. 
 
@@ -65334,7 +65392,7 @@ Wandelt eine Zeichenkette in einen Interval-Typ.  Kann verwendet werden um Tagen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1300"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1314"/>
         <source>&lt;h3&gt;hour() function&lt;/h3&gt;
 Extract the hour from a datetime or time, or the number of hours
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -65379,7 +65437,7 @@ aus einem &lt;code&gt;Intervall&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="794"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="808"/>
         <source>&lt;h3&gt;color_hsla() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, lightness and alpha (transparency) attributes
 
@@ -65441,7 +65499,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="485"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="499"/>
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
@@ -65450,7 +65508,7 @@ Diese Gruppe enth&amp;auml;lt Funktionen, die mit Datensatzkennungen arbeiten.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1965"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1979"/>
         <source>&lt;h3&gt;totime() function&lt;/h3&gt;
 Convert a string into Qt time type.
 
@@ -65480,7 +65538,7 @@ Wandelt eine Zeichenkette in einen Qt-Zeittyp um.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1641"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1655"/>
         <source>&lt;h3&gt;replace() function&lt;/h3&gt;
 Returns a string with the the supplied string replaced.
 
@@ -65524,7 +65582,7 @@ Dies Gruppe enth&amp;auml;lt Funktionen die mit Bedingungen umgehen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="491"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="505"/>
         <source>&lt;h3&gt;abs() function&lt;/h3&gt;
 Returns the absolute value of a number.&lt;br&gt;
 
@@ -65552,7 +65610,7 @@ abs(&lt;i&gt;wert&lt;/i&gt;)&lt;br&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1457"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1471"/>
         <source>&lt;h3&gt;max() function&lt;/h3&gt;
 Returns the largest value in a set of values.
 
@@ -65583,7 +65641,7 @@ Gibt den gr&amp;ouml;&amp;szlig;ten Wert eine Menge von Werte zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1796"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1810"/>
         <source>&lt;h3&gt;sqrt() function&lt;/h3&gt;
 Returns square root of a value
 
@@ -65621,7 +65679,7 @@ This group contains functions that operate on condition.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="759"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="773"/>
         <source>
 &lt;h3&gt;color_cmyka() function&lt;/h3&gt;
 Returns a string representation of a color based on its cyan, magenta, yellow, black and alpha (transparency) components
@@ -65660,7 +65718,7 @@ Schwarzanteil und Alpha-/Transparenzanteil zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1238"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1252"/>
         <source>&lt;h3&gt;format_number() function&lt;/h3&gt;
 Returns a number formatted with the locale separator for thousands. 
 Also truncates the number to the number of supplied places. 
@@ -65696,7 +65754,7 @@ beschr&amp;auml;nkt die Zahl auch auf die angegebene Anzahl von Nachkommastellen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2134"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2148"/>
         <source>&lt;h3&gt;year() function&lt;/h3&gt;
 Extract the year part from a date, or the number of years
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -65796,7 +65854,7 @@ Ergebnis zur&amp;uuml;ckgegeben werden kann.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1578"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1592"/>
         <source>&lt;h3&gt;randf() function&lt;/h3&gt;
 Returns a random float within the range specified by the minimum and 
 maximum argument (inclusive).
@@ -65832,7 +65890,7 @@ Diese Funktion hat zwei Argumente.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2109"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2123"/>
         <source>&lt;h3&gt;xmin function&lt;/h3&gt;
 Returns the minimum x coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -65861,7 +65919,7 @@ Gibt den kleinste X-Koordinate einer Geometrie zurück. Berechnung erfolgt im r�
 &lt;pre&gt;xmin($geometry) &amp;rarr; ergibt die minimale X-Koordinate von $geometry&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1742"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1756"/>
         <source>&lt;h3&gt;scale_linear() function&lt;/h3&gt;
 Transforms a given value from an input domain to an output range using linear interpolation. 
 
@@ -65902,7 +65960,7 @@ Formt einen gegebenen Wert aus einem Ausgangsbereich mittels linearer Interpolat
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1992"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2006"/>
         <source>&lt;h3&gt;trim() function&lt;/h3&gt;
 Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 
@@ -65933,7 +65991,7 @@ Entfernt f&amp;uuml;hrende und schlie&amp;szlig;ende Leerzeichen (Leerzeichen, T
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1485"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1499"/>
         <source>&lt;h3&gt;minute() function&lt;/h3&gt;
 Extract the minute from a datetime or time, or the number of minutes
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -65976,7 +66034,7 @@ eines &lt;code&gt;Intervalls&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="517"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="531"/>
         <source>&lt;h3&gt;age() function&lt;/h3&gt;
 Returns the difference between two dates.
 &lt;br&gt;&lt;br&gt;
@@ -66042,7 +66100,7 @@ sinnvolle Informationen zu erhalten:
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1411"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1425"/>
         <source>&lt;h3&gt;log10() function&lt;/h3&gt;
 Returns the value of the base 10 logarithm of the passed expression.
 &lt;br&gt;
@@ -66086,7 +66144,7 @@ Diese Gruppe enth&amp;auml;lt Funktionen, die einen Datentypen in einen anderen 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="934"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="948"/>
         <source>&lt;h3&gt;cos() function&lt;/h3&gt;
 Returns cosinus of an angle.
 
@@ -66114,7 +66172,7 @@ Gibt den Cosinus eines Winkels zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="482"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="496"/>
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
@@ -66123,7 +66181,7 @@ Die Gruppe enth&amp;auml;lt Operatoren (z.B. +, - und *)
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1762"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1776"/>
         <source>&lt;h3&gt;second() function&lt;/h3&gt;
 Extract the seconds from a datetime or time, or the number of seconds
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -66167,7 +66225,7 @@ aus einem &lt;code&gt;Intervall&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="563"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="577"/>
         <source>&lt;h3&gt;atan() function&lt;/h3&gt;
 Returns arcustanget of a value in radians.
 
@@ -66224,7 +66282,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1869"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1883"/>
         <source>&lt;h3&gt;title() function&lt;/h3&gt;
 Converts all words of a string to title case (all words lower case with leading
 capital letter).
@@ -66256,7 +66314,7 @@ Wandelt alle Worte einer Zeichenkette in Kleinbuchstaben mit gro&amp;szlig;em An
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1595"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1609"/>
         <source>&lt;h3&gt;regexp_match() function&lt;/h3&gt;
 Returns true if any part of a string matches the supplied regular expression.
 
@@ -66289,7 +66347,7 @@ Gibt 1 zur&amp;uuml;ck, wenn irgendein Teil der Zeichenkette dem gegebenen regul
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1827"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1841"/>
         <source>&lt;h3&gt;substr() function&lt;/h3&gt;
 Return a part of a string
 
@@ -66324,7 +66382,7 @@ Liefert einen Teil einer Zeichenkette
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1049"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1063"/>
         <source>&lt;h3&gt;format() function&lt;/h3&gt;
 Format a string using supplied arguments. 
 
@@ -66356,7 +66414,7 @@ Formatiert eine Zeichenkette mit den gegebenen Argumenten.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1610"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1624"/>
         <source>&lt;h3&gt;regexp_replace() function&lt;/h3&gt;
 Returns a string with the supplied regular expression replaced.
 
@@ -66391,7 +66449,7 @@ Liefert eine Zeichenkette in der der angegebene regul&amp;auml;re Ausdruck erset
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1626"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1640"/>
         <source>&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
 Returns the portion of a string which matches a supplied regular expression.
 
@@ -66453,7 +66511,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="861"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="875"/>
         <source>
 &lt;h3&gt;color_rgba() function&lt;/h3&gt;
 Returns a string representation of a color based on its red, green, blue, and alpha (transparency) components
@@ -66518,7 +66576,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="450"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="464"/>
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
@@ -66527,7 +66585,7 @@ Die Gruppe enth&amp;auml;lt mathematische Funktionen (z.B. Quadratwurzel, Sinus 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1471"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1485"/>
         <source>&lt;h3&gt;min() function&lt;/h3&gt;
 Returns the smallest value in a set of values.
 
@@ -66558,7 +66616,7 @@ Gibt den kleinsten Wert eine Menge von Werten zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1427"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1441"/>
         <source>&lt;h3&gt;lower() function&lt;/h3&gt;
 Converts a string to lower case letters.
 
@@ -66614,7 +66672,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="488"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="502"/>
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
@@ -66623,7 +66681,7 @@ Dies Gruppen enth&amp;auml;lt Funktionen f&amp;uuml;r Zeichenketten (z.B. Ersetz
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="893"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="907"/>
         <source>&lt;h3&gt;concat() function&lt;/h3&gt;
 Concatenates several strings to one.
 
@@ -66654,7 +66712,7 @@ F&amp;uuml;gt Zeichenketten zu einer zusammen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="721"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="735"/>
         <source>&lt;h3&gt;coalesce() function&lt;/h3&gt;
 Returns the first non-NULL value from the expression list.
 &lt;br&gt;
@@ -66696,7 +66754,7 @@ Diese Funktion kann beliebig viele Argumente haben.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="550"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="564"/>
         <source>&lt;h3&gt;asin() function&lt;/h3&gt;
 Returns arcussinus of a value in radians.
 
@@ -66725,7 +66783,7 @@ Gibt den Arcussinus eines Werts im Bogenma&amp;szlig; zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1897"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1911"/>
         <source>&lt;h3&gt;todatetime() function&lt;/h3&gt;
 Convert a string into Qt data time type.
 
@@ -66755,7 +66813,7 @@ Wandelt eine Zeichenkette in einen Qt-Datum&amp;amp;Zeit-Typ.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1063"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1077"/>
         <source>&lt;h3&gt;format_date() function&lt;/h3&gt;
 Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
 
@@ -67104,7 +67162,7 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1856"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1870"/>
         <source>&lt;h3&gt;tan() function&lt;/h3&gt;
 Returns tangent of an angle.
 
@@ -67162,7 +67220,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1378"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1392"/>
         <source>&lt;h3&gt;ln() function&lt;/h3&gt;
 Returns the value of the natural logarithm of the passed expression.
 &lt;br&gt;
@@ -67197,7 +67255,7 @@ Die Funktion akzeptiert ein Argument.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="827"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="841"/>
         <source>&lt;h3&gt;color_hsva() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, value and alpha (transparency) attributes
 

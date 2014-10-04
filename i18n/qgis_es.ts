@@ -299,7 +299,7 @@ See log for more information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>You can refer to model values in you formula, using single-letter variables, as follows:
+        <source>You can refer to model values in your formula, using single-letter variables, as follows:
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -6590,10 +6590,6 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
         <translation type="unfinished">Instalado</translation>
     </message>
     <message>
-        <source>Upgradable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Not installed</source>
         <translation type="unfinished">No instalado</translation>
     </message>
@@ -6619,6 +6615,10 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Could not download file: %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Updatable</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -74673,6 +74673,23 @@ Returns the first feature of a layer matching a given attribute value
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
 &lt;pre&gt;getFeature( layer, attributeField, value )&lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;IN expression&lt;/h3&gt;
+Returns 1 if value is found within a list of values
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;&apos;a&apos; IN (&apos;a&apos;, &apos;b&apos;)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; IN (&apos;A&apos;,&apos;B&quot;) &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IN (&apos;C&apos;,&apos;B&quot;) &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
         <translation type="unfinished"></translation>
