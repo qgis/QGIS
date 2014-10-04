@@ -36,11 +36,11 @@ class ParametersDialog(AlgorithmExecutionDialog):
     NOT_SELECTED = QtCore.QCoreApplication.translate('ParametersDialog', '[Not selected]')
 
     def __init__(self, alg):
-        AlgorithmExecutionDialog.__init__(self, alg, self.scrollArea)
-
         self.paramTable = ParametersPanel(self, alg)
         self.scrollArea = QtGui.QScrollArea()
         self.scrollArea.setFrameShape(QtGui.QFrame.NoFrame);
         self.scrollArea.setWidget(self.paramTable)
         self.scrollArea.setWidgetResizable(True)
         self.executed = False
+
+        AlgorithmExecutionDialog.__init__(self, alg, self.scrollArea)

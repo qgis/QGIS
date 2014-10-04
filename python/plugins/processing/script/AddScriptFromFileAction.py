@@ -44,7 +44,7 @@ class AddScriptFromFileAction(ToolboxAction):
     def execute(self):
         filename = QtGui.QFileDialog.getOpenFileName(self.toolbox,
            self.tr('Script files', 'AddScriptFromFileAction'), None,
-           self.tr('Script files (*.py *.PY)', 'AddScriptFromFileAction'))
+           self.tr('Script files (*.py *.PY)', 'AddScriptFromFileAction'))
         if filename:
             try:
                 script = ScriptAlgorithm(filename)
