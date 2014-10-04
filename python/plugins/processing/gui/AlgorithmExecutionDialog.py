@@ -198,7 +198,7 @@ class AlgorithmExecutionDialog(QDialog):
             if checkCRS and not self.alg.checkInputCRS():
                 reply = QMessageBox.question(self, self.tr("Unmatching CRS's"),
                     self.tr('Layers do not all use the same CRS. This can '
-                            'cause unexpected results.\nDo you want to'
+                            'cause unexpected results.\nDo you want to '
                             'continue?'),
                     QMessageBox.Yes | QMessageBox.No,
                     QMessageBox.No)
