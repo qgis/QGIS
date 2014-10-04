@@ -46,7 +46,7 @@ class ModelerOnlyAlgorithmProvider(AlgorithmProvider):
         return 'modelertools'
 
     def getDescription(self):
-        return 'Modeler-only tools'
+        return self.tr('Modeler-only tools', 'ModelerOnlyAlgorithmProvider')
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../images/model.png')

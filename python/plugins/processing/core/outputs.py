@@ -83,8 +83,15 @@ class Output(object):
     def outputTypeName(self):
         return self.__module__.split('.')[-1]
 
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'Output'
+        return QCoreApplication.translate(context, string)
+
+
 class OutputDirectory(Output):
     directory = True
+
 
 class OutputExtent(Output):
 
@@ -104,6 +111,7 @@ class OutputExtent(Output):
         except:
             return False
 
+
 class OutputFile(Output):
 
     def __init__(self, name='', description='', ext = None):
@@ -112,17 +120,18 @@ class OutputFile(Output):
 
     def getFileFilter(self, alg):
         if self.ext is None:
-            return 'All files(*.*)'
+            return self.tr('All files(*.*)', 'OutputFile')
         else:
-            return '%s files(*.%s)' % (self.ext, self.ext)
+            return self.tr('%s files(*.%s)', 'OutputFile') % (self.ext, self.ext)
 
     def getDefaultFileExtension(self, alg):
         return self.ext or 'file'
 
+
 class OutputHTML(Output):
 
     def getFileFilter(self, alg):
-        return 'HTML files(*.html)'
+        return self.tr('HTML files(*.html)', 'OutputHTML')
 
     def getDefaultFileExtension(self, alg):
         return 'html'
@@ -135,6 +144,7 @@ class OutputNumber(Output):
         self.description = description
         self.value = None
         self.hidden = True
+
 
 class OutputRaster(Output):
 
@@ -149,7 +159,7 @@ class OutputRaster(Output):
             # use extensions given by the algorithm provider
             exts = providerExts
         for i in range(len(exts)):
-            exts[i] = exts[i].upper() + ' files(*.' + exts[i].lower() + ')'
+            exts[i] = self.tr('%s files(*.%s)', 'OutputRaster') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self, alg):
@@ -174,6 +184,7 @@ class OutputRaster(Output):
                         + self.getDefaultFileExtension(alg))
             return self.compatible
 
+
 class OutputString(Output):
 
     def __init__(self, name='', description=''):
@@ -181,6 +192,7 @@ class OutputString(Output):
         self.description = description
         self.value = None
         self.hidden = True
+
 
 class OutputTable(Output):
 
@@ -241,7 +253,7 @@ class OutputVector(Output):
     def getFileFilter(self, alg):
         exts = dataobjects.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = exts[i].upper() + ' files(*.' + exts[i].lower() + ')'
+            self.tr('%s files(*.%s)', 'OutputVector') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self, alg):
@@ -287,7 +299,7 @@ class OutputVector(Output):
 
         if self.encoding is None:
             settings = QSettings()
-            self.encoding = settings.value('/Processing/encoding', 'System', type=str)
+            self.encoding = settings.value('/Processing/encoding', 'System', str)
 
         w = VectorWriter(self.value, self.encoding, fields, geomType,
                          crs, options)

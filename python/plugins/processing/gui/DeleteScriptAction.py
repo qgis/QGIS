@@ -41,7 +41,7 @@ class DeleteScriptAction(ContextAction):
     SCRIPT_R = 1
 
     def __init__(self, scriptType):
-        self.name = 'Delete script'
+        self.name = self.tr('Delete script', 'DeleteScriptAction')
         self.scriptType = scriptType
 
     def isEnabled(self):
@@ -51,10 +51,12 @@ class DeleteScriptAction(ContextAction):
             return isinstance(self.alg, RAlgorithm)
 
     def execute(self, alg):
-        reply = QMessageBox.question(None, 'Confirmation',
-                'Are you sure you want to delete this script?',
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No)
+        reply = QMessageBox.question(None,
+            self.tr('Confirmation', 'DeleteScriptAction'),
+            self.tr('Are you sure you want to delete this script?',
+                    'DeleteScriptAction'),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No)
         if reply == QMessageBox.Yes:
             os.remove(self.alg.descriptionFile)
             if self.scriptType == self.SCRIPT_PYTHON:

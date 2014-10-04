@@ -51,7 +51,7 @@ class ExtentSelectionPanel(QtGui.QWidget):
         if self.canUseAutoExtent():
             if hasattr(self.text, 'setPlaceholderText'):
                 self.text.setPlaceholderText(
-                        '[Leave blank to use min covering extent]')
+                    self.tr('[Leave blank to use min covering extent]'))
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QtGui.QPushButton()
         self.pushButton.setText('...')
@@ -74,17 +74,17 @@ class ExtentSelectionPanel(QtGui.QWidget):
 
     def buttonPushed(self):
         popupmenu = QMenu()
-        useLayerExtentAction = QtGui.QAction('Use layer/canvas extent',
+        useLayerExtentAction = QtGui.QAction(self.tr('Use layer/canvas extent'),
                 self.pushButton)
         useLayerExtentAction.triggered.connect(self.useLayerExtent)
         popupmenu.addAction(useLayerExtentAction)
-        selectOnCanvasAction = QtGui.QAction('Select extent on canvas',
+        selectOnCanvasAction = QtGui.QAction(self.tr('Select extent on canvas'),
                 self.pushButton)
         selectOnCanvasAction.triggered.connect(self.selectOnCanvas)
         popupmenu.addAction(selectOnCanvasAction)
         if self.canUseAutoExtent():
             useMincoveringExtentAction = \
-                QtGui.QAction('Use min covering extent from input layers',
+                QtGui.QAction(self.tr('Use min covering extent from input layers'),
                               self.pushButton)
             useMincoveringExtentAction.triggered.connect(
                     self.useMinCoveringExtent)

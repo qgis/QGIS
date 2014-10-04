@@ -77,7 +77,7 @@ class HistoryDialog(QDialog, Ui_DlgHistory):
 
     def saveLog(self):
         fileName = QFileDialog.getSaveFileName(self,
-            self.tr('Save file'), '.', 'Log files (*.log *.LOG)')
+            self.tr('Save file'), '.', self.tr('Log files (*.log *.LOG)'))
 
         if fileName == '':
             return

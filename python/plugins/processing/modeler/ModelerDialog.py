@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.modeler.WrongModelException import WrongModelException
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -32,6 +31,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
@@ -40,7 +40,7 @@ from processing.modeler.ModelerAlgorithm import ModelerAlgorithm, ModelerParamet
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
-from processing.core.ProcessingLog import ProcessingLog
+from processing.modeler.WrongModelException import WrongModelException
 from processing.tools.system import *
 
 from processing.ui.ui_DlgModeler import Ui_DlgModeler
@@ -166,9 +166,9 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(self.tr('Search...'))
         if hasattr(self.textName, 'setPlaceholderText'):
-            self.textName.setPlaceholderText('[Enter model name here]')
+            self.textName.setPlaceholderText(self.tr('[Enter model name here]'))
         if hasattr(self.textGroup, 'setPlaceholderText'):
-            self.textGroup.setPlaceholderText('[Enter group name here]')
+            self.textGroup.setPlaceholderText(self.tr('[Enter group name here]'))
 
         # Connect signals and slots
         self.inputsTree.doubleClicked.connect(self.addInput)
@@ -313,7 +313,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
     def openModel(self):
         filename = unicode(QFileDialog.getOpenFileName(self,
                            self.tr('Open Model'), ModelerUtils.modelsFolder(),
-                           self.tr('Processing models (*.model)')))
+                           self.tr('Processing models (*.model *.MODEL)')))
         if filename:
             try:
                 alg = ModelerAlgorithm.fromFile(filename)
@@ -327,18 +327,16 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 self.hasChanged = False
             except WrongModelException, e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            'Could not load model ' + filename + '\n'
-                            + e.msg)
+                    self.tr('Could not load model %s\n%s') % (filename, e.msg))
                 QMessageBox.critical(self, self.tr('Could not open model'),
                         self.tr('The selected model could not be loaded.\n'
                                  'See the log for more information.'))
             except Exception, e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            'Could not load model ' + filename + '\n'
-                            + e.args[0])
+                    self.tr('Could not load model %s\n%s') % (filename, e.args[0]))
                 QMessageBox.critical(self, self.tr('Could not open model'),
-                        self.tr('The selected model could not be loaded.\n'
-                                 'See the log for more information.'))
+                    self.tr('The selected model could not be loaded.\n'
+                            'See the log for more information.'))
 
     def repaintModel(self):
         self.scene = ModelerScene()
@@ -483,7 +481,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
 
         if len(groups) > 0:
             mainItem = QTreeWidgetItem()
-            mainItem.setText(0, 'Geoalgorithms')
+            mainItem.setText(0, self.tr('Geoalgorithms'))
             mainItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
             mainItem.setToolTip(0, mainItem.text(0))
             for (groupname, group) in groups.items():

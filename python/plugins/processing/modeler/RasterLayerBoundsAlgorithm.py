@@ -43,14 +43,14 @@ class RasterLayerBoundsAlgorithm(GeoAlgorithm):
     def defineCharacteristics(self):
         self.showInModeler = True
         self.showInToolbox = False
-        self.name = 'Raster layer bounds'
-        self.group = 'Modeler-only tools'
-        self.addParameter(ParameterRaster(self.LAYER, 'Layer'))
-        self.addOutput(OutputNumber(self.XMIN, 'min X'))
-        self.addOutput(OutputNumber(self.XMAX, 'max X'))
-        self.addOutput(OutputNumber(self.YMIN, 'min Y'))
-        self.addOutput(OutputNumber(self.YMAX, 'max Y'))
-        self.addOutput(OutputExtent(self.EXTENT, 'Extent'))
+        self.name = self.tr('Raster layer bounds', 'RasterLayerBoundsAlgorithm')
+        self.group = self.tr('Modeler-only tools', 'RasterLayerBoundsAlgorithm')
+        self.addParameter(ParameterRaster(self.LAYER, self.tr('Layer', 'RasterLayerBoundsAlgorithm')))
+        self.addOutput(OutputNumber(self.XMIN, self.tr('min X', 'RasterLayerBoundsAlgorithm')))
+        self.addOutput(OutputNumber(self.XMAX, self.tr('max X', 'RasterLayerBoundsAlgorithm')))
+        self.addOutput(OutputNumber(self.YMIN, self.tr('min Y', 'RasterLayerBoundsAlgorithm')))
+        self.addOutput(OutputNumber(self.YMAX, self.tr('max Y', 'RasterLayerBoundsAlgorithm')))
+        self.addOutput(OutputExtent(self.EXTENT, self.tr('Extent', 'RasterLayerBoundsAlgorithm')))
 
     def processAlgorithm(self, progress):
         uri = self.getParameterValue(self.LAYER)
@@ -63,4 +63,3 @@ class RasterLayerBoundsAlgorithm(GeoAlgorithm):
                             layer.extent().xMaximum(),
                             layer.extent().yMinimum(),
                             layer.extent().yMaximum()))
-

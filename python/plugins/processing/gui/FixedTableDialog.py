@@ -42,7 +42,7 @@ class FixedTableDialog(QtGui.QDialog):
 
     def setupUi(self):
         self.resize(600, 350)
-        self.setWindowTitle('Fixed Table')
+        self.setWindowTitle(self.tr('Fixed Table'))
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
@@ -62,10 +62,10 @@ class FixedTableDialog(QtGui.QDialog):
             self.table.setRowHeight(i, 22)
         self.table.verticalHeader().setVisible(False)
         self.addRowButton = QtGui.QPushButton()
-        self.addRowButton.setText('Add row')
+        self.addRowButton.setText(self.tr('Add row'))
         self.addRowButton.setEnabled(not self.param.fixedNumOfRows)
         self.removeRowButton = QtGui.QPushButton()
-        self.removeRowButton.setText('Remove row')
+        self.removeRowButton.setText(self.tr('Remove row'))
         self.removeRowButton.setEnabled(not self.param.fixedNumOfRows)
         self.buttonBox.addButton(self.addRowButton,
                                  QtGui.QDialogButtonBox.ActionRole)

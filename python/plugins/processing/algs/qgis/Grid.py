@@ -25,6 +25,8 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
+import math
+
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -132,8 +134,8 @@ class Grid(GeoAlgorithm):
                            hSpacing, vSpacing):
         ft = QgsFeature()
 
-        columns = int(floor(float(width) / hSpacing))
-        rows = int(floor(float(height) / vSpacing))
+        columns = int(math.floor(float(width) / hSpacing))
+        rows = int(math.floor(float(height) / vSpacing))
 
         # Longitude lines
         for col in xrange(0, columns + 1):
@@ -163,8 +165,8 @@ class Grid(GeoAlgorithm):
                            hSpacing, vSpacing):
         ft = QgsFeature()
 
-        columns = int(floor(float(width) / hSpacing))
-        rows = int(floor(float(height) / vSpacing))
+        columns = int(math.floor(float(width) / hSpacing))
+        rows = int(math.floor(float(height) / vSpacing))
 
         for col in xrange(0, columns):
             # (column + 1) and (row + 1) calculation is used to maintain
@@ -194,8 +196,8 @@ class Grid(GeoAlgorithm):
         halfHSpacing = hSpacing / 2
         halfVSpacing = vSpacing / 2
 
-        columns = int(floor(float(width) / halfHSpacing))
-        rows = int(floor(float(height) / vSpacing))
+        columns = int(math.floor(float(width) / halfHSpacing))
+        rows = int(math.floor(float(height) / vSpacing))
 
         for col in xrange(0, columns):
             x1 = originX + ((col + 0) * halfHSpacing)
@@ -234,8 +236,8 @@ class Grid(GeoAlgorithm):
 
         halfVSpacing = vSpacing / 2
 
-        columns = int(floor(float(width) / hSpacing))
-        rows = int(floor(float(height) / vSpacing))
+        columns = int(math.floor(float(width) / hSpacing))
+        rows = int(math.floor(float(height) / vSpacing))
 
         for col in xrange(0, columns):
             # (column + 1) and (row + 1) calculation is used to maintain

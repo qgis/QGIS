@@ -48,8 +48,8 @@ class RenderingStyleFilePanel(QtGui.QWidget):
         self.setLayout(self.horizontalLayout)
 
     def showSelectionDialog(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Select style file'
-                , '', '*.qml')
+        filename = QtGui.QFileDialog.getOpenFileName(self,
+            self.tr('Select style file'), '', self.tr('QGIS Layer Style File (*.qml *.QML)'))
         if filename:
             self.text.setText(unicode(filename))
 

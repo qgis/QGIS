@@ -64,7 +64,7 @@ class AlgorithmExecutionDialog(QDialog):
         self.buttonBox.setOrientation(Qt.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.Close)
         self.runButton = QPushButton()
-        self.runButton.setText('Run')
+        self.runButton.setText(self.tr('Run'))
         self.buttonBox.addButton(self.runButton, QDialogButtonBox.ActionRole)
         self.runButton.clicked.connect(self.accept)
         self.setWindowTitle(self.alg.name)
@@ -78,11 +78,11 @@ class AlgorithmExecutionDialog(QDialog):
         self.verticalLayout.setMargin(9)
         self.tabWidget = QTabWidget()
         self.tabWidget.setMinimumWidth(300)
-        self.tabWidget.addTab(self.mainWidget, 'Parameters')
+        self.tabWidget.addTab(self.mainWidget, self.tr('Parameters'))
         self.verticalLayout.addWidget(self.tabWidget)
         self.logText = QTextEdit()
         self.logText.readOnly = True
-        self.tabWidget.addTab(self.logText, 'Log')
+        self.tabWidget.addTab(self.logText, self.tr('Log'))
         self.webView = QWebView()
         html = None
         url = None
@@ -93,15 +93,16 @@ class AlgorithmExecutionDialog(QDialog):
             else:
                 url = QUrl(help)
         else:
-            html = '<h2>Sorry, no help is available for this \
-                    algorithm.</h2>'
+            html = self.tr('<h2>Sorry, no help is available for this '
+                           'algorithm.</h2>')
         try:
             if html:
                 self.webView.setHtml(html)
             elif url:
                 self.webView.load(url)
         except:
-            self.webView.setHtml('<h2>Could not open help file :-( </h2>')
+            self.webView.setHtml(
+                self.tr('<h2>Could not open help file :-( </h2>'))
         self.tabWidget.addTab(self.webView, 'Help')
         self.verticalLayout.addWidget(self.progressLabel)
         self.verticalLayout.addWidget(self.progress)
@@ -195,17 +196,18 @@ class AlgorithmExecutionDialog(QDialog):
         try:
             self.setParamValues()
             if checkCRS and not self.alg.checkInputCRS():
-                reply = QMessageBox.question(self, "Unmatching CRS's",
-                        'Layers do not all use the same CRS.\n'
-                        + 'This can cause unexpected results.\n'
-                        + 'Do you want to continue?',
-                        QMessageBox.Yes | QMessageBox.No,
-                        QMessageBox.No)
+                reply = QMessageBox.question(self, self.tr("Unmatching CRS's"),
+                    self.tr('Layers do not all use the same CRS. This can '
+                            'cause unexpected results.\nDo you want to'
+                            'continue?'),
+                    QMessageBox.Yes | QMessageBox.No,
+                    QMessageBox.No)
                 if reply == QMessageBox.No:
                     return
             msg = self.alg.checkParameterValuesBeforeExecuting()
             if msg:
-                QMessageBox.warning(self, 'Unable to execute algorithm', msg)
+                QMessageBox.warning(
+                    self, self.tr('Unable to execute algorithm'), msg)
                 return
             self.runButton.setEnabled(False)
             self.buttonBox.button(
@@ -221,10 +223,11 @@ class AlgorithmExecutionDialog(QDialog):
 
             self.tabWidget.setCurrentIndex(1)  # Log tab
             self.progress.setMaximum(0)
-            self.progressLabel.setText('Processing algorithm...')
+            self.progressLabel.setText(self.tr('Processing algorithm...'))
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
-            self.setInfo('<b>Algorithm %s starting...</b>' % self.alg.name)
+            self.setInfo(
+                self.tr('<b>Algorithm %s starting...</b>') % self.alg.name)
             # make sure the log tab is visible before executing the algorithm
             try:
                 self.repaint()
@@ -254,12 +257,13 @@ class AlgorithmExecutionDialog(QDialog):
                 palette = ex.widget.palette()
                 palette.setColor(QPalette.Base, QColor(255, 255, 0))
                 ex.widget.setPalette(palette)
-                self.progressLabel.setText('<b>Missing parameter value: '
-                        + ex.parameter.description + '</b>')
+                self.progressLabel.setText(
+                    self.tr('<b>Missing parameter value: %s</b>' % ex.parameter.description))
                 return
             except:
-                QMessageBox.critical(self, 'Unable to execute algorithm',
-                                     'Wrong or missing parameter values')
+                QMessageBox.critical(self,
+                    self.tr('Unable to execute algorithm'),
+                    self.tr('Wrong or missing parameter values'))
 
     def finish(self):
         keepOpen = ProcessingConfig.getSetting(
@@ -274,8 +278,9 @@ class AlgorithmExecutionDialog(QDialog):
         else:
             self.resetGUI()
             if self.alg.getHTMLOutputsCount() > 0:
-                self.setInfo('HTML output has been generated by this '
-                        + 'algorithm.\nOpen the results dialog to check it.')
+                self.setInfo(
+                    self.tr('HTML output has been generated by this algorithm.'
+                            '\nOpen the results dialog to check it.'))
 
     def error(self, msg):
         QApplication.restoreOverrideCursor()

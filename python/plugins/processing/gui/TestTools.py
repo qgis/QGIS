@@ -64,9 +64,9 @@ def createTest(text):
     for out in alg.outputs:
         filename = (tokens[i])[1:-1]
         if tokens[i] == str(None):
-            QtGui.QMessageBox.critical(None, 'Error',
-                    'Cannot create unit test for that algorithm \
-                     execution.\nThe output cannot be a temporary file')
+            QtGui.QMessageBox.critical(None, tr('Error'),
+                tr('Cannot create unit test for that algorithm execution. The '
+                   'output cannot be a temporary file'))
             return
         s += "\toutput=outputs['" + out.name + "']\n"
         if isinstance(out, (OutputNumber, OutputString)):
@@ -111,6 +111,9 @@ def createTest(text):
     dlg = ShowTestDialog(s)
     dlg.exec_()
 
+def tr(string):
+    return QCoreApplication.translate('TestTools', string)
+
 
 class ShowTestDialog(QtGui.QDialog):
 
@@ -118,7 +121,7 @@ class ShowTestDialog(QtGui.QDialog):
         QtGui.QDialog.__init__(self)
         self.setModal(True)
         self.resize(600, 400)
-        self.setWindowTitle('Unit test')
+        self.setWindowTitle(self.tr('Unit test'))
         layout = QVBoxLayout()
         self.text = QtGui.QTextEdit()
         self.text.setEnabled(True)

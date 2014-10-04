@@ -44,8 +44,8 @@ from processing.gui.Help2Html import getDescription, ALG_DESC, ALG_VERSION, ALG_
 class GetScriptsAction(ToolboxAction):
 
     def __init__(self):
-        self.name = "Get scripts from on-line scripts collection"
-        self.group = 'Tools'
+        self.name = self.tr('Get scripts from on-line scripts collection', 'GetScriptsAction')
+        self.group = self.tr('Tools', 'GetScriptsAction')
 
     def getIcon(self):
         return QIcon(':/processing/images/script.png')
@@ -58,13 +58,16 @@ class GetScriptsAction(ToolboxAction):
                 self.toolbox.updateProvider('script')
 
         except HTTPError:
-            QMessageBox.critical(iface.mainWindow(), "Connection problem", "Could not connect to scripts/models repository")
+            QMessageBox.critical(iface.mainWindow(),
+                self.tr('Connection problem', 'GetScriptsAction'),
+                self.tr('Could not connect to scripts/models repository', 'GetScriptsAction'))
+
 
 class GetModelsAction(ToolboxAction):
 
     def __init__(self):
-        self.name = "Get models from on-line scripts collection"
-        self.group = 'Tools'
+        self.name = self.tr('Get models from on-line scripts collection', 'GetModelsAction')
+        self.group = self.tr('Tools', 'GetModelsAction')
 
     def getIcon(self):
         return QIcon(':/processing/images/model.png')
@@ -76,7 +79,9 @@ class GetModelsAction(ToolboxAction):
             if dlg.updateToolbox:
                 self.toolbox.updateProvider('model')
         except HTTPError:
-            QMessageBox.critical(iface.mainWindow(), "Connection problem", "Could not connect to scripts/models repository")
+            QMessageBox.critical(iface.mainWindow(),
+                self.tr('Connection problem', 'GetModelsAction'),
+                self.tr('Could not connect to scripts/models repository', 'GetModelsAction'))
 
 
 def readUrl(url):
@@ -89,12 +94,17 @@ def readUrl(url):
 
 class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
 
-    HELP_TEXT = ("<h3> Processing resources manager </h3>"
-                "<p>Check/uncheck algorithms in the tree to select the ones that you want to install or remove</p>"
-                "<p>Algorithms are divided in 3 groups:</p>"
-                "<ul><li><b>Installed:</b> Algorithms already in your system, with the latest version available</li>"
-                "<li><b>Upgradable:</b> Algorithms already in your system, but with a newer version available in the server</li>"
-                "<li><b>Not installed:</b> Algorithms not installed in your system</li></ul>")
+    HELP_TEXT = QCoreApplication.translate('GetScriptsAndModelsDialog',
+        '<h3> Processing resources manager </h3>'
+        '<p>Check/uncheck algorithms in the tree to select the ones that you '
+        'want to install or remove</p>'
+        '<p>Algorithms are divided in 3 groups:</p>'
+        '<ul><li><b>Installed:</b> Algorithms already in your system, with '
+        'the latest version available</li>'
+        '<li><b>Upgradable:</b> Algorithms already in your system, but with '
+        'a newer version available in the server</li>'
+        '<li><b>Not installed:</b> Algorithms not installed in your '
+        'system</li></ul>')
     MODELS = 0
     SCRIPTS = 1
 
@@ -103,11 +113,11 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
         self.resourceType = resourceType
         if self.resourceType == self.MODELS:
             self.folder = ModelerUtils.modelsFolder()
-            self.urlBase = "https://raw.githubusercontent.com/qgis/QGIS-Processing/master/models/"
+            self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/models/'
             self.icon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/model.png')
         else:
             self.folder = ScriptUtils.scriptsFolder()
-            self.urlBase = "https://raw.githubusercontent.com/qgis/QGIS-Processing/master/scripts/"
+            self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/scripts/'
             self.icon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/script.png')
         self.lastSelectedItem = None
         self.setupUi(self)
@@ -119,16 +129,16 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
 
     def populateTree(self):
         self.uptodateItem = QTreeWidgetItem()
-        self.uptodateItem.setText(0, "Installed")
+        self.uptodateItem.setText(0, self.tr('Installed'))
         self.toupdateItem = QTreeWidgetItem()
-        self.toupdateItem.setText(0, "Upgradable")
+        self.toupdateItem.setText(0, self.tr('Updatable'))
         self.notinstalledItem = QTreeWidgetItem()
-        self.notinstalledItem.setText(0, "Not installed")
+        self.notinstalledItem.setText(0, self.tr('Not installed'))
         self.toupdateItem.setIcon(0, self.icon)
         self.uptodateItem.setIcon(0, self.icon)
         self.notinstalledItem.setIcon(0, self.icon)
-        resources = readUrl(self.urlBase + "list.txt").splitlines()
-        resources = [r.split(",") for r in resources]
+        resources = readUrl(self.urlBase + 'list.txt').splitlines()
+        resources = [r.split(',') for r in resources]
         for filename, version, name in resources:
             treeBranch = self.getTreeBranchForState(filename, float(version))
             item = TreeItem(filename, name, self.icon)
@@ -145,15 +155,15 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
     def currentItemChanged(self, item, prev):
         if isinstance(item, TreeItem):
             try:
-                url = self.urlBase + item.filename.replace(" ","%20") + ".help"
+                url = self.urlBase + item.filename.replace(' ', '%20') + '.help'
                 helpContent = readUrl(url)
                 descriptions = json.loads(helpContent)
-                html = "<h2>%s</h2>" % item.name
-                html+="<p><b>Description:</b> " + getDescription(ALG_DESC, descriptions)+"</p>"
-                html+="<p><b>Created by:</b> " + getDescription(ALG_CREATOR, descriptions)+"</p>"
-                html+="<p><b>Version:</b> " + getDescription(ALG_VERSION, descriptions)+"</p>"
+                html = '<h2>%s</h2>' % item.name
+                html += self.tr('<p><b>Description:</b>%s</p>') % getDescription(ALG_DESC, descriptions)
+                html += self.tr('<p><b>Created by:</b>%s') % getDescription(ALG_CREATOR, descriptions)
+                html += self.tr('<p><b>Version:</b>%s') % getDescription(ALG_VERSION, descriptions)
             except HTTPError, e:
-                html = "<h2>No detailed description available for this script</h2>"
+                html = self.tr('<h2>No detailed description available for this script</h2>')
             self.webView.setHtml(html)
         else:
             self.webView.setHtml(self.HELP_TEXT)
@@ -162,7 +172,7 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
         if not os.path.exists(os.path.join(self.folder, filename)):
             return self.notinstalledItem
         else:
-            helpFile = os.path.join(self.folder, filename + ".help")
+            helpFile = os.path.join(self.folder, filename + '.help')
             try:
                 with open(helpFile) as f:
                     helpContent = json.load(f)
@@ -193,16 +203,17 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
             self.progressBar.setMaximum(len(toDownload))
             for i, filename in enumerate(toDownload):
                 QCoreApplication.processEvents()
-                url = self.urlBase + filename.replace(" ","%20")
+                url = self.urlBase + filename.replace(' ','%20')
                 try:
                     code = readUrl(url)
                     path = os.path.join(self.folder, filename)
-                    with open(path, "w") as f:
+                    with open(path, 'w') as f:
                         f.write(code)
                     self.progressBar.setValue(i + 1)
                 except HTTPError:
-                    QMessageBox.critical(iface.mainWindow(), "Connection problem",
-                                         "Could not download file :" + filename)
+                    QMessageBox.critical(iface.mainWindow(),
+                        self.tr('Connection problem'),
+                        self.tr('Could not download file: %s') % filename)
                     return
 
 
@@ -228,9 +239,3 @@ class TreeItem(QTreeWidgetItem):
         self.setText(0, name)
         self.setIcon(0, icon)
         self.setCheckState(0, Qt.Unchecked)
-
-
-
-
-
-

@@ -44,7 +44,7 @@ class FileSelectionPanel(QtGui.QWidget):
                                 QtGui.QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QtGui.QPushButton()
-        self.pushButton.setText('...')
+        self.pushButton.setText(self.tr('...'))
         self.pushButton.clicked.connect(self.showSelectionDialog)
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)
@@ -64,13 +64,13 @@ class FileSelectionPanel(QtGui.QWidget):
 
         if self.isFolder:
             folder = QtGui.QFileDialog.getExistingDirectory(self,
-                    'Select folder', path)
+                self.tr('Select folder'), path)
             if folder:
                 self.text.setText(str(folder))
                 settings.setValue('/Processing/LastInputPath',
                                   os.path.dirname(unicode(folder)))
         else:
-            filenames = QtGui.QFileDialog.getOpenFileNames(self, 'Open file',
+            filenames = QtGui.QFileDialog.getOpenFileNames(self, self.tr('Open file'),
                     path, '*.' + self.ext)
             if filenames:
                 self.text.setText(u';'.join(filenames))

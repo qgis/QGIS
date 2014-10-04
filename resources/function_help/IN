@@ -1,0 +1,13 @@
+<h3>IN expression</h3>
+Returns 1 if value is found within a list of values
+
+<h4>Syntax</h4>
+<pre>'a' IN ('a', 'b')</pre>
+
+<h4>Arguments</h4>
+None
+
+<h4>Example</h4>
+<pre> 'A' IN ('A','B") &rarr; returns 1 </pre>
+<pre> 'A' IN ('C','B") &rarr; returns 0 </pre>
+

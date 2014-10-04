@@ -139,6 +139,3 @@ class ModelerScene(QtGui.QGraphicsScene):
         if mouseEvent.button() != QtCore.Qt.LeftButton:
             return
         super(ModelerScene, self).mousePressEvent(mouseEvent)
-
-
-

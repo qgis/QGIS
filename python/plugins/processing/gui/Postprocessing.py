@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 from PyQt4.QtGui import *
+from PyQt4.QtCore import *
 from qgis.core import *
 from processing.gui.SilentProgress import SilentProgress
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -45,7 +46,7 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
     htmlResults = False
     if progress is None:
         progress = SilentProgress()
-    progress.setText('Loading resulting layers')
+    progress.setText(QCoreApplication.translate('Postprocessing', 'Loading resulting layers'))
     i = 0
     for out in alg.outputs:
         progress.setPercentage(100 * i / float(len(alg.outputs)))

@@ -36,21 +36,20 @@ class MissingDependencyDialog(QtGui.QDialog):
     def __init__(self, msg):
         QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint
                                | QtCore.Qt.WindowTitleHint)
-        self.msg = \
-            '<h3>Missing dependency.This algorithm cannot be run :-( </h3>' \
-            + msg
+        self.msg = self.tr('<h3>Missing dependency.This algorithm cannot '
+                           'be run :-( </h3>\n%s') % msg
         self.setupUi()
 
     def setupUi(self):
         self.resize(500, 300)
-        self.setWindowTitle('Missing dependency')
+        self.setWindowTitle(self.tr('Missing dependency'))
         layout = QVBoxLayout()
         browser = QtGui.QTextBrowser()
         browser.setOpenLinks(False)
         browser.anchorClicked.connect(self.linkClicked)
         browser.setHtml(self.msg)
         button = QPushButton()
-        button.setText('Close')
+        button.setText(self.tr('Close'))
         button.clicked.connect(self.closeButtonPressed)
         buttonBox = QtGui.QDialogButtonBox()
         buttonBox.setOrientation(QtCore.Qt.Horizontal)

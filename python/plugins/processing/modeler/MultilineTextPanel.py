@@ -39,7 +39,7 @@ class MultilineTextPanel(QtGui.QWidget):
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
         self.combo = QtGui.QComboBox()
-        self.combo.addItem('[Use text below]')
+        self.combo.addItem(self.tr('[Use text below]'))
         for option in options:
             self.combo.addItem(option[0], option[1])
         self.combo.setSizePolicy(QtGui.QSizePolicy.Expanding,

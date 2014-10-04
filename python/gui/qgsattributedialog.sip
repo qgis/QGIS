@@ -1,4 +1,4 @@
-class QgsAttributeDialog : QObject
+class QgsAttributeDialog : QDialog
 {
 %TypeHeaderCode
 #include <qgsattributedialog.h>

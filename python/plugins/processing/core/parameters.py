@@ -27,8 +27,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import sys
-from processing.tools.system import *
+
+from PyQt4.QtCore import *
 from qgis.core import *
+
+from processing.tools.system import *
 from processing.tools import dataobjects
 
 
@@ -37,6 +40,7 @@ def getParameterFromString(s):
     params = [t if unicode(t) != "None" else None for t in tokens[1:]]
     clazz = getattr(sys.modules[__name__], tokens[0])
     return clazz(*params)
+
 
 def parseBool(s):
     if s == unicode(None):
@@ -89,6 +93,11 @@ class Parameter:
     def todict(self):
         return self.__dict__
 
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'Parameter'
+        return QtCore.QCoreApplication.translate(context, string)
+
 
 class ParameterBoolean(Parameter):
 
@@ -140,6 +149,7 @@ class ParameterDataObject(Parameter):
             else:
                 return '"' + unicode(self.value).replace('\\', '\\\\') + '"'
 
+
 class ParameterExtent(Parameter):
 
     USE_MIN_COVERING_EXTENT = 'USE_MIN_COVERING_EXTENT'
@@ -170,6 +180,7 @@ class ParameterExtent(Parameter):
     def getValueAsCommandLineParameter(self):
         return '"' + unicode(self.value) + '"'
 
+
 class ParameterFile(Parameter):
 
     def __init__(self, name='', description='', isFolder=False, optional=True, ext = None):
@@ -192,6 +203,7 @@ class ParameterFile(Parameter):
         if self.ext is not None and self.value != '':
             return self.value.endswith(self.ext)
         return True
+
 
 class ParameterFixedTable(Parameter):
 
@@ -348,11 +360,11 @@ class ParameterMultipleInput(ParameterDataObject):
         if self.datatype == ParameterMultipleInput.TYPE_RASTER:
             exts = dataobjects.getSupportedOutputRasterLayerExtensions()
         elif self.datatype == ParameterMultipleInput.TYPE_FILE:
-            return "All files (*.*)"
+            return self.tr('All files (*.*)', 'ParameterMultipleInput')
         else:
             exts = dataobjects.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = exts[i].upper() + ' files(*.' + exts[i].lower() + ')'
+            exts[i] = self.tr('%s files(*.%s)', 'ParameterMultipleInput') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
 
@@ -483,9 +495,8 @@ class ParameterRaster(ParameterDataObject):
     def getFileFilter(self):
         exts = dataobjects.getSupportedOutputRasterLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = exts[i].upper() + ' files(*.' + exts[i].lower() + ')'
+            exts[i] = self.tr('%s files(*.%s)', 'ParameterRaster') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
-
 
 
 class ParameterSelection(Parameter):
@@ -537,7 +548,6 @@ class ParameterString(Parameter):
     def getValueAsCommandLineParameter(self):
         return '"' + unicode(self.value.replace(ParameterString.NEWLINE,
                              ParameterString.ESCAPED_NEWLINE)) + '"'
-
 
 
 class ParameterTable(ParameterDataObject):
@@ -602,8 +612,9 @@ class ParameterTable(ParameterDataObject):
     def getFileFilter(self):
         exts = ['csv', 'dbf']
         for i in range(len(exts)):
-            exts[i] = exts[i].upper() + ' files(*.' + exts[i].lower() + ')'
+            exts[i] = self.tr('%s files(*.%s)', 'ParameterTable') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
+
 
 class ParameterTableField(Parameter):
 
@@ -631,13 +642,9 @@ class ParameterTableField(Parameter):
             return self.optional
         return True
 
-
     def __str__(self):
         return self.name + ' <' + self.__module__.split('.')[-1] + ' from ' \
             + self.parent + '>'
-# -*- coding: utf-8 -*-
-
-
 
 
 class ParameterVector(ParameterDataObject):
@@ -714,5 +721,5 @@ class ParameterVector(ParameterDataObject):
     def getFileFilter(self):
         exts = dataobjects.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = exts[i].upper() + ' files(*.' + exts[i].lower() + ')'
+            exts[i] = self.tr('%s files(*.%s)', 'ParameterVector') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)

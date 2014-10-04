@@ -42,7 +42,7 @@ class CouldNotLoadResultsDialog(QtGui.QDialog):
 
     def setupUi(self):
         self.resize(600, 350)
-        self.setWindowTitle('Problem loading output layers')
+        self.setWindowTitle(self.tr('Problem loading output layers'))
         layout = QVBoxLayout()
         browser = QtGui.QTextBrowser()
         browser.setOpenLinks(False)
@@ -50,7 +50,7 @@ class CouldNotLoadResultsDialog(QtGui.QDialog):
         html = self.alg.getPostProcessingErrorMessage(self.wrongLayers)
         browser.setHtml(html)
         button = QPushButton()
-        button.setText('Close')
+        button.setText(self.tr('Close'))
         button.clicked.connect(self.closeButtonPressed)
         buttonBox = QtGui.QDialogButtonBox()
         buttonBox.setOrientation(QtCore.Qt.Horizontal)

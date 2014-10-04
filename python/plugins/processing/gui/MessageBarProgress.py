@@ -35,7 +35,7 @@ class MessageBarProgress:
 
     def __init__(self):
         self.progressMessageBar = \
-            iface.messageBar().createMessage('Executing algorithm')
+            iface.messageBar().createMessage(self.tr('Executing algorithm'))
         self.progress = QtGui.QProgressBar()
         self.progress.setMaximum(100)
         self.progress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
@@ -45,9 +45,8 @@ class MessageBarProgress:
 
     def error(self, msg):
         iface.messageBar().clearWidgets()
-        iface.messageBar().pushMessage("Error", msg,
-                                                  level = QgsMessageBar.CRITICAL,
-                                                  duration = 3)
+        iface.messageBar().pushMessage(self.tr('Error'),
+            msg, level=QgsMessageBar.CRITICAL, duration=3)
 
     def setText(self, text):
         pass
@@ -69,3 +68,8 @@ class MessageBarProgress:
 
     def close(self):
         iface.messageBar().clearWidgets()
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'MessageBarProgress'
+        return QCoreApplication.translate(context, string)

@@ -69,8 +69,6 @@ class ModelerOutput():
         return self.__dict__
 
 
-
-
 class Algorithm():
 
     def __init__(self, consoleName=""):
@@ -118,6 +116,7 @@ class Algorithm():
                 name = self.consoleName + "_" + str(i)
             self.name = name
 
+
 class ValueFromInput():
 
     def __init__(self, name=""):
@@ -134,6 +133,7 @@ class ValueFromInput():
             return self.name == other.name
         except:
             return False
+
 
 class ValueFromOutput():
 
@@ -153,6 +153,7 @@ class ValueFromOutput():
     def __str__(self):
         return self.alg + "," + self.output
 
+
 class ModelerAlgorithm(GeoAlgorithm):
 
     CANVAS_SIZE = 4000
@@ -169,7 +170,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         return newone
 
     def __init__(self):
-        self.name = "Model"
+        self.name = self.tr('Model', 'ModelerAlgorithm')
         # The dialog where this model is being edited
         self.modelerdialog = None
         self.descriptionFile = None
@@ -329,8 +330,8 @@ class ModelerAlgorithm(GeoAlgorithm):
                 # algorithms to skip some conversion routines
                 if not param.setValue(value) and not isinstance(param,
                         ParameterDataObject):
-                    raise GeoAlgorithmExecutionException('Wrong value: '
-                            + str(value))
+                    raise GeoAlgorithmExecutionException(
+                       self.tr('Wrong value: %s', 'ModelerAlgorithm') % value)
         for out in algInstance.outputs:
             if not out.hidden:
                 if out.name in alg.outputs:
@@ -423,9 +424,11 @@ class ModelerAlgorithm(GeoAlgorithm):
                             break
                     if canExecute:
                         try:
-                            progress.setDebugInfo('Prepare algorithm: ' + alg.name)
+                            progress.setDebugInfo(
+                                self.tr('Prepare algorithm: %s', 'ModelerAlgorithm') % alg.name)
                             self.prepareAlgorithm(alg)
-                            progress.setText('Running %s [%i/%i]' % ( alg.description, len(executed) + 1 ,len(toExecute)))
+                            progress.setText(
+                                self.tr('Running %s [%i/%i]', 'ModelerAlgorithm') % (alg.description, len(executed) + 1 ,len(toExecute)))
                             progress.setDebugInfo('Parameters: ' + ', '.join([unicode(p).strip()
                                                 + '=' + unicode(p.value) for p in alg.algorithm.parameters]))
                             t0 = time.time()
@@ -433,15 +436,14 @@ class ModelerAlgorithm(GeoAlgorithm):
                             dt = time.time() - t0
                             executed.append(alg.name)
                             progress.setDebugInfo(
-                                    'OK. Execution took %0.3f ms (%i outputs).'
-                                    % (dt, len(alg.algorithm.outputs)))
+                                self.tr('OK. Execution took %0.3f ms (%i outputs).', 'ModelerAlgorithm') % (dt, len(alg.algorithm.outputs)))
                         except GeoAlgorithmExecutionException, e:
-                            progress.setDebugInfo('Failed')
+                            progress.setDebugInfo(self.tr('Failed', 'ModelerAlgorithm'))
                             raise GeoAlgorithmExecutionException(
-                                    'Error executing algorithm %s\n%s' % (alg.description, e.msg))
+                                self.tr('Error executing algorithm %s\n%s', 'ModelerAlgorithm') % (alg.description, e.msg))
 
         progress.setDebugInfo(
-                'Model processed ok. Executed %i algorithms total' % len(executed))
+            self.tr('Model processed ok. Executed %i algorithms total', 'ModelerAlgorithm') % len(executed))
 
 
     def getAsCommand(self):
@@ -557,8 +559,8 @@ class ModelerAlgorithm(GeoAlgorithm):
                     if param:
                         pass
                     else:
-                        raise WrongModelException('Error in parameter line: '
-                                + line)
+                        raise WrongModelException(
+                            self.tr('Error in parameter line: %s', 'ModelerAlgorithm') % line)
                     line = lines.readline().strip('\n')
                     tokens = line.split(',')
                     model.addParameter(ModelerParameter(param, QtCore.QPointF(
@@ -620,8 +622,8 @@ class ModelerAlgorithm(GeoAlgorithm):
                         model.addAlgorithm(modelAlg)
                         modelAlgs.append(modelAlg.name)
                     else:
-                        raise WrongModelException('Error in algorithm name: '
-                                + algLine)
+                        raise WrongModelException(
+                            self.tr('Error in algorithm name: %s', 'ModelerAlgorithm') % algLine)
                 line = lines.readline().strip('\n').strip('\r')
             for modelAlg in model.algs.values():
                 for name, value in modelAlg.params.iteritems():
@@ -632,8 +634,4 @@ class ModelerAlgorithm(GeoAlgorithm):
             if isinstance(e, WrongModelException):
                 raise e
             else:
-                raise WrongModelException('Error in model definition line:'
-                        + line.strip() + ' : ' + traceback.format_exc())
-
-
-
+                raise WrongModelException(self.tr('Error in model definition line: %s\n%s', 'ModelerAlgorithm') % (line.strip(), traceback.format_exc()))

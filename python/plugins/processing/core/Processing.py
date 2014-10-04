@@ -27,11 +27,14 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import sys
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
 from qgis.core import *
-import processing
 from qgis.utils import iface
+
+import processing
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -92,9 +95,8 @@ class Processing:
                 Processing.updateAlgsList()
         except:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                   'Could not load provider:'
-                                   + provider.getDescription() + '\n'
-                                   + unicode(sys.exc_info()[1]))
+                self.tr('Could not load provider: %s\n%s')
+                % (provider.getDescription(), unicode(sys.exc_info()[1])))
             Processing.removeProvider(provider)
 
     @staticmethod
@@ -281,15 +283,17 @@ class Processing:
                     continue
                 print 'Error: Wrong parameter value %s for parameter %s.' \
                     % (value, name)
-                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Error in %s. Wrong parameter value %s for parameter %s." \
+                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                    self.tr('Error in %s. Wrong parameter value %s for parameter %s.') \
                     % (alg.name, value, name))
                 return
             # fill any missing parameters with default values if allowed
             for param in alg.parameters:
                 if param.name not in setParams:
                     if not param.setValue(None):
-                        print ("Error: Missing parameter value for parameter %s." % (param.name))
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Error in %s. Missing parameter value for parameter %s." \
+                        print ('Error: Missing parameter value for parameter %s.' % (param.name))
+                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                            self.tr('Error in %s. Missing parameter value for parameter %s.') \
                             % (alg.name, param.name))
                         return
         else:
@@ -343,3 +347,9 @@ class Processing:
           QApplication.restoreOverrideCursor()
           progress.close()
         return alg
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'Processing'
+        return QtCore.QCoreApplication.translate(context, string)
+

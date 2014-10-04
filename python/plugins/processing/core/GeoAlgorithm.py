@@ -220,7 +220,7 @@ class GeoAlgorithm:
         except Exception, e:
             # If something goes wrong and is not caught in the
             # algorithm, we catch it here and wrap it
-            lines = ['Uncaught error while executing algorithm']
+            lines = [self.tr('Uncaught error while executing algorithm')]
             errstring = traceback.format_exc()
             newline = errstring.find('\n')
             if newline != -1:
@@ -230,7 +230,7 @@ class GeoAlgorithm:
             lines.append(errstring.replace('\n', '|'))
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
             raise GeoAlgorithmExecutionException(str(e)
-                    + '\nSee log for more details')
+                    + self.tr('\nSee log for more details'))
 
     def runPostExecutionScript(self, progress):
         scriptFile = ProcessingConfig.getSetting(
@@ -262,7 +262,7 @@ class GeoAlgorithm:
 
     def convertUnsupportedFormats(self, progress):
         i = 0
-        progress.setText('Converting outputs')
+        progress.setText(self.tr('Converting outputs'))
         for out in self.outputs:
             if isinstance(out, OutputVector):
                 if out.compatible is not None:
@@ -383,7 +383,7 @@ class GeoAlgorithm:
                         crs = dataobjects.getObject(item).crs()
                         if crs not in crsList:
                             crsList.append(crs)
-        return len(crsList) == 1
+        return len(crsList) < 2
 
     def addOutput(self, output):
         # TODO: check that name does not exist
@@ -516,15 +516,20 @@ class GeoAlgorithm:
                          loaded.
         """
 
-        html = '<p>Oooops! The following output layers could not be \
-                open</p><ul>\n'
+        html = self.tr('<p>Oooops! The following output layers could not be '
+                       'open</p><ul>\n')
         for layer in wrongLayers:
-            html += '<li>' + layer.description \
-                + ': <font size=3 face="Courier New" color="#ff0000">' \
-                + layer.value + '</font></li>\n'
-        html += '</ul><p>The above files could not be opened, which probably \
-                 indicates that they were not correctly produced by the \
-                 executed algorithm</p>'
-        html += '<p>Checking the log information might help you see why those \
-                 layers were not created as expected</p>'
+            html += self.tr('<li>%s: <font size=3 face="Courier New" '
+                            'color="#ff0000">%s</font></li>\n') % \
+                        (layer.description, layer.value)
+        html += self.tr('</ul><p>The above files could not be opened, which '
+                        'probably indicates that they were not correctly '
+                        'produced by the executed algorithm</p>'
+                        '<p>Checking the log information might help you see '
+                        'why those layers were not created as expected</p>')
         return html
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'GeoAlgorithm'
+        return QCoreApplication.translate(context, string)

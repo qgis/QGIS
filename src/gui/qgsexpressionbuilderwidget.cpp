@@ -72,6 +72,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
                 .arg( tr( "Joins two values together into a string" ) )
                 .arg( tr( "Usage" ) )
                 .arg( tr( "'Dia' || Diameter" ) ) );
+  registerItem( "Operators", "IN", " IN " );
   registerItem( "Operators", "LIKE", " LIKE " );
   registerItem( "Operators", "ILIKE", " ILIKE " );
   registerItem( "Operators", "IS", " IS " );

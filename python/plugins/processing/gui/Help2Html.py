@@ -54,6 +54,7 @@ def getHtmlFromRstFile(rst):
         s = p.sub(replace, s)
     return s
 
+
 def getHtmlFromHelpFile(alg, helpFile):
     if not os.path.exists(helpFile):
         return None
@@ -64,24 +65,26 @@ def getHtmlFromHelpFile(alg, helpFile):
     except:
         return None
 
+
 def getHtmlFromDescriptionsDict(alg, descriptions):
 
-    s = '<html><body><h2>Algorithm description</h2>\n'
+    s = tr('<html><body><h2>Algorithm description</h2>\n')
     s += '<p>' + getDescription(ALG_DESC, descriptions) + '</p>\n'
-    s += '<h2>Input parameters</h2>\n'
+    s += tr('<h2>Input parameters</h2>\n')
     for param in alg.parameters:
         s += '<h3>' + param.description + '</h3>\n'
         s += '<p>' + getDescription(param.name, descriptions) + '</p>\n'
-    s += '<h2>Outputs</h2>\n'
+    s += tr('<h2>Outputs</h2>\n')
     for out in alg.outputs:
         s += '<h3>' + out.description + '</h3>\n'
         s += '<p>' + getDescription(out.name, descriptions) + '</p>\n'
     s += '<br>'
-    s += '<p align="right">Algorithm author: ' + getDescription(ALG_CREATOR, descriptions) + '</p>'
-    s += '<p align="right">Help author: ' + getDescription(ALG_HELP_CREATOR, descriptions) + '</p>'
-    s += '<p align="right">Algorithm version: ' + getDescription(ALG_VERSION, descriptions) + '</p>'
+    s += tr('<p align="right">Algorithm author: %s</p>') % getDescription(ALG_CREATOR, descriptions)
+    s += tr('<p align="right">Help author: %s</p>') + getDescription(ALG_HELP_CREATOR, descriptions)
+    s += tr('<p align="right">Algorithm version: %s</p>') + getDescription(ALG_VERSION, descriptions)
     s += '</body></html>'
     return s
+
 
 def getDescription(name, descriptions):
     if name in descriptions:
@@ -89,3 +92,5 @@ def getDescription(name, descriptions):
     else:
         return ''
 
+def tr(string):
+    return QtCore.QCoreApplication.translate('Help2Html', string)

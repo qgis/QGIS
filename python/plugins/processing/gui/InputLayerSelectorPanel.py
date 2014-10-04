@@ -63,7 +63,7 @@ class InputLayerSelectorPanel(QtGui.QWidget):
             path = ''
 
         filename = QtGui.QFileDialog.getOpenFileName(self, self.param.description, path,
-                'All files(*.*);;' + self.param.getFileFilter())
+                self.tr('All files(*.*);;') + self.param.getFileFilter())
         if filename:
             self.text.addItem(filename, filename)
             self.text.setCurrentIndex(self.text.count() - 1)

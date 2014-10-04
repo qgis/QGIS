@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>406</width>
-    <height>293</height>
+    <height>319</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -92,7 +92,7 @@
      <item row="4" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Layerattribute</string>
+        <string>Layer attribute</string>
        </property>
        <property name="buddy">
         <cstring>mLayerAttributeComboBox</cstring>
