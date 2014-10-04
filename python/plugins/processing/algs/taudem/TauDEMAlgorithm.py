@@ -88,7 +88,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
         commands = []
         commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
-        processNum = ProcessingConfig.getSetting(TauDEMUtils.MPI_PROCESSES)
+        processNum = int(ProcessingConfig.getSetting(TauDEMUtils.MPI_PROCESSES))
         if processNum <= 0:
             raise GeoAlgorithmExecutionException('Wrong number of MPI \
                 processes used.\nPlease set correct number before running \
