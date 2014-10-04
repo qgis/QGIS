@@ -25,44 +25,38 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtGui, QtCore
-from processing.gui.CrsSelectionDialog import CrsSelectionDialog
-from qgis.core import QgsCoordinateReferenceSystem
+from PyQt4.QtGui import *
+from PyQt4.QtCore import *
 
-class CrsSelectionPanel(QtGui.QWidget):
+from qgis.gui import *
+from qgis.core import *
+
+from processing.ui.ui_widgetCRSSelector import Ui_widgetCRSSelector
+
+class CrsSelectionPanel(QWidget, Ui_widgetCRSSelector):
 
     def __init__(self, default):
-        super(CrsSelectionPanel, self).__init__(None)
-        self.authid = QgsCoordinateReferenceSystem(default).authid()
-        self.horizontalLayout = QtGui.QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.text = QtGui.QLineEdit()
-        self.text.setEnabled(False)
-        self.text.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                QtGui.QSizePolicy.Expanding)
-        self.horizontalLayout.addWidget(self.text)
-        self.pushButton = QtGui.QPushButton()
-        self.pushButton.setText('...')
-        self.pushButton.clicked.connect(self.showSelectionDialog)
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.setLayout(self.horizontalLayout)
-        self.setText()
+        QWidget.__init__(self)
+        self.setupUi(self)
 
-    def setAuthid(self, authid):
-        self.authid = authid
-        self.setText()
+        self.btnBrowse.clicked.connect(self.browseCRS)
+        self.authId = QgsCoordinateReferenceSystem(default).authid()
+        self.updateText()
 
-    def showSelectionDialog(self):
-        dialog = CrsSelectionDialog()
-        dialog.exec_()
-        if dialog.authid:
-            self.authid = str(dialog.authid)
-            self.setText()
+    def setAuthId(self, authid):
+        self.authId = authid
+        self.updateText()
 
-    def setText(self):
-        if self.authid is not None:
-            self.text.setText(str(self.authid))
+    def browseCRS(self):
+        selector = QgsGenericProjectionSelector()
+        selector.setSelectedAuthId(self.authId)
+        if selector.exec_():
+            self.authId = selector.selectedAuthId()
+            self.updateText()
+
+    def updateText(self):
+        if self.authId is not None:
+            self.leCRS.setText(self.authId)
 
     def getValue(self):
-        return self.authid
+        return self.authId

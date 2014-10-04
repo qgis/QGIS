@@ -120,7 +120,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         elif isinstance(widget, CrsSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.table.rowCount()):
-                self.table.cellWidget(row, col).setAuthid(widgetValue)
+                self.table.cellWidget(row, col).setAuthId(widgetValue)
         elif isinstance(widget, FileSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.table.rowCount()):

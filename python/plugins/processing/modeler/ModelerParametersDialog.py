@@ -422,7 +422,7 @@ class ModelerParametersDialog(QDialog):
                     else:
                         self.setComboBoxValue(widget, value, param)
                 elif isinstance(param, ParameterCrs):
-                    widget.setAuthid(value)
+                    widget.setAuthId(value)
                 elif isinstance(param, ParameterFixedTable):
                     pass #TODO!
                 elif isinstance(param, ParameterMultipleInput):
