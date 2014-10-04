@@ -6121,8 +6121,14 @@ im Installationsverzeichnis nicht erlaubt ist.</translation>
     </message>
     <message>
         <source>Layers do not all use the same CRS. This can cause unexpected results.
+Do you want to continue?</source>
+        <translation>Layer benutzen nicht alle dasselbe Koordinatensystem. Dies kann zu nicht erwarteten Ergebnissen führen.
+Fortfahren?</translation>
+    </message>
+    <message>
+        <source>Layers do not all use the same CRS. This can cause unexpected results.
 Do you want tocontinue?</source>
-        <translation>Layer verwenden nicht alle dasselbe Koordinatensystem. Dies kann zu unerwarteten Ergebnissen führen.
+        <translation type="obsolete">Layer verwenden nicht alle dasselbe Koordinatensystem. Dies kann zu unerwarteten Ergebnissen führen.
 Fortfahren?
 </translation>
     </message>

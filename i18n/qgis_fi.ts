@@ -5,7 +5,7 @@
     <name>@default</name>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Virhe</translation>
+        <translation>Virhe</translation>
     </message>
     <message>
         <source>Cannot create unit test for that algorithm execution. The output cannot be a temporary file</source>
@@ -6104,7 +6104,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Layers do not all use the same CRS. This can cause unexpected results.
-Do you want tocontinue?</source>
+Do you want to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

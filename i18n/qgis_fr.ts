@@ -34,7 +34,7 @@
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Help author: %s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;Auteur de l&apos;aide : %s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Algorithm version: %s&lt;/p&gt;</source>
@@ -101,11 +101,11 @@ See log for more information</source>
     </message>
     <message>
         <source>Script files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers scripts</translation>
     </message>
     <message>
         <source>Script files (*.py *.PY)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers scripts (*.py *.PY)</translation>
     </message>
     <message>
         <source>Error reading script</source>
@@ -193,7 +193,7 @@ See log for more information</source>
     </message>
     <message>
         <source>Algorithm %s correctly executed...</source>
-        <translation>L&apos;algorithme %s a été correctement exécuté...</translation>
+        <translation>L&apos;algorithme %s a été correctement exécuté ...</translation>
     </message>
     <message>
         <source>Batch processing</source>
@@ -249,11 +249,12 @@ See log for more information</source>
     <message>
         <source>
  - No numerical variables are available.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+ - Aucune variable numérique de disponible.</translation>
     </message>
     <message>
         <source>[Enter your formula here]</source>
-        <translation type="unfinished">[Entrez votre formule ici]</translation>
+        <translation>[Entrez votre formule ici]</translation>
     </message>
     <message>
         <source>Calculator</source>
@@ -473,7 +474,7 @@ See log for more information</source>
     </message>
     <message>
         <source>Select a table for editation.</source>
-        <translation>Sélectionnez une table pour pouvoir l&apos;éditer</translation>
+        <translation>Sélectionnez une table pour pouvoir l&apos;éditer.</translation>
     </message>
     <message>
         <source>Select a table/view for deletion.</source>
@@ -1387,7 +1388,7 @@ Colonnes</translation>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="345"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id. Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Évite de sélectionner des entités par leur id. Des fois - en particulier lors de l’exécution de requêtes intensives - la récupération des entités de manière séquentielle peut être beaucoup plus rapide que de les récupérer par leur id.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Évite de sélectionner les entités par leur id. Parfois - en particulier lors de l’exécution de requêtes intensives - la récupération des entités de manière séquentielle peut être beaucoup plus rapide que de les récupérer par leur id.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="348"/>
@@ -3354,14 +3355,14 @@ colonne géométrique - colonne avec des entiers uniques</translation>
     <name>EditModelAction</name>
     <message>
         <source>Edit model</source>
-        <translation type="unfinished"></translation>
+        <translation>Editer modèle</translation>
     </message>
 </context>
 <context>
     <name>EditScriptAction</name>
     <message>
         <source>Edit script</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer script</translation>
     </message>
 </context>
 <context>
@@ -3491,7 +3492,7 @@ colonne géométrique - colonne avec des entiers uniques</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir fichier</translation>
     </message>
 </context>
 <context>
@@ -5602,7 +5603,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Could not connect to scripts/models repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de se connecter au dépôt des scripts/modèles</translation>
     </message>
 </context>
 <context>
@@ -5621,7 +5622,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Could not connect to scripts/models repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de se connecter au dépôt des scripts/modèles</translation>
     </message>
 </context>
 <context>
@@ -5635,12 +5636,8 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation>Installés</translation>
     </message>
     <message>
-        <source>Upgradable</source>
-        <translation type="obsolete">Mise à jour disponible</translation>
-    </message>
-    <message>
         <source>Updatable</source>
-        <translation type="unfinished"></translation>
+        <translation>Mise à jour disponible</translation>
     </message>
     <message>
         <source>Not installed</source>
@@ -5648,15 +5645,15 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Description:&lt;/b&gt;%s&lt;/p&gt;</source>
-        <translation>&lt;p&gt;&lt;b&gt;Description:&lt;/b&gt;%s&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;&lt;b&gt;Description :&lt;/b&gt; %s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Created by:&lt;/b&gt;%s</source>
-        <translation>&lt;p&gt;&lt;b&gt;Créé par:&lt;/b&gt;%s</translation>
+        <translation>&lt;p&gt;&lt;b&gt;Créé par :&lt;/b&gt; %s</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Version:&lt;/b&gt;%s</source>
-        <translation>&lt;p&gt;&lt;b&gt;Version:&lt;/b&gt;%s</translation>
+        <translation>&lt;p&gt;&lt;b&gt;Version :&lt;/b&gt; %s</translation>
     </message>
     <message>
         <source>&lt;h2&gt;No detailed description available for this script&lt;/h2&gt;</source>
@@ -5735,7 +5732,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="118"/>
         <source>Layer not found</source>
-        <translation>Couche non-trouvée</translation>
+        <translation>Couche non trouvée</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="118"/>
@@ -5964,7 +5961,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Error saving help file</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de la sauvegarde du fichier d&apos;aide</translation>
     </message>
     <message>
         <source>Help file could not be saved.
@@ -5983,7 +5980,7 @@ are stored on the installation folder</source>
     <message>
         <source>&lt;h2&gt;Input parameters&lt;/h2&gt;
 </source>
-        <translation type="unfinished">&lt;h2&gt;Paramètres en entrée&lt;/h2&gt;
+        <translation>&lt;h2&gt;Paramètres en entrée&lt;/h2&gt;
 </translation>
     </message>
     <message>
@@ -6009,7 +6006,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Algorithm help written by</source>
-        <translation>Aide sur l&apos;algorithme rédigée par</translation>
+        <translation>Aide de l&apos;algorithme rédigée par</translation>
     </message>
     <message>
         <source>Algorithm version</source>
@@ -6103,7 +6100,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>&lt;h2&gt;Sorry, no help is available for this algorithm.&lt;/h2&gt;</source>
-        <translation>&lt;h2&gt;Désolé, aucune aide disponible pour cet algorithme.&lt;/h2&gt;</translation>
+        <translation>&lt;h2&gt;Désolé, aucune aide n&apos;est disponible pour cet algorithme.&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Could not open help file :-( &lt;/h2&gt;</source>
@@ -6115,8 +6112,14 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Layers do not all use the same CRS. This can cause unexpected results.
-Do you want tocontinue?</source>
+Do you want to continue?</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layers do not all use the same CRS. This can cause unexpected results.
+Do you want tocontinue?</source>
+        <translation type="obsolete">Les couches n&apos;utilisent pas toutes le même SCR. Cela peut générer des résultats inattendus.
+Souhaitez-vous continuer ?</translation>
     </message>
     <message>
         <source>Unable to execute algorithm</source>
@@ -6132,11 +6135,11 @@ Do you want tocontinue?</source>
     </message>
     <message>
         <source>&lt;b&gt;Missing parameter value: %s&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Valeur de paramètre manquante : %s&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished">Paramètre erroné ou manquant</translation>
+        <translation>Valeur de paramètre manquante ou erronée</translation>
     </message>
     <message>
         <source>HTML output has been generated by this algorithm.
@@ -7545,7 +7548,7 @@ Agit sur toutes les couches actives courantes</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Erreur</translation>
+        <translation>Erreur</translation>
     </message>
 </context>
 <context>
@@ -7758,7 +7761,7 @@ Agit sur toutes les couches actives courantes</translation>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="441"/>
         <source>Results paging</source>
-        <translation type="unfinished"></translation>
+        <translation>Pagination des résultats</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="453"/>
@@ -7768,7 +7771,7 @@ Agit sur toutes les couches actives courantes</translation>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="476"/>
         <source>results at a time</source>
-        <translation type="unfinished"></translation>
+        <translation>résultats à la fois</translation>
     </message>
     <message>
         <source>No services/connections defined. To get started with MetaSearch, create a new connection by clicking &apos;New&apos; or click &apos;Add default services&apos;.</source>
@@ -7884,18 +7887,18 @@ Agit sur toutes les couches actives courantes</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Fermer</translation>
+        <translation>Fermer</translation>
     </message>
 </context>
 <context>
     <name>ModelerAlgorithm</name>
     <message>
         <source>Model</source>
-        <translation type="unfinished">Modèle</translation>
+        <translation>Modèle</translation>
     </message>
     <message>
         <source>Wrong value: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Mauvaise valeur : %s</translation>
     </message>
     <message>
         <source>Prepare algorithm: %s</source>
@@ -7911,12 +7914,13 @@ Agit sur toutes les couches actives courantes</translation>
     </message>
     <message>
         <source>Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Echoué</translation>
     </message>
     <message>
         <source>Error executing algorithm %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de l&apos;exécution de l&apos;algorithme %s
+%s</translation>
     </message>
     <message>
         <source>Model processed ok. Executed %i algorithms total</source>
@@ -7928,7 +7932,7 @@ Agit sur toutes les couches actives courantes</translation>
     </message>
     <message>
         <source>Error in algorithm name: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur dans le nom de l&apos;algorithme : %s</translation>
     </message>
     <message>
         <source>Error in model definition line: %s
@@ -7944,12 +7948,13 @@ Agit sur toutes les couches actives courantes</translation>
     </message>
     <message>
         <source>Models</source>
-        <translation type="unfinished">Modèles</translation>
+        <translation>Modèles</translation>
     </message>
     <message>
         <source>Could not load model %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger le modèle %s
+%s</translation>
     </message>
 </context>
 <context>
@@ -7960,11 +7965,11 @@ Agit sur toutes les couches actives courantes</translation>
     </message>
     <message>
         <source>[Enter model name here]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Entrez le nom du modèle ici]</translation>
     </message>
     <message>
         <source>[Enter group name here]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Entrez le nom du groupe ici]</translation>
     </message>
     <message>
         <source>Message</source>
@@ -8023,7 +8028,8 @@ Agit sur toutes les couches actives courantes</translation>
     <message>
         <source>Could not load model %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger le modèle %s
+%s</translation>
     </message>
     <message>
         <source>The selected model could not be loaded.
@@ -8033,7 +8039,7 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     </message>
     <message>
         <source>Geoalgorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>Géoalgorithmes</translation>
     </message>
     <message>
         <source>Model doesn&apos;t contains any algorithms and/or parameters and can&apos;t be executed</source>
@@ -8075,15 +8081,15 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     <name>ModelerParameterDefinitionDialog</name>
     <message>
         <source>Parameter definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Définition du paramètre</translation>
     </message>
     <message>
         <source>Parameter name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom du paramètre</translation>
     </message>
     <message>
         <source>Checked</source>
-        <translation type="unfinished"></translation>
+        <translation>Coché</translation>
     </message>
     <message>
         <source>Parent layer</source>
@@ -8091,15 +8097,15 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     </message>
     <message>
         <source>Required</source>
-        <translation type="unfinished"></translation>
+        <translation>Requis</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Oui</translation>
+        <translation>Oui</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Non</translation>
+        <translation>Non</translation>
     </message>
     <message>
         <source>Shape type</source>
@@ -8111,23 +8117,23 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Point</translation>
+        <translation>Point</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Ligne</translation>
+        <translation>Ligne</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">Polygone</translation>
+        <translation>Polygone</translation>
     </message>
     <message>
         <source>Mandatory</source>
-        <translation type="unfinished"></translation>
+        <translation>Obligatoire</translation>
     </message>
     <message>
         <source>Data type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de Donnée</translation>
     </message>
     <message>
         <source>Vector (any)</source>
@@ -8135,47 +8141,47 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     </message>
     <message>
         <source>Vector (point)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vecteur (point)</translation>
     </message>
     <message>
         <source>Vector (line)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vecteur (ligne)</translation>
     </message>
     <message>
         <source>Vector (polygon)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vecteur (polygone)</translation>
     </message>
     <message>
         <source>Raster</source>
-        <translation type="unfinished">Raster</translation>
+        <translation>Raster</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Table</translation>
+        <translation>Table</translation>
     </message>
     <message>
         <source>Min/Max values</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeurs Min/Max</translation>
     </message>
     <message>
         <source>Default value</source>
-        <translation type="unfinished">Valeur par défaut</translation>
+        <translation>Valeur par défaut</translation>
     </message>
     <message>
         <source>0</source>
-        <translation type="unfinished">0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished">Fichier</translation>
+        <translation>Fichier</translation>
     </message>
     <message>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Dossier</translation>
     </message>
     <message>
         <source>Unable to define parameter</source>
@@ -8183,22 +8189,22 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     </message>
     <message>
         <source>Invalid parameter name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de paramètre invalide</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished">Paramètre erroné ou manquant</translation>
+        <translation>Valeurs de paramètre manquantes ou erronées</translation>
     </message>
 </context>
 <context>
     <name>ModelerParametersDialog</name>
     <message>
         <source>Description</source>
-        <translation type="unfinished">Description</translation>
+        <translation>Description</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished">Afficher les paramètres avancés</translation>
+        <translation>Afficher les paramètres avancés</translation>
     </message>
     <message>
         <source>Parent algorithms</source>
@@ -8206,19 +8212,19 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">Paramètres</translation>
+        <translation>Paramètres</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Sorry, no help is available for this algorithm.&lt;/h2&gt;</source>
-        <translation type="unfinished">&lt;h2&gt;Désolé, aucune aide disponible pour cet algorithme.&lt;/h2&gt;</translation>
+        <translation>&lt;h2&gt;Désolé, aucune aide disponible pour cet algorithme.&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Could not open help file :-( &lt;/h2&gt;</source>
-        <translation type="unfinished">&lt;h2&gt;Impossible d&apos;ouvrir le fichier d&apos;aide :-( &lt;/h2&gt;</translation>
+        <translation>&lt;h2&gt;Impossible d&apos;ouvrir le fichier d&apos;aide :-( &lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished">Masquer les paramètres avancés</translation>
+        <translation>Masquer les paramètres avancés</translation>
     </message>
     <message>
         <source>&apos;%s&apos; from algorithm &apos;%s&apos;</source>
@@ -8226,25 +8232,25 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     </message>
     <message>
         <source>Unable to add algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ajouter l&apos;algorithme</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished">Paramètre erroné ou manquant</translation>
+        <translation>Valeurs de paramètre manquantes ou erronées</translation>
     </message>
 </context>
 <context>
     <name>MultilineTextPanel</name>
     <message>
         <source>[Use text below]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Utiliser le texte ci-dessous]</translation>
     </message>
 </context>
 <context>
     <name>MultipleFileInputDialog</name>
     <message>
         <source>Multiple selection</source>
-        <translation type="unfinished">Sélection multiple</translation>
+        <translation>Sélection Multiple</translation>
     </message>
     <message>
         <source>Select the file(s) to use</source>
@@ -8252,18 +8258,18 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     </message>
     <message>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Tous les fichiers (*.*)</translation>
+        <translation>Tous les fichiers (*.*)</translation>
     </message>
 </context>
 <context>
     <name>MultipleFileInputPanel</name>
     <message>
         <source>0 elements selected</source>
-        <translation type="unfinished"></translation>
+        <translation>0 élément sélectionné</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>%d elements selected</source>
@@ -8435,11 +8441,11 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     <name>OutputFile</name>
     <message>
         <source>All files(*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s fichiers (*.%s)</translation>
     </message>
 </context>
 <context>
@@ -8453,7 +8459,7 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     <name>OutputRaster</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s fichiers (*.%s)</translation>
     </message>
 </context>
 <context>
@@ -8487,7 +8493,7 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     <name>OutputVector</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s fichiers (*.%s)</translation>
     </message>
 </context>
 <context>
@@ -8516,54 +8522,54 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     <name>ParameterMultipleInput</name>
     <message>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Tous les fichiers (*.*)</translation>
+        <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s fichiers (*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParameterRaster</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s fichiers (*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParameterTable</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s fichiers (*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParameterVector</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s fichiers (*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParametersDialog</name>
     <message>
         <source>[Not selected]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Non sélectionné]</translation>
     </message>
 </context>
 <context>
     <name>ParametersPanel</name>
     <message>
         <source>[Not selected]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Non sélectionné]</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished">Afficher les paramètres avancés</translation>
+        <translation>Afficher les paramètres avancés</translation>
     </message>
     <message>
         <source> [optional]</source>
-        <translation type="unfinished"></translation>
+        <translation> [optionnel]</translation>
     </message>
     <message>
         <source>Iterate over this layer</source>
@@ -8575,11 +8581,11 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished">Masquer les paramètres avancés</translation>
+        <translation>Masquer les paramètres avancés</translation>
     </message>
     <message>
         <source>[not set]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Non défini]</translation>
     </message>
 </context>
 <context>
@@ -13570,7 +13576,7 @@ Veuillez contacter les développeurs.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2331"/>
         <source>Manage Layer Visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Contrôler la visibilité de la couche</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2340"/>
@@ -15312,7 +15318,7 @@ Parser error:
     <message>
         <location filename="../src/gui/qgsattributedialog.cpp" line="103"/>
         <source>%1 - Feature Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 - Attributs d&apos;entités</translation>
     </message>
 </context>
 <context>
@@ -15603,7 +15609,7 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="551"/>
         <source>Switch to form view</source>
-        <translation type="unfinished"></translation>
+        <translation>Basculer sur la vue formulaire</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="554"/>
@@ -15613,7 +15619,7 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="571"/>
         <source>Switch to table view</source>
-        <translation type="unfinished"></translation>
+        <translation>Basculer sur la vue tabulaire</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="694"/>
@@ -16378,7 +16384,7 @@ Base de données :%2</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="200"/>
         <source>Legend</source>
-        <translation type="unfinished">Légende</translation>
+        <translation>Légende</translation>
     </message>
 </context>
 <context>
@@ -16601,7 +16607,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/gui/qgscolorbutton.cpp" line="350"/>
         <source>Pick color</source>
-        <translation type="unfinished"></translation>
+        <translation>Piocher couleur</translation>
     </message>
 </context>
 <context>
@@ -16642,7 +16648,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/gui/qgscolorbuttonv2.cpp" line="446"/>
         <source>Pick color</source>
-        <translation type="unfinished"></translation>
+        <translation>Piocher couleur</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolorbuttonv2.cpp" line="450"/>
@@ -17003,7 +17009,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/gui/qgscolorwidgets.cpp" line="1474"/>
         <source>#RRGGBBAA</source>
-        <translation type="unfinished"></translation>
+        <translation>#RRVVBBAA</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolorwidgets.cpp" line="1476"/>
@@ -17013,7 +17019,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/gui/qgscolorwidgets.cpp" line="1478"/>
         <source>rgba( r, g, b, a )</source>
-        <translation type="unfinished"></translation>
+        <translation>rgba( r, v, b, a )</translation>
     </message>
 </context>
 <context>
@@ -17778,7 +17784,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodelv2.cpp" line="126"/>
         <source>Automatic</source>
-        <translation type="unfinished">Automatique</translation>
+        <translation>Automatique</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodelv2.cpp" line="126"/>
@@ -17824,7 +17830,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="44"/>
         <source>Extend to next page</source>
-        <translation type="unfinished">Étendre à la page suivante</translation>
+        <translation>Étendre à la page suivante</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="45"/>
@@ -17834,7 +17840,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="47"/>
         <source>Draw headers only</source>
-        <translation type="unfinished"></translation>
+        <translation>N&apos;afficher que les en-têtes</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="48"/>
@@ -17849,7 +17855,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="50"/>
         <source>Show set message</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher le message défini</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="53"/>
@@ -17859,27 +17865,27 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="64"/>
         <source>Select header font color</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner la couleur de police de l&apos;en-tête</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="67"/>
         <source>Select content font color</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner la couleur de police du contenu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="70"/>
         <source>Select grid color</source>
-        <translation type="unfinished">Sélectionner la couleur de la grille</translation>
+        <translation>Sélectionner la couleur de la grille</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="74"/>
         <source>Select background color</source>
-        <translation type="unfinished">Sélectionner la couleur du fond</translation>
+        <translation>Sélectionner la couleur du fond</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="78"/>
         <source>No background</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de fond</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="133"/>
@@ -17913,12 +17919,12 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="338"/>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="340"/>
         <source>Select Font</source>
-        <translation type="unfinished">Sélectionner un police</translation>
+        <translation>Sélectionner une police</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="298"/>
         <source>Table header font</source>
-        <translation type="unfinished">Police de l&apos;en-tête de la table</translation>
+        <translation>Police de l&apos;en-tête de la table</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="318"/>
@@ -18113,7 +18119,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="309"/>
         <source>Background color</source>
-        <translation type="unfinished">Couleur du fond</translation>
+        <translation>Couleur de fond</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="355"/>
@@ -18123,7 +18129,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="370"/>
         <source>Stroke width</source>
-        <translation type="unfinished">Épaisseur du trait</translation>
+        <translation>Épaisseur du trait</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="390"/>
@@ -18140,7 +18146,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="448"/>
         <source>Table heading</source>
-        <translation type="unfinished"></translation>
+        <translation>En-tête de table</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="525"/>
@@ -18165,7 +18171,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="511"/>
         <source>Alignment</source>
-        <translation type="unfinished">Alignement</translation>
+        <translation>Alignement</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="454"/>
@@ -18207,7 +18213,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="165"/>
         <source>Show only features visible within a map</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne montrer que les entités visibles sur la carte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="188"/>
@@ -18222,17 +18228,17 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="231"/>
         <source>Appearance</source>
-        <translation type="unfinished">Apparence</translation>
+        <translation>Apparence</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="243"/>
         <source>Cell margins</source>
-        <translation type="unfinished"></translation>
+        <translation>Marges de cellule</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="263"/>
         <source>Display header</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher l&apos;en-tête</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="276"/>
@@ -18242,7 +18248,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="281"/>
         <source>No header</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas d&apos;en-tête</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="289"/>
@@ -18422,7 +18428,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="299"/>
         <source>V</source>
-        <translation type="unfinished">V</translation>
+        <translation>V</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="308"/>
@@ -18467,7 +18473,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="356"/>
         <source>F5</source>
-        <translation type="unfinished">F5</translation>
+        <translation>F5</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="365"/>
@@ -18772,7 +18778,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="614"/>
         <source>Add Attribute Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter une table d&apos;attributs</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="617"/>
@@ -18942,7 +18948,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="898"/>
         <source>Ctrl+&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+&lt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="907"/>
@@ -18952,7 +18958,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="910"/>
         <source>Ctrl+,</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+,</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="919"/>
@@ -18962,7 +18968,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="922"/>
         <source>Ctrl+.</source>
-        <translation type="unfinished">Ctrl+.</translation>
+        <translation>Ctrl+.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="931"/>
@@ -18972,7 +18978,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="934"/>
         <source>Ctrl+&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="943"/>
@@ -18982,7 +18988,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="946"/>
         <source>Ctrl+Alt+/</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+/</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="955"/>
@@ -19022,12 +19028,12 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="514"/>
         <source>Add Items from Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter éléments depuis un modèle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="517"/>
         <source>Add items from template</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter éléments depuis un modèle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="644"/>
@@ -22228,12 +22234,12 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="43"/>
         <source>Select header font color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sélectionner la couleur de police de l&apos;en-tête</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="46"/>
         <source>Select content font color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sélectionner la couleur de police du contenu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="173"/>
@@ -22352,7 +22358,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="297"/>
         <source>Table heading</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">En-tête de table</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="333"/>
@@ -27274,7 +27280,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
     <message>
         <location filename="../src/gui/editorwidgets/qgsfilenamewidgetwrapper.cpp" line="117"/>
         <source>Select a file</source>
-        <translation type="unfinished">Sélectionner un fichier</translation>
+        <translation>Sélectionner un fichier</translation>
     </message>
 </context>
 <context>
@@ -29705,7 +29711,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="774"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="779"/>
         <source>Transparent</source>
-        <translation type="unfinished">Transparent</translation>
+        <translation>Transparent</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1102"/>
@@ -29778,12 +29784,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="196"/>
         <source>Values</source>
-        <translation type="unfinished">Valeurs</translation>
+        <translation>Valeurs</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="196"/>
         <source>Legend</source>
-        <translation type="unfinished">Légende</translation>
+        <translation>Légende</translation>
     </message>
 </context>
 <context>
@@ -29869,12 +29875,12 @@ Use &quot;%1&quot; for the lower bound of the classification, and &quot;%2&quot;
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="238"/>
         <source>Legend Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format de la légende</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="251"/>
         <source>Precision</source>
-        <translation type="unfinished">Précision</translation>
+        <translation>Précision</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="54"/>
@@ -35579,17 +35585,17 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.</numerusform
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="97"/>
         <source>Wrong editing tool, cannot apply the &apos;capture point&apos; tool on this vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Mauvais outil d&apos;édition, impossible d&apos;utiliser l&apos;outil &apos;saisie de point&apos; sur cette couche vectorielle</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="153"/>
         <source>Wrong editing tool, cannot apply the &apos;capture line&apos; tool on this vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Mauvais outil d&apos;édition, impossible d&apos;utiliser l&apos;outil &apos;saisie de ligne&apos; sur cette couche vectorielle</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="160"/>
         <source>Wrong editing tool, cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Mauvais outil d&apos;édition, impossible d&apos;utiliser l&apos;outil &apos;saisie de polygone&apos; sur cette couche vectorielle</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="218"/>
@@ -35693,12 +35699,12 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.</numerusform
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="89"/>
         <source>the inserted ring is not closed</source>
-        <translation type="unfinished"></translation>
+        <translation>l&apos;anneau ajouté n&apos;est pas fermé</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="93"/>
         <source>the inserted ring is not a valid geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>l&apos;anneau ajouté n&apos;a pas une géométrie valide</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="97"/>
@@ -35708,12 +35714,12 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.</numerusform
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="101"/>
         <source>the inserted ring is not contained in a feature</source>
-        <translation type="unfinished"></translation>
+        <translation>l&apos;anneau ajouté n&apos;est pas contenu dans une entité</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="105"/>
         <source>an unknown error occured</source>
-        <translation type="unfinished"></translation>
+        <translation>une erreur inconnue s&apos;est produite</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="107"/>
@@ -35825,12 +35831,12 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.</numerusform
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="91"/>
         <source>the inserted Ring is not closed</source>
-        <translation type="unfinished"></translation>
+        <translation>l&apos;anneau ajouté n&apos;est pas fermé</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="95"/>
         <source>the inserted Ring is not a valid geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>l&apos;anneau ajouté n&apos;a pas une géométrie valide</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="99"/>
@@ -35840,12 +35846,12 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.</numerusform
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="103"/>
         <source>the inserted Ring is not contained in a feature</source>
-        <translation type="unfinished"></translation>
+        <translation>l&apos;anneau ajouté n&apos;est pas contenu dans une entité</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="107"/>
         <source>an unknown error occured</source>
-        <translation type="unfinished"></translation>
+        <translation>une erreur inconnue s&apos;est produite</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="109"/>
@@ -36052,7 +36058,7 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.</numerusform
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="112"/>
         <source>The active point layer does not have a rotation attribute.</source>
-        <translation type="unfinished"></translation>
+        <translation>La couche de point active n&apos;a pas d&apos;attribut de rotation.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="192"/>
@@ -43891,7 +43897,7 @@ Le message d&apos;erreur de la base de donnée est :
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="631"/>
         <source>Database connection was successful, but no accessible tables were found. Please verify that you have SELECT privilege on a table carrying PostGIS geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>La connexion à la base de données a réussi, mais aucune table n&apos;est accessible. Veuillez vérifier si vous avez le droit d&apos;effectuer une commande SELECT sur une table ayant une géométrie PostGIS.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="642"/>
@@ -46746,7 +46752,11 @@ Cliquer sur le bouton Aide pour connaître les options valides de création pour
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1676"/>
@@ -56325,11 +56335,11 @@ Raison : %2</translation>
     <name>RangePanel</name>
     <message>
         <source>Min</source>
-        <translation type="unfinished">Min</translation>
+        <translation>Min</translation>
     </message>
     <message>
         <source>Max</source>
-        <translation type="unfinished">Max</translation>
+        <translation>Max</translation>
     </message>
 </context>
 <context>
@@ -56344,27 +56354,27 @@ Raison : %2</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Couche</translation>
+        <translation>Couche</translation>
     </message>
     <message>
         <source>min X</source>
-        <translation type="unfinished"></translation>
+        <translation>X min</translation>
     </message>
     <message>
         <source>max X</source>
-        <translation type="unfinished"></translation>
+        <translation>X max</translation>
     </message>
     <message>
         <source>min Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y min</translation>
     </message>
     <message>
         <source>max Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y max</translation>
     </message>
     <message>
         <source>Extent</source>
-        <translation type="unfinished">Emprise</translation>
+        <translation>Emprise</translation>
     </message>
 </context>
 <context>
@@ -56690,7 +56700,8 @@ Raison : %2</translation>
     <message>
         <source>Could not load script: %s
 Problem with line: %d</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne peut charger le script : %s
+Problème à la ligne : %d</translation>
     </message>
     <message>
         <source>[Test scripts]</source>
@@ -56703,22 +56714,23 @@ Problem with line: %d</source>
     <message>
         <source>Could not load script: %s.
 Problem with line %d</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne peut charger le script : %s
+Problème à la ligne : %d</translation>
     </message>
 </context>
 <context>
     <name>ScriptAlgorithmProvider</name>
     <message>
         <source>Create new script</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer un nouveau script</translation>
     </message>
     <message>
         <source>Scripts folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Dossier de scripts</translation>
     </message>
     <message>
         <source>Scripts</source>
-        <translation type="unfinished">Scripts</translation>
+        <translation>Scripts</translation>
     </message>
 </context>
 <context>
@@ -57229,27 +57241,27 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Couche</translation>
+        <translation>Couche</translation>
     </message>
     <message>
         <source>min X</source>
-        <translation type="unfinished"></translation>
+        <translation>X min</translation>
     </message>
     <message>
         <source>max X</source>
-        <translation type="unfinished"></translation>
+        <translation>X max</translation>
     </message>
     <message>
         <source>min Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y min</translation>
     </message>
     <message>
         <source>max Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y max</translation>
     </message>
     <message>
         <source>Extent</source>
-        <translation type="unfinished">Emprise</translation>
+        <translation>Emprise</translation>
     </message>
 </context>
 <context>

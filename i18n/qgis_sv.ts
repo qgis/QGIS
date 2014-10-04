@@ -5,7 +5,7 @@
     <name>@default</name>
     <message>
         <source>Error</source>
-        <translation>Fel</translation>
+        <translation>Fellink </translation>
     </message>
     <message>
         <source>Cannot create unit test for that algorithm execution. The output cannot be a temporary file</source>
@@ -5638,12 +5638,8 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation>Installerade</translation>
     </message>
     <message>
-        <source>Upgradable</source>
-        <translation type="obsolete">Möjliga att uppdatera</translation>
-    </message>
-    <message>
         <source>Updatable</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppdateringsbar</translation>
     </message>
     <message>
         <source>Not installed</source>
@@ -6123,8 +6119,13 @@ exempelmodell eller ett exempelskript, då dessa
     </message>
     <message>
         <source>Layers do not all use the same CRS. This can cause unexpected results.
+Do you want to continue?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layers do not all use the same CRS. This can cause unexpected results.
 Do you want tocontinue?</source>
-        <translation>Alla lager använder inte samma koordinatsystem. Detta kan leda till oväntade resultat.
+        <translation type="obsolete">Alla lager använder inte samma koordinatsystem. Detta kan leda till oväntade resultat.
 Vill du fortsätta?</translation>
     </message>
     <message>
@@ -15338,7 +15339,7 @@ Tolkningsfel:
     <message>
         <location filename="../src/gui/qgsattributedialog.cpp" line="103"/>
         <source>%1 - Feature Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 - Objektattribut</translation>
     </message>
 </context>
 <context>
@@ -26158,7 +26159,7 @@ Tolkningsfel:
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="95"/>
         <source>Layer attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagerattribut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="148"/>
@@ -29951,7 +29952,7 @@ Använd &quot;%1&quot; som undre gräns, och &quot;%2&quot; som övre.</translat
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="321"/>
         <source>Link class boundaries</source>
-        <translation>Länkklassgränser</translation>
+        <translation>Länka ihop intervallgränser</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="344"/>
@@ -52433,7 +52434,7 @@ Det uppkom ett problem med din symboldatabas.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="157"/>
         <source>Join intersected polylines when rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Slå ihop polygoner som berör varandra vid rendering</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
@@ -56375,46 +56376,46 @@ Orsak: %2</translation>
     <name>RangePanel</name>
     <message>
         <source>Min</source>
-        <translation type="unfinished">Min</translation>
+        <translation>Min</translation>
     </message>
     <message>
         <source>Max</source>
-        <translation type="unfinished">Max</translation>
+        <translation>Max</translation>
     </message>
 </context>
 <context>
     <name>RasterLayerBoundsAlgorithm</name>
     <message>
         <source>Raster layer bounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Begränsningsruta för rasterlager</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished">Endast modellverktyg</translation>
+        <translation>Endast modellverktyg</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Lager</translation>
+        <translation>Lager</translation>
     </message>
     <message>
         <source>min X</source>
-        <translation type="unfinished"></translation>
+        <translation>min X</translation>
     </message>
     <message>
         <source>max X</source>
-        <translation type="unfinished"></translation>
+        <translation>max X</translation>
     </message>
     <message>
         <source>min Y</source>
-        <translation type="unfinished"></translation>
+        <translation>min Y</translation>
     </message>
     <message>
         <source>max Y</source>
-        <translation type="unfinished"></translation>
+        <translation>max Y</translation>
     </message>
     <message>
         <source>Extent</source>
-        <translation type="unfinished">Utsträckning</translation>
+        <translation>Utsträckning</translation>
     </message>
 </context>
 <context>
@@ -56429,11 +56430,11 @@ Orsak: %2</translation>
     <name>RenderingStyleFilePanel</name>
     <message>
         <source>Select style file</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj stilfil</translation>
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml *.QML)</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS-lager stilfil (*.qml *.QML)</translation>
     </message>
 </context>
 <context>
@@ -56735,40 +56736,42 @@ Orsak: %2</translation>
     <name>ScriptAlgorithm</name>
     <message>
         <source>User scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Skript skapade av användare</translation>
     </message>
     <message>
         <source>Could not load script: %s
 Problem with line: %d</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte ladda skript: %s
+Problem vid rad: %d</translation>
     </message>
     <message>
         <source>[Test scripts]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Testskript]</translation>
     </message>
     <message>
         <source>[Unnamed algorithm]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Algoritm utan namn]</translation>
     </message>
     <message>
         <source>Could not load script: %s.
 Problem with line %d</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte ladda skript: %s
+Problem vid rad: %d</translation>
     </message>
 </context>
 <context>
     <name>ScriptAlgorithmProvider</name>
     <message>
         <source>Create new script</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapa nytt skript</translation>
     </message>
     <message>
         <source>Scripts folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriptmapp</translation>
     </message>
     <message>
         <source>Scripts</source>
-        <translation type="unfinished">Skript</translation>
+        <translation>Skript</translation>
     </message>
 </context>
 <context>
@@ -57085,7 +57088,7 @@ Problem with line %d</source>
     <name>ShowTestDialog</name>
     <message>
         <source>Unit test</source>
-        <translation type="unfinished"></translation>
+        <translation>Enhetstest</translation>
     </message>
 </context>
 <context>
@@ -57271,35 +57274,35 @@ Problem with line %d</source>
     <name>VectorLayerBoundsAlgorithm</name>
     <message>
         <source>Vector layer bounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Begränsningsruta för vektorlager</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished">Endast modellverktyg</translation>
+        <translation>Endast modellverktyg</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Lager</translation>
+        <translation>Lager</translation>
     </message>
     <message>
         <source>min X</source>
-        <translation type="unfinished"></translation>
+        <translation>min X</translation>
     </message>
     <message>
         <source>max X</source>
-        <translation type="unfinished"></translation>
+        <translation>max X</translation>
     </message>
     <message>
         <source>min Y</source>
-        <translation type="unfinished"></translation>
+        <translation>min Y</translation>
     </message>
     <message>
         <source>max Y</source>
-        <translation type="unfinished"></translation>
+        <translation>max Y</translation>
     </message>
     <message>
         <source>Extent</source>
-        <translation type="unfinished">Utsträckning</translation>
+        <translation>Utsträckning</translation>
     </message>
 </context>
 <context>
@@ -64503,11 +64506,11 @@ Returns a string representation of a color based on its hue, saturation, value a
     </message>
     <message>
         <source>Polygon area</source>
-        <translation type="unfinished"></translation>
+        <translation>Polygonarea</translation>
     </message>
     <message>
         <source>Polygon perimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>Polygonkantlinje</translation>
     </message>
     <message>
         <source>Line length</source>

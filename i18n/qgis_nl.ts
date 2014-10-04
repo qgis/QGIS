@@ -107,7 +107,7 @@ Kijk voor meer informatie in de log</translation>
     </message>
     <message>
         <source>Script files (*.py *.PY)</source>
-        <translation type="unfinished"></translation>
+        <translation>Script-bestanden (*.py *.PY)</translation>
     </message>
     <message>
         <source>Error reading script</source>
@@ -246,7 +246,8 @@ Kijk voor meer informatie in de log</translation>
     <message>
         <source>You can refer to model values in your formula, using single-letter variables, as follows:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Je kunt als volgt vanuit je formule d.m.v. eenletter-variabelen naar modelvariabelen refereren:
+</translation>
     </message>
     <message>
         <source>
@@ -3500,7 +3501,7 @@ geometry column - column with unique integer values</source>
     <name>FixedTableDialog</name>
     <message>
         <source>Fixed Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaste tabel</translation>
     </message>
     <message>
         <source>Add row</source>
@@ -3515,7 +3516,7 @@ geometry column - column with unique integer values</source>
     <name>FixedTablePanel</name>
     <message>
         <source>Fixed table %dx%d</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaste tabel %dx%d</translation>
     </message>
     <message>
         <source>...</source>
@@ -5644,12 +5645,8 @@ GEOS fout: een of meer invoerobjecten hebben een ongeldige geometrie.</translati
         <translation>Geïnstalleerd</translation>
     </message>
     <message>
-        <source>Upgradable</source>
-        <translation type="obsolete">Verouderd</translation>
-    </message>
-    <message>
         <source>Updatable</source>
-        <translation type="unfinished"></translation>
+        <translation>Verouderd</translation>
     </message>
     <message>
         <source>Not installed</source>
@@ -6128,8 +6125,13 @@ wanneer je  een voorbeeldmodel of -script wijzigt, omdat deze zijn opgeslagen in
     </message>
     <message>
         <source>Layers do not all use the same CRS. This can cause unexpected results.
+Do you want to continue?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layers do not all use the same CRS. This can cause unexpected results.
 Do you want tocontinue?</source>
-        <translation>Kaartlagen zijn niet allemaal in hetzelfde CRS. Dit kan onverwachte resultaten opleveren.
+        <translation type="obsolete">Kaartlagen zijn niet allemaal in hetzelfde CRS. Dit kan onverwachte resultaten opleveren.
 Doorgaan?</translation>
     </message>
     <message>
@@ -6437,7 +6439,7 @@ Bekijk het in het resultaatvenster.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="630"/>
         <source>Cut Features</source>
-        <translation>Kaartobjecten Knippen</translation>
+        <translation>Kaartobjecten knippen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="633"/>
@@ -6447,7 +6449,7 @@ Bekijk het in het resultaatvenster.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="642"/>
         <source>Copy Features</source>
-        <translation>Kaartobjecten Kopiëren</translation>
+        <translation>Kaartobjecten kopiëren</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="645"/>
@@ -6457,7 +6459,7 @@ Bekijk het in het resultaatvenster.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="654"/>
         <source>Paste Features</source>
-        <translation>Kaartobjecten Plakken</translation>
+        <translation>Kaartobjecten plakken</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="657"/>
@@ -6497,7 +6499,7 @@ Bekijk het in het resultaatvenster.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="729"/>
         <source>Delete Selected</source>
-        <translation>Geselecteerd Object(en) Verwijderen</translation>
+        <translation>Geselecteerde object(en) verwijderen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="741"/>
@@ -8106,103 +8108,103 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>Parent layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Groeplaag</translation>
     </message>
     <message>
         <source>Required</source>
-        <translation type="unfinished"></translation>
+        <translation>Vereist</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Ja</translation>
+        <translation>Ja</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Nee</translation>
+        <translation>Nee</translation>
     </message>
     <message>
         <source>Shape type</source>
-        <translation type="unfinished"></translation>
+        <translation>Objecttype</translation>
     </message>
     <message>
         <source>Any</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punt</translation>
+        <translation>Punt</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Lijn</translation>
+        <translation>Lijn</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">Polygoon</translation>
+        <translation>Polygoon</translation>
     </message>
     <message>
         <source>Mandatory</source>
-        <translation type="unfinished"></translation>
+        <translation>Verplicht</translation>
     </message>
     <message>
         <source>Data type</source>
-        <translation type="unfinished"></translation>
+        <translation>Datatype</translation>
     </message>
     <message>
         <source>Vector (any)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector (alle)</translation>
     </message>
     <message>
         <source>Vector (point)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector (punt)</translation>
     </message>
     <message>
         <source>Vector (line)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector (lijn)</translation>
     </message>
     <message>
         <source>Vector (polygon)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector (polygoon)</translation>
     </message>
     <message>
         <source>Raster</source>
-        <translation type="unfinished">Raster</translation>
+        <translation>Raster</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Tabel</translation>
+        <translation>Tabel</translation>
     </message>
     <message>
         <source>Min/Max values</source>
-        <translation type="unfinished"></translation>
+        <translation>Min/max-waarden</translation>
     </message>
     <message>
         <source>Default value</source>
-        <translation type="unfinished">Standaardwaarde</translation>
+        <translation>Standaardwaarde</translation>
     </message>
     <message>
         <source>0</source>
-        <translation type="unfinished">0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Type</translation>
+        <translation>Type</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished">Bestand</translation>
+        <translation>Bestand</translation>
     </message>
     <message>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Map</translation>
     </message>
     <message>
         <source>Unable to define parameter</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameterdefinitie niet mogelijk</translation>
     </message>
     <message>
         <source>Invalid parameter name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige parameternaam</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
@@ -8213,39 +8215,39 @@ Bekijk het log voor meer informatie.</translation>
     <name>ModelerParametersDialog</name>
     <message>
         <source>Description</source>
-        <translation type="unfinished">Omschrijving</translation>
+        <translation>Omschrijving</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished">Geavanceerde parameters tonen</translation>
+        <translation>Geavanceerde parameters tonen</translation>
     </message>
     <message>
         <source>Parent algorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>Moederalgoritme</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">Parameters</translation>
+        <translation>Parameters</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Sorry, no help is available for this algorithm.&lt;/h2&gt;</source>
-        <translation type="unfinished">&lt;h2&gt;Sorry, er is geen hulp beschikbaar voor dit algoritme.&lt;/h2&gt;</translation>
+        <translation>&lt;h2&gt;Sorry, er is geen hulp beschikbaar voor dit algoritme.&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Could not open help file :-( &lt;/h2&gt;</source>
-        <translation type="unfinished">&lt;h2&gt;Hulpbestand kan niet worden geopend :-( &lt;/h2&gt;</translation>
+        <translation>&lt;h2&gt;Hulpbestand kan niet worden geopend :-( &lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished">Geavanceerde opties verbergen</translation>
+        <translation>Geavanceerde parameters verbergen</translation>
     </message>
     <message>
         <source>&apos;%s&apos; from algorithm &apos;%s&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%s&apos; van algoritme &apos;%s&apos;</translation>
     </message>
     <message>
         <source>Unable to add algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritme kan niet worden toegevoegd</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
@@ -8256,37 +8258,37 @@ Bekijk het log voor meer informatie.</translation>
     <name>MultilineTextPanel</name>
     <message>
         <source>[Use text below]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Gebruik onderstaande tekst]</translation>
     </message>
 </context>
 <context>
     <name>MultipleFileInputDialog</name>
     <message>
         <source>Multiple selection</source>
-        <translation type="unfinished">Meervoudige selecties</translation>
+        <translation>Meervoudige selecties</translation>
     </message>
     <message>
         <source>Select the file(s) to use</source>
-        <translation type="unfinished"></translation>
+        <translation>Kies bestand(en) voor gebruik</translation>
     </message>
     <message>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Alle bestanden (*.*)</translation>
+        <translation>Alle bestanden (*.*)</translation>
     </message>
 </context>
 <context>
     <name>MultipleFileInputPanel</name>
     <message>
         <source>0 elements selected</source>
-        <translation type="unfinished"></translation>
+        <translation>0 elementen geselecteerd</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>%d elements selected</source>
-        <translation type="unfinished"></translation>
+        <translation>%d elementen geselecteerd</translation>
     </message>
 </context>
 <context>
@@ -8454,25 +8456,25 @@ Bekijk het log voor meer informatie.</translation>
     <name>OutputFile</name>
     <message>
         <source>All files(*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle bestanden (*.*)</translation>
     </message>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s bestanden (*.%s)</translation>
     </message>
 </context>
 <context>
     <name>OutputHTML</name>
     <message>
         <source>HTML files(*.html)</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML-bestanden (*.html)</translation>
     </message>
 </context>
 <context>
     <name>OutputRaster</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s bestanden (*.%s)</translation>
     </message>
 </context>
 <context>
@@ -8506,7 +8508,7 @@ Bekijk het log voor meer informatie.</translation>
     <name>OutputVector</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s bestanden (*.%s)</translation>
     </message>
 </context>
 <context>
@@ -8535,70 +8537,70 @@ Bekijk het log voor meer informatie.</translation>
     <name>ParameterMultipleInput</name>
     <message>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Alle bestanden (*.*)</translation>
+        <translation>Alle bestanden (*.*)</translation>
     </message>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s bestanden (*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParameterRaster</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s bestanden (*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParameterTable</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s bestanden (*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParameterVector</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s bestanden (*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParametersDialog</name>
     <message>
         <source>[Not selected]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Niet geselecteerd]</translation>
     </message>
 </context>
 <context>
     <name>ParametersPanel</name>
     <message>
         <source>[Not selected]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Niet geselecteerd]</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished">Geavanceerde parameters tonen</translation>
+        <translation>Geavanceerde parameters tonen</translation>
     </message>
     <message>
         <source> [optional]</source>
-        <translation type="unfinished"></translation>
+        <translation> [optioneel]</translation>
     </message>
     <message>
         <source>Iterate over this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Over deze laag itereren</translation>
     </message>
     <message>
         <source>Open output file after running algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoerbestand openen na uitvoeren van algoritme</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished">Geavanceerde opties verbergen</translation>
+        <translation>Geavanceerde opties verbergen</translation>
     </message>
     <message>
         <source>[not set]</source>
-        <translation type="unfinished"></translation>
+        <translation>[niet bepaald]</translation>
     </message>
 </context>
 <context>
@@ -8619,7 +8621,7 @@ Bekijk het log voor meer informatie.</translation>
     <name>Postprocessing</name>
     <message>
         <source>Loading resulting layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlagen laden</translation>
     </message>
 </context>
 <context>
@@ -8666,11 +8668,12 @@ Bekijk het log voor meer informatie.</translation>
     <message>
         <source>Could not load provider: %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan provider niet laden: %s
+%s</translation>
     </message>
     <message>
         <source>Error in %s. Wrong parameter value %s for parameter %s.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout in %s. Ongeldige waarde %s voor parameter %s.</translation>
     </message>
     <message>
         <source>Error in %s. Missing parameter value for parameter %s.</source>
@@ -15342,7 +15345,7 @@ Parser fout:
     <message>
         <location filename="../src/gui/qgsattributedialog.cpp" line="103"/>
         <source>%1 - Feature Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 - Object-attributen</translation>
     </message>
 </context>
 <context>
@@ -15613,7 +15616,7 @@ Parser fout:
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="680"/>
         <source>Show Selected Features</source>
-        <translation>Toon Geselecteerde Objecten</translation>
+        <translation>Geselecteerde objecten weergeven</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="703"/>
@@ -26158,7 +26161,7 @@ Parser fout:
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="95"/>
         <source>Layer attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Laag-attributen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="148"/>
@@ -30078,7 +30081,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="238"/>
         <source>Delete selected category</source>
-        <translation>Verwijder geselecteerde categorie</translation>
+        <translation>Geselecteerde categorie verwijderen </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="241"/>
@@ -30096,22 +30099,22 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="53"/>
         <source>Add selected map to canvas</source>
-        <translation>Voeg geselecteerde kaart toe aan kaartvenster</translation>
+        <translation>Geselecteerde kaart aan kaartvenster toevoegen</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="61"/>
         <source>Copy selected map</source>
-        <translation>Kopiëer geselecteerde kaart</translation>
+        <translation>Geselecteerde kaart kopiëren </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="69"/>
         <source>Rename selected map</source>
-        <translation>Hernoem geselecteerde kaart</translation>
+        <translation>Geselecteerde kaart hernoemen </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="77"/>
         <source>Delete selected map</source>
-        <translation>Verwijder geselecteerde kaart</translation>
+        <translation>Geselecteerde kaart verwijderen </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="85"/>
@@ -41054,7 +41057,7 @@ fout:%2</translation>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="210"/>
         <source>Copying features...</source>
-        <translation>Kaartobjecten Kopiëren...</translation>
+        <translation>Kaartobjecten kopiëren...</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="210"/>
@@ -42110,7 +42113,7 @@ Fout: %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="204"/>
         <source>Copying features...</source>
-        <translation>Kaartobjecten Kopiëren...</translation>
+        <translation>Kaartobjecten kopiëren...</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="204"/>
@@ -46809,7 +46812,11 @@ Klik op de help knop om geldige schrijf-opties voor dit type te verkrijgen.</tra
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1676"/>
@@ -56418,46 +56425,46 @@ Omschrijving: %2</translation>
     <name>RangePanel</name>
     <message>
         <source>Min</source>
-        <translation type="unfinished">Min</translation>
+        <translation>Min</translation>
     </message>
     <message>
         <source>Max</source>
-        <translation type="unfinished">Max</translation>
+        <translation>Max</translation>
     </message>
 </context>
 <context>
     <name>RasterLayerBoundsAlgorithm</name>
     <message>
         <source>Raster layer bounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterlaag-extent</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished">Specifiek modelleergereedschap</translation>
+        <translation>Specifiek modelleergereedschap</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Laag</translation>
     </message>
     <message>
         <source>min X</source>
-        <translation type="unfinished"></translation>
+        <translation>min X</translation>
     </message>
     <message>
         <source>max X</source>
-        <translation type="unfinished"></translation>
+        <translation>max X</translation>
     </message>
     <message>
         <source>min Y</source>
-        <translation type="unfinished"></translation>
+        <translation>min Y</translation>
     </message>
     <message>
         <source>max Y</source>
-        <translation type="unfinished"></translation>
+        <translation>max Y</translation>
     </message>
     <message>
         <source>Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Extent</translation>
     </message>
 </context>
 <context>
@@ -56472,11 +56479,11 @@ Omschrijving: %2</translation>
     <name>RenderingStyleFilePanel</name>
     <message>
         <source>Select style file</source>
-        <translation type="unfinished"></translation>
+        <translation>Stijlbestand selecteren</translation>
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml *.QML)</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS Stijlbestand (*.qml *.QML)</translation>
     </message>
 </context>
 <context>
@@ -56778,40 +56785,42 @@ Omschrijving: %2</translation>
     <name>ScriptAlgorithm</name>
     <message>
         <source>User scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruikersscripts</translation>
     </message>
     <message>
         <source>Could not load script: %s
 Problem with line: %d</source>
-        <translation type="unfinished"></translation>
+        <translation>Script kan niet worden geladen %s
+Probleem op regel: %d</translation>
     </message>
     <message>
         <source>[Test scripts]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Testscripts]</translation>
     </message>
     <message>
         <source>[Unnamed algorithm]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Algoritme zonder naam]</translation>
     </message>
     <message>
         <source>Could not load script: %s.
 Problem with line %d</source>
-        <translation type="unfinished"></translation>
+        <translation>Script kan niet worden geladen %s
+Probleem op regel: %d</translation>
     </message>
 </context>
 <context>
     <name>ScriptAlgorithmProvider</name>
     <message>
         <source>Create new script</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuw script aanmaken</translation>
     </message>
     <message>
         <source>Scripts folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Scriptfolder</translation>
     </message>
     <message>
         <source>Scripts</source>
-        <translation type="unfinished">Scripts</translation>
+        <translation>Scripts</translation>
     </message>
 </context>
 <context>
@@ -57128,7 +57137,7 @@ Problem with line %d</source>
     <name>ShowTestDialog</name>
     <message>
         <source>Unit test</source>
-        <translation type="unfinished"></translation>
+        <translation>Unit-test</translation>
     </message>
 </context>
 <context>
@@ -57314,35 +57323,35 @@ Problem with line %d</source>
     <name>VectorLayerBoundsAlgorithm</name>
     <message>
         <source>Vector layer bounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Vectorlaag-extent</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished">Specifiek modelleergereedschap</translation>
+        <translation>Specifiek modelleergereedschap</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Laag</translation>
     </message>
     <message>
         <source>min X</source>
-        <translation type="unfinished"></translation>
+        <translation>min X</translation>
     </message>
     <message>
         <source>max X</source>
-        <translation type="unfinished"></translation>
+        <translation>max X</translation>
     </message>
     <message>
         <source>min Y</source>
-        <translation type="unfinished"></translation>
+        <translation>min Y</translation>
     </message>
     <message>
         <source>max Y</source>
-        <translation type="unfinished"></translation>
+        <translation>max Y</translation>
     </message>
     <message>
         <source>Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Extent</translation>
     </message>
 </context>
 <context>
@@ -64803,7 +64812,19 @@ None
 &lt;pre&gt; &apos;A&apos; IN (&apos;C&apos;,&apos;B&quot;) &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;IN-expressie&lt;/h3&gt;
+Geeft 1 wanneer een waarde wordt gevonden in een lijst met waarden
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;&apos;a&apos; IN (&apos;a&apos;, &apos;b&apos;)&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+None
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; IN (&apos;A&apos;,&apos;B&quot;) &amp;rarr; geeft 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IN (&apos;C&apos;,&apos;B&quot;) &amp;rarr; geeft 0 &lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="606"/>

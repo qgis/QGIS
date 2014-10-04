@@ -244,16 +244,11 @@ Veja o registo para mais informação</translation>
 <context>
     <name>CalculatorModelerParametersDialog</name>
     <message>
-        <source>You can refer to model values in you formula, using single-letter variables, as follows:
-</source>
-        <translation type="obsolete">Pode referir valores do modelo na sua fórmula, usando variáveis com letras, como vem a seguir:
-
-</translation>
-    </message>
-    <message>
         <source>You can refer to model values in your formula, using single-letter variables, as follows:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Pode referir valores do modelo na sua fórmula, usando variáveis com letras, como vem a seguir:
+
+</translation>
     </message>
     <message>
         <source>
@@ -5644,12 +5639,8 @@ Erro no geoprocessamento GEOS: Um ou mais elementos de entrada têm geometria in
         <translation>Instalados</translation>
     </message>
     <message>
-        <source>Upgradable</source>
-        <translation type="obsolete">Actualizável</translation>
-    </message>
-    <message>
         <source>Updatable</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizável</translation>
     </message>
     <message>
         <source>Not installed</source>
@@ -6129,8 +6120,13 @@ que estão armazenados na pasta de instalação</translation>
     </message>
     <message>
         <source>Layers do not all use the same CRS. This can cause unexpected results.
+Do you want to continue?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layers do not all use the same CRS. This can cause unexpected results.
 Do you want tocontinue?</source>
-        <translation>As camadas não têm todas a mesma SRC. Isto pode causar resultados inesperados.
+        <translation type="obsolete">As camadas não têm todas a mesma SRC. Isto pode causar resultados inesperados.
 Deseja continuar?</translation>
     </message>
     <message>
