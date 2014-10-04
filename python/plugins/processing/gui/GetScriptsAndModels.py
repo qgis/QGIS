@@ -131,7 +131,7 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
         self.uptodateItem = QTreeWidgetItem()
         self.uptodateItem.setText(0, self.tr('Installed'))
         self.toupdateItem = QTreeWidgetItem()
-        self.toupdateItem.setText(0, self.tr('Upgradable'))
+        self.toupdateItem.setText(0, self.tr('Updatable'))
         self.notinstalledItem = QTreeWidgetItem()
         self.notinstalledItem.setText(0, self.tr('Not installed'))
         self.toupdateItem.setIcon(0, self.icon)
