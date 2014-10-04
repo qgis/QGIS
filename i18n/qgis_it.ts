@@ -5,7 +5,7 @@
     <name>@default</name>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Errore</translation>
+        <translation>Errore</translation>
     </message>
     <message>
         <source>Cannot create unit test for that algorithm execution. The output cannot be a temporary file</source>
@@ -19,24 +19,26 @@
     <message>
         <source>&lt;h2&gt;Input parameters&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Parametri di input&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Outputs&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Output&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Algorithm author: %s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;Autore dell&apos;algoritmo: %s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Help author: %s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;Autore dell&apos;aiuto: %s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Algorithm version: %s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;Versione dell&apos;algoritmo: %s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Uncaught error executing %s.
@@ -45,7 +47,7 @@ See log for more information</source>
     </message>
     <message>
         <source>Executing iteration %s/%s...</source>
-        <translation type="unfinished"></translation>
+        <translation>Esecuzione dell&apos;iterazione  %s/%s...</translation>
     </message>
 </context>
 <context>
@@ -60,65 +62,69 @@ See log for more information</source>
     <name>AddModelFromFileAction</name>
     <message>
         <source>Add model from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi modello da file</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Strumenti</translation>
+        <translation>Strumenti</translation>
     </message>
     <message>
         <source>Open model</source>
-        <translation type="unfinished">Apri modello</translation>
+        <translation>Apri modello</translation>
     </message>
     <message>
         <source>Processing model files (*.model *.MODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>File di modelli di Processing (*.model  *.MODEL)</translation>
     </message>
     <message>
         <source>Error reading model</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore durante la lettura del modello</translation>
     </message>
     <message>
         <source>The selected file does not contain a valid model</source>
-        <translation type="unfinished"></translation>
+        <translation>Il file selezionato non contiene un modello valido</translation>
     </message>
     <message>
         <source>Cannot read file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile leggere il file</translation>
     </message>
 </context>
 <context>
     <name>AddScriptFromFileAction</name>
     <message>
         <source>Add script from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi script da file</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Strumenti</translation>
+        <translation>Strumenti</translation>
     </message>
     <message>
         <source>Script files</source>
+        <translation>File di script</translation>
+    </message>
+    <message>
+        <source>Script files (*.py *.PY)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Script filesÂ (*.py *.PY)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">File di scriptÂ (*.py *.PY)</translation>
     </message>
     <message>
         <source>Error reading script</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore durante la lettura dello script</translation>
     </message>
     <message>
         <source>The selected file does not contain a valid script</source>
-        <translation type="unfinished"></translation>
+        <translation>Il file selezionato non contiene uno script valido</translation>
     </message>
 </context>
 <context>
     <name>AlgorithmProvider</name>
     <message>
         <source>Activate</source>
-        <translation type="unfinished">Attiva</translation>
+        <translation>Attiva</translation>
     </message>
     <message>
         <source>Generic algorithm provider</source>
@@ -129,57 +135,57 @@ See log for more information</source>
     <name>BatchInputSelectionPanel</name>
     <message>
         <source>Select from open layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli da layer aperti</translation>
     </message>
     <message>
         <source>Select from filesystem</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona da disco</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation type="unfinished">Apri file</translation>
+        <translation>Apri file</translation>
     </message>
     <message>
         <source>All files(*.*);;</source>
-        <translation type="unfinished"></translation>
+        <translation>Tutti i file (*.*);;</translation>
     </message>
 </context>
 <context>
     <name>BatchOutputSelectionPanel</name>
     <message>
         <source>Save file</source>
-        <translation type="unfinished">Salva file</translation>
+        <translation>Salva file</translation>
     </message>
 </context>
 <context>
     <name>BatchProcessingDialog</name>
     <message>
         <source>Batch Processing - %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Processo in serie - %s</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra parametri avanzati</translation>
     </message>
     <message>
         <source>Add row</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi riga</translation>
     </message>
     <message>
         <source>Delete row</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina riga</translation>
     </message>
     <message>
         <source>Load in QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Carica in QGIS</translation>
     </message>
     <message>
         <source>&lt;b&gt;Missing parameter value: %s (row %d)&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Valore del parametro mancante: %s (riga %d)&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Wrong or missing parameter value: %s (row %d)&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Valore del parametro errato o mancante: %s (riga %d)&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Processing algorithm %d/%d...</source>
@@ -187,38 +193,38 @@ See log for more information</source>
     </message>
     <message>
         <source>&lt;b&gt;Algorithm %s starting...&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Avvio dell&apos;algoritmo %s...&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Algorithm %s correctly executed...</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritmo %s eseguito correttamente...</translation>
     </message>
     <message>
         <source>Batch processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Processo in serie</translation>
     </message>
     <message>
         <source>Batch processing successfully completed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Processo in serie completato con successo!</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Sì</translation>
+        <translation>Sì</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">No</translation>
+        <translation>No</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Nascondi i parametri avanzati</translation>
     </message>
 </context>
 <context>
     <name>CalculatorModelerAlgorithm</name>
     <message>
         <source>Calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Calcolatore</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
@@ -226,15 +232,15 @@ See log for more information</source>
     </message>
     <message>
         <source>Formula</source>
-        <translation type="unfinished"></translation>
+        <translation>Formula</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation type="unfinished"></translation>
+        <translation>Risultato</translation>
     </message>
     <message>
         <source>Wrong formula: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Formula errata: %s</translation>
     </message>
 </context>
 <context>
@@ -242,20 +248,27 @@ See log for more information</source>
     <message>
         <source>You can refer to model values in you formula, usingsingle-letter variables, as follows:
 </source>
+        <translation type="obsolete">Nella formula puoi riferirti ai valori del modello  utilizzando una singola lettera per variabile, come segue
+</translation>
+    </message>
+    <message>
+        <source>You can refer to model values in you formula, using single-letter variables, as follows:
+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
  - No numerical variables are available.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+ - Non sono disponibili variabili numeriche.</translation>
     </message>
     <message>
         <source>[Enter your formula here]</source>
-        <translation type="unfinished">[Inserisci la formula qui]</translation>
+        <translation>[Inserisci la formula qui]</translation>
     </message>
     <message>
         <source>Calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Calcolatore</translation>
     </message>
 </context>
 <context>
@@ -282,15 +295,15 @@ See log for more information</source>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Generale</translation>
+        <translation>Generale</translation>
     </message>
     <message>
         <source>Models</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelli</translation>
     </message>
     <message>
         <source>Scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Script</translation>
     </message>
     <message>
         <source>Providers</source>
@@ -371,25 +384,25 @@ See log for more information</source>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Chiudi</translation>
+        <translation>Chiudi</translation>
     </message>
 </context>
 <context>
     <name>CreateNewModelAction</name>
     <message>
         <source>Create new model</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea nuovo modello</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Strumenti</translation>
+        <translation>Strumenti</translation>
     </message>
 </context>
 <context>
     <name>CreateNewScriptAction</name>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Strumenti</translation>
+        <translation>Strumenti</translation>
     </message>
 </context>
 <context>
@@ -1480,30 +1493,30 @@ colonne</translation>
     <name>DeleteModelAction</name>
     <message>
         <source>Delete model</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina modello</translation>
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished">Conferma</translation>
+        <translation>Conferma</translation>
     </message>
     <message>
         <source>Are you sure you want to delete this model?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vuoi veramente eliminare questo modello?</translation>
     </message>
 </context>
 <context>
     <name>DeleteScriptAction</name>
     <message>
         <source>Delete script</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina script</translation>
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished">Conferma</translation>
+        <translation>Conferma</translation>
     </message>
     <message>
         <source>Are you sure you want to delete this script?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vuoi veramente eliminare questo script?</translation>
     </message>
 </context>
 <context>
@@ -3157,7 +3170,7 @@ Sicuro di voler proseguire?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="14"/>
         <source>Script editor</source>
-        <translation>Editor del modello</translation>
+        <translation>Editor dello script</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="40"/>
@@ -3185,7 +3198,7 @@ Sicuro di voler proseguire?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="67"/>
         <source>Edit script help</source>
-        <translation>Modifica guida del modello</translation>
+        <translation>Modifica help dello script</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="84"/>
@@ -3350,21 +3363,21 @@ colonna geometrica, colonna con valori interi univoci</translation>
     <name>EditModelAction</name>
     <message>
         <source>Edit model</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiorna modello</translation>
     </message>
 </context>
 <context>
     <name>EditScriptAction</name>
     <message>
         <source>Edit script</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifica script</translation>
     </message>
 </context>
 <context>
     <name>ExtentSelectionPanel</name>
     <message>
         <source>[Leave blank to use min covering extent]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Lascia vuoto per usare l&apos;estensione minima]</translation>
     </message>
     <message>
         <source>Use layer/canvas extent</source>
@@ -3479,15 +3492,15 @@ colonna geometrica, colonna con valori interi univoci</translation>
     <name>FileSelectionPanel</name>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Select folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli cartella</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation type="unfinished">Apri file</translation>
+        <translation>Apri file</translation>
     </message>
 </context>
 <context>
@@ -3498,11 +3511,11 @@ colonna geometrica, colonna con valori interi univoci</translation>
     </message>
     <message>
         <source>Add row</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi riga</translation>
     </message>
     <message>
         <source>Remove row</source>
-        <translation type="unfinished"></translation>
+        <translation>Rimuovi riga</translation>
     </message>
 </context>
 <context>
@@ -3513,7 +3526,7 @@ colonna geometrica, colonna con valori interi univoci</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -5245,7 +5258,7 @@ See log for more details</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you seewhy those layers were not created as expected&lt;/p&gt;</source>
+        <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you see why those layers were not created as expected&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5586,11 +5599,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Strumenti</translation>
+        <translation>Strumenti</translation>
     </message>
     <message>
         <source>Connection problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Problema di connessione</translation>
     </message>
     <message>
         <source>Could not connect to scripts/models repository</source>
@@ -5605,11 +5618,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Strumenti</translation>
+        <translation>Strumenti</translation>
     </message>
     <message>
         <source>Connection problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Problema di connessione</translation>
     </message>
     <message>
         <source>Could not connect to scripts/models repository</source>
@@ -5624,23 +5637,23 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Installed</source>
-        <translation type="unfinished">Installato</translation>
+        <translation>Installato</translation>
     </message>
     <message>
         <source>Upgradable</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiornabile</translation>
     </message>
     <message>
         <source>Not installed</source>
-        <translation type="unfinished">Non installati</translation>
+        <translation>Non installato</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Description:&lt;/b&gt;%s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Descrizione:&lt;/b&gt;%s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Created by:&lt;/b&gt;%s</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Creato da:&lt;/b&gt;%s</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Version:&lt;/b&gt;%s</source>
@@ -5648,15 +5661,15 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>&lt;h2&gt;No detailed description available for this script&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Descrizione dettagliata per questo script non disponibile&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Connection problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Problema di connessione</translation>
     </message>
     <message>
         <source>Could not download file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile scaricare il file: %s</translation>
     </message>
 </context>
 <context>
@@ -5948,7 +5961,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>HelpEditionDialog</name>
     <message>
         <source>Cannot open help file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile aprire il file di aiuto: %s</translation>
     </message>
     <message>
         <source>Error saving help file</source>
@@ -5965,21 +5978,24 @@ are stored on the installation folder</source>
     <message>
         <source>&lt;h2&gt;Algorithm description&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Descrizione dell&apos;algoritmo&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Input parameters&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Parametri di input&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Outputs&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h2&gt;Output&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>Algorithm description</source>
-        <translation type="unfinished"></translation>
+        <translation>Descrizione dell&apos;algoritmo</translation>
     </message>
     <message>
         <source>Input parameters</source>
@@ -6070,7 +6086,7 @@ are stored on the installation folder</source>
     <name>InputLayerSelectorPanel</name>
     <message>
         <source>All files(*.*);;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tutti i file (*.*);;</translation>
     </message>
 </context>
 <context>
@@ -6114,7 +6130,7 @@ Do you want tocontinue?</source>
     </message>
     <message>
         <source>&lt;b&gt;Algorithm %s starting...&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;b&gt;Avvio dell&apos;algoritmo %s...&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Missing parameter value: %s&lt;/b&gt;</source>
@@ -7932,7 +7948,7 @@ Agisce su tutti i vettori editabili attivi al momento
     </message>
     <message>
         <source>Models</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Modelli</translation>
     </message>
     <message>
         <source>Could not load model %s
@@ -8182,11 +8198,11 @@ Vedere l&apos;area messaggi per ulteriori informazioni..</translation>
     <name>ModelerParametersDialog</name>
     <message>
         <source>Description</source>
-        <translation type="unfinished">Descrizione</translation>
+        <translation>Descrizione</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mostra parametri avanzati</translation>
     </message>
     <message>
         <source>Parent algorithms</source>
@@ -8206,7 +8222,7 @@ Vedere l&apos;area messaggi per ulteriori informazioni..</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nascondi i parametri avanzati</translation>
     </message>
     <message>
         <source>&apos;%s&apos; from algorithm &apos;%s&apos;</source>
@@ -8547,7 +8563,7 @@ Vedere l&apos;area messaggi per ulteriori informazioni..</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mostra parametri avanzati</translation>
     </message>
     <message>
         <source> [optional]</source>
@@ -8563,7 +8579,7 @@ Vedere l&apos;area messaggi per ulteriori informazioni..</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nascondi i parametri avanzati</translation>
     </message>
     <message>
         <source>[not set]</source>
@@ -15307,9 +15323,13 @@ Errore di analisi:
 <context>
     <name>QgsAttributeDialog</name>
     <message>
-        <location filename="../src/gui/qgsattributedialog.cpp" line="103"/>
         <source>Feature Attributes</source>
-        <translation>Attributi elemento</translation>
+        <translation type="obsolete">Attributi elemento</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsattributedialog.cpp" line="103"/>
+        <source>%1 - Feature Attributes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26115,9 +26135,8 @@ Errore di elaborazione:
         <translation>Simbologia simboli del vettore</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="95"/>
         <source>Layerattribute</source>
-        <translation>Layerattribute</translation>
+        <translation type="obsolete">Layerattribute</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="139"/>
@@ -26128,6 +26147,11 @@ Errore di elaborazione:
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="119"/>
         <source>Unselect all</source>
         <translation>Deseleziona tutto</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="95"/>
+        <source>Layer attribute</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="148"/>
@@ -47150,18 +47174,6 @@ p, li { white-space: pre-wrap; }
         <translation>Metadati</translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1685"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1780"/>
         <source>Title</source>
@@ -56849,7 +56861,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Scripts</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Script</translation>
     </message>
 </context>
 <context>

@@ -148,15 +148,15 @@ See log for more information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Script filesÂ (*.py *.PY)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Error reading script</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>The selected file does not contain a valid script</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Script files (*.py *.PY)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -286,11 +286,6 @@ See log for more information</source>
 <context>
     <name>CalculatorModelerParametersDialog</name>
     <message>
-        <source>You can refer to model values in you formula, usingsingle-letter variables, as follows:
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>
  - No numerical variables are available.</source>
         <translation type="unfinished"></translation>
@@ -301,6 +296,11 @@ See log for more information</source>
     </message>
     <message>
         <source>Calculator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You can refer to model values in you formula, using single-letter variables, as follows:
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6106,7 +6106,7 @@ See log for more details</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you seewhy those layers were not created as expected&lt;/p&gt;</source>
+        <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you see why those layers were not created as expected&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -18442,7 +18442,11 @@ Error del analizador:
     </message>
     <message>
         <source>Feature Attributes</source>
-        <translation>Atributos del objeto espacial</translation>
+        <translation type="obsolete">Atributos del objeto espacial</translation>
+    </message>
+    <message>
+        <source>%1 - Feature Attributes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -29514,7 +29518,7 @@ Error del analizador:
         <translation>Exportar objetos espaciales que intersecten con la extensión actual del mapa</translation>
     </message>
     <message>
-        <source>Layerattribute</source>
+        <source>Layer attribute</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -102,7 +102,7 @@ See log for more information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Script filesÂ (*.py *.PY)</source>
+        <source>Script files (*.py *.PY)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -240,7 +240,7 @@ See log for more information</source>
 <context>
     <name>CalculatorModelerParametersDialog</name>
     <message>
-        <source>You can refer to model values in you formula, usingsingle-letter variables, as follows:
+        <source>You can refer to model values in you formula, using single-letter variables, as follows:
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -5248,7 +5248,7 @@ See log for more details</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you seewhy those layers were not created as expected&lt;/p&gt;</source>
+        <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you see why those layers were not created as expected&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15301,9 +15301,13 @@ Parser error:
 <context>
     <name>QgsAttributeDialog</name>
     <message>
-        <location filename="../src/gui/qgsattributedialog.cpp" line="103"/>
         <source>Feature Attributes</source>
-        <translation>Attributs d&apos;entités</translation>
+        <translation type="obsolete">Attributs d&apos;entités</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsattributedialog.cpp" line="103"/>
+        <source>%1 - Feature Attributes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26103,11 +26107,6 @@ Erreur d&apos;analyse :
         <translation>Symbologie de la couche de symboles</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="95"/>
-        <source>Layerattribute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="139"/>
         <source>Select all</source>
         <translation>Sélectionner tout</translation>
@@ -26116,6 +26115,11 @@ Erreur d&apos;analyse :
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="119"/>
         <source>Unselect all</source>
         <translation>Tout désélectionner</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="95"/>
+        <source>Layer attribute</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="148"/>
@@ -47091,18 +47095,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="148"/>
         <source>Metadata</source>
         <translation>Métadonnées</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1685"/>

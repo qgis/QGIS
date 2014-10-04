@@ -5,47 +5,51 @@
     <name>@default</name>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Fel</translation>
+        <translation>Fel</translation>
     </message>
     <message>
         <source>Cannot create unit test for that algorithm execution. The output cannot be a temporary file</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte skapa test för algoritmens exekvering. Utdata kan inte vara en tillfällig fil.</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;body&gt;&lt;h2&gt;Algorithm description&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;&lt;h2&gt;Algoritmbeskrivning&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Input parameters&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Parametrar&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Outputs&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Utdata&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Algorithm author: %s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;Algoritm av: %s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Help author: %s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;Hjälp av: %s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Algorithm version: %s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;Algoritm version: %s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Uncaught error executing %s.
 See log for more information</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel som inte gick att hantera vid körning av %s.
+Se logg för mer information</translation>
     </message>
     <message>
         <source>Executing iteration %s/%s...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exekverar omgång %s/%s...</translation>
     </message>
 </context>
 <context>
@@ -60,181 +64,185 @@ See log for more information</source>
     <name>AddModelFromFileAction</name>
     <message>
         <source>Add model from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till modell från fil</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Verktyg</translation>
+        <translation>Verktyg</translation>
     </message>
     <message>
         <source>Open model</source>
-        <translation type="unfinished">Öppna modell</translation>
+        <translation>Öppna modell</translation>
     </message>
     <message>
         <source>Processing model files (*.model *.MODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbetar modellfiler (*.model *.MODEL)</translation>
     </message>
     <message>
         <source>Error reading model</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel vid läsning av modell</translation>
     </message>
     <message>
         <source>The selected file does not contain a valid model</source>
-        <translation type="unfinished"></translation>
+        <translation>Vald fil innehåller inte en giltig modell</translation>
     </message>
     <message>
         <source>Cannot read file</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte läsa filen</translation>
     </message>
 </context>
 <context>
     <name>AddScriptFromFileAction</name>
     <message>
         <source>Add script from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till skript från fil</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Verktyg</translation>
+        <translation>Verktyg</translation>
     </message>
     <message>
         <source>Script files</source>
+        <translation>Skriptfiler</translation>
+    </message>
+    <message>
+        <source>Script files (*.py *.PY)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Script filesÂ (*.py *.PY)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">SkriptfilerÂ (*.py *.PY)</translation>
     </message>
     <message>
         <source>Error reading script</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel vid läsning av skript</translation>
     </message>
     <message>
         <source>The selected file does not contain a valid script</source>
-        <translation type="unfinished"></translation>
+        <translation>Vald fil innehåller inte ett giltigt skript</translation>
     </message>
 </context>
 <context>
     <name>AlgorithmProvider</name>
     <message>
         <source>Activate</source>
-        <translation type="unfinished">Aktivera</translation>
+        <translation>Aktivera</translation>
     </message>
     <message>
         <source>Generic algorithm provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Generisk algoritmkälla</translation>
     </message>
 </context>
 <context>
     <name>BatchInputSelectionPanel</name>
     <message>
         <source>Select from open layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj från öppnade lager</translation>
     </message>
     <message>
         <source>Select from filesystem</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj från filsystemet</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation type="unfinished">Öppna fil</translation>
+        <translation>Öppna fil</translation>
     </message>
     <message>
         <source>All files(*.*);;</source>
-        <translation type="unfinished"></translation>
+        <translation>Alla filer(*.*):;</translation>
     </message>
 </context>
 <context>
     <name>BatchOutputSelectionPanel</name>
     <message>
         <source>Save file</source>
-        <translation type="unfinished">Spara fil</translation>
+        <translation>Spara fil</translation>
     </message>
 </context>
 <context>
     <name>BatchProcessingDialog</name>
     <message>
         <source>Batch Processing - %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Batch Process - %s</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa avancerade parametrar</translation>
     </message>
     <message>
         <source>Add row</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till rad</translation>
     </message>
     <message>
         <source>Delete row</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort rad</translation>
     </message>
     <message>
         <source>Load in QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Läs in i QGIS</translation>
     </message>
     <message>
         <source>&lt;b&gt;Missing parameter value: %s (row %d)&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Saknat parametervärde: %s (rad %d)&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Wrong or missing parameter value: %s (row %d)&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Felaktigt eller saknat parametervärde: %s (rad %d)&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Processing algorithm %d/%d...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbetar algoritm %d/%d...</translation>
     </message>
     <message>
         <source>&lt;b&gt;Algorithm %s starting...&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Algoritm %s påbörjas...&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Algorithm %s correctly executed...</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritm %s exekverades korrekt...</translation>
     </message>
     <message>
         <source>Batch processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Batchprocesskörning</translation>
     </message>
     <message>
         <source>Batch processing successfully completed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Lyckad batchprocesskörning slutfördes!</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Ja</translation>
+        <translation>Ja</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Nej</translation>
+        <translation>Nej</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Göm avancerade parametrar</translation>
     </message>
 </context>
 <context>
     <name>CalculatorModelerAlgorithm</name>
     <message>
         <source>Calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkylator</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Endast modellverktyg</translation>
     </message>
     <message>
         <source>Formula</source>
-        <translation type="unfinished"></translation>
+        <translation>Formel</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultat</translation>
     </message>
     <message>
         <source>Wrong formula: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel formel: %s</translation>
     </message>
 </context>
 <context>
@@ -242,20 +250,27 @@ See log for more information</source>
     <message>
         <source>You can refer to model values in you formula, usingsingle-letter variables, as follows:
 </source>
+        <translation type="obsolete">Du kan hänvisa till modellvärden i din formel, med enkla teckenvariabler, enligt följande:
+</translation>
+    </message>
+    <message>
+        <source>You can refer to model values in you formula, using single-letter variables, as follows:
+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
  - No numerical variables are available.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+- Inga numeriska variabler finns tillgängliga.</translation>
     </message>
     <message>
         <source>[Enter your formula here]</source>
-        <translation type="unfinished">[Skriv in din formel här]</translation>
+        <translation>[Skriv in din formel här]</translation>
     </message>
     <message>
         <source>Calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkylator</translation>
     </message>
 </context>
 <context>
@@ -282,15 +297,15 @@ See log for more information</source>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Allmänt</translation>
+        <translation>Allmänt</translation>
     </message>
     <message>
         <source>Models</source>
-        <translation type="unfinished"></translation>
+        <translation>Modeller</translation>
     </message>
     <message>
         <source>Scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Skript</translation>
     </message>
     <message>
         <source>Providers</source>
@@ -367,29 +382,29 @@ See log for more information</source>
     <name>CouldNotLoadResultsDialog</name>
     <message>
         <source>Problem loading output layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Problem att öppna resultatlager</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Stäng</translation>
+        <translation>Stäng</translation>
     </message>
 </context>
 <context>
     <name>CreateNewModelAction</name>
     <message>
         <source>Create new model</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapa ny modell</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Verktyg</translation>
+        <translation>Verktyg</translation>
     </message>
 </context>
 <context>
     <name>CreateNewScriptAction</name>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Verktyg</translation>
+        <translation>Verktyg</translation>
     </message>
 </context>
 <context>
@@ -1478,30 +1493,30 @@ columns</source>
     <name>DeleteModelAction</name>
     <message>
         <source>Delete model</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort modell</translation>
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished">Konfirmera</translation>
+        <translation>Bekräfta</translation>
     </message>
     <message>
         <source>Are you sure you want to delete this model?</source>
-        <translation type="unfinished"></translation>
+        <translation>Är du säker på att du vill ta bort modellen?</translation>
     </message>
 </context>
 <context>
     <name>DeleteScriptAction</name>
     <message>
         <source>Delete script</source>
-        <translation type="unfinished"></translation>
+        <translation>Radera skript</translation>
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished">Konfirmera</translation>
+        <translation>Bekräfta</translation>
     </message>
     <message>
         <source>Are you sure you want to delete this script?</source>
-        <translation type="unfinished"></translation>
+        <translation>Är du säker på att du vill ta bort skriptet?</translation>
     </message>
 </context>
 <context>
@@ -3350,33 +3365,33 @@ geometrikolumn - kolumn med unika heltalsvärden</translation>
     <name>EditModelAction</name>
     <message>
         <source>Edit model</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigera modell</translation>
     </message>
 </context>
 <context>
     <name>EditScriptAction</name>
     <message>
         <source>Edit script</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigera skript</translation>
     </message>
 </context>
 <context>
     <name>ExtentSelectionPanel</name>
     <message>
         <source>[Leave blank to use min covering extent]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Lämna tom för att använda minsta täckningsområde]</translation>
     </message>
     <message>
         <source>Use layer/canvas extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd lager-/kartfönsterutbredning</translation>
     </message>
     <message>
         <source>Select extent on canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj utsträckning på kartfönstret</translation>
     </message>
     <message>
         <source>Use min covering extent from input layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd minsta täckningsområde baserat på valda lager</translation>
     </message>
 </context>
 <context>
@@ -3479,41 +3494,41 @@ geometrikolumn - kolumn med unika heltalsvärden</translation>
     <name>FileSelectionPanel</name>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Select folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj katalog</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation type="unfinished">Öppna fil</translation>
+        <translation>Öppna fil</translation>
     </message>
 </context>
 <context>
     <name>FixedTableDialog</name>
     <message>
         <source>Fixed Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixerad Tabell</translation>
     </message>
     <message>
         <source>Add row</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till rad</translation>
     </message>
     <message>
         <source>Remove row</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort rad</translation>
     </message>
 </context>
 <context>
     <name>FixedTablePanel</name>
     <message>
         <source>Fixed table %dx%d</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixerad tabell %dx%d</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -5224,30 +5239,37 @@ Det &apos;gråa&apos; värdet (från GDAL 1.7.0) möjliggör att expandera ett d
     <name>GeoAlgorithm</name>
     <message>
         <source>Uncaught error while executing algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel som inte gick att hantera vid körning av algoritm</translation>
     </message>
     <message>
         <source>
 See log for more details</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Se logg för fler detaljer</translation>
     </message>
     <message>
         <source>Converting outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Konverterar utdata</translation>
     </message>
     <message>
         <source>&lt;p&gt;Oooops! The following output layers could not be open&lt;/p&gt;&lt;ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Hoppsan! Följande utdatalager kunde inte öppnas&lt;/p&gt;&lt;ul&gt;
+</translation>
     </message>
     <message>
         <source>&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
 </source>
+        <translation>&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
+</translation>
+    </message>
+    <message>
+        <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you see why those layers were not created as expected&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you seewhy those layers were not created as expected&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">&lt;/ul&gt;&lt;p&gt;Ovanstående filer kunde inte öppnas, vilket sannolikt betyder att de inte skapades korrekt av algoritmen&lt;/p&gt;&lt;p&gt;En kontroll av loggen kanske kan hjälpa dig att ta reda på varför dessa lager inte skapades som förväntat&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -5585,81 +5607,81 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>GetModelsAction</name>
     <message>
         <source>Get models from on-line scripts collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Hämta modeller från on-line skriptsamling</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Verktyg</translation>
+        <translation>Verktyg</translation>
     </message>
     <message>
         <source>Connection problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Annslutningsproblem</translation>
     </message>
     <message>
         <source>Could not connect to scripts/models repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte anslutea till skript-/modellsamling</translation>
     </message>
 </context>
 <context>
     <name>GetScriptsAction</name>
     <message>
         <source>Get scripts from on-line scripts collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Hämta skript från on-line skriptsamling</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Verktyg</translation>
+        <translation>Verktyg</translation>
     </message>
     <message>
         <source>Connection problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Anslutningsproblem</translation>
     </message>
     <message>
         <source>Could not connect to scripts/models repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte ansluta till skript-/modellsamling</translation>
     </message>
 </context>
 <context>
     <name>GetScriptsAndModelsDialog</name>
     <message>
         <source>&lt;h3&gt; Processing resources manager &lt;/h3&gt;&lt;p&gt;Check/uncheck algorithms in the tree to select the ones that you want to install or remove&lt;/p&gt;&lt;p&gt;Algorithms are divided in 3 groups:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Installed:&lt;/b&gt; Algorithms already in your system, with the latest version available&lt;/li&gt;&lt;li&gt;&lt;b&gt;Upgradable:&lt;/b&gt; Algorithms already in your system, but with a newer version available in the server&lt;/li&gt;&lt;li&gt;&lt;b&gt;Not installed:&lt;/b&gt; Algorithms not installed in your system&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;  Bearbetar resurshanterare &lt;/h3&gt;&lt;p&gt;bocka för/av algoritmer i trädet för att välja de som du vill lägga till eller ta bort&lt;/p&gt;&lt;p&gt;Algoritmer delas in i tre grupper:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Installerade:&lt;/b&gt; Algoritmer som redan finns i ditt system, med senast tillgängliga version&lt;/li&gt;&lt;li&gt;&lt;b&gt;Möjliga att uppdatera:&lt;/b&gt; Algoritmer som redan finns i ditt system, men där det finns en nyare version på servern&lt;/li&gt;&lt;li&gt;&lt;b&gt;Ej installerade:&lt;/b&gt; Algoritmer som inte finns i ditt system&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>Installed</source>
-        <translation type="unfinished">Installerade</translation>
+        <translation>Installerade</translation>
     </message>
     <message>
         <source>Upgradable</source>
-        <translation type="unfinished"></translation>
+        <translation>Möjliga att uppdatera</translation>
     </message>
     <message>
         <source>Not installed</source>
-        <translation type="unfinished">Ej installerade</translation>
+        <translation>Ej installerade</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Description:&lt;/b&gt;%s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Beskrivning:&lt;/b&gt;%s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Created by:&lt;/b&gt;%s</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Skapad av:&lt;/b&gt;%s</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Version:&lt;/b&gt;%s</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Version:&lt;/b&gt;%s</translation>
     </message>
     <message>
         <source>&lt;h2&gt;No detailed description available for this script&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Det finns ingen detaljerad information om detta skript&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Connection problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Anslutningsproblem</translation>
     </message>
     <message>
         <source>Could not download file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte ladda ner fil: %s</translation>
     </message>
 </context>
 <context>
@@ -5951,11 +5973,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>HelpEditionDialog</name>
     <message>
         <source>Cannot open help file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte öppna hjälpfilen: %s</translation>
     </message>
     <message>
         <source>Error saving help file</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte spara hjälpfil</translation>
     </message>
     <message>
         <source>Help file could not be saved.
@@ -5963,30 +5985,37 @@ Check that you have permission to modify the help
 file. You might not have permission if you are 
 editing an example model or script, since they 
 are stored on the installation folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte spara hjälpfilen.
+Kontrollera att du har rättigheter att ändra hjälpfilen.
+Du kan sakna rättigheten om du redigerar en
+exempelmodell eller ett exempelskript, då dessa
+är sparade i installationskatalogen</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Algorithm description&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Algoritmbeskrivning&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Input parameters&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Parametrar&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Outputs&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Utdata&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>Algorithm description</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritmbeskrivning</translation>
     </message>
     <message>
         <source>Input parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametrar</translation>
     </message>
     <message>
         <source>Outputs</source>
@@ -5994,15 +6023,15 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Algorithm created by</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritm skapad av</translation>
     </message>
     <message>
         <source>Algorithm help written by</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritmhjälp skriven av</translation>
     </message>
     <message>
         <source>Algorithm version</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritmversion</translation>
     </message>
 </context>
 <context>
@@ -6037,7 +6066,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Log files (*.log *.LOG)</source>
-        <translation type="unfinished"></translation>
+        <translation>Loggfiler (*.log *.LOG)</translation>
     </message>
     <message>
         <source>Create test</source>
@@ -6073,64 +6102,66 @@ are stored on the installation folder</source>
     <name>InputLayerSelectorPanel</name>
     <message>
         <source>All files(*.*);;</source>
-        <translation type="unfinished"></translation>
+        <translation>Alla filer(*.*);;</translation>
     </message>
 </context>
 <context>
     <name>InvalidParameterValue</name>
     <message>
         <source>Run</source>
-        <translation type="unfinished">Kör</translation>
+        <translation>Kör</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">Parametrar</translation>
+        <translation>Parametrar</translation>
     </message>
     <message>
         <source>Log</source>
-        <translation type="unfinished"></translation>
+        <translation>Logg</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Sorry, no help is available for this algorithm.&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Tyvärr, det finns ingen hjälp för denna algoritm.&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Could not open help file :-( &lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Kunde inte öppna hjälpfilen :-( &lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Unmatching CRS&apos;s</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinatsystem överenstämmer inte</translation>
     </message>
     <message>
         <source>Layers do not all use the same CRS. This can cause unexpected results.
 Do you want tocontinue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Alla lager använder inte samma koordinatsystem. Detta kan leda till oväntade resultat.
+Vill du fortsätta?</translation>
     </message>
     <message>
         <source>Unable to execute algorithm</source>
-        <translation type="unfinished">Kan inte köra algoritm</translation>
+        <translation>Kan inte köra algoritm</translation>
     </message>
     <message>
         <source>Processing algorithm...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbetar algoritm...</translation>
     </message>
     <message>
         <source>&lt;b&gt;Algorithm %s starting...&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Algoritm %s påbörjas...&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Missing parameter value: %s&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Saknat parametervärde: %s&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished">Fel eller saknade parametervärden</translation>
+        <translation>Fel eller saknade parametervärden</translation>
     </message>
     <message>
         <source>HTML output has been generated by this algorithm.
 Open the results dialog to check it.</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML utdata har skapats av algoritmen.
+Öppna resultatdialogen för att kontrollera.</translation>
     </message>
 </context>
 <context>
@@ -7530,11 +7561,11 @@ Fungear på aktuellt redigerbart lager</translation>
     <name>MessageBarProgress</name>
     <message>
         <source>Executing algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Exekverar algoritm</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Fel</translation>
+        <translation>Fel</translation>
     </message>
 </context>
 <context>
@@ -7865,80 +7896,84 @@ Fungear på aktuellt redigerbart lager</translation>
     <message>
         <source>&lt;h3&gt;Missing dependency.This algorithm cannot be run :-( &lt;/h3&gt;
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Saknade beroenden. Algoritmen kan inte köras :-( &lt;/h3&gt;
+%s</translation>
     </message>
     <message>
         <source>Missing dependency</source>
-        <translation type="unfinished"></translation>
+        <translation>Beroenden saknas</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Stäng</translation>
+        <translation>Stäng</translation>
     </message>
 </context>
 <context>
     <name>ModelerAlgorithm</name>
     <message>
         <source>Model</source>
-        <translation type="unfinished">Modell</translation>
+        <translation>Modell</translation>
     </message>
     <message>
         <source>Wrong value: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel värde: %s</translation>
     </message>
     <message>
         <source>Prepare algorithm: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Förbered algoritm: %s</translation>
     </message>
     <message>
         <source>Running %s [%i/%i]</source>
-        <translation type="unfinished"></translation>
+        <translation>Kör %s [%i/%i]</translation>
     </message>
     <message>
         <source>OK. Execution took %0.3f ms (%i outputs).</source>
-        <translation type="unfinished"></translation>
+        <translation>OK. Exekveringen tog %0.3f ms (%i utdata).</translation>
     </message>
     <message>
         <source>Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Misslyckades</translation>
     </message>
     <message>
         <source>Error executing algorithm %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel vid körning av algoritm %s
+%s</translation>
     </message>
     <message>
         <source>Model processed ok. Executed %i algorithms total</source>
-        <translation type="unfinished"></translation>
+        <translation>Modellen kördes korrekt. %i algoritmer totalt exekverades</translation>
     </message>
     <message>
         <source>Error in parameter line: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel i parameter rad: %s</translation>
     </message>
     <message>
         <source>Error in algorithm name: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel i algoritm namn: %s</translation>
     </message>
     <message>
         <source>Error in model definition line: %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel i modelldefinitionen rad: %s
+%s</translation>
     </message>
 </context>
 <context>
     <name>ModelerAlgorithmProvider</name>
     <message>
         <source>Models folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Modellkatalog</translation>
     </message>
     <message>
         <source>Models</source>
-        <translation type="unfinished"></translation>
+        <translation>Modeller</translation>
     </message>
     <message>
         <source>Could not load model %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte öppna modell %s
+%s</translation>
     </message>
 </context>
 <context>
@@ -7949,11 +7984,11 @@ Fungear på aktuellt redigerbart lager</translation>
     </message>
     <message>
         <source>[Enter model name here]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Skriv in namn på modell här]</translation>
     </message>
     <message>
         <source>[Enter group name here]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Skriv in namn på grupp här]</translation>
     </message>
     <message>
         <source>Message</source>
@@ -8007,12 +8042,13 @@ Fungear på aktuellt redigerbart lager</translation>
     </message>
     <message>
         <source>Processing models (*.model *.MODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbetar modeller (*.model *.MODEL)</translation>
     </message>
     <message>
         <source>Could not load model %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte öppna modell %s
+%s</translation>
     </message>
     <message>
         <source>The selected model could not be loaded.
@@ -8022,7 +8058,7 @@ Se loggen för mer information.</translation>
     </message>
     <message>
         <source>Geoalgorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>Geoalgoritmer</translation>
     </message>
     <message>
         <source>Model doesn&apos;t contains any algorithms and/or parameters and can&apos;t be executed</source>
@@ -8057,206 +8093,206 @@ Se loggen för mer information.</translation>
     <name>ModelerOnlyAlgorithmProvider</name>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Endast modellverktyg</translation>
     </message>
 </context>
 <context>
     <name>ModelerParameterDefinitionDialog</name>
     <message>
         <source>Parameter definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameterdefinition</translation>
     </message>
     <message>
         <source>Parameter name</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameternamn</translation>
     </message>
     <message>
         <source>Checked</source>
-        <translation type="unfinished"></translation>
+        <translation>Markerad</translation>
     </message>
     <message>
         <source>Parent layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Överordnat lager</translation>
     </message>
     <message>
         <source>Required</source>
-        <translation type="unfinished"></translation>
+        <translation>Krävs</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Ja</translation>
+        <translation>Ja</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Nej</translation>
+        <translation>Nej</translation>
     </message>
     <message>
         <source>Shape type</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometrityp</translation>
     </message>
     <message>
         <source>Any</source>
-        <translation type="unfinished"></translation>
+        <translation>Valfri</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Linje</translation>
+        <translation>Linje</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">Polygon</translation>
+        <translation>Polygon</translation>
     </message>
     <message>
         <source>Mandatory</source>
-        <translation type="unfinished"></translation>
+        <translation>Obligatorisk</translation>
     </message>
     <message>
         <source>Data type</source>
-        <translation type="unfinished"></translation>
+        <translation>Datatyp</translation>
     </message>
     <message>
         <source>Vector (any)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektor (valfri)</translation>
     </message>
     <message>
         <source>Vector (point)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektor (punkt)</translation>
     </message>
     <message>
         <source>Vector (line)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektor (linje)</translation>
     </message>
     <message>
         <source>Vector (polygon)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektor (polygon)</translation>
     </message>
     <message>
         <source>Raster</source>
-        <translation type="unfinished">Raster</translation>
+        <translation>Raster</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Tabell</translation>
+        <translation>Tabell</translation>
     </message>
     <message>
         <source>Min/Max values</source>
-        <translation type="unfinished"></translation>
+        <translation>Min/Max värden</translation>
     </message>
     <message>
         <source>Default value</source>
-        <translation type="unfinished">Standardvärde</translation>
+        <translation>Standardvärde</translation>
     </message>
     <message>
         <source>0</source>
-        <translation type="unfinished">0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Fil</translation>
     </message>
     <message>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Katalog</translation>
     </message>
     <message>
         <source>Unable to define parameter</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte definiera parameter</translation>
     </message>
     <message>
         <source>Invalid parameter name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogiltigt parameternamn</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished">Fel eller saknade parametervärden</translation>
+        <translation>Felaktigt eller saknat parametervärde</translation>
     </message>
 </context>
 <context>
     <name>ModelerParametersDialog</name>
     <message>
         <source>Description</source>
-        <translation type="unfinished">Beskrivning</translation>
+        <translation>Beskrivning</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa avancerade parametrar</translation>
     </message>
     <message>
         <source>Parent algorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>Överordnad algoritm</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">Parametrar</translation>
+        <translation>Parametrar</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Sorry, no help is available for this algorithm.&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Tyvärr, det finns ingen hjälp för denna algoritm.&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Could not open help file :-( &lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Kunde inte öppna hjälpfilen :-( &lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Göm avancerade parametrar</translation>
     </message>
     <message>
         <source>&apos;%s&apos; from algorithm &apos;%s&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%s&apos; från algoritm &apos;%s&apos;</translation>
     </message>
     <message>
         <source>Unable to add algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte lägga till algoritm</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished">Fel eller saknade parametervärden</translation>
+        <translation>Fel eller saknade parametervärden</translation>
     </message>
 </context>
 <context>
     <name>MultilineTextPanel</name>
     <message>
         <source>[Use text below]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Använd text nedan]</translation>
     </message>
 </context>
 <context>
     <name>MultipleFileInputDialog</name>
     <message>
         <source>Multiple selection</source>
-        <translation type="unfinished">Multipelt val</translation>
+        <translation>Multipelt val</translation>
     </message>
     <message>
         <source>Select the file(s) to use</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj fil(er) att använda</translation>
     </message>
     <message>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Alla filer (*.*)</translation>
+        <translation>Alla filer (*.*)</translation>
     </message>
 </context>
 <context>
     <name>MultipleFileInputPanel</name>
     <message>
         <source>0 elements selected</source>
-        <translation type="unfinished"></translation>
+        <translation>0 element valda</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>%d elements selected</source>
-        <translation type="unfinished"></translation>
+        <translation>%d element valda</translation>
     </message>
 </context>
 <context>
@@ -8424,25 +8460,25 @@ Se loggen för mer information.</translation>
     <name>OutputFile</name>
     <message>
         <source>All files(*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alla filer(*.*)</translation>
     </message>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s filer(*.%s)</translation>
     </message>
 </context>
 <context>
     <name>OutputHTML</name>
     <message>
         <source>HTML files(*.html)</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML filer(*.html)</translation>
     </message>
 </context>
 <context>
     <name>OutputRaster</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s filer(*.%s)</translation>
     </message>
 </context>
 <context>
@@ -8476,7 +8512,7 @@ Se loggen för mer information.</translation>
     <name>OutputVector</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s filer(*.%s)</translation>
     </message>
 </context>
 <context>
@@ -8505,70 +8541,70 @@ Se loggen för mer information.</translation>
     <name>ParameterMultipleInput</name>
     <message>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Alla filer (*.*)</translation>
+        <translation>Alla filer (*.*)</translation>
     </message>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s filer(*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParameterRaster</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s filer(*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParameterTable</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s filer(*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParameterVector</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s filer(*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParametersDialog</name>
     <message>
         <source>[Not selected]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Ej vald]</translation>
     </message>
 </context>
 <context>
     <name>ParametersPanel</name>
     <message>
         <source>[Not selected]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Ej vald]</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa avancerade parametrar</translation>
     </message>
     <message>
         <source> [optional]</source>
-        <translation type="unfinished"></translation>
+        <translation>[valfri]</translation>
     </message>
     <message>
         <source>Iterate over this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Upprepa med detta lager</translation>
     </message>
     <message>
         <source>Open output file after running algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till utdata när algoritmen körts</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Göm avancerade parametrar</translation>
     </message>
     <message>
         <source>[not set]</source>
-        <translation type="unfinished"></translation>
+        <translation>[ej satt]</translation>
     </message>
 </context>
 <context>
@@ -8589,7 +8625,7 @@ Se loggen för mer information.</translation>
     <name>Postprocessing</name>
     <message>
         <source>Loading resulting layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Läser in lagerresultat</translation>
     </message>
 </context>
 <context>
@@ -8636,15 +8672,16 @@ Se loggen för mer information.</translation>
     <message>
         <source>Could not load provider: %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte läsa in förmedlare: %s
+%s</translation>
     </message>
     <message>
         <source>Error in %s. Wrong parameter value %s for parameter %s.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel i %s. Fel parametervärde %s i parameter %s.</translation>
     </message>
     <message>
         <source>Error in %s. Missing parameter value for parameter %s.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel i %s. Parametervärde saknas för parameter %s.</translation>
     </message>
 </context>
 <context>
@@ -15309,9 +15346,13 @@ Tolkningsfel:
 <context>
     <name>QgsAttributeDialog</name>
     <message>
-        <location filename="../src/gui/qgsattributedialog.cpp" line="103"/>
         <source>Feature Attributes</source>
-        <translation>Objektattribut</translation>
+        <translation type="obsolete">Objektattribut</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsattributedialog.cpp" line="103"/>
+        <source>%1 - Feature Attributes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16379,7 +16420,7 @@ Databas: %2</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="200"/>
         <source>Legend</source>
-        <translation type="unfinished">Teckenförklaring</translation>
+        <translation>Teckenförklaring</translation>
     </message>
 </context>
 <context>
@@ -17812,7 +17853,7 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablev2.cpp" line="153"/>
         <source>&lt;attribute table&gt;</source>
-        <translation type="unfinished">&lt;attributtabell&gt;</translation>
+        <translation>&lt;attributtabell&gt;</translation>
     </message>
 </context>
 <context>
@@ -17875,12 +17916,12 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="74"/>
         <source>Select background color</source>
-        <translation type="unfinished">Välj bakgrundsfärg</translation>
+        <translation>Välj bakgrundsfärg</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="78"/>
         <source>No background</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen bakgrund</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="133"/>
@@ -17954,7 +17995,7 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="447"/>
         <source>Table background color</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabellbakgrundsfärg</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="607"/>
@@ -18114,7 +18155,7 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="309"/>
         <source>Background color</source>
-        <translation type="unfinished">Bakgrundsfärg</translation>
+        <translation>Bakgrundsfärg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="355"/>
@@ -18423,7 +18464,7 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="299"/>
         <source>V</source>
-        <translation type="unfinished">V</translation>
+        <translation>V</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="308"/>
@@ -18468,7 +18509,7 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="356"/>
         <source>F5</source>
-        <translation type="unfinished">F5</translation>
+        <translation>F5</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="365"/>
@@ -18943,7 +18984,7 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="898"/>
         <source>Ctrl+&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+&lt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="907"/>
@@ -18953,7 +18994,7 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="910"/>
         <source>Ctrl+,</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+,</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="919"/>
@@ -18963,7 +19004,7 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="922"/>
         <source>Ctrl+.</source>
-        <translation type="unfinished">Ctrl+.</translation>
+        <translation>Ctrl+.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="931"/>
@@ -18973,7 +19014,7 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="934"/>
         <source>Ctrl+&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="943"/>
@@ -18983,7 +19024,7 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="946"/>
         <source>Ctrl+Alt+/</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+/</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="955"/>
@@ -26119,9 +26160,8 @@ Tolkningsfel:
         <translation>Symbollagerstil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="95"/>
         <source>Layerattribute</source>
-        <translation>Lagerattribut</translation>
+        <translation type="obsolete">Lagerattribut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="139"/>
@@ -26132,6 +26172,11 @@ Tolkningsfel:
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="119"/>
         <source>Unselect all</source>
         <translation>Avselektera alla</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="95"/>
+        <source>Layer attribute</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="148"/>
@@ -29795,12 +29840,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="196"/>
         <source>Values</source>
-        <translation type="unfinished">Värden</translation>
+        <translation>Värden</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="196"/>
         <source>Legend</source>
-        <translation type="unfinished">Teckenförklaring</translation>
+        <translation>Teckenförklaring</translation>
     </message>
 </context>
 <context>
@@ -29835,18 +29880,21 @@ p, li { white-space: pre-wrap; }
         <source>Precision of upper and lower values in label text.
 Positive is number of decimal places
 Negative rounds to powers of 10</source>
-        <translation type="unfinished"></translation>
+        <translation>Noggrannhet i övre och undre värden i etiketten.
+Positiva tal är antal decimaler
+Negativa tal avrundar till position gånger 10</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="51"/>
         <source>Check to remove trailing zeroes after the decimal point from the upper and lower values in the legend.</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj för att ta bort nollor efter decimaltecknet från övre och undre värden i teckenförklaringen.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="63"/>
         <source>Template for the legend text associated with each classification.  
 Use &quot;%1&quot; for the lower bound of the classification, and &quot;%2&quot; for the upper bound.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mall för teckenförklaringsetikett kopplad till varje klassning.
+Använd &quot;%1&quot; som undre gräns, och &quot;%2&quot; som övre.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="74"/>
@@ -29886,12 +29934,12 @@ Use &quot;%1&quot; for the lower bound of the classification, and &quot;%2&quot;
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="238"/>
         <source>Legend Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Teckenförklaringsformat</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="251"/>
         <source>Precision</source>
-        <translation type="unfinished">Precision</translation>
+        <translation>Precision</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="54"/>
@@ -29969,7 +30017,7 @@ Tryck Avbryt för att avbryta kalkyleringen eller OK för att fortsätta.</trans
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="815"/>
         <source>Rows will be reordered before linking boundaries. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Rader kommer att sorteras om innan gränser kopplas. Fortsätta?</translation>
     </message>
 </context>
 <context>
@@ -32943,7 +32991,7 @@ Detta kan vara ett problem med din nätverksanslutning eller WMS-servern.</numer
         <location filename="../src/gui/qgsidentifymenu.cpp" line="128"/>
         <location filename="../src/gui/qgsidentifymenu.cpp" line="400"/>
         <source>%1 all (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 alla (%2)</translation>
     </message>
 </context>
 <context>
@@ -56360,7 +56408,7 @@ Orsak: %2</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Endast modellverktyg</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -56738,7 +56786,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Scripts</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Skript</translation>
     </message>
 </context>
 <context>
@@ -57245,7 +57293,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Endast modellverktyg</translation>
     </message>
     <message>
         <source>Layer</source>

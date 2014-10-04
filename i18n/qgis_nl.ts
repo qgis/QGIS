@@ -5,47 +5,51 @@
     <name>@default</name>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Fout</translation>
+        <translation>Fout</translation>
     </message>
     <message>
         <source>Cannot create unit test for that algorithm execution. The output cannot be a temporary file</source>
-        <translation type="unfinished"></translation>
+        <translation>Er kan geen unit-test worden gemaakt voor het uitvoeren van dit algoritme. De uitvoer mag geen tijdelijk bestand zijn</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;body&gt;&lt;h2&gt;Algorithm description&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;&lt;h2&gt;Algoritmebeschrijving&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Input parameters&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Invoerparameters&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Outputs&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Uitvoer&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Algorithm author: %s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;Algoritme-auteur: %s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Help author: %s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;Hulp-auteur: %s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Algorithm version: %s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;Algoritme-versie: %s&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Uncaught error executing %s.
 See log for more information</source>
-        <translation type="unfinished"></translation>
+        <translation>Onverwachte fout tijdens het uitvoeren van %s.
+Kijk voor meer informatie in de log</translation>
     </message>
     <message>
         <source>Executing iteration %s/%s...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoeren van iteratie %s/%s...</translation>
     </message>
 </context>
 <context>
@@ -60,202 +64,203 @@ See log for more information</source>
     <name>AddModelFromFileAction</name>
     <message>
         <source>Add model from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Model toevoegen uit bestand</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Hulpmiddelen</translation>
+        <translation>Gereedschap</translation>
     </message>
     <message>
         <source>Open model</source>
-        <translation type="unfinished">Open model</translation>
+        <translation>Open model</translation>
     </message>
     <message>
         <source>Processing model files (*.model *.MODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoeren van modelbestanden (*.model *.MODEL)</translation>
     </message>
     <message>
         <source>Error reading model</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij inlezen van model</translation>
     </message>
     <message>
         <source>The selected file does not contain a valid model</source>
-        <translation type="unfinished"></translation>
+        <translation>Het geselecteerde bestand bevat geen geldig model</translation>
     </message>
     <message>
         <source>Cannot read file</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan bestand niet lezen</translation>
     </message>
 </context>
 <context>
     <name>AddScriptFromFileAction</name>
     <message>
         <source>Add script from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Script toevoegen uit bestand</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Hulpmiddelen</translation>
+        <translation>Gereedschap</translation>
     </message>
     <message>
         <source>Script files</source>
-        <translation type="unfinished"></translation>
+        <translation>Scriptbestanden</translation>
     </message>
     <message>
-        <source>Script filesÂ (*.py *.PY)</source>
+        <source>Script files (*.py *.PY)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Error reading script</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij inlezen van script</translation>
     </message>
     <message>
         <source>The selected file does not contain a valid script</source>
-        <translation type="unfinished"></translation>
+        <translation>Het geselecteerde bestand bevat geen geldig script</translation>
     </message>
 </context>
 <context>
     <name>AlgorithmProvider</name>
     <message>
         <source>Activate</source>
-        <translation type="unfinished">Activeren</translation>
+        <translation>Activeren</translation>
     </message>
     <message>
         <source>Generic algorithm provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Generieke algoritme-voorziening</translation>
     </message>
 </context>
 <context>
     <name>BatchInputSelectionPanel</name>
     <message>
         <source>Select from open layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Kies uit geopende kaartlagen</translation>
     </message>
     <message>
         <source>Select from filesystem</source>
-        <translation type="unfinished"></translation>
+        <translation>Kies uit bestandssysteem</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation type="unfinished">Bestand openen</translation>
+        <translation>Open bestand</translation>
     </message>
     <message>
         <source>All files(*.*);;</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle bestanden(*.*);</translation>
     </message>
 </context>
 <context>
     <name>BatchOutputSelectionPanel</name>
     <message>
         <source>Save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand opslaan</translation>
     </message>
 </context>
 <context>
     <name>BatchProcessingDialog</name>
     <message>
         <source>Batch Processing - %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Batch-processing - %s</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Geavanceerde parameters tonen</translation>
     </message>
     <message>
         <source>Add row</source>
-        <translation type="unfinished"></translation>
+        <translation>Regel toevoegen</translation>
     </message>
     <message>
         <source>Delete row</source>
-        <translation type="unfinished"></translation>
+        <translation>Regel verwijderen</translation>
     </message>
     <message>
         <source>Load in QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Laden in QGIS</translation>
     </message>
     <message>
         <source>&lt;b&gt;Missing parameter value: %s (row %d)&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Onbeschikbare parameterwaarde: %s (regel %d)&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Wrong or missing parameter value: %s (row %d)&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Foute of ontbrekende parameterwaarde: %s (regel %d)&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Processing algorithm %d/%d...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoeren van algoritme %d/%d...</translation>
     </message>
     <message>
         <source>&lt;b&gt;Algorithm %s starting...&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Algoritme %s start...&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Algorithm %s correctly executed...</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritme %s is correct uitgevoerd...</translation>
     </message>
     <message>
         <source>Batch processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Batch-processing</translation>
     </message>
     <message>
         <source>Batch processing successfully completed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Batch-proces is geslaagd!</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Ja</translation>
+        <translation>Ja</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Nee</translation>
+        <translation>Nee</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Geavanceerde opties verbergen</translation>
     </message>
 </context>
 <context>
     <name>CalculatorModelerAlgorithm</name>
     <message>
         <source>Calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Calculator</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifiek modelleergereedschap</translation>
     </message>
     <message>
         <source>Formula</source>
-        <translation type="unfinished"></translation>
+        <translation>Formule</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaat</translation>
     </message>
     <message>
         <source>Wrong formula: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout in formule: %s</translation>
     </message>
 </context>
 <context>
     <name>CalculatorModelerParametersDialog</name>
     <message>
-        <source>You can refer to model values in you formula, usingsingle-letter variables, as follows:
+        <source>You can refer to model values in you formula, using single-letter variables, as follows:
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
  - No numerical variables are available.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+- Er zijn geen numerieke variabelen beschikbaar.</translation>
     </message>
     <message>
         <source>[Enter your formula here]</source>
-        <translation type="unfinished">[Geef hier de formule]</translation>
+        <translation>[Geef hier de formule]</translation>
     </message>
     <message>
         <source>Calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Calculator</translation>
     </message>
 </context>
 <context>
@@ -282,15 +287,15 @@ See log for more information</source>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Algemeen</translation>
+        <translation>Algemeen</translation>
     </message>
     <message>
         <source>Models</source>
-        <translation type="unfinished"></translation>
+        <translation>Modellen</translation>
     </message>
     <message>
         <source>Scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Scripts</translation>
     </message>
     <message>
         <source>Providers</source>
@@ -367,29 +372,29 @@ See log for more information</source>
     <name>CouldNotLoadResultsDialog</name>
     <message>
         <source>Problem loading output layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Probleem bij het laden van uitvoerlagen</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Sluiten</translation>
+        <translation>Sluiten</translation>
     </message>
 </context>
 <context>
     <name>CreateNewModelAction</name>
     <message>
         <source>Create new model</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuw model aanmaken</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Hulpmiddelen</translation>
+        <translation>Gereedschap</translation>
     </message>
 </context>
 <context>
     <name>CreateNewScriptAction</name>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Hulpmiddelen</translation>
+        <translation>Gereedschap</translation>
     </message>
 </context>
 <context>
@@ -1480,30 +1485,30 @@ ophalen</translation>
     <name>DeleteModelAction</name>
     <message>
         <source>Delete model</source>
-        <translation type="unfinished"></translation>
+        <translation>Model verwijderen</translation>
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished">Bevestiging</translation>
+        <translation>Bevestiging</translation>
     </message>
     <message>
         <source>Are you sure you want to delete this model?</source>
-        <translation type="unfinished"></translation>
+        <translation>Weet u zeker dat u dit model wilt verwijderen?</translation>
     </message>
 </context>
 <context>
     <name>DeleteScriptAction</name>
     <message>
         <source>Delete script</source>
-        <translation type="unfinished"></translation>
+        <translation>Script verwijderen</translation>
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished">Bevestiging</translation>
+        <translation>Bevestiging</translation>
     </message>
     <message>
         <source>Are you sure you want to delete this script?</source>
-        <translation type="unfinished"></translation>
+        <translation>Weet u zeker dat u dit script wilt verwijderen?</translation>
     </message>
 </context>
 <context>
@@ -3351,33 +3356,33 @@ geometry column - column with unique integer values</source>
     <name>EditModelAction</name>
     <message>
         <source>Edit model</source>
-        <translation type="unfinished"></translation>
+        <translation>Model bewerken</translation>
     </message>
 </context>
 <context>
     <name>EditScriptAction</name>
     <message>
         <source>Edit script</source>
-        <translation type="unfinished"></translation>
+        <translation>Script bewerken</translation>
     </message>
 </context>
 <context>
     <name>ExtentSelectionPanel</name>
     <message>
         <source>[Leave blank to use min covering extent]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Leeg laten om minimaal gebied te gebruiken]</translation>
     </message>
     <message>
         <source>Use layer/canvas extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebied van kaartlaag/kaartvenster gebruiken</translation>
     </message>
     <message>
         <source>Select extent on canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebied selecteren in kaartvenster</translation>
     </message>
     <message>
         <source>Use min covering extent from input layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimaal gebied van input-lagen gebruiken</translation>
     </message>
 </context>
 <context>
@@ -3480,15 +3485,15 @@ geometry column - column with unique integer values</source>
     <name>FileSelectionPanel</name>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Select folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Map selecteren</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation type="unfinished">Bestand openen</translation>
+        <translation>Bestand openen</translation>
     </message>
 </context>
 <context>
@@ -3499,7 +3504,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Add row</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Regel toevoegen</translation>
     </message>
     <message>
         <source>Remove row</source>
@@ -5248,7 +5253,7 @@ See log for more details</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you seewhy those layers were not created as expected&lt;/p&gt;</source>
+        <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you see why those layers were not created as expected&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5594,7 +5599,7 @@ GEOS fout: een of meer invoerobjecten hebben een ongeldige geometrie.</translati
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Hulpmiddelen</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Connection problem</source>
@@ -5613,7 +5618,7 @@ GEOS fout: een of meer invoerobjecten hebben een ongeldige geometrie.</translati
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Hulpmiddelen</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Connection problem</source>
@@ -5978,12 +5983,14 @@ are stored on the installation folder</source>
     <message>
         <source>&lt;h2&gt;Input parameters&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h2&gt;Invoerparameters&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Outputs&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h2&gt;Uitvoer&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>Algorithm description</source>
@@ -6078,7 +6085,7 @@ are stored on the installation folder</source>
     <name>InputLayerSelectorPanel</name>
     <message>
         <source>All files(*.*);;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alle bestanden(*.*);</translation>
     </message>
 </context>
 <context>
@@ -6122,7 +6129,7 @@ Do you want tocontinue?</source>
     </message>
     <message>
         <source>&lt;b&gt;Algorithm %s starting...&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;b&gt;Algoritme %s start...&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Missing parameter value: %s&lt;/b&gt;</source>
@@ -7937,7 +7944,7 @@ Werkt voor huidige actieve bewerkbare laag</translation>
     </message>
     <message>
         <source>Models</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Modellen</translation>
     </message>
     <message>
         <source>Could not load model %s
@@ -8061,7 +8068,7 @@ Bekijk het log voor meer informatie.</translation>
     <name>ModelerOnlyAlgorithmProvider</name>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Specifiek modelleergereedschap</translation>
     </message>
 </context>
 <context>
@@ -8191,7 +8198,7 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geavanceerde parameters tonen</translation>
     </message>
     <message>
         <source>Parent algorithms</source>
@@ -8211,7 +8218,7 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geavanceerde opties verbergen</translation>
     </message>
     <message>
         <source>&apos;%s&apos; from algorithm &apos;%s&apos;</source>
@@ -8552,7 +8559,7 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geavanceerde parameters tonen</translation>
     </message>
     <message>
         <source> [optional]</source>
@@ -8568,7 +8575,7 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geavanceerde opties verbergen</translation>
     </message>
     <message>
         <source>[not set]</source>
@@ -15314,9 +15321,13 @@ Parser fout:
 <context>
     <name>QgsAttributeDialog</name>
     <message>
-        <location filename="../src/gui/qgsattributedialog.cpp" line="103"/>
         <source>Feature Attributes</source>
-        <translation>Object-attributen</translation>
+        <translation type="obsolete">Object-attributen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsattributedialog.cpp" line="103"/>
+        <source>%1 - Feature Attributes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26120,9 +26131,8 @@ Parser fout:
         <translation>Symbologie symboollaag</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="95"/>
         <source>Layerattribute</source>
-        <translation>Laag-aatribuut</translation>
+        <translation type="obsolete">Laag-aatribuut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="139"/>
@@ -26133,6 +26143,11 @@ Parser fout:
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="119"/>
         <source>Unselect all</source>
         <translation>Deselecteer alles</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="95"/>
+        <source>Layer attribute</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="148"/>
@@ -47139,18 +47154,6 @@ p, li { white-space: pre-wrap; }
         <translation>Metadata</translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1685"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1780"/>
         <source>Title</source>
@@ -56419,7 +56422,7 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Specifiek modelleergereedschap</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -56797,7 +56800,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Scripts</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Scripts</translation>
     </message>
 </context>
 <context>
@@ -57304,7 +57307,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Specifiek modelleergereedschap</translation>
     </message>
     <message>
         <source>Layer</source>

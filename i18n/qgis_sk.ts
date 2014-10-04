@@ -102,7 +102,7 @@ See log for more information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Script filesÂ (*.py *.PY)</source>
+        <source>Script files (*.py *.PY)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -240,7 +240,7 @@ See log for more information</source>
 <context>
     <name>CalculatorModelerParametersDialog</name>
     <message>
-        <source>You can refer to model values in you formula, usingsingle-letter variables, as follows:
+        <source>You can refer to model values in you formula, using single-letter variables, as follows:
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -5429,7 +5429,7 @@ See log for more details</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you seewhy those layers were not created as expected&lt;/p&gt;</source>
+        <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you see why those layers were not created as expected&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16804,7 +16804,7 @@ Parser error:
     </message>
     <message>
         <location filename="../src/gui/qgsattributedialog.cpp" line="103"/>
-        <source>Feature Attributes</source>
+        <source>%1 - Feature Attributes</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -29064,11 +29064,6 @@ Chyba pri spracovávaní:
         <translation type="unfinished">Symbolika vrstvy symbolov</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="95"/>
-        <source>Layerattribute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="139"/>
         <source>Select all</source>
         <translation type="unfinished">Vybrať všetko</translation>
@@ -29077,6 +29072,11 @@ Chyba pri spracovávaní:
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="119"/>
         <source>Unselect all</source>
         <translation type="unfinished">Zrušiť výber</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="95"/>
+        <source>Layer attribute</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="148"/>
