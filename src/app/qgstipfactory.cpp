@@ -192,6 +192,40 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " Check out the plugins and see what they can do for you."
                       ) );
   addGenericTip( myTip );
+  // by yjacolin
+  myTip.setTitle(tr("QGIS makes me dizzy!"));
+  myTip.setContent(tr("QGIS has easter eggs hidden inside. Write 'dizzy' without the quote in"
+                      "coordinate input in the status bar and see what happen in the map "
+                      "canvas. You can also try 'retro'. To stop it, just write 'dizzy' or "
+                      "'retro' again."
+        ));
+  addGuiTip(myTip);
+  // by yjacolin
+  myTip.setTitle(tr("Add an action to layer"));
+  myTip.setContent(tr("Action in a layer allow user to trigger action when clicking on a geometry"
+                      " with 'Run Feature Action' tools."
+                      "For example, you can open an html page using the field value of the geometry "
+                      "as a parameter. Look at the <a href=\"http://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu\">documentation</a>."
+        ));
+  addGuiTip(myTip);
+  // by yjacolin
+  myTip.setTitle(tr("Copy-paste and cut in QGIS"));
+  myTip.setContent(tr("Cpoy-past-cut are working as in another application in QGIS. Select a "
+                      "feature (a geometry or a attribut row in the attribute table) and use "
+                      "one of this shortcut: ctrl+c to copy, ctrl+p, to paste and ctrl+x to cut."
+        ));
+  addGuiTip(myTip);
+  // by yjacolin
+  myTip.setTitle(tr("Right clic with identifiy tools"));
+  myTip.setContent(tr("Right clic with identify tools ill show you a contextuel menu to choose "
+                      "the layer where identify feature. A sub menu will list feature identified "
+                      "and a third sub-menu will show the action link setup for the layer."
+                      "If one of this sub-menu doesn't contains any informatio, the next sub-menu"
+                      "will appear instead. For example, if you have just one layer, and click on "
+                      "somewhere will several feature, the first menu will list the feature list "
+                      "instead of layer list."
+        ));
+  addGuiTip(myTip);
 
   /* Template for adding more tips
   myTip.setTitle(tr(""));
