@@ -29,16 +29,20 @@ import os
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from qgis.core import *
-from processing.gui.SilentProgress import SilentProgress
+
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.core.ProcessingResults import ProcessingResults
+
 from processing.gui.ResultsDialog import ResultsDialog
 from processing.gui.RenderingStyles import RenderingStyles
-from processing.gui.CouldNotLoadResultsDialog import CouldNotLoadResultsDialog
+from processing.gui.MessageDialog import MessageDialog
+from processing.gui.SilentProgress import SilentProgress
+
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputTable
-from processing.core.ProcessingResults import ProcessingResults
 from processing.core.outputs import OutputHTML
+
 from processing.tools import dataobjects
 
 def handleAlgorithmResults(alg, progress=None, showResults=True):
@@ -74,7 +78,9 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
         i += 1
     if wrongLayers:
         QApplication.restoreOverrideCursor()
-        dlg = CouldNotLoadResultsDialog(wrongLayers, alg)
+        dlg = MessageDialog()
+        dlg.setTitle(QCoreApplication.translate('Postprocessing', 'Problem loading output layers'))
+        dlg.setMessage(alg.getPostProcessingErrorMessage(wrongLayers))
         dlg.exec_()
 
     if showResults and htmlResults and not wrongLayers:

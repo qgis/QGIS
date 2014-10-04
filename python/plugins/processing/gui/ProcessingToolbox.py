@@ -34,7 +34,7 @@ from processing.core.Processing import Processing
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.gui.MissingDependencyDialog import MissingDependencyDialog
+from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.BatchProcessingDialog import BatchProcessingDialog
@@ -186,7 +186,11 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             alg = Processing.getAlgorithm(item.alg.commandLineName())
             message = alg.checkBeforeOpeningParametersDialog()
             if message:
-                dlg = MissingDependencyDialog(message)
+                dlg = MessageDialog()
+                dlg.setTitle(self.tr('Missing dependency'))
+                dlg.setMessage(
+                    self.tr('<h3>Missing dependency. This algorithm cannot '
+                            'be run :-( </h3>\n%s') % message)
                 dlg.exec_()
                 return
             alg = alg.getCopy()
