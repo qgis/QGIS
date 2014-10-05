@@ -878,6 +878,8 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     void drawGridFrameLineBorder( QPainter *p, BorderSide border ) const;
 
     void calculateCRSTransformLines();
+
+    friend class TestQgsComposerMapGrid;
 };
 
 #endif // QGSCOMPOSERMAPGRID_H

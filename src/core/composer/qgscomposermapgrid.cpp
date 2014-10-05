@@ -1236,13 +1236,34 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
   else if ( mGridAnnotationFormat == QgsComposerMapGrid::DecimalWithSuffix )
   {
     QString hemisphere;
+
+    //check if we are using degrees (ie, geographic crs)
+    bool geographic = false;
+    if ( mCRS.isValid() && mCRS.geographicFlag() )
+    {
+      geographic = true;
+    }
+    else if ( mComposerMap && mComposerMap->composition() )
+    {
+      geographic = mComposerMap->composition()->mapSettings().destinationCrs().geographicFlag();
+    }
+
+    double coordRounded = qRound( value * pow( 10.0, mGridAnnotationPrecision ) ) / pow( 10.0, mGridAnnotationPrecision );
     if ( coord == QgsComposerMapGrid::Longitude )
     {
-      hemisphere = value < 0 ? QObject::tr( "W" ) : QObject::tr( "E" );
+      //don't use E/W suffixes if ambiguous (eg 180 degrees)
+      if ( !geographic || ( coordRounded != 180.0 && coordRounded != 0.0 ) )
+      {
+        hemisphere = value < 0 ? QObject::tr( "W" ) : QObject::tr( "E" );
+      }
     }
     else
     {
-      hemisphere = value < 0 ? QObject::tr( "S" ) : QObject::tr( "N" );
+      //don't use N/S suffixes if ambiguous (eg 0 degrees)
+      if ( !geographic || coordRounded != 0.0 )
+      {
+        hemisphere = value < 0 ? QObject::tr( "S" ) : QObject::tr( "N" );
+      }
     }
     return QString::number( qAbs( value ), 'f', mGridAnnotationPrecision ) + hemisphere;
   }
