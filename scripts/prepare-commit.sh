@@ -15,7 +15,7 @@
 ###########################################################################
 
 
-PATH=$PATH:$(dirname $0)
+PATH=$PATH:$(dirname $(readlink -f $0))
 
 if ! type -p astyle.sh >/dev/null; then
 	echo astyle.sh not found
