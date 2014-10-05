@@ -148,6 +148,7 @@ for my $i (<i18n/qgis_*.ts>) {
 
 	push @lang, {
 		code=>$langcode,
+		origcode=>$lc,
 		name=>$name, n=>$n,
 		translations=>$translations,
 		finished=>$finished,
@@ -217,7 +218,7 @@ if ( @ARGV && $ARGV[0] eq "site") {
 my @ts;
 for my $l (sort { $a->{code} cmp $b->{code} } @lang) {
 	next if $l->{percentage} < 35;
-	push @ts, $l->{code};
+	push @ts, $l->{origcode};
 }
 
 rename "i18n/CMakeLists.txt", "i18n/CMakeLists.txt.temp" || die "cannot rename i18n/CMakeLists.txt: $!";
@@ -225,7 +226,7 @@ rename "i18n/CMakeLists.txt", "i18n/CMakeLists.txt.temp" || die "cannot rename i
 open I, "i18n/CMakeLists.txt.temp";
 open O, ">i18n/CMakeLists.txt";
 while(<I>) {
-	if( /^\(SET TS_FILES / || /^FILE \(GLOB TS_FILES \*\.ts\)/ ) {
+	if( /^SET\(TS_FILES / || /^FILE \(GLOB TS_FILES \*\.ts\)/ ) {
 		print O "SET(TS_FILES " . join( " ", map { "qgis_$_\.ts"; } @ts ) . ")\n";
 	} else {
 		print O;
