@@ -378,6 +378,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
     , mModel( 0 )
 {
 
+
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
   if ( renderer )
@@ -391,6 +392,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
 
   // setup user interface
   setupUi( this );
+  mModel = new QgsGraduatedSymbolRendererV2Model( this );
 
   mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric | QgsFieldProxyModel::Date );
   mExpressionWidget->setLayer( mLayer );
@@ -526,7 +528,6 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
   spinPrecision->setValue( labelFormat.precision() );
   cbxTrimTrailingZeroes->setChecked( labelFormat.trimTrailingZeroes() );
 
-  mModel = new QgsGraduatedSymbolRendererV2Model( this );
   mModel->setRenderer( mRenderer );
   viewGraduated->setModel( mModel );
   viewGraduated->resizeColumnToContents( 0 );

@@ -6,7 +6,7 @@ class QgsRendererRangeV2
 
   public:
     QgsRendererRangeV2();
-    QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, QString label, bool render = true );
+    QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol /Transfer/, QString label, bool render = true );
     QgsRendererRangeV2( const QgsRendererRangeV2& range );
 
     // default dtor is ok
