@@ -15,8 +15,8 @@
 #include <QMessageBox>
 #include <QDateTime>
 
-QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent ) :
-    QDialog( parent )
+QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent )
+    : QDialog( parent )
 {
   setupUi( this );
   setWindowTitle( "Save style in database" );
@@ -25,19 +25,31 @@ QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent ) :
   setTabOrder( mDescriptionEdit, mUseAsDefault );
   setTabOrder( mUseAsDefault, buttonBox );
 
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/saveStyleToDb/geometry" ).toByteArray() );
 }
+
+QgsSaveStyleToDbDialog::~QgsSaveStyleToDbDialog()
+{
+  QSettings settings;
+  settings.setValue( "/Windows/saveStyleToDb/geometry", saveGeometry() );
+}
+
 QString QgsSaveStyleToDbDialog::getName()
 {
   return mNameEdit->text();
 }
+
 QString QgsSaveStyleToDbDialog::getDescription()
 {
   return mDescriptionEdit->toPlainText();
 }
+
 bool QgsSaveStyleToDbDialog::isDefault()
 {
   return mUseAsDefault->isChecked();
 }
+
 QString QgsSaveStyleToDbDialog::getUIFileContent()
 {
   return mUIFileContent;
@@ -63,10 +75,7 @@ void QgsSaveStyleToDbDialog::on_mFilePickButton_clicked()
   {
     return;
   }
-
-
   QFileInfo myFI( myFileName );
-
   QFile uiFile( myFI.filePath() );
 
   QString myPath = myFI.path();
@@ -86,6 +95,4 @@ void QgsSaveStyleToDbDialog::on_mFilePickButton_clicked()
     mUIFileContent = content;
     mFileNameLabel->setText( myFI.fileName() );
   }
-
 }
-

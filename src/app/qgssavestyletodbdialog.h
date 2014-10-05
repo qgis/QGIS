@@ -21,6 +21,8 @@ class APP_EXPORT QgsSaveStyleToDbDialog : public QDialog, private Ui::QgsSaveToD
   public:
     explicit QgsSaveStyleToDbDialog( QWidget *parent = 0 );
 
+    ~QgsSaveStyleToDbDialog();
+
   signals:
 
   public slots:

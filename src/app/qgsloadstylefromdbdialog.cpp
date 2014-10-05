@@ -10,6 +10,7 @@
 #include "qgsloadstylefromdbdialog.h"
 #include "qgslogger.h"
 
+#include <QSettings>
 #include <QMessageBox>
 #include <QVector>
 
@@ -44,6 +45,15 @@ QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
   setTabOrder( mOthersTable, mCancelButton );
   setTabOrder( mCancelButton, mLoadButton );
 
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/loadStyleFromDb/geometry" ).toByteArray() );
+
+}
+
+QgsLoadStyleFromDBDialog::~QgsLoadStyleFromDBDialog()
+{
+  QSettings settings;
+  settings.setValue( "/Windows/loadStyleFromDb/geometry", saveGeometry() );
 }
 
 void QgsLoadStyleFromDBDialog::initializeLists( QStringList ids, QStringList names, QStringList descriptions, int sectionLimit )
