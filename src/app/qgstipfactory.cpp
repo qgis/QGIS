@@ -201,20 +201,20 @@ QgsTipFactory::QgsTipFactory() : QObject()
         ));
   addGuiTip(myTip);
   // by yjacolin
-  myTip.setTitle(tr("Copy-paste and cut in QGIS"));
-  myTip.setContent(tr("Copy-past-cut are working as in another application in QGIS. Select a "
+  myTip.setTitle(tr("Copy, paste and cut in QGIS"));
+  myTip.setContent(tr("Copy, paste, and cut work as in another applications in QGIS. Select a "
                       "feature (a geometry or an attribut row in the attribute table) and use "
-                      "one of this shortcut: ctrl+c to copy, ctrl+p, to paste and ctrl+x to cut."
+                      "one of this shortcuts: Ctrl+C to copy, Ctrl+X to copy, and Ctrl+V to paste."
         ));
   addGuiTip(myTip);
   // by yjacolin
-  myTip.setTitle(tr("Right clic with identifiy tools"));
-  myTip.setContent(tr("Right clic with identify tools will show you a contextual menu to choose "
-                      "the layer where identify feature. A sub menu will list feature identified "
-                      "and a third sub-menu will show the action link setup for the layer."
+  myTip.setTitle(tr("Right clic with identify tools"));
+  myTip.setContent(tr("Right clic with the identify tools to show a context menu from which you can "
+                      "choose the layer in which to identify feature. A sub menu will list feature "
+                      "identified and a third sub-menu will show the action link setup for the layer."
                       "If one of this sub-menu doesn't contains any information, the next sub-menu"
-                      "will appear instead. For example, if you have just one layer, and click on "
-                      "somewhere will several feature, the first menu will list the feature list "
+                      "will appear instead. For example, if you have just one layer, and click "
+                      "somewhere with several features, the first menu will list the feature list "
                       "instead of layer list."
         ));
   addGuiTip(myTip);
