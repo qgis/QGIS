@@ -1265,7 +1265,15 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
         hemisphere = value < 0 ? QObject::tr( "S" ) : QObject::tr( "N" );
       }
     }
-    return QString::number( qAbs( value ), 'f', mGridAnnotationPrecision ) + hemisphere;
+    if ( geographic )
+    {
+      //insert degree symbol for geographic coordinates
+      return QString::number( qAbs( value ), 'f', mGridAnnotationPrecision ) + QChar( 176 ) + hemisphere;
+    }
+    else
+    {
+      return QString::number( qAbs( value ), 'f', mGridAnnotationPrecision ) + hemisphere;
+    }
   }
 
   QgsPoint p;

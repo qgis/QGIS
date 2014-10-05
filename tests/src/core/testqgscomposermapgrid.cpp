@@ -475,23 +475,23 @@ void TestQgsComposerMapGrid::annotationFormats()
   gridProjected.setAnnotationPrecision( 1 );
 
   //normal e/w
-  QCOMPARE( gridGeographic.gridAnnotationString( 90, QgsComposerMapGrid::Longitude ), QString( "90.0E" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 90, QgsComposerMapGrid::Longitude ), QString( "90.0" ) + QChar( 176 ) + QString( "E" ) );
   QCOMPARE( gridProjected.gridAnnotationString( 90, QgsComposerMapGrid::Longitude ), QString( "90.0E" ) );
 
   //0 degrees
-  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsComposerMapGrid::Longitude ), QString( "0.0" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsComposerMapGrid::Longitude ), QString( "0.0" ) + QChar( 176 ) );
   QCOMPARE( gridProjected.gridAnnotationString( 0, QgsComposerMapGrid::Longitude ), QString( "0.0E" ) );
 
   //180 degrees
-  QCOMPARE( gridGeographic.gridAnnotationString( 180, QgsComposerMapGrid::Longitude ), QString( "180.0" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 180, QgsComposerMapGrid::Longitude ), QString( "180.0" ) + QChar( 176 ) );
   QCOMPARE( gridProjected.gridAnnotationString( 180, QgsComposerMapGrid::Longitude ), QString( "180.0E" ) );
 
   //normal n/s
-  QCOMPARE( gridGeographic.gridAnnotationString( 45, QgsComposerMapGrid::Latitude ), QString( "45.0N" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 45, QgsComposerMapGrid::Latitude ), QString( "45.0" ) + QChar( 176 ) + QString( "N" ) );
   QCOMPARE( gridProjected.gridAnnotationString( 45, QgsComposerMapGrid::Latitude ), QString( "45.0N" ) );
 
   //0 north/south
-  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsComposerMapGrid::Latitude ), QString( "0.0" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsComposerMapGrid::Latitude ), QString( "0.0" ) + QChar( 176 ) );
   QCOMPARE( gridProjected.gridAnnotationString( 0, QgsComposerMapGrid::Latitude ), QString( "0.0N" ) );
 
 }
