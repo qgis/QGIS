@@ -351,13 +351,19 @@ void QgsComposerMapWidget::updateMapForAtlas()
     return;
   }
 
-  //update atlas based extent for map
-  QgsAtlasComposition* atlas = &composition->atlasComposition();
-  atlas->prepareMap( mComposerMap );
-
-  //redraw map
-  mComposerMap->cache();
-  mComposerMap->update();
+  if ( mComposerMap->atlasDriven() )
+  {
+    //update atlas based extent for map
+    QgsAtlasComposition* atlas = &composition->atlasComposition();
+    //prepareMap causes a redraw
+    atlas->prepareMap( mComposerMap );
+  }
+  else
+  {
+    //redraw map
+    mComposerMap->cache();
+    mComposerMap->update();
+  }
 }
 
 void QgsComposerMapWidget::on_mAtlasMarginRadio_toggled( bool checked )

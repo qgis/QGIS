@@ -1032,6 +1032,11 @@ void QgsComposerItem::refreshRotation( const bool updateItem , const bool adjust
     }
   }
 
+  if ( rotation == mEvaluatedItemRotation )
+  {
+    return;
+  }
+
   if ( adjustPosition )
   {
     //adjustPosition set, so shift the position of the item so that rotation occurs around item center
@@ -1297,8 +1302,12 @@ void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataD
        property == QgsComposerObject::ItemWidth || property == QgsComposerObject::ItemHeight ||
        property == QgsComposerObject::AllProperties )
   {
-    QRectF evaluatedRect = evalItemRect( QRectF( pos().x(), pos().y(), rect().width(), rect().height() ) );
-    setSceneRect( evaluatedRect );
+    QRectF beforeRect = QRectF( pos().x(), pos().y(), rect().width(), rect().height() );
+    QRectF evaluatedRect = evalItemRect( beforeRect );
+    if ( evaluatedRect != beforeRect )
+    {
+      setSceneRect( evaluatedRect );
+    }
   }
   if ( property == QgsComposerObject::ItemRotation || property == QgsComposerObject::AllProperties )
   {

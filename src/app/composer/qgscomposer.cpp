@@ -970,6 +970,11 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
   mActionAtlasNext->setEnabled( checked );
   mActionAtlasPrev->setEnabled( checked );
 
+  if ( checked )
+  {
+    loadAtlasPredefinedScalesFromProject();
+  }
+
   bool previewEnabled = mComposition->setAtlasMode( checked ? QgsComposition::PreviewAtlas : QgsComposition::AtlasOff );
   if ( !previewEnabled )
   {
@@ -991,8 +996,6 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
 
   if ( checked )
   {
-    loadAtlasPredefinedScalesFromProject();
-    atlasMap->firstFeature();
     emit( atlasPreviewFeatureChanged() );
   }
   else

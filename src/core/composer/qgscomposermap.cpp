@@ -817,15 +817,6 @@ void QgsComposerMap::setNewAtlasFeatureExtent( const QgsRectangle& extent )
   emit extentChanged();
 }
 
-void QgsComposerMap::toggleAtlasPreview()
-{
-  //atlas preview has been toggled, so update item and extents
-  mCacheUpdated = false;
-  updateItem();
-  emit itemChanged();
-  emit extentChanged();
-}
-
 QgsRectangle* QgsComposerMap::currentMapExtent()
 {
   //non-const version
@@ -1093,7 +1084,7 @@ void QgsComposerMap::updateItem()
     return;
   }
 
-  if ( mPreviewMode != QgsComposerMap::Rectangle &&  !mCacheUpdated )
+  if ( mPreviewMode != QgsComposerMap::Rectangle && !mCacheUpdated )
   {
     cache();
   }
@@ -2033,13 +2024,17 @@ void QgsComposerMap::refreshDataDefinedProperty( const QgsComposerObject::DataDe
        property == QgsComposerObject::MapAtlasMargin ||
        property == QgsComposerObject::AllProperties )
   {
+    QgsRectangle beforeExtent = *currentMapExtent();
     refreshMapExtents();
     emit itemChanged();
-    emit extentChanged();
+    if ( *currentMapExtent() != beforeExtent )
+    {
+      emit extentChanged();
+    }
   }
 
   //force redraw
-  cache();
+  mCacheUpdated = false;
 
   QgsComposerItem::refreshDataDefinedProperty( property );
 }

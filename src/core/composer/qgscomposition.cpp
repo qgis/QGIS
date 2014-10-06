@@ -225,6 +225,15 @@ void QgsComposition::updateBounds()
 void QgsComposition::refreshItems()
 {
   emit refreshItemsTriggered();
+  //force a redraw on all maps
+  QList<QgsComposerMap*> maps;
+  composerItems( maps );
+  QList<QgsComposerMap*>::iterator mapIt = maps.begin();
+  for ( ; mapIt != maps.end(); ++mapIt )
+  {
+    ( *mapIt )->cache();
+    ( *mapIt )->update();
+  }
 }
 
 void QgsComposition::setSelectedItem( QgsComposerItem *item )
@@ -295,6 +304,11 @@ QRectF QgsComposition::compositionBounds() const
 
 void QgsComposition::setPaperSize( const double width, const double height )
 {
+  if ( width == mPageWidth && height == mPageHeight )
+  {
+    return;
+  }
+
   //update item positions
   QList<QGraphicsItem *> itemList = items();
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
@@ -2823,18 +2837,6 @@ bool QgsComposition::setAtlasMode( const AtlasMode mode )
       mAtlasComposition.endRender();
       return false;
     }
-  }
-
-  QList<QgsComposerMap*> maps;
-  composerItems( maps );
-  for ( QList<QgsComposerMap*>::iterator mit = maps.begin(); mit != maps.end(); ++mit )
-  {
-    QgsComposerMap* currentMap = ( *mit );
-    if ( !currentMap->atlasDriven() )
-    {
-      continue;
-    }
-    currentMap->toggleAtlasPreview();
   }
 
   update();

@@ -217,8 +217,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     */
     void setNewAtlasFeatureExtent( const QgsRectangle& extent );
 
-    /**Called when atlas preview is toggled, to force map item to update its extent and redraw*/
-    void toggleAtlasPreview();
+    /**Called when atlas preview is toggled, to force map item to update its extent and redraw
+     * @deprecated no longer required
+    */
+    Q_DECL_DEPRECATED void toggleAtlasPreview() {}
 
     /**Returns a pointer to the current map extent, which is either the original user specified
      * extent or the temporary atlas-driven feature extent depending on the current atlas state
