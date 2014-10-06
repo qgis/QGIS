@@ -1872,7 +1872,6 @@ int QgsExpression::functionCount()
   return Functions().size();
 }
 
-
 QgsExpression::QgsExpression( const QString& expr )
     : mRowNumber( 0 )
     , mScale( 0 )
@@ -1950,19 +1949,30 @@ bool QgsExpression::prepare( const QgsFields& fields )
   return mRootNode->prepare( this, fields );
 }
 
-QVariant QgsExpression::evaluate( const QgsFeature* f )
+QVariant QgsExpression::evaluate( const QgsFeature* f, const QgsField field )
 {
+  QVariant result;
+
   mEvalErrorString = QString();
   if ( !mRootNode )
   {
     mEvalErrorString = QObject::tr( "No root node! Parsing failed?" );
-    return QVariant();
+  }
+  else
+  {
+    result = mRootNode->eval( this, f );
+
+    // If the field type is set and we cannot properly convert
+    // the result we return an Invalid QVariant
+    if ( field.type() != QVariant::Invalid &&
+         !field.convertCompatible( result ) )
+      result = QVariant();
   }
 
-  return mRootNode->eval( this, f );
+  return result;
 }
 
-QVariant QgsExpression::evaluate( const QgsFeature* f, const QgsFields& fields )
+QVariant QgsExpression::evaluate( const QgsFeature* f, const QgsFields& fields , const QgsField field )
 {
   // first prepare
   bool res = prepare( fields );
@@ -1970,7 +1980,7 @@ QVariant QgsExpression::evaluate( const QgsFeature* f, const QgsFields& fields )
     return QVariant();
 
   // then evaluate
-  return evaluate( f );
+  return evaluate( f, field );
 }
 
 QString QgsExpression::dump() const

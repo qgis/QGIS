@@ -117,23 +117,26 @@ class CORE_EXPORT QgsExpression
 
     // evaluation
 
+    //! Evaluate without a feature
+    inline QVariant evaluate( const QgsField field ) { return evaluate( 0, field ); }
+
     //! Evaluate the feature and return the result
     //! @note prepare() should be called before calling this method
-    QVariant evaluate( const QgsFeature* f = NULL );
+    QVariant evaluate( const QgsFeature* f = NULL, const QgsField field = QgsField() );
 
     //! Evaluate the feature and return the result
     //! @note prepare() should be called before calling this method
     //! @note available in python bindings as evaluatePrepared
-    inline QVariant evaluate( const QgsFeature& f ) { return evaluate( &f ); }
+    inline QVariant evaluate( const QgsFeature& f, const QgsField field = QgsField() ) { return evaluate( &f, field ); }
 
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
-    QVariant evaluate( const QgsFeature* f, const QgsFields& fields );
+    QVariant evaluate( const QgsFeature* f, const QgsFields& fields, const QgsField field = QgsField() );
 
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
     //! @note not available in python bindings
-    inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields ) { return evaluate( &f, fields ); }
+    inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields, const QgsField field = QgsField() ) { return evaluate( &f, fields, field ); }
 
     //! Returns true if an error occurred when evaluating last input
     bool hasEvalError() const { return !mEvalErrorString.isNull(); }

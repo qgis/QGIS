@@ -31,23 +31,25 @@ class QgsExpression
 
     // evaluation
 
+    //! Evaluate without a feature
+    QVariant evaluate( const QgsField field );
     //! Evaluate the feature and return the result
     //! @note prepare() should be called before calling this method
-    QVariant evaluate( const QgsFeature* f = NULL );
+    QVariant evaluate( const QgsFeature* f = NULL, const QgsField field = QgsField() );
 
     //! Evaluate the feature and return the result
     //! @note prepare() should be called before calling this method
     //! @note available in python bindings as evaluatePrepared
-    QVariant evaluate( const QgsFeature& f ) /PyName=evaluatePrepared/;
+    QVariant evaluate( const QgsFeature& f, const QgsField field = QgsField() ) /PyName=evaluatePrepared/;
 
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
-    QVariant evaluate( const QgsFeature* f, const QgsFields& fields );
+    QVariant evaluate( const QgsFeature* f, const QgsFields& fields, const QgsField field = QgsField() );
 
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
     //! @note not available in python bindings
-    // inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields ) { return evaluate( &f, fields ); }
+    // inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields )
 
     //! Returns true if an error occurred when evaluating last input
     bool hasEvalError() const;
