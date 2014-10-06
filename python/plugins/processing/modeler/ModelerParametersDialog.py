@@ -492,7 +492,7 @@ class ModelerParametersDialog(QDialog):
                 else:
                     return False
             else:
-                alg.values[param.name] = s
+                alg.params[param.name] = s
                 return True
         else:
             alg.params[param.name] = widget.itemData(widget.currentIndex())
