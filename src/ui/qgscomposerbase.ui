@@ -21,7 +21,16 @@
     <bool>true</bool>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
     <item row="0" column="0">
@@ -992,6 +1001,17 @@
    </property>
    <property name="text">
     <string>Atlas Settings</string>
+   </property>
+  </action>
+  <action name="mActionShowBoxes">
+   <property name="text">
+    <string>Show Bounding Boxes</string>
+   </property>
+   <property name="toolTip">
+    <string>Show bounding boxes</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+B</string>
    </property>
   </action>
  </widget>

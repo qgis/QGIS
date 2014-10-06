@@ -222,6 +222,20 @@ class QgsComposition : QGraphicsScene
      * @note Added in QGIS 2.5
     */
     int snapTolerance() const;
+	
+    /**Sets whether selection bounding boxes should be shown in the composition
+     * @param boundsVisible set to true to show selection bounding box
+     * @see boundingBoxesVisible
+     * @note added in QGIS 2.5
+    */
+    void setBoundingBoxesVisible( const bool boundsVisible );
+
+    /**Returns whether selection bounding boxes should be shown in the composition
+     * @returns true if selection bounding boxes should be shown
+     * @see setBoundingBoxesVisible
+     * @note added in QGIS 2.5
+    */
+    bool boundingBoxesVisible() const;	
 
     /**Returns pointer to undo/redo command storage*/
     QUndoStack* undoStack();
