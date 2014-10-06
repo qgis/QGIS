@@ -95,7 +95,7 @@ class Processing:
                 Processing.updateAlgsList()
         except:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                self.tr('Could not load provider: %s\n%s')
+                Processing.tr('Could not load provider: %s\n%s')
                 % (provider.getDescription(), unicode(sys.exc_info()[1])))
             Processing.removeProvider(provider)
 
@@ -284,7 +284,7 @@ class Processing:
                 print 'Error: Wrong parameter value %s for parameter %s.' \
                     % (value, name)
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                    self.tr('Error in %s. Wrong parameter value %s for parameter %s.') \
+                    Processing.tr('Error in %s. Wrong parameter value %s for parameter %s.') \
                     % (alg.name, value, name))
                 return
             # fill any missing parameters with default values if allowed
@@ -293,7 +293,7 @@ class Processing:
                     if not param.setValue(None):
                         print ('Error: Missing parameter value for parameter %s.' % (param.name))
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            self.tr('Error in %s. Missing parameter value for parameter %s.') \
+                            Processing.tr('Error in %s. Missing parameter value for parameter %s.') \
                             % (alg.name, param.name))
                         return
         else:
@@ -347,9 +347,10 @@ class Processing:
           QApplication.restoreOverrideCursor()
           progress.close()
         return alg
-
-    def tr(self, string, context=''):
+        
+    @staticmethod
+    def tr(string, context=''):
         if context == '':
             context = 'Processing'
-        return QtCore.QCoreApplication.translate(context, string)
+        return QCoreApplication.translate(context, string)
 
