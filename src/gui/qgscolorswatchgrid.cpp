@@ -308,6 +308,11 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
     {
       painter.setPen( highlight );
     }
+    else if (( *colorIt ).first == mBaseColor )
+    {
+      //currently active color
+      painter.setPen( QColor( 75, 75, 75 ) );
+    }
     else
     {
       painter.setPen( QColor( 197, 197, 197 ) );
