@@ -432,7 +432,7 @@ bool QgsMapLayer::readXml( const QDomNode& layer_node )
 
 
 
-bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& document )
+bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& document, QString relativeBasePath )
 {
   // use scale dependent visibility flag
   layerElement.setAttribute( "hasScaleBasedVisibilityFlag", hasScaleBasedVisibility() ? 1 : 0 );
@@ -456,26 +456,26 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   if ( vlayer && vlayer->providerType() == "spatialite" )
   {
     QgsDataSourceURI uri( src );
-    QString database = QgsProject::instance()->writePath( uri.database() );
+    QString database = QgsProject::instance()->writePath( uri.database(), relativeBasePath );
     uri.setConnection( uri.host(), uri.port(), database, uri.username(), uri.password() );
     src = uri.uri();
   }
   else if ( vlayer && vlayer->providerType() == "ogr" )
   {
     QStringList theURIParts = src.split( "|" );
-    theURIParts[0] = QgsProject::instance()->writePath( theURIParts[0] );
+    theURIParts[0] = QgsProject::instance()->writePath( theURIParts[0], relativeBasePath );
     src = theURIParts.join( "|" );
   }
   else if ( vlayer && vlayer->providerType() == "delimitedtext" )
   {
     QUrl urlSource = QUrl::fromEncoded( src.toAscii() );
-    QUrl urlDest = QUrl::fromLocalFile( QgsProject::instance()->writePath( urlSource.toLocalFile() ) );
+    QUrl urlDest = QUrl::fromLocalFile( QgsProject::instance()->writePath( urlSource.toLocalFile(), relativeBasePath ) );
     urlDest.setQueryItems( urlSource.queryItems() );
     src = QString::fromAscii( urlDest.toEncoded() );
   }
   else
   {
-    src = QgsProject::instance()->writePath( src );
+    src = QgsProject::instance()->writePath( src, relativeBasePath );
   }
 
   QDomText dataSourceText = document.createTextNode( src );
@@ -599,14 +599,14 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
 
 } // bool QgsMapLayer::writeXML
 
-QDomDocument QgsMapLayer::asLayerDefinition( QList<QgsMapLayer *> layers )
+QDomDocument QgsMapLayer::asLayerDefinition( QList<QgsMapLayer *> layers, QString relativeBasePath )
 {
   QDomDocument doc( "qgis-layer-definition" );
   QDomElement layerselm = doc.createElement( "maplayers" );
   foreach ( QgsMapLayer* layer, layers )
   {
     QDomElement layerelm = doc.createElement( "maplayer" );
-    layer->writeLayerXML( layerelm, doc );
+    layer->writeLayerXML( layerelm, doc, relativeBasePath  );
     layerelm.removeChild( layerelm.firstChildElement( "id" ) );
     layerselm.appendChild( layerelm );
   }
@@ -664,6 +664,8 @@ QList<QgsMapLayer *> QgsMapLayer::fromLayerDefinitionFile( const QString qlrfile
     return QList<QgsMapLayer*>();
   }
 
+  QFileInfo fileinfo( file );
+  QDir::setCurrent( fileinfo.absoluteDir().path() );
   return QgsMapLayer::fromLayerDefinition( doc );
 }
 

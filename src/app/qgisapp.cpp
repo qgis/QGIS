@@ -4917,8 +4917,9 @@ void QgisApp::saveAsLayerDefinition()
   if ( !path.endsWith( ".qlr" ) )
     path = path.append( ".qlr" );
 
-  QDomDocument doc = QgsMapLayer::asLayerDefinition( layers );
   QFile file( path );
+  QFileInfo fileinfo( file );
+  QDomDocument doc = QgsMapLayer::asLayerDefinition( layers, fileinfo.canonicalFilePath() );
   if ( file.open( QFile::WriteOnly | QFile::Truncate ) )
   {
     QTextStream qlayerstream( &file );
