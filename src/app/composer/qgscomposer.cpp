@@ -3546,13 +3546,6 @@ void QgsComposer::writeWorldFile( QString worldFileName, double a, double b, dou
 
 void QgsComposer::setAtlasFeature( QgsMapLayer* layer, const QgsFeature& feat )
 {
-  //update expression variables
-  QgsExpression::setSpecialColumn( "$atlasfeatureid", feat.id() );
-  QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( feat ) );
-  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *( feat.geometry() ) ) );
-
-  emit atlasPreviewFeatureChanged();
-
   //check if composition atlas settings match
   QgsAtlasComposition& atlas = mComposition->atlasComposition();
   if ( ! atlas.enabled() || atlas.coverageLayer() != layer )
