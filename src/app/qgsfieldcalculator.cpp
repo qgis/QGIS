@@ -127,6 +127,8 @@ void QgsFieldCalculator::accept()
     return;
   }
 
+  const QgsField& field = mVectorLayer->pendingFields()[mAttributeId];
+
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   mVectorLayer->beginEditCommand( "Field calculator" );
@@ -198,7 +200,7 @@ void QgsFieldCalculator::accept()
   bool newField = !mUpdateExistingGroupBox->isChecked();
   QVariant emptyAttribute;
   if ( newField )
-    emptyAttribute = QVariant( mVectorLayer->pendingFields()[mAttributeId].type() );
+    emptyAttribute = QVariant( field.type() );
 
   QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
   while ( fit.nextFeature( feature ) )
@@ -210,9 +212,9 @@ void QgsFieldCalculator::accept()
         continue;
       }
     }
-
     exp.setCurrentRowNumber( rownum );
     QVariant value = exp.evaluate( &feature );
+    field.convertCompatible( value );
     if ( exp.hasEvalError() )
     {
       calculationSuccess = false;

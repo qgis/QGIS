@@ -110,6 +110,65 @@ public:
 
     /**Formats string for display*/
     QString displayString( const QVariant& v ) const;
+
+
+    /**
+     * Converts the provided variant to a compatible format
+     *
+     * @param v  The value to convert
+     *
+     * @return   True if the conversion was successful
+     */
+    QVariant convertCompatible( QVariant& v ) const;
+%MethodCode
+    PyObject *sipParseErr = NULL;
+
+    {
+      QVariant * a0;
+      int a0State = 0;
+      const QgsField *sipCpp;
+
+      if (sipParseArgs(&sipParseErr, sipArgs, "BJ1", &sipSelf, sipType_QgsField, &sipCpp, sipType_QVariant,&a0, &a0State))
+      {
+        bool sipRes;
+
+        Py_BEGIN_ALLOW_THREADS
+        try
+        {
+          QgsDebugMsg( a0->toString() );
+          sipRes = sipCpp->convertCompatible(*a0);
+          QgsDebugMsg( a0->toString() );
+        }
+        catch (...)
+        {
+          Py_BLOCK_THREADS
+
+          sipReleaseType(a0,sipType_QVariant,a0State);
+            sipRaiseUnknownException();
+            return NULL;
+        }
+
+        Py_END_ALLOW_THREADS
+
+        PyObject* res = sipConvertFromType( a0, sipType_QVariant, NULL );
+        sipReleaseType(a0,sipType_QVariant,a0State);
+
+        if ( !sipRes )
+        {
+          PyErr_SetString(PyExc_ValueError,
+            QString( "Value %1 (%2) could not be converted to field type %3." ).arg( a0->toString() ).arg ( a0->typeName() ).arg( sipCpp->type() ).toUtf8().constData() );
+            sipError = sipErrorFail;
+        }
+
+        return res;
+      }
+    }
+
+    /* Raise an exception if the arguments couldn't be parsed. */
+    sipNoMethod(sipParseErr, sipName_QgsField, sipName_convertCompatible, doc_QgsField_convertCompatible);
+
+    return NULL;
+%End
 }; // class QgsField
 
 

@@ -559,6 +559,7 @@ void QgsVectorLayerFeatureIterator::addVirtualAttributes( QgsFeature& f )
     {
       QgsExpression* exp = it.value();
       QVariant val = exp->evaluate( f );
+      mSource->mFields.at( it.key() ).convertCompatible( val );;
       f.setAttribute( it.key(), val );
     }
   }
