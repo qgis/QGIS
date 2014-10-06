@@ -15,10 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
 #include "qgscomposerhtml.h"
 #include "qgscomposerframe.h"
 #include "qgscomposition.h"
 #include "qgscompositionchecker.h"
+#include "qgsfontutils.h"
 #include <QObject>
 #include <QtTest>
 
@@ -41,14 +43,21 @@ class TestQgsComposerHtml: public QObject
     QgsComposition* mComposition;
     QgsMapSettings mMapSettings;
     QString mReport;
+    QFont mTestFont;
 };
 
 void TestQgsComposerHtml::initTestCase()
 {
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
   mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = "<h1>Composer HTML Tests</h1>\n";
+
+  QgsFontUtils::loadStandardTestFonts( QStringList() << "Oblique" );
+  mTestFont = QgsFontUtils::getStandardTestFont( "Oblique " );
 }
 
 void TestQgsComposerHtml::cleanupTestCase()
@@ -82,7 +91,7 @@ void TestQgsComposerHtml::sourceMode()
   htmlFrame->setFrameEnabled( true );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
-  htmlItem->setHtml( QString( "<p><i>Test manual <b>html</b></i></p>" ) );
+  htmlItem->setHtml( QString( "<p style=\"font-family: %1\"><i>Test manual <b>html</b></i></p>" ).arg( mTestFont.family() ) );
   htmlItem->loadHtml();
 
   QgsCompositionChecker checker( "composerhtml_manual", mComposition );
@@ -99,7 +108,7 @@ void TestQgsComposerHtml::userStylesheets()
   htmlFrame->setFrameEnabled( true );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
-  htmlItem->setHtml( QString( "<p><i>Test user stylesheets <b>html</b></i></p>" ) );
+  htmlItem->setHtml( QString( "<p style=\"font-family: %1\"><i>Test user stylesheets <b>html</b></i></p>" ).arg( mTestFont.family() ) );
 
   //set user stylesheet
   htmlItem->setUserStylesheet( QString( "b { color: red; } i { color: green; }" ) );
@@ -121,7 +130,8 @@ void TestQgsComposerHtml::evalExpressions()
   htmlItem->addFrame( htmlFrame );
   htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
   htmlItem->setEvaluateExpressions( true );
-  htmlItem->setHtml( QString( "<p>Test expressions = <i>[% 1 + 2 + 3%]</i></p>" ) );
+  htmlItem->setHtml( QString( "<p style=\"font-family: %1\">Test expressions = <i>[% 1 + 2 + 3%]</i></p>" ).arg( mTestFont.family() ) );
+
   htmlItem->loadHtml();
 
   QgsCompositionChecker checker( "composerhtml_expressions_enabled", mComposition );
@@ -139,7 +149,7 @@ void TestQgsComposerHtml::evalExpressionsOff()
   htmlItem->addFrame( htmlFrame );
   htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
   htmlItem->setEvaluateExpressions( false );
-  htmlItem->setHtml( QString( "<p>Test expressions = <i>[% 1 + 2 + 3%]</i></p>" ) );
+  htmlItem->setHtml( QString( "<p style=\"font-family: %1\">Test expressions = <i>[% 1 + 2 + 3%]</i></p>" ).arg( mTestFont.family() ) );
   htmlItem->loadHtml();
 
   QgsCompositionChecker checker( "composerhtml_expressions_disabled", mComposition );
