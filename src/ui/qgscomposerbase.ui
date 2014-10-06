@@ -21,7 +21,16 @@
     <bool>true</bool>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
     <item row="0" column="0">
@@ -247,6 +256,9 @@
    <property name="toolTip">
     <string>Zoom</string>
    </property>
+   <property name="shortcut">
+    <string>Z</string>
+   </property>
   </action>
   <action name="mActionAddNewMap">
    <property name="icon">
@@ -441,6 +453,9 @@
    </property>
    <property name="toolTip">
     <string>Move item content</string>
+   </property>
+   <property name="shortcut">
+    <string>C</string>
    </property>
   </action>
   <action name="mActionGroupItems">
@@ -861,6 +876,9 @@
    </property>
    <property name="text">
     <string>Pan Composer</string>
+   </property>
+   <property name="shortcut">
+    <string>P</string>
    </property>
   </action>
   <action name="mActionOptions">
