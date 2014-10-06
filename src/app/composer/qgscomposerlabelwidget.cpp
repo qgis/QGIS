@@ -51,13 +51,13 @@ void QgsComposerLabelWidget::on_mHtmlCheckBox_stateChanged( int state )
     {
       mFontButton->setEnabled( false );
       mFontColorButton->setEnabled( false );
-      mAlignementGroup->setEnabled( false );
+      mAppearanceGroup->setEnabled( false );
     }
     else
     {
       mFontButton->setEnabled( true );
       mFontColorButton->setEnabled( true );
-      mAlignementGroup->setEnabled( true );
+      mAppearanceGroup->setEnabled( true );
     }
 
     mComposerLabel->beginCommand( tr( "Label text HTML state changed" ), QgsComposerMergeCommand::ComposerLabelSetText );

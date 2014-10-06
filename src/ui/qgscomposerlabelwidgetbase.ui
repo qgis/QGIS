@@ -102,7 +102,25 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mAppearanceGroup">
+         <property name="title">
+          <string>Appearance</string>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0" colspan="2">
            <widget class="QPushButton" name="mFontButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -115,15 +133,15 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Font color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>Font color</string>
-              </property>
-             </widget>
-            </item>
             <item>
              <widget class="QgsColorButtonV2" name="mFontColorButton">
               <property name="minimumSize">
@@ -158,98 +176,24 @@
             </item>
            </layout>
           </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mAlignementGroup">
-         <property name="title">
-          <string>Alignment</string>
-         </property>
-         <property name="checkable">
-          <bool>false</bool>
-         </property>
-         <property name="syncGroup" stdset="0">
-          <string notr="true">composeritem</string>
-         </property>
-         <property name="collapsed" stdset="0">
-          <bool>false</bool>
-         </property>
-         <layout class="QGridLayout" name="gridLayout">
-          <property name="verticalSpacing">
-           <number>3</number>
-          </property>
-          <item row="1" column="0">
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>4</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QLabel" name="mVerticalAlignementLabel">
+          <item row="2" column="0">
+           <widget class="QLabel" name="mMarginLabel">
             <property name="text">
-             <string>Vertical</string>
+             <string>Margin</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
-            <item>
-             <widget class="QRadioButton" name="mTopRadioButton">
-              <property name="text">
-               <string>Top</string>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">buttonGroup</string>
-              </attribute>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="mMiddleRadioButton">
-              <property name="text">
-               <string>Middle</string>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">buttonGroup</string>
-              </attribute>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="mBottomRadioButton">
-              <property name="text">
-               <string>Bottom</string>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">buttonGroup</string>
-              </attribute>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>0</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="mMarginDoubleSpinBox">
+            <property name="prefix">
+             <string/>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+           </widget>
           </item>
-          <item row="1" column="1">
+          <item row="4" column="0" colspan="2">
            <layout class="QHBoxLayout" name="horizontalLayout_5">
             <item>
              <widget class="QRadioButton" name="mLeftRadioButton">
@@ -296,45 +240,64 @@
             </item>
            </layout>
           </item>
-          <item row="0" column="0" colspan="2">
+          <item row="6" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QRadioButton" name="mTopRadioButton">
+              <property name="text">
+               <string>Top</string>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="mMiddleRadioButton">
+              <property name="text">
+               <string>Middle</string>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="mBottomRadioButton">
+              <property name="text">
+               <string>Bottom</string>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>0</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0" colspan="2">
            <widget class="QLabel" name="mHorizontalAlignementLabel">
             <property name="text">
-             <string>Horizontal</string>
+             <string>Horizontal alignment</string>
             </property>
            </widget>
           </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mDisplayGroupBox">
-         <property name="title">
-          <string>Display</string>
-         </property>
-         <property name="checkable">
-          <bool>false</bool>
-         </property>
-         <property name="syncGroup" stdset="0">
-          <string notr="true">composeritem</string>
-         </property>
-         <property name="collapsed" stdset="0">
-          <bool>true</bool>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1">
-          <item row="0" column="0">
-           <widget class="QLabel" name="mMarginLabel">
+          <item row="5" column="0" colspan="2">
+           <widget class="QLabel" name="mVerticalAlignementLabel">
             <property name="text">
-             <string>Margin</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="mMarginDoubleSpinBox">
-            <property name="prefix">
-             <string/>
-            </property>
-            <property name="suffix">
-             <string> mm</string>
+             <string>Vertical alignment</string>
             </property>
            </widget>
           </item>
@@ -364,7 +327,7 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
  </buttongroups>
 </ui>
