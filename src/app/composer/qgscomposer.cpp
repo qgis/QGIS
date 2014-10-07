@@ -996,6 +996,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
 
   if ( checked )
   {
+    mapCanvas()->stopRendering();
     emit( atlasPreviewFeatureChanged() );
   }
   else
@@ -1014,6 +1015,8 @@ void QgsComposer::on_mActionAtlasNext_triggered()
     return;
   }
 
+  mapCanvas()->stopRendering();
+
   loadAtlasPredefinedScalesFromProject();
   atlasMap->nextFeature();
   emit( atlasPreviewFeatureChanged() );
@@ -1026,6 +1029,8 @@ void QgsComposer::on_mActionAtlasPrev_triggered()
   {
     return;
   }
+
+  mapCanvas()->stopRendering();
 
   loadAtlasPredefinedScalesFromProject();
   atlasMap->prevFeature();
@@ -1040,6 +1045,8 @@ void QgsComposer::on_mActionAtlasFirst_triggered()
     return;
   }
 
+  mapCanvas()->stopRendering();
+
   loadAtlasPredefinedScalesFromProject();
   atlasMap->firstFeature();
   emit( atlasPreviewFeatureChanged() );
@@ -1052,6 +1059,8 @@ void QgsComposer::on_mActionAtlasLast_triggered()
   {
     return;
   }
+
+  mapCanvas()->stopRendering();
 
   loadAtlasPredefinedScalesFromProject();
   atlasMap->lastFeature();
@@ -3572,6 +3581,8 @@ void QgsComposer::setAtlasFeature( QgsMapLayer* layer, const QgsFeature& feat )
 
   //bring composer window to foreground
   activate();
+
+  mapCanvas()->stopRendering();
 
   //set current preview feature id
   atlas.prepareForFeature( &feat );
