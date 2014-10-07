@@ -135,6 +135,7 @@ bool QgsVectorLayerRenderer::render()
   if ( mSimplifyGeometry )
   {
     double map2pixelTol = mSimplifyMethod.threshold();
+    bool validTransform = true;
 
     const QgsMapToPixel& mtp = mContext.mapToPixel();
     map2pixelTol *= mtp.mapUnitsPerPixel();
@@ -174,18 +175,28 @@ bool QgsVectorLayerRenderer::render()
       catch ( QgsCsException &cse )
       {
         QgsMessageLog::logMessage( QObject::tr( "Simplify transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
+        validTransform = false;
       }
     }
 
-    QgsSimplifyMethod simplifyMethod;
-    simplifyMethod.setMethodType( QgsSimplifyMethod::OptimizeForRendering );
-    simplifyMethod.setTolerance( map2pixelTol );
-    simplifyMethod.setForceLocalOptimization( mSimplifyMethod.forceLocalOptimization() );
+    if ( validTransform )
+    {
+      QgsSimplifyMethod simplifyMethod;
+      simplifyMethod.setMethodType( QgsSimplifyMethod::OptimizeForRendering );
+      simplifyMethod.setTolerance( map2pixelTol );
+      simplifyMethod.setForceLocalOptimization( mSimplifyMethod.forceLocalOptimization() );
 
-    featureRequest.setSimplifyMethod( simplifyMethod );
+      featureRequest.setSimplifyMethod( simplifyMethod );
 
-    QgsVectorSimplifyMethod vectorMethod = mSimplifyMethod;
-    mContext.setVectorSimplifyMethod( vectorMethod );
+      QgsVectorSimplifyMethod vectorMethod = mSimplifyMethod;
+      mContext.setVectorSimplifyMethod( vectorMethod );
+    }
+    else
+    {
+      QgsVectorSimplifyMethod vectorMethod;
+      vectorMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+      mContext.setVectorSimplifyMethod( vectorMethod );
+    }
   }
   else
   {
