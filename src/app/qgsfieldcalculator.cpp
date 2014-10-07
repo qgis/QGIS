@@ -127,8 +127,6 @@ void QgsFieldCalculator::accept()
     return;
   }
 
-  const QgsField& field = mVectorLayer->pendingFields()[mAttributeId];
-
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   mVectorLayer->beginEditCommand( "Field calculator" );
@@ -196,6 +194,8 @@ void QgsFieldCalculator::accept()
 
   bool useGeometry = exp.needsGeometry();
   int rownum = 1;
+
+  const QgsField& field = mVectorLayer->pendingFields()[mAttributeId];
 
   bool newField = !mUpdateExistingGroupBox->isChecked();
   QVariant emptyAttribute;
