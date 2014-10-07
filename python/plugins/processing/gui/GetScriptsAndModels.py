@@ -159,9 +159,9 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
                 helpContent = readUrl(url)
                 descriptions = json.loads(helpContent)
                 html = '<h2>%s</h2>' % item.name
-                html += self.tr('<p><b>Description:</b>%s</p>') % getDescription(ALG_DESC, descriptions)
-                html += self.tr('<p><b>Created by:</b>%s') % getDescription(ALG_CREATOR, descriptions)
-                html += self.tr('<p><b>Version:</b>%s') % getDescription(ALG_VERSION, descriptions)
+                html += self.tr('<p><b>Description:</b> %s</p>') % getDescription(ALG_DESC, descriptions)
+                html += self.tr('<p><b>Created by:</b> %s') % getDescription(ALG_CREATOR, descriptions)
+                html += self.tr('<p><b>Version:</b> %s') % getDescription(ALG_VERSION, descriptions)
             except HTTPError, e:
                 html = self.tr('<h2>No detailed description available for this script</h2>')
             self.webView.setHtml(html)

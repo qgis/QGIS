@@ -88,7 +88,7 @@ def getHtmlFromDescriptionsDict(alg, descriptions):
 
 def getDescription(name, descriptions):
     if name in descriptions:
-        return descriptions[name].replace("\n", "<br>")
+        return unicode(descriptions[name]).replace("\n", "<br>")
     else:
         return ''
 
