@@ -38,11 +38,9 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
-from processing.gui.Help2Html import  getHtmlFromHelpFile
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.parameters import *
 from processing.tools import dataobjects
-from processing.core.parameters import getParameterFromString
 from processing.gui.Help2Html import getHtmlFromDescriptionsDict
 
 class ModelerParameter():
@@ -544,6 +542,8 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     @staticmethod
     def fromOldFormatFile(filename):
+        def _tr(s):
+            return QtCore.QCoreApplication.translate('ModelerAlgorithm', s)
         hardcodedValues = {}
         modelParameters = []
         modelAlgs = []
@@ -560,7 +560,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                         pass
                     else:
                         raise WrongModelException(
-                            self.tr('Error in parameter line: %s', 'ModelerAlgorithm') % line)
+                            _tr('Error in parameter line: %s', 'ModelerAlgorithm') % line)
                     line = lines.readline().strip('\n')
                     tokens = line.split(',')
                     model.addParameter(ModelerParameter(param, QtCore.QPointF(
@@ -623,7 +623,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                         modelAlgs.append(modelAlg.name)
                     else:
                         raise WrongModelException(
-                            self.tr('Error in algorithm name: %s', 'ModelerAlgorithm') % algLine)
+                            _tr('Error in algorithm name: %s', ) % algLine)
                 line = lines.readline().strip('\n').strip('\r')
             for modelAlg in model.algs.values():
                 for name, value in modelAlg.params.iteritems():
@@ -634,4 +634,4 @@ class ModelerAlgorithm(GeoAlgorithm):
             if isinstance(e, WrongModelException):
                 raise e
             else:
-                raise WrongModelException(self.tr('Error in model definition line: %s\n%s', 'ModelerAlgorithm') % (line.strip(), traceback.format_exc()))
+                raise WrongModelException(_tr('Error in model definition line: ') + '%s\n%s' % (line.strip(), traceback.format_exc()))
