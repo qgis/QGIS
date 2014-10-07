@@ -38,6 +38,11 @@ void QgsPhotoWidgetWrapper::selectFileName()
 
 void QgsPhotoWidgetWrapper::loadPixmap( const QString &fileName )
 {
+  if ( mWebView )
+  {
+    mWebView->setUrl( fileName );
+  }
+
   QPixmap pm( fileName );
   if ( !pm.isNull() && mPhotoLabel )
   {
@@ -52,7 +57,6 @@ void QgsPhotoWidgetWrapper::loadPixmap( const QString &fileName )
     }
 
     pm = pm.scaled( size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-
 
     mPhotoLabel->setPixmap( pm );
     mPhotoLabel->setMinimumSize( size );
@@ -98,9 +102,17 @@ void QgsPhotoWidgetWrapper::initWidget( QWidget* editor )
   QWidget* container;
 
   mLineEdit = qobject_cast<QLineEdit*>( editor );
+  mWebView = qobject_cast<QWebView*>( editor );
 
   if ( mLineEdit )
-    container = qobject_cast<QWidget*>( mLineEdit->parent() );
+  {
+    container = mLineEdit->parentWidget();
+  }
+  else if ( mWebView )
+  {
+    container = mWebView->parentWidget();
+    mLineEdit = container->findChild<QLineEdit*>();
+  }
   else
   {
     container = editor;
@@ -140,6 +152,10 @@ void QgsPhotoWidgetWrapper::setValue( const QVariant& value )
       mLineEdit->setText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
     else
       mLineEdit->setText( value.toString() );
+  }
+  else
+  {
+    loadPixmap( value.toString() );
   }
 }
 

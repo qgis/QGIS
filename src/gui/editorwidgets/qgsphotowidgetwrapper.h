@@ -21,6 +21,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QLineEdit>
+#include <QWebView>
 
 
 /**
@@ -60,6 +61,8 @@ class GUI_EXPORT QgsPhotoWidgetWrapper : public QgsEditorWidgetWrapper
   private:
     //! This label is used as a container to display the picture
     QLabel* mPhotoLabel;
+    //! This webview is used as a container to display the picture
+    QWebView* mWebView;
     //! The line edit containing the path to the picture
     QLineEdit* mLineEdit;
     //! The button to open the file chooser dialog
