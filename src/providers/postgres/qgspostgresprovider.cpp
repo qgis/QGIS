@@ -3356,6 +3356,11 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
     uiFileValue = QString( ",XMLPARSE(DOCUMENT %1)" ).arg( QgsPostgresConn::quotedValue( uiFileContent ) );
   }
 
+  // Note: in the construction of the INSERT and UPDATE strings the qmlStyle and sldStyle values
+  // can contain user entered strings, which may themselves include %## values that would be
+  // replaced by the QString.arg function.  To ensure that the final SQL string is not corrupt these
+  // two values are both replaced in the final .arg call of the string construction.
+
   QString sql = QString( "INSERT INTO layer_styles("
                          "f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description,owner%11"
                          ") VALUES ("
@@ -3371,6 +3376,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                 .arg( QgsPostgresConn::quotedValue( dsUri.username() ) )
                 .arg( uiFileColumn )
                 .arg( uiFileValue )
+                // Must be the final .arg replacement - see above
                 .arg( QgsPostgresConn::quotedValue( qmlStyle ),
                       QgsPostgresConn::quotedValue( sldStyle ) );
 
@@ -3419,6 +3425,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
           .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
           .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
+          // Must be the final .arg replacement - see above
           .arg( QgsPostgresConn::quotedValue( qmlStyle ),
                   QgsPostgresConn::quotedValue( sldStyle ) );
   }
