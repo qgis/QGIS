@@ -434,6 +434,10 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool upda
   QList<QgsComposerMap*> maps;
   QList<QgsComposerMap*> atlasMaps;
   mComposition->composerItems( maps );
+  if ( maps.isEmpty() )
+  {
+    return true;
+  }
   for ( QList<QgsComposerMap*>::iterator mit = maps.begin(); mit != maps.end(); ++mit )
   {
     QgsComposerMap* currentMap = ( *mit );
@@ -444,24 +448,30 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool upda
     atlasMaps << currentMap;
   }
 
-  //clear the transformed bounds of the previous feature
-  mTransformedFeatureBounds = QgsRectangle();
-
-  if ( atlasMaps.isEmpty() )
+  if ( atlasMaps.count() > 0 )
   {
-    //no atlas enabled maps
-    return true;
+    //clear the transformed bounds of the previous feature
+    mTransformedFeatureBounds = QgsRectangle();
+
+    // compute extent of current feature in the map CRS. This should be set on a per-atlas map basis,
+    // but given that it's not currently possible to have maps with different CRSes we can just
+    // calculate it once based on the first atlas maps' CRS.
+    computeExtent( atlasMaps[0] );
   }
 
-  // compute extent of current feature in the map CRS. This should be set on a per-atlas map basis,
-  // but given that it's not currently possible to have maps with different CRSes we can just
-  // calculate it once based on the first atlas maps' CRS.
-  computeExtent( atlasMaps[0] );
-
-  //update atlas bounds of every atlas enabled composer map
-  for ( QList<QgsComposerMap*>::iterator mit = atlasMaps.begin(); mit != atlasMaps.end(); ++mit )
+  for ( QList<QgsComposerMap*>::iterator mit = maps.begin(); mit != maps.end(); ++mit )
   {
-    prepareMap( *mit );
+    if (( *mit )->atlasDriven() )
+    {
+      //map is atlas driven, so update it's bounds (causes a redraw)
+      prepareMap( *mit );
+    }
+    else
+    {
+      //map is not atlas driven, so manually force a redraw (to reflect possibly atlas
+      //dependant symbology)
+      ( *mit )->cache();
+    }
   }
 
   return true;
