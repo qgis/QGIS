@@ -15564,10 +15564,6 @@ p, li { white-space: pre-wrap; }
         <translation>Pievienot kolonnu</translation>
     </message>
     <message>
-        <source>Provider Field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Virtual Field</source>
         <translation type="unfinished"></translation>
     </message>
@@ -15578,6 +15574,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Expression</source>
         <translation type="unfinished">Izteiksme</translation>
+    </message>
+    <message>
+        <source>&lt;i&gt;Virtual fields&lt;/i&gt; are calculated on the fly and cannot be directly modified and will not be saved to the data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;i&gt;Permanent fields&lt;/i&gt; are saved in the data provider and it is possible to directly modify them.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Permanent Field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer is currently not in edit mode. To add a permanent field, editing mode will automatically be turned on.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16492,11 +16504,11 @@ Parser error:
     </message>
     <message>
         <source>Attribute Error</source>
-        <translation>Atribūta kļūda</translation>
+        <translation type="obsolete">Atribūta kļūda</translation>
     </message>
     <message>
         <source>The attribute could not be added to the layer</source>
-        <translation>Slānim nebija iespējams pievienot atribūtu</translation>
+        <translation type="obsolete">Slānim nebija iespējams pievienot atribūtu</translation>
     </message>
     <message>
         <source>The attribute(s) could not be deleted</source>
@@ -16751,6 +16763,14 @@ Parser error:
     </message>
     <message>
         <source>Switch to table view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to add field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to add field &apos;%1&apos; of type &apos;%2&apos;. Is the field name unique?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19881,6 +19901,18 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Ctrl+Alt+/</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>C</source>
+        <translation type="unfinished">C</translation>
+    </message>
+    <message>
+        <source>P</source>
+        <translation type="unfinished">P</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerColumnAlignmentDelegate</name>
@@ -20494,19 +20526,19 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Alignment</source>
-        <translation type="unfinished">Līdzināšana</translation>
+        <translation type="obsolete">Līdzināšana</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished">Vertikāls</translation>
+        <translation type="obsolete">Vertikāls</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished">Horizontāls</translation>
+        <translation type="obsolete">Horizontāls</translation>
     </message>
     <message>
         <source>Display</source>
-        <translation type="unfinished">Ekrāns</translation>
+        <translation type="obsolete">Ekrāns</translation>
     </message>
     <message>
         <source>Margin</source>
@@ -20527,6 +20559,18 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Font color</source>
         <translation type="unfinished">Fonta krasa</translation>
+    </message>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished">Izskats</translation>
+    </message>
+    <message>
+        <source>Horizontal alignment</source>
+        <translation type="unfinished">Horizontālā līdzināšana</translation>
+    </message>
+    <message>
+        <source>Vertical alignment</source>
+        <translation type="unfinished">Vertikālā līdzināšana</translation>
     </message>
 </context>
 <context>
@@ -25360,6 +25404,14 @@ not displayed</source>
         <source>Delete Attributes</source>
         <translation>Dzēst atribūtus</translation>
     </message>
+    <message>
+        <source>Provider fields can only be deleted when the layer is in edit mode.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provider does not support deleting attributes.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDelimitedTextPlugin</name>
@@ -27667,11 +27719,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Name conflict</source>
-        <translation type="unfinished">Nosaukumu konflikts</translation>
+        <translation type="obsolete">Nosaukumu konflikts</translation>
     </message>
     <message>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
-        <translation type="unfinished">Nebija iespējams pievienot atribūtu. Tāds nosaukums jau eksistē tabulā.</translation>
+        <translation type="obsolete">Nebija iespējams pievienot atribūtu. Tāds nosaukums jau eksistē tabulā.</translation>
     </message>
     <message>
         <source>Added attribute</source>
@@ -27679,7 +27731,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Deleted attribute</source>
-        <translation type="unfinished">Dzēsts atribūts</translation>
+        <translation type="obsolete">Dzēsts atribūts</translation>
     </message>
     <message>
         <source>Line edit</source>
@@ -27783,6 +27835,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Editor Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to add field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to add field &apos;%1&apos; of type &apos;%2&apos;. Is the field name unique?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deleted attributes</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

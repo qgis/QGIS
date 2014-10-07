@@ -17711,10 +17711,6 @@ p, li { white-space: pre-wrap; }
         <translation>Precisión</translation>
     </message>
     <message>
-        <source>Provider Field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Virtual Field</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17725,6 +17721,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Expression</source>
         <translation type="unfinished">Expresión</translation>
+    </message>
+    <message>
+        <source>&lt;i&gt;Virtual fields&lt;/i&gt; are calculated on the fly and cannot be directly modified and will not be saved to the data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;i&gt;Permanent fields&lt;/i&gt; are saved in the data provider and it is possible to directly modify them.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Permanent Field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer is currently not in edit mode. To add a permanent field, editing mode will automatically be turned on.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18862,11 +18874,11 @@ Error del analizador:
     </message>
     <message>
         <source>Attribute Error</source>
-        <translation>Error de atributo</translation>
+        <translation type="obsolete">Error de atributo</translation>
     </message>
     <message>
         <source>The attribute could not be added to the layer</source>
-        <translation>No se pudo añadir el atributo a la capa</translation>
+        <translation type="obsolete">No se pudo añadir el atributo a la capa</translation>
     </message>
     <message>
         <source>The attribute(s) could not be deleted</source>
@@ -19056,6 +19068,14 @@ Error del analizador:
     </message>
     <message>
         <source>Switch to table view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to add field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to add field &apos;%1&apos; of type &apos;%2&apos;. Is the field name unique?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -22356,6 +22376,18 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>Ctrl+Alt+/</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>P</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerColumnAlignmentDelegate</name>
@@ -22989,19 +23021,19 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Alignment</source>
-        <translation>Alineación</translation>
+        <translation type="obsolete">Alineación</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation>Vertical</translation>
+        <translation type="obsolete">Vertical</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation>Horizontal</translation>
+        <translation type="obsolete">Horizontal</translation>
     </message>
     <message>
         <source>Display</source>
-        <translation>Visualizar</translation>
+        <translation type="obsolete">Visualizar</translation>
     </message>
     <message>
         <source>Margin</source>
@@ -23026,6 +23058,18 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Font color</source>
         <translation type="unfinished">Color de letras</translation>
+    </message>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished">Apariencia</translation>
+    </message>
+    <message>
+        <source>Horizontal alignment</source>
+        <translation type="unfinished">Alineación horizontal</translation>
+    </message>
+    <message>
+        <source>Vertical alignment</source>
+        <translation type="unfinished">Alineación vertical</translation>
     </message>
 </context>
 <context>
@@ -28002,6 +28046,14 @@ no se muestran</translation>
         <source>Delete Attributes</source>
         <translation>Borrar atributos</translation>
     </message>
+    <message>
+        <source>Provider fields can only be deleted when the layer is in edit mode.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provider does not support deleting attributes.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDelimitedTextPlugin</name>
@@ -30461,11 +30513,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Name conflict</source>
-        <translation>Conflicto de nombres</translation>
+        <translation type="obsolete">Conflicto de nombres</translation>
     </message>
     <message>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
-        <translation>No se pudo insertar el atributo. El nombre ya existe en la tabla.</translation>
+        <translation type="obsolete">No se pudo insertar el atributo. El nombre ya existe en la tabla.</translation>
     </message>
     <message>
         <source>Added attribute</source>
@@ -30473,7 +30525,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Deleted attribute</source>
-        <translation>Atributo borrado</translation>
+        <translation type="obsolete">Atributo borrado</translation>
     </message>
     <message>
         <source>Line edit</source>
@@ -30578,6 +30630,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Editor Widget</source>
         <translation>Control del editor</translation>
+    </message>
+    <message>
+        <source>Failed to add field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to add field &apos;%1&apos; of type &apos;%2&apos;. Is the field name unique?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deleted attributes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
