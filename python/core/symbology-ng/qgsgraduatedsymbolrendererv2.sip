@@ -63,7 +63,7 @@ class QgsRendererRangeV2LabelFormat
     void setTrimTrailingZeroes( bool trimTrailingZeroes );
 
     //! @note labelForLowerUpper in python bindings
-    QString labelForRange( double lower, double upper ) const;
+    QString labelForRange( double lower, double upper ) const /PyName=labelForLowerUpper/;
     QString labelForRange( const QgsRendererRangeV2 &range ) const;
     QString formatNumber( double value ) const;
 

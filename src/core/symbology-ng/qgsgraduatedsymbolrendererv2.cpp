@@ -178,12 +178,14 @@ QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat():
     mTrimTrailingZeroes( false ),
     mNumberScale( 1.0 ),
     mNumberSuffix( "" ),
-    mReTrailingZeroes( "[.,]?0*$" )
+    mReTrailingZeroes( "[.,]?0*$" ),
+    mReNegativeZero("^\\-0(?:[.,]0*)?$")
 {
 }
 
 QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat( QString format, int precision, bool trimTrailingZeroes ):
-    mReTrailingZeroes( "[.,]?0*$" )
+    mReTrailingZeroes( "[.,]?0*$" ),
+    mReNegativeZero("^\\-0(?:[.,]0*)?$")
 {
   setFormat( format );
   setPrecision( precision );
@@ -231,11 +233,13 @@ QString QgsRendererRangeV2LabelFormat::formatNumber( double value ) const
   {
     QString valueStr=QString::number( value, 'f', mPrecision );
     if( mTrimTrailingZeroes ) valueStr=valueStr.replace(mReTrailingZeroes,"");
+    if( mReNegativeZero.exactMatch(valueStr)) valueStr=valueStr.mid(1);
     return valueStr;
   }
   else
   {
     QString valueStr=QString::number( value*mNumberScale, 'f', 0 );
+    if( valueStr == "-0" ) valueStr="0";
     if( valueStr != "0" ) valueStr=valueStr+mNumberSuffix;
     return valueStr;
   }

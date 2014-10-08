@@ -104,6 +104,7 @@ class CORE_EXPORT QgsRendererRangeV2LabelFormat
     double mNumberScale;
     QString mNumberSuffix;
     QRegExp mReTrailingZeroes;
+    QRegExp mReNegativeZero;
 };
 
 class QgsVectorLayer;
