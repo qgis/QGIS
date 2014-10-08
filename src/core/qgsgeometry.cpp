@@ -355,9 +355,9 @@ static GEOSGeometry *createGeosPolygon( const QgsPolygon& polygon )
   try
   {
     for ( int i = 0; i < polygon.count(); i++ )
-	{
+    {
       GEOSGeometry *ring = createGeosLinearRing( polygon[i] );
-	  if ( ring ) geoms << ring;
+      if ( ring ) geoms << ring;
     }
 
     return createGeosPolygon( geoms );
