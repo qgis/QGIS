@@ -294,7 +294,7 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
     return;
   }
 
-  double offset = 0.0;
+  double offset = mOffset;
   applyDataDefinedSymbology( context, mPen, mSelPen, offset );
 
   p->setPen( context.selected() ? mSelPen : mPen );
@@ -311,7 +311,7 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
     return;
   }
 
-  if ( offset == 0 )
+  if ( qgsDoubleNear( offset, 0 ) )
   {
     p->drawPolyline( points );
   }
@@ -480,7 +480,6 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   }
 
   //offset
-  offset = mOffset;
   QgsExpression* lineOffsetExpression = expression( "offset" );
   if ( lineOffsetExpression )
   {
