@@ -519,11 +519,21 @@ void QgsColorButtonV2::addRecentColor( const QColor& color )
 
   QSettings settings;
   QList< QVariant > recentColorVariants = settings.value( QString( "/colors/recent" ) ).toList();
-  QVariant colorVariant = QVariant( opaqueColor );
-  recentColorVariants.removeAll( colorVariant );
 
+  //remove colors by name
+  for ( int colorIdx = recentColorVariants.length() - 1; colorIdx >= 0; --colorIdx )
+  {
+    if (( recentColorVariants.at( colorIdx ).value<QColor>() ).name() == opaqueColor.name() )
+    {
+      recentColorVariants.removeAt( colorIdx );
+    }
+  }
+
+  //add color
+  QVariant colorVariant = QVariant( opaqueColor );
   recentColorVariants.prepend( colorVariant );
 
+  //trim to 20 colors
   while ( recentColorVariants.count() > 20 )
   {
     recentColorVariants.pop_back();
