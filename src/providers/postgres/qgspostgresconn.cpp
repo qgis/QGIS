@@ -183,8 +183,10 @@ QgsPostgresConn::QgsPostgresConn( QString conninfo, bool readOnly, bool shared )
 
     QgsCredentials::instance()->lock();
 
-    while ( PQstatus() != CONNECTION_OK )
+    int i = 0;
+    while ( PQstatus() != CONNECTION_OK && i < 5 )
     {
+      ++i;
       bool ok = QgsCredentials::instance()->get( conninfo, username, password, PQerrorMessage() );
       if ( !ok )
         break;
