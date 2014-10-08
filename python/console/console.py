@@ -539,8 +539,6 @@ class PythonConsoleWidget(QWidget):
         self.findPrevButton.clicked.connect(self._findPrev)
         self.lineEditFind.textChanged.connect(self._textFindChanged)
 
-        self.tabEditorWidget.restoreTabsOrAddNew()
-
     def _findText(self):
         self.tabEditorWidget.currentWidget().newEditor.findText(True)
 
@@ -586,7 +584,9 @@ class PythonConsoleWidget(QWidget):
 
     def toggleEditor(self, checked):
         self.splitterObj.show() if checked else self.splitterObj.hide()
-        self.tabEditorWidget.enableToolBarEditor(checked)
+        if not self.tabEditorWidget:
+            self.tabEditorWidget.enableToolBarEditor(checked)
+            self.tabEditorWidget.restoreTabsOrAddNew()
 
     def toggleObjectListWidget(self, checked):
         self.listClassMethod.show() if checked else self.listClassMethod.hide()
@@ -679,8 +679,7 @@ class PythonConsoleWidget(QWidget):
         QgsContextHelp.run( "PythonConsole" )
 
     def openSettings(self):
-        options = optionsDialog(self)
-        if options.exec_():
+        if optionsDialog(self).exec_():
             self.shell.refreshSettingsShell()
             self.shellOut.refreshSettingsOutput()
             self.tabEditorWidget.refreshSettingsEditor()
