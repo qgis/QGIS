@@ -906,6 +906,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double mAtlasMargin;
 
     void init();
+    void updateToolTip();
 
     /**Returns a list of the layers to render for this map item*/
     QStringList layersToRender() const;

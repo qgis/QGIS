@@ -112,6 +112,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
   mCurrentRectangle = rect();
 
   init();
+  updateToolTip();
 }
 
 void QgsComposerMap::init()
@@ -119,8 +120,6 @@ void QgsComposerMap::init()
   mGridStack = new QgsComposerMapGridStack( this );
   mOverviewStack = new QgsComposerMapOverviewStack( this );
   connectUpdateSlot();
-
-  setToolTip( tr( "Map %1" ).arg( mId ) );
 
   // data defined strings
   mDataDefinedNames.insert( QgsComposerObject::MapRotation, QString( "dataDefinedMapRotation" ) );
@@ -130,6 +129,11 @@ void QgsComposerMap::init()
   mDataDefinedNames.insert( QgsComposerObject::MapXMax, QString( "dataDefinedMapXMax" ) );
   mDataDefinedNames.insert( QgsComposerObject::MapYMax, QString( "dataDefinedMapYMax" ) );
   mDataDefinedNames.insert( QgsComposerObject::MapAtlasMargin, QString( "dataDefinedMapAtlasMargin" ) );
+}
+
+void QgsComposerMap::updateToolTip()
+{
+    setToolTip( tr( "Map %1" ).arg( mId ) );
 }
 
 void QgsComposerMap::adjustExtentToItemShape( double itemWidth, double itemHeight, QgsRectangle& extent ) const
@@ -1292,6 +1296,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   if ( idRead != "not found" )
   {
     mId = idRead.toInt();
+    updateToolTip();
   }
   mPreviewMode = Rectangle;
 
@@ -2263,6 +2268,7 @@ void QgsComposerMap::assignFreeId()
     }
   }
   mId = maxId + 1;
+  updateToolTip();
 }
 
 bool QgsComposerMap::imageSizeConsideringRotation( double& width, double& height ) const
