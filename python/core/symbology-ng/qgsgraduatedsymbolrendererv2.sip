@@ -63,7 +63,7 @@ class QgsRendererRangeV2LabelFormat
     void setTrimTrailingZeroes( bool trimTrailingZeroes );
 
     //! @note labelForLowerUpper in python bindings
-    QString labelForRange( double lower, double upper ) const;
+    QString labelForRange( double lower, double upper ) const /PyName=labelForLowerUpper/;
     QString labelForRange( const QgsRendererRangeV2 &range ) const;
     QString formatNumber( double value ) const;
 
@@ -165,7 +165,7 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     //! @param labelFormat The string appended to classification labels
     //! @param updateRanges If true then ranges ending with the old unit string are updated to the new.
     //! @note Added in 2.6
-    void setLabelFormat( const QgsRendererRangeV2LabelFormat &labelFormat, bool updateRanges = true );
+    void setLabelFormat( const QgsRendererRangeV2LabelFormat &labelFormat, bool updateRanges = false );
 
     //! Reset the label decimal places to a numberbased on the minimum class interval
     //! @param updateRanges if true then ranges currently using the default label will be updated
