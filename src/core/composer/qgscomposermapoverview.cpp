@@ -108,6 +108,8 @@ void QgsComposerMapOverview::draw( QPainter *painter )
 
   //workaround QT Bug #21329
   thisRectPoly.pop_back();
+  thisExtent.pop_back();
+
   //create transform from map coordinates to painter coordinates
   QTransform::quadToQuad( thisExtent, thisRectPoly, mapTransform );
   QPolygonF intersectPolygon;

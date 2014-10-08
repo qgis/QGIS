@@ -170,6 +170,9 @@ void TestQgsComposerMap::mapPolygonVertices()
   QVERIFY( fabs( visibleExtent[3].x() - 781662.375 ) < 0.001 );
   QVERIFY( fabs( visibleExtent[3].y() - 3339523.125 ) < 0.001 );
 
+  //polygon should be closed
+  QVERIFY( visibleExtent.isClosed() );
+
   //now test with rotated map
   mComposerMap->setMapRotation( 10 );
   visibleExtent = mComposerMap->visibleExtentPolygon();
@@ -183,6 +186,9 @@ void TestQgsComposerMap::mapPolygonVertices()
   QVERIFY( fabs( visibleExtent[2].y() - 3340556.21752 ) < 0.001 );
   QVERIFY( fabs( visibleExtent[3].x() - 782243.868114 ) < 0.001 );
   QVERIFY( fabs( visibleExtent[3].y() - 3338576.62829 ) < 0.001 );
+
+  //polygon should be closed
+  QVERIFY( visibleExtent.isClosed() );
 
   mComposerMap->setMapRotation( 0 );
 
