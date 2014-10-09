@@ -65,7 +65,6 @@ class QgsRequestHandler
     virtual void setInfoFormat( const QString &format ) = 0;
     /**Send out HTTP headers and flush output buffer*/
     virtual void sendResponse( ) = 0;
-    virtual bool responseReady() const = 0;
     /**Pointer to last raised exception*/
     virtual bool exceptionRaised() const = 0;
     QMap<QString, QString> parameterMap( ) { return mParameterMap; }
