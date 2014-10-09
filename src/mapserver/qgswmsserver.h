@@ -59,9 +59,9 @@ independent from any server side technology*/
 class QgsWMSServer: public QgsOWSServer
 {
   public:
-    /**Constructor. Takes ownership of QgsRequestHandler. Does _NOT_ take ownership of
+    /**Constructor. Does _NOT_ take ownership of
         QgsConfigParser, QgsCapabilitiesCache and QgsMapRenderer*/
-    QgsWMSServer( const QString& configFilePath, QMap<QString, QString> parameters, QgsWMSConfigParser* cp, QgsRequestHandler* rh,
+    QgsWMSServer(const QString& configFilePath, QMap<QString, QString> &parameters, QgsWMSConfigParser* cp, QgsRequestHandler* rh,
                   QgsMapRenderer* renderer, QgsCapabilitiesCache* capCache );
     ~QgsWMSServer();
 
