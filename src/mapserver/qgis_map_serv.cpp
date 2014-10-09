@@ -94,7 +94,7 @@ void printRequestInfos()
   }
   if ( getenv( "REMOTE_HOST" ) != NULL )
   {
-    QgsMessageLog::logMessage( "remote ip: " + QString( getenv( "REMOTE_ADDR" ) ), "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "remote ip: " + QString( getenv( "REMOTE_HOST" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "REMOTE_USER" ) != NULL )
   {
@@ -326,7 +326,11 @@ int main( int argc, char * argv[] )
   // Init plugins
   if (! QgsServerPlugins::initPlugins( &serverIface ) )
   {
-      QgsMessageLog::logMessage( "No server plugins are available", "Server", QgsMessageLog::INFO );
+      QgsMessageLog::logMessage( "No server python plugins are available", "Server", QgsMessageLog::INFO );
+  }
+  else
+  {
+    QgsMessageLog::logMessage( "Server python plugins loaded", "Server", QgsMessageLog::INFO );
   }
   // Store plugin filters for faster access
   QMultiMap<int, QgsServerFilter*> pluginFilters = serverIface.filters();
@@ -364,6 +368,7 @@ int main( int argc, char * argv[] )
     QgsServerFiltersMap::const_iterator filtersIterator;
     for( filtersIterator = pluginFilters.constBegin(); filtersIterator != pluginFilters.constEnd(); ++filtersIterator)
     {
+      QgsMessageLog::logMessage( QString("Calling filters priority %1").arg( filtersIterator.key() ), "Server", QgsMessageLog::INFO );
       filtersIterator.value()->requestReady();
     }
 #endif
