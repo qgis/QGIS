@@ -33,12 +33,14 @@ QVariant QgsColorWidgetWrapper::value()
 
 QWidget* QgsColorWidgetWrapper::createWidget( QWidget* parent )
 {
-  return new QgsColorButton( parent );
+  QgsColorButtonV2* button = new QgsColorButtonV2( parent );
+  button->setContext( QString( "editor" ) );
+  return button;
 }
 
 void QgsColorWidgetWrapper::initWidget( QWidget* editor )
 {
-  mColorButton = qobject_cast<QgsColorButton*>( editor );
+  mColorButton = qobject_cast<QgsColorButtonV2*>( editor );
 
   connect( mColorButton, SIGNAL( colorChanged( QColor ) ), this, SLOT( valueChanged() ) );
 }
