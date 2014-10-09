@@ -24,6 +24,8 @@
 //#include "qgsdataitem.h"
 #include "qgserror.h"
 
+typedef int dataCapabilities_t();
+
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 

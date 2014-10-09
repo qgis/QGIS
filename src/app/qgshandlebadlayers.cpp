@@ -26,8 +26,10 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QFileDialog>
 #include <QPushButton>
 #include <QMessageBox>
+#include <QSettings>
 #include <QUrl>
 
 QgsHandleBadLayersHandler::QgsHandleBadLayersHandler()
@@ -71,7 +73,6 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers, const QDo
 
   connect( mLayerList, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
   connect( mBrowseButton, SIGNAL( clicked() ), this, SLOT( browseClicked() ) );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
 
   mLayerList->clear();
@@ -94,12 +95,14 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers, const QDo
     QString name = node.namedItem( "layername" ).toElement().text();
     QString type = node.toElement().attribute( "type" );
     QString datasource = node.namedItem( "datasource" ).toElement().text();
-    QString provider = type == "vector" ? node.namedItem( "provider" ).toElement().text() : tr( "none" );
+    QString provider = node.namedItem( "provider" ).toElement().text();
+    QString vectorProvider = type == "vector" ? provider : tr( "none" );
+    bool providerFileBased = ( QgsProviderRegistry::instance()->getProviderCapabilities( provider ) & QgsDataProvider::File ) != 0;
 
     QgsDebugMsg( QString( "name=%1 type=%2 provider=%3 datasource='%4'" )
                  .arg( name )
                  .arg( type )
-                 .arg( provider )
+                 .arg( vectorProvider )
                  .arg( datasource ) );
 
     mLayerList->setRowCount( j + 1 );
@@ -112,10 +115,11 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers, const QDo
     mLayerList->setItem( j, 0, item );
 
     item = new QTableWidgetItem( type );
+    item->setData( Qt::UserRole + 0, providerFileBased );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     mLayerList->setItem( j, 1, item );
 
-    item = new QTableWidgetItem( provider );
+    item = new QTableWidgetItem( vectorProvider );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     mLayerList->setItem( j, 2, item );
 
@@ -141,6 +145,10 @@ void QgsHandleBadLayers::selectionChanged()
   foreach ( QTableWidgetItem *item, mLayerList->selectedItems() )
   {
     if ( item->column() != 0 )
+      continue;
+
+    bool providerFileBased = mLayerList->item( item->row(), 1 )->data( Qt::UserRole + 0 ).toBool();
+    if ( !providerFileBased )
       continue;
 
     mRows << item->row();
@@ -261,31 +269,34 @@ void QgsHandleBadLayers::browseClicked()
   }
   else if ( mRows.size() > 1 )
   {
-    QStringList selectedFiles;
-    QString enc;
     QString title = tr( "Select new directory of selected files" );
 
-    QgisGui::openFilesRememberingFilter( "missingDirectory", tr( "All files (*)" ), selectedFiles, enc, title );
-    if ( selectedFiles.isEmpty() )
+    QSettings settings;
+    QString lastDir = settings.value( "/UI/missingDirectory", "" ).toString();
+    QString selectedFolder = QFileDialog::getExistingDirectory( this, title, lastDir );
+    if ( selectedFolder.isEmpty() )
     {
       return;
     }
 
-    QFileInfo path( selectedFiles[0] );
-    if ( !path.exists() )
+    QDir dir( selectedFolder );
+    if ( !dir.exists() )
     {
       return;
     }
 
     foreach ( int row, mRows )
     {
-      QString type = mLayerList->item( row, 1 )->text();
+      bool providerFileBased = mLayerList->item( row, 1 )->data( Qt::UserRole + 0 ).toBool();
+      if ( !providerFileBased )
+        continue;
+
       QString fn = filename( row );
       if ( fn.isEmpty() )
         continue;
 
       QFileInfo fi( fn );
-      fi.setFile( path.dir(), fi.fileName() );
+      fi.setFile( dir, fi.fileName() );
       if ( !fi.exists() )
         continue;
 
