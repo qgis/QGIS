@@ -54,13 +54,68 @@ SET (qgis_mapserv_MOC_HDRS
   qgscapabilitiescache.h
   qgsconfigcache.h
   qgsmslayercache.h
-  qgsserverlogger.h
+  qgsserverlogger.h  
 )
 
 SET (qgis_mapserv_RCCS
   # not used
   #qgis_mapserv.qrc
   )
+
+
+
+IF (WITH_SERVER_PLUGINS)
+#############################################################
+# qgis_server library
+
+
+SET(qgis_mapserv_MOC_HDRS ${qgis_mapserv_MOC_HDRS}
+
+)
+
+SET(qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
+    qgsserverplugins.cpp
+    qgsserverinterface.cpp
+    qgsserverfilter.cpp
+    qgsserverinterfaceimpl.cpp
+)
+
+QT4_WRAP_CPP(qgis_mapserv_MOC_SRCS ${qgis_mapserv_MOC_HDRS})
+
+ADD_LIBRARY(qgis_server SHARED ${qgis_mapserv_SRCS} ${qgis_mapserv_MOC_SRCS} ${qgis_mapserv_HDRS} ${qgis_mapserv_MOC_HDRS} )
+
+#generate unversioned libs for android
+IF (NOT ANDROID)
+  SET_TARGET_PROPERTIES(qgis_server PROPERTIES
+    VERSION ${COMPLETE_VERSION}
+    SOVERSION ${COMPLETE_VERSION}
+    )
+ENDIF (NOT ANDROID)
+
+TARGET_LINK_LIBRARIES(qgis_server
+  qgis_core
+  qgis_analysis
+  qgispython
+  ${PROJ_LIBRARY}
+  ${FCGI_LIBRARY}
+  ${POSTGRES_LIBRARY}
+  ${GDAL_LIBRARY}
+)
+
+# install
+
+INSTALL(TARGETS qgis_server
+  RUNTIME DESTINATION ${QGIS_BIN_DIR}
+  LIBRARY DESTINATION ${QGIS_LIB_DIR}
+  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
+  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
+  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
+
+INCLUDE_DIRECTORIES(
+    ../python
+)
+
+ENDIF (WITH_SERVER_PLUGINS) # end qgis_server library
 
 QT4_WRAP_UI (qgis_mapserv_UIS_H  ${qgis_mapserv_UIS})
 
@@ -95,7 +150,7 @@ INCLUDE_DIRECTORIES(
   ../core/composer
   ../core/layertree
   ../analysis/interpolation
-  ../plugins/diagram_overlay
+  ../plugins/diagram_overlay  
   .
 )
 
@@ -106,11 +161,13 @@ ENDIF (WITH_INTERNAL_SPATIALITE)
 TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
   qgis_core
   qgis_analysis
+  qgispython
   ${PROJ_LIBRARY}
   ${FCGI_LIBRARY}
   ${POSTGRES_LIBRARY}
   ${GDAL_LIBRARY}
 )
+
 
 ########################################################
 # Install
