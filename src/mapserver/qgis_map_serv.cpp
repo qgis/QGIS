@@ -37,6 +37,11 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsserverlogger.h"
+#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+#include "qgsserverplugins.h"
+#include "qgsserverfilter.h"
+#include "qgsserverinterfaceimpl.h"
+#endif
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>
@@ -315,6 +320,18 @@ int main( int argc, char * argv[] )
   int logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
 
+#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+  // Create the interface
+  QgsServerInterfaceImpl serverIface( &capabilitiesCache );
+  // Init plugins
+  if (! QgsServerPlugins::initPlugins( &serverIface ) )
+  {
+      QgsMessageLog::logMessage( "No server plugins are available", "Server", QgsMessageLog::INFO );
+  }
+  // Store plugin filters for faster access  
+  QMultiMap<int, QgsServerFilter*> pluginFilters = serverIface.filters();
+#endif
+
   while ( fcgi_accept() >= 0 )
   {
     QgsMapLayerRegistry::instance()->removeAllMapLayers();
@@ -339,6 +356,17 @@ int main( int argc, char * argv[] )
       QgsMessageLog::logMessage( "Parse input exception: " + e.message(), "Server", QgsMessageLog::CRITICAL );
       theRequestHandler->setServiceException( e );
     }
+
+#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+    // Set the request handler into the interface for plugins to manipulate it
+    serverIface.setRequestHandler( theRequestHandler.data() );
+    // Iterate filters and call their requestReady() method
+    QgsServerFiltersMap::const_iterator filtersIterator;
+    for( filtersIterator = pluginFilters.constBegin(); filtersIterator != pluginFilters.constEnd(); ++filtersIterator)
+    {
+      filtersIterator.value()->requestReady();
+    }
+#endif
 
     // Copy the parameters map
     QMap<QString, QString> parameterMap( theRequestHandler->parameterMap() );
@@ -397,6 +425,14 @@ int main( int argc, char * argv[] )
         theRequestHandler->setServiceException( QgsMapServiceException( "Service configuration error", "Service unknown or unsupported" ) );
       } // end switch
     } // end if not exception raised
+
+#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+    // Call responseReady plugin filters
+    for(filtersIterator = pluginFilters.constBegin(); filtersIterator != pluginFilters.constEnd(); ++filtersIterator)
+    {
+      filtersIterator.value()->responseReady();
+    }
+#endif
 
     theRequestHandler->sendResponse();
 
