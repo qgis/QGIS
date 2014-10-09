@@ -23,6 +23,7 @@ class QWebPage;
 class QImage;
 class QgsFeature;
 class QgsVectorLayer;
+class QgsNetworkContentFetcher;
 
 class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 {
@@ -38,7 +39,10 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     };
 
     QgsComposerHtml( QgsComposition* c, bool createUndoCommands );
+
+    //should be private - fix for QGIS 3.0
     QgsComposerHtml();
+
     ~QgsComposerHtml();
 
     /**Sets the source mode for item's HTML content.
@@ -240,6 +244,8 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     QgsVectorLayer* mExpressionLayer;
     QString mUserStylesheet;
     bool mEnableUserStylesheet;
+
+    QgsNetworkContentFetcher* mFetcher;
 
     double htmlUnitsToMM(); //calculate scale factor
 

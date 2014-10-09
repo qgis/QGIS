@@ -32,7 +32,12 @@ QgsNetworkContentFetcher::QgsNetworkContentFetcher()
 
 QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
 {
-  delete mReply;
+  if ( mReply->isRunning() )
+  {
+    //cancel running request
+    mReply->abort();
+  }
+  mReply->deleteLater();
 }
 
 void QgsNetworkContentFetcher::fetchContent( const QUrl url )
@@ -42,6 +47,14 @@ void QgsNetworkContentFetcher::fetchContent( const QUrl url )
 
   //get contents
   QNetworkRequest request( nextUrlToFetch );
+
+  if ( mReply )
+  {
+    //cancel any in progress requests
+    mReply->abort();
+    mReply->deleteLater();
+    mReply = 0;
+  }
 
   mReply = QgsNetworkAccessManager::instance()->get( request );
   connect( mReply, SIGNAL( finished() ), this, SLOT( contentLoaded() ) );

@@ -31,6 +31,7 @@ class TestQgsNetworkContentFetcher: public QObject
     void fetchEmptyUrl(); //test fetching blank url
     void fetchBadUrl(); //test fetching bad url
     void fetchUrlContent(); //test fetching url content
+    void doubleFetch(); //fetch content while already fetching content
     void fetchEncodedContent(); //test fetching url content encoded as utf-8
 
     void contentLoaded();
@@ -93,7 +94,8 @@ void TestQgsNetworkContentFetcher::fetchBadUrl()
 void TestQgsNetworkContentFetcher::fetchUrlContent()
 {
   QgsNetworkContentFetcher fetcher;
-  //test fetching content from the QGIS homepage
+  //test fetching content from the QGIS homepage - ideally a dedicate page should be created for these tests so
+  //that we do not rely on content from the homepage
   mLoaded = false;
   fetcher.fetchContent( QUrl( "http://www.qgis.org/en/site/" ) );
   connect( &fetcher, SIGNAL( finished() ), this, SLOT( contentLoaded() ) );
@@ -108,10 +110,33 @@ void TestQgsNetworkContentFetcher::fetchUrlContent()
   QVERIFY( mFetchedHtml.contains( QString( "QGIS" ) ) );
 }
 
+void TestQgsNetworkContentFetcher::doubleFetch()
+{
+  QgsNetworkContentFetcher fetcher;
+  //fetch content from the QGIS homepage - ideally a dedicate page should be created for these tests so
+  //that we do not rely on content from the homepage
+  mLoaded = false;
+  fetcher.fetchContent( QUrl( "http://www.osgeo.org/" ) );
+  //double fetch - this should happen before previous request finishes
+  fetcher.fetchContent( QUrl( "http://www.qgis.org/en/site/" ) );
+
+  connect( &fetcher, SIGNAL( finished() ), this, SLOT( contentLoaded() ) );
+
+  while ( !mLoaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( fetcher.reply()->error() == QNetworkReply::NoError );
+
+  //test retrieved content
+  QString mFetchedHtml = fetcher.contentAsString();
+  QVERIFY( mFetchedHtml.contains( QString( "QGIS" ) ) );
+}
+
 void TestQgsNetworkContentFetcher::fetchEncodedContent()
 {
   QgsNetworkContentFetcher fetcher;
-  //test fetching content from the QGIS homepage
+  //test fetching encoded content as string
   mLoaded = false;
   fetcher.fetchContent( QUrl::fromLocalFile( QString( TEST_DATA_DIR ) + QDir::separator() +  "encoded_html.html" ) );
   connect( &fetcher, SIGNAL( finished() ), this, SLOT( contentLoaded() ) );

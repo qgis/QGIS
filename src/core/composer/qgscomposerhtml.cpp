@@ -30,18 +30,20 @@
 #include <QImage>
 #include <QNetworkReply>
 
-QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): QgsComposerMultiFrame( c, createUndoCommands ),
-    mContentMode( QgsComposerHtml::Url ),
-    mWebPage( 0 ),
-    mLoaded( false ),
-    mHtmlUnitsToMM( 1.0 ),
-    mRenderedPage( 0 ),
-    mEvaluateExpressions( true ),
-    mUseSmartBreaks( true ),
-    mMaxBreakDistance( 10 ),
-    mExpressionFeature( 0 ),
-    mExpressionLayer( 0 ),
-    mEnableUserStylesheet( false )
+QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands )
+    : QgsComposerMultiFrame( c, createUndoCommands )
+    , mContentMode( QgsComposerHtml::Url )
+    , mWebPage( 0 )
+    , mLoaded( false )
+    , mHtmlUnitsToMM( 1.0 )
+    , mRenderedPage( 0 )
+    , mEvaluateExpressions( true )
+    , mUseSmartBreaks( true )
+    , mMaxBreakDistance( 10 )
+    , mExpressionFeature( 0 )
+    , mExpressionLayer( 0 )
+    , mEnableUserStylesheet( false )
+    , mFetcher( 0 )
 {
   mHtmlUnitsToMM = htmlUnitsToMM();
   mWebPage = new QWebPage();
@@ -74,25 +76,33 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): 
   //to update the expression context
   connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshExpressionContext() ) );
 
+  mFetcher = new QgsNetworkContentFetcher();
+  connect( mFetcher, SIGNAL( finished() ), this, SLOT( frameLoaded() ) );
+
 }
 
-QgsComposerHtml::QgsComposerHtml(): QgsComposerMultiFrame( 0, false ),
-    mContentMode( QgsComposerHtml::Url ),
-    mWebPage( 0 ),
-    mLoaded( false ),
-    mHtmlUnitsToMM( 1.0 ),
-    mRenderedPage( 0 ),
-    mUseSmartBreaks( true ),
-    mMaxBreakDistance( 10 ),
-    mExpressionFeature( 0 ),
-    mExpressionLayer( 0 )
+QgsComposerHtml::QgsComposerHtml()
+    : QgsComposerMultiFrame( 0, false )
+    , mContentMode( QgsComposerHtml::Url )
+    , mWebPage( 0 )
+    , mLoaded( false )
+    , mHtmlUnitsToMM( 1.0 )
+    , mRenderedPage( 0 )
+    , mUseSmartBreaks( true )
+    , mMaxBreakDistance( 10 )
+    , mExpressionFeature( 0 )
+    , mExpressionLayer( 0 )
+    , mFetcher( 0 )
 {
+  mFetcher = new QgsNetworkContentFetcher();
+  connect( mFetcher, SIGNAL( finished() ), this, SLOT( frameLoaded() ) );
 }
 
 QgsComposerHtml::~QgsComposerHtml()
 {
   delete mWebPage;
   delete mRenderedPage;
+  mFetcher->deleteLater();
 }
 
 void QgsComposerHtml::setUrl( const QUrl& url )
@@ -257,19 +267,17 @@ void QgsComposerHtml::renderCachedImage()
 
 QString QgsComposerHtml::fetchHtml( QUrl url )
 {
-  QgsNetworkContentFetcher fetcher;
   //pause until HTML fetch
   mLoaded = false;
-  fetcher.fetchContent( url );
-  connect( &fetcher, SIGNAL( finished() ), this, SLOT( frameLoaded() ) );
+  mFetcher->fetchContent( url );
 
   while ( !mLoaded )
   {
     qApp->processEvents();
   }
 
-  mFetchedHtml = fetcher.contentAsString();
-  mActualFetchedUrl = fetcher.reply()->url().toString();
+  mFetchedHtml = mFetcher->contentAsString();
+  mActualFetchedUrl = mFetcher->reply()->url().toString();
   return mFetchedHtml;
 }
 
