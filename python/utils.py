@@ -97,7 +97,6 @@ def initInterface(pointer):
   global iface
   iface = wrapinstance(pointer, QgisInterface)
 
-
 #######################
 # PLUGINS
 
@@ -208,7 +207,7 @@ def startPlugin(packageName):
     plugins[packageName] = package.classFactory(iface)
   except:
     _unloadPluginModules(packageName)
-    msg = QCoreApplication.translate("Python", "%s due an error when calling its classFactory() method") % errMsg
+    msg = QCoreApplication.translate("Python", "%s due to an error when calling its classFactory() method") % errMsg
     showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
     return False
 
@@ -218,7 +217,7 @@ def startPlugin(packageName):
   except:
     del plugins[packageName]
     _unloadPluginModules(packageName)
-    msg = QCoreApplication.translate("Python", "%s due an error when calling its initGui() method" ) % errMsg
+    msg = QCoreApplication.translate("Python", "%s due to an error when calling its initGui() method" ) % errMsg
     showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
     return False
 
@@ -446,6 +445,57 @@ def qgsfunction(args, group, **kwargs):
       QgsExpression.registerFunction(f)
     return f
   return wrapper
+
+#######################
+# SERVER PLUGINS
+#
+# TODO: move into server_utils.py ?
+
+# list of plugin paths. it gets filled in by the QGIS python library
+server_plugin_paths = []
+
+# dictionary of plugins
+server_plugins = {}
+
+# list of active (started) plugins
+server_active_plugins = []
+
+
+# initialize 'serverIface' object
+serverIface = None
+
+def initServerInterface(pointer):
+  from qgis.server import QgsServerInterface
+  from sip import wrapinstance
+  global serverIface
+  serverIface = wrapinstance(pointer, QgsServerInterface)
+
+
+
+def startServerPlugin(packageName):
+  """ initialize the plugin """
+  global server_plugins, server_active_plugins, serverIface
+
+  if packageName in server_active_plugins: return False
+  if packageName not in sys.modules: return False
+
+  package = sys.modules[packageName]
+
+  errMsg = QCoreApplication.translate("Python", "Couldn't load server plugin %s" ) % packageName
+
+  # create an instance of the plugin
+  try:
+    server_plugins[packageName] = package.serverClassFactory(serverIface)
+  except:
+    _unloadPluginModules(packageName)
+    msg = QCoreApplication.translate("Python", "%s due to an error when calling its serverClassFactory() method") % errMsg
+    showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
+    return False
+
+  # add to active plugins
+  server_active_plugins.append(packageName)
+  return True
+
 
 #######################
 # IMPORT wrapper
