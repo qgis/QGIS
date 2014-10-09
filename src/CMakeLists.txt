@@ -17,7 +17,7 @@ IF (WITH_BINDINGS)
 ENDIF (WITH_BINDINGS)
 
 IF (WITH_MAPSERVER)
-  ADD_SUBDIRECTORY(mapserver)  # TODO: enable again once compilation is fixed
+  ADD_SUBDIRECTORY(mapserver) 
 ENDIF (WITH_MAPSERVER)
 
 IF (WITH_CUSTOM_WIDGETS)

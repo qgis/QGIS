@@ -46,6 +46,13 @@ IF(WITH_MAPSERVER)
   SET (MAPSERVER_SKIP_ECW FALSE CACHE BOOL "Determines whether QGIS mapserver should disable ECW (ECW in server apps requires a special license)")
 ENDIF(WITH_MAPSERVER)
 
+
+SET (WITH_SERVER_PLUGINS FALSE CACHE BOOL "Determines whether QGIS mapserver support for python plugins should be built")
+IF(WITH_SERVER_PLUGINS)
+  SET(MAPSERVER_HAVE_PYTHON_PLUGINS TRUE)
+ENDIF(WITH_SERVER_PLUGINS)
+
+
 # Custom widgets
 SET (WITH_CUSTOM_WIDGETS FALSE CACHE BOOL "Determines whether QGIS custom widgets for Qt Designer should be built")
 
@@ -75,6 +82,7 @@ SET (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be b
 IF(WITH_ORACLE)
   SET(HAVE_ORACLE TRUE)
 ENDIF(WITH_ORACLE)
+
 
 # try to configure and build python bindings by default
 SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
