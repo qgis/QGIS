@@ -27,6 +27,12 @@ QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache )
 }
 
 
+QString QgsServerInterfaceImpl::getEnv(const QString& name ) const
+{
+    return getenv( name.toLocal8Bit() );
+}
+
+
 /** Destructor */
 QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
 {

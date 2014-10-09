@@ -49,6 +49,7 @@ public:
   QgsRequestHandler*  requestHandler( ) { return mRequestHandler; }
   void registerFilter( QgsServerFilter *filter, int priority = 0 );
   QgsServerFiltersMap filters( ) { return mFilters; }
+  QString getEnv(const QString& name ) const;
 
 private:
 

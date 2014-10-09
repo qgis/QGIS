@@ -100,7 +100,7 @@ bool QgsServerPlugins::initPlugins(QgsServerInterface *interface)
             {
               atLeastOneEnabled = TRUE;
               mServerPlugins.append( pluginName );
-              QgsMessageLog::logMessage( QString("Server plugin %1 loaded!").arg( pluginName ), "Server", QgsMessageLog::CRITICAL );
+              QgsMessageLog::logMessage( QString("Server plugin %1 loaded!").arg( pluginName ), "Server", QgsMessageLog::INFO );
             } else {
               QgsMessageLog::logMessage( QString("Error loading server plugin %1").arg( pluginName ), "Server", QgsMessageLog::CRITICAL );
             }
