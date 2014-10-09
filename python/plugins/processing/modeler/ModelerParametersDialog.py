@@ -269,6 +269,8 @@ class ModelerParametersDialog(QDialog):
                 item.addItem(self.resolveValueDescription(layer), layer)
         elif isinstance(param, ParameterBoolean):
             item = QComboBox()
+            item.addItem('Yes')
+            item.addItem('No')
             bools = self.getAvailableValuesOfType(ParameterBoolean, None)
             for b in bools:
                 item.addItem(self.resolveValueDescription(b), b)
