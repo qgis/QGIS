@@ -55,54 +55,54 @@ class ProcessingConfig:
     def initialize():
         icon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/alg.png')
         ProcessingConfig.settingIcons['General'] = icon
-        ProcessingConfig.addSetting(Setting('General',
+        ProcessingConfig.addSetting(Setting(ProcessingConfig.tr('General'),
                 ProcessingConfig.SHOW_DEBUG_IN_DIALOG,
-                'Show extra info in Log panel', True))
-        ProcessingConfig.addSetting(Setting('General',
+                ProcessingConfig.tr('Show extra info in Log panel'), True))
+        ProcessingConfig.addSetting(Setting(ProcessingConfig.tr('General'),
                 ProcessingConfig.KEEP_DIALOG_OPEN,
-                'Keep dialog open after running an algorithm', False))
-        ProcessingConfig.addSetting(Setting('General',
+                ProcessingConfig.tr('Keep dialog open after running an algorithm'), False))
+        ProcessingConfig.addSetting(Setting(ProcessingConfig.tr('General'),
                 ProcessingConfig.USE_SELECTED,
-                'Use only selected features', True))
-        ProcessingConfig.addSetting(Setting('General',
+                ProcessingConfig.tr('Use only selected features'), True))
+        ProcessingConfig.addSetting(Setting(ProcessingConfig.tr('General'),
                 ProcessingConfig.USE_FILENAME_AS_LAYER_NAME,
-                'Use filename as layer name', False))
-        ProcessingConfig.addSetting(Setting('General',
+                ProcessingConfig.tr('Use filename as layer name'), False))
+        ProcessingConfig.addSetting(Setting(ProcessingConfig.tr('General'),
                 ProcessingConfig.SHOW_RECENT_ALGORITHMS,
-                'Show recently executed algorithms', True))
-        ProcessingConfig.addSetting(Setting('General',
+                ProcessingConfig.tr('Show recently executed algorithms'), True))
+        ProcessingConfig.addSetting(Setting(ProcessingConfig.tr('General'),
                 ProcessingConfig.OUTPUT_FOLDER,
-                'Output folder', tempFolder()))
-        ProcessingConfig.addSetting(Setting('General',
+                ProcessingConfig.tr('Output folder'), tempFolder()))
+        ProcessingConfig.addSetting(Setting(ProcessingConfig.tr('General'),
                 ProcessingConfig.SHOW_CRS_DEF,
-                'Show layer CRS definition in selection boxes', True))
-        ProcessingConfig.addSetting(Setting('General',
+                ProcessingConfig.tr('Show layer CRS definition in selection boxes'), True))
+        ProcessingConfig.addSetting(Setting(ProcessingConfig.tr('General'),
                 ProcessingConfig.WARN_UNMATCHING_CRS,
-                "Warn before executing if layer CRS's do not match", True))
-        ProcessingConfig.addSetting(Setting('General',
+                ProcessingConfig.tr("Warn before executing if layer CRS's do not match"), True))
+        ProcessingConfig.addSetting(Setting(ProcessingConfig.tr('General'),
                 ProcessingConfig.RASTER_STYLE,
-                'Style for raster layers', ''))
-        ProcessingConfig.addSetting(Setting('General',
+                ProcessingConfig.tr('Style for raster layers'), ''))
+        ProcessingConfig.addSetting(Setting(ProcessingConfig.tr('General'),
                 ProcessingConfig.VECTOR_POINT_STYLE,
-                'Style for point layers', ''))
-        ProcessingConfig.addSetting(Setting('General',
+                ProcessingConfig.tr('Style for point layers'), ''))
+        ProcessingConfig.addSetting(Setting(ProcessingConfig.tr('General'),
                 ProcessingConfig.VECTOR_LINE_STYLE,
-                'Style for line layers', ''))
-        ProcessingConfig.addSetting(Setting('General',
+                ProcessingConfig.tr('Style for line layers'), ''))
+        ProcessingConfig.addSetting(Setting(ProcessingConfig.tr('General'),
                 ProcessingConfig.VECTOR_POLYGON_STYLE,
-                'Style for polygon layers', ''))
-        ProcessingConfig.addSetting(Setting('General',
+                ProcessingConfig.tr('Style for polygon layers'), ''))
+        ProcessingConfig.addSetting(Setting(ProcessingConfig.tr('General'),
                 ProcessingConfig.VECTOR_POLYGON_STYLE,
-                'Style for polygon layers', ''))
-        ProcessingConfig.addSetting(Setting('General',
+                ProcessingConfig.tr('Style for polygon layers'), ''))
+        ProcessingConfig.addSetting(Setting(ProcessingConfig.tr('General'),
                 ProcessingConfig.PRE_EXECUTION_SCRIPT,
-                'Pre-execution script', ''))
-        ProcessingConfig.addSetting(Setting('General',
+                ProcessingConfig.tr('Pre-execution script'), ''))
+        ProcessingConfig.addSetting(Setting(ProcessingConfig.tr('General'),
                 ProcessingConfig.POST_EXECUTION_SCRIPT,
-                'Post-execution script', ''))
-        ProcessingConfig.addSetting(Setting('General',
+                ProcessingConfig.tr('Post-execution script'), ''))
+        ProcessingConfig.addSetting(Setting(ProcessingConfig.tr('General'),
                 ProcessingConfig.RECENT_ALGORITHMS,
-                'Recent algs', '', hidden=True))
+                ProcessingConfig.tr('Recent algs'), '', hidden=True))
 
     @staticmethod
     def setGroupIcon(group, icon):
@@ -110,7 +110,7 @@ class ProcessingConfig:
 
     @staticmethod
     def getGroupIcon(group):
-        if group == 'General':
+        if group == ProcessingConfig.tr('General'):
             return QtGui.QIcon(os.path.dirname(__file__) + '/../images/alg.png'
                                )
         if group in ProcessingConfig.settingIcons:
@@ -162,6 +162,12 @@ class ProcessingConfig:
         if name in ProcessingConfig.settings.keys():
             ProcessingConfig.settings[name].value = value
             ProcessingConfig.settings[name].save()
+
+    @staticmethod
+    def tr(string, context=''):
+        if context == '':
+            context = 'ProcessingConfig'
+        return QCoreApplication.translate(context, string)
 
 
 class Setting:
