@@ -56,5 +56,7 @@
 
 #cmakedefine MAPSERVER_SKIP_ECW
 
+#cmakedefine MAPSERVER_HAVE_PYTHON_PLUGINS
+
 #endif
 
