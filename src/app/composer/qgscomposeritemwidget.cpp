@@ -191,13 +191,6 @@ void QgsComposerItemWidget::showFrameGroup( bool showGroup )
 }
 
 //slots
-void QgsComposerItemWidget::on_mFrameColorButton_clicked()
-{
-  if ( !mItem )
-  {
-    return;
-  }
-}
 
 void QgsComposerItemWidget::on_mFrameColorButton_colorChanged( const QColor& newFrameColor )
 {
@@ -206,10 +199,7 @@ void QgsComposerItemWidget::on_mFrameColorButton_colorChanged( const QColor& new
     return;
   }
   mItem->beginCommand( tr( "Frame color changed" ) );
-  QPen thePen = mItem->pen();
-  thePen.setColor( newFrameColor );
-
-  mItem->setPen( thePen );
+  mItem->setFrameOutlineColor( newFrameColor );
   mItem->update();
   mItem->endCommand();
 }
@@ -486,8 +476,8 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mItemRotationSpinBox->blockSignals( true );
   mExcludeFromPrintsCheckBox->blockSignals( true );
 
-  mBackgroundColorButton->setColor( mItem->brush().color() );
-  mFrameColorButton->setColor( mItem->pen().color() );
+  mBackgroundColorButton->setColor( mItem->backgroundColor() );
+  mFrameColorButton->setColor( mItem->frameOutlineColor() );
   mOutlineWidthSpinBox->setValue( mItem->frameOutlineWidth() );
   mFrameJoinStyleCombo->setPenJoinStyle( mItem->frameJoinStyle() );
   mItemIdLineEdit->setText( mItem->id() );

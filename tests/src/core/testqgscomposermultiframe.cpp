@@ -31,6 +31,7 @@ class TestQgsComposerMultiFrame: public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
+    void addFrame(); //test creating new frame inherits all properties of existing frame
     void frameIsEmpty(); //test if frame is empty works
     void addRemovePage(); //test if page is added and removed for RepeatUntilFinished mode
 
@@ -70,6 +71,49 @@ void TestQgsComposerMultiFrame::init()
 void TestQgsComposerMultiFrame::cleanup()
 {
 
+}
+
+void TestQgsComposerMultiFrame::addFrame()
+{
+  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame* frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+
+  //should not be inherited
+  frame1->setHidePageIfEmpty( true );
+
+  //should be inherited
+  frame1->setHideBackgroundIfEmpty( true );
+  frame1->setFrameOutlineWidth( 5.0 );
+  frame1->setFrameJoinStyle( Qt::RoundJoin );
+  frame1->setFrameEnabled( true );
+  frame1->setFrameOutlineColor( QColor( Qt::red ) );
+  frame1->setBackgroundEnabled( true );
+  frame1->setBackgroundColor( QColor( Qt::green ) );
+  frame1->setBlendMode( QPainter::CompositionMode_ColorBurn );
+  frame1->setTransparency( 50 );
+
+  QgsComposerFrame* frame2 = htmlItem->createNewFrame( frame1, QPointF( 50, 55 ), QSizeF( 70, 120 ) );
+
+  //check frame created in correct place
+  QCOMPARE( frame2->rect().height(), 120.0 );
+  QCOMPARE( frame2->rect().width(), 70.0 );
+  QCOMPARE( frame2->scenePos().x(), 50.0 );
+  QCOMPARE( frame2->scenePos().y(), 55.0 );
+
+  //check frame properties
+  QCOMPARE( frame2->frameOutlineWidth(), frame1->frameOutlineWidth() );
+  QCOMPARE( frame2->frameOutlineColor(), frame1->frameOutlineColor() );
+  QCOMPARE( frame2->frameJoinStyle(), frame1->frameJoinStyle() );
+  QCOMPARE( frame2->hasBackground(), frame1->hasBackground() );
+  QCOMPARE( frame2->backgroundColor(), frame1->backgroundColor() );
+  QCOMPARE( frame2->blendMode(), frame1->blendMode() );
+  QCOMPARE( frame2->transparency(), frame1->transparency() );
+
+  //check non-inherited properties
+  QVERIFY( !frame2->hidePageIfEmpty() );
+
+  mComposition->removeMultiFrame( htmlItem );
+  delete htmlItem;
 }
 
 void TestQgsComposerMultiFrame::frameIsEmpty()

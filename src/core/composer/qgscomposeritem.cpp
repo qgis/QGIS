@@ -422,6 +422,19 @@ void QgsComposerItem::setFrameEnabled( const bool drawFrame )
   emit frameChanged();
 }
 
+void QgsComposerItem::setFrameOutlineColor( const QColor &color )
+{
+  QPen itemPen = pen();
+  if ( itemPen.color() == color )
+  {
+    //no change
+    return;
+  }
+  itemPen.setColor( color );
+  setPen( itemPen );
+  emit frameChanged();
+}
+
 void QgsComposerItem::setFrameOutlineWidth( const double outlineWidth )
 {
   QPen itemPen = pen();

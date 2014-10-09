@@ -73,7 +73,7 @@ class QgsComposerItemWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     void showFrameGroup( bool showGroup );
 
   public slots:
-    void on_mFrameColorButton_clicked();
+
     /** Set the frame color
      * @note added in 1.9
      */

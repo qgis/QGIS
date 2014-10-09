@@ -269,26 +269,47 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @see setFrameEnabled
      * @see frameOutlineWidth
      * @see frameJoinStyle
+     * @see frameOutlineColor
      */
     bool hasFrame() const;
 
     /**Set whether this item has a frame drawn around it or not.
      * @param drawFrame draw frame
-     * @returns nothing
      * @note introduced in 1.8
      * @see hasFrame
      * @see setFrameOutlineWidth
      * @see setFrameJoinStyle
+     * @see setFrameOutlineColor
      */
     void setFrameEnabled( const bool drawFrame );
+    
+    /**Sets frame outline color
+     * @param color new color for outline frame
+     * @note introduced in 2.6
+     * @see frameOutlineColor
+     * @see setFrameEnabled
+     * @see setFrameJoinStyle
+     * @see setFrameOutlineWidth
+     */
+    virtual void setFrameOutlineColor( const QColor& color );
+
+    /**Returns the frame's outline color. Only used if hasFrame is true.
+     * @returns frame outline color
+     * @note introduced in 2.6
+     * @see hasFrame
+     * @see setFrameOutlineColor
+     * @see frameJoinStyle
+     * @see setFrameOutlineColor
+     */
+    QColor frameOutlineColor() const;
 
     /**Sets frame outline width
      * @param outlineWidth new width for outline frame
-     * @returns nothing
      * @note introduced in 2.2
      * @see frameOutlineWidth
      * @see setFrameEnabled
      * @see setFrameJoinStyle
+     * @see setFrameOutlineColor
      */
     virtual void setFrameOutlineWidth( const double outlineWidth );
 
@@ -298,6 +319,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @see hasFrame
      * @see setFrameOutlineWidth
      * @see frameJoinStyle
+     * @see frameOutlineColor
      */
     double frameOutlineWidth() const;
 
@@ -307,16 +329,17 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @see hasFrame
      * @see setFrameJoinStyle
      * @see frameOutlineWidth
+     * @see frameOutlineColor
      */
     Qt::PenJoinStyle frameJoinStyle() const;
 
     /**Sets join style used when drawing the item's frame
      * @param style Join style for outline frame
-     * @returns nothing
      * @note introduced in 2.3
      * @see setFrameEnabled
      * @see frameJoinStyle
      * @see setFrameOutlineWidth
+     * @see setFrameOutlineColor
      */
     void setFrameJoinStyle( const Qt::PenJoinStyle style );
 

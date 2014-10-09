@@ -211,9 +211,10 @@ QgsComposerFrame* QgsComposerMultiFrame::createNewFrame( QgsComposerFrame* curre
   newFrame->setBackgroundEnabled( currentFrame->hasBackground() );
   newFrame->setBlendMode( currentFrame->blendMode() );
   newFrame->setFrameEnabled( currentFrame->hasFrame() );
+  newFrame->setFrameOutlineColor( currentFrame->frameOutlineColor() );
   newFrame->setFrameJoinStyle( currentFrame->frameJoinStyle() );
   newFrame->setFrameOutlineWidth( currentFrame->frameOutlineWidth() );
-  newFrame->setOpacity( currentFrame->opacity() );
+  newFrame->setTransparency( currentFrame->transparency() );
   newFrame->setHideBackgroundIfEmpty( currentFrame->hideBackgroundIfEmpty() );
 
   addFrame( newFrame, false );
