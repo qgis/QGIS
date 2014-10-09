@@ -6594,18 +6594,6 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
         <translation type="unfinished">No instalado</translation>
     </message>
     <message>
-        <source>&lt;p&gt;&lt;b&gt;Description:&lt;/b&gt;%s&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;&lt;b&gt;Created by:&lt;/b&gt;%s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;&lt;b&gt;Version:&lt;/b&gt;%s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h2&gt;No detailed description available for this script&lt;/h2&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6619,6 +6607,18 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Updatable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;b&gt;Description:&lt;/b&gt; %s&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;b&gt;Created by:&lt;/b&gt; %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;b&gt;Version:&lt;/b&gt; %s</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8827,19 +8827,6 @@ Actúa sobre la capa actual en edición</translation>
         <source>Model processed ok. Executed %i algorithms total</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Error in parameter line: %s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error in algorithm name: %s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error in model definition line: %s
-%s</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ModelerAlgorithmProvider</name>
@@ -10508,6 +10495,73 @@ Por favor, cambie esta situación primero, porque el complemento de OSM no sabe 
     </message>
     <message>
         <source>Error in %s. Missing parameter value for parameter %s.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ProcessingConfig</name>
+    <message>
+        <source>General</source>
+        <translation type="unfinished">General</translation>
+    </message>
+    <message>
+        <source>Show extra info in Log panel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keep dialog open after running an algorithm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use only selected features</source>
+        <translation type="unfinished">Usar sólo objetos espaciales seleccionados</translation>
+    </message>
+    <message>
+        <source>Use filename as layer name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show recently executed algorithms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output folder</source>
+        <translation type="unfinished">Carpeta de salida</translation>
+    </message>
+    <message>
+        <source>Show layer CRS definition in selection boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warn before executing if layer CRS&apos;s do not match</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Style for raster layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Style for point layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Style for line layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Style for polygon layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pre-execution script</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Post-execution script</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recent algs</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -38668,6 +38722,10 @@ no se muestran</translation>
         <source>Wrong editing tool, cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Add feature</source>
+        <translation type="unfinished">Añadir objeto espacial</translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolAddIsland</name>
@@ -38802,6 +38860,10 @@ no se muestran</translation>
         <source>Coordinate transform error. Cannot transform the point to the layers coordinate system</source>
         <translation>Error de transformación de coordenadas. No se puede transformar el punto al sistema de coordenadas de las capas.</translation>
     </message>
+    <message>
+        <source>Add part</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolAddRing</name>
@@ -38889,6 +38951,10 @@ no se muestran</translation>
         <source>could not add ring since %1.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Add ring</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolAddVertex</name>
@@ -38923,7 +38989,7 @@ no se muestran</translation>
     <name>QgsMapToolDeletePart</name>
     <message>
         <source>Delete part</source>
-        <translation type="obsolete">Borrar parte</translation>
+        <translation type="unfinished">Borrar parte</translation>
     </message>
     <message>
         <source>This isn&apos;t a multipart geometry.</source>
@@ -39076,6 +39142,10 @@ no se muestran</translation>
         <source>could not add ring since %1.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Fill ring</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolIdentify</name>
@@ -39184,6 +39254,24 @@ no se muestran</translation>
         <source>Show attribute table</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Identify</source>
+        <translation type="unfinished">Identificar</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolIdentifyFeature</name>
+    <message>
+        <source>Identify feature</source>
+        <translation type="unfinished">Identificar objeto espacial</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolMeasureAngle</name>
+    <message>
+        <source>Measure angle</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolMoveFeature</name>
@@ -39199,6 +39287,10 @@ no se muestran</translation>
         <source>Feature moved</source>
         <translation>Objeto espacial movido</translation>
     </message>
+    <message>
+        <source>Move feature</source>
+        <translation type="unfinished">Mover objeto espacial</translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolMoveLabel</name>
@@ -39209,6 +39301,10 @@ no se muestran</translation>
     <message>
         <source>Moved label</source>
         <translation>Etiqueta movida</translation>
+    </message>
+    <message>
+        <source>Move label</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -39222,7 +39318,7 @@ no se muestran</translation>
     <name>QgsMapToolNodeTool</name>
     <message>
         <source>Node tool</source>
-        <translation type="obsolete">Herramienta Nodos</translation>
+        <translation type="unfinished">Herramienta Nodos</translation>
     </message>
     <message>
         <source>Feature was deleted on background.
@@ -39263,6 +39359,13 @@ no se muestran</translation>
     </message>
 </context>
 <context>
+    <name>QgsMapToolPan</name>
+    <message>
+        <source>Pan</source>
+        <translation type="unfinished">Mover</translation>
+    </message>
+</context>
+<context>
     <name>QgsMapToolPinLabels</name>
     <message>
         <source>Label pinned</source>
@@ -39279,6 +39382,10 @@ no se muestran</translation>
     <message>
         <source>Unpinned label</source>
         <translation>Etiqueta desanclada</translation>
+    </message>
+    <message>
+        <source>Pin labels</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -39375,6 +39482,17 @@ no se muestran</translation>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
         <translation type="obsolete">La selección se extiende más allá del sistema de coordenadas de la capa.</translation>
     </message>
+    <message>
+        <source>Select</source>
+        <translation type="unfinished">Seleccionar</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolSelectFeatures</name>
+    <message>
+        <source>Select features</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolShowHideLabels</name>
@@ -39396,6 +39514,10 @@ no se muestran</translation>
     </message>
     <message>
         <source>CRS Exception: selection extends beyond layer&apos;s coordinate system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show/hide labels</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -39484,6 +39606,10 @@ no se muestran</translation>
         <source>An error occured during splitting.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Split features</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolSplitParts</name>
@@ -39535,6 +39661,10 @@ no se muestran</translation>
         <source>An error occured during splitting.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Split parts</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolVertexEdit</name>
@@ -39557,6 +39687,13 @@ no se muestran</translation>
     <message>
         <source>Could not snap segment. Have you set the tolerance in Settings &gt; Snapping Options?</source>
         <translation type="obsolete">No se pudo autoensamblar el segmento. ¿Ha establecido la tolerancia en Configuración &gt; Opciones de autoensamblado?</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolZoom</name>
+    <message>
+        <source>Zoom</source>
+        <translation type="unfinished">Zum</translation>
     </message>
 </context>
 <context>
