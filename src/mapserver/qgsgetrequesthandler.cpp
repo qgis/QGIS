@@ -24,10 +24,9 @@ QgsGetRequestHandler::QgsGetRequestHandler()
 {
 }
 
-QMap<QString, QString> QgsGetRequestHandler::parseInput()
+void QgsGetRequestHandler::parseInput()
 {
   QString queryString;
-  QMap<QString, QString> parameters;
 
   const char* qs = getenv( "QUERY_STRING" );
   if ( qs )
@@ -38,9 +37,8 @@ QMap<QString, QString> QgsGetRequestHandler::parseInput()
   else
   {
     QgsDebugMsg( "error, no query string found" );
-    return parameters; //no query string? something must be wrong...
+    return; //no query string? something must be wrong...
   }
 
-  requestStringToParameterMap( queryString, parameters );
-  return parameters;
+  requestStringToParameterMap( queryString, mParameterMap );
 }
