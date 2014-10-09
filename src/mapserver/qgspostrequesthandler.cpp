@@ -27,10 +27,9 @@ QgsPostRequestHandler::~QgsPostRequestHandler()
 {
 }
 
-QMap<QString, QString> QgsPostRequestHandler::parseInput()
+void QgsPostRequestHandler::parseInput()
 {
   QgsDebugMsg( "QgsPostRequestHandler::parseInput" );
-  QMap<QString, QString> parameters;
   QString inputString = readPostBody();
   QgsDebugMsg( inputString );
 
@@ -38,7 +37,7 @@ QMap<QString, QString> QgsPostRequestHandler::parseInput()
   QString errorMsg;
   if ( !doc.setContent( inputString, true, &errorMsg ) )
   {
-    requestStringToParameterMap( inputString, parameters );
+    requestStringToParameterMap( inputString, mParameterMap);
   }
   else
   {
@@ -52,19 +51,17 @@ QMap<QString, QString> QgsPostRequestHandler::parseInput()
     else
     {
       QgsDebugMsg( "error, no query string found but a QDomDocument" );
-      return parameters; //no query string? something must be wrong...
+      return; //no query string? something must be wrong...
     }
 
-    requestStringToParameterMap( queryString, parameters );
+    requestStringToParameterMap( queryString, mParameterMap);
 
     QDomElement docElem = doc.documentElement();
     if ( docElem.hasAttribute( "version" ) )
-      parameters.insert( "VERSION", docElem.attribute( "version" ) );
+      mParameterMap.insert( "VERSION", docElem.attribute( "version" ) );
     if ( docElem.hasAttribute( "service" ) )
-      parameters.insert( "SERVICE", docElem.attribute( "service" ) );
-    parameters.insert( "REQUEST", docElem.tagName() );
-    parameters.insert( "REQUEST_BODY", inputString );
+      mParameterMap.insert( "SERVICE", docElem.attribute( "service" ) );
+    mParameterMap.insert( "REQUEST", docElem.tagName() );
+    mParameterMap.insert( "REQUEST_BODY", inputString );
   }
-
-  return parameters;
 }

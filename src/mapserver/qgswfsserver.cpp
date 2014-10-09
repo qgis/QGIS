@@ -64,7 +64,7 @@ static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 static const QString OGC_NAMESPACE = "http://www.opengis.net/ogc";
 static const QString QGS_NAMESPACE = "http://www.qgis.org/gml";
 
-QgsWFSServer::QgsWFSServer( const QString& configFilePath, QMap<QString, QString> parameters, QgsWFSProjectParser* cp,
+QgsWFSServer::QgsWFSServer(const QString& configFilePath, QMap<QString, QString> &parameters, QgsWFSProjectParser* cp,
                             QgsRequestHandler* rh ): QgsOWSServer( configFilePath, parameters, rh ), mConfigParser( cp )
 {
 }
@@ -90,7 +90,7 @@ void QgsWFSServer::executeRequest()
   {
     //do some error handling
     QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting..." );
-    mRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
+    mRequestHandler->setServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
     return;
   }
 
@@ -103,11 +103,11 @@ void QgsWFSServer::executeRequest()
     }
     catch ( QgsMapServiceException& ex )
     {
-      mRequestHandler->sendServiceException( ex );
+      mRequestHandler->setServiceException( ex );
       return;
     }
-    QgsDebugMsg( "sending GetCapabilities response" );
-    mRequestHandler->sendGetCapabilitiesResponse( capabilitiesDocument );
+    QgsDebugMsg( "seting GetCapabilities response" );
+    mRequestHandler->setGetCapabilitiesResponse( capabilitiesDocument );
     return;
   }
   else if ( request.compare( "DescribeFeatureType", Qt::CaseInsensitive ) == 0 )
@@ -119,11 +119,11 @@ void QgsWFSServer::executeRequest()
     }
     catch ( QgsMapServiceException& ex )
     {
-      mRequestHandler->sendServiceException( ex );
+      mRequestHandler->setServiceException( ex );
       return;
     }
-    QgsDebugMsg( "sending GetCapabilities response" );
-    mRequestHandler->sendGetCapabilitiesResponse( describeDocument );
+    QgsDebugMsg( "seting GetCapabilities response" );
+    mRequestHandler->setGetCapabilitiesResponse( describeDocument );
     return;
   }
   else if ( request.compare( "GetFeature", Qt::CaseInsensitive ) == 0 )
@@ -136,7 +136,7 @@ void QgsWFSServer::executeRequest()
     }
     catch ( QgsMapServiceException& ex )
     {
-      mRequestHandler->sendServiceException( ex );
+      mRequestHandler->setServiceException( ex );
     }
 
     return;
@@ -150,11 +150,11 @@ void QgsWFSServer::executeRequest()
     }
     catch ( QgsMapServiceException& ex )
     {
-      mRequestHandler->sendServiceException( ex );
+      mRequestHandler->setServiceException( ex );
       return;
     }
-    QgsDebugMsg( "sending Transaction response" );
-    mRequestHandler->sendGetCapabilitiesResponse( transactionDocument );
+    QgsDebugMsg( "seting Transaction response" );
+    mRequestHandler->setGetCapabilitiesResponse( transactionDocument );
     return;
   }
 }
@@ -533,7 +533,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               if ( featureCounter == 0 )
                 startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-              sendGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+              setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
 
               fid = "";
               ++featCounter;
@@ -570,7 +570,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               if ( featureCounter == 0 )
                 startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-              sendGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+              setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
               ++featCounter;
               ++featureCounter;
             }
@@ -596,7 +596,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
                   if ( featureCounter == 0 )
                     startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-                  sendGetFeature( request, format, &feature, featureCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+                  setGetFeature( request, format, &feature, featureCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
                   ++featureCounter;
                   ++featCounter;
                 }
@@ -611,7 +611,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             if ( featureCounter == 0 )
               startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-            sendGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+            setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
             ++featCounter;
             ++featureCounter;
           }
@@ -851,7 +851,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           if ( featureCounter == 0 )
             startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-          sendGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+          setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
           ++featCounter;
           ++featureCounter;
         }
@@ -897,7 +897,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               if ( featureCounter == 0 )
                 startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-              sendGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+              setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
               ++featCounter;
               ++featureCounter;
             }
@@ -934,7 +934,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             if ( featureCounter == 0 )
               startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-            sendGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+            setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
 
             fid = "";
             ++featCounter;
@@ -971,7 +971,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             if ( featureCounter == 0 )
               startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-            sendGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+            setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
             ++featCounter;
             ++featureCounter;
           }
@@ -1016,7 +1016,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
                 if ( featureCounter == 0 )
                   startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-                sendGetFeature( request, format, &feature, featureCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+                setGetFeature( request, format, &feature, featureCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
                 ++featureCounter;
                 ++featCounter;
               }
@@ -1053,7 +1053,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           if ( featureCounter == 0 )
             startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-          sendGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+          setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
           ++featCounter;
           ++featureCounter;
         }
@@ -1200,12 +1200,12 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
       }
     }
     result = doc.toByteArray();
-    request.sendGetFeatureResponse( &result );
+    request.setGetFeatureResponse( &result );
   }
   fcString = "";
 }
 
-void QgsWFSServer::sendGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, int prec, QgsCoordinateReferenceSystem& crs, QgsAttributeList attrIndexes, QSet<QString> excludedAttributes ) /*const*/
+void QgsWFSServer::setGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, int prec, QgsCoordinateReferenceSystem& crs, QgsAttributeList attrIndexes, QSet<QString> excludedAttributes ) /*const*/
 {
   if ( !feat->isValid() )
     return;
@@ -1222,7 +1222,7 @@ void QgsWFSServer::sendGetFeature( QgsRequestHandler& request, const QString& fo
     fcString += "\n";
 
     result = fcString.toUtf8();
-    request.sendGetFeatureResponse( &result );
+    request.setGetFeatureResponse( &result );
     fcString = "";
   }
   else
@@ -1241,7 +1241,7 @@ void QgsWFSServer::sendGetFeature( QgsRequestHandler& request, const QString& fo
     }
 
     result = gmlDoc.toByteArray();
-    request.sendGetFeatureResponse( &result );
+    request.setGetFeatureResponse( &result );
     gmlDoc.removeChild( featureElement );
   }
 }

@@ -28,7 +28,7 @@ class QgsPostRequestHandler: public QgsHttpRequestHandler
     ~QgsPostRequestHandler();
 
     /**Parses the input and creates a request neutral Parameter/Value map*/
-    QMap<QString, QString> parseInput();
+    void parseInput();
 };
 
 #endif // QGSPOSTREQUESTHANDLER_H

@@ -37,9 +37,8 @@ QgsSOAPRequestHandler::~QgsSOAPRequestHandler()
 
 }
 
-QMap<QString, QString> QgsSOAPRequestHandler::parseInput()
+void QgsSOAPRequestHandler::parseInput()
 {
-  QMap<QString, QString> result;
   QString inputString = readPostBody();
 
   //QgsDebugMsg("input string is: " + inputString)
@@ -54,7 +53,7 @@ QMap<QString, QString> QgsSOAPRequestHandler::parseInput()
     QgsDebugMsg( "the xml string was:" );
     QgsDebugMsg( inputString );
     throw QgsMapServiceException( "InvalidXML", "XML error: " + errorMsg );
-    return result;
+    return;
   }
 
   // if xml reading was successfull, save the inputXML in a file
@@ -67,7 +66,7 @@ QMap<QString, QString> QgsSOAPRequestHandler::parseInput()
   {
     QgsDebugMsg( "Envelope element not found" );
     throw QgsMapServiceException( "SOAPError", "Element <Envelope> not found" );
-    return result;
+    return;
   }
 
   QDomNodeList bodyNodeList = envelopeNodeList.item( 0 ).toElement().elementsByTagNameNS( "http://schemas.xmlsoap.org/soap/envelope/", "Body" );
@@ -75,7 +74,7 @@ QMap<QString, QString> QgsSOAPRequestHandler::parseInput()
   {
     QgsDebugMsg( "body node not found" );
     throw QgsMapServiceException( "SOAPError", "Element <Body> not found" );
-    return result;
+    return;
   }
   QDomElement bodyElement = bodyNodeList.item( 0 ).toElement();
   QDomElement firstChildElement = bodyElement.firstChild().toElement();
@@ -84,27 +83,27 @@ QMap<QString, QString> QgsSOAPRequestHandler::parseInput()
   if ( serviceString == "MS" )
   {
     QgsDebugMsg( "service = MS " );
-    result.insert( "SERVICE", "MS" );
+    mParameterMap.insert( "SERVICE", "MS" );
     mService = "MS";
   }
   else if ( serviceString == "WMS" )
   {
-    result.insert( "SERVICE", "WMS" );
+    mParameterMap.insert( "SERVICE", "WMS" );
     mService = "WMS";
   }
   else if ( serviceString == "MDS" )
   {
-    result.insert( "SERVICE", "MDS" );
+    mParameterMap.insert( "SERVICE", "MDS" );
     mService = "MDS";
   }
   else if ( serviceString == "MAS" )
   {
-    result.insert( "SERVICE", "MAS" );
+    mParameterMap.insert( "SERVICE", "MAS" );
     mService = "MAS";
   }
   else
   {
-    result.insert( "SERVICE", "DISCOVERY" );
+    mParameterMap.insert( "SERVICE", "DISCOVERY" );
     mService = "DISCOVERY";
   }
 
@@ -113,31 +112,31 @@ QMap<QString, QString> QgsSOAPRequestHandler::parseInput()
   //if(firstChildElement.localName().compare("getCapabilities", Qt::CaseInsensitive) == 0)
   if ( firstChildElement.localName() == "GetCapabilities" || firstChildElement.localName() == "getCapabilities" )
   {
-    result.insert( "REQUEST", "GetCapabilities" );
+    mParameterMap.insert( "REQUEST", "GetCapabilities" );
   }
   //GetMap request
   //else if(firstChildElement.tagName().compare("getMap",Qt::CaseInsensitive) == 0)
   else if ( firstChildElement.localName() == "GetMap" || firstChildElement.localName() == "getMap" )
   {
-    result.insert( "REQUEST", "GetMap" );
-    parseGetMapElement( result, firstChildElement );
+    mParameterMap.insert( "REQUEST", "GetMap" );
+    parseGetMapElement( mParameterMap, firstChildElement );
   }
   //GetDiagram request
   //else if(firstChildElement.tagName().compare("getDiagram", Qt::CaseInsensitive) == 0)
   else if ( firstChildElement.localName() == "GetDiagram" )
   {
-    result.insert( "REQUEST", "GetDiagram" );
-    parseGetMapElement( result, firstChildElement ); //reuse the method for GetMap
+    mParameterMap.insert( "REQUEST", "GetDiagram" );
+    parseGetMapElement( mParameterMap, firstChildElement ); //reuse the method for GetMap
   }
   //GetFeatureInfo request
   else if ( firstChildElement.localName() == "GetFeatureInfo" )
   {
-    result.insert( "REQUEST", "GetFeatureInfo" );
-    parseGetFeatureInfoElement( result, firstChildElement );
+    mParameterMap.insert( "REQUEST", "GetFeatureInfo" );
+    parseGetFeatureInfoElement( mParameterMap, firstChildElement );
   }
 
   //set mFormat
-  QString formatString = result.value( "FORMAT" );
+  QString formatString = mParameterMap.value( "FORMAT" );
   if ( !formatString.isEmpty() )
   {
     //remove the image/ in front of the format
@@ -160,35 +159,33 @@ QMap<QString, QString> QgsSOAPRequestHandler::parseInput()
 
     mFormat = formatString;
   }
-
-  return result;
 }
 
-void QgsSOAPRequestHandler::sendGetMapResponse( const QString& service, QImage* img ) const
+void QgsSOAPRequestHandler::setGetMapResponse( const QString& service, QImage* img )
 {
-  QgsMapServiceException ex( "Send error", "Error, could not send Image" );
+  QgsMapServiceException ex( "set error", "Error, could not set Image" );
   if ( service == "WMS" )
   {
-    if ( sendUrlToFile( img ) != 0 )
+    if ( setUrlToFile( img ) != 0 )
     {
-      sendServiceException( ex );
+      setServiceException( ex );
     }
   }
   else if ( service == "MAS" || service == "MS" || service == "MDS" )
   {
 
-    if ( sendSOAPWithAttachments( img ) != 0 )
+    if ( setSOAPWithAttachments( img ) != 0 )
     {
-      sendServiceException( ex );
+      setServiceException( ex );
     }
   }
   else
   {
-    sendServiceException( ex );
+    setServiceException( ex );
   }
 }
 
-void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc ) const
+void QgsSOAPRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc )
 {
   //Parse the QDomDocument Document and create a SOAP response
   QDomElement DocCapabilitiesElement = doc.firstChildElement();
@@ -373,12 +370,12 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
       }
 
       QByteArray ba = soapResponseDoc.toByteArray();
-      sendHttpResponse( &ba, "text/xml" );
+      setHttpResponse( &ba, "text/xml" );
     }
   }
 }
 
-void QgsSOAPRequestHandler::sendGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) const
+void QgsSOAPRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat )
 {
   Q_UNUSED( infoFormat );
   QDomDocument featureInfoResponseDoc;
@@ -395,12 +392,12 @@ void QgsSOAPRequestHandler::sendGetFeatureInfoResponse( const QDomDocument& info
 
   soapBodyElement.appendChild( infoDoc.documentElement() );
 
-  //now send message
+  //now set message
   QByteArray ba = featureInfoResponseDoc.toByteArray();
-  sendHttpResponse( &ba, "text/xml" );
+  setHttpResponse( &ba, "text/xml" );
 }
 
-void QgsSOAPRequestHandler::sendGetStyleResponse( const QDomDocument& infoDoc ) const
+void QgsSOAPRequestHandler::setGetStyleResponse( const QDomDocument& infoDoc )
 {
   QDomDocument featureInfoResponseDoc;
 
@@ -416,18 +413,18 @@ void QgsSOAPRequestHandler::sendGetStyleResponse( const QDomDocument& infoDoc ) 
 
   soapBodyElement.appendChild( infoDoc.documentElement() );
 
-  //now send message
+  //now set message
   QByteArray ba = featureInfoResponseDoc.toByteArray();
-  sendHttpResponse( &ba, "text/xml" );
+  setHttpResponse( &ba, "text/xml" );
 }
 
-void QgsSOAPRequestHandler::sendGetPrintResponse( QByteArray* ba ) const
+void QgsSOAPRequestHandler::setGetPrintResponse( QByteArray* ba ) const
 {
   Q_UNUSED( ba );
   //soon...
 }
 
-void QgsSOAPRequestHandler::sendServiceException( const QgsMapServiceException& ex ) const
+void QgsSOAPRequestHandler::setServiceException( const QgsMapServiceException& ex )
 {
   //create response document
   QDomDocument soapResponseDoc;
@@ -449,7 +446,7 @@ void QgsSOAPRequestHandler::sendServiceException( const QgsMapServiceException& 
   msExceptionsElement.appendChild( msExceptionMessage );
 
   QByteArray ba = soapResponseDoc.toByteArray();
-  sendHttpResponse( &ba, "text/xml" );
+  setHttpResponse( &ba, "text/xml" );
 }
 
 int QgsSOAPRequestHandler::parseGetMapElement( QMap<QString, QString>& parameterMap, const QDomElement& getMapElement ) const
@@ -656,7 +653,7 @@ int QgsSOAPRequestHandler::parseOutputAttributesElement( QMap<QString, QString>&
   return 0;
 }
 
-int QgsSOAPRequestHandler::sendSOAPWithAttachments( QImage* img ) const
+int QgsSOAPRequestHandler::setSOAPWithAttachments( QImage* img )
 {
   QgsDebugMsg( "Entering." );
   //create response xml document
@@ -680,37 +677,39 @@ int QgsSOAPRequestHandler::sendSOAPWithAttachments( QImage* img ) const
   img->save( &buffer, mFormat.toLocal8Bit().data(), -1 ); // writes image into ba
 
   QByteArray xmlByteArray = xmlResponse.toString().toLocal8Bit();
-  printf( "MIME-Version: 1.0\n" );
-  printf( "Content-Type: Multipart/Related; boundary=\"MIME_boundary\"; type=\"text/xml\"; start=\"<xml@mapservice>\"\n" );
-  printf( "\n" );
-  printf( "--MIME_boundary\r\n" );
-  printf( "Content-Type: text/xml\n" );
-  printf( "Content-ID: <xml@mapservice>\n" );
-  printf( "\n" );
-  printf( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
-  fwrite( xmlByteArray.data(), xmlByteArray.size(), 1, FCGI_stdout );
-  printf( "\n" );
-  printf( "\r\n" );
-  printf( "--MIME_boundary\r\n" );
+
+  // Set headers
+  setHeader( "MIME-Version", "1.0" );
+  setHeader( "Content-Type", "Multipart/Related; boundary=\"MIME_boundary\"; type=\"text/xml\"; start=\"<xml@mapservice>\"" );
+  // Start body
+  appendBody( "--MIME_boundary\r\n" );
+  appendBody( "Content-Type: text/xml\n" );
+  appendBody( "Content-ID: <xml@mapservice>\n" );
+  appendBody( "\n" );
+  appendBody( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
+  appendBody( xmlByteArray );
+  appendBody( "\n" );
+  appendBody( "\r\n" );
+  appendBody( "--MIME_boundary\r\n" );
   if ( mFormat == "JPG" )
   {
-    printf( "Content-Type: image/jpg\n" );
+    appendBody( "Content-Type: image/jpg\n" );
   }
   else if ( mFormat == "PNG" )
   {
-    printf( "Content-Type: image/png\n" );
+    appendBody( "Content-Type: image/png\n" );
   }
-  printf( "Content-Transfer-Encoding: binary\n" );
-  printf( "Content-ID: <image@mapservice>\n" );
-  printf( "\n" );
-  fwrite( ba.data(), ba.size(), 1, FCGI_stdout );
-  printf( "\r\n" );
-  printf( "--MIME_boundary\r\n" );
+  appendBody( "Content-Transfer-Encoding: binary\n" );
+  appendBody( "Content-ID: <image@mapservice>\n" );
+  appendBody( "\n" );
+  appendBody( ba );
+  appendBody( "\r\n" );
+  appendBody( "--MIME_boundary\r\n" );
 
   return 0;
 }
 
-int QgsSOAPRequestHandler::sendUrlToFile( QImage* img ) const
+int QgsSOAPRequestHandler::setUrlToFile( QImage* img )
 {
   QString uri;
   QFile theFile;
@@ -795,7 +794,7 @@ int QgsSOAPRequestHandler::sendUrlToFile( QImage* img ) const
   bodyElement.appendChild( getMapResponseElement );
 
   QByteArray xmlByteArray = xmlResponse.toByteArray();
-  sendHttpResponse( &xmlByteArray, "text/xml" );
+  setHttpResponse( &xmlByteArray, "text/xml" );
   return 0;
 }
 
