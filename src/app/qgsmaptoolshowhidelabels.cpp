@@ -27,8 +27,10 @@
 
 #include <QMouseEvent>
 
-QgsMapToolShowHideLabels::QgsMapToolShowHideLabels( QgsMapCanvas* canvas ): QgsMapToolLabel( canvas )
+QgsMapToolShowHideLabels::QgsMapToolShowHideLabels( QgsMapCanvas* canvas )
+    : QgsMapToolLabel( canvas )
 {
+  mToolName = tr( "Show/hide labels" );
   mRubberBand = 0;
 }
 

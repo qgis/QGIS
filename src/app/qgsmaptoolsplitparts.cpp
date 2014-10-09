@@ -22,9 +22,10 @@
 
 #include <QMouseEvent>
 
-QgsMapToolSplitParts::QgsMapToolSplitParts( QgsMapCanvas* canvas ): QgsMapToolCapture( canvas, QgsMapToolCapture::CaptureLine )
+QgsMapToolSplitParts::QgsMapToolSplitParts( QgsMapCanvas* canvas )
+    : QgsMapToolCapture( canvas, QgsMapToolCapture::CaptureLine )
 {
-
+  mToolName = tr( "Split parts" );
 }
 
 QgsMapToolSplitParts::~QgsMapToolSplitParts()

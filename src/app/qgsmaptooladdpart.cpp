@@ -25,6 +25,7 @@
 QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas* canvas )
     : QgsMapToolCapture( canvas )
 {
+  mToolName = tr( "Add part" );
 }
 
 QgsMapToolAddPart::~QgsMapToolAddPart()

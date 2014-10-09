@@ -24,8 +24,10 @@
 #include <QMouseEvent>
 
 QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas ), mRubberBand( 0 )
+    : QgsMapToolEdit( canvas )
+    , mRubberBand( 0 )
 {
+  mToolName = tr( "Delete part" );
 }
 
 QgsMapToolDeletePart::~QgsMapToolDeletePart()

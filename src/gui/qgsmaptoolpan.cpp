@@ -23,8 +23,10 @@
 
 
 QgsMapToolPan::QgsMapToolPan( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas ), mDragging( false )
+    : QgsMapTool( canvas )
+    , mDragging( false )
 {
+  mToolName = tr( "Pan" );
   // set cursor
   QBitmap panBmp = QBitmap::fromData( QSize( 16, 16 ), pan_bits );
   QBitmap panBmpMask = QBitmap::fromData( QSize( 16, 16 ), pan_mask_bits );

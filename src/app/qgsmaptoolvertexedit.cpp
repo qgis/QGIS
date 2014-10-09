@@ -30,7 +30,8 @@
 #include <QSettings>
 #include <QPixmap>
 
-QgsMapToolVertexEdit::QgsMapToolVertexEdit( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas )
+QgsMapToolVertexEdit::QgsMapToolVertexEdit( QgsMapCanvas* canvas )
+    : QgsMapToolEdit( canvas )
 {
 
 }

@@ -25,9 +25,10 @@
 
 #include <limits>
 
-QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas* canvas ): QgsMapToolCapture( canvas, QgsMapToolCapture::CapturePolygon )
+QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas* canvas )
+    : QgsMapToolCapture( canvas, QgsMapToolCapture::CapturePolygon )
 {
-
+  mToolName = tr( "Fill ring" );
 }
 
 QgsMapToolFillRing::~QgsMapToolFillRing()

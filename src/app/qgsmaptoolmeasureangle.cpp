@@ -25,8 +25,12 @@
 #include <QSettings>
 #include <cmath>
 
-QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas* canvas ): QgsMapTool( canvas ), mRubberBand( 0 ), mResultDisplay( 0 )
+QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas* canvas )
+    : QgsMapTool( canvas )
+    , mRubberBand( 0 )
+    , mResultDisplay( 0 )
 {
+  mToolName = tr( "Measure angle" );
   mSnapper.setMapCanvas( canvas );
 
   connect( canvas, SIGNAL( destinationCrsChanged() ),

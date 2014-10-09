@@ -30,15 +30,17 @@
 #include <QMouseEvent>
 #include <QSettings>
 
-QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas ): QgsMapToolCapture( canvas )
+QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas )
+    : QgsMapToolCapture( canvas )
 {
+  mToolName = tr( "Add feature" );
 }
 
 QgsMapToolAddFeature::~QgsMapToolAddFeature()
 {
 }
 
-bool QgsMapToolAddFeature::addFeature(QgsVectorLayer *vlayer, QgsFeature *f, bool showModal )
+bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bool showModal )
 {
   QgsFeatureAction action( tr( "add feature" ), *f, vlayer, -1, -1, this );
   return action.addFeature( QgsAttributeMap(), showModal );

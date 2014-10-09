@@ -24,9 +24,11 @@
 #include <QMouseEvent>
 #include <QSettings>
 #include <limits>
-QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), mRubberBand( 0 )
+QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas* canvas )
+    : QgsMapToolEdit( canvas )
+    , mRubberBand( 0 )
 {
-
+  mToolName = tr( "Move feature" );
 }
 
 QgsMapToolMoveFeature::~QgsMapToolMoveFeature()

@@ -25,7 +25,11 @@
 #include "qgsdiagramrendererv2.h"
 #include <QMouseEvent>
 
-QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas* canvas ): QgsMapTool( canvas ), mLabelRubberBand( 0 ), mFeatureRubberBand( 0 ), mFixPointRubberBand( 0 )
+QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas* canvas )
+    : QgsMapTool( canvas )
+    , mLabelRubberBand( 0 )
+    , mFeatureRubberBand( 0 )
+    , mFixPointRubberBand( 0 )
     , mCurrentLayer( 0 )
 {
 }

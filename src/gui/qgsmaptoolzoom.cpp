@@ -28,8 +28,12 @@
 
 
 QgsMapToolZoom::QgsMapToolZoom( QgsMapCanvas* canvas, bool zoomOut )
-    : QgsMapTool( canvas ), mZoomOut( zoomOut ), mDragging( false ), mRubberBand( 0 )
+    : QgsMapTool( canvas )
+    , mZoomOut( zoomOut )
+    , mDragging( false )
+    , mRubberBand( 0 )
 {
+  mToolName = tr( "Zoom" );
   // set the cursor
   QPixmap myZoomQPixmap = QPixmap(( const char ** )( zoomOut ? zoom_out : zoom_in ) );
   mCursor = QCursor( myZoomQPixmap, 7, 7 );

@@ -28,8 +28,10 @@
 #include <qgslogger.h>
 #include <QMouseEvent>
 
-QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas* canvas ): QgsMapToolLabel( canvas )
+QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas* canvas )
+    : QgsMapToolLabel( canvas )
 {
+  mToolName = tr( "Pin labels" );
   mRubberBand = 0;
   mShowPinned = false;
 

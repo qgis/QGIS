@@ -40,6 +40,7 @@ QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas )
     , mIsPoint( false )
     , mDeselectOnRelease( -1 )
 {
+  mToolName =  tr( "Node tool" );
 }
 
 QgsMapToolNodeTool::~QgsMapToolNodeTool()

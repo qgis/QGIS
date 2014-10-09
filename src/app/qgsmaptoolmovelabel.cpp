@@ -22,8 +22,10 @@
 #include "qgsvectorlayer.h"
 #include <QMouseEvent>
 
-QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas* canvas ): QgsMapToolLabel( canvas )
+QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas* canvas )
+    : QgsMapToolLabel( canvas )
 {
+  mToolName = tr( "Move label" );
 }
 
 QgsMapToolMoveLabel::~QgsMapToolMoveLabel()
