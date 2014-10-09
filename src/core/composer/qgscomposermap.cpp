@@ -133,7 +133,7 @@ void QgsComposerMap::init()
 
 void QgsComposerMap::updateToolTip()
 {
-    setToolTip( tr( "Map %1" ).arg( mId ) );
+  setToolTip( tr( "Map %1" ).arg( mId ) );
 }
 
 void QgsComposerMap::adjustExtentToItemShape( double itemWidth, double itemHeight, QgsRectangle& extent ) const
