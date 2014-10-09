@@ -37,6 +37,12 @@
   <layout class="QGridLayout" name="gridLayout_4">
    <item row="0" column="0">
     <widget class="QScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -45,8 +51,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>412</width>
-        <height>587</height>
+        <width>432</width>
+        <height>581</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -441,11 +447,13 @@
   <tabstop>mMultipolygonRadioButton</tabstop>
   <tabstop>leSRID</tabstop>
   <tabstop>pbnFindSRID</tabstop>
+  <tabstop>checkBoxPrimaryKey</tabstop>
   <tabstop>mNameEdit</tabstop>
   <tabstop>mTypeBox</tabstop>
+  <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mAttributeView</tabstop>
   <tabstop>mRemoveAttributeButton</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>scrollArea</tabstop>
  </tabstops>
  <resources/>
  <connections>
