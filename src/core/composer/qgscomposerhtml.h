@@ -257,6 +257,9 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 
     /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions */
     void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer );
+
+    /**calculates the max width of frames in the html multiframe*/
+    double maxFrameWidth() const;
 };
 
 #endif // QGSCOMPOSERHTML_H

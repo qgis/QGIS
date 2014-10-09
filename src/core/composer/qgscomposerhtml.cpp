@@ -185,7 +185,7 @@ void QgsComposerHtml::loadHtml()
   mLoaded = false;
 
   //reset page size. otherwise viewport size increases but never decreases again
-  mWebPage->setViewportSize( QSize( 0, 0 ) );
+  mWebPage->setViewportSize( QSize( maxFrameWidth() * mHtmlUnitsToMM, 0 ) );
 
   //set html, using the specified url as base if in Url mode
   mWebPage->mainFrame()->setHtml( loadedHtml, mContentMode == QgsComposerHtml::Url ? QUrl( mActualFetchedUrl ) : QUrl() );
@@ -220,21 +220,28 @@ void QgsComposerHtml::frameLoaded( bool ok )
   mLoaded = true;
 }
 
+double QgsComposerHtml::maxFrameWidth() const
+{
+  double maxWidth = 0;
+  QList<QgsComposerFrame*>::const_iterator frameIt = mFrameItems.constBegin();
+  for ( ; frameIt != mFrameItems.constEnd(); ++frameIt )
+  {
+    maxWidth = qMax( maxWidth, ( *frameIt )->boundingRect().width() );
+  }
+
+  return maxWidth;
+}
+
 void QgsComposerHtml::recalculateFrameSizes()
 {
-  if ( frameCount() < 1 )  return;
+  if ( frameCount() < 1 ) return;
 
   QSize contentsSize = mWebPage->mainFrame()->contentsSize();
 
   //find maximum frame width
-  double maxFrameWidth = 0;
-  QList<QgsComposerFrame*>::const_iterator frameIt = mFrameItems.constBegin();
-  for ( ; frameIt != mFrameItems.constEnd(); ++frameIt )
-  {
-    maxFrameWidth = qMax( maxFrameWidth, ( *frameIt )->boundingRect().width() );
-  }
+  double maxWidth = maxFrameWidth();
   //set content width to match maximum frame width
-  contentsSize.setWidth( maxFrameWidth * mHtmlUnitsToMM );
+  contentsSize.setWidth( maxWidth * mHtmlUnitsToMM );
 
   mWebPage->setViewportSize( contentsSize );
   mSize.setWidth( contentsSize.width() / mHtmlUnitsToMM );
