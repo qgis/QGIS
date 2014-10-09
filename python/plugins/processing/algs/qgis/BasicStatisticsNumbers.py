@@ -116,8 +116,8 @@ class BasicStatisticsNumbers(GeoAlgorithm):
                     if value > maxValue:
                         maxValue = value
 
-            values.append(value)
-            sumValue += value
+                values.append(value)
+                sumValue += value
 
             current += 1
             progress.setPercentage(int(current * total))
