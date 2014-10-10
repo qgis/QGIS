@@ -324,9 +324,9 @@ int main( int argc, char * argv[] )
   // Create the interface
   QgsServerInterfaceImpl serverIface( &capabilitiesCache );
   // Init plugins
-  if (! QgsServerPlugins::initPlugins( &serverIface ) )
+  if ( ! QgsServerPlugins::initPlugins( &serverIface ) )
   {
-      QgsMessageLog::logMessage( "No server python plugins are available", "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "No server python plugins are available", "Server", QgsMessageLog::INFO );
   }
   else
   {
@@ -366,9 +366,8 @@ int main( int argc, char * argv[] )
     serverIface.setRequestHandler( theRequestHandler.data() );
     // Iterate filters and call their requestReady() method
     QgsServerFiltersMap::const_iterator filtersIterator;
-    for( filtersIterator = pluginFilters.constBegin(); filtersIterator != pluginFilters.constEnd(); ++filtersIterator)
+    for ( filtersIterator = pluginFilters.constBegin(); filtersIterator != pluginFilters.constEnd(); ++filtersIterator )
     {
-      QgsMessageLog::logMessage( QString("Calling filters priority %1").arg( filtersIterator.key() ), "Server", QgsMessageLog::INFO );
       filtersIterator.value()->requestReady();
     }
 #endif
@@ -432,9 +431,11 @@ int main( int argc, char * argv[] )
     } // end if not exception raised
 
 #ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
-    // Call responseReady plugin filters
-    for(filtersIterator = pluginFilters.constBegin(); filtersIterator != pluginFilters.constEnd(); ++filtersIterator)
+    // Call responseReady plugin filters in reverse order
+    filtersIterator = pluginFilters.constEnd();
+    while ( filtersIterator != pluginFilters.constBegin() )
     {
+      --filtersIterator;
       filtersIterator.value()->responseReady();
     }
 #endif
