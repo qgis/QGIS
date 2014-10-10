@@ -351,49 +351,51 @@ int main( int argc, char * argv[] )
     QString serviceString = theRequestHandler->parameter( "SERVICE" );
 
     // Enter core services main switch
-    if ( !theRequestHandler->exceptionRaised() ) {
-        if ( serviceString == "WCS")
-          {
-            QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration( configFilePath );
-            if ( !p )
-              {
-                theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
-              }
-            else {
-                QgsWCSServer wcsServer( configFilePath, parameterMap, p, theRequestHandler.data() );
-                wcsServer.executeRequest();
-              }
-          }
-        else if ( serviceString == "WFS")
-          {
-            QgsWFSProjectParser* p = QgsConfigCache::instance()->wfsConfiguration( configFilePath );
-            if ( !p )
-              {
-                theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
-              }
-            else
-              {
-                QgsWFSServer wfsServer( configFilePath, parameterMap, p, theRequestHandler.data() );
-                wfsServer.executeRequest();
-              }
-          }
-        else if ( serviceString == "WMS")
-          {
-            QgsWMSConfigParser* p = QgsConfigCache::instance()->wmsConfiguration( configFilePath, parameterMap );
-            if ( !p )
-              {
-                theRequestHandler->setServiceException( QgsMapServiceException( "WMS configuration error", "There was an error reading the project file or the SLD configuration" ) );
-              }
-            else
-              {
-                QgsWMSServer wmsServer( configFilePath, parameterMap, p, theRequestHandler.data() , theMapRenderer.data(), &capabilitiesCache );
-                wmsServer.executeRequest();
-              }
-          }
+    if ( !theRequestHandler->exceptionRaised() )
+    {
+      if ( serviceString == "WCS" )
+      {
+        QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration( configFilePath );
+        if ( !p )
+        {
+          theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
+        }
         else
-          {
-            theRequestHandler->setServiceException( QgsMapServiceException( "Service configuration error", "Service unknown or unsupported" ) );
-          } // end switch
+        {
+          QgsWCSServer wcsServer( configFilePath, parameterMap, p, theRequestHandler.data() );
+          wcsServer.executeRequest();
+        }
+      }
+      else if ( serviceString == "WFS" )
+      {
+        QgsWFSProjectParser* p = QgsConfigCache::instance()->wfsConfiguration( configFilePath );
+        if ( !p )
+        {
+          theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
+        }
+        else
+        {
+          QgsWFSServer wfsServer( configFilePath, parameterMap, p, theRequestHandler.data() );
+          wfsServer.executeRequest();
+        }
+      }
+      else if ( serviceString == "WMS" )
+      {
+        QgsWMSConfigParser* p = QgsConfigCache::instance()->wmsConfiguration( configFilePath, parameterMap );
+        if ( !p )
+        {
+          theRequestHandler->setServiceException( QgsMapServiceException( "WMS configuration error", "There was an error reading the project file or the SLD configuration" ) );
+        }
+        else
+        {
+          QgsWMSServer wmsServer( configFilePath, parameterMap, p, theRequestHandler.data() , theMapRenderer.data(), &capabilitiesCache );
+          wmsServer.executeRequest();
+        }
+      }
+      else
+      {
+        theRequestHandler->setServiceException( QgsMapServiceException( "Service configuration error", "Service unknown or unsupported" ) );
+      } // end switch
     } // end if not exception raised
 
     theRequestHandler->sendResponse();
