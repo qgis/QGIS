@@ -10,7 +10,6 @@
 %Import core/core.sip
 
 %Include qgsserverfilter.sip
-%Include qgsserverlogger.sip
 %Include qgsmapserviceexception.sip
 %Include qgscapabilitiescache.sip
 %Include qgsrequesthandler.sip
