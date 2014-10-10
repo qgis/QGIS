@@ -44,7 +44,7 @@ const unsigned char* QgsFeatureRendererV2::_getPoint( QPointF& pt, QgsRenderCont
   double x, y;
   wkbPtr >> x >> y;
 
-  if ( wkbType == QGis::WKBPolygon25D )
+  if ( wkbType == QGis::WKBPoint25D )
     wkbPtr += sizeof( double );
 
   if ( context.coordinateTransform() )
