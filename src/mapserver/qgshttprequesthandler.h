@@ -72,7 +72,6 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     QString readPostBody() const;
 
   private:
-    QByteArray mBody; // The response payload
     static void medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage );
     static void imageColors( QHash<QRgb, int>& colors, const QImage& image );
     static void splitColorBox( QgsColorBox& colorBox, QgsColorBoxMap& colorBoxMap,

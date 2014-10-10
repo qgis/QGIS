@@ -62,6 +62,7 @@ class QgsRequestHandler
     virtual void appendBody( const QByteArray &body ) = 0;
     /**Clears the response body*/
     virtual void clearBody( ) = 0;
+    virtual QByteArray* body( ) { return &mBody; }
     virtual void setInfoFormat( const QString &format ) = 0;
     /**Send out HTTP headers and flush output buffer*/
     virtual void sendResponse( ) = 0;
@@ -76,12 +77,14 @@ class QgsRequestHandler
     virtual QString parameter( const QString &key ) const = 0;
     QString format() const { return mFormat; }
     bool headersSent() { return mHeadersSent; }
+    QString infoFormat() const { return mInfoFormat; }
 
   protected:
 
     virtual void sendHeaders( ) = 0;
     virtual void sendBody( ) const = 0;
     /**This is set by the parseInput methods of the subclasses (parameter FORMAT, e.g. 'FORMAT=PNG')*/
+    QByteArray mBody; // The response payload
     QString mFormat;
     QString mFormatString; //format string as it is passed in the request (with base)
     bool mHeadersSent;
@@ -92,6 +95,7 @@ class QgsRequestHandler
     /** Response headers. They can be empty, in this case headers are
         automatically generated from the content mFormat */
     QMap<QString, QString> mHeaders;
+
 };
 
 #endif
