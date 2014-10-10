@@ -3356,23 +3356,29 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
     uiFileValue = QString( ",XMLPARSE(DOCUMENT %1)" ).arg( QgsPostgresConn::quotedValue( uiFileContent ) );
   }
 
+  // Note: in the construction of the INSERT and UPDATE strings the qmlStyle and sldStyle values
+  // can contain user entered strings, which may themselves include %## values that would be
+  // replaced by the QString.arg function.  To ensure that the final SQL string is not corrupt these
+  // two values are both replaced in the final .arg call of the string construction.
+
   QString sql = QString( "INSERT INTO layer_styles("
                          "f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description,owner%11"
                          ") VALUES ("
-                         "%1,%2,%3,%4,%5,XMLPARSE(DOCUMENT %6),XMLPARSE(DOCUMENT %7),%8,%9,%10%12"
+                         "%1,%2,%3,%4,%5,XMLPARSE(DOCUMENT %16),XMLPARSE(DOCUMENT %17),%8,%9,%10%12"
                          ")" )
                 .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                 .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                 .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                 .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
                 .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
-                .arg( QgsPostgresConn::quotedValue( qmlStyle ) )
-                .arg( QgsPostgresConn::quotedValue( sldStyle ) )
                 .arg( useAsDefault ? "true" : "false" )
                 .arg( QgsPostgresConn::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
                 .arg( QgsPostgresConn::quotedValue( dsUri.username() ) )
                 .arg( uiFileColumn )
-                .arg( uiFileValue );
+                .arg( uiFileValue )
+                // Must be the final .arg replacement - see above
+                .arg( QgsPostgresConn::quotedValue( qmlStyle ),
+                      QgsPostgresConn::quotedValue( sldStyle ) );
 
   QString checkQuery = QString( "SELECT styleName"
                                 " FROM layer_styles"
@@ -3402,8 +3408,8 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
 
     sql = QString( "UPDATE layer_styles"
                    " SET useAsDefault=%1"
-                   ",styleQML=XMLPARSE(DOCUMENT %2)"
-                   ",styleSLD=XMLPARSE(DOCUMENT %3)"
+                   ",styleQML=XMLPARSE(DOCUMENT %12)"
+                   ",styleSLD=XMLPARSE(DOCUMENT %13)"
                    ",description=%4"
                    ",owner=%5"
                    " WHERE f_table_catalog=%6"
@@ -3412,15 +3418,16 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                    " AND f_geometry_column=%9"
                    " AND styleName=%10" )
           .arg( useAsDefault ? "true" : "false" )
-          .arg( QgsPostgresConn::quotedValue( qmlStyle ) )
-          .arg( QgsPostgresConn::quotedValue( sldStyle ) )
           .arg( QgsPostgresConn::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.username() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
-          .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
+          .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
+          // Must be the final .arg replacement - see above
+          .arg( QgsPostgresConn::quotedValue( qmlStyle ),
+                  QgsPostgresConn::quotedValue( sldStyle ) );
   }
 
   if ( useAsDefault )
