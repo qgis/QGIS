@@ -138,8 +138,12 @@ void QgsHttpRequestHandler::sendHeaders()
 
 void QgsHttpRequestHandler::sendBody() const
 {
-  fwrite(( void* )mBody.data(), mBody.size(), 1, FCGI_stdout );
-  QgsDebugMsg( QString( "Sent %1 bytes" ).arg( mBody.size() ) );
+  size_t result = fwrite( (void*)mBody.data(), mBody.size(), 1, FCGI_stdout );
+#ifdef QGISDEBUG
+  QgsDebugMsg( QString( "Sent %1 blocks of %2 bytes" ).arg( result, mBody.size() ) );
+#else
+  Q_UNUSED( result );
+#endif
 }
 
 void QgsHttpRequestHandler::sendResponse()
