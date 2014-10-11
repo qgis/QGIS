@@ -91,6 +91,7 @@ QString QgsMimeDataUtils::Uri::data() const
   QString escapedName = name;
   QString escapeUri = uri;
   escapedName.replace( ":", "\\:" );
+  escapeUri.replace( "\\", "\\\\" );
   escapeUri.replace( ":", "\\:" );
   return layerType + ":" + providerKey + ":" + escapedName + ":" + escapeUri;
 }
