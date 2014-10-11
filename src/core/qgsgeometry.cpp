@@ -268,7 +268,7 @@ static GEOSGeometry *createGeosLinearRing( const QgsPolyline& polyline )
 {
   GEOSCoordSequence *coord = 0;
 
-  if ( polyline.count() == 0 )
+  if ( polyline.count() <= 2 )
     return 0;
 
   try
@@ -282,6 +282,9 @@ static GEOSGeometry *createGeosLinearRing( const QgsPolyline& polyline )
     }
     else
     {
+      if ( polyline.count() == 3 ) //-> Avoid 'GEOS::IllegalArgumentException: Invalid number of points in LinearRing found 3 - must be 0 or >= 4'
+        return 0;
+
       coord = createGeosCoordSequence( polyline );
     }
 
@@ -352,7 +355,10 @@ static GEOSGeometry *createGeosPolygon( const QgsPolygon& polygon )
   try
   {
     for ( int i = 0; i < polygon.count(); i++ )
-      geoms << createGeosLinearRing( polygon[i] );
+    {
+      GEOSGeometry *ring = createGeosLinearRing( polygon[i] );
+      if ( ring ) geoms << ring;
+    }
 
     return createGeosPolygon( geoms );
   }
@@ -4063,7 +4069,8 @@ bool QgsGeometry::exportWkbToGeos() const
             sequence << QgsPoint( x, y );
           }
 
-          rings << createGeosLinearRing( sequence );
+          GEOSGeometry *ring = createGeosLinearRing( sequence );
+          if ( ring ) rings << ring;
         }
         mGeos = createGeosPolygon( rings );
         mDirtyGeos = false;
@@ -4110,10 +4117,12 @@ bool QgsGeometry::exportWkbToGeos() const
               sequence << QgsPoint( x, y );
             }
 
-            rings << createGeosLinearRing( sequence );
+            GEOSGeometry *ring = createGeosLinearRing( sequence );
+            if ( ring ) rings << ring;
           }
 
-          polygons << createGeosPolygon( rings );
+          GEOSGeometry *polygon = createGeosPolygon( rings );
+          if ( polygon ) polygons << polygon;
         }
         mGeos = createGeosCollection( GEOS_MULTIPOLYGON, polygons );
         mDirtyGeos = false;
