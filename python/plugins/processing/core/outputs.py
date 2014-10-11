@@ -253,7 +253,7 @@ class OutputVector(Output):
     def getFileFilter(self, alg):
         exts = dataobjects.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
-            self.tr('%s files(*.%s)', 'OutputVector') % (exts[i].upper(), exts[i].lower())
+            exts[i] = self.tr('%s files (*.%s)', 'OutputVector') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self, alg):
