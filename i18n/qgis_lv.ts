@@ -9477,7 +9477,11 @@ See the log for more information.</source>
     <name>OutputVector</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation>%s faili (*.%s)</translation>
+        <translation type="obsolete">%s faili (*.%s)</translation>
+    </message>
+    <message>
+        <source>%s files (*.%s)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

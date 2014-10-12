@@ -10310,7 +10310,7 @@ Por favor, cambie esta situación primero, porque el complemento de OSM no sabe 
 <context>
     <name>OutputVector</name>
     <message>
-        <source>%s files(*.%s)</source>
+        <source>%s files (*.%s)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

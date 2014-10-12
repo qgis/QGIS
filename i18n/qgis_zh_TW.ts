@@ -8145,7 +8145,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>0</source>
-        <translation type="unfinished">0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <source>Type</source>
@@ -8469,7 +8469,11 @@ See the log for more information.</source>
     <name>OutputVector</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation>%s 個檔案(*.%s)</translation>
+        <translation type="obsolete">%s 個檔案(*.%s)</translation>
+    </message>
+    <message>
+        <source>%s files (*.%s)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8645,67 +8649,67 @@ See the log for more information.</source>
     <name>ProcessingConfig</name>
     <message>
         <source>General</source>
-        <translation type="unfinished">一般</translation>
+        <translation>一般</translation>
     </message>
     <message>
         <source>Show extra info in Log panel</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示額外訊息在日誌版上</translation>
     </message>
     <message>
         <source>Keep dialog open after running an algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>在演算法執行過程中保持對話框開啟狀態</translation>
     </message>
     <message>
         <source>Use only selected features</source>
-        <translation type="unfinished">僅使用選取的圖徵</translation>
+        <translation>僅使用選取的圖徵</translation>
     </message>
     <message>
         <source>Use filename as layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>使用檔案名稱當作圖層名稱</translation>
     </message>
     <message>
         <source>Show recently executed algorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示最近使用的演算法</translation>
     </message>
     <message>
         <source>Output folder</source>
-        <translation type="unfinished">輸出資料夾</translation>
+        <translation>輸出資料夾</translation>
     </message>
     <message>
         <source>Show layer CRS definition in selection boxes</source>
-        <translation type="unfinished"></translation>
+        <translation>在選取方塊中顯示圖層的坐標參考系統資訊</translation>
     </message>
     <message>
         <source>Warn before executing if layer CRS&apos;s do not match</source>
-        <translation type="unfinished"></translation>
+        <translation>在執行前,如果坐標參考系統不一致則提出警告</translation>
     </message>
     <message>
         <source>Style for raster layers</source>
-        <translation type="unfinished"></translation>
+        <translation>影像圖層的樣式</translation>
     </message>
     <message>
         <source>Style for point layers</source>
-        <translation type="unfinished"></translation>
+        <translation>點圖層的樣式</translation>
     </message>
     <message>
         <source>Style for line layers</source>
-        <translation type="unfinished"></translation>
+        <translation>縣圖層的樣式</translation>
     </message>
     <message>
         <source>Style for polygon layers</source>
-        <translation type="unfinished"></translation>
+        <translation>多邊形圖層的樣式</translation>
     </message>
     <message>
         <source>Pre-execution script</source>
-        <translation type="unfinished"></translation>
+        <translation>前期執行的腳本</translation>
     </message>
     <message>
         <source>Post-execution script</source>
-        <translation type="unfinished"></translation>
+        <translation>後執行的腳本</translation>
     </message>
     <message>
         <source>Recent algs</source>
-        <translation type="unfinished"></translation>
+        <translation>最近使用的腳本</translation>
     </message>
 </context>
 <context>
@@ -8868,284 +8872,286 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Share on codepad</source>
-        <translation type="unfinished"></translation>
+        <translation>分享到程式碼編輯區</translation>
     </message>
     <message>
         <source>Hide/Show Object Inspector</source>
-        <translation type="unfinished"></translation>
+        <translation>隱藏/顯示物件查看器</translation>
     </message>
     <message>
         <source>Select All</source>
-        <translation type="unfinished">全選</translation>
+        <translation>全選</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished">設定</translation>
+        <translation>設定</translation>
     </message>
     <message>
         <source>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; was not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; 未找到.</translation>
     </message>
     <message>
         <source>URL copied to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>複製網頁地址URL至剪貼簿中</translation>
     </message>
     <message>
         <source>Connection error: </source>
-        <translation type="unfinished"></translation>
+        <translation>連線錯誤:</translation>
     </message>
     <message>
         <source> [Temporary file saved in {0}]</source>
-        <translation type="unfinished"></translation>
+        <translation>[暫存檔儲存在 {0}]</translation>
     </message>
     <message>
         <source>## Script error: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>## 城市錯誤: {0}</translation>
     </message>
     <message>
         <source>## Script executed successfully: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>## 程式執行成功: {0}</translation>
     </message>
     <message>
         <source>Cannot execute file {0}. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>無法執行檔案 {0}. 錯誤: {1}</translation>
     </message>
     <message>
         <source>Hey, type something to run!</source>
-        <translation type="unfinished"></translation>
+        <translation>嘿! 輸入一些東西才可以執行歐!</translation>
     </message>
     <message>
         <source>You have to save the file before running it.</source>
-        <translation type="unfinished"></translation>
+        <translation>在執行它以前,你必須需要先存檔歐!</translation>
     </message>
     <message>
         <source>Python Console: Save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Python主控台:儲存檔案</translation>
     </message>
     <message>
         <source>Script was correctly saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>程式已正確儲存</translation>
     </message>
     <message>
         <source>Click on button to restore all tabs from last session.</source>
-        <translation type="unfinished"></translation>
+        <translation>點擊按鈕，即可還原所有頁籤最後一次工作狀態。</translation>
     </message>
     <message>
         <source>Restore tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>還原頁籤</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">關閉</translation>
+        <translation>關閉</translation>
     </message>
     <message>
         <source>List all tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>列出所有頁籤</translation>
     </message>
     <message>
         <source>New Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>新編輯器</translation>
     </message>
     <message>
         <source>Close Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>關閉頁籤</translation>
     </message>
     <message>
         <source>Close All</source>
-        <translation type="unfinished"></translation>
+        <translation>全部關閉</translation>
     </message>
     <message>
         <source>Close Others</source>
-        <translation type="unfinished"></translation>
+        <translation>關閉其他的</translation>
     </message>
     <message>
         <source>Save As</source>
-        <translation type="unfinished"></translation>
+        <translation>另存為</translation>
     </message>
     <message>
         <source>The file {0} could not be opened. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>檔案 {0} 無法開啟. 錯誤: {1}</translation>
     </message>
     <message>
         <source>Untitled-{0}</source>
-        <translation type="unfinished"></translation>
+        <translation>無標題-{0}</translation>
     </message>
     <message>
         <source>Python Console: Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>Python主控台:儲存檔案</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; has been modified, save changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>檔案 &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; 已被修改, 要儲存這些修改嗎?</translation>
     </message>
     <message>
         <source>Unable to restore the file: 
 {0}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>無法重新載入這個檔案:
+ {0}</translation>
     </message>
     <message>
         <source>Hide/Show Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>隱藏/顯示工具列</translation>
     </message>
     <message>
         <source>Show Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示編輯器</translation>
     </message>
     <message>
         <source>Enter Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>輸入選取的</translation>
     </message>
     <message>
         <source>Object Inspector</source>
-        <translation type="unfinished"></translation>
+        <translation>物件查看器</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation type="unfinished">開啟檔案</translation>
+        <translation>開啟檔案</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">儲存</translation>
+        <translation>儲存</translation>
     </message>
     <message>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation>存檔為...</translation>
     </message>
     <message>
         <source>Run script</source>
-        <translation type="unfinished"></translation>
+        <translation>執行腳本</translation>
     </message>
     <message>
         <source>Show editor</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示編輯器</translation>
     </message>
     <message>
         <source>Import Class</source>
-        <translation type="unfinished"></translation>
+        <translation>匯入類別</translation>
     </message>
     <message>
         <source>Import Processing class</source>
-        <translation type="unfinished"></translation>
+        <translation>匯入處理中的類別</translation>
     </message>
     <message>
         <source>Enter text to find...</source>
-        <translation type="unfinished"></translation>
+        <translation>輸入文字進行搜尋...</translation>
     </message>
     <message>
         <source>Find Next</source>
-        <translation type="unfinished"></translation>
+        <translation>尋找下一個</translation>
     </message>
     <message>
         <source>Find Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>尋找上一個</translation>
     </message>
     <message>
         <source>Case Sensitive</source>
-        <translation type="unfinished"></translation>
+        <translation>大小寫視為相異</translation>
     </message>
     <message>
         <source>Whole Word</source>
-        <translation type="unfinished"></translation>
+        <translation>整個文字</translation>
     </message>
     <message>
         <source>Wrap Around</source>
-        <translation type="unfinished"></translation>
+        <translation>環繞</translation>
     </message>
     <message>
         <source>Open File</source>
-        <translation type="unfinished">開啟檔案</translation>
+        <translation>開啟檔案</translation>
     </message>
     <message>
         <source>Save Error</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存錯誤</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;{0}&lt;/b&gt; could not be saved. Error: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>檔案 &lt;b&gt;{0}&lt;/b&gt; 無法儲存. 錯誤: {1}</translation>
     </message>
     <message>
         <source>Save File As</source>
-        <translation type="unfinished"></translation>
+        <translation>存檔為</translation>
     </message>
     <message>
         <source>Python Console 
 Use iface to access QGIS API interface or Type help(iface) for more info</source>
-        <translation type="unfinished"></translation>
+        <translation>Python主控台
+使用iface存取QGIS的API介面或鍵入help(iface) 獲取更多信息</translation>
     </message>
     <message>
         <source>History saved successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>歷史保存成功</translation>
     </message>
     <message>
         <source>Session and file history cleared successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>工作階段和檔案歷史記錄成功清除</translation>
     </message>
     <message>
         <source>History cleared successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>歷史紀錄清除成功</translation>
     </message>
     <message>
         <source>Command History</source>
-        <translation type="unfinished"></translation>
+        <translation>命令歷史記錄</translation>
     </message>
     <message>
         <source>Show</source>
-        <translation type="unfinished">顯示</translation>
+        <translation>顯示</translation>
     </message>
     <message>
         <source>Clear File</source>
-        <translation type="unfinished"></translation>
+        <translation>清除檔案</translation>
     </message>
     <message>
         <source>Clear Session</source>
-        <translation type="unfinished"></translation>
+        <translation>清除工作階段</translation>
     </message>
     <message>
         <source>Python Console - Command History</source>
-        <translation type="unfinished"></translation>
+        <translation>Python主控台 - 命令歷史記錄</translation>
     </message>
     <message>
         <source>Double click on item to execute</source>
-        <translation type="unfinished"></translation>
+        <translation>雙擊項目後執行</translation>
     </message>
     <message>
         <source>Add API path</source>
-        <translation type="unfinished"></translation>
+        <translation>增加API路徑</translation>
     </message>
     <message>
         <source>Remove API path</source>
-        <translation type="unfinished"></translation>
+        <translation>移除API路徑</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been deleted or is not accessible</source>
-        <translation type="unfinished"></translation>
+        <translation>檔案 &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; 已被刪除或無法被處理</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been changed and reloaded</source>
-        <translation type="unfinished"></translation>
+        <translation>檔案 &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; 已被改變並被重新載入</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is read only, please save to different file first.</source>
-        <translation type="unfinished"></translation>
+        <translation>檔案 &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; 現在是唯讀狀態,請先另存新黨.</translation>
     </message>
     <message>
         <source>Import PyQt.QtCore class</source>
-        <translation type="unfinished"></translation>
+        <translation>請匯入 PyQt.QtCore 這個類別</translation>
     </message>
     <message>
         <source>Import PyQt.QtGui class</source>
-        <translation type="unfinished"></translation>
+        <translation>請匯入 PyQt.QtGui 這個類別</translation>
     </message>
     <message>
         <source>Run command</source>
-        <translation type="unfinished"></translation>
+        <translation>執行命令</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">說明</translation>
+        <translation>說明</translation>
     </message>
 </context>
 <context>
@@ -9185,27 +9191,27 @@ Use iface to access QGIS API interface or Type help(iface) for more info</source
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3277"/>
         <source>Unable to initialize</source>
         <comment>QOCISpatialDriver</comment>
-        <translation type="unfinished"></translation>
+        <translation>無法初始化</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3447"/>
         <source>Unable to logon</source>
-        <translation type="unfinished"></translation>
+        <translation>無法登錄</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3526"/>
         <source>Unable to begin transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>無法開始交易</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3548"/>
         <source>Unable to commit transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>無法提交交易</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3570"/>
         <source>Unable to rollback transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>無法反轉交易</translation>
     </message>
 </context>
 <context>
@@ -9215,42 +9221,42 @@ Use iface to access QGIS API interface or Type help(iface) for more info</source
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="2037"/>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="2053"/>
         <source>Unable to bind column for batch execute</source>
-        <translation type="unfinished"></translation>
+        <translation>批次執行時無法綁定列</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="2069"/>
         <source>Unable to execute batch statement</source>
-        <translation type="unfinished"></translation>
+        <translation>無法批次處理雨具</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3010"/>
         <source>Unable to goto next</source>
-        <translation type="unfinished"></translation>
+        <translation>無法到下一個</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3092"/>
         <source>Unable to alloc statement</source>
-        <translation type="unfinished"></translation>
+        <translation>無法分配語句</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3108"/>
         <source>Unable to prepare statement</source>
-        <translation type="unfinished"></translation>
+        <translation>無法準備雨具</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3137"/>
         <source>Unable to get statement type</source>
-        <translation type="unfinished"></translation>
+        <translation>無法取得語句的類型</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3163"/>
         <source>Unable to bind value</source>
-        <translation type="unfinished"></translation>
+        <translation>無法綁定值</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3176"/>
         <source>Unable to execute statement</source>
-        <translation type="unfinished"></translation>
+        <translation>無法執行語句</translation>
     </message>
 </context>
 <context>
@@ -9333,7 +9339,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="122"/>
         <source>Selection extends beyond layer&apos;s coordinate system</source>
-        <translation type="unfinished"></translation>
+        <translation>選擇圖層坐標系統以外的範圍</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="266"/>
@@ -9515,7 +9521,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="939"/>
         <source> cm</source>
-        <translation type="unfinished"></translation>
+        <translation>公分</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="954"/>
@@ -9793,24 +9799,24 @@ Error(%2): %3</source>
         <location filename="../src/core/qgsgeometry.cpp" line="216"/>
         <location filename="../src/core/qgsgeometry.cpp" line="240"/>
         <location filename="../src/core/qgsgeometry.cpp" line="259"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="292"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="361"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="389"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="422"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="444"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="469"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2028"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2327"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2361"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2399"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2534"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2599"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="3418"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4846"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4940"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6082"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6111"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6134"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="295"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="367"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="395"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="428"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="450"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="475"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2034"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2333"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2367"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2405"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2540"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2605"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3424"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4855"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4949"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6091"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6120"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6143"/>
         <source>Exception: %1</source>
         <translation>異常:%1</translation>
     </message>
@@ -9819,30 +9825,30 @@ Error(%2): %3</source>
         <location filename="../src/core/qgsgeometry.cpp" line="216"/>
         <location filename="../src/core/qgsgeometry.cpp" line="240"/>
         <location filename="../src/core/qgsgeometry.cpp" line="259"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="292"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="361"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="389"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="422"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="444"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="469"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2028"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2327"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2361"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2399"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2534"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2599"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="3418"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4846"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4940"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5738"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6082"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6111"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6134"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="295"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="367"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="395"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="428"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="450"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="475"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2034"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2333"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2367"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2405"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2540"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2605"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3424"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4855"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4949"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="5747"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6091"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6120"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6143"/>
         <source>GEOS</source>
         <translation>GEOS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="5738"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="5747"/>
         <source>GEOS prior to 3.2 doesn&apos;t support GEOSInterpolate</source>
         <translation>GEOS 3.2版之前不支援GEOS內插</translation>
     </message>
@@ -9958,7 +9964,7 @@ Error(%2): %3</source>
         <location filename="../src/core/qgspoint.cpp" line="284"/>
         <location filename="../src/core/qgspoint.cpp" line="288"/>
         <source>-</source>
-        <translation type="unfinished">-</translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposermapgrid.cpp" line="1257"/>
@@ -10095,7 +10101,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="533"/>
         <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. Each following line contains a pair of coordinates.</source>
-        <translation type="unfinished"></translation>
+        <translation>在正常狀況下, BNA檔是多行的文字格式. 每一筆記錄中,第一行包含坐標系統的識別碼與類型/號碼.而接下來每一行則包含一對坐標值</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1722"/>
@@ -10178,12 +10184,12 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="82"/>
         <source>Empty filename given</source>
-        <translation type="unfinished"></translation>
+        <translation>給了空白檔名</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="522"/>
         <source>New BNA files are created by the systems default line termination conventions. This may be overridden here.</source>
-        <translation type="unfinished"></translation>
+        <translation>新的BNA文件由系統創建。這可能被複寫。</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="541"/>
@@ -10203,7 +10209,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="567"/>
         <source>Set the number of decimal for coordinates. Default value is 10.</source>
-        <translation type="unfinished"></translation>
+        <translation>設置坐標值的小數位數,預設值是10.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="599"/>
@@ -10233,7 +10239,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="677"/>
         <source>Set to YES to resize fields to their optimal size.</source>
-        <translation type="unfinished"></translation>
+        <translation>設置為YES來調整欄位達到最佳尺寸.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="699"/>
@@ -10685,17 +10691,17 @@ Only %1 of %2 features written.</source>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="2365"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1672"/>
         <source>ESRI FileGDB</source>
-        <translation type="unfinished"></translation>
+        <translation>ESRI FileGDB</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1860"/>
         <source>Cannot overwrite a OGR layer in place</source>
-        <translation type="unfinished"></translation>
+        <translation>不能複寫OGR圖曾</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="2465"/>
         <source>Failed to transform, writing stopped. (Exception: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>轉換失敗。停止寫入。 (異常：%1)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3674"/>
@@ -10703,7 +10709,7 @@ Only %1 of %2 features written.</source>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3720"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="64"/>
         <source>Unable to load %1 provider</source>
-        <translation type="unfinished"></translation>
+        <translation>無法載入 %1 </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3682"/>
@@ -10711,12 +10717,12 @@ Only %1 of %2 features written.</source>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3728"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="73"/>
         <source>Provider %1 has no %2 method</source>
-        <translation type="unfinished"></translation>
+        <translation>供應者%1 沒有 %2 方法</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3775"/>
         <source>Loaded from Provider</source>
-        <translation type="unfinished">從提供者載入</translation>
+        <translation>從提供者載入</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="104"/>
@@ -10727,12 +10733,12 @@ Only %1 of %2 features written.</source>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="176"/>
         <source>Creation error for features from #%1 to #%2. Provider errors was: 
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>從 #%1 到 #%2 圖徵建立錯誤.提供者錯誤:%3</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="349"/>
         <source>Import was canceled at %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>載入取消,在%2 的 %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="382"/>
@@ -10742,7 +10748,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="437"/>
         <source>Only %1 of %2 features written.</source>
-        <translation type="unfinished"></translation>
+        <translation>只有 %2 的 %1 圖徵被寫入.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="343"/>
@@ -10750,7 +10756,7 @@ Only %1 of %2 features written.</source>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="492"/>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="506"/>
         <source>Reading raster part %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>讀取影像 %2 的 %1 部分.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="677"/>
@@ -10760,12 +10766,12 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="720"/>
         <source>Building pyramids failed - write access denied</source>
-        <translation type="unfinished"></translation>
+        <translation>建立影像金字塔失敗,寫入程序被拒.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="721"/>
         <source>Write access denied. Adjust the file permissions and try again.</source>
-        <translation type="unfinished">拒絕寫入存取。請調整檔案權限後再試。</translation>
+        <translation>寫入操作被拒絕。修改檔案的許可權線然後重試。</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="725"/>
@@ -10773,23 +10779,23 @@ Only %1 of %2 features written.</source>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="736"/>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="741"/>
         <source>Building pyramids failed.</source>
-        <translation type="unfinished">建立影像金字塔失敗。</translation>
+        <translation>建立快取金字塔顯示檔(Pyramid)失敗.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="726"/>
         <source>The file was not writable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
-        <translation type="unfinished">此檔案無法寫入。某些格式不支援影像金字塔全覽圖。若有疑問可以查閱GDAL文件。</translation>
+        <translation>此檔案無法寫入。某些格式不支援影像金字塔全覽圖。若有疑問可以查閱GDAL文件。</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="732"/>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="742"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
-        <translation type="unfinished">此影像類型不支援建立影像金字塔全覽圖。</translation>
+        <translation>此類影像不支持建立快取金字塔(Pyramids)的全覽圖.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="737"/>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library.</source>
-        <translation type="unfinished">JPEG壓縮影像圖層與您目前的libtiff程式庫不支援建立內部影像金字塔全覽圖。</translation>
+        <translation>JPEG壓縮影像圖層與您目前的libtiff程式庫不支援建立內部影像金字塔全覽圖。</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrendererregistry.cpp" line="47"/>
@@ -11595,12 +11601,12 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/zonal_statistics/qgszonalstatisticsplugin.cpp" line="27"/>
         <source>A plugin to calculate count, sum, mean of rasters for each polygon of a vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>用來計算向量圖層每個多邊形內之影像像素值的數量，加總及平均的附加元件.</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="671"/>
         <source>Cannot open GDAL MEM dataset %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>無法開啟 GDAL MEM 資料集 %1: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="738"/>
@@ -11610,7 +11616,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="769"/>
         <source>Cannot inittialize GDALWarpOperation : </source>
-        <translation type="unfinished"></translation>
+        <translation>無法初始化 GDALWarpOperation :</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="780"/>
@@ -12042,7 +12048,7 @@ Error: %2</source>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2887"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3258"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3321"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3460"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3467"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="142"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5094"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5176"/>
@@ -12135,37 +12141,37 @@ Database error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3393"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3399"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5281"/>
         <source>Save style in database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3394"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3400"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5282"/>
         <source>A style named &quot;%1&quot; already exists in the database for this layer. Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3398"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3404"/>
         <source>Operation aborted. No changes were made in the database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3445"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3452"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3492"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3561"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3499"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3568"/>
         <source>Connection to database failed using username: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3510"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3536"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3577"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3517"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3543"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3584"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5189"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5273"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5333"/>
@@ -12178,24 +12184,24 @@ Database error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3511"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3518"/>
         <source>Error executing the select query for related styles. The query was logged</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3537"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3544"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5501"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3578"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3585"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5556"/>
         <source>Error executing the select query. The query was logged</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3573"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3580"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5551"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
         <translation type="unfinished"></translation>
@@ -12655,17 +12661,17 @@ Response was:
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="611"/>
         <source>Unable to begin transaction</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">無法開始交易</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="626"/>
         <source>Unable to commit transaction</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">無法提交交易</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="641"/>
         <source>Unable to rollback transaction</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">無法反轉交易</translation>
     </message>
 </context>
 <context>
@@ -12685,7 +12691,7 @@ Response was:
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="364"/>
         <source>Unable to execute statement</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">無法執行語句</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="369"/>
@@ -16093,7 +16099,7 @@ Database:%2</source>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="254"/>
         <source>Case Sensitive</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">大小寫視為相異</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="261"/>
@@ -24590,7 +24596,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="192"/>
         <source> cm</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">公分</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="196"/>
@@ -32922,93 +32928,93 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>結果</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="266"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="284"/>
         <source>Layer</source>
         <translation type="unfinished">圖層</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="271"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="289"/>
         <source>FID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="276"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="294"/>
         <source>Attribute</source>
         <translation type="unfinished">屬性</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="281"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="299"/>
         <source>Value</source>
         <translation type="unfinished">值</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="41"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="50"/>
         <source>Expand tree.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="44"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="61"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="78"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="95"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="112"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="132"/>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="155"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="53"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="70"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="87"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="104"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="121"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="141"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="164"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="109"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="118"/>
         <source>Clear Results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="331"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="355"/>
         <source>Help</source>
         <translation type="unfinished">說明</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="207"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="225"/>
         <source>Select identify mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="210"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="228"/>
         <source>Mode</source>
         <translation type="unfinished">模式</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="302"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="326"/>
         <source>Select view mode for raster layers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="305"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="329"/>
         <source>View</source>
         <translation type="unfinished">檢視</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="240"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="258"/>
         <source>Auto open form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="58"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="67"/>
         <source>Collapse tree.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="75"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="84"/>
         <source>New results will be expanded by default.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="129"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="138"/>
         <source>Copy selected feature to clipboard.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="152"/>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="161"/>
         <source>Print selected HTML response.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -33021,174 +33027,174 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished">結果</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="279"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="280"/>
         <source>Feature</source>
         <translation type="unfinished">圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="280"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="281"/>
         <source>Value</source>
         <translation type="unfinished">值</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="296"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="297"/>
         <source>Current layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="297"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="298"/>
         <source>Top down, stop at first</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="298"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="299"/>
         <source>Top down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="299"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="300"/>
         <source>Layer selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="444"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="760"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="402"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="761"/>
         <source>(Derived)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="459"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="417"/>
         <source>(Actions)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="465"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="828"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="951"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1317"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="423"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="829"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="947"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1314"/>
         <source>Edit feature form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="465"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="828"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="951"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1317"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="423"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="829"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="947"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1314"/>
         <source>View feature form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="305"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="306"/>
         <source>Table</source>
         <translation>表格</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="304"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="305"/>
         <source>Tree</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="306"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="307"/>
         <source>Graph</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="438"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="496"/>
         <source>feature id</source>
         <translation type="unfinished">圖徵ID</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="698"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="699"/>
         <source>Format</source>
         <translation type="unfinished">格式</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="747"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="748"/>
         <source>No attributes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="957"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="953"/>
         <source>Zoom to feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="958"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="954"/>
         <source>Copy feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="959"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="955"/>
         <source>Toggle feature selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="962"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="958"/>
         <source>Copy attribute value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="963"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="959"/>
         <source>Copy feature attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="976"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="972"/>
         <source>Copy GetFeatureInfo request URL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="984"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="980"/>
         <source>Clear results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="985"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="981"/>
         <source>Clear highlights</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="986"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="982"/>
         <source>Highlight all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="987"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="983"/>
         <source>Highlight layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="990"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="986"/>
         <source>Activate layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="991"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="987"/>
         <source>Layer properties...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="994"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="990"/>
         <source>Expand all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="995"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="991"/>
         <source>Collapse all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1585"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1582"/>
         <source>Attributes changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1741"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1738"/>
         <source>Cannot print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1741"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1738"/>
         <source>Cannot print this item</source>
         <translation type="unfinished"></translation>
     </message>
@@ -37651,142 +37657,142 @@ Extended error information:
         <translation>新增Spatialite圖層</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="61"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="67"/>
         <source>Database</source>
         <translation>資料庫</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="84"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="90"/>
         <source>Create a new Spatialite database</source>
         <translation>建立新的Spatialite資料庫</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="87"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="93"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="98"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="104"/>
         <source>Layer name</source>
         <translation>圖層名稱</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="114"/>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="141"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="120"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="147"/>
         <source>Name for the new layer</source>
         <translation>新圖層的名稱</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="125"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="131"/>
         <source>Geometry column</source>
         <translation>幾何欄位</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="144"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="150"/>
         <source>geometry</source>
         <translation>geometry</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="159"/>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="294"/>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="370"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="165"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="300"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="376"/>
         <source>Type</source>
         <translation>類別</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="165"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="171"/>
         <source>Point</source>
         <translation>點</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="172"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="178"/>
         <source>Line</source>
         <translation>線</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="179"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="185"/>
         <source>Polygon</source>
         <translation>多邊形</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="186"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="192"/>
         <source>MultiPoint</source>
         <translation>MultiPoint</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="193"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="199"/>
         <source>Multiline</source>
         <translation>Multiline</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="200"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="206"/>
         <source>Multipolygon</source>
         <translation>Multipolygon</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="212"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="218"/>
         <source>Spatial Reference Id</source>
         <translation>空間參考ID</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="228"/>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="231"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="234"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="237"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
         <translation>指定圖層幾何欄位的坐標參考系統。</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="234"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="240"/>
         <source>Specify CRS</source>
         <translation>指定CRS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="243"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="249"/>
         <source>Add an integer id field as the primary key for the new layer</source>
         <translation>加入整數ID欄位為新圖層的主鍵</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="246"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="252"/>
         <source>Create an autoincrementing primary key</source>
         <translation>建立自動遞增的主鍵</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="253"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="259"/>
         <source>New attribute</source>
         <translation>新增屬性</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="265"/>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="365"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="271"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="371"/>
         <source>Name</source>
         <translation>名稱</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="281"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="287"/>
         <source>An attribute name</source>
         <translation>屬性名稱</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="320"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="326"/>
         <source>Add attribute to list</source>
         <translation>加入屬性至列表</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="326"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="332"/>
         <source>Add to attributes list</source>
         <translation>加入屬性列表</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="343"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="349"/>
         <source>Attributes list</source>
         <translation>屬性列表</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="397"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="403"/>
         <source>Delete selected attribute</source>
         <translation>刪除選取的屬性</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="400"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="406"/>
         <source>Remove attribute</source>
         <translation>移除屬性</translation>
     </message>
@@ -56896,7 +56902,7 @@ Problem with line %d</source>
     <message>
         <location filename="../python/console/console_settings.ui" line="278"/>
         <source>Enable Object Inspector (switching between tabs may be slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>啟用物件查看器 (標籤之間的切換可能會很慢)</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="703"/>
