@@ -32,7 +32,7 @@ QgsNetworkContentFetcher::QgsNetworkContentFetcher()
 
 QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
 {
-  if ( mReply->isRunning() )
+  if ( mReply && mReply->isRunning() )
   {
     //cancel running request
     mReply->abort();
