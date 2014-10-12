@@ -27,10 +27,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import sys
-
 from PyQt4.QtCore import *
 from qgis.core import *
-
 from processing.tools.system import *
 from processing.tools import dataobjects
 
@@ -96,7 +94,7 @@ class Parameter:
     def tr(self, string, context=''):
         if context == '':
             context = 'Parameter'
-        return QtCore.QCoreApplication.translate(context, string)
+        return QCoreApplication.translate(context, string)
 
 
 class ParameterBoolean(Parameter):
