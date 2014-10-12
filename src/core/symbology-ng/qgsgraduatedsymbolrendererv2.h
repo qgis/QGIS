@@ -104,6 +104,7 @@ class CORE_EXPORT QgsRendererRangeV2LabelFormat
     double mNumberScale;
     QString mNumberSuffix;
     QRegExp mReTrailingZeroes;
+    QRegExp mReNegativeZero;
 };
 
 class QgsVectorLayer;
@@ -195,7 +196,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @param labelFormat The string appended to classification labels
     //! @param updateRanges If true then ranges ending with the old unit string are updated to the new.
     //! @note Added in 2.6
-    void setLabelFormat( const QgsRendererRangeV2LabelFormat &labelFormat, bool updateRanges = true );
+    void setLabelFormat( const QgsRendererRangeV2LabelFormat &labelFormat, bool updateRanges = false );
 
     //! Reset the label decimal places to a numberbased on the minimum class interval
     //! @param updateRanges if true then ranges currently using the default label will be updated
