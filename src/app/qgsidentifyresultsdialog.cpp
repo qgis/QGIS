@@ -276,6 +276,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mExpandNewToolButton->setChecked( mySettings.value( "/Map/identifyExpand", false ).toBool() );
   mCopyToolButton->setEnabled( false );
   lstResults->setColumnCount( 2 );
+  lstResults->sortByColumn( -1 );
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
 
@@ -396,49 +397,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   mFeatures << f;
   layItem->addChild( featItem );
 
-  const QgsFields &fields = vlayer->pendingFields();
-  const QgsAttributes& attrs = f.attributes();
-  bool featureLabeled = false;
-  for ( int i = 0; i < attrs.count(); ++i )
-  {
-    if ( i >= fields.count() )
-      continue;
-
-    QString value = fields[i].displayString( attrs[i] );
-    QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << value );
-
-    attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
-    attrItem->setData( 0, Qt::UserRole, fields[i].name() );
-    attrItem->setData( 0, Qt::UserRole + 1, i );
-
-    attrItem->setData( 1, Qt::UserRole, value );
-
-    if ( vlayer->editorWidgetV2( i ) == "Hidden" )
-    {
-      delete attrItem;
-      continue;
-    }
-
-    value = representValue( vlayer, fields[i].name(), attrs[i] );
-
-    attrItem->setData( 1, Qt::DisplayRole, value );
-
-    if ( fields[i].name() == vlayer->displayField() )
-    {
-      featItem->setText( 0, attrItem->text( 0 ) );
-      featItem->setText( 1, attrItem->text( 1 ) );
-      featureLabeled = true;
-    }
-
-    featItem->addChild( attrItem );
-  }
-
-  if ( !featureLabeled )
-  {
-    featItem->setText( 0, tr( "feature id" ) );
-    featItem->setText( 1, QString::number( f.id() ) );
-  }
-
   if ( derivedAttributes.size() >= 0 )
   {
     QTreeWidgetItem *derivedItem = new QTreeWidgetItem( QStringList() << tr( "(Derived)" ) );
@@ -494,6 +452,49 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
       connect( action, SIGNAL( destroyed() ), this, SLOT( mapLayerActionDestroyed() ) );
     }
+  }
+
+  const QgsFields &fields = vlayer->pendingFields();
+  const QgsAttributes& attrs = f.attributes();
+  bool featureLabeled = false;
+  for ( int i = 0; i < attrs.count(); ++i )
+  {
+    if ( i >= fields.count() )
+      continue;
+
+    QString value = fields[i].displayString( attrs[i] );
+    QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << value );
+
+    attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
+    attrItem->setData( 0, Qt::UserRole, fields[i].name() );
+    attrItem->setData( 0, Qt::UserRole + 1, i );
+
+    attrItem->setData( 1, Qt::UserRole, value );
+
+    if ( vlayer->editorWidgetV2( i ) == "Hidden" )
+    {
+      delete attrItem;
+      continue;
+    }
+
+    value = representValue( vlayer, fields[i].name(), attrs[i] );
+
+    attrItem->setData( 1, Qt::DisplayRole, value );
+
+    if ( fields[i].name() == vlayer->displayField() )
+    {
+      featItem->setText( 0, attrItem->text( 0 ) );
+      featItem->setText( 1, attrItem->text( 1 ) );
+      featureLabeled = true;
+    }
+
+    featItem->addChild( attrItem );
+  }
+
+  if ( !featureLabeled )
+  {
+    featItem->setText( 0, tr( "feature id" ) );
+    featItem->setText( 1, QString::number( f.id() ) );
   }
 
   // table
@@ -833,11 +834,6 @@ void QgsIdentifyResultsDialog::editingToggled()
 // Call to show the dialog box.
 void QgsIdentifyResultsDialog::show()
 {
-  // Enforce a few things before showing the dialog box
-  lstResults->sortItems( 0, Qt::AscendingOrder );
-  // column width is now stored in settings
-  //expandColumnsToFit();
-
   bool showFeatureForm = false;
 
   if ( lstResults->topLevelItemCount() > 0 )
@@ -1071,6 +1067,7 @@ void QgsIdentifyResultsDialog::clear()
   }
 
   lstResults->clear();
+  lstResults->sortByColumn( -1 );
   clearHighlights();
 
   tblResults->clearContents();
