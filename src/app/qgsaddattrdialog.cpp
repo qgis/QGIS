@@ -19,15 +19,12 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgslogger.h"
-#include "qgsexpressionbuilderdialog.h"
 
 #include <QMessageBox>
-#include <QLabel>
 
 QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mIsShapeFile( vlayer && vlayer->providerType() == "ogr" && vlayer->storageType() == "ESRI Shapefile" )
-    , mLayer( vlayer )
 {
   setupUi( this );
 
@@ -53,18 +50,9 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
   }
 
   on_mTypeBox_currentIndexChanged( 0 );
-  on_mFieldModeButtonGroup_buttonClicked( mButtonProviderField );
 
   if ( mIsShapeFile )
     mNameEdit->setMaxLength( 10 );
-
-  mExpressionWidget->setLayer( vlayer );
-
-  int cap = mLayer->dataProvider()->capabilities();
-
-  mButtonProviderField->setEnabled( cap & QgsVectorDataProvider::AddAttributes );
-
-  mInfoIcon->setPixmap( style()->standardPixmap( QStyle::SP_MessageBoxInformation ) );
 }
 
 void QgsAddAttrDialog::on_mTypeBox_currentIndexChanged( int idx )
@@ -80,22 +68,6 @@ void QgsAddAttrDialog::on_mTypeBox_currentIndexChanged( int idx )
   if ( mLength->value() > mLength->maximum() )
     mLength->setValue( mLength->maximum() );
   setPrecisionMinMax();
-}
-
-void QgsAddAttrDialog::on_mFieldModeButtonGroup_buttonClicked( QAbstractButton* button )
-{
-  if ( button == mButtonProviderField )
-  {
-    mExpressionWidget->hide();
-    mExpressionLabel->hide();
-  }
-  else
-  {
-    mExpressionWidget->show();
-    mExpressionLabel->show();
-  }
-
-  mLayerEditableInfo->setVisible( !mLayer->isEditable() && button == mButtonProviderField );
 }
 
 void QgsAddAttrDialog::on_mLength_editingFinished()
@@ -128,17 +100,6 @@ void QgsAddAttrDialog::accept()
                           tr( "No name specified. Please specify a name to create a new field." ) );
     return;
   }
-  if ( mButtonVirtualField->isChecked() && mExpressionWidget->currentField().isEmpty() )
-  {
-    QMessageBox::warning( this, tr( "Warning" ),
-                          tr( "No expression specified. Please enter an expression that will be used to calculate the field values." ) );
-    return;
-  }
-
-  if ( !mLayer->isEditable() && mode() == ProviderField )
-  {
-    mLayer->startEditing();
-  }
 
   QDialog::accept();
 }
@@ -161,17 +122,4 @@ QgsField QgsAddAttrDialog::field() const
            mLength->value(),
            mPrec->value(),
            mCommentEdit->text() );
-}
-
-const QString QgsAddAttrDialog::expression() const
-{
-  return mExpressionWidget->currentField();
-}
-
-QgsAddAttrDialog::AttributeMode QgsAddAttrDialog::mode() const
-{
-  if ( mButtonVirtualField->isChecked() )
-    return VirtualField;
-  else
-    return ProviderField;
 }

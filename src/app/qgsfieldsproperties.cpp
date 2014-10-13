@@ -533,14 +533,8 @@ void QgsFieldsProperties::on_mAddAttributeButton_clicked()
   QgsAddAttrDialog dialog( mLayer, this );
   if ( dialog.exec() == QDialog::Accepted )
   {
-    if ( dialog.mode() == QgsAddAttrDialog::VirtualField )
-    {
-      mLayer->addExpressionField( dialog.expression(), dialog.field() );
-    }
-    else
-    {
-      addAttribute( dialog.field() );
-    }
+    addAttribute( dialog.field() );
+
   }
 }
 
@@ -582,13 +576,13 @@ void QgsFieldsProperties::updateButtons()
   if ( mLayer->isEditable() )
   {
     mDeleteAttributeButton->setEnabled( cap & QgsVectorDataProvider::DeleteAttributes );
-    mCalculateFieldButton->setEnabled( cap & ( QgsVectorDataProvider::ChangeAttributeValues | QgsVectorDataProvider::AddAttributes ) );
+    mAddAttributeButton->setEnabled( cap & QgsVectorDataProvider::AddAttributes );
     mToggleEditingButton->setChecked( true );
   }
   else
   {
     mToggleEditingButton->setChecked( false );
-    mCalculateFieldButton->setEnabled( false );
+    mAddAttributeButton->setEnabled( false );
 
     // Enable delete button if items are selected
     mDeleteAttributeButton->setEnabled( mFieldsList->selectedItems().count() > 0 );
