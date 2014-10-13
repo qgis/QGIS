@@ -369,7 +369,8 @@ QColor QgsRandomColorsV2::color( double value ) const
   int minVal = 130;
   int maxVal = 255;
 
-  int colorIndex = !isnan( value ) ? value : 1 * ( mTotalColorCount - 1 );
+  //if value is nan, then use last precalculated color
+  int colorIndex = ( !isnan( value ) ? value : 1 ) * ( mTotalColorCount - 1 );
   if ( mTotalColorCount >= 1 && mPrecalculatedColors.length() > colorIndex )
   {
     //use precalculated hue
