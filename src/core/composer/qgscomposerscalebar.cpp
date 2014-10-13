@@ -407,7 +407,7 @@ void QgsComposerScaleBar::adjustBoxSize()
 void QgsComposerScaleBar::update()
 {
   //Don't adjust box size for numeric scale bars:
-  if ( mStyle->name() != "Numeric" )
+  if ( mStyle && mStyle->name() != "Numeric" )
   {
     adjustBoxSize();
   }
