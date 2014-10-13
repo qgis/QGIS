@@ -89,16 +89,16 @@ void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& 
     {
       line.append( QgsPoint( label->getX( i ), label->getY( i ) ) );
     }
-    mDxfExport->writePolyline( line, mLayerName, "CONTINUOUS", 1, 0.01, true );
+    mDxfExport->writePolyline( line, g->dxfLayer(), "CONTINUOUS", 1, 0.01, true );
 #endif
     text = text.replace( tmpLyr.wrapChar.isEmpty() ? "\n" : tmpLyr.wrapChar, "\\P" );
 
-    text.prepend( QString( "\\f%1|i%2|b%3;\\H%4;" )
+    text.prepend( QString( "\\f%1|i%2|b%3;\\H%4;\\W0.5;" )
                   .arg( tmpLyr.textFont.family() )
                   .arg( tmpLyr.textFont.italic() ? 1 : 0 )
                   .arg( tmpLyr.textFont.bold() ? 1 : 0 )
-                  .arg( label->getHeight() / ( 1 + text.count( "\\P" ) ) ) );
+                  .arg( label->getHeight() / ( 1 + text.count( "\\P" ) ) * 0.75 ) );
 
-    mDxfExport->writeMText( g->dxfLayer(), text, QgsPoint( label->getX(), label->getY() ), label->getWidth(), angle, tmpLyr.textColor );
+    mDxfExport->writeMText( g->dxfLayer(), text, QgsPoint( label->getX(), label->getY() ), label->getWidth() * 1.1, angle, tmpLyr.textColor );
   }
 }

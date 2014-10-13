@@ -366,7 +366,7 @@ void QgsDxfExport::writeGroup( int code, const QgsPoint &p, double z, bool skipz
     writeGroup( code + 30, z );
 }
 
-void QgsDxfExport::writeGroup( QColor color, int exactMatchCode, int rgbCode )
+void QgsDxfExport::writeGroup( QColor color, int exactMatchCode, int rgbCode, int transparencyCode )
 {
   int minDistAt = -1;
   int minDist = INT_MAX;
@@ -390,6 +390,8 @@ void QgsDxfExport::writeGroup( QColor color, int exactMatchCode, int rgbCode )
   writeGroup( exactMatchCode, minDistAt );
   int c = ( color.red() & 0xff ) * 0x10000 + ( color.green() & 0xff ) * 0x100 + ( color.blue() & 0xff );
   writeGroup( rgbCode, c );
+  if( transparencyCode != -1 && color.alpha() < 255 )
+    writeGroup( transparencyCode, 0x2000000 | color.alpha() );
 }
 
 void QgsDxfExport::writeGroupCode( int code )
@@ -606,6 +608,7 @@ void QgsDxfExport::writeTables()
   writeGroup( 2, "VPORT" );
   writeHandle();
   writeGroup( 100, "AcDbSymbolTable" );
+
   writeGroup( 70, 0 );
   writeGroup( 0, "ENDTAB" );
 

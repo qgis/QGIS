@@ -74,7 +74,7 @@ class CORE_EXPORT QgsDxfExport
     void writeDouble( double d );
     void writeString( const QString& s );
     void writeGroup( int code, const QgsPoint &p, double z = 0.0, bool skipz = false );
-    void writeGroup( QColor color, int exactMatch = 62, int rgb = 420 );
+    void writeGroup( QColor color, int exactMatch = 62, int rgbCode = 420, int tranparencyCode = 440 );
 
     int writeHandle( int code = 5, int handle = 0 );
 
