@@ -52,6 +52,8 @@ void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
 {
   if ( !mFocusInEvent )
     QLineEdit::mousePressEvent( e );
+  else
+    mFocusInEvent = false;
 }
 
 void QgsFilterLineEdit::focusInEvent( QFocusEvent* e )
