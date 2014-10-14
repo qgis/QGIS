@@ -1012,6 +1012,17 @@
     <string>Atlas &amp;Settings</string>
    </property>
   </action>
+  <action name="mActionShowBoxes">
+   <property name="text">
+    <string>Show Bounding Boxes</string>
+   </property>
+   <property name="toolTip">
+    <string>Show bounding boxes</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+B</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../../python/plugins/fTools/resources.qrc"/>
