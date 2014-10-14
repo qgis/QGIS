@@ -75,10 +75,54 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
      * @returns void
      */
     void setVAlign( Qt::AlignmentFlag a ) { mVAlignment = a; }
-    //!brief Accessor for the margin of the label
-    double margin() { return mMargin; }
-    //!brief Mutator for the margin of the label
-    void setMargin( double m ) { mMargin = m; }
+
+    /**Returns the margin between the edge of the frame and the label contents
+     * @returns margin in mm
+     * @deprecated use marginX and marginY instead
+    */
+    Q_DECL_DEPRECATED double margin() { return mMarginX; }
+
+    /**Returns the horizontal margin between the edge of the frame and the label
+     * contents.
+     * @returns horizontal margin in mm
+     * @note added in QGIS 2.7
+    */
+    double marginX() const { return mMarginX; }
+
+    /**Returns the vertical margin between the edge of the frame and the label
+     * contents.
+     * @returns vertical margin in mm
+     * @note added in QGIS 2.7
+    */
+    double marginY() const { return mMarginY; }
+
+    /**Sets the margin between the edge of the frame and the label contents.
+     * This method sets both the horizontal and vertical margins to the same
+     * value. The margins can be individually controlled using the setMarginX
+     * and setMarginY methods.
+     * @param m margin in mm
+     * @see setMarginX
+     * @see setMarginY
+    */
+    void setMargin( const double m );
+
+    /**Sets the horizontal margin between the edge of the frame and the label
+     * contents.
+     * @param margin horizontal margin in mm
+     * @see setMargin
+     * @see setMarginY
+     * @note added in QGIS 2.7
+    */
+    void setMarginX( const double margin );
+
+    /**Sets the vertical margin between the edge of the frame and the label
+     * contents.
+     * @param margin vertical margin in mm
+     * @see setMargin
+     * @see setMarginX
+     * @note added in QGIS 2.7
+    */
+    void setMarginY( const double margin );
 
     /**Sets text color
         */
@@ -125,8 +169,10 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     // Font
     QFont mFont;
 
-    // Border between text and fram (in mm)
-    double mMargin;
+    /**Horizontal margin between contents and frame (in mm)*/
+    double mMarginX;
+    /**Vertical margin between contents and frame (in mm)*/
+    double mMarginY;
 
     // Font color
     QColor mFontColor;

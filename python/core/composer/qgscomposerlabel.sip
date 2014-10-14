@@ -52,10 +52,54 @@ class QgsComposerLabel : QgsComposerItem
      * @returns void
      */
     void setVAlign( Qt::AlignmentFlag a );
-    //!brief Accessor for the margin of the label
-    double margin();
-    //!brief Mutator for the margin of the label
-    void setMargin( double m );
+
+    /**Returns the margin between the edge of the frame and the label contents
+     * @returns margin in mm
+     * @deprecated use marginX and marginY instead
+    */
+    double margin() /Deprecated/;
+
+    /**Returns the horizontal margin between the edge of the frame and the label
+     * contents.
+     * @returns horizontal margin in mm
+     * @note added in QGIS 2.7
+    */
+    double marginX() const;
+
+    /**Returns the vertical margin between the edge of the frame and the label
+     * contents.
+     * @returns vertical margin in mm
+     * @note added in QGIS 2.7
+    */
+    double marginY() const;
+
+    /**Sets the margin between the edge of the frame and the label contents.
+     * This method sets both the horizontal and vertical margins to the same
+     * value. The margins can be individually controlled using the setMarginX
+     * and setMarginY methods.
+     * @param m margin in mm
+     * @see setMarginX
+     * @see setMarginY
+    */
+    void setMargin( const double m );
+
+    /**Sets the horizontal margin between the edge of the frame and the label
+     * contents.
+     * @param margin horizontal margin in mm
+     * @see setMargin
+     * @see setMarginY
+     * @note added in QGIS 2.7
+    */
+    void setMarginX( const double margin );
+
+    /**Sets the vertical margin between the edge of the frame and the label
+     * contents.
+     * @param margin vertical margin in mm
+     * @see setMargin
+     * @see setMarginX
+     * @note added in QGIS 2.7
+    */
+    void setMarginY( const double margin );
 
     /**Sets text color
         @note: this function was added in version 1.4*/
