@@ -161,24 +161,14 @@
       <property name="verticalSpacing">
        <number>3</number>
       </property>
-      <item row="3" column="0">
-       <widget class="QLabel" name="mOutputFieldTypeLabel">
-        <property name="text">
-         <string>Output field type</string>
-        </property>
-        <property name="buddy">
-         <cstring>mOutputFieldTypeComboBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="3">
+      <item row="5" column="3">
        <widget class="QSpinBox" name="mOutputFieldPrecisionSpinBox">
         <property name="value">
          <number>2</number>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="mFieldNameLabel">
         <property name="text">
          <string>Output field name</string>
@@ -188,17 +178,20 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="2">
-       <widget class="QLabel" name="mOutputFieldPrecisionLabel">
+      <item row="5" column="0">
+       <widget class="QLabel" name="mOutputFieldWidthLabel">
         <property name="text">
-         <string>Precision</string>
+         <string>Output field width</string>
         </property>
         <property name="buddy">
-         <cstring>mOutputFieldPrecisionSpinBox</cstring>
+         <cstring>mOutputFieldWidthSpinBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="4" column="1" colspan="3">
+       <widget class="QComboBox" name="mOutputFieldTypeComboBox"/>
+      </item>
+      <item row="5" column="1">
        <widget class="QSpinBox" name="mOutputFieldWidthSpinBox">
         <property name="toolTip">
          <string>Width of complete output. For example 123,456 means 6 as field width.</string>
@@ -211,26 +204,33 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="1" colspan="3">
+       <widget class="QLineEdit" name="mOutputFieldNameLineEdit"/>
+      </item>
       <item row="4" column="0">
-       <widget class="QLabel" name="mOutputFieldWidthLabel">
+       <widget class="QLabel" name="mOutputFieldTypeLabel">
         <property name="text">
-         <string>Output field width</string>
+         <string>Output field type</string>
         </property>
         <property name="buddy">
-         <cstring>mOutputFieldWidthSpinBox</cstring>
+         <cstring>mOutputFieldTypeComboBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="3" column="1" colspan="3">
-       <widget class="QComboBox" name="mOutputFieldTypeComboBox"/>
+      <item row="5" column="2">
+       <widget class="QLabel" name="mOutputFieldPrecisionLabel">
+        <property name="text">
+         <string>Precision</string>
+        </property>
+        <property name="buddy">
+         <cstring>mOutputFieldPrecisionSpinBox</cstring>
+        </property>
+       </widget>
       </item>
-      <item row="2" column="1" colspan="3">
-       <widget class="QLineEdit" name="mOutputFieldNameLineEdit"/>
-      </item>
-      <item row="5" column="0" colspan="4">
+      <item row="2" column="0" colspan="4">
        <widget class="QCheckBox" name="mCreateVirtualFieldCheckbox">
         <property name="toolTip">
-         <string>A virtual field will be recalculated every time it is used and will not be saved in the data provider but in the project.</string>
+         <string>&lt;p&gt;A virtual field will be recalculated every time it is used. Its definition will be saved in the project file. It will not be saved in the dataprovider and therefore its values not be available in other software.&lt;/p&gt;</string>
         </property>
         <property name="text">
          <string>Create virtual field</string>
