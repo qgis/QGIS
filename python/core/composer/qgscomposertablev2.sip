@@ -52,7 +52,6 @@ class QgsComposerTableV2: QgsComposerMultiFrame
     {
       HeadersOnly, /*!< show header rows only */
       HideTable, /*!< hides entire table if empty */
-      DrawEmptyCells, /*!< draws empty cells */
       ShowMessage /*!< shows preset message instead of table contents*/
     };    
 
@@ -103,6 +102,18 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @see emptyTableBehaviour
      */
     QString emptyTableMessage() const; 
+    
+    /**Sets whether empty rows should be drawn. Tables default to hiding empty 
+     * @param showEmpty set to true to show empty rows in the table
+     * @see showEmptyRows
+     */
+    void setShowEmptyRows( const bool showEmpty );
+
+    /**Returns whether empty rows are drawn in the table
+     * @returns true if empty rows are drawn
+     * @see setShowEmptyRows
+     */
+    bool showEmptyRows() const;
 
     /**Sets the font used to draw header text in the table.
      * @param font font for header cells

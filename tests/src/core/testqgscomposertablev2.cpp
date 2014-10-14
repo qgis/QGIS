@@ -51,6 +51,7 @@ class TestQgsComposerTableV2: public QObject
     void attributeTableRender(); //test rendering attribute table
     void manualColumnWidth(); //test setting manual column widths
     void attributeTableEmpty(); //test empty modes for attribute table
+    void showEmptyRows(); //test showing empty rows
     void attributeTableExtend();
     void attributeTableRepeat();
     void attributeTableAtlasSource(); //test attribute table in atlas feature mode
@@ -341,16 +342,22 @@ void TestQgsComposerTableV2::attributeTableEmpty()
   QgsCompositionChecker checker2( "composerattributetable_hidetable", mComposition );
   QVERIFY( checker2.testComposition( mReport, 0 ) );
 
-  mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::DrawEmptyCells );
-  QgsCompositionChecker checker3( "composerattributetable_drawempty", mComposition );
-  QVERIFY( checker3.testComposition( mReport, 0 ) );
-
   mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::ShowMessage );
   mComposerAttributeTable->setEmptyTableMessage( "no rows" );
-  QgsCompositionChecker checker4( "composerattributetable_showmessage", mComposition );
-  QVERIFY( checker4.testComposition( mReport, 0 ) );
+  QgsCompositionChecker checker3( "composerattributetable_showmessage", mComposition );
+  QVERIFY( checker3.testComposition( mReport, 0 ) );
 
   mComposerAttributeTable->setFilterFeatures( false );
+}
+
+void TestQgsComposerTableV2::showEmptyRows()
+{
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 3 );
+  mComposerAttributeTable->setShowEmptyRows( true );
+  QgsCompositionChecker checker( "composerattributetable_drawempty", mComposition );
+  QVERIFY( checker.testComposition( mReport, 0 ) );
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
+  mComposerAttributeTable->setShowEmptyRows( false );
 }
 
 void TestQgsComposerTableV2::attributeTableExtend()

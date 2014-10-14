@@ -25,6 +25,7 @@ QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool create
     : QgsComposerMultiFrame( composition, createUndoCommands )
     , mCellMargin( 1.0 )
     , mEmptyTableMode( HeadersOnly )
+    , mShowEmptyRows( false )
     , mHeaderFontColor( Qt::black )
     , mHeaderHAlignment( FollowColumn )
     , mHeaderMode( FirstFrame )
@@ -67,6 +68,7 @@ bool QgsComposerTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool i
   elem.setAttribute( "cellMargin", QString::number( mCellMargin ) );
   elem.setAttribute( "emptyTableMode", QString::number(( int )mEmptyTableMode ) );
   elem.setAttribute( "emptyTableMessage", mEmptyTableMessage );
+  elem.setAttribute( "showEmptyRows", mShowEmptyRows );
   elem.setAttribute( "headerFont", mHeaderFont.toString() );
   elem.setAttribute( "headerFontColor", QgsSymbolLayerV2Utils::encodeColor( mHeaderFontColor ) );
   elem.setAttribute( "headerHAlignment", QString::number(( int )mHeaderHAlignment ) );
@@ -110,6 +112,7 @@ bool QgsComposerTableV2::readXML( const QDomElement &itemElem, const QDomDocumen
 
   mEmptyTableMode = QgsComposerTableV2::EmptyTableMode( itemElem.attribute( "emptyTableMode", "0" ).toInt() );
   mEmptyTableMessage = itemElem.attribute( "emptyTableMessage", tr( "No matching records" ) );
+  mShowEmptyRows = itemElem.attribute( "showEmptyRows", "0" ).toInt();
   mHeaderFont.fromString( itemElem.attribute( "headerFont", "" ) );
   mHeaderFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "headerFontColor", "0,0,0,255" ) );
   mHeaderHAlignment = QgsComposerTableV2::HeaderHAlignment( itemElem.attribute( "headerHAlignment", "0" ).toInt() );
@@ -270,7 +273,7 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
   bool drawContents = !( emptyTable && mEmptyTableMode == QgsComposerTableV2::ShowMessage );
 
   int numberRowsToDraw = rowsToShow.second - rowsToShow.first;
-  if ( mEmptyTableMode == QgsComposerTableV2::DrawEmptyCells )
+  if ( drawContents && mShowEmptyRows )
   {
     numberRowsToDraw = rowsVisible( frameIndex );
   }
@@ -444,6 +447,18 @@ void QgsComposerTableV2::setEmptyTableMessage( const QString message )
   emit changed();
 }
 
+void QgsComposerTableV2::setShowEmptyRows( const bool showEmpty )
+{
+  if ( showEmpty == mShowEmptyRows )
+  {
+    return;
+  }
+
+  mShowEmptyRows = showEmpty;
+  update();
+  emit changed();
+}
+
 void QgsComposerTableV2::setHeaderFont( const QFont &font )
 {
   if ( font == mHeaderFont )
@@ -466,7 +481,7 @@ void QgsComposerTableV2::setHeaderFontColor( const QColor &color )
   }
 
   mHeaderFontColor = color;
-  repaint();
+  update();
 
   emit changed();
 }
@@ -479,7 +494,7 @@ void QgsComposerTableV2::setHeaderHAlignment( const QgsComposerTableV2::HeaderHA
   }
 
   mHeaderHAlignment = alignment;
-  repaint();
+  update();
 
   emit changed();
 }
@@ -519,7 +534,7 @@ void QgsComposerTableV2::setContentFontColor( const QColor &color )
   }
 
   mContentFontColor = color;
-  repaint();
+  update();
 
   emit changed();
 }
@@ -560,7 +575,7 @@ void QgsComposerTableV2::setGridColor( const QColor &color )
   }
 
   mGridColor = color;
-  repaint();
+  update();
 
   emit changed();
 }
@@ -573,7 +588,7 @@ void QgsComposerTableV2::setBackgroundColor( const QColor &color )
   }
 
   mBackgroundColor = color;
-  repaint();
+  update();
 
   emit changed();
 }
