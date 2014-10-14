@@ -32,8 +32,6 @@
 class QgsDataProvider;
 class QgsDataItem;
 
-// TODO: bad place, where to put this? qgsproviderregistry.h?
-typedef int dataCapabilities_t();
 typedef QgsDataItem * dataItem_t( QString, QgsDataItem* );
 
 

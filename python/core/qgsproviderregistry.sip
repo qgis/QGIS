@@ -39,6 +39,12 @@ class QgsProviderRegistry
     QgsDataProvider *provider( const QString & providerKey,
                                const QString & dataSource );
 
+    /** Return the provider capabilities
+        @param providerKey identificator of the provider
+        @note Added in 2.6
+    */
+    int getProviderCapabilities( const QString& providerKey ) const;
+
     QWidget *selectWidget( const QString & providerKey,
                            QWidget * parent = 0, Qt::WindowFlags fl = 0 );
 
