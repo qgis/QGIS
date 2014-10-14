@@ -92,7 +92,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   //antialiasing on
   painter->setRenderHint( QPainter::Antialiasing, true );
 
-  double penWidth = hasFrame() ? pen().widthF() : 0;
+  double penWidth = hasFrame() ? ( pen().widthF() / 2.0 ) : 0;
   QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin, rect().height() - 2 * penWidth - 2 * mMargin );
 
   QString textToDraw = displayText();
@@ -286,7 +286,7 @@ void QgsComposerLabel::adjustSizeToText()
   double textWidth = QgsComposerUtils::textWidthMM( mFont, displayText() );
   double fontHeight = QgsComposerUtils::fontHeightMM( mFont );
 
-  double penWidth = hasFrame() ? pen().widthF() : 0;
+  double penWidth = hasFrame() ? ( pen().widthF() / 2.0 ) : 0;
 
   double width = textWidth + 2 * mMargin + 2 * penWidth + 1;
   double height = fontHeight + 2 * mMargin + 2 * penWidth;
