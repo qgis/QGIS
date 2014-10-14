@@ -14090,6 +14090,10 @@ La respuesta fue:
         <source>Selection extends beyond layer&apos;s coordinate system</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Comma Separated Value [CSV]</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -17729,10 +17733,6 @@ p, li { white-space: pre-wrap; }
         <source>No name specified. Please specify a name to create a new field.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>No expression specified. Please enter an expression that will be used to calculate the field values.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsAddAttrDialogBase</name>
@@ -17765,32 +17765,8 @@ p, li { white-space: pre-wrap; }
         <translation>Precisión</translation>
     </message>
     <message>
-        <source>Virtual Field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Define an expression which will be used to calculate this field.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Expression</source>
-        <translation type="unfinished">Expresión</translation>
-    </message>
-    <message>
-        <source>&lt;i&gt;Virtual fields&lt;/i&gt; are calculated on the fly and cannot be directly modified and will not be saved to the data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;i&gt;Permanent fields&lt;/i&gt; are saved in the data provider and it is possible to directly modify them.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Permanent Field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Layer is currently not in edit mode. To add a permanent field, editing mode will automatically be turned on.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Expresión</translation>
     </message>
 </context>
 <context>
@@ -19454,6 +19430,10 @@ El error fue: %2</translation>
     <message>
         <source>Edit Widget Properties</source>
         <translation>Editar propiedades del control</translation>
+    </message>
+    <message>
+        <source>Edit Widget Properties - %1 (%2)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -21301,10 +21281,6 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Draw empty cells</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Show set message</source>
         <translation type="unfinished"></translation>
     </message>
@@ -21458,6 +21434,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Table background color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show empty rows changed</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -21638,6 +21618,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Background color</source>
         <translation type="unfinished">Color de fondo</translation>
+    </message>
+    <message>
+        <source>Show empty rows</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -30496,6 +30480,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Create a new field</source>
         <translation>Crear un campo nuevo</translation>
+    </message>
+    <message>
+        <source>You are editing information on this layer but the layer is currently not in edit mode. If you click Ok, edit mode will automatically be turned on.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This layer does not support adding new provider fields. You can only add virtual fields.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;A virtual field will be recalculated every time it is used. Its definition will be saved in the project file. It will not be saved in the dataprovider and therefore its values not be available in other software.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create virtual field</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
