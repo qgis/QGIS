@@ -58,15 +58,17 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
     mOutputFieldNameLineEdit->setMaxLength( 10 );
   }
 
-  if( !( vl->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes ) )
+  if ( !( vl->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes ) )
   {
     mCreateVirtualFieldCheckbox->setChecked( true );
     mCreateVirtualFieldCheckbox->setEnabled( false );
     mOnlyVirtualFieldsInfoLabel->setVisible( true );
+    mInfoIcon->setVisible( true );
   }
   else
   {
     mOnlyVirtualFieldsInfoLabel->setVisible( false );
+    mInfoIcon->setVisible( false );
   }
 
   if ( !( vl->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) )
@@ -100,9 +102,14 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
     mNewFieldGroupBox->setCheckable( false );
   }
 
-  if ( ( mNewFieldGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() ) || mVectorLayer->isEditable() )
+  if (( mNewFieldGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() ) || mVectorLayer->isEditable() )
   {
     mEditModeAutoTurnOnLabel->setVisible( false );
+    mInfoIcon->setVisible( false );
+  }
+  else
+  {
+    mInfoIcon->setVisible( true );
   }
 
   bool hasselection = vl->selectedFeatureCount() > 0;
@@ -112,8 +119,9 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
 
   builder->loadRecent( "fieldcalc" );
 
-  mEditModeAutoTurnOnLabel->setPixmap( style()->standardPixmap( QStyle::SP_MessageBoxInformation ) );
-  mOnlyVirtualFieldsInfoLabel->setPixmap( style()->standardPixmap( QStyle::SP_MessageBoxInformation ) );
+  mInfoIcon->setPixmap( style()->standardPixmap( QStyle::SP_MessageBoxInformation ) );
+
+  setOkButtonState();
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/QgsFieldCalculator/geometry" ).toByteArray() );
@@ -304,7 +312,7 @@ void QgsFieldCalculator::populateOutputFieldTypes()
 void QgsFieldCalculator::on_mNewFieldGroupBox_toggled( bool on )
 {
   mUpdateExistingGroupBox->setChecked( !on );
-  if ( on && ! ( mVectorLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes ) )
+  if ( on && !( mVectorLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes ) )
   {
     mOnlyVirtualFieldsInfoLabel->setVisible( true );
   }
@@ -313,7 +321,7 @@ void QgsFieldCalculator::on_mNewFieldGroupBox_toggled( bool on )
     mOnlyVirtualFieldsInfoLabel->setVisible( false );
   }
 
-  if ( ( mNewFieldGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() ) || mVectorLayer->isEditable() )
+  if (( mNewFieldGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() ) || mVectorLayer->isEditable() )
   {
     mEditModeAutoTurnOnLabel->setVisible( false );
   }
@@ -321,6 +329,8 @@ void QgsFieldCalculator::on_mNewFieldGroupBox_toggled( bool on )
   {
     mEditModeAutoTurnOnLabel->setVisible( true );
   }
+
+  mInfoIcon->setVisible( mOnlyVirtualFieldsInfoLabel->isVisible() || mEditModeAutoTurnOnLabel->isVisible() );
 }
 
 void QgsFieldCalculator::on_mUpdateExistingGroupBox_toggled( bool on )
@@ -343,7 +353,7 @@ void QgsFieldCalculator::on_mCreateVirtualFieldCheckbox_stateChanged( int state 
   mOnlyUpdateSelectedCheckBox->setChecked( false );
   mOnlyUpdateSelectedCheckBox->setEnabled( state != Qt::Checked && mVectorLayer->selectedFeatureCount() > 0 );
 
-  if ( ( mNewFieldGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() ) || mVectorLayer->isEditable() )
+  if (( mNewFieldGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() ) || mVectorLayer->isEditable() )
   {
     mEditModeAutoTurnOnLabel->setVisible( false );
   }
@@ -351,6 +361,7 @@ void QgsFieldCalculator::on_mCreateVirtualFieldCheckbox_stateChanged( int state 
   {
     mEditModeAutoTurnOnLabel->setVisible( true );
   }
+  mInfoIcon->setVisible( mOnlyVirtualFieldsInfoLabel->isVisible() || mEditModeAutoTurnOnLabel->isVisible() );
 }
 
 
