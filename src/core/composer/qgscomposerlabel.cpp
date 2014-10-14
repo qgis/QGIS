@@ -105,7 +105,9 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   painter->setRenderHint( QPainter::Antialiasing, true );
 
   double penWidth = hasFrame() ? ( pen().widthF() / 2.0 ) : 0;
-  QRectF painterRect( penWidth + mMarginX, penWidth + mMarginY, rect().width() - 2 * penWidth - 2 * mMarginX, rect().height() - 2 * penWidth - 2 * mMarginY );
+  double xPenAdjust = mMarginX < 0 ? -penWidth : penWidth;
+  double yPenAdjust = mMarginY < 0 ? -penWidth : penWidth;
+  QRectF painterRect( xPenAdjust + mMarginX, yPenAdjust + mMarginY, rect().width() - 2 * xPenAdjust - 2 * mMarginX, rect().height() - 2 * yPenAdjust - 2 * mMarginY );
 
   QString textToDraw = displayText();
 
@@ -314,16 +316,19 @@ void QgsComposerLabel::setMargin( const double m )
 {
   mMarginX = m;
   mMarginY = m;
+  prepareGeometryChange();
 }
 
 void QgsComposerLabel::setMarginX( const double margin )
 {
   mMarginX = margin;
+  prepareGeometryChange();
 }
 
 void QgsComposerLabel::setMarginY( const double margin )
 {
   mMarginY = margin;
+  prepareGeometryChange();
 }
 
 void QgsComposerLabel::adjustSizeToText()
@@ -490,6 +495,36 @@ QString QgsComposerLabel::displayName() const
   {
     return text.simplified();
   }
+}
+
+QRectF QgsComposerLabel::boundingRect() const
+{
+  QRectF rectangle = rect();
+  double penWidth = hasFrame() ? ( pen().widthF() / 2.0 ) : 0;
+  rectangle.adjust( -penWidth, -penWidth, penWidth, penWidth );
+
+  if ( mMarginX < 0 )
+  {
+    rectangle.adjust( mMarginX, 0, -mMarginX, 0 );
+  }
+  if ( mMarginY < 0 )
+  {
+    rectangle.adjust( 0, mMarginY, 0, -mMarginY );
+  }
+
+  return rectangle;
+}
+
+void QgsComposerLabel::setFrameEnabled( const bool drawFrame )
+{
+  QgsComposerItem::setFrameEnabled( drawFrame );
+  prepareGeometryChange();
+}
+
+void QgsComposerLabel::setFrameOutlineWidth( const double outlineWidth )
+{
+  QgsComposerItem::setFrameOutlineWidth( outlineWidth );
+  prepareGeometryChange();
 }
 
 void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, double& xShift, double& yShift ) const

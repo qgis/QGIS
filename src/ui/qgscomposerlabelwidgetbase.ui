@@ -179,6 +179,9 @@
             <property name="suffix">
              <string> mm</string>
             </property>
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
            </widget>
           </item>
           <item row="5" column="0" colspan="2">
@@ -302,6 +305,9 @@
            <widget class="QDoubleSpinBox" name="mMarginYDoubleSpinBox">
             <property name="suffix">
              <string> mm</string>
+            </property>
+            <property name="minimum">
+             <double>-99.989999999999995</double>
             </property>
            </widget>
           </item>

@@ -146,6 +146,19 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     //Overriden to contain part of label's text
     virtual QString displayName() const;
 
+    /**In case of negative margins, the bounding rect may be larger than the
+     * label's frame
+    */
+    QRectF boundingRect() const;
+
+    /**Reimplemented to call prepareGeometryChange after toggling frame
+    */
+    virtual void setFrameEnabled( const bool drawFrame );
+
+    /**Reimplemented to call prepareGeometryChange after changing outline width
+    */
+    virtual void setFrameOutlineWidth( const double outlineWidth );
+
   public slots:
     void refreshExpressionContext();
 

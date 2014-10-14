@@ -285,7 +285,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @see setFrameJoinStyle
      * @see setFrameOutlineColor
      */
-    void setFrameEnabled( const bool drawFrame );
+    virtual void setFrameEnabled( const bool drawFrame );
     
     /**Sets frame outline color
      * @param color new color for outline frame
