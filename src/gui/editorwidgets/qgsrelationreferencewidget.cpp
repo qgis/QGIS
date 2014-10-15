@@ -78,10 +78,8 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
 
   // open form button
   mOpenFormButton = new QToolButton( this );
-  mOpenFormAction = new QAction( QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ), tr( "Open related feature form" ), this );
-  mOpenFormButton->addAction( mOpenFormAction );
-  mOpenFormButton->setDefaultAction( mOpenFormAction );
-  connect( mOpenFormButton, SIGNAL( triggered( QAction* ) ), this, SLOT( openForm() ) );
+  mOpenFormButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ) );
+  mOpenFormButton->setText( tr( "Open related feature form" ) );
   editLayout->addWidget( mOpenFormButton );
 
   // highlight button
@@ -94,24 +92,19 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
   mHighlightFeatureButton->addAction( mScaleHighlightFeatureAction );
   mHighlightFeatureButton->addAction( mPanHighlightFeatureAction );
   mHighlightFeatureButton->setDefaultAction( mHighlightFeatureAction );
-  connect( mHighlightFeatureButton, SIGNAL( triggered( QAction* ) ), this, SLOT( highlightActionTriggered( QAction* ) ) );
   editLayout->addWidget( mHighlightFeatureButton );
 
   // map identification button
   mMapIdentificationButton = new QToolButton( this );
-  mMapIdentificationAction = new QAction( QgsApplication::getThemeIcon( "/mActionMapIdentification.svg" ), tr( "Select on map" ), this );
-  mMapIdentificationAction->setCheckable( true );
-  mMapIdentificationButton->addAction( mMapIdentificationAction );
-  mMapIdentificationButton->setDefaultAction( mMapIdentificationAction );
-  connect( mMapIdentificationButton, SIGNAL( triggered( QAction* ) ), this, SLOT( mapIdentification() ) );
+  mMapIdentificationButton->setIcon( QgsApplication::getThemeIcon( "/mActionMapIdentification.svg" ) );
+  mMapIdentificationButton->setText( tr( "Select on map" ) );
+  mMapIdentificationButton->setCheckable( true );
   editLayout->addWidget( mMapIdentificationButton );
 
   // remove foreign key button
   mRemoveFKButton = new QToolButton( this );
-  mRemoveFKAction = new QAction( QgsApplication::getThemeIcon( "/mActionRemove.svg" ), tr( "No selection" ), this );
-  mRemoveFKButton->addAction( mRemoveFKAction );
-  mRemoveFKButton->setDefaultAction( mRemoveFKAction );
-  connect( mRemoveFKButton, SIGNAL( triggered( QAction* ) ), this, SLOT( deleteForeignKey() ) );
+  mRemoveFKButton->setIcon( QgsApplication::getThemeIcon( "/mActionRemove.svg" ) );
+  mRemoveFKButton->setText( tr( "No selection" ) );
   editLayout->addWidget( mRemoveFKButton );
 
   // spacer
@@ -142,6 +135,12 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
   mHighlightFeatureButton->hide();
   mAttributeEditorFrame->hide();
   mInvalidLabel->hide();
+
+  // connect buttons
+  connect( mOpenFormButton, SIGNAL( clicked() ), this, SLOT( openForm() ) );
+  connect( mHighlightFeatureButton, SIGNAL( triggered( QAction* ) ), this, SLOT( highlightActionTriggered( QAction* ) ) );
+  connect( mMapIdentificationButton, SIGNAL( clicked() ), this, SLOT( mapIdentification() ) );
+  connect( mRemoveFKButton, SIGNAL( clicked() ), this, SLOT( deleteForeignKey() ) );
 }
 
 QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
@@ -331,7 +330,7 @@ void QgsRelationReferenceWidget::setEditorContext( QgsAttributeEditorContext con
   if ( mMapTool )
     delete mMapTool;
   mMapTool = new QgsMapToolIdentifyFeature( mCanvas );
-  mMapTool->setAction( mMapIdentificationAction );
+  mMapTool->setAction( mMapIdentificationButton->defaultAction() );
 }
 
 void QgsRelationReferenceWidget::setEmbedForm( bool display )

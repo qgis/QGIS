@@ -45,35 +45,30 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget* parent )
   buttonLayout->setContentsMargins( 0, 0, 0, 0 );
   // toogle editing
   mToggleEditingButton = new QToolButton( this );
-  QAction* toggleEditingAction = new QAction( QgsApplication::getThemeIcon( "/mActionToggleEditing.svg" ), tr( "Toggle editing" ), this );
-  mToggleEditingButton->addAction( toggleEditingAction );
-  mToggleEditingButton->setDefaultAction( toggleEditingAction );
+  mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.svg" ) );
+  mToggleEditingButton->setText( tr( "Toggle editing" ) );
   mToggleEditingButton->setEnabled( false );
   mToggleEditingButton->setCheckable( true );
   buttonLayout->addWidget( mToggleEditingButton );
   // add feature
   mAddFeatureButton = new QToolButton( this );
-  QAction* addFeatureAction = new QAction( QgsApplication::getThemeIcon( "/mActionAdd.svg" ), tr( "Add feature" ), this );
-  mAddFeatureButton->addAction( addFeatureAction );
-  mAddFeatureButton->setDefaultAction( addFeatureAction );
+  mAddFeatureButton->setIcon( QgsApplication::getThemeIcon( "/mActionAdd.svg" ) );
+  mAddFeatureButton->setText( tr( "Add feature" ) );
   buttonLayout->addWidget( mAddFeatureButton );
   // delete feature
   mDeleteFeatureButton = new QToolButton( this );
-  QAction* deleteFeatureAction = new QAction( QgsApplication::getThemeIcon( "/mActionRemove.svg" ), tr( "Delete feature" ), this );
-  mDeleteFeatureButton->addAction( deleteFeatureAction );
-  mDeleteFeatureButton->setDefaultAction( deleteFeatureAction );
+  mDeleteFeatureButton->setIcon( QgsApplication::getThemeIcon( "/mActionRemove.svg" ) );
+  mDeleteFeatureButton->setText( tr( "Delete feature" ) );
   buttonLayout->addWidget( mDeleteFeatureButton );
   // link feature
   mLinkFeatureButton = new QToolButton( this );
-  QAction* linkFeatureAction = new QAction( QgsApplication::getThemeIcon( "/mActionLink.svg" ), tr( "Link feature" ), this );
-  mLinkFeatureButton->addAction( linkFeatureAction );
-  mLinkFeatureButton->setDefaultAction( linkFeatureAction );
+  mLinkFeatureButton->setIcon( QgsApplication::getThemeIcon( "/mActionLink.svg" ) );
+  mLinkFeatureButton->setText( tr( "Link feature" ) );
   buttonLayout->addWidget( mLinkFeatureButton );
   // unlink feature
   mUnlinkFeatureButton = new QToolButton( this );
-  QAction* unlinkFeatureAction = new QAction( QgsApplication::getThemeIcon( "/mActionUnlink.svg" ), tr( "Unlink feature" ), this );
-  mUnlinkFeatureButton->addAction( unlinkFeatureAction );
-  mUnlinkFeatureButton->setDefaultAction( unlinkFeatureAction );
+  mUnlinkFeatureButton->setIcon( QgsApplication::getThemeIcon( "/mActionUnlink.svg" ) );
+  mUnlinkFeatureButton->setText( tr( "Unlink feature" ) );
   buttonLayout->addWidget( mUnlinkFeatureButton );
   // spacer
   buttonLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ) );
