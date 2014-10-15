@@ -273,7 +273,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &theHistogram,
       // We need statistics -> avoid histogramDefaults in hasHistogram if possible
       // TODO: use approximated statistics if aproximated histogram is requested
       // (theSampleSize > 0)
-      QgsRasterBandStats stats =  bandStatistics( theBandNo, QgsRasterBandStats::Min, theExtent, theSampleSize );
+      QgsRasterBandStats stats = bandStatistics( theBandNo, QgsRasterBandStats::Min, theExtent, theSampleSize );
       theHistogram.minimum = stats.minimumValue;
     }
   }
@@ -285,7 +285,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &theHistogram,
     }
     else
     {
-      QgsRasterBandStats stats =  bandStatistics( theBandNo, QgsRasterBandStats::Max, theExtent, theSampleSize );
+      QgsRasterBandStats stats = bandStatistics( theBandNo, QgsRasterBandStats::Max, theExtent, theSampleSize );
       theHistogram.maximum = stats.maximumValue;
     }
   }
@@ -518,7 +518,7 @@ void QgsRasterInterface::cumulativeCut( int theBandNo,
   int mySrcDataType = srcDataType( theBandNo );
 
   //get band stats to specify real histogram min/max (fix #9793 Byte bands)
-  QgsRasterBandStats stats =  bandStatistics( theBandNo, QgsRasterBandStats::Min, theExtent, theSampleSize );
+  QgsRasterBandStats stats = bandStatistics( theBandNo, QgsRasterBandStats::Min, theExtent, theSampleSize );
   // for byte bands make sure bin count == actual range
   int myBinCount = ( mySrcDataType == QGis::Byte ) ? int( ceil( stats.maximumValue - stats.minimumValue + 1 ) ) : 0;
   QgsRasterHistogram myHistogram = histogram( theBandNo, myBinCount, stats.minimumValue, stats.maximumValue, theExtent, theSampleSize );

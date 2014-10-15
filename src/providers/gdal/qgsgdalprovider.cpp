@@ -1397,7 +1397,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
   myMinVal -= dfHalfBucket;
   myMaxVal += dfHalfBucket;
 
-  /*
+#if 0
   const char* pszPixelType = GDALGetMetadataItem( myGdalBand, "PIXELTYPE", "IMAGE_STRUCTURE" );
   int bSignedByte = ( pszPixelType != NULL && EQUAL( pszPixelType, "SIGNEDBYTE" ) );
 
@@ -1420,7 +1420,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
     myMinVal -= dfHalfBucket;
     myMaxVal += dfHalfBucket;
   }
-  */
+#endif
 
   int *myHistogramArray = new int[myHistogram.binCount];
   CPLErr myError = GDALGetRasterHistogram( myGdalBand, myMinVal, myMaxVal,

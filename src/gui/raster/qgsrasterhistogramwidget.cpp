@@ -606,52 +606,64 @@ void QgsRasterHistogramWidget::refreshHistogram()
     QgsDebugMsg( QString( "computed histo min = %1 max = %2" ).arg( mHistoMin ).arg( mHistoMax ) );
     myFirstIteration = false;
   }
-  // for x axis use band pixel values rather than gdal hist. bin values
-  // subtract -0.5 to prevent rounding errors
-  // see http://www.gdal.org/classGDALRasterBand.html#3f8889607d3b2294f7e0f11181c201c8
-  // fix x range for non-Byte data
-  mpPlot->setAxisScale( QwtPlot::xBottom,
-                        mHistoMin - myBinXStep / 2,
-                        mHistoMax + myBinXStep / 2 );
 
-  mpPlot->replot();
-
-  // histo plot markers
-  // memory leak?
-  mHistoMarkerMin = new QwtPlotMarker();
-  mHistoMarkerMin->attach( mpPlot );
-  mHistoMarkerMax = new QwtPlotMarker();
-  mHistoMarkerMax->attach( mpPlot );
-  updateHistoMarkers();
-
-  // histo picker
-  if ( ! mHistoPicker )
+  if ( mHistoMin < mHistoMax )
   {
-    mHistoPicker = new QwtPlotPicker( mpPlot->canvas() );
-    // mHistoPicker->setTrackerMode( QwtPicker::ActiveOnly );
-    mHistoPicker->setTrackerMode( QwtPicker::AlwaysOff );
-    mHistoPicker->setRubberBand( QwtPicker::VLineRubberBand );
+    // for x axis use band pixel values rather than gdal hist. bin values
+    // subtract -0.5 to prevent rounding errors
+    // see http://www.gdal.org/classGDALRasterBand.html#3f8889607d3b2294f7e0f11181c201c8
+    // fix x range for non-Byte data
+    mpPlot->setAxisScale( QwtPlot::xBottom,
+                          mHistoMin - myBinXStep / 2,
+                          mHistoMax + myBinXStep / 2 );
+    mpPlot->setEnabled( true );
+    mpPlot->replot();
+
+    // histo plot markers
+    // memory leak?
+    mHistoMarkerMin = new QwtPlotMarker();
+    mHistoMarkerMin->attach( mpPlot );
+    mHistoMarkerMax = new QwtPlotMarker();
+    mHistoMarkerMax->attach( mpPlot );
+    updateHistoMarkers();
+
+    // histo picker
+    if ( !mHistoPicker )
+    {
+      mHistoPicker = new QwtPlotPicker( mpPlot->canvas() );
+      // mHistoPicker->setTrackerMode( QwtPicker::ActiveOnly );
+      mHistoPicker->setTrackerMode( QwtPicker::AlwaysOff );
+      mHistoPicker->setRubberBand( QwtPicker::VLineRubberBand );
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+      mHistoPicker->setStateMachine( new QwtPickerDragPointMachine );
+      connect( mHistoPicker, SIGNAL( selected( const QPointF & ) ), this, SLOT( histoPickerSelected( const QPointF & ) ) );
+#else
+      mHistoPicker->setSelectionFlags( QwtPicker::PointSelection | QwtPicker::DragSelection );
+      connect( mHistoPicker, SIGNAL( selected( const QwtDoublePoint & ) ), this, SLOT( histoPickerSelectedQwt5( const QwtDoublePoint & ) ) );
+#endif
+    }
     mHistoPicker->setEnabled( false );
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-    mHistoPicker->setStateMachine( new QwtPickerDragPointMachine );
-    connect( mHistoPicker, SIGNAL( selected( const QPointF & ) ), this, SLOT( histoPickerSelected( const QPointF & ) ) );
-#else
-    mHistoPicker->setSelectionFlags( QwtPicker::PointSelection | QwtPicker::DragSelection );
-    connect( mHistoPicker, SIGNAL( selected( const QwtDoublePoint & ) ), this, SLOT( histoPickerSelectedQwt5( const QwtDoublePoint & ) ) );
-#endif
-  }
 
-  // plot zoomer
-  if ( ! mHistoZoomer )
-  {
-    mHistoZoomer = new QwtPlotZoomer( mpPlot->canvas() );
+    // plot zoomer
+    if ( !mHistoZoomer )
+    {
+      mHistoZoomer = new QwtPlotZoomer( mpPlot->canvas() );
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-    mHistoZoomer->setStateMachine( new QwtPickerDragRectMachine );
+      mHistoZoomer->setStateMachine( new QwtPickerDragRectMachine );
 #else
-    mHistoZoomer->setSelectionFlags( QwtPicker::RectSelection | QwtPicker::DragSelection );
+      mHistoZoomer->setSelectionFlags( QwtPicker::RectSelection | QwtPicker::DragSelection );
 #endif
-    mHistoZoomer->setTrackerMode( QwtPicker::AlwaysOff );
+      mHistoZoomer->setTrackerMode( QwtPicker::AlwaysOff );
+    }
     mHistoZoomer->setEnabled( true );
+  }
+  else
+  {
+    mpPlot->setDisabled( true );
+    if ( mHistoPicker )
+      mHistoPicker->setEnabled( false );
+    if ( mHistoZoomer )
+      mHistoZoomer->setEnabled( false );
   }
 
   disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );

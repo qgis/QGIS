@@ -50,7 +50,7 @@ class CORE_EXPORT QgsRasterBandStats
     {
       statsGathered = None;
       minimumValue = std::numeric_limits<double>::max();
-      maximumValue = std::numeric_limits<double>::min();
+      maximumValue = -std::numeric_limits<double>::max();
       range = 0.0;
       mean = 0.0;
       sumOfSquares = 0.0;
