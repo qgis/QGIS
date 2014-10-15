@@ -105,6 +105,10 @@ void QgsTextEditWrapper::initWidget( QWidget* editor )
     }
 
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
+
+    mWritablePalette = mLineEdit->palette();
+    mReadOnlyPalette = mLineEdit->palette();
+    mReadOnlyPalette.setColor( QPalette::Text, mWritablePalette.color( QPalette::Disabled, QPalette::Text ) );
   }
 }
 
@@ -143,5 +147,11 @@ void QgsTextEditWrapper::setEnabled( bool enabled )
     mPlainTextEdit->setReadOnly( !enabled );
 
   if ( mLineEdit )
+  {
     mLineEdit->setReadOnly( !enabled );
+    if ( enabled )
+      mLineEdit->setPalette( mWritablePalette );
+    else
+      mLineEdit->setPalette( mReadOnlyPalette );
+  }
 }

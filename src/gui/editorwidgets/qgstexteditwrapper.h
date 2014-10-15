@@ -55,6 +55,8 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
     QTextEdit* mTextEdit;
     QPlainTextEdit* mPlainTextEdit;
     QLineEdit* mLineEdit;
+    QPalette mReadOnlyPalette;
+    QPalette mWritablePalette;
 };
 
 #endif // QGSTEXTEDITWRAPPER_H
