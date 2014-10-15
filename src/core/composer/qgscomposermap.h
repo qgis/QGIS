@@ -43,6 +43,7 @@ class QgsVectorLayer;
  *  \brief Object representing map window.
  */
 
+Q_NOWARN_DEPRECATED_PUSH
 class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 {
     Q_OBJECT
@@ -948,6 +949,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     friend class QgsComposerMapOverview; //to access mXOffset, mYOffset
 };
+Q_NOWARN_DEPRECATED_POP
 
 #endif
 
