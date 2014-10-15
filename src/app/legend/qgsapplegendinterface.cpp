@@ -85,7 +85,8 @@ void QgsAppLegendInterface::moveLayer( QgsMapLayer * ml, int groupIndex )
   if ( !nodeLayer || !QgsLayerTree::isGroup( nodeLayer->parent() ) )
     return;
 
-  group->insertLayer( 0, ml );
+  Qt::CheckState checked = nodeLayer->isVisible();
+  group->insertLayer( 0, ml, checked );
 
   QgsLayerTreeGroup* nodeLayerParentGroup = QgsLayerTree::toGroup( nodeLayer->parent() );
   nodeLayerParentGroup->removeChildNode( nodeLayer );

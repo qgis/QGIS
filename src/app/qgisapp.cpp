@@ -6978,10 +6978,10 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
     Q_ASSERT( QgsLayerTree::isGroup( nodeSelectedLyr->parent() ) );
     QgsLayerTreeGroup* parentGroup = QgsLayerTree::toGroup( nodeSelectedLyr->parent() );
 
-    QgsLayerTreeLayer* nodeDupLayer = parentGroup->insertLayer( parentGroup->children().indexOf( nodeSelectedLyr ) + 1, dupLayer );
-
     // always set duplicated layers to not visible so layer can be configured before being turned on
-    nodeDupLayer->setVisible( Qt::Unchecked );
+    Qt::CheckState checked;
+    QgsLayerTreeLayer* nodeDupLayer = parentGroup->insertLayer( parentGroup->children().indexOf( nodeSelectedLyr ) + 1, dupLayer, checked = Qt::Unchecked );
+    Q_UNUSED( nodeDupLayer );
 
     // duplicate the layer style
     copyStyle( selectedLyr );

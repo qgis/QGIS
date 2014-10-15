@@ -45,7 +45,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     //! Append a new group node with given name. Newly created node is owned by this group.
     QgsLayerTreeGroup* addGroup( const QString& name );
     //! Insert a new layer node for given map layer at specified position. Newly created node is owned by this group.
-    QgsLayerTreeLayer* insertLayer( int index, QgsMapLayer* layer );
+    QgsLayerTreeLayer* insertLayer( int index, QgsMapLayer* layer , Qt::CheckState checked );
     //! Append a new layer node for given map layer. Newly created node is owned by this group.
     QgsLayerTreeLayer* addLayer( QgsMapLayer* layer );
 
