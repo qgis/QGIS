@@ -22,6 +22,7 @@
 #include <QDomDocument>
 
 class QgsComposerItem;
+class QgsComposerMultiFrame;
 
 /**Undo command to undo/redo all composer item related changes*/
 class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
@@ -46,7 +47,10 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     /**Returns true if previous state and after state are valid and different*/
     bool containsChange() const;
 
-    const QgsComposerItem* item() const { return mItem; }
+    /**Returns the target item the command applies to.
+     * @returns target composer item
+    */
+    QgsComposerItem *item() const;
 
   protected:
     /**Target item of the command*/
@@ -55,6 +59,11 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     QDomDocument mPreviousState;
     /**XML containing the state after executing the command*/
     QDomDocument mAfterState;
+
+    /**Parameters for frame items*/
+    /**Parent multiframe*/
+    QgsComposerMultiFrame* mMultiFrame;
+    int mFrameNumber;
 
     /**Flag to prevent the first redo() if the command is pushed to the undo stack*/
     bool mFirstRun;

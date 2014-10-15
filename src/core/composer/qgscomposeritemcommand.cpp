@@ -17,11 +17,26 @@
 
 #include "qgscomposeritemcommand.h"
 #include "qgscomposeritem.h"
+#include "qgscomposerframe.h"
+#include "qgscomposermultiframe.h"
 #include "qgsproject.h"
+#include "qgslogger.h"
 
-QgsComposerItemCommand::QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent ):
-    QUndoCommand( text, parent ), mItem( item ), mFirstRun( true )
+QgsComposerItemCommand::QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent )
+    : QUndoCommand( text, parent )
+    , mItem( item )
+    , mMultiFrame( 0 )
+    , mFrameNumber( 0 )
+    , mFirstRun( true )
 {
+  //is item a frame?
+  QgsComposerFrame* frame = dynamic_cast<QgsComposerFrame*>( mItem );
+  if ( frame )
+  {
+    //store parent multiframe and frame index
+    mMultiFrame = frame->multiFrame();
+    mFrameNumber = mMultiFrame->frameIndex( frame );
+  }
 }
 
 QgsComposerItemCommand::~QgsComposerItemCommand()
@@ -48,6 +63,27 @@ bool QgsComposerItemCommand::containsChange() const
   return !( mPreviousState.isNull() || mAfterState.isNull() || mPreviousState.toString() == mAfterState.toString() );
 }
 
+QgsComposerItem* QgsComposerItemCommand::item() const
+{
+  QgsComposerItem* item = 0;
+  if ( mMultiFrame )
+  {
+    //item is a frame, so it needs to be handled differently
+    //in this case the target item is the matching frame number, as subsequent
+    //changes to the multiframe may have deleted mItem
+    if ( mMultiFrame->frameCount() > mFrameNumber )
+    {
+      item = mMultiFrame->frame( mFrameNumber );
+    }
+  }
+  else if ( mItem )
+  {
+    item = mItem;
+  }
+
+  return item;
+}
+
 void QgsComposerItemCommand::savePreviousState()
 {
   saveState( mPreviousState );
@@ -60,26 +96,38 @@ void QgsComposerItemCommand::saveAfterState()
 
 void QgsComposerItemCommand::saveState( QDomDocument& stateDoc ) const
 {
-  if ( mItem )
+  const QgsComposerItem* source = item();
+  if ( !source )
   {
-    stateDoc.clear();
-    QDomElement documentElement = stateDoc.createElement( "ComposerItemState" );
-    mItem->writeXML( documentElement, stateDoc );
-    stateDoc.appendChild( documentElement );
+    return;
   }
+
+  stateDoc.clear();
+  QDomElement documentElement = stateDoc.createElement( "ComposerItemState" );
+  source->writeXML( documentElement, stateDoc );
+  stateDoc.appendChild( documentElement );
 }
 
 void QgsComposerItemCommand::restoreState( QDomDocument& stateDoc ) const
 {
-  if ( mItem )
+  QgsComposerItem* destItem = item();
+  if ( !destItem )
   {
-    mItem->readXML( stateDoc.documentElement().firstChild().toElement(), stateDoc );
-    mItem->repaint();
-    QgsProject::instance()->dirty( true );
+    return;
   }
+
+  destItem->readXML( stateDoc.documentElement().firstChild().toElement(), stateDoc );
+  destItem->repaint();
+  QgsProject::instance()->dirty( true );
 }
 
-QgsComposerMergeCommand::QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text ): QgsComposerItemCommand( item, text ), mContext( c )
+//
+//QgsComposerMergeCommand
+//
+
+QgsComposerMergeCommand::QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text )
+    : QgsComposerItemCommand( item, text )
+    , mContext( c )
 {
 }
 
@@ -89,11 +137,18 @@ QgsComposerMergeCommand::~QgsComposerMergeCommand()
 
 bool QgsComposerMergeCommand::mergeWith( const QUndoCommand * command )
 {
-  const QgsComposerItemCommand* c = dynamic_cast<const QgsComposerItemCommand*>( command );
-  if ( !c || mItem != c->item() )
+  QgsComposerItem* thisItem = item();
+  if ( !thisItem )
   {
     return false;
   }
+
+  const QgsComposerItemCommand* c = dynamic_cast<const QgsComposerItemCommand*>( command );
+  if ( !c || thisItem != c->item() )
+  {
+    return false;
+  }
+
   mAfterState = c->afterState();
   return true;
 }

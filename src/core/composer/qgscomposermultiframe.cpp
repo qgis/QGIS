@@ -307,7 +307,8 @@ void QgsComposerMultiFrame::removeFrame( int i, const bool removeEmptyPages )
   {
     mIsRecalculatingSize = true;
     int pageNumber = frameItem->page();
-    mComposition->removeComposerItem( frameItem );
+    //remove item, but don't create undo command
+    mComposition->removeComposerItem( frameItem, false );
     //if frame was the only item on the page, remove the page
     if ( removeEmptyPages && mComposition->pageIsEmpty( pageNumber ) )
     {
@@ -385,8 +386,10 @@ bool QgsComposerMultiFrame::_readXML( const QDomElement& itemElem, const QDomDoc
       QDomElement frameElem = frameList.at( i ).toElement();
       QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, 0, 0, 0, 0 );
       newFrame->readXML( frameElem, doc );
-      addFrame( newFrame );
+      addFrame( newFrame, false );
     }
+
+    //TODO - think there should be a recalculateFrameSizes() call here
   }
   return true;
 }

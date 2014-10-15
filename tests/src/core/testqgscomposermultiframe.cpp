@@ -34,6 +34,8 @@ class TestQgsComposerMultiFrame: public QObject
     void addFrame(); //test creating new frame inherits all properties of existing frame
     void frameIsEmpty(); //test if frame is empty works
     void addRemovePage(); //test if page is added and removed for RepeatUntilFinished mode
+    void undoRedo(); //test that combinations of frame/multiframe undo/redo don't crash
+    void undoRedoRemovedFrame(); //test that undo doesn't crash with removed frames
 
   private:
     QgsComposition* mComposition;
@@ -203,6 +205,148 @@ void TestQgsComposerMultiFrame::addRemovePage()
   delete htmlItem;
 }
 
+void TestQgsComposerMultiFrame::undoRedo()
+{
+  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame* frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  htmlItem->addFrame( frame1 );
+  htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
+  htmlItem->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
+
+  //short content, so should fit in one frame
+  htmlItem->setHtml( QString( "<p>Test content</p>" ) );
+  htmlItem->loadHtml();
+
+  //do some combinations of undo/redo commands for both the frame and multiframe
+  //to try to trigger a crash
+  frame1->beginCommand( "move" );
+  frame1->setSceneRect( QRectF( 10, 10, 20, 20 ) );
+  frame1->endCommand();
+  frame1->beginCommand( "outline", QgsComposerMergeCommand::ItemOutlineWidth );
+  frame1->setFrameOutlineWidth( 4.0 );
+  frame1->endCommand();
+  frame1->beginCommand( "outline", QgsComposerMergeCommand::ItemOutlineWidth );
+  frame1->setFrameOutlineWidth( 7.0 );
+  frame1->endCommand();
+
+  //multiframe commands
+  mComposition->beginMultiFrameCommand( htmlItem, "maxbreak" );
+  htmlItem->setMaxBreakDistance( 100 );
+  mComposition->endMultiFrameCommand();
+
+  //another frame command
+  frame1->beginCommand( "bgcolor", QgsComposerMergeCommand::ItemTransparency );
+  frame1->setBackgroundColor( QColor( 255, 255, 0 ) );
+  frame1->endCommand();
+  frame1->beginCommand( "bgcolor", QgsComposerMergeCommand::ItemTransparency );
+  frame1->setBackgroundColor( QColor( 255, 0, 0 ) );
+  frame1->endCommand();
+
+  //undo changes
+
+  //frame bg
+  mComposition->undoStack()->undo();
+  //multiframe max break
+  mComposition->undoStack()->undo();
+  //frame outline width
+  mComposition->undoStack()->undo();
+  //frame move
+  mComposition->undoStack()->undo();
+
+  //check result
+  QCOMPARE( htmlItem->maxBreakDistance(), 10.0 );
+  QCOMPARE( htmlItem->frame( 0 )->frameOutlineWidth(), 0.3 );
+  QCOMPARE( htmlItem->frame( 0 )->pos(), QPointF( 0, 0 ) );
+  QCOMPARE( htmlItem->frame( 0 )->backgroundColor(), QColor( 255, 255, 255 ) );
+
+  //now redo
+
+  //frame move
+  mComposition->undoStack()->redo();
+  //frame outline width
+  mComposition->undoStack()->redo();
+  //multiframe max break
+  mComposition->undoStack()->redo();
+  //frame bg color
+  mComposition->undoStack()->redo();
+
+  //check result
+  QCOMPARE( htmlItem->maxBreakDistance(), 100.0 );
+  QCOMPARE( htmlItem->frame( 0 )->frameOutlineWidth(), 7.0 );
+  QCOMPARE( htmlItem->frame( 0 )->pos(), QPointF( 10, 10 ) );
+  QCOMPARE( htmlItem->frame( 0 )->backgroundColor(), QColor( 255, 0, 0 ) );
+
+  mComposition->removeMultiFrame( htmlItem );
+  delete htmlItem;
+}
+
+
+void TestQgsComposerMultiFrame::undoRedoRemovedFrame()
+{
+  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame* frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  htmlItem->addFrame( frame1 );
+  htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
+  htmlItem->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
+
+  //long content, so should require multiple frames
+  htmlItem->setHtml( QString( "<p style=\"height: 2000px\">Test content</p>" ) );
+  htmlItem->loadHtml();
+
+  QVERIFY( htmlItem->frameCount() > 1 );
+
+  //do a command on the first frame
+  htmlItem->frame( 0 )->beginCommand( "outline", QgsComposerMergeCommand::ItemOutlineWidth );
+  htmlItem->frame( 0 )->setFrameOutlineWidth( 4.0 );
+  htmlItem->frame( 0 )->endCommand();
+  //do a command on the second frame
+  htmlItem->frame( 1 )->beginCommand( "outline", QgsComposerMergeCommand::ItemOutlineWidth );
+  htmlItem->frame( 1 )->setFrameOutlineWidth( 8.0 );
+  htmlItem->frame( 1 )->endCommand();
+
+  //do a multiframe command which removes extra frames
+  mComposition->beginMultiFrameCommand( htmlItem, "source" );
+  htmlItem->setHtml( QString( "<p style=\"height: 20px\">Test content</p>" ) );
+  mComposition->endMultiFrameCommand();
+
+  //wipes the second frame
+  htmlItem->loadHtml();
+
+  QCOMPARE( htmlItem->frameCount(), 1 );
+
+  //undo changes
+
+  //multiframe command
+  mComposition->undoStack()->undo();
+  //frame 2 command
+  mComposition->undoStack()->undo();
+  //frame 1 command
+  mComposition->undoStack()->undo();
+
+  //check result
+  QVERIFY( htmlItem->frameCount() > 1 );
+  QCOMPARE( htmlItem->frame( 0 )->frameOutlineWidth(), 0.3 );
+  QCOMPARE( htmlItem->frame( 1 )->frameOutlineWidth(), 0.3 );
+
+  //now redo
+
+  //frame 1 command
+  mComposition->undoStack()->redo();
+  //frame 2 command
+  mComposition->undoStack()->redo();
+
+  //check result
+  QVERIFY( htmlItem->frameCount() > 1 );
+  QCOMPARE( htmlItem->frame( 0 )->frameOutlineWidth(), 4.0 );
+  QCOMPARE( htmlItem->frame( 1 )->frameOutlineWidth(), 8.0 );
+
+  //multiframe command
+  mComposition->undoStack()->redo();
+  QCOMPARE( htmlItem->frameCount(), 1 );
+
+  mComposition->removeMultiFrame( htmlItem );
+  delete htmlItem;
+}
 
 QTEST_MAIN( TestQgsComposerMultiFrame )
 #include "moc_testqgscomposermultiframe.cxx"
