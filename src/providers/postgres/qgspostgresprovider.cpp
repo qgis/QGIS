@@ -2193,7 +2193,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
                        .arg( result.PQresultStatus() ).arg( PGRES_TUPLES_OK ) );
           throw PGException( result );
         }
-        // TODO: watch out for NULL , handle somehow
+        // TODO: watch out for NULL, handle somehow
         old_tg_id = result.PQgetvalue( 0, 0 ).toLong();
         QgsDebugMsg( QString( "Old TG id is %1" ).arg( old_tg_id ) );
       }
@@ -2681,15 +2681,15 @@ bool QgsPostgresProvider::getGeometryDetails()
     if ( !mIsQuery )
     {
       layerProperty.schemaName = schemaName;
-      layerProperty.tableName = tableName;
+      layerProperty.tableName  = tableName;
     }
     else
     {
       layerProperty.schemaName = "";
-      layerProperty.tableName = mQuery;
+      layerProperty.tableName  = mQuery;
     }
     layerProperty.geometryColName = mGeometryColumn;
-    layerProperty.geometryColType = sctNone;
+    layerProperty.geometryColType = mSpatialColType;
     layerProperty.force2d         = false;
 
     QString delim = "";
@@ -2773,7 +2773,7 @@ bool QgsPostgresProvider::getGeometryDetails()
   return mValid;
 }
 
-bool QgsPostgresProvider::convertField( QgsField &field , const QMap<QString, QVariant>* options )
+bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVariant> *options )
 {
   //determine field type to use for strings
   QString stringFieldType = "varchar";
@@ -3427,7 +3427,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
           .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
           // Must be the final .arg replacement - see above
           .arg( QgsPostgresConn::quotedValue( qmlStyle ),
-                  QgsPostgresConn::quotedValue( sldStyle ) );
+                QgsPostgresConn::quotedValue( sldStyle ) );
   }
 
   if ( useAsDefault )
