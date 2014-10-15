@@ -551,6 +551,8 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionRemoveAllFromOverview() = 0;
     virtual QAction *actionHideAllLayers() = 0;
     virtual QAction *actionShowAllLayers() = 0;
+    virtual QAction *actionHideSelectedLayers() = 0;
+    virtual QAction *actionShowSelectedLayers() = 0;
 
     // Plugin menu actions
     virtual QAction *actionManagePlugins() = 0;

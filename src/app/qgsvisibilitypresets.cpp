@@ -38,6 +38,8 @@ QgsVisibilityPresets::QgsVisibilityPresets()
 
   mMenu->addAction( QgisApp::instance()->actionShowAllLayers() );
   mMenu->addAction( QgisApp::instance()->actionHideAllLayers() );
+  mMenu->addAction( QgisApp::instance()->actionShowSelectedLayers() );
+  mMenu->addAction( QgisApp::instance()->actionHideSelectedLayers() );
   mMenu->addSeparator();
 
   mMenu->addAction( tr( "Add Preset..." ), this, SLOT( addPreset() ) );

@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>20</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="mProjectMenu">
@@ -178,6 +178,8 @@
     <addaction name="separator"/>
     <addaction name="mActionShowAllLayers"/>
     <addaction name="mActionHideAllLayers"/>
+    <addaction name="mActionShowSelectedLayers"/>
+    <addaction name="mActionHideSelectedLayers"/>
    </widget>
    <widget class="QMenu" name="mPluginMenu">
     <property name="title">
@@ -2240,6 +2242,24 @@ Acts on currently active editable layer</string>
   <action name="mActionSetLayerScaleVisibility">
    <property name="text">
     <string>Set Scale Visibility of Layer(s)</string>
+   </property>
+  </action>
+  <action name="mActionShowSelectedLayers">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowAllLayers.png</normaloff>:/images/themes/default/mActionShowSelectedLayers.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show Selected Layers</string>
+   </property>
+  </action>
+  <action name="mActionHideSelectedLayers">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHideAllLayers.png</normaloff>:/images/themes/default/mActionHideSelectedLayers.png</iconset>
+   </property>
+   <property name="text">
+    <string>Hide Selected Layers</string>
    </property>
   </action>
  </widget>

@@ -360,6 +360,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionRemoveAllFromOverview() { return mActionRemoveAllFromOverview; }
     QAction *actionHideAllLayers() { return mActionHideAllLayers; }
     QAction *actionShowAllLayers() { return mActionShowAllLayers; }
+    QAction *actionHideSelectedLayers() { return mActionHideSelectedLayers; }
+    QAction *actionShowSelectedLayers() { return mActionShowSelectedLayers; }
 
     QAction *actionManagePlugins() { return mActionManagePlugins; }
     QAction *actionPluginListSeparator() { return mActionPluginSeparator1; }
@@ -924,12 +926,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void hideAllLayers();
     //reimplements method from base (gui) class
     void showAllLayers();
-    // TODO: remove exportMapServer declaration once the mapserver export plugin is complete
-    // and tested
-    /*
-    //! Export current view as a mapserver map file
-    void exportMapServer();
-    */
+    //reimplements method from base (gui) class
+    void hideSelectedLayers();
+    //reimplements method from base (gui) class
+    void showSelectedLayers();
     //! Return pointer to the active layer
     QgsMapLayer *activeLayer();
     //! set the active layer

@@ -1176,6 +1176,8 @@ void QgisApp::createActions()
   connect( mActionRemoveAllFromOverview, SIGNAL( triggered() ), this, SLOT( removeAllFromOverview() ) );
   connect( mActionShowAllLayers, SIGNAL( triggered() ), this, SLOT( showAllLayers() ) );
   connect( mActionHideAllLayers, SIGNAL( triggered() ), this, SLOT( hideAllLayers() ) );
+  connect( mActionShowSelectedLayers, SIGNAL( triggered() ), this, SLOT( showSelectedLayers() ) );
+  connect( mActionHideSelectedLayers, SIGNAL( triggered() ), this, SLOT( hideSelectedLayers() ) );
 
   // Plugin Menu Items
 
@@ -1876,6 +1878,8 @@ void QgisApp::setTheme( QString theThemeName )
   mActionAddAllToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionAddAllToOverview.svg" ) );
   mActionHideAllLayers->setIcon( QgsApplication::getThemeIcon( "/mActionHideAllLayers.png" ) );
   mActionShowAllLayers->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
+  mActionHideSelectedLayers->setIcon( QgsApplication::getThemeIcon( "/mActionHideSelectedLayers.png" ) );
+  mActionShowSelectedLayers->setIcon( QgsApplication::getThemeIcon( "/mActionShowSelectedLayers.png" ) );
   mActionRemoveAllFromOverview->setIcon( QgsApplication::getThemeIcon( "/mActionRemoveAllFromOverview.svg" ) );
   mActionToggleFullScreen->setIcon( QgsApplication::getThemeIcon( "/mActionToggleFullScreen.png" ) );
   mActionProjectProperties->setIcon( QgsApplication::getThemeIcon( "/mActionProjectProperties.png" ) );
@@ -4428,6 +4432,35 @@ void QgisApp::showAllLayers()
 
   foreach ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
     nodeLayer->setVisible( Qt::Checked );
+}
+
+//reimplements method from base (gui) class
+void QgisApp::hideSelectedLayers()
+{
+  QgsDebugMsg( "hiding selected layers!" );
+
+  foreach ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
+  {
+    if ( QgsLayerTree::isGroup( node ) )
+      QgsLayerTree::toGroup( node )->setVisible( Qt::Unchecked );
+    else if ( QgsLayerTree::isLayer( node ) )
+      QgsLayerTree::toLayer( node )->setVisible( Qt::Unchecked );
+  }
+}
+
+
+// reimplements method from base (gui) class
+void QgisApp::showSelectedLayers()
+{
+  QgsDebugMsg( "show selected layers!" );
+
+  foreach ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
+  {
+    if ( QgsLayerTree::isGroup( node ) )
+      QgsLayerTree::toGroup( node )->setVisible( Qt::Checked );
+    else if ( QgsLayerTree::isLayer( node ) )
+      QgsLayerTree::toLayer( node )->setVisible( Qt::Checked );
+  }
 }
 
 

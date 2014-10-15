@@ -556,6 +556,8 @@ QAction *QgisAppInterface::actionAddAllToOverview() { return qgis->actionAddAllT
 QAction *QgisAppInterface::actionRemoveAllFromOverview() { return qgis->actionRemoveAllFromOverview(); }
 QAction *QgisAppInterface::actionHideAllLayers() { return qgis->actionHideAllLayers(); }
 QAction *QgisAppInterface::actionShowAllLayers() { return qgis->actionShowAllLayers(); }
+QAction *QgisAppInterface::actionHideSelectedLayers() { return qgis->actionHideSelectedLayers(); }
+QAction *QgisAppInterface::actionShowSelectedLayers() { return qgis->actionShowSelectedLayers(); }
 
 //! Plugin menu actions
 QAction *QgisAppInterface::actionManagePlugins() { return qgis->actionManagePlugins(); }
