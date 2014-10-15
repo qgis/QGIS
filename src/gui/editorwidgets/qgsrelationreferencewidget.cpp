@@ -230,7 +230,13 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
 
   if ( mReadOnlySelector )
   {
-    mLineEdit->setText( f.attribute( mFkeyFieldIdx ).toString() );
+    QgsExpression expr( mReferencedLayer->displayExpression() );
+    QString title = expr.evaluate( &f ).toString();
+    if ( expr.hasEvalError() )
+    {
+      title = f.attribute( mFkeyFieldIdx ).toString();
+    }
+    mLineEdit->setText( title );
     mFeatureId = f.id();
   }
   else
@@ -565,7 +571,13 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature& feature )
 {
   if ( mReadOnlySelector )
   {
-    mLineEdit->setText( feature.attribute( mFkeyFieldIdx ).toString() );
+    QgsExpression expr( mReferencedLayer->displayExpression() );
+    QString title = expr.evaluate( &feature ).toString();
+    if ( expr.hasEvalError() )
+    {
+      title = feature.attribute( mFkeyFieldIdx ).toString();
+    }
+    mLineEdit->setText( title );
     mForeignKey = feature.attribute( mFkeyFieldIdx );
     mFeatureId = feature.id();
   }
