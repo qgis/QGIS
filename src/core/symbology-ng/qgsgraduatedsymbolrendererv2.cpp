@@ -1113,10 +1113,11 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
       double upperValue = rangeElem.attribute( "upper" ).toDouble();
       QString symbolName = rangeElem.attribute( "symbol" );
       QString label = rangeElem.attribute( "label" );
+      bool render=rangeElem.attribute("render","true") != "false";
       if ( symbolMap.contains( symbolName ) )
       {
         QgsSymbolV2* symbol = symbolMap.take( symbolName );
-        ranges.append( QgsRendererRangeV2( lowerValue, upperValue, symbol, label ) );
+        ranges.append( QgsRendererRangeV2( lowerValue, upperValue, symbol, label, render ) );
       }
     }
     rangeElem = rangeElem.nextSiblingElement();
