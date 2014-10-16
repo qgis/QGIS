@@ -147,9 +147,6 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QPainter* painter )
 }
 
 
-
-
-
 QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGroup* parentGroup, bool splitLayer )
 {
   QList<Atom> atoms;
@@ -246,7 +243,6 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
 
   return atoms;
 }
-
 
 
 void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
@@ -346,7 +342,6 @@ void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
     }
   }
 }
-
 
 
 QSizeF QgsLegendRenderer::drawTitle( QPainter* painter, QPointF point, Qt::AlignmentFlag halignment, double legendWidth )

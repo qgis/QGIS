@@ -656,7 +656,12 @@ QImage* QgsWMSServer::getLegendGraphics()
 
   QgsLayerTreeGroup rootGroup;
   foreach ( QString layerId, layerIds )
-    rootGroup.addLayer( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+  {
+    QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    QgsLayerTreeLayer *layer = rootGroup.addLayer( ml );
+    if( !ml->title().isEmpty() )
+      layer->setLayerName( ml->title() );
+  }
   QgsLayerTreeModel legendModel( &rootGroup );
 
   QList<QgsLayerTreeNode*> rootChildren = rootGroup.children();
