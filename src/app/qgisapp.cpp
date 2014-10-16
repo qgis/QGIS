@@ -2797,6 +2797,7 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
         QStringList sublayers = layer->dataProvider()->subLayers();
         QString ligne = sublayers.at( 0 );
         QStringList elements = ligne.split( ":" );
+        if ( elements.at( 1 ) != base ) elements.replace( 1, base );
         layer->setLayerName( elements.at( 1 ) );
         myList << layer;
       }
