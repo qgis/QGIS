@@ -6800,7 +6800,7 @@ Open the results dialog to check it.</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="238"/>
+        <location filename="../src/ui/qgisapp.ui" line="240"/>
         <source>&amp;Edit</source>
         <translation>&amp;Keisti</translation>
     </message>
@@ -6842,12 +6842,12 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">Naujas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="206"/>
+        <location filename="../src/ui/qgisapp.ui" line="208"/>
         <source>&amp;Settings</source>
         <translation>&amp;Nustatymai</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="184"/>
+        <location filename="../src/ui/qgisapp.ui" line="186"/>
         <source>&amp;Plugins</source>
         <translation>Pri&amp;edai</translation>
     </message>
@@ -6857,77 +6857,77 @@ Open the results dialog to check it.</source>
         <translation>&amp;Dekoracijos</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="218"/>
+        <location filename="../src/ui/qgisapp.ui" line="220"/>
         <source>&amp;Raster</source>
         <translation>&amp;Rastras</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="192"/>
+        <location filename="../src/ui/qgisapp.ui" line="194"/>
         <source>&amp;Help</source>
         <translation>&amp;Pagalba</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="288"/>
+        <location filename="../src/ui/qgisapp.ui" line="290"/>
         <source>File</source>
         <translation>Failas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="305"/>
+        <location filename="../src/ui/qgisapp.ui" line="307"/>
         <source>Manage Layers</source>
         <translation>Tvarkyti sluoksnius</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="326"/>
+        <location filename="../src/ui/qgisapp.ui" line="328"/>
         <source>Digitizing</source>
         <translation>Skaitmeninimas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="347"/>
+        <location filename="../src/ui/qgisapp.ui" line="349"/>
         <source>Advanced Digitizing</source>
         <translation>Sudėtingesnis skaitmeninimas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="374"/>
+        <location filename="../src/ui/qgisapp.ui" line="376"/>
         <source>Map Navigation</source>
         <translation>Žemėlapio navigacija</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="397"/>
+        <location filename="../src/ui/qgisapp.ui" line="399"/>
         <source>Attributes</source>
         <translation>Atributai</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="416"/>
+        <location filename="../src/ui/qgisapp.ui" line="418"/>
         <source>Plugins</source>
         <translation>Priedai</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="427"/>
+        <location filename="../src/ui/qgisapp.ui" line="429"/>
         <source>Help</source>
         <translation>Pagalba</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="439"/>
+        <location filename="../src/ui/qgisapp.ui" line="441"/>
         <source>Raster</source>
         <translation>Rastras</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="458"/>
+        <location filename="../src/ui/qgisapp.ui" line="460"/>
         <source>Label</source>
         <translation>Etiketė</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="476"/>
+        <location filename="../src/ui/qgisapp.ui" line="478"/>
         <source>Vector</source>
         <translation>Vektorius</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="487"/>
+        <location filename="../src/ui/qgisapp.ui" line="489"/>
         <source>Database</source>
         <translation>Duomenų bazė</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="498"/>
+        <location filename="../src/ui/qgisapp.ui" line="500"/>
         <source>Web</source>
         <translation>Žiniatinklis</translation>
     </message>
@@ -6936,7 +6936,7 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">&amp;Naujas projektas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="516"/>
+        <location filename="../src/ui/qgisapp.ui" line="518"/>
         <source>Ctrl+N</source>
         <translation></translation>
     </message>
@@ -6945,7 +6945,7 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">&amp;Atverti projektą...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="528"/>
+        <location filename="../src/ui/qgisapp.ui" line="530"/>
         <source>Ctrl+O</source>
         <translation></translation>
     </message>
@@ -6954,7 +6954,7 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">Į&amp;rašyti projektą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="540"/>
+        <location filename="../src/ui/qgisapp.ui" line="542"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
@@ -6963,43 +6963,43 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">Įrašyti projektą &amp;kaip...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="552"/>
+        <location filename="../src/ui/qgisapp.ui" line="554"/>
         <source>Ctrl+Shift+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="561"/>
+        <location filename="../src/ui/qgisapp.ui" line="563"/>
         <source>Save as Image...</source>
         <translation>Įrašyti kaip piešinį...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="570"/>
+        <location filename="../src/ui/qgisapp.ui" line="572"/>
         <source>&amp;New Print Composer</source>
         <translation>&amp;Naujas spausdinimo kūrėjas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="573"/>
+        <location filename="../src/ui/qgisapp.ui" line="575"/>
         <source>Ctrl+P</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1651"/>
+        <location filename="../src/ui/qgisapp.ui" line="1653"/>
         <source>Embed Layers and Groups...</source>
         <translation>Įdėti sluoksnius ir grupes...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1717"/>
+        <location filename="../src/ui/qgisapp.ui" line="1719"/>
         <source>Run Feature Action</source>
         <translation>Vykdyti geoobjekto veiksmą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1741"/>
-        <location filename="../src/ui/qgisapp.ui" line="1744"/>
+        <location filename="../src/ui/qgisapp.ui" line="1743"/>
+        <location filename="../src/ui/qgisapp.ui" line="1746"/>
         <source>Touch zoom and pan</source>
         <translation>Jutiminis artinimas ir perstumimas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1756"/>
+        <location filename="../src/ui/qgisapp.ui" line="1758"/>
         <source>Offset Curve</source>
         <translation>Kreivės postūmis</translation>
     </message>
@@ -7012,411 +7012,421 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">Naujas projektas pagal šabloną</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="224"/>
+        <location filename="../src/ui/qgisapp.ui" line="226"/>
         <source>Vect&amp;or</source>
         <translation>&amp;Vektorius</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="228"/>
+        <location filename="../src/ui/qgisapp.ui" line="230"/>
         <source>&amp;OpenStreetMap</source>
         <translation>&amp;OpenStreetMap</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="242"/>
+        <location filename="../src/ui/qgisapp.ui" line="244"/>
         <source>Paste Features as</source>
         <translation>Įkelti objektą kaip</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="513"/>
+        <location filename="../src/ui/qgisapp.ui" line="515"/>
         <source>&amp;New</source>
         <translation>&amp;Naujas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="525"/>
+        <location filename="../src/ui/qgisapp.ui" line="527"/>
         <source>&amp;Open...</source>
         <translation>&amp;Atverti...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="537"/>
+        <location filename="../src/ui/qgisapp.ui" line="539"/>
         <source>&amp;Save</source>
         <translation>Į&amp;rašyti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="549"/>
+        <location filename="../src/ui/qgisapp.ui" line="551"/>
         <source>Save &amp;As...</source>
         <translation>Įrašyti &amp;kaip...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="591"/>
+        <location filename="../src/ui/qgisapp.ui" line="593"/>
         <source>Exit QGIS</source>
         <translation>Išjungti QGIS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="594"/>
+        <location filename="../src/ui/qgisapp.ui" line="596"/>
         <source>Ctrl+Q</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="606"/>
+        <location filename="../src/ui/qgisapp.ui" line="608"/>
         <source>&amp;Undo</source>
         <translation>&amp;Atšaukti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="609"/>
+        <location filename="../src/ui/qgisapp.ui" line="611"/>
         <source>Ctrl+Z</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="618"/>
+        <location filename="../src/ui/qgisapp.ui" line="620"/>
         <source>&amp;Redo</source>
         <translation>&amp;Pakartoti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="621"/>
+        <location filename="../src/ui/qgisapp.ui" line="623"/>
         <source>Ctrl+Shift+Z</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="630"/>
+        <location filename="../src/ui/qgisapp.ui" line="632"/>
         <source>Cut Features</source>
         <translation>Iškirpti objektus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="633"/>
+        <location filename="../src/ui/qgisapp.ui" line="635"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="642"/>
+        <location filename="../src/ui/qgisapp.ui" line="644"/>
         <source>Copy Features</source>
         <translation>Kopijuoti objektus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="645"/>
+        <location filename="../src/ui/qgisapp.ui" line="647"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="654"/>
+        <location filename="../src/ui/qgisapp.ui" line="656"/>
         <source>Paste Features</source>
         <translation>Įkelti objektus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="657"/>
+        <location filename="../src/ui/qgisapp.ui" line="659"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="669"/>
+        <location filename="../src/ui/qgisapp.ui" line="671"/>
         <source>Add Feature</source>
         <translation>Pridėti objektą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="672"/>
+        <location filename="../src/ui/qgisapp.ui" line="674"/>
         <source>Ctrl+.</source>
         <translation>Ctrl+.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="684"/>
+        <location filename="../src/ui/qgisapp.ui" line="686"/>
         <source>Move Feature(s)</source>
         <translation>Perkelti objektą(-us)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="696"/>
+        <location filename="../src/ui/qgisapp.ui" line="698"/>
         <source>Reshape Features</source>
         <translation>Keisti geoobjektų formą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="708"/>
+        <location filename="../src/ui/qgisapp.ui" line="710"/>
         <source>Split Features</source>
         <translation>Padalinti objektus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="720"/>
+        <location filename="../src/ui/qgisapp.ui" line="722"/>
         <source>Split Parts</source>
         <translation>Padalinti dalis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="729"/>
+        <location filename="../src/ui/qgisapp.ui" line="731"/>
         <source>Delete Selected</source>
         <translation>Trinti pažymėtus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="741"/>
+        <location filename="../src/ui/qgisapp.ui" line="743"/>
         <source>Add Ring</source>
         <translation>Pridėti žiedą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="753"/>
+        <location filename="../src/ui/qgisapp.ui" line="755"/>
         <source>Add Part</source>
         <translation>Pridėti dalį</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="765"/>
+        <location filename="../src/ui/qgisapp.ui" line="767"/>
         <source>Simplify Feature</source>
         <translation>Supaprastinti objektą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="777"/>
+        <location filename="../src/ui/qgisapp.ui" line="779"/>
         <source>Delete Ring</source>
         <translation>Naikinti žiedą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="789"/>
+        <location filename="../src/ui/qgisapp.ui" line="791"/>
         <source>Delete Part</source>
         <translation>Naikinti dalį</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="819"/>
+        <location filename="../src/ui/qgisapp.ui" line="821"/>
         <source>Node Tool</source>
         <translation>Viršūnės įrankis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="831"/>
+        <location filename="../src/ui/qgisapp.ui" line="833"/>
         <source>Rotate Point Symbols</source>
         <translation>Pasukti taško simbolį</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="836"/>
+        <location filename="../src/ui/qgisapp.ui" line="838"/>
         <source>Snapping Options...</source>
         <translation>Pritraukimo parinktys...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="848"/>
+        <location filename="../src/ui/qgisapp.ui" line="850"/>
         <source>Pan Map</source>
         <translation>Paslinkti žemėlapį</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="860"/>
+        <location filename="../src/ui/qgisapp.ui" line="862"/>
         <source>Zoom In</source>
         <translation>Didinti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="863"/>
+        <location filename="../src/ui/qgisapp.ui" line="865"/>
         <source>Ctrl++</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="875"/>
+        <location filename="../src/ui/qgisapp.ui" line="877"/>
         <source>Zoom Out</source>
         <translation>Mažinti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="878"/>
+        <location filename="../src/ui/qgisapp.ui" line="880"/>
         <source>Ctrl+-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="890"/>
+        <location filename="../src/ui/qgisapp.ui" line="892"/>
         <source>Select Feature(s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="893"/>
+        <location filename="../src/ui/qgisapp.ui" line="895"/>
         <source>Select Features by area or single click</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="950"/>
+        <location filename="../src/ui/qgisapp.ui" line="952"/>
         <source>Identify Features</source>
         <translation>Identifikuoti objektus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="953"/>
+        <location filename="../src/ui/qgisapp.ui" line="955"/>
         <source>Ctrl+Shift+I</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="965"/>
+        <location filename="../src/ui/qgisapp.ui" line="967"/>
         <source>Measure Line</source>
         <translation>Matuoti liniją</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="968"/>
-        <location filename="../src/ui/qgisapp.ui" line="1250"/>
+        <location filename="../src/ui/qgisapp.ui" line="970"/>
+        <location filename="../src/ui/qgisapp.ui" line="1252"/>
         <source>Ctrl+Shift+M</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="980"/>
+        <location filename="../src/ui/qgisapp.ui" line="982"/>
         <source>Measure Area</source>
         <translation>Matuoti plotą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="983"/>
+        <location filename="../src/ui/qgisapp.ui" line="985"/>
         <source>Ctrl+Shift+J</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="995"/>
+        <location filename="../src/ui/qgisapp.ui" line="997"/>
         <source>Measure Angle</source>
         <translation>Matuoti kampą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1004"/>
+        <location filename="../src/ui/qgisapp.ui" line="1006"/>
         <source>Zoom Full</source>
         <translation>Pilnai padidinti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1007"/>
+        <location filename="../src/ui/qgisapp.ui" line="1009"/>
         <source>Ctrl+Shift+F</source>
         <translation>Ctrl+Shift+F</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1016"/>
+        <location filename="../src/ui/qgisapp.ui" line="1018"/>
         <source>Zoom to Layer</source>
         <translation>Didinti iki sluoksnio</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1025"/>
+        <location filename="../src/ui/qgisapp.ui" line="1027"/>
         <source>Zoom to Selection</source>
         <translation>Didinti iki pažymėjimo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1028"/>
+        <location filename="../src/ui/qgisapp.ui" line="1030"/>
         <source>Ctrl+J</source>
         <translation>Ctrl+J</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1037"/>
+        <location filename="../src/ui/qgisapp.ui" line="1039"/>
         <source>Zoom Last</source>
         <translation>Didinti praėjusį</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1046"/>
+        <location filename="../src/ui/qgisapp.ui" line="1048"/>
         <source>Zoom Next</source>
         <translation>Didinti kitą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1055"/>
+        <location filename="../src/ui/qgisapp.ui" line="1057"/>
         <source>Zoom Actual Size</source>
         <translation>Didinti iki realaus dydžio</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1058"/>
+        <location filename="../src/ui/qgisapp.ui" line="1060"/>
         <source>Zoom to Native Pixel Resolution</source>
         <translation>Didinti iki pradinio taško rezoliucijos</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1070"/>
+        <location filename="../src/ui/qgisapp.ui" line="1072"/>
         <source>Map Tips</source>
         <translation>Žemėlapio patarimai</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1073"/>
+        <location filename="../src/ui/qgisapp.ui" line="1075"/>
         <source>Show information about a feature when the mouse is hovered over it</source>
         <translation>Rodyti informaciją apie geoobjektą, užvedus virš jo pelės žymeklį</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1082"/>
+        <location filename="../src/ui/qgisapp.ui" line="1084"/>
         <source>New Bookmark...</source>
         <translation>Nauja žymelė...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1085"/>
+        <location filename="../src/ui/qgisapp.ui" line="1087"/>
         <source>Ctrl+B</source>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1094"/>
+        <location filename="../src/ui/qgisapp.ui" line="1096"/>
         <source>Show Bookmarks</source>
         <translation>Rodyti žymeles</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1097"/>
+        <location filename="../src/ui/qgisapp.ui" line="1099"/>
         <source>Ctrl+Shift+B</source>
         <translation>Ctrl+Shift+B</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1106"/>
+        <location filename="../src/ui/qgisapp.ui" line="1108"/>
         <source>Refresh</source>
         <translation>Atnaujinti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1324"/>
-        <location filename="../src/ui/qgisapp.ui" line="1327"/>
+        <location filename="../src/ui/qgisapp.ui" line="1326"/>
+        <location filename="../src/ui/qgisapp.ui" line="1329"/>
         <source>Remove Layer/Group</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2109"/>
+        <location filename="../src/ui/qgisapp.ui" line="2111"/>
         <source>Need commercial support?</source>
         <translation>Reikia komercinio palaikymo?</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2154"/>
+        <location filename="../src/ui/qgisapp.ui" line="2156"/>
         <source>DXF Export...</source>
         <translation>DXF eksportas...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2166"/>
-        <location filename="../src/ui/qgisapp.ui" line="2169"/>
+        <location filename="../src/ui/qgisapp.ui" line="2168"/>
+        <location filename="../src/ui/qgisapp.ui" line="2171"/>
         <source>Fill Ring</source>
         <translation>Užpildyti žiedą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2174"/>
+        <location filename="../src/ui/qgisapp.ui" line="2176"/>
         <source>Add from Layer Definition File...</source>
         <translation>Pridėti iš sluoksnio apibrėžimo failo...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2179"/>
+        <location filename="../src/ui/qgisapp.ui" line="2181"/>
         <source>Save As Layer Definition File...</source>
         <translation>Įrašyti kaip sluoksnio apibrėžimo failą...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2190"/>
+        <location filename="../src/ui/qgisapp.ui" line="2192"/>
         <source>Normal</source>
         <translation type="unfinished">Normalus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2193"/>
+        <location filename="../src/ui/qgisapp.ui" line="2195"/>
         <source>Normal preview mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2201"/>
+        <location filename="../src/ui/qgisapp.ui" line="2203"/>
         <source>Simulate Photocopy (Grayscale)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2204"/>
+        <location filename="../src/ui/qgisapp.ui" line="2206"/>
         <source>Simulate photocopy (grayscale)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2212"/>
+        <location filename="../src/ui/qgisapp.ui" line="2214"/>
         <source>Simulate Fax (Mono)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2215"/>
+        <location filename="../src/ui/qgisapp.ui" line="2217"/>
         <source>Simulate fax (mono)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2223"/>
+        <location filename="../src/ui/qgisapp.ui" line="2225"/>
         <source>Simulate Color Blindness (Protanope)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2226"/>
+        <location filename="../src/ui/qgisapp.ui" line="2228"/>
         <source>Simulate color blindness (protanope)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2234"/>
+        <location filename="../src/ui/qgisapp.ui" line="2236"/>
         <source>Simulate Color Blindness (Deuteranope)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2237"/>
+        <location filename="../src/ui/qgisapp.ui" line="2239"/>
         <source>Simulate color blindness (deuteranope)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2242"/>
+        <location filename="../src/ui/qgisapp.ui" line="2244"/>
         <source>Set Scale Visibility of Layer(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2253"/>
+        <source>Show Selected Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2262"/>
+        <source>Hide Selected Layers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7424,117 +7434,117 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1121"/>
+        <location filename="../src/ui/qgisapp.ui" line="1123"/>
         <source>Text Annotation</source>
         <translation>Tekstinė anotacija</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1145"/>
+        <location filename="../src/ui/qgisapp.ui" line="1147"/>
         <source>Move Annotation</source>
         <translation>Perkelti anotaciją</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1154"/>
+        <location filename="../src/ui/qgisapp.ui" line="1156"/>
         <source>Labeling</source>
         <translation>Etiketės</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1157"/>
+        <location filename="../src/ui/qgisapp.ui" line="1159"/>
         <source>Layer Labeling Options</source>
         <translation>Sluoksnio etikečių parinktys</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1166"/>
+        <location filename="../src/ui/qgisapp.ui" line="1168"/>
         <source>New Shapefile Layer...</source>
         <translation>Naujas Shapefile sluoksnis...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1169"/>
+        <location filename="../src/ui/qgisapp.ui" line="1171"/>
         <source>Ctrl+Shift+N</source>
         <translation>Ctrl+Shift+N</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1178"/>
+        <location filename="../src/ui/qgisapp.ui" line="1180"/>
         <source>New SpatiaLite Layer ...</source>
         <translation>Naujas SpatiaLite sluoksnis...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1181"/>
+        <location filename="../src/ui/qgisapp.ui" line="1183"/>
         <source>Ctrl+Shift+A</source>
         <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1190"/>
+        <location filename="../src/ui/qgisapp.ui" line="1192"/>
         <source>Raster calculator ...</source>
         <translation>Rastro skaičiuotuvas...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1199"/>
+        <location filename="../src/ui/qgisapp.ui" line="1201"/>
         <source>Add Vector Layer...</source>
         <translation>Pridėti vektorinį sluoksnį...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1202"/>
+        <location filename="../src/ui/qgisapp.ui" line="1204"/>
         <source>Ctrl+Shift+V</source>
         <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1211"/>
+        <location filename="../src/ui/qgisapp.ui" line="1213"/>
         <source>Add Raster Layer...</source>
         <translation>Pridėti rastrinį sluoksnį...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1214"/>
+        <location filename="../src/ui/qgisapp.ui" line="1216"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1226"/>
+        <location filename="../src/ui/qgisapp.ui" line="1228"/>
         <source>Ctrl+Shift+D</source>
         <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1235"/>
+        <location filename="../src/ui/qgisapp.ui" line="1237"/>
         <source>Add SpatiaLite Layer...</source>
         <translation>Pridėti SpatiaLite sluoksnį...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1238"/>
+        <location filename="../src/ui/qgisapp.ui" line="1240"/>
         <source>Ctrl+Shift+L</source>
         <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1259"/>
+        <location filename="../src/ui/qgisapp.ui" line="1261"/>
         <source>Add Oracle Spatial Layer...</source>
         <translation>Pridėti Oracle Spatial sluoksnį...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1271"/>
+        <location filename="../src/ui/qgisapp.ui" line="1273"/>
         <source>Add WMS/WMTS Layer...</source>
         <translation>Pridėti WMS/WMTS sluoksnį...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1274"/>
+        <location filename="../src/ui/qgisapp.ui" line="1276"/>
         <source>Ctrl+Shift+W</source>
         <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1283"/>
+        <location filename="../src/ui/qgisapp.ui" line="1285"/>
         <source>Open Attribute Table</source>
         <translation>Atverti atributų lentelę</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1298"/>
+        <location filename="../src/ui/qgisapp.ui" line="1300"/>
         <source>Toggles the editing state of the current layer</source>
         <translation>Keičia dabartinio sluoksnio keitimo būseną</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1307"/>
+        <location filename="../src/ui/qgisapp.ui" line="1309"/>
         <source>Save for Selected Layer(s)</source>
         <translation>Įrašyti pažymėtiems sluoksniams</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1310"/>
+        <location filename="../src/ui/qgisapp.ui" line="1312"/>
         <source>Save edits to current layer, but continue editing</source>
         <translation>Įrašyti dabartinio sluoksnio pakeitimus, bet tęsti keitimus</translation>
     </message>
@@ -7543,52 +7553,52 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">Išimti sluoksnį(-ius)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1330"/>
+        <location filename="../src/ui/qgisapp.ui" line="1332"/>
         <source>Ctrl+D</source>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1335"/>
+        <location filename="../src/ui/qgisapp.ui" line="1337"/>
         <source>Set CRS of Layer(s)</source>
         <translation>Nustatyti sluoksnio CRS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1338"/>
+        <location filename="../src/ui/qgisapp.ui" line="1340"/>
         <source>Ctrl+Shift+C</source>
         <translation>Ctrl+Shift+C</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1416"/>
+        <location filename="../src/ui/qgisapp.ui" line="1418"/>
         <source>Manage and Install Plugins...</source>
         <translation>Tvarkyti ir diegti priedus...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1424"/>
+        <location filename="../src/ui/qgisapp.ui" line="1426"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1783"/>
+        <location filename="../src/ui/qgisapp.ui" line="1785"/>
         <source>Add WCS Layer...</source>
         <translation>Pridėti WCS sluoksnį...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1792"/>
+        <location filename="../src/ui/qgisapp.ui" line="1794"/>
         <source>&amp;Grid</source>
         <translation>&amp;Tinklelis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1795"/>
+        <location filename="../src/ui/qgisapp.ui" line="1797"/>
         <source>Grid</source>
         <translation>Tinklelis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1810"/>
+        <location filename="../src/ui/qgisapp.ui" line="1812"/>
         <source>Pin/Unpin Labels</source>
         <translation>Prisegti/atsegti etiketes</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1813"/>
+        <location filename="../src/ui/qgisapp.ui" line="1815"/>
         <source>Pin/Unpin Labels
 Click or marquee on label to pin
 Shift unpins, Ctl (Cmd) toggles state
@@ -7599,44 +7609,44 @@ Shift atsega, Ctl (Cmd) perjungia būseną
 Veikia visuose redaguojamuose sluoksniuose</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1828"/>
-        <location filename="../src/ui/qgisapp.ui" line="1831"/>
+        <location filename="../src/ui/qgisapp.ui" line="1830"/>
+        <location filename="../src/ui/qgisapp.ui" line="1833"/>
         <source>Highlight Pinned Labels</source>
         <translation>Paryškinti prisegtas etiketes</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1840"/>
-        <location filename="../src/ui/qgisapp.ui" line="1843"/>
+        <location filename="../src/ui/qgisapp.ui" line="1842"/>
+        <location filename="../src/ui/qgisapp.ui" line="1845"/>
         <source>New Blank Project</source>
         <translation>Naujas tuščias projektas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1852"/>
+        <location filename="../src/ui/qgisapp.ui" line="1854"/>
         <source>Local Cumulative Cut Stretch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1855"/>
+        <location filename="../src/ui/qgisapp.ui" line="1857"/>
         <source>Local cumulative cut stretch using current extent, default limits and estimated values.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1864"/>
+        <location filename="../src/ui/qgisapp.ui" line="1866"/>
         <source>Full Dataset Cumulative Cut Stretch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1867"/>
+        <location filename="../src/ui/qgisapp.ui" line="1869"/>
         <source>Cumulative cut stretch using full dataset extent, default limits and estimated values.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1879"/>
+        <location filename="../src/ui/qgisapp.ui" line="1881"/>
         <source>Show/Hide Labels</source>
         <translation>Rodyti/slėpti etiketes</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1882"/>
+        <location filename="../src/ui/qgisapp.ui" line="1884"/>
         <source>Show/Hide Labels
 Click or marquee on feature to show label
 Shift+click or marquee on label to hide it
@@ -7647,112 +7657,112 @@ Shift+spauskite ant etiketės, kad ją paslėptumėte
 Įtakoja šiuo metu aktyvų keičiamą sluoksnį</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1897"/>
-        <location filename="../src/ui/qgisapp.ui" line="1900"/>
+        <location filename="../src/ui/qgisapp.ui" line="1899"/>
+        <location filename="../src/ui/qgisapp.ui" line="1902"/>
         <source>Html Annotation</source>
         <translation>Html anotacija</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1909"/>
-        <location filename="../src/ui/qgisapp.ui" line="1912"/>
+        <location filename="../src/ui/qgisapp.ui" line="1911"/>
+        <location filename="../src/ui/qgisapp.ui" line="1914"/>
         <source>Duplicate Layer(s)</source>
         <translation>Dubliuoti sluoksnį(-ius)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1924"/>
+        <location filename="../src/ui/qgisapp.ui" line="1926"/>
         <source>SVG annotation</source>
         <translation>SVG anotacija</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1933"/>
-        <location filename="../src/ui/qgisapp.ui" line="1936"/>
+        <location filename="../src/ui/qgisapp.ui" line="1935"/>
+        <location filename="../src/ui/qgisapp.ui" line="1938"/>
         <source>Save for All Layers</source>
         <translation>Įrašyti visiems sluoksniams</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1948"/>
-        <location filename="../src/ui/qgisapp.ui" line="1951"/>
+        <location filename="../src/ui/qgisapp.ui" line="1950"/>
+        <location filename="../src/ui/qgisapp.ui" line="1953"/>
         <source>Rollback for All Layers</source>
         <translation>Atstatyti visiems sluoksniams</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1963"/>
-        <location filename="../src/ui/qgisapp.ui" line="1966"/>
+        <location filename="../src/ui/qgisapp.ui" line="1965"/>
+        <location filename="../src/ui/qgisapp.ui" line="1968"/>
         <source>Cancel for All Layers</source>
         <translation>Atšaukti visiems sluoksniams</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1978"/>
-        <location filename="../src/ui/qgisapp.ui" line="1981"/>
+        <location filename="../src/ui/qgisapp.ui" line="1980"/>
+        <location filename="../src/ui/qgisapp.ui" line="1983"/>
         <source>Rollback for Selected Layer(s)</source>
         <translation>Atstatyti pažymėtiems sluoksniams</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1993"/>
-        <location filename="../src/ui/qgisapp.ui" line="1996"/>
+        <location filename="../src/ui/qgisapp.ui" line="1995"/>
+        <location filename="../src/ui/qgisapp.ui" line="1998"/>
         <source>Current Edits</source>
         <translation>Dabartiniai keitimai</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2008"/>
-        <location filename="../src/ui/qgisapp.ui" line="2011"/>
+        <location filename="../src/ui/qgisapp.ui" line="2010"/>
+        <location filename="../src/ui/qgisapp.ui" line="2013"/>
         <source>Cancel for Selected Layer(s)</source>
         <translation>Atšaukti pažymėtiems sluoksniams</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2023"/>
-        <location filename="../src/ui/qgisapp.ui" line="2026"/>
+        <location filename="../src/ui/qgisapp.ui" line="2025"/>
+        <location filename="../src/ui/qgisapp.ui" line="2028"/>
         <source>Save Layer Edits</source>
         <translation>Įrašyti sluoksnio pakeitimus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2038"/>
-        <location filename="../src/ui/qgisapp.ui" line="2041"/>
+        <location filename="../src/ui/qgisapp.ui" line="2040"/>
+        <location filename="../src/ui/qgisapp.ui" line="2043"/>
         <source>Rotate Feature(s)</source>
         <translation>Pasukti objektus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2046"/>
+        <location filename="../src/ui/qgisapp.ui" line="2048"/>
         <source>&amp;Download data</source>
         <translation>Atsiųsti &amp;duomenis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2051"/>
+        <location filename="../src/ui/qgisapp.ui" line="2053"/>
         <source>&amp;Import topology from XML</source>
         <translation>&amp;Importuoti topologiją iš XML</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2056"/>
+        <location filename="../src/ui/qgisapp.ui" line="2058"/>
         <source>&amp;Export topology to SpatiaLite</source>
         <translation>&amp;Eksportuoti topologiją į SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2065"/>
+        <location filename="../src/ui/qgisapp.ui" line="2067"/>
         <source>Increase brightness</source>
         <translation>Didinti ryškumą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2074"/>
+        <location filename="../src/ui/qgisapp.ui" line="2076"/>
         <source>Decrease brightness</source>
         <translation>Mažinti ryškumą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2083"/>
+        <location filename="../src/ui/qgisapp.ui" line="2085"/>
         <source>Increase contrast</source>
         <translation>Didinti kontrastą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2092"/>
+        <location filename="../src/ui/qgisapp.ui" line="2094"/>
         <source>Decrease contrast</source>
         <translation>Mažinti kontrastą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2101"/>
+        <location filename="../src/ui/qgisapp.ui" line="2103"/>
         <source>Select By Expression</source>
         <translation>Parinkti su išraiška</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2104"/>
+        <location filename="../src/ui/qgisapp.ui" line="2106"/>
         <source>Select features using an expression</source>
         <translation>Pažymėti feoobjektus naudojant išraišką</translation>
     </message>
@@ -7761,140 +7771,140 @@ Shift+spauskite ant etiketės, kad ją paslėptumėte
         <translation type="obsolete">Reikia pagalbos?</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2118"/>
-        <location filename="../src/ui/qgisapp.ui" line="2121"/>
+        <location filename="../src/ui/qgisapp.ui" line="2120"/>
+        <location filename="../src/ui/qgisapp.ui" line="2123"/>
         <source>Open Field Calculator</source>
         <translation>Atverti laukų skaičiuotuvą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2130"/>
+        <location filename="../src/ui/qgisapp.ui" line="2132"/>
         <source>Add Delimited Text Layer...</source>
         <translation>Pridėti atskirtą teksto sluoksnį...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2133"/>
+        <location filename="../src/ui/qgisapp.ui" line="2135"/>
         <source>Add Delimited Text Layer</source>
         <translation>Pridėti atskirtą teksto sluoksnį</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2138"/>
+        <location filename="../src/ui/qgisapp.ui" line="2140"/>
         <source>New Vector Layer</source>
         <translation>Naujas vektorinis sluoksnis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2141"/>
+        <location filename="../src/ui/qgisapp.ui" line="2143"/>
         <source>Paste features in clipboard into a new OGR vector layer.</source>
         <translation>Įkelti geoobjektus iš iškarpinės į naują OGR vektorinį sluoksnį.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2146"/>
+        <location filename="../src/ui/qgisapp.ui" line="2148"/>
         <source>New Memory Vector Layer</source>
         <translation>Naujas laikinas vektorinis sluoksnis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2149"/>
+        <location filename="../src/ui/qgisapp.ui" line="2151"/>
         <source>Paste features in clipboard into a new memory vector layer.</source>
         <translation>Įdėtii objektus į naują laikiną sluoksnį.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1383"/>
+        <location filename="../src/ui/qgisapp.ui" line="1385"/>
         <source>Remove All from Overview</source>
         <translation>Pašalinti visus iš Peržiūros</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1595"/>
+        <location filename="../src/ui/qgisapp.ui" line="1597"/>
         <source>Style Manager...</source>
         <translation>Stiliaus Redaktorius...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1612"/>
+        <location filename="../src/ui/qgisapp.ui" line="1614"/>
         <source>Stretch Histogram to Full Dataset</source>
         <translation>Ištempti histogramą iki pilno duomenų rinkinio</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1635"/>
+        <location filename="../src/ui/qgisapp.ui" line="1637"/>
         <source>Customization...</source>
         <translation>Tinkinimas...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1643"/>
+        <location filename="../src/ui/qgisapp.ui" line="1645"/>
         <source>This is here just to avoid shortcut conflicts, the shortcut is caught in QgsCustomization</source>
         <translation>Tai čia yra tik tam, kad būtų išvengta kombinacijų konfliktų, klavišų kombinacijos gaudomos QgsCustomization</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1646"/>
+        <location filename="../src/ui/qgisapp.ui" line="1648"/>
         <source>Ctrl+M</source>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1654"/>
+        <location filename="../src/ui/qgisapp.ui" line="1656"/>
         <source>Embed layers and groups from other project files</source>
         <translation>Prijungti sluoksnius ir grupes iš kitų projektų failų</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1663"/>
+        <location filename="../src/ui/qgisapp.ui" line="1665"/>
         <source>&amp;Copyright Label</source>
         <translation>&amp;Autorių teisių etiketė</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1666"/>
+        <location filename="../src/ui/qgisapp.ui" line="1668"/>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
         <translation>Sukuria žemėlapyje rodomą autorių teisių etiketę.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1675"/>
+        <location filename="../src/ui/qgisapp.ui" line="1677"/>
         <source>&amp;North Arrow</source>
         <translation>Šiaurės &amp;rodyklė</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1678"/>
+        <location filename="../src/ui/qgisapp.ui" line="1680"/>
         <source>&quot;Creates a north arrow that is displayed on the map canvas&quot;</source>
         <translation>&quot;Sukuria žemėlapyje rodomą šiaurės rodyklę&quot;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1687"/>
+        <location filename="../src/ui/qgisapp.ui" line="1689"/>
         <source>&amp;Scale Bar</source>
         <translation>&amp;Mastelio juosta</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1690"/>
-        <location filename="../src/ui/qgisapp.ui" line="1798"/>
+        <location filename="../src/ui/qgisapp.ui" line="1692"/>
+        <location filename="../src/ui/qgisapp.ui" line="1800"/>
         <source>Creates a scale bar that is displayed on the map canvas</source>
         <translation>Sukuria žemėlapyje rodomą mastelio juostą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1699"/>
+        <location filename="../src/ui/qgisapp.ui" line="1701"/>
         <source>Add WFS Layer...</source>
         <translation>Pridėti WFS sluoksnį...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1702"/>
+        <location filename="../src/ui/qgisapp.ui" line="1704"/>
         <source>Add WFS Layer</source>
         <translation>Pridėti WFS sluoksnį</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1714"/>
+        <location filename="../src/ui/qgisapp.ui" line="1716"/>
         <source>Feature Action</source>
         <translation>Geoobjekto veiksmas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1726"/>
-        <location filename="../src/ui/qgisapp.ui" line="1729"/>
+        <location filename="../src/ui/qgisapp.ui" line="1728"/>
+        <location filename="../src/ui/qgisapp.ui" line="1731"/>
         <source>Pan Map to Selection</source>
         <translation>Pastumti žemėlapį ties žymėjimu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1765"/>
+        <location filename="../src/ui/qgisapp.ui" line="1767"/>
         <source>Copy style</source>
         <translation>Kopijuoti stilių</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1774"/>
+        <location filename="../src/ui/qgisapp.ui" line="1776"/>
         <source>Paste style</source>
         <translation>Įdėti stilių</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1348"/>
+        <location filename="../src/ui/qgisapp.ui" line="1350"/>
         <source>Properties...</source>
         <translation>Savybės...</translation>
     </message>
@@ -7914,17 +7924,17 @@ Shift+spauskite ant etiketės, kad ją paslėptumėte
         <translation>Naujas pagal šabloną</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="582"/>
+        <location filename="../src/ui/qgisapp.ui" line="584"/>
         <source>Composer Manager...</source>
         <translation>Kūrėjo valdymas...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="798"/>
+        <location filename="../src/ui/qgisapp.ui" line="800"/>
         <source>Merge Selected Features</source>
         <translation>Sulieti parinktus geoobjektus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="807"/>
+        <location filename="../src/ui/qgisapp.ui" line="809"/>
         <source>Merge Attributes of Selected Features</source>
         <translation>Sulieti parinktų geoobjektų atributus</translation>
     </message>
@@ -7937,47 +7947,47 @@ Shift+spauskite ant etiketės, kad ją paslėptumėte
         <translation type="obsolete">Pažymėti geoobjektus stačiakampiu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="905"/>
+        <location filename="../src/ui/qgisapp.ui" line="907"/>
         <source>Select Features by Polygon</source>
         <translation>Pažymėti geoobjektus poligonu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="917"/>
+        <location filename="../src/ui/qgisapp.ui" line="919"/>
         <source>Select Features by Freehand</source>
         <translation>Pažymėti geoobjektus laisvai</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="929"/>
+        <location filename="../src/ui/qgisapp.ui" line="931"/>
         <source>Select Features by Radius</source>
         <translation>Pažymėti geoobjektus spinduliu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="938"/>
+        <location filename="../src/ui/qgisapp.ui" line="940"/>
         <source>Deselect Features from All Layers</source>
         <translation>Nužymėti geoobjektus visuose sluoksniuose</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1133"/>
+        <location filename="../src/ui/qgisapp.ui" line="1135"/>
         <source>Form Annotation</source>
         <translation>Formos anotacija</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1223"/>
+        <location filename="../src/ui/qgisapp.ui" line="1225"/>
         <source>Add PostGIS Layers...</source>
         <translation>Pridėti PostGIS sluoksnius...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1247"/>
+        <location filename="../src/ui/qgisapp.ui" line="1249"/>
         <source>Add MSSQL Spatial Layer...</source>
         <translation>Pridėti MSSQL erdvinį sluoksnį...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1295"/>
+        <location filename="../src/ui/qgisapp.ui" line="1297"/>
         <source>Toggle Editing</source>
         <translation>Perjungti redagavimą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1315"/>
+        <location filename="../src/ui/qgisapp.ui" line="1317"/>
         <source>Save As...</source>
         <translation>Įrašyti kaip...</translation>
     </message>
@@ -7986,47 +7996,47 @@ Shift+spauskite ant etiketės, kad ją paslėptumėte
         <translation type="obsolete">Įrašyti pažymėjimą kaip vektorinį failą...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1343"/>
+        <location filename="../src/ui/qgisapp.ui" line="1345"/>
         <source>Set Project CRS from Layer</source>
         <translation>Nustatyti projekto CRS pagal sluoksnį</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1353"/>
+        <location filename="../src/ui/qgisapp.ui" line="1355"/>
         <source>Query...</source>
         <translation>Užklausa...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1365"/>
+        <location filename="../src/ui/qgisapp.ui" line="1367"/>
         <source>Add to Overview</source>
         <translation>Pridėti į peržiūrą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1262"/>
+        <location filename="../src/ui/qgisapp.ui" line="1264"/>
         <source>Ctrl+Shift+O</source>
         <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1374"/>
+        <location filename="../src/ui/qgisapp.ui" line="1376"/>
         <source>Add All to Overview</source>
         <translation>Pridėti viską į peržiūrą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1392"/>
+        <location filename="../src/ui/qgisapp.ui" line="1394"/>
         <source>Show All Layers</source>
         <translation>Rodyti visus sluoksnius</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1395"/>
+        <location filename="../src/ui/qgisapp.ui" line="1397"/>
         <source>Ctrl+Shift+U</source>
         <translation>Ctrl+Shift+U</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1404"/>
+        <location filename="../src/ui/qgisapp.ui" line="1406"/>
         <source>Hide All Layers</source>
         <translation>Slėpti visus sluoksnius</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1407"/>
+        <location filename="../src/ui/qgisapp.ui" line="1409"/>
         <source>Ctrl+Shift+H</source>
         <translation>Ctrl+Shift+H</translation>
     </message>
@@ -8035,12 +8045,12 @@ Shift+spauskite ant etiketės, kad ją paslėptumėte
         <translation type="obsolete">Tvarkyti priedus...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1421"/>
+        <location filename="../src/ui/qgisapp.ui" line="1423"/>
         <source>Toggle Full Screen Mode</source>
         <translation>Perjungti pilno ekrano režimą</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1356"/>
+        <location filename="../src/ui/qgisapp.ui" line="1358"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
@@ -8060,120 +8070,120 @@ Shift+spauskite ant etiketės, kad ją paslėptumėte
         <translation type="unfinished">Pridėti sluoksnį</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1109"/>
+        <location filename="../src/ui/qgisapp.ui" line="1111"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1433"/>
+        <location filename="../src/ui/qgisapp.ui" line="1435"/>
         <source>Project Properties...</source>
         <translation>Projekto savybės...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1436"/>
+        <location filename="../src/ui/qgisapp.ui" line="1438"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1445"/>
+        <location filename="../src/ui/qgisapp.ui" line="1447"/>
         <source>Options...</source>
         <translation>Parinktys...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1457"/>
+        <location filename="../src/ui/qgisapp.ui" line="1459"/>
         <source>Custom CRS...</source>
         <translation>Sava CRS...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1466"/>
+        <location filename="../src/ui/qgisapp.ui" line="1468"/>
         <source>Configure shortcuts...</source>
         <translation>Konfigūruoti klavišų kombinacijas...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1478"/>
+        <location filename="../src/ui/qgisapp.ui" line="1480"/>
         <source>Local Histogram Stretch</source>
         <translation>Vietinės histogramos ištempimas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1481"/>
+        <location filename="../src/ui/qgisapp.ui" line="1483"/>
         <source>Stretch histogram of active raster to view extents</source>
         <translation>Ištempti aktyvaus rastro histogramą iki rodinio apimčių</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1490"/>
+        <location filename="../src/ui/qgisapp.ui" line="1492"/>
         <source>Help Contents</source>
         <translation>Pagalbos turinys</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1493"/>
+        <location filename="../src/ui/qgisapp.ui" line="1495"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1498"/>
+        <location filename="../src/ui/qgisapp.ui" line="1500"/>
         <source>API documentation</source>
         <translation>API dokumentacija</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1507"/>
+        <location filename="../src/ui/qgisapp.ui" line="1509"/>
         <source>QGIS Home Page</source>
         <translation>QGIS namų puslapis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1510"/>
+        <location filename="../src/ui/qgisapp.ui" line="1512"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1519"/>
+        <location filename="../src/ui/qgisapp.ui" line="1521"/>
         <source>Check QGIS Version</source>
         <translation>Tikrinti QGIS versiją</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1522"/>
+        <location filename="../src/ui/qgisapp.ui" line="1524"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
         <translation>Tikrinti, ar jūsų QGIS versija yra nauja (reikia interneto ryšio)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1531"/>
+        <location filename="../src/ui/qgisapp.ui" line="1533"/>
         <source>About</source>
         <translation>Apie</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1543"/>
+        <location filename="../src/ui/qgisapp.ui" line="1545"/>
         <source>QGIS Sponsors</source>
         <translation>QGIS rėmėjai</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1555"/>
-        <location filename="../src/ui/qgisapp.ui" line="1558"/>
+        <location filename="../src/ui/qgisapp.ui" line="1557"/>
+        <location filename="../src/ui/qgisapp.ui" line="1560"/>
         <source>Move Label</source>
         <translation>Perkelti etiketę</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1570"/>
+        <location filename="../src/ui/qgisapp.ui" line="1572"/>
         <source>Rotate Label</source>
         <translation>Pasukti etiketę</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1573"/>
+        <location filename="../src/ui/qgisapp.ui" line="1575"/>
         <source>Rotate Label
 Ctl (Cmd) increments by 15 deg.</source>
         <translation>Pasukti etiketę
 Ctl (Cmd) didina 15 laipsnių žingsniu.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1586"/>
+        <location filename="../src/ui/qgisapp.ui" line="1588"/>
         <source>Change Label</source>
         <translation>Keisti etiketę</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1600"/>
+        <location filename="../src/ui/qgisapp.ui" line="1602"/>
         <source>Python Console</source>
         <translation>Python&apos;o konsolė</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1609"/>
+        <location filename="../src/ui/qgisapp.ui" line="1611"/>
         <source>Full histogram stretch</source>
         <translation>Pilnas histogramos ištempimas</translation>
     </message>
@@ -12656,22 +12666,22 @@ Tik %1 iš %2 objektų įrašyta.</translation>
         <translation>Priedas, vykdantis erdvines vektorinių sluoksnių užklausas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10191"/>
+        <location filename="../src/app/qgisapp.cpp" line="10224"/>
         <source>minidump written to %1</source>
         <translation>minidump išsaugotas į %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10195"/>
+        <location filename="../src/app/qgisapp.cpp" line="10228"/>
         <source>writing of minidump to %1 failed (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10202"/>
+        <location filename="../src/app/qgisapp.cpp" line="10235"/>
         <source>creation of minidump to %1 failed (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10205"/>
+        <location filename="../src/app/qgisapp.cpp" line="10238"/>
         <source>Crash dumped</source>
         <translation type="unfinished"></translation>
     </message>
@@ -14326,7 +14336,7 @@ Response was:
 <context>
     <name>QgisApp</name>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2302"/>
+        <location filename="../src/app/qgisapp.cpp" line="2306"/>
         <source>Layers</source>
         <translation>Sluoksniai</translation>
     </message>
@@ -14335,103 +14345,103 @@ Response was:
         <translation type="obsolete">Версия</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2802"/>
-        <location filename="../src/app/qgisapp.cpp" line="2809"/>
-        <location filename="../src/app/qgisapp.cpp" line="3140"/>
+        <location filename="../src/app/qgisapp.cpp" line="2806"/>
+        <location filename="../src/app/qgisapp.cpp" line="2813"/>
+        <location filename="../src/app/qgisapp.cpp" line="3144"/>
         <source>Invalid Data Source</source>
         <translation>Nekorektiškas duomenų šaltinis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5099"/>
-        <location filename="../src/app/qgisapp.cpp" line="7489"/>
-        <location filename="../src/app/qgisapp.cpp" line="7498"/>
-        <location filename="../src/app/qgisapp.cpp" line="7559"/>
-        <location filename="../src/app/qgisapp.cpp" line="7568"/>
+        <location filename="../src/app/qgisapp.cpp" line="5132"/>
+        <location filename="../src/app/qgisapp.cpp" line="7522"/>
+        <location filename="../src/app/qgisapp.cpp" line="7531"/>
+        <location filename="../src/app/qgisapp.cpp" line="7592"/>
+        <location filename="../src/app/qgisapp.cpp" line="7601"/>
         <source>No Layer Selected</source>
         <translation>Neparinktas sluoksnis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5612"/>
-        <location filename="../src/app/qgisapp.cpp" line="5678"/>
-        <location filename="../src/app/qgisapp.cpp" line="5715"/>
+        <location filename="../src/app/qgisapp.cpp" line="5645"/>
+        <location filename="../src/app/qgisapp.cpp" line="5711"/>
+        <location filename="../src/app/qgisapp.cpp" line="5748"/>
         <source>Not enough features selected</source>
         <translation>Parinkta nepakankamai objektų</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5698"/>
+        <location filename="../src/app/qgisapp.cpp" line="5731"/>
         <source>Union operation canceled</source>
         <translation>Apjungimo veiksmas nutrauktas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7313"/>
+        <location filename="../src/app/qgisapp.cpp" line="7346"/>
         <source>There is a new version of QGIS available</source>
         <translation>Yra nauja QGIS versija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7317"/>
+        <location filename="../src/app/qgisapp.cpp" line="7350"/>
         <source>You are running a development version of QGIS</source>
         <translation>Jūs naudojate QGIS vystomąją versiją</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7321"/>
+        <location filename="../src/app/qgisapp.cpp" line="7354"/>
         <source>You are running the current version of QGIS</source>
         <translation>Jūs naudojate naujausią QGIS versiją</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7326"/>
+        <location filename="../src/app/qgisapp.cpp" line="7359"/>
         <source>Would you like more information?</source>
         <translation>Norite daugiau informacijos?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7329"/>
-        <location filename="../src/app/qgisapp.cpp" line="7342"/>
-        <location filename="../src/app/qgisapp.cpp" line="7347"/>
-        <location filename="../src/app/qgisapp.cpp" line="7368"/>
+        <location filename="../src/app/qgisapp.cpp" line="7362"/>
+        <location filename="../src/app/qgisapp.cpp" line="7375"/>
+        <location filename="../src/app/qgisapp.cpp" line="7380"/>
+        <location filename="../src/app/qgisapp.cpp" line="7401"/>
         <source>QGIS Version Information</source>
         <translation>QGIS versijos informacija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7347"/>
+        <location filename="../src/app/qgisapp.cpp" line="7380"/>
         <source>Unable to get current version information from server</source>
         <translation>Nepavyko gauti dabartinės versijos informacijos iš serverio</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7357"/>
+        <location filename="../src/app/qgisapp.cpp" line="7390"/>
         <source>Connection refused - server may be down</source>
         <translation>Jungtis atmesta - galbūt serveris neveikia</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7360"/>
+        <location filename="../src/app/qgisapp.cpp" line="7393"/>
         <source>QGIS server was not found</source>
         <translation>QGIS serveris nerastas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2300"/>
+        <location filename="../src/app/qgisapp.cpp" line="2304"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>Žemėlapio legenda, kuri rodo visus drobėje esančius sluoksnius. Spauskite varnelę, kad įjungtumėte arba išjungtumėte sluoksnį. Du kartus spauskite sluoksnį, norėdami derinti išvaizdą ir keisti kitas savybes.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2199"/>
+        <location filename="../src/app/qgisapp.cpp" line="2203"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>Žemėlapio peržiūros drobė. Ši drobė gali būti naudojama vietos žemėlapyje, kuris rodo dabartinio žemėlaio apimtis. Dabartinė apimtis apibrėžiama raudonu stačiakampiu. Į peržiūros drobę galima įdėti bet kokį sluoksnį.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1677"/>
+        <location filename="../src/app/qgisapp.cpp" line="1679"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
         <translation>Progreso juosta, kuri atvaizduoja sluoksnių generavimą ir kitas laikui imlias operacijas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1759"/>
+        <location filename="../src/app/qgisapp.cpp" line="1761"/>
         <source>Displays the current map scale</source>
         <translation>Rodo dabartinį žemėlapio mastelį</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1766"/>
+        <location filename="../src/app/qgisapp.cpp" line="1768"/>
         <source>Render</source>
         <translation>Braižyti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1770"/>
+        <location filename="../src/app/qgisapp.cpp" line="1772"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
         <translation>Įjungus, žemėlapio sluoksniai perpaišomi atsižvelgiant į žemėlapio stumdymą ar kitus įvykius. Neįjungus niekas nebraižoma. Tai leidžia jums pridėti daug sluoksnių ir simbolizuoti juos prieš pradedant vaizdavimą.</translation>
     </message>
@@ -14440,7 +14450,7 @@ Response was:
         <translation type="obsolete">QGIS файлы (*.qgs)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1774"/>
+        <location filename="../src/app/qgisapp.cpp" line="1776"/>
         <source>Toggle map rendering</source>
         <translation>Perjungti žemėlapio braižymą</translation>
     </message>
@@ -14509,12 +14519,12 @@ Response was:
         <translation type="obsolete">Компоненты (Плагины)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1805"/>
+        <location filename="../src/app/qgisapp.cpp" line="1807"/>
         <source>Ready</source>
         <translation>Pasiruošęs</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8594"/>
+        <location filename="../src/app/qgisapp.cpp" line="8627"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>Žemėlapio koordinatės pelės kursoriaus pozicijoje</translation>
     </message>
@@ -14539,22 +14549,22 @@ Response was:
         <translation>Įjungiamas Python</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1216"/>
+        <location filename="../src/app/qgisapp.cpp" line="1218"/>
         <source>Current Edits</source>
         <translation>Dabartiniai keitimai</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1488"/>
+        <location filename="../src/app/qgisapp.cpp" line="1490"/>
         <source>Window</source>
         <translation>Langas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1745"/>
+        <location filename="../src/app/qgisapp.cpp" line="1747"/>
         <source>Scale </source>
         <translation>Mastelis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1760"/>
+        <location filename="../src/app/qgisapp.cpp" line="1762"/>
         <source>Current map scale (formatted as x:y)</source>
         <translation>Dabartinis žemėlapio mastelis (formatu x:y)</translation>
     </message>
@@ -14564,22 +14574,22 @@ Response was:
         <translation>Privati qgis.db</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2641"/>
+        <location filename="../src/app/qgisapp.cpp" line="2645"/>
         <source>Compiled against GDAL/OGR</source>
         <translation>Kompiliuota su GDAL/OGR</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2642"/>
+        <location filename="../src/app/qgisapp.cpp" line="2646"/>
         <source>Running against GDAL/OGR</source>
         <translation>Vykdoma su GDAL/OGR</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9355"/>
+        <location filename="../src/app/qgisapp.cpp" line="9388"/>
         <source>Invalid Layer</source>
         <translation>Netinkamas sluoksnis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3282"/>
+        <location filename="../src/app/qgisapp.cpp" line="3286"/>
         <source>Cannot get MSSQL select dialog from provider.</source>
         <translation>Nepavyko iš tiekėjo gauti MSSQL užklausos dialogo.</translation>
     </message>
@@ -14675,230 +14685,230 @@ Response was:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2325"/>
+        <location filename="../src/app/qgisapp.cpp" line="2329"/>
         <source>Add Group</source>
         <translation type="unfinished">Pridėti grupę</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2331"/>
+        <location filename="../src/app/qgisapp.cpp" line="2335"/>
         <source>Manage Layer Visibility</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2340"/>
+        <location filename="../src/app/qgisapp.cpp" line="2344"/>
         <source>Filter Legend By Map Content</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2348"/>
+        <location filename="../src/app/qgisapp.cpp" line="2352"/>
         <source>Expand All</source>
         <translation type="unfinished">Išplėsti viską</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2353"/>
+        <location filename="../src/app/qgisapp.cpp" line="2357"/>
         <source>Collapse All</source>
         <translation type="unfinished">Sutraukti viską</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3707"/>
+        <location filename="../src/app/qgisapp.cpp" line="3711"/>
         <source>Layer creation failed. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3730"/>
+        <location filename="../src/app/qgisapp.cpp" line="3734"/>
         <source>Calculating...</source>
         <translation>Skaičiuojama...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3730"/>
-        <location filename="../src/app/qgisapp.cpp" line="4803"/>
+        <location filename="../src/app/qgisapp.cpp" line="3734"/>
+        <location filename="../src/app/qgisapp.cpp" line="4836"/>
         <source>Abort...</source>
         <translation>Nutraukti...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3751"/>
+        <location filename="../src/app/qgisapp.cpp" line="3755"/>
         <source>Choose a QGIS project file to open</source>
         <translation>Parinkite QGIS projekto failą atidarymui</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3753"/>
-        <location filename="../src/app/qgisapp.cpp" line="3912"/>
-        <location filename="../src/app/qgisapp.cpp" line="3977"/>
+        <location filename="../src/app/qgisapp.cpp" line="3757"/>
+        <location filename="../src/app/qgisapp.cpp" line="3916"/>
+        <location filename="../src/app/qgisapp.cpp" line="3981"/>
         <source>QGIS files</source>
         <translation>QGIS failai</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3802"/>
+        <location filename="../src/app/qgisapp.cpp" line="3806"/>
         <source>Unable to open project</source>
         <translation>Nepavyko atverti projekto</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3910"/>
+        <location filename="../src/app/qgisapp.cpp" line="3914"/>
         <source>Choose a QGIS project file</source>
         <translation>Parinkite QGIS projekto failą</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3932"/>
+        <location filename="../src/app/qgisapp.cpp" line="3936"/>
         <source>Insufficient permissions</source>
         <translation>Neužtenka teisių</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3933"/>
+        <location filename="../src/app/qgisapp.cpp" line="3937"/>
         <source>The project file is not writable.</source>
         <translation>Į projekto failą negalima įrašyti.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4644"/>
-        <location filename="../src/app/qgisapp.cpp" line="4665"/>
+        <location filename="../src/app/qgisapp.cpp" line="4677"/>
+        <location filename="../src/app/qgisapp.cpp" line="4698"/>
         <source>Commit errors</source>
         <translation>Patvirtinimo klaidos</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4645"/>
-        <location filename="../src/app/qgisapp.cpp" line="4666"/>
+        <location filename="../src/app/qgisapp.cpp" line="4678"/>
+        <location filename="../src/app/qgisapp.cpp" line="4699"/>
         <source>Could not commit changes to layer %1</source>
         <translation>Nepavyko patvirtinti pakeitimų sluoksniui %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4647"/>
+        <location filename="../src/app/qgisapp.cpp" line="4680"/>
         <source>Errors: %1
 </source>
         <translation>Klaidos: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4654"/>
+        <location filename="../src/app/qgisapp.cpp" line="4687"/>
         <source>Show more</source>
         <translation>Rodyti daugiau</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5030"/>
+        <location filename="../src/app/qgisapp.cpp" line="5063"/>
         <source>Saving done</source>
         <translation>Įrašymas baigas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5031"/>
+        <location filename="../src/app/qgisapp.cpp" line="5064"/>
         <source>Export to vector file has been completed</source>
         <translation>Eksportas į vektorinį failą baigtas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5037"/>
+        <location filename="../src/app/qgisapp.cpp" line="5070"/>
         <source>Save error</source>
         <translation>Įrašymo klaida</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5038"/>
+        <location filename="../src/app/qgisapp.cpp" line="5071"/>
         <source>Export to vector file failed.
 Error: %1</source>
         <translation>Nepavyko eksportas į vektorinį failą.
 Klaida: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5100"/>
+        <location filename="../src/app/qgisapp.cpp" line="5133"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>Norėdami naikinti geoobjektus, turite parinkti vektorinį sluoksnį</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5108"/>
+        <location filename="../src/app/qgisapp.cpp" line="5141"/>
         <source>No Vector Layer Selected</source>
         <translation>Neparinktas vektorinis sluoksnis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5109"/>
+        <location filename="../src/app/qgisapp.cpp" line="5142"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Geoobjektų šalinimas veikia tik su vektoriniais sluoksniais</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5116"/>
+        <location filename="../src/app/qgisapp.cpp" line="5149"/>
         <source>Provider does not support deletion</source>
         <translation>Tiekėjas nepalaiko šalinimo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5117"/>
+        <location filename="../src/app/qgisapp.cpp" line="5150"/>
         <source>Data provider does not support deleting features</source>
         <translation>Duomenų tiekėjas nepalaiko geoobjektų naikinimo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5124"/>
-        <location filename="../src/app/qgisapp.cpp" line="5604"/>
-        <location filename="../src/app/qgisapp.cpp" line="5663"/>
+        <location filename="../src/app/qgisapp.cpp" line="5157"/>
+        <location filename="../src/app/qgisapp.cpp" line="5637"/>
+        <location filename="../src/app/qgisapp.cpp" line="5696"/>
         <source>Layer not editable</source>
         <translation>Sluoksnis neredaguojamas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5125"/>
+        <location filename="../src/app/qgisapp.cpp" line="5158"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>Dabartinis sluoksnis nėra redaguojamas. Skaitmeninimo įrankinėje parinkite mygtuką „Perjungti redagavimą“.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5148"/>
+        <location filename="../src/app/qgisapp.cpp" line="5181"/>
         <source>Problem deleting features</source>
         <translation>Klaida naikinant geoobjektus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5149"/>
+        <location filename="../src/app/qgisapp.cpp" line="5182"/>
         <source>A problem occured during deletion of features</source>
         <translation>Naikinant geoobjektus įvyko klaida</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5604"/>
-        <location filename="../src/app/qgisapp.cpp" line="5663"/>
+        <location filename="../src/app/qgisapp.cpp" line="5637"/>
+        <location filename="../src/app/qgisapp.cpp" line="5696"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to Layer-&gt;Toggle editing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5998"/>
-        <location filename="../src/app/qgisapp.cpp" line="6005"/>
-        <location filename="../src/app/qgisapp.cpp" line="6011"/>
+        <location filename="../src/app/qgisapp.cpp" line="6031"/>
+        <location filename="../src/app/qgisapp.cpp" line="6038"/>
+        <location filename="../src/app/qgisapp.cpp" line="6044"/>
         <source>Paste features</source>
         <translation>Įkelti geoobjektus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5999"/>
+        <location filename="../src/app/qgisapp.cpp" line="6032"/>
         <source>no features could be successfully pasted.</source>
         <translation>jokie geoobjektai nebuvo sėkmingai įkelti.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6006"/>
+        <location filename="../src/app/qgisapp.cpp" line="6039"/>
         <source>%1 features were successfully pasted.</source>
         <translation>%1 geoobjektai buvo sėkmingai įkelti.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6012"/>
+        <location filename="../src/app/qgisapp.cpp" line="6045"/>
         <source>%1 of %2 features could be successfully pasted.</source>
         <translation>%1 iš %2 geoobjektų buvo sėkmingai įkelti.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6210"/>
+        <location filename="../src/app/qgisapp.cpp" line="6243"/>
         <source>Cannot copy style: %1</source>
         <translation>Nepavyko nukopijuoti stiliaus: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6236"/>
+        <location filename="../src/app/qgisapp.cpp" line="6269"/>
         <source>Cannot parse style: %1:%2:%3</source>
         <translation>Nepavyko išnagrinėti stiliaus: %1:%2:%3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6248"/>
+        <location filename="../src/app/qgisapp.cpp" line="6281"/>
         <source>Cannot read style: %1</source>
         <translation>Nepavyko perskaityti stiliaus: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6832"/>
+        <location filename="../src/app/qgisapp.cpp" line="6865"/>
         <source>No legend entries selected</source>
         <translation>Nepažymėti jokie legendos įrašai</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6833"/>
+        <location filename="../src/app/qgisapp.cpp" line="6866"/>
         <source>Select the layers and groups you want to remove in the legend.</source>
         <translation>Pažymėkite sluoksnius ir grupes, kuriuos norite išimti iš legendos.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6840"/>
+        <location filename="../src/app/qgisapp.cpp" line="6873"/>
         <source>Remove layers and groups</source>
         <translation>Išimti sluoksnius ir grupes</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="6840"/>
+        <location filename="../src/app/qgisapp.cpp" line="6873"/>
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
         <translation>
@@ -14908,7 +14918,7 @@ Klaida: %1</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="6852"/>
+        <location filename="../src/app/qgisapp.cpp" line="6885"/>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation>
@@ -14918,54 +14928,54 @@ Klaida: %1</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6927"/>
+        <location filename="../src/app/qgisapp.cpp" line="6960"/>
         <source>%1 (%2 type unsupported)</source>
         <translation>%1 (%2 tipas nepalaikomas)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6989"/>
+        <location filename="../src/app/qgisapp.cpp" line="7022"/>
         <source>Set scale visibility for selected layers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7490"/>
-        <location filename="../src/app/qgisapp.cpp" line="7499"/>
+        <location filename="../src/app/qgisapp.cpp" line="7523"/>
+        <location filename="../src/app/qgisapp.cpp" line="7532"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>Norėdami atlikti pilną histogramos išplėtimą, turite pažymėti rastrinį sluoksnį.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7613"/>
+        <location filename="../src/app/qgisapp.cpp" line="7646"/>
         <source>http://qgis.org/en/site/forusers/commercial_support.html</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7723"/>
-        <location filename="../src/app/qgisapp.cpp" line="7766"/>
+        <location filename="../src/app/qgisapp.cpp" line="7756"/>
+        <location filename="../src/app/qgisapp.cpp" line="7799"/>
         <source>Layer is not valid</source>
         <translation>Netinkamas sluoksnis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7722"/>
+        <location filename="../src/app/qgisapp.cpp" line="7755"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>Sluoksnis %1 nėra tinkamas sluoksnis ir negali būti pridėtas į žemėlapį</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7765"/>
+        <location filename="../src/app/qgisapp.cpp" line="7798"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Sluoksnis nėra tinkamas ir negali būti pridėtas į žemėlapį</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7878"/>
+        <location filename="../src/app/qgisapp.cpp" line="7911"/>
         <source>Save?</source>
         <translation>Įrašyti?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7879"/>
+        <location filename="../src/app/qgisapp.cpp" line="7912"/>
         <source>Do you want to save the current project? %1</source>
         <translation>Ar norite įrašyti dabartinį projektą? %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8828"/>
+        <location filename="../src/app/qgisapp.cpp" line="8861"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation>
@@ -14975,65 +14985,65 @@ Klaida: %1</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9274"/>
+        <location filename="../src/app/qgisapp.cpp" line="9307"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Atidaryti GDAL palaikomą rastrinį duomenų šaltinį</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9514"/>
+        <location filename="../src/app/qgisapp.cpp" line="9547"/>
         <source>Unsupported Data Source</source>
         <translation>Nepalaikomas duomenų šaltinis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9664"/>
+        <location filename="../src/app/qgisapp.cpp" line="9697"/>
         <source>This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.</source>
         <translation>Šis projekto failas buvo įrašytas senesne QGIS versija. Įrašant šį projekto failą, QGIS atnaujins jį iki paskutinės versijos, todėl jo tikriausiai nebebus galima atidaryti su senesne QGIS versija.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9990"/>
+        <location filename="../src/app/qgisapp.cpp" line="10023"/>
         <source>SSL errors occured accessing URL %1:</source>
         <translation>SSL klaidos aptikros bandant pasiekti URL %1:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10027"/>
+        <location filename="../src/app/qgisapp.cpp" line="10060"/>
         <source> Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1318"/>
-        <location filename="../src/app/qgisapp.cpp" line="4879"/>
-        <location filename="../src/app/qgisapp.cpp" line="6209"/>
-        <location filename="../src/app/qgisapp.cpp" line="6235"/>
-        <location filename="../src/app/qgisapp.cpp" line="6247"/>
-        <location filename="../src/app/qgisapp.cpp" line="6386"/>
-        <location filename="../src/app/qgisapp.cpp" line="6466"/>
-        <location filename="../src/app/qgisapp.cpp" line="9375"/>
+        <location filename="../src/app/qgisapp.cpp" line="1320"/>
+        <location filename="../src/app/qgisapp.cpp" line="4912"/>
+        <location filename="../src/app/qgisapp.cpp" line="6242"/>
+        <location filename="../src/app/qgisapp.cpp" line="6268"/>
+        <location filename="../src/app/qgisapp.cpp" line="6280"/>
+        <location filename="../src/app/qgisapp.cpp" line="6419"/>
+        <location filename="../src/app/qgisapp.cpp" line="6499"/>
+        <location filename="../src/app/qgisapp.cpp" line="9408"/>
         <source>Error</source>
         <translation>Klaida</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1746"/>
+        <location filename="../src/app/qgisapp.cpp" line="1748"/>
         <source>Current map scale</source>
         <translation>Dabartinis žemėlapio mastelis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9686"/>
+        <location filename="../src/app/qgisapp.cpp" line="9719"/>
         <source>Project file is older</source>
         <translation>Projekto failas yra senesnis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9684"/>
+        <location filename="../src/app/qgisapp.cpp" line="9717"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9685"/>
+        <location filename="../src/app/qgisapp.cpp" line="9718"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>Įspėti mane, atidarant projekto failą, sukurtą senesne QGIS versija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2208"/>
+        <location filename="../src/app/qgisapp.cpp" line="2212"/>
         <source>Overview</source>
         <translation>Peržiūra</translation>
     </message>
@@ -15052,7 +15062,7 @@ Klaida: %1</translation>
         <translation>Kelios QgisApp kopijos</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1198"/>
+        <location filename="../src/app/qgisapp.cpp" line="1200"/>
         <source>Minimize</source>
         <translation>Minimizuoti</translation>
     </message>
@@ -15099,85 +15109,85 @@ Prašome susisiekti su kūrėjais.
         <translation>QGIS paleidžiamas...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1199"/>
+        <location filename="../src/app/qgisapp.cpp" line="1201"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1200"/>
+        <location filename="../src/app/qgisapp.cpp" line="1202"/>
         <source>Minimizes the active window to the dock</source>
         <translation>Minimizuojamas aktyvus langas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1203"/>
+        <location filename="../src/app/qgisapp.cpp" line="1205"/>
         <source>Zoom</source>
         <translation>Priartinimas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1204"/>
+        <location filename="../src/app/qgisapp.cpp" line="1206"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
         <translation>Perjungia tarp iš anksto numatyto ir naudotojo nurodyto dydžio</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1207"/>
+        <location filename="../src/app/qgisapp.cpp" line="1209"/>
         <source>Bring All to Front</source>
         <translation>Iškelti visus į viršų</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1208"/>
+        <location filename="../src/app/qgisapp.cpp" line="1210"/>
         <source>Bring forward all open windows</source>
         <translation>Iškelti į viršų visus atidarytus langus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1312"/>
-        <location filename="../src/app/qgisapp.cpp" line="1318"/>
+        <location filename="../src/app/qgisapp.cpp" line="1314"/>
+        <location filename="../src/app/qgisapp.cpp" line="1320"/>
         <source>Failed to open Python console:</source>
         <translation>Nepavyko atidaryti Python konsolės:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1427"/>
+        <location filename="../src/app/qgisapp.cpp" line="1429"/>
         <source>Panels</source>
         <translation>Skydeliai</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1429"/>
+        <location filename="../src/app/qgisapp.cpp" line="1431"/>
         <source>Toolbars</source>
         <translation>Įrankinės</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1503"/>
+        <location filename="../src/app/qgisapp.cpp" line="1505"/>
         <source>&amp;Database</source>
         <translation>&amp;Duomenų bazės</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1507"/>
+        <location filename="../src/app/qgisapp.cpp" line="1509"/>
         <source>&amp;Web</source>
         <translation>&amp;Tinklas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1696"/>
+        <location filename="../src/app/qgisapp.cpp" line="1698"/>
         <source>Toggle extents and mouse position display</source>
         <translation>Persijungti tarp apimties ir pelės pozicijos rodymo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1710"/>
-        <location filename="../src/app/qgisapp.cpp" line="8596"/>
+        <location filename="../src/app/qgisapp.cpp" line="1712"/>
+        <location filename="../src/app/qgisapp.cpp" line="8629"/>
         <source>Coordinate:</source>
         <translation>Koordinatė:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1711"/>
+        <location filename="../src/app/qgisapp.cpp" line="1713"/>
         <source>Current map coordinate</source>
         <translation>Dabartinė žemėlapio koordinatė</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1796"/>
+        <location filename="../src/app/qgisapp.cpp" line="1798"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
         <translation>Ši piktograma rodo, ar įjungtas automatinis koordinačių atskaitos sistemos transformavimas. Spauskite piktogramą, norėdami peržiūrėti projekto nustatymus ir pakeisti šią elgseną.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1800"/>
+        <location filename="../src/app/qgisapp.cpp" line="1802"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
         <translation>CRS būsena - Spustelėkite, kad atvertumėte koordinačių sistemos dialogą</translation>
     </message>
@@ -15186,223 +15196,223 @@ Prašome susisiekti su kūrėjais.
         <translation type="obsolete">Valdyti braižymo eiliškumą</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2390"/>
+        <location filename="../src/app/qgisapp.cpp" line="2394"/>
         <source>Map layer list that displays all layers in drawing order.</source>
         <translation>Žemėlapio sluoksnių sąrašas, rodantis visus sluoksnius paišymo tvarka.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2391"/>
+        <location filename="../src/app/qgisapp.cpp" line="2395"/>
         <source>Layer order</source>
         <translation>Sluoksnių eiliškumas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2576"/>
-        <location filename="../src/app/qgisapp.cpp" line="3678"/>
+        <location filename="../src/app/qgisapp.cpp" line="2580"/>
+        <location filename="../src/app/qgisapp.cpp" line="3682"/>
         <source>&lt; Blank &gt;</source>
         <translation>&lt; Tuščia &gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2631"/>
+        <location filename="../src/app/qgisapp.cpp" line="2635"/>
         <source>QGIS version</source>
         <translation>QGIS versija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2632"/>
+        <location filename="../src/app/qgisapp.cpp" line="2636"/>
         <source>QGIS code revision</source>
         <translation>QGIS kodo versija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2636"/>
+        <location filename="../src/app/qgisapp.cpp" line="2640"/>
         <source>Compiled against Qt</source>
         <translation>Sukompiliuota Qt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2637"/>
+        <location filename="../src/app/qgisapp.cpp" line="2641"/>
         <source>Running against Qt</source>
         <translation>Vykdoma Qt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2651"/>
+        <location filename="../src/app/qgisapp.cpp" line="2655"/>
         <source>PostgreSQL Client Version</source>
         <translation>PostgreSQL kliento versija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2655"/>
+        <location filename="../src/app/qgisapp.cpp" line="2659"/>
         <source>No support.</source>
         <translation>Nepalaikoma.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2659"/>
+        <location filename="../src/app/qgisapp.cpp" line="2663"/>
         <source>SpatiaLite Version</source>
         <translation>SpatiaLite versija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2665"/>
+        <location filename="../src/app/qgisapp.cpp" line="2669"/>
         <source>QWT Version</source>
         <translation>QWT versija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2666"/>
+        <location filename="../src/app/qgisapp.cpp" line="2670"/>
         <source>PROJ.4 Version</source>
         <translation>PROJ.4 versija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2670"/>
+        <location filename="../src/app/qgisapp.cpp" line="2674"/>
         <source>QScintilla2 Version</source>
         <translation>QScintilla2 versija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2673"/>
+        <location filename="../src/app/qgisapp.cpp" line="2677"/>
         <source>This copy of QGIS writes debugging output.</source>
         <translation>Ši QGIS kopija išveda derinimo informaciją.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2900"/>
+        <location filename="../src/app/qgisapp.cpp" line="2904"/>
         <source>Vector</source>
         <translation>Vektorius</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3163"/>
+        <location filename="../src/app/qgisapp.cpp" line="3167"/>
         <source>PostgreSQL</source>
         <translation>PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3163"/>
+        <location filename="../src/app/qgisapp.cpp" line="3167"/>
         <source>Cannot get PostgreSQL select dialog from provider.</source>
         <translation>Nepavyko gauti PostgreSQL pasirinkimo dialogo.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3219"/>
+        <location filename="../src/app/qgisapp.cpp" line="3223"/>
         <source>%1 is an invalid layer - not loaded</source>
         <translation>%1 yra netinkamas sluoksnis - nebuvo įkeltas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3220"/>
+        <location filename="../src/app/qgisapp.cpp" line="3224"/>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>%1 yra netinkamas sluoksnis ir negali būti įkeltas. Prašome patikrinti &lt;a href=&quot;#messageLog&quot;&gt;pranešimo žurnalą&lt;/a&gt; detalesnei informacijai.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3246"/>
+        <location filename="../src/app/qgisapp.cpp" line="3250"/>
         <source>SpatiaLite</source>
         <translation>SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3246"/>
+        <location filename="../src/app/qgisapp.cpp" line="3250"/>
         <source>Cannot get SpatiaLite select dialog from provider.</source>
         <translation>Nepavyko gauti SpatiaLite pasirinkimo dialogo.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3261"/>
+        <location filename="../src/app/qgisapp.cpp" line="3265"/>
         <source>Delimited Text</source>
         <translation>Delimited Text</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3261"/>
+        <location filename="../src/app/qgisapp.cpp" line="3265"/>
         <source>Cannot get Delimited Text select dialog from provider.</source>
         <translation>Nepavyko gauti Delimited Text select dialogo iš šaltinio.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3282"/>
+        <location filename="../src/app/qgisapp.cpp" line="3286"/>
         <source>MSSQL</source>
         <translation>MSSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3299"/>
+        <location filename="../src/app/qgisapp.cpp" line="3303"/>
         <source>Oracle</source>
         <translation>Oracle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3299"/>
+        <location filename="../src/app/qgisapp.cpp" line="3303"/>
         <source>Cannot get Oracle select dialog from provider.</source>
         <translation>Nepavyko gauti Oracle pasirinkimo dialogo.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3322"/>
+        <location filename="../src/app/qgisapp.cpp" line="3326"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3322"/>
+        <location filename="../src/app/qgisapp.cpp" line="3326"/>
         <source>Cannot get WMS select dialog from provider.</source>
         <translation>Nepavyko gauti WMS pasirinkimo dialogo.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3339"/>
+        <location filename="../src/app/qgisapp.cpp" line="3343"/>
         <source>WCS</source>
         <translation>WCS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3339"/>
+        <location filename="../src/app/qgisapp.cpp" line="3343"/>
         <source>Cannot get WCS select dialog from provider.</source>
         <translation>Nepavyko gauti WCS pasirinkimo dialogo.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3361"/>
+        <location filename="../src/app/qgisapp.cpp" line="3365"/>
         <source>WFS</source>
         <translation>WFS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3361"/>
+        <location filename="../src/app/qgisapp.cpp" line="3365"/>
         <source>Cannot get WFS select dialog from provider.</source>
         <translation>Nepavyko gauti WFS pasirinkimo dialogo.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3548"/>
+        <location filename="../src/app/qgisapp.cpp" line="3552"/>
         <source>Default failed to open: %1</source>
         <translation>Numatytojo nepavyko atidaryti: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3552"/>
+        <location filename="../src/app/qgisapp.cpp" line="3556"/>
         <source>Default not found: %1</source>
         <translation>Numatytasis nerastas: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3554"/>
+        <location filename="../src/app/qgisapp.cpp" line="3558"/>
         <source>Open Template Project</source>
         <translation>Atidaryti šabloninį projektą</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3579"/>
+        <location filename="../src/app/qgisapp.cpp" line="3583"/>
         <source>Auto-open Project</source>
         <translation>Auto-open Project</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3612"/>
+        <location filename="../src/app/qgisapp.cpp" line="3616"/>
         <source>Failed to open: %1</source>
         <translation>Nepavyko atidaryti: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3635"/>
+        <location filename="../src/app/qgisapp.cpp" line="3639"/>
         <source>Not valid project file: %1</source>
         <translation>Netinkamas projekto failas: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3648"/>
+        <location filename="../src/app/qgisapp.cpp" line="3652"/>
         <source>Project failed to open: %1</source>
         <translation>Nepavyko atidaryti projekto: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3655"/>
+        <location filename="../src/app/qgisapp.cpp" line="3659"/>
         <source>Default template has been reopened: %1</source>
         <translation>Numatytasis šablonas buvo atidarytas pakartotinai: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3662"/>
+        <location filename="../src/app/qgisapp.cpp" line="3666"/>
         <source>File not found: %1</source>
         <translation>Failas nerastas: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3788"/>
+        <location filename="../src/app/qgisapp.cpp" line="3792"/>
         <source>Loading project: %1</source>
         <translation>Įkeliamas projektas: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3859"/>
+        <location filename="../src/app/qgisapp.cpp" line="3863"/>
         <source>Security warning</source>
         <translation>Saugumo įspėjimas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3860"/>
+        <location filename="../src/app/qgisapp.cpp" line="3864"/>
         <source>project macros have been disabled.</source>
         <translation>projekto macros buvo išjungti.</translation>
     </message>
@@ -15415,102 +15425,102 @@ Prašome susisiekti su kūrėjais.
         <translation type="obsolete">Baigėsi tinklo užklausos laikas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10026"/>
+        <location filename="../src/app/qgisapp.cpp" line="10059"/>
         <source>A network request timed out, any data received is likely incomplete.</source>
         <translation>Baigėsi tinklo užklausos laikas, bet kokie gauti duomenys tikriausiai yra nepilni.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3851"/>
+        <location filename="../src/app/qgisapp.cpp" line="3855"/>
         <source>Enable macros</source>
         <translation>Įgalinti macros</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3883"/>
+        <location filename="../src/app/qgisapp.cpp" line="3887"/>
         <source>Project loaded</source>
         <translation>Projektas įkeltas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4141"/>
+        <location filename="../src/app/qgisapp.cpp" line="4145"/>
         <source>Unable to load %1</source>
         <translation>Nepavyko įkelti %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4613"/>
+        <location filename="../src/app/qgisapp.cpp" line="4646"/>
         <source>Default system font substituted.</source>
         <translation>Pakeista numatytuoju sisteminiu šriftu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4632"/>
+        <location filename="../src/app/qgisapp.cpp" line="4665"/>
         <source>Labeling</source>
         <translation>Etiketės</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4633"/>
+        <location filename="../src/app/qgisapp.cpp" line="4666"/>
         <source>Font for layer &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; was not found (&lt;i&gt;%2&lt;/i&gt;). %3</source>
         <translation>Sluoksnio &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; šriftas nerastas (&lt;i&gt;%2&lt;/i&gt;). %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4624"/>
+        <location filename="../src/app/qgisapp.cpp" line="4657"/>
         <source>Open labeling dialog</source>
         <translation>Atverti etikečių dialogą</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2646"/>
+        <location filename="../src/app/qgisapp.cpp" line="2650"/>
         <source>Compiled against GEOS</source>
         <translation>Sukompiliuota su GEOS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2647"/>
+        <location filename="../src/app/qgisapp.cpp" line="2651"/>
         <source>Running against GEOS</source>
         <translation>Vykdoma su GEOS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4035"/>
+        <location filename="../src/app/qgisapp.cpp" line="4039"/>
         <source>DXF export completed</source>
         <translation>Baigtas DXF eksportas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4039"/>
+        <location filename="../src/app/qgisapp.cpp" line="4043"/>
         <source>DXF export failed</source>
         <translation>DXF eksportas nepavyko</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4704"/>
+        <location filename="../src/app/qgisapp.cpp" line="4737"/>
         <source>Labeling Options</source>
         <translation>Etikečių parinktys</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4705"/>
+        <location filename="../src/app/qgisapp.cpp" line="4738"/>
         <source>Please select a vector layer first</source>
         <translation>Prašome iš pradžių parinkti vektorinį sluoksnį</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4713"/>
+        <location filename="../src/app/qgisapp.cpp" line="4746"/>
         <source>Layer labeling settings</source>
         <translation>Sluoksnio etikečių nustatymai</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4805"/>
+        <location filename="../src/app/qgisapp.cpp" line="4838"/>
         <source>Reading raster</source>
         <translation>Skaitomas rastras</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4880"/>
+        <location filename="../src/app/qgisapp.cpp" line="4913"/>
         <source>Cannot write raster error code: %1</source>
         <translation>Negalima rašyti rastro klaidos kodas: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5134"/>
+        <location filename="../src/app/qgisapp.cpp" line="5167"/>
         <source>No Features Selected</source>
         <translation>Nėra parinktų geoobjektų</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5135"/>
+        <location filename="../src/app/qgisapp.cpp" line="5168"/>
         <source>The current layer has not selected features</source>
         <translation>Dabartiniame sluoksnyje nėra parinktų geoobjektų</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="5154"/>
+        <location filename="../src/app/qgisapp.cpp" line="5187"/>
         <source>%n feature(s) deleted.</source>
         <comment>number of features deleted</comment>
         <translation>
@@ -15520,87 +15530,87 @@ Prašome susisiekti su kūrėjais.
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5260"/>
+        <location filename="../src/app/qgisapp.cpp" line="5293"/>
         <source>Create unique print composer title</source>
         <translation>Sukurti unikalų spausdinimo kūrėjo pavadinimą</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5263"/>
+        <location filename="../src/app/qgisapp.cpp" line="5296"/>
         <source>(title generated if left empty)</source>
         <translation>(pavadinimas bus sukurtas automatiškai, jei paliksite tuščią)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5277"/>
+        <location filename="../src/app/qgisapp.cpp" line="5310"/>
         <source>Composer title</source>
         <translation>Kūrėjo pavadinimas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5292"/>
+        <location filename="../src/app/qgisapp.cpp" line="5325"/>
         <source>Title can not be empty!</source>
         <translation>Pavadinimas negali būti tuščias!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5303"/>
+        <location filename="../src/app/qgisapp.cpp" line="5336"/>
         <source>Title already exists!</source>
         <translation>Toks pavadinimas jau yra!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5365"/>
+        <location filename="../src/app/qgisapp.cpp" line="5398"/>
         <source> copy</source>
         <translation> kopijuoti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5849"/>
+        <location filename="../src/app/qgisapp.cpp" line="5882"/>
         <source>No active vector layer</source>
         <translation>Nėra aktyvaus vektorinio sluoksnio</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5850"/>
+        <location filename="../src/app/qgisapp.cpp" line="5883"/>
         <source>To select features, choose a vector layer in the legend</source>
         <translation>Norint pažymėti geoobjektus, parinkite vektorinį sluoksnį</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6039"/>
+        <location filename="../src/app/qgisapp.cpp" line="6072"/>
         <source>Pasted</source>
         <translation>Įklijuota</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6040"/>
+        <location filename="../src/app/qgisapp.cpp" line="6073"/>
         <source>New memory layer name</source>
         <translation>Naujas atminties sluoksnio vardas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6041"/>
+        <location filename="../src/app/qgisapp.cpp" line="6074"/>
         <source>Layer name</source>
         <translation>Sluoksnio pavadinimas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6117"/>
+        <location filename="../src/app/qgisapp.cpp" line="6150"/>
         <source>No features in clipboard.</source>
         <translation>Nėra jokių objektų kopijavimo atmintije.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6121"/>
+        <location filename="../src/app/qgisapp.cpp" line="6154"/>
         <source>No features with geometry found, point type layer will be created.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6125"/>
+        <location filename="../src/app/qgisapp.cpp" line="6158"/>
         <source>Multiple geometry types found, features with geometry different from %1 will be created without geometry.</source>
         <translation>Aptikti keli skirtingi geometrijos tipai, objektai kurių geometrija skiriasi nuo %1 bus sukurti be geometrijos.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6139"/>
+        <location filename="../src/app/qgisapp.cpp" line="6172"/>
         <source>Cannot create new layer</source>
         <translation>Negalima sukurti naujo sluoksnio</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6152"/>
+        <location filename="../src/app/qgisapp.cpp" line="6185"/>
         <source>Cannot create field %1 (%2,%3)</source>
         <translation>Negalima sukurti lauko %1 (%2, %3)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6467"/>
+        <location filename="../src/app/qgisapp.cpp" line="6500"/>
         <source>Could not %1 changes to layer %2
 
 Errors: %3
@@ -15611,44 +15621,44 @@ Klaidos: %3
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6468"/>
+        <location filename="../src/app/qgisapp.cpp" line="6501"/>
         <source>rollback</source>
         <translation>atšaukti pakeitimus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6468"/>
+        <location filename="../src/app/qgisapp.cpp" line="6501"/>
         <source>cancel</source>
         <translation>atšaukti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6498"/>
+        <location filename="../src/app/qgisapp.cpp" line="6531"/>
         <source>Save</source>
         <translation>Įrašyti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6498"/>
-        <location filename="../src/app/qgisapp.cpp" line="6524"/>
-        <location filename="../src/app/qgisapp.cpp" line="6550"/>
+        <location filename="../src/app/qgisapp.cpp" line="6531"/>
+        <location filename="../src/app/qgisapp.cpp" line="6557"/>
+        <location filename="../src/app/qgisapp.cpp" line="6583"/>
         <source>all</source>
         <translation>visi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6524"/>
+        <location filename="../src/app/qgisapp.cpp" line="6557"/>
         <source>Rollback</source>
         <translation>Atšaukti pakeitimus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6550"/>
+        <location filename="../src/app/qgisapp.cpp" line="6583"/>
         <source>Cancel</source>
         <translation>Nutraukti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6566"/>
+        <location filename="../src/app/qgisapp.cpp" line="6599"/>
         <source>Current edits</source>
         <translation>Dabartiniai keitimai</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6567"/>
+        <location filename="../src/app/qgisapp.cpp" line="6600"/>
         <source>%1 current changes for %2 layer(s)?</source>
         <translation>%1 padarytus pakeitimus %2 sluoksniui(-iams)?</translation>
     </message>
@@ -15683,64 +15693,64 @@ Klaidos: %3
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6879"/>
+        <location filename="../src/app/qgisapp.cpp" line="6912"/>
         <source>copy</source>
         <translation>kopija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6883"/>
+        <location filename="../src/app/qgisapp.cpp" line="6916"/>
         <source>Plugin layer</source>
         <translation>Plėtinio sluoksnis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6895"/>
+        <location filename="../src/app/qgisapp.cpp" line="6928"/>
         <source>Memory layer</source>
         <translation>Atminties sluoksnis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6915"/>
-        <location filename="../src/app/qgisapp.cpp" line="6926"/>
+        <location filename="../src/app/qgisapp.cpp" line="6948"/>
+        <location filename="../src/app/qgisapp.cpp" line="6959"/>
         <source>Duplicate layer: </source>
         <translation>Dubliuotas sluoksnis: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6916"/>
+        <location filename="../src/app/qgisapp.cpp" line="6949"/>
         <source>%1 (duplication resulted in invalid layer)</source>
         <translation>%1 (dubliavimas lėmė neteisingą rezultatą)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7239"/>
+        <location filename="../src/app/qgisapp.cpp" line="7272"/>
         <source>Couldn&apos;t load Python support library: %1</source>
         <translation>Nepavyko įkelti Python palaikymo bibliotekos: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7250"/>
+        <location filename="../src/app/qgisapp.cpp" line="7283"/>
         <source>Couldn&apos;t resolve python support library&apos;s instance() symbol.</source>
         <translation>Nepavyko aptikti python palaikomos bibliotekos instance() simbolio.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7265"/>
+        <location filename="../src/app/qgisapp.cpp" line="7298"/>
         <source>Python support ENABLED :-) </source>
         <translation>Python&apos;o palaikymas ĮJUNGTAS :-) </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7335"/>
+        <location filename="../src/app/qgisapp.cpp" line="7368"/>
         <source>QGIS - Changes since last release</source>
         <translation>QGIS - pakeitimai po paskutinės versijos</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7363"/>
+        <location filename="../src/app/qgisapp.cpp" line="7396"/>
         <source>Unknown network socket error: %1</source>
         <translation>Nežinoma tinklo jungties klaida: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7560"/>
-        <location filename="../src/app/qgisapp.cpp" line="7569"/>
+        <location filename="../src/app/qgisapp.cpp" line="7593"/>
+        <location filename="../src/app/qgisapp.cpp" line="7602"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
         <translation>Norėdami pakeisti ryškumą ar kontrastą, turite pažymėti rastro sluoksnį.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7595"/>
+        <location filename="../src/app/qgisapp.cpp" line="7628"/>
         <source>en</source>
         <comment>documentation language</comment>
         <translation>en</translation>
@@ -15750,48 +15760,48 @@ Klaidos: %3
         <translation type="obsolete">http://qgis.org/de/site/forusers/commercial_support.html</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7854"/>
+        <location filename="../src/app/qgisapp.cpp" line="7887"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
         <translation>Projektas turi sluoksnių redagavimo rėžime su neužsaugotais pakeitimais, kurie nebus užsaugoti!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8497"/>
+        <location filename="../src/app/qgisapp.cpp" line="8530"/>
         <source>Current CRS: %1 (OTFR enabled)</source>
         <translation>Dabartinė CRS: %1 (OTFR įjungtas)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8504"/>
+        <location filename="../src/app/qgisapp.cpp" line="8537"/>
         <source>Current CRS: %1 (OTFR disabled)</source>
         <translation>Dabartinė CRS: %1 (OTFR išjungtas)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9373"/>
+        <location filename="../src/app/qgisapp.cpp" line="9406"/>
         <source>Error adding valid layer to map canvas</source>
         <translation>Klaida įkeliant tinkamą sluoksnį į žemėlapio langą</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9374"/>
-        <location filename="../src/app/qgisapp.cpp" line="9512"/>
+        <location filename="../src/app/qgisapp.cpp" line="9407"/>
+        <location filename="../src/app/qgisapp.cpp" line="9545"/>
         <source>Raster layer</source>
         <translation>Rastrinis sluoksnis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9555"/>
+        <location filename="../src/app/qgisapp.cpp" line="9588"/>
         <source>Exit QGIS</source>
         <translation>Išjungti QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9556"/>
+        <location filename="../src/app/qgisapp.cpp" line="9589"/>
         <source>Do you really want to quit QGIS?</source>
         <translation>Ar tikrai norite išjungti QGIS?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9690"/>
+        <location filename="../src/app/qgisapp.cpp" line="9723"/>
         <source>This project file was saved by an older version of QGIS</source>
         <translation>Šis projekto failas buvo įrašytas naudojant senesnę QGIS versiją</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10006"/>
+        <location filename="../src/app/qgisapp.cpp" line="10039"/>
         <source>
 
 Always ignore these errors?</source>
@@ -15800,7 +15810,7 @@ Always ignore these errors?</source>
 Visada ignoruoti tokias klaidas?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10010"/>
+        <location filename="../src/app/qgisapp.cpp" line="10043"/>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
         <translation>
@@ -15810,17 +15820,17 @@ Visada ignoruoti tokias klaidas?</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2801"/>
+        <location filename="../src/app/qgisapp.cpp" line="2805"/>
         <source>%1 doesn&apos;t have any layers</source>
         <translation>%1 neturi jokių sluoksnių</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1726"/>
+        <location filename="../src/app/qgisapp.cpp" line="1728"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position. The format is lat,lon or east,north</source>
         <translation>Rodo žemėlapio koordinates pagal pelės kursoriaus padėtį. Atvaizdavimas atnaujinamas pelei judant. Taip pat galima nustatyti žemėlapio centrą į nurodytą poziciją. Formatas yra platuma, ilguma arba rytai, šiaurė</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1730"/>
+        <location filename="../src/app/qgisapp.cpp" line="1732"/>
         <source>Current map coordinate (lat,lon or east,north)</source>
         <translation>Dabartinės žemėlapio koordinatės (plat,ilg arba rytai, šiaurė)</translation>
     </message>
@@ -15829,57 +15839,57 @@ Visada ignoruoti tokias klaidas?</translation>
         <translation type="obsolete">Rastras</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3975"/>
+        <location filename="../src/app/qgisapp.cpp" line="3979"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>Pasirinkite failo vardą QGIS projekto failui užsaugoti kaip</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4260"/>
+        <location filename="../src/app/qgisapp.cpp" line="4264"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Parinkite žemėlapio paveikslo failo pavadinimą</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5145"/>
+        <location filename="../src/app/qgisapp.cpp" line="5178"/>
         <source>Features deleted</source>
         <translation>Geoobjektai pašalinti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5200"/>
+        <location filename="../src/app/qgisapp.cpp" line="5233"/>
         <source>Merging features...</source>
         <translation>Suliejami geoobjektai...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5200"/>
+        <location filename="../src/app/qgisapp.cpp" line="5233"/>
         <source>Abort</source>
         <translation>Nutraukti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5320"/>
-        <location filename="../src/app/qgisapp.cpp" line="5403"/>
+        <location filename="../src/app/qgisapp.cpp" line="5353"/>
+        <location filename="../src/app/qgisapp.cpp" line="5436"/>
         <source>Composer %1</source>
         <translation>Kūrėjas %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5589"/>
-        <location filename="../src/app/qgisapp.cpp" line="5652"/>
+        <location filename="../src/app/qgisapp.cpp" line="5622"/>
+        <location filename="../src/app/qgisapp.cpp" line="5685"/>
         <source>No active layer</source>
         <translation>Nėra aktyvaus sluoksnio</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5590"/>
-        <location filename="../src/app/qgisapp.cpp" line="5652"/>
+        <location filename="../src/app/qgisapp.cpp" line="5623"/>
+        <location filename="../src/app/qgisapp.cpp" line="5685"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>Nepasirinktas joks sluoksnis. Prašome pasirinkti sluoksnį iš sluoksnių sąrašo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5598"/>
-        <location filename="../src/app/qgisapp.cpp" line="5658"/>
+        <location filename="../src/app/qgisapp.cpp" line="5631"/>
+        <location filename="../src/app/qgisapp.cpp" line="5691"/>
         <source>Active layer is not vector</source>
         <translation>Aktyvus sluoksnis nėra vektorius</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5598"/>
-        <location filename="../src/app/qgisapp.cpp" line="5658"/>
+        <location filename="../src/app/qgisapp.cpp" line="5631"/>
+        <location filename="../src/app/qgisapp.cpp" line="5691"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>Suliejimo įrankis veikia tik su vektoriniais sluoksniais. Prašome sąraše parinkti vektorinį sluoksnį</translation>
     </message>
@@ -15888,72 +15898,72 @@ Visada ignoruoti tokias klaidas?</translation>
         <translation type="obsolete">Objektų apjungimas galimas tik sluoksnių redagavimo rėžime. Tam, kad panaudoti apjungimo įrankį eikite į Sluoksniai-&gt;Įjungti redagavimą</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5612"/>
-        <location filename="../src/app/qgisapp.cpp" line="5678"/>
-        <location filename="../src/app/qgisapp.cpp" line="5715"/>
+        <location filename="../src/app/qgisapp.cpp" line="5645"/>
+        <location filename="../src/app/qgisapp.cpp" line="5711"/>
+        <location filename="../src/app/qgisapp.cpp" line="5748"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>Suliejimo įrankiui reikia ne mažiau dviejų pažymėtų geoobjektų</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5626"/>
+        <location filename="../src/app/qgisapp.cpp" line="5659"/>
         <source>Merged feature attributes</source>
         <translation>Apjungto objekto atributai</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5690"/>
-        <location filename="../src/app/qgisapp.cpp" line="5730"/>
+        <location filename="../src/app/qgisapp.cpp" line="5723"/>
+        <location filename="../src/app/qgisapp.cpp" line="5763"/>
         <source>Merge failed</source>
         <translation>Apjungimas nepavyko</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5690"/>
-        <location filename="../src/app/qgisapp.cpp" line="5730"/>
+        <location filename="../src/app/qgisapp.cpp" line="5723"/>
+        <location filename="../src/app/qgisapp.cpp" line="5763"/>
         <source>An error occured during the merge operation</source>
         <translation>Įvyko klaida atliekant suliejimo operaciją</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5698"/>
-        <location filename="../src/app/qgisapp.cpp" line="5737"/>
+        <location filename="../src/app/qgisapp.cpp" line="5731"/>
+        <location filename="../src/app/qgisapp.cpp" line="5770"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation>Sujungimo veiksmo rezultatas būtų geometrijos tipas, kuris yra nesuderinamas su dabartiniu sluoksniu, todėl veiksmas nutrauktas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5743"/>
+        <location filename="../src/app/qgisapp.cpp" line="5776"/>
         <source>Merged features</source>
         <translation>Apjungti objektai</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5887"/>
+        <location filename="../src/app/qgisapp.cpp" line="5920"/>
         <source>Features cut</source>
         <translation>Objektai apkirpti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5913"/>
+        <location filename="../src/app/qgisapp.cpp" line="5946"/>
         <source>Features pasted</source>
         <translation>Objektai įdėti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6329"/>
+        <location filename="../src/app/qgisapp.cpp" line="6362"/>
         <source>Start editing failed</source>
         <translation>Nepavyko pradėti redagavimo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6330"/>
+        <location filename="../src/app/qgisapp.cpp" line="6363"/>
         <source>Provider cannot be opened for editing</source>
         <translation>Šaltinis negali būti atvertas redagavimui</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6355"/>
+        <location filename="../src/app/qgisapp.cpp" line="6388"/>
         <source>Stop editing</source>
         <translation>Baigti keitimą</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6356"/>
+        <location filename="../src/app/qgisapp.cpp" line="6389"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>Ar norite įrašyti sluoksnio %1 pakeitimus?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6387"/>
+        <location filename="../src/app/qgisapp.cpp" line="6420"/>
         <source>Problems during roll back</source>
         <translation>Problemos atliekant veiksmų atšaukimą</translation>
     </message>
@@ -15963,89 +15973,89 @@ Visada ignoruoti tokias klaidas?</translation>
         <translation>GPS informacija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8586"/>
+        <location filename="../src/app/qgisapp.cpp" line="8619"/>
         <source>Map coordinates for the current view extents</source>
         <translation>Dabartinio rodinio apimties žemėlapio koordinatės</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8662"/>
+        <location filename="../src/app/qgisapp.cpp" line="8695"/>
         <source>Extents:</source>
         <translation>Apimtys:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8755"/>
+        <location filename="../src/app/qgisapp.cpp" line="8788"/>
         <source>Maptips require an active layer</source>
         <translation>Žemėlapio patarimams reikia aktyvaus sluoksnio</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6130"/>
-        <location filename="../src/app/qgisapp.cpp" line="6139"/>
-        <location filename="../src/app/qgisapp.cpp" line="6151"/>
-        <location filename="../src/app/qgisapp.cpp" line="9861"/>
+        <location filename="../src/app/qgisapp.cpp" line="6163"/>
+        <location filename="../src/app/qgisapp.cpp" line="6172"/>
+        <location filename="../src/app/qgisapp.cpp" line="6184"/>
+        <location filename="../src/app/qgisapp.cpp" line="9894"/>
         <source>Warning</source>
         <translation>Įspėjimas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9862"/>
+        <location filename="../src/app/qgisapp.cpp" line="9895"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>Šis sluoksnis neturi savybių dialogo.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9902"/>
+        <location filename="../src/app/qgisapp.cpp" line="9935"/>
         <source>Authentication required</source>
         <translation>Autentifikacija privaloma</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9957"/>
+        <location filename="../src/app/qgisapp.cpp" line="9990"/>
         <source>Proxy authentication required</source>
         <translation>Proxy autentifikacija reikalaujama</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2808"/>
-        <location filename="../src/app/qgisapp.cpp" line="3139"/>
+        <location filename="../src/app/qgisapp.cpp" line="2812"/>
+        <location filename="../src/app/qgisapp.cpp" line="3143"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 yra netinkamas arba neatpažintas duomenų šaltinis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3942"/>
-        <location filename="../src/app/qgisapp.cpp" line="3996"/>
+        <location filename="../src/app/qgisapp.cpp" line="3946"/>
+        <location filename="../src/app/qgisapp.cpp" line="4000"/>
         <source>Saved project to: %1</source>
         <translation>Projektas įrašytas į: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3954"/>
-        <location filename="../src/app/qgisapp.cpp" line="4003"/>
+        <location filename="../src/app/qgisapp.cpp" line="3958"/>
+        <location filename="../src/app/qgisapp.cpp" line="4007"/>
         <source>Unable to save project %1</source>
         <translation>Nepavyko įrašyti projekto %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4265"/>
+        <location filename="../src/app/qgisapp.cpp" line="4269"/>
         <source>Saved map image to %1</source>
         <translation>Žemėlapio vaizdas įrašytas į %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7368"/>
+        <location filename="../src/app/qgisapp.cpp" line="7401"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>Nepavyko susisiekti su QGIS versijų stotimi %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9509"/>
+        <location filename="../src/app/qgisapp.cpp" line="9542"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 yra nepalaikomas rastrinis duomenų šaltinis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9668"/>
+        <location filename="../src/app/qgisapp.cpp" line="9701"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation>&lt;p&gt;Šis projekto failas buvo įrašytas naudojant senesnę QGIS versiją. Įrašant projekto failą, QGIS jį atnaujins iki paskutinės versijos, dėl to failo tikriausiai nebegalės atidaryti senesnės QGIS versijos.&lt;p&gt;Nors QGIS kūrėjai stengiasi palikti atgalinį palaikymą, kai kuri informacija iš seno projekto failo gali būti prarasta. Norėdami pagerinti QGIS kokybę, mes būsime dėkingi, jei jūs užregistruosite klaidą adresu %3. Būtinai prisekite seną projekto failą bei nurodykite QGIS versiją, su kuria buvo aptikta klaida.&lt;p&gt;Norėdami panaikinti šį įspėjimą atidarant senesnius projektų failus, išjunkite varnelę &apos;%5&apos; meniu %4.&lt;p&gt;Projekto failo versija: %1&lt;br&gt;Dabartinė QGIS versija: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5140"/>
+        <location filename="../src/app/qgisapp.cpp" line="5173"/>
         <source>Delete features</source>
         <translation>Panaikinti objektus</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="5140"/>
+        <location filename="../src/app/qgisapp.cpp" line="5173"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
@@ -16064,7 +16074,7 @@ Visada ignoruoti tokias klaidas?</translation>
 <context>
     <name>QgisAppInterface</name>
     <message>
-        <location filename="../src/app/qgisappinterface.cpp" line="582"/>
+        <location filename="../src/app/qgisappinterface.cpp" line="584"/>
         <source>Attributes changed</source>
         <translation>Atributai pakeisti</translation>
     </message>
@@ -35411,22 +35421,22 @@ eilutėje %2 stulpelyje %3</translation>
 <context>
     <name>QgsHandleBadLayers</name>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="68"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="70"/>
         <source>Browse</source>
         <translation>Naršyti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="83"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="84"/>
         <source>Layer name</source>
         <translation>Sluoksnio pavadinimas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="84"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="85"/>
         <source>Type</source>
         <translation>Tipas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="85"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="86"/>
         <source>Provider</source>
         <translation>Tiekėjas</translation>
     </message>
@@ -35439,44 +35449,43 @@ eilutėje %2 stulpelyje %3</translation>
         <translation type="obsolete">Naujas šaltinis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="86"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="87"/>
         <source>Datasource</source>
         <translation type="unfinished">Duomenų šaltinis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="97"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="99"/>
         <source>none</source>
         <translation>joks</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="251"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="259"/>
         <source>Select file to replace &apos;%1&apos;</source>
         <translation>Parinkite failą, kuris pakeis „%1“</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="256"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="264"/>
         <source>Please select exactly one file.</source>
         <translation>Prašome parinkti lygiai vieną failą.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="266"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="272"/>
         <source>Select new directory of selected files</source>
         <translation>Parinkite naują parinktų failų aplanką</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="268"/>
         <source>All files (*)</source>
-        <translation>Visi failai (*)</translation>
+        <translation type="obsolete">Visi failai (*)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="329"/>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="348"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="340"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="359"/>
         <source>Unhandled layer will be lost.</source>
         <translation>Neapdorotas sluoksnis bus prarastas.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="330"/>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="349"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="341"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="360"/>
         <source>There are still %n unhandled layer(s), that will be lost if you closed now.</source>
         <comment>unhandled layers</comment>
         <translation>
@@ -35529,12 +35538,12 @@ eilutėje %2 stulpelyje %3</translation>
         <translation type="obsolete">Tvarkyti blogus sluoksnius</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="44"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="46"/>
         <source>Handle bad layers</source>
         <translation type="unfinished">Tvarkyti blogus sluoksnius</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="45"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="47"/>
         <source>%1 of %2 bad layers were not fixable.</source>
         <translation>%1 iš %2 blogų sluoksnių buvo nepataisomi.</translation>
     </message>
@@ -49699,7 +49708,7 @@ Spauskite pagalbos mygtuką, kad gautumėte tinkamas šio formato kūrimo parink
         <translation>Juosta %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="672"/>
+        <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="684"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Parinkite failo pavadinimą, kad išaugoti žemėlapio paveikslą kaip</translation>
     </message>
@@ -49766,22 +49775,22 @@ Spauskite pagalbos mygtuką, kad gautumėte tinkamas šio formato kūrimo parink
 <context>
     <name>QgsRasterInterface</name>
     <message>
-        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="581"/>
+        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="584"/>
         <source>Identify</source>
         <translation>Nustatyti</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="596"/>
+        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="599"/>
         <source>Build Pyramids</source>
         <translation>Kurti piramides</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="586"/>
+        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="589"/>
         <source>Create Datasources</source>
         <translation>Kurti duomenų šaltinius</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="591"/>
+        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="594"/>
         <source>Remove Datasources</source>
         <translation>Naikinti duomenų šaltinius</translation>
     </message>
@@ -51704,7 +51713,7 @@ standard deviation ×</source>
 <context>
     <name>QgsRelationEditorWidget</name>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="48"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="49"/>
         <source>Toggle editing</source>
         <translation type="unfinished">Perjungti redagavimą</translation>
     </message>
@@ -51714,27 +51723,27 @@ standard deviation ×</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="62"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="61"/>
         <source>Delete feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="68"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="66"/>
         <source>Link feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="74"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="71"/>
         <source>Unlink feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="82"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="77"/>
         <source>Form view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="89"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="84"/>
         <source>Table view</source>
         <translation type="unfinished"></translation>
     </message>
@@ -51841,48 +51850,48 @@ standard deviation ×</source>
         <translation type="obsolete">(nėra pažymėjimo)</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="81"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="82"/>
         <source>Open related feature form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="90"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="88"/>
         <source>Highlight feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="91"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="89"/>
         <source>Scale and highlight feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="92"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="90"/>
         <source>Pan and highlight feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="102"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="100"/>
         <source>Select on map</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="111"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="107"/>
         <source>No selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="131"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="124"/>
         <source>The relation is not valid. Please make sure your relation definitions are ok.</source>
         <translation>Ryšys netinkamas. Įsitikinkite, kad ryšio apibrėžimas yra teisingas.</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="264"/>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="382"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="269"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="387"/>
         <source>%1 (no selection)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="537"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="542"/>
         <source>Identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -58220,22 +58229,22 @@ Klaida:%2</translation>
 <context>
     <name>QgsVisibilityPresets</name>
     <message>
-        <location filename="../src/app/qgsvisibilitypresets.cpp" line="43"/>
+        <location filename="../src/app/qgsvisibilitypresets.cpp" line="45"/>
         <source>Add Preset...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvisibilitypresets.cpp" line="46"/>
+        <location filename="../src/app/qgsvisibilitypresets.cpp" line="48"/>
         <source>Remove Current Preset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvisibilitypresets.cpp" line="211"/>
+        <location filename="../src/app/qgsvisibilitypresets.cpp" line="213"/>
         <source>Visibility Presets</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvisibilitypresets.cpp" line="211"/>
+        <location filename="../src/app/qgsvisibilitypresets.cpp" line="213"/>
         <source>Name of the new preset</source>
         <translation type="unfinished"></translation>
     </message>

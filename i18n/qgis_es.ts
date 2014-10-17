@@ -8391,6 +8391,14 @@ Actúa sobre la capa actual en edición</translation>
         <source>Remove Layer/Group</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Show Selected Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide Selected Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -35525,7 +35533,7 @@ en la línea %2 columna %3</translation>
     </message>
     <message>
         <source>All files (*)</source>
-        <translation>Todos los archivos (*)</translation>
+        <translation type="obsolete">Todos los archivos (*)</translation>
     </message>
     <message>
         <source>Unhandled layer will be lost.</source>

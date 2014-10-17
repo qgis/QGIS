@@ -7915,7 +7915,7 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">QGIS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="238"/>
+        <location filename="../src/ui/qgisapp.ui" line="240"/>
         <source>&amp;Edit</source>
         <translation>&amp;Urejanje</translation>
     </message>
@@ -7962,12 +7962,12 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">Novo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="206"/>
+        <location filename="../src/ui/qgisapp.ui" line="208"/>
         <source>&amp;Settings</source>
         <translation>&amp;Nastavitve</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="184"/>
+        <location filename="../src/ui/qgisapp.ui" line="186"/>
         <source>&amp;Plugins</source>
         <translation>&amp;Vtičniki</translation>
     </message>
@@ -7987,12 +7987,12 @@ Open the results dialog to check it.</source>
         <translation>&amp;Okrasje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="218"/>
+        <location filename="../src/ui/qgisapp.ui" line="220"/>
         <source>&amp;Raster</source>
         <translation>&amp;Raster</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="192"/>
+        <location filename="../src/ui/qgisapp.ui" line="194"/>
         <source>&amp;Help</source>
         <translation>&amp;Pomoč</translation>
     </message>
@@ -8001,82 +8001,82 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">Nov projekt iz predloge</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="224"/>
+        <location filename="../src/ui/qgisapp.ui" line="226"/>
         <source>Vect&amp;or</source>
         <translation>Vekt&amp;or</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="228"/>
+        <location filename="../src/ui/qgisapp.ui" line="230"/>
         <source>&amp;OpenStreetMap</source>
         <translation>&amp;OdpriStreetMap</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="242"/>
+        <location filename="../src/ui/qgisapp.ui" line="244"/>
         <source>Paste Features as</source>
         <translation>Prilepi elemente kot</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="288"/>
+        <location filename="../src/ui/qgisapp.ui" line="290"/>
         <source>File</source>
         <translation>Datoteka</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="305"/>
+        <location filename="../src/ui/qgisapp.ui" line="307"/>
         <source>Manage Layers</source>
         <translation>Urejanje slojev</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="326"/>
+        <location filename="../src/ui/qgisapp.ui" line="328"/>
         <source>Digitizing</source>
         <translation>Risanje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="347"/>
+        <location filename="../src/ui/qgisapp.ui" line="349"/>
         <source>Advanced Digitizing</source>
         <translation>Napredno risanje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="374"/>
+        <location filename="../src/ui/qgisapp.ui" line="376"/>
         <source>Map Navigation</source>
         <translation>Navigacija zemljevida</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="397"/>
+        <location filename="../src/ui/qgisapp.ui" line="399"/>
         <source>Attributes</source>
         <translation>Podatki</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="416"/>
+        <location filename="../src/ui/qgisapp.ui" line="418"/>
         <source>Plugins</source>
         <translation>Dodatki</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="427"/>
+        <location filename="../src/ui/qgisapp.ui" line="429"/>
         <source>Help</source>
         <translation>Pomoč</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="439"/>
+        <location filename="../src/ui/qgisapp.ui" line="441"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="458"/>
+        <location filename="../src/ui/qgisapp.ui" line="460"/>
         <source>Label</source>
         <translation>Oznaka</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="476"/>
+        <location filename="../src/ui/qgisapp.ui" line="478"/>
         <source>Vector</source>
         <translation>Vektor</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="487"/>
+        <location filename="../src/ui/qgisapp.ui" line="489"/>
         <source>Database</source>
         <translation>Podatkovno skladišče</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="498"/>
+        <location filename="../src/ui/qgisapp.ui" line="500"/>
         <source>Web</source>
         <translation>Splet</translation>
     </message>
@@ -8085,7 +8085,7 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">&amp;Nov projekt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="516"/>
+        <location filename="../src/ui/qgisapp.ui" line="518"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
@@ -8094,7 +8094,7 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">&amp;Odpri projekt...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="528"/>
+        <location filename="../src/ui/qgisapp.ui" line="530"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
@@ -8103,7 +8103,7 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">&amp;Shrani projekt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="540"/>
+        <location filename="../src/ui/qgisapp.ui" line="542"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
@@ -8112,52 +8112,52 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">Shrani projekt &amp;kot...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="552"/>
+        <location filename="../src/ui/qgisapp.ui" line="554"/>
         <source>Ctrl+Shift+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="561"/>
+        <location filename="../src/ui/qgisapp.ui" line="563"/>
         <source>Save as Image...</source>
         <translation>Shrani kot sliko...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="570"/>
+        <location filename="../src/ui/qgisapp.ui" line="572"/>
         <source>&amp;New Print Composer</source>
         <translation>&amp;Nova tiskovina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="573"/>
+        <location filename="../src/ui/qgisapp.ui" line="575"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="582"/>
+        <location filename="../src/ui/qgisapp.ui" line="584"/>
         <source>Composer Manager...</source>
         <translation>Urejevalnik tiskovin...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="591"/>
+        <location filename="../src/ui/qgisapp.ui" line="593"/>
         <source>Exit QGIS</source>
         <translation>Izhod</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="669"/>
+        <location filename="../src/ui/qgisapp.ui" line="671"/>
         <source>Add Feature</source>
         <translation>Vstavi element</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="720"/>
+        <location filename="../src/ui/qgisapp.ui" line="722"/>
         <source>Split Parts</source>
         <translation>Razdeli dele</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="798"/>
+        <location filename="../src/ui/qgisapp.ui" line="800"/>
         <source>Merge Selected Features</source>
         <translation>Spoji označene elemente</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="807"/>
+        <location filename="../src/ui/qgisapp.ui" line="809"/>
         <source>Merge Attributes of Selected Features</source>
         <translation>Združi podatke označenih elementov</translation>
     </message>
@@ -8170,259 +8170,269 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">Označi elemente (kvadrat)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="905"/>
+        <location filename="../src/ui/qgisapp.ui" line="907"/>
         <source>Select Features by Polygon</source>
         <translation>Označi elemente (poligon)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="917"/>
+        <location filename="../src/ui/qgisapp.ui" line="919"/>
         <source>Select Features by Freehand</source>
         <translation>Prostoročno označi elemente</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="929"/>
+        <location filename="../src/ui/qgisapp.ui" line="931"/>
         <source>Select Features by Radius</source>
         <translation>Označi element (krog)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="938"/>
+        <location filename="../src/ui/qgisapp.ui" line="940"/>
         <source>Deselect Features from All Layers</source>
         <translation>Počisti označeno na vseh slojih</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1109"/>
+        <location filename="../src/ui/qgisapp.ui" line="1111"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1133"/>
+        <location filename="../src/ui/qgisapp.ui" line="1135"/>
         <source>Form Annotation</source>
         <translation>Opomba obrazca</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1157"/>
+        <location filename="../src/ui/qgisapp.ui" line="1159"/>
         <source>Layer Labeling Options</source>
         <translation>Lastnosti label</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1223"/>
+        <location filename="../src/ui/qgisapp.ui" line="1225"/>
         <source>Add PostGIS Layers...</source>
         <translation>Vstavi PostGIS sloje...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1259"/>
+        <location filename="../src/ui/qgisapp.ui" line="1261"/>
         <source>Add Oracle Spatial Layer...</source>
         <translation>Vstavi Oracle sloj...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1271"/>
+        <location filename="../src/ui/qgisapp.ui" line="1273"/>
         <source>Add WMS/WMTS Layer...</source>
         <translation>Vstavi WMS/WMTS sloj...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1295"/>
+        <location filename="../src/ui/qgisapp.ui" line="1297"/>
         <source>Toggle Editing</source>
         <translation>Vključi/izključi urejanje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1324"/>
-        <location filename="../src/ui/qgisapp.ui" line="1327"/>
+        <location filename="../src/ui/qgisapp.ui" line="1326"/>
+        <location filename="../src/ui/qgisapp.ui" line="1329"/>
         <source>Remove Layer/Group</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1416"/>
+        <location filename="../src/ui/qgisapp.ui" line="1418"/>
         <source>Manage and Install Plugins...</source>
         <translation>Upravljanje in namestitev vtičnikov...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1424"/>
+        <location filename="../src/ui/qgisapp.ui" line="1426"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1909"/>
-        <location filename="../src/ui/qgisapp.ui" line="1912"/>
+        <location filename="../src/ui/qgisapp.ui" line="1911"/>
+        <location filename="../src/ui/qgisapp.ui" line="1914"/>
         <source>Duplicate Layer(s)</source>
         <translation>Podvoji sloj(je)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1924"/>
+        <location filename="../src/ui/qgisapp.ui" line="1926"/>
         <source>SVG annotation</source>
         <translation>SVG zaznamki</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1933"/>
-        <location filename="../src/ui/qgisapp.ui" line="1936"/>
+        <location filename="../src/ui/qgisapp.ui" line="1935"/>
+        <location filename="../src/ui/qgisapp.ui" line="1938"/>
         <source>Save for All Layers</source>
         <translation>Shrani za vse sloje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1948"/>
-        <location filename="../src/ui/qgisapp.ui" line="1951"/>
+        <location filename="../src/ui/qgisapp.ui" line="1950"/>
+        <location filename="../src/ui/qgisapp.ui" line="1953"/>
         <source>Rollback for All Layers</source>
         <translation>Razveljavi za vse sloje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1963"/>
-        <location filename="../src/ui/qgisapp.ui" line="1966"/>
+        <location filename="../src/ui/qgisapp.ui" line="1965"/>
+        <location filename="../src/ui/qgisapp.ui" line="1968"/>
         <source>Cancel for All Layers</source>
         <translation>Prekini za vse sloje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1978"/>
-        <location filename="../src/ui/qgisapp.ui" line="1981"/>
+        <location filename="../src/ui/qgisapp.ui" line="1980"/>
+        <location filename="../src/ui/qgisapp.ui" line="1983"/>
         <source>Rollback for Selected Layer(s)</source>
         <translation>Razveljavi za označen sloj(e)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1993"/>
-        <location filename="../src/ui/qgisapp.ui" line="1996"/>
+        <location filename="../src/ui/qgisapp.ui" line="1995"/>
+        <location filename="../src/ui/qgisapp.ui" line="1998"/>
         <source>Current Edits</source>
         <translation>Trenutno urejani</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2008"/>
-        <location filename="../src/ui/qgisapp.ui" line="2011"/>
+        <location filename="../src/ui/qgisapp.ui" line="2010"/>
+        <location filename="../src/ui/qgisapp.ui" line="2013"/>
         <source>Cancel for Selected Layer(s)</source>
         <translation>Prekini za izbrane sloj(e)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2023"/>
-        <location filename="../src/ui/qgisapp.ui" line="2026"/>
+        <location filename="../src/ui/qgisapp.ui" line="2025"/>
+        <location filename="../src/ui/qgisapp.ui" line="2028"/>
         <source>Save Layer Edits</source>
         <translation>Shrani spremembe sloja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2038"/>
-        <location filename="../src/ui/qgisapp.ui" line="2041"/>
+        <location filename="../src/ui/qgisapp.ui" line="2040"/>
+        <location filename="../src/ui/qgisapp.ui" line="2043"/>
         <source>Rotate Feature(s)</source>
         <translation>Zavrti element(e)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2046"/>
+        <location filename="../src/ui/qgisapp.ui" line="2048"/>
         <source>&amp;Download data</source>
         <translation>&amp;Prenesi podatke</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2051"/>
+        <location filename="../src/ui/qgisapp.ui" line="2053"/>
         <source>&amp;Import topology from XML</source>
         <translation>&amp;Uvozi topologijo iz XML</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2056"/>
+        <location filename="../src/ui/qgisapp.ui" line="2058"/>
         <source>&amp;Export topology to SpatiaLite</source>
         <translation>&amp;Izvozi topologijo v SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2065"/>
+        <location filename="../src/ui/qgisapp.ui" line="2067"/>
         <source>Increase brightness</source>
         <translation>Posvetli</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2074"/>
+        <location filename="../src/ui/qgisapp.ui" line="2076"/>
         <source>Decrease brightness</source>
         <translation>Potemni</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2083"/>
+        <location filename="../src/ui/qgisapp.ui" line="2085"/>
         <source>Increase contrast</source>
         <translation>Več ostrine</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2092"/>
+        <location filename="../src/ui/qgisapp.ui" line="2094"/>
         <source>Decrease contrast</source>
         <translation>Manj ostrine</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2101"/>
+        <location filename="../src/ui/qgisapp.ui" line="2103"/>
         <source>Select By Expression</source>
         <translation>Označeni z izrazom</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2104"/>
+        <location filename="../src/ui/qgisapp.ui" line="2106"/>
         <source>Select features using an expression</source>
         <translation>Za označevanje uporabi izraz</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2109"/>
+        <location filename="../src/ui/qgisapp.ui" line="2111"/>
         <source>Need commercial support?</source>
         <translation>Potrebujete komercialno podporo?</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2154"/>
+        <location filename="../src/ui/qgisapp.ui" line="2156"/>
         <source>DXF Export...</source>
         <translation>DXF izvoz...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2166"/>
-        <location filename="../src/ui/qgisapp.ui" line="2169"/>
+        <location filename="../src/ui/qgisapp.ui" line="2168"/>
+        <location filename="../src/ui/qgisapp.ui" line="2171"/>
         <source>Fill Ring</source>
         <translation>Polnilo obroča</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2174"/>
+        <location filename="../src/ui/qgisapp.ui" line="2176"/>
         <source>Add from Layer Definition File...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2179"/>
+        <location filename="../src/ui/qgisapp.ui" line="2181"/>
         <source>Save As Layer Definition File...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2190"/>
+        <location filename="../src/ui/qgisapp.ui" line="2192"/>
         <source>Normal</source>
         <translation type="unfinished">Običajno</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2193"/>
+        <location filename="../src/ui/qgisapp.ui" line="2195"/>
         <source>Normal preview mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2201"/>
+        <location filename="../src/ui/qgisapp.ui" line="2203"/>
         <source>Simulate Photocopy (Grayscale)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2204"/>
+        <location filename="../src/ui/qgisapp.ui" line="2206"/>
         <source>Simulate photocopy (grayscale)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2212"/>
+        <location filename="../src/ui/qgisapp.ui" line="2214"/>
         <source>Simulate Fax (Mono)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2215"/>
+        <location filename="../src/ui/qgisapp.ui" line="2217"/>
         <source>Simulate fax (mono)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2223"/>
+        <location filename="../src/ui/qgisapp.ui" line="2225"/>
         <source>Simulate Color Blindness (Protanope)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2226"/>
+        <location filename="../src/ui/qgisapp.ui" line="2228"/>
         <source>Simulate color blindness (protanope)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2234"/>
+        <location filename="../src/ui/qgisapp.ui" line="2236"/>
         <source>Simulate Color Blindness (Deuteranope)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2237"/>
+        <location filename="../src/ui/qgisapp.ui" line="2239"/>
         <source>Simulate color blindness (deuteranope)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2242"/>
+        <location filename="../src/ui/qgisapp.ui" line="2244"/>
         <source>Set Scale Visibility of Layer(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2253"/>
+        <source>Show Selected Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2262"/>
+        <source>Hide Selected Layers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -8430,38 +8440,38 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">Potrebujete pomoč?</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2118"/>
-        <location filename="../src/ui/qgisapp.ui" line="2121"/>
+        <location filename="../src/ui/qgisapp.ui" line="2120"/>
+        <location filename="../src/ui/qgisapp.ui" line="2123"/>
         <source>Open Field Calculator</source>
         <translation>Odpri kalkulator</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2130"/>
+        <location filename="../src/ui/qgisapp.ui" line="2132"/>
         <source>Add Delimited Text Layer...</source>
         <translation>Dodaj sloj iz besedilne datoteke...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2133"/>
+        <location filename="../src/ui/qgisapp.ui" line="2135"/>
         <source>Add Delimited Text Layer</source>
         <translation>Dodaj sloj iz besedilne datoteke</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2138"/>
+        <location filename="../src/ui/qgisapp.ui" line="2140"/>
         <source>New Vector Layer</source>
         <translation>Novi vektorski sloj</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2141"/>
+        <location filename="../src/ui/qgisapp.ui" line="2143"/>
         <source>Paste features in clipboard into a new OGR vector layer.</source>
         <translation>Prilepi elemente v nov OGR vektorski sloj.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2146"/>
+        <location filename="../src/ui/qgisapp.ui" line="2148"/>
         <source>New Memory Vector Layer</source>
         <translation>Nov vektorki sloj v pomnilniku</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2149"/>
+        <location filename="../src/ui/qgisapp.ui" line="2151"/>
         <source>Paste features in clipboard into a new memory vector layer.</source>
         <translation>Prilepi elemente v nov vektorski sloj v pomnilniku.</translation>
     </message>
@@ -8470,7 +8480,7 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">Shrani spremembe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1315"/>
+        <location filename="../src/ui/qgisapp.ui" line="1317"/>
         <source>Save As...</source>
         <translation>Shrani kot...</translation>
     </message>
@@ -8479,70 +8489,70 @@ Open the results dialog to check it.</source>
         <translation type="obsolete">Shrani označeno kot vektorsko datoteko...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1343"/>
+        <location filename="../src/ui/qgisapp.ui" line="1345"/>
         <source>Set Project CRS from Layer</source>
         <translation>Privzemi koordinatni sistem iz sloja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1573"/>
+        <location filename="../src/ui/qgisapp.ui" line="1575"/>
         <source>Rotate Label
 Ctl (Cmd) increments by 15 deg.</source>
         <translation>Zasuči oznako
 Ctl (Cmd) korak po 15 stopinj.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1651"/>
+        <location filename="../src/ui/qgisapp.ui" line="1653"/>
         <source>Embed Layers and Groups...</source>
         <translation>Vključi sloje in skupine...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1717"/>
+        <location filename="../src/ui/qgisapp.ui" line="1719"/>
         <source>Run Feature Action</source>
         <translation>Izvedi akcijo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1741"/>
-        <location filename="../src/ui/qgisapp.ui" line="1744"/>
+        <location filename="../src/ui/qgisapp.ui" line="1743"/>
+        <location filename="../src/ui/qgisapp.ui" line="1746"/>
         <source>Touch zoom and pan</source>
         <translation>Premikanje in povečava</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1756"/>
+        <location filename="../src/ui/qgisapp.ui" line="1758"/>
         <source>Offset Curve</source>
         <translation>Krivulja dstopanja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1765"/>
+        <location filename="../src/ui/qgisapp.ui" line="1767"/>
         <source>Copy style</source>
         <translation>Kopiraj sloga</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1774"/>
+        <location filename="../src/ui/qgisapp.ui" line="1776"/>
         <source>Paste style</source>
         <translation>Prilepi slog</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1783"/>
+        <location filename="../src/ui/qgisapp.ui" line="1785"/>
         <source>Add WCS Layer...</source>
         <translation>Vstavi WCS sloj...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1792"/>
+        <location filename="../src/ui/qgisapp.ui" line="1794"/>
         <source>&amp;Grid</source>
         <translation>&amp;Mreža</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1795"/>
+        <location filename="../src/ui/qgisapp.ui" line="1797"/>
         <source>Grid</source>
         <translation>Mreža</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1810"/>
+        <location filename="../src/ui/qgisapp.ui" line="1812"/>
         <source>Pin/Unpin Labels</source>
         <translation>Pripni/Odpni oznake</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1813"/>
+        <location filename="../src/ui/qgisapp.ui" line="1815"/>
         <source>Pin/Unpin Labels
 Click or marquee on label to pin
 Shift unpins, Ctl (Cmd) toggles state
@@ -8553,44 +8563,44 @@ Premakni nepripete, Ctl (Cmd) spremeni stanje
 Za vse sloje, ki so na voljo za urejanje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1828"/>
-        <location filename="../src/ui/qgisapp.ui" line="1831"/>
+        <location filename="../src/ui/qgisapp.ui" line="1830"/>
+        <location filename="../src/ui/qgisapp.ui" line="1833"/>
         <source>Highlight Pinned Labels</source>
         <translation>Povdari pripete oznake</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1840"/>
-        <location filename="../src/ui/qgisapp.ui" line="1843"/>
+        <location filename="../src/ui/qgisapp.ui" line="1842"/>
+        <location filename="../src/ui/qgisapp.ui" line="1845"/>
         <source>New Blank Project</source>
         <translation>Nov prazen projekt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1852"/>
+        <location filename="../src/ui/qgisapp.ui" line="1854"/>
         <source>Local Cumulative Cut Stretch</source>
         <translation>Lokalni komulativni presek</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1855"/>
+        <location filename="../src/ui/qgisapp.ui" line="1857"/>
         <source>Local cumulative cut stretch using current extent, default limits and estimated values.</source>
         <translation>Lokalni komulativni presek ob uporabi trenutnega obsega, privzetih omejitvah in pričakovanih vrednostih.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1864"/>
+        <location filename="../src/ui/qgisapp.ui" line="1866"/>
         <source>Full Dataset Cumulative Cut Stretch</source>
         <translation>Popolni komulativni presek</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1867"/>
+        <location filename="../src/ui/qgisapp.ui" line="1869"/>
         <source>Cumulative cut stretch using full dataset extent, default limits and estimated values.</source>
         <translation>Komulativni presek ob uporabi trenutnega obsega, privzetih omejitvah in pričakovanih vrednostih.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1879"/>
+        <location filename="../src/ui/qgisapp.ui" line="1881"/>
         <source>Show/Hide Labels</source>
         <translation>Prikaži/Skrij oznake</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1882"/>
+        <location filename="../src/ui/qgisapp.ui" line="1884"/>
         <source>Show/Hide Labels
 Click or marquee on feature to show label
 Shift+click or marquee on label to hide it
@@ -8601,8 +8611,8 @@ Shift+klik skrije oznako
 Deluje na trenutnem sloju z omogočenim urejanjem</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1897"/>
-        <location filename="../src/ui/qgisapp.ui" line="1900"/>
+        <location filename="../src/ui/qgisapp.ui" line="1899"/>
+        <location filename="../src/ui/qgisapp.ui" line="1902"/>
         <source>Html Annotation</source>
         <translation>Html oznaka</translation>
     </message>
@@ -8615,57 +8625,57 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Izhod</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="594"/>
+        <location filename="../src/ui/qgisapp.ui" line="596"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="606"/>
+        <location filename="../src/ui/qgisapp.ui" line="608"/>
         <source>&amp;Undo</source>
         <translation>&amp;Razveljavi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="609"/>
+        <location filename="../src/ui/qgisapp.ui" line="611"/>
         <source>Ctrl+Z</source>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="618"/>
+        <location filename="../src/ui/qgisapp.ui" line="620"/>
         <source>&amp;Redo</source>
         <translation>&amp;Uveljavi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="621"/>
+        <location filename="../src/ui/qgisapp.ui" line="623"/>
         <source>Ctrl+Shift+Z</source>
         <translation>Ctrl+Shift+Z</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="630"/>
+        <location filename="../src/ui/qgisapp.ui" line="632"/>
         <source>Cut Features</source>
         <translation>Izreži elemente</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="633"/>
+        <location filename="../src/ui/qgisapp.ui" line="635"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="642"/>
+        <location filename="../src/ui/qgisapp.ui" line="644"/>
         <source>Copy Features</source>
         <translation>Kopiraj elemente</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="645"/>
+        <location filename="../src/ui/qgisapp.ui" line="647"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="654"/>
+        <location filename="../src/ui/qgisapp.ui" line="656"/>
         <source>Paste Features</source>
         <translation>Prilepi elemente</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="657"/>
+        <location filename="../src/ui/qgisapp.ui" line="659"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
@@ -8674,7 +8684,7 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Nariši točko</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="672"/>
+        <location filename="../src/ui/qgisapp.ui" line="674"/>
         <source>Ctrl+.</source>
         <translation>Ctrl+.</translation>
     </message>
@@ -8695,47 +8705,47 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Ctrl+?</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="684"/>
+        <location filename="../src/ui/qgisapp.ui" line="686"/>
         <source>Move Feature(s)</source>
         <translation>Premakni element(e)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="696"/>
+        <location filename="../src/ui/qgisapp.ui" line="698"/>
         <source>Reshape Features</source>
         <translation>Preoblikuj elemente</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="708"/>
+        <location filename="../src/ui/qgisapp.ui" line="710"/>
         <source>Split Features</source>
         <translation>Razdeli elemente</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="729"/>
+        <location filename="../src/ui/qgisapp.ui" line="731"/>
         <source>Delete Selected</source>
         <translation>Izbriši označeno</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="741"/>
+        <location filename="../src/ui/qgisapp.ui" line="743"/>
         <source>Add Ring</source>
         <translation>Dodaj obroč</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="753"/>
+        <location filename="../src/ui/qgisapp.ui" line="755"/>
         <source>Add Part</source>
         <translation>Dodaj del</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="765"/>
+        <location filename="../src/ui/qgisapp.ui" line="767"/>
         <source>Simplify Feature</source>
         <translation>Poenostavi element</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="777"/>
+        <location filename="../src/ui/qgisapp.ui" line="779"/>
         <source>Delete Ring</source>
         <translation>Briši obroč</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="789"/>
+        <location filename="../src/ui/qgisapp.ui" line="791"/>
         <source>Delete Part</source>
         <translation>Briši del</translation>
     </message>
@@ -8748,42 +8758,42 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Spoji podatke označenih elementov</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="819"/>
+        <location filename="../src/ui/qgisapp.ui" line="821"/>
         <source>Node Tool</source>
         <translation>Urejanje vozlišč</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="831"/>
+        <location filename="../src/ui/qgisapp.ui" line="833"/>
         <source>Rotate Point Symbols</source>
         <translation>Vrtenje simbolov</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="836"/>
+        <location filename="../src/ui/qgisapp.ui" line="838"/>
         <source>Snapping Options...</source>
         <translation>Nastavitve lepljenja...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="848"/>
+        <location filename="../src/ui/qgisapp.ui" line="850"/>
         <source>Pan Map</source>
         <translation>Premakni zemljevid</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="860"/>
+        <location filename="../src/ui/qgisapp.ui" line="862"/>
         <source>Zoom In</source>
         <translation>Povečaj</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="863"/>
+        <location filename="../src/ui/qgisapp.ui" line="865"/>
         <source>Ctrl++</source>
         <translation>Ctrl++</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="875"/>
+        <location filename="../src/ui/qgisapp.ui" line="877"/>
         <source>Zoom Out</source>
         <translation>Zmanjšaj</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="878"/>
+        <location filename="../src/ui/qgisapp.ui" line="880"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
@@ -8812,118 +8822,118 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Odstrani označeno</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="950"/>
+        <location filename="../src/ui/qgisapp.ui" line="952"/>
         <source>Identify Features</source>
         <translation>Informacija</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="953"/>
+        <location filename="../src/ui/qgisapp.ui" line="955"/>
         <source>Ctrl+Shift+I</source>
         <translation>Ctrl+Shift+I</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="965"/>
+        <location filename="../src/ui/qgisapp.ui" line="967"/>
         <source>Measure Line</source>
         <translation>Merjenje linij</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="968"/>
-        <location filename="../src/ui/qgisapp.ui" line="1250"/>
+        <location filename="../src/ui/qgisapp.ui" line="970"/>
+        <location filename="../src/ui/qgisapp.ui" line="1252"/>
         <source>Ctrl+Shift+M</source>
         <translation>Ctrl+Shift+M</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="980"/>
+        <location filename="../src/ui/qgisapp.ui" line="982"/>
         <source>Measure Area</source>
         <translation>Merjenje površine</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="983"/>
+        <location filename="../src/ui/qgisapp.ui" line="985"/>
         <source>Ctrl+Shift+J</source>
         <translation>Ctrl+Shift+J</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="995"/>
+        <location filename="../src/ui/qgisapp.ui" line="997"/>
         <source>Measure Angle</source>
         <translation>Merjenje kota</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1004"/>
+        <location filename="../src/ui/qgisapp.ui" line="1006"/>
         <source>Zoom Full</source>
         <translation>Prikaz vsega</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1007"/>
+        <location filename="../src/ui/qgisapp.ui" line="1009"/>
         <source>Ctrl+Shift+F</source>
         <translation>Ctrl+Shift+F</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1016"/>
+        <location filename="../src/ui/qgisapp.ui" line="1018"/>
         <source>Zoom to Layer</source>
         <translation>Prikaz sloja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1025"/>
+        <location filename="../src/ui/qgisapp.ui" line="1027"/>
         <source>Zoom to Selection</source>
         <translation>Prikaz označenih elementov</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1028"/>
+        <location filename="../src/ui/qgisapp.ui" line="1030"/>
         <source>Ctrl+J</source>
         <translation>Ctrl+J</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1037"/>
+        <location filename="../src/ui/qgisapp.ui" line="1039"/>
         <source>Zoom Last</source>
         <translation>Prejšnji pogled</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1046"/>
+        <location filename="../src/ui/qgisapp.ui" line="1048"/>
         <source>Zoom Next</source>
         <translation>Naslednji pogled</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1055"/>
+        <location filename="../src/ui/qgisapp.ui" line="1057"/>
         <source>Zoom Actual Size</source>
         <translation>Dejanska velikost</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1058"/>
+        <location filename="../src/ui/qgisapp.ui" line="1060"/>
         <source>Zoom to Native Pixel Resolution</source>
         <translation>Prikaži v orginalni ločljivosti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1070"/>
+        <location filename="../src/ui/qgisapp.ui" line="1072"/>
         <source>Map Tips</source>
         <translation>Namigi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1073"/>
+        <location filename="../src/ui/qgisapp.ui" line="1075"/>
         <source>Show information about a feature when the mouse is hovered over it</source>
         <translation>Prikaz informacij nad elementom ob prehodu miške</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1082"/>
+        <location filename="../src/ui/qgisapp.ui" line="1084"/>
         <source>New Bookmark...</source>
         <translation>Nov zaznamek...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1085"/>
+        <location filename="../src/ui/qgisapp.ui" line="1087"/>
         <source>Ctrl+B</source>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1094"/>
+        <location filename="../src/ui/qgisapp.ui" line="1096"/>
         <source>Show Bookmarks</source>
         <translation>Zaznamki</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1097"/>
+        <location filename="../src/ui/qgisapp.ui" line="1099"/>
         <source>Ctrl+Shift+B</source>
         <translation>Ctrl+Shift+B</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1106"/>
+        <location filename="../src/ui/qgisapp.ui" line="1108"/>
         <source>Refresh</source>
         <translation>Osveži</translation>
     </message>
@@ -8932,7 +8942,7 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1121"/>
+        <location filename="../src/ui/qgisapp.ui" line="1123"/>
         <source>Text Annotation</source>
         <translation>Besedilo opombe</translation>
     </message>
@@ -8941,57 +8951,57 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Oblika opombe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1145"/>
+        <location filename="../src/ui/qgisapp.ui" line="1147"/>
         <source>Move Annotation</source>
         <translation>Premakni opombo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1154"/>
+        <location filename="../src/ui/qgisapp.ui" line="1156"/>
         <source>Labeling</source>
         <translation>Oznake</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1166"/>
+        <location filename="../src/ui/qgisapp.ui" line="1168"/>
         <source>New Shapefile Layer...</source>
         <translation>Nov sloj (shp)...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1169"/>
+        <location filename="../src/ui/qgisapp.ui" line="1171"/>
         <source>Ctrl+Shift+N</source>
         <translation>Ctrl+Shift+N</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1178"/>
+        <location filename="../src/ui/qgisapp.ui" line="1180"/>
         <source>New SpatiaLite Layer ...</source>
         <translation>Nov Spatialite sloj...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1181"/>
+        <location filename="../src/ui/qgisapp.ui" line="1183"/>
         <source>Ctrl+Shift+A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1190"/>
+        <location filename="../src/ui/qgisapp.ui" line="1192"/>
         <source>Raster calculator ...</source>
         <translation>Izračun rastra...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1199"/>
+        <location filename="../src/ui/qgisapp.ui" line="1201"/>
         <source>Add Vector Layer...</source>
         <translation>Vstavi vektorski sloj...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1202"/>
+        <location filename="../src/ui/qgisapp.ui" line="1204"/>
         <source>Ctrl+Shift+V</source>
         <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1211"/>
+        <location filename="../src/ui/qgisapp.ui" line="1213"/>
         <source>Add Raster Layer...</source>
         <translation>Vstavi rasterski sloj...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1214"/>
+        <location filename="../src/ui/qgisapp.ui" line="1216"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
@@ -9000,22 +9010,22 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Dodaj sloj (Postgis)...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1226"/>
+        <location filename="../src/ui/qgisapp.ui" line="1228"/>
         <source>Ctrl+Shift+D</source>
         <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1235"/>
+        <location filename="../src/ui/qgisapp.ui" line="1237"/>
         <source>Add SpatiaLite Layer...</source>
         <translation>Vstavi SpatiaLite sloj...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1238"/>
+        <location filename="../src/ui/qgisapp.ui" line="1240"/>
         <source>Ctrl+Shift+L</source>
         <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1247"/>
+        <location filename="../src/ui/qgisapp.ui" line="1249"/>
         <source>Add MSSQL Spatial Layer...</source>
         <translation>Vstavi MSSQL sloj...</translation>
     </message>
@@ -9024,12 +9034,12 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Vstavi WMS sloj...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1274"/>
+        <location filename="../src/ui/qgisapp.ui" line="1276"/>
         <source>Ctrl+Shift+W</source>
         <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1283"/>
+        <location filename="../src/ui/qgisapp.ui" line="1285"/>
         <source>Open Attribute Table</source>
         <translation>Odpri podatkovno tabelo</translation>
     </message>
@@ -9038,7 +9048,7 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Omogoči urejanje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1298"/>
+        <location filename="../src/ui/qgisapp.ui" line="1300"/>
         <source>Toggles the editing state of the current layer</source>
         <translation>Omogoči urejanje trenutnega sloja</translation>
     </message>
@@ -9047,7 +9057,7 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Shrani spremembe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1310"/>
+        <location filename="../src/ui/qgisapp.ui" line="1312"/>
         <source>Save edits to current layer, but continue editing</source>
         <translation>Shrani spremembe in nadaljuj urejanje</translation>
     </message>
@@ -9064,17 +9074,17 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Odstrani sloj(e)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1330"/>
+        <location filename="../src/ui/qgisapp.ui" line="1332"/>
         <source>Ctrl+D</source>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1335"/>
+        <location filename="../src/ui/qgisapp.ui" line="1337"/>
         <source>Set CRS of Layer(s)</source>
         <translation>Nastavitev koordinatnega sistema za sloj(e)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1338"/>
+        <location filename="../src/ui/qgisapp.ui" line="1340"/>
         <source>Ctrl+Shift+C</source>
         <translation>Ctrl+Shift+C</translation>
     </message>
@@ -9087,22 +9097,22 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Drsnik za povečavo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1383"/>
+        <location filename="../src/ui/qgisapp.ui" line="1385"/>
         <source>Remove All from Overview</source>
         <translation>Odstrani vse iz preglednega zemljevida</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1595"/>
+        <location filename="../src/ui/qgisapp.ui" line="1597"/>
         <source>Style Manager...</source>
         <translation>Urejevalnik simbolov...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1612"/>
+        <location filename="../src/ui/qgisapp.ui" line="1614"/>
         <source>Stretch Histogram to Full Dataset</source>
         <translation>Prilagodi Histogram podatkovnnemu setu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1635"/>
+        <location filename="../src/ui/qgisapp.ui" line="1637"/>
         <source>Customization...</source>
         <translation>Prilagoditve...</translation>
     </message>
@@ -9111,69 +9121,69 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">mActionCatchForCustomization</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1643"/>
+        <location filename="../src/ui/qgisapp.ui" line="1645"/>
         <source>This is here just to avoid shortcut conflicts, the shortcut is caught in QgsCustomization</source>
         <translation>Zaradi izogibanja konfliktov pri prilagoditvah bližnjic</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1646"/>
+        <location filename="../src/ui/qgisapp.ui" line="1648"/>
         <source>Ctrl+M</source>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1654"/>
+        <location filename="../src/ui/qgisapp.ui" line="1656"/>
         <source>Embed layers and groups from other project files</source>
         <translation>Vključi sloje in skupine iz ostalih projektov</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1663"/>
+        <location filename="../src/ui/qgisapp.ui" line="1665"/>
         <source>&amp;Copyright Label</source>
         <translation>&amp;Oznaka pravic kopiranja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1666"/>
+        <location filename="../src/ui/qgisapp.ui" line="1668"/>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
         <translation>Ustvari oznako za pravice kopiranja, ki je prikazana na zemljevidu.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1675"/>
+        <location filename="../src/ui/qgisapp.ui" line="1677"/>
         <source>&amp;North Arrow</source>
         <translation>&amp;Severna puščica</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1678"/>
+        <location filename="../src/ui/qgisapp.ui" line="1680"/>
         <source>&quot;Creates a north arrow that is displayed on the map canvas&quot;</source>
         <translation>&quot;Kreira oznako severa n azemljevidu&quot;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1687"/>
+        <location filename="../src/ui/qgisapp.ui" line="1689"/>
         <source>&amp;Scale Bar</source>
         <translation>&amp;Merilni trak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1690"/>
-        <location filename="../src/ui/qgisapp.ui" line="1798"/>
+        <location filename="../src/ui/qgisapp.ui" line="1692"/>
+        <location filename="../src/ui/qgisapp.ui" line="1800"/>
         <source>Creates a scale bar that is displayed on the map canvas</source>
         <translation>Ustvari merilni trak na zemljevidu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1699"/>
+        <location filename="../src/ui/qgisapp.ui" line="1701"/>
         <source>Add WFS Layer...</source>
         <translation>Vstavi WFS sloj...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1702"/>
+        <location filename="../src/ui/qgisapp.ui" line="1704"/>
         <source>Add WFS Layer</source>
         <translation>Vstavi WFS sloj</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1714"/>
+        <location filename="../src/ui/qgisapp.ui" line="1716"/>
         <source>Feature Action</source>
         <translation>Ukaz</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1726"/>
-        <location filename="../src/ui/qgisapp.ui" line="1729"/>
+        <location filename="../src/ui/qgisapp.ui" line="1728"/>
+        <location filename="../src/ui/qgisapp.ui" line="1731"/>
         <source>Pan Map to Selection</source>
         <translation>Povleci zemljevid k označenemu</translation>
     </message>
@@ -9182,52 +9192,52 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Sledenje z GPS v realnem času</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1348"/>
+        <location filename="../src/ui/qgisapp.ui" line="1350"/>
         <source>Properties...</source>
         <translation>Lastnosti...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1353"/>
+        <location filename="../src/ui/qgisapp.ui" line="1355"/>
         <source>Query...</source>
         <translation>Poizvedba...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1365"/>
+        <location filename="../src/ui/qgisapp.ui" line="1367"/>
         <source>Add to Overview</source>
         <translation>Vsstavi sloj na pregledni zemljevid</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1262"/>
+        <location filename="../src/ui/qgisapp.ui" line="1264"/>
         <source>Ctrl+Shift+O</source>
         <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="513"/>
+        <location filename="../src/ui/qgisapp.ui" line="515"/>
         <source>&amp;New</source>
         <translation>&amp;Novo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="525"/>
+        <location filename="../src/ui/qgisapp.ui" line="527"/>
         <source>&amp;Open...</source>
         <translation>&amp;Odpri...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="537"/>
+        <location filename="../src/ui/qgisapp.ui" line="539"/>
         <source>&amp;Save</source>
         <translation>&amp;Shrani</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="549"/>
+        <location filename="../src/ui/qgisapp.ui" line="551"/>
         <source>Save &amp;As...</source>
         <translation>Shrani &amp;kot...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1307"/>
+        <location filename="../src/ui/qgisapp.ui" line="1309"/>
         <source>Save for Selected Layer(s)</source>
         <translation>Shrani za izbrane sloj(e)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1374"/>
+        <location filename="../src/ui/qgisapp.ui" line="1376"/>
         <source>Add All to Overview</source>
         <translation>Vstavi vse sloje  na pregledni zemljevid</translation>
     </message>
@@ -9236,22 +9246,22 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Izbriši vse na preglednem zemljevidu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1392"/>
+        <location filename="../src/ui/qgisapp.ui" line="1394"/>
         <source>Show All Layers</source>
         <translation>Prikaži vse sloje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1395"/>
+        <location filename="../src/ui/qgisapp.ui" line="1397"/>
         <source>Ctrl+Shift+U</source>
         <translation>Ctrl+Shift+U</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1404"/>
+        <location filename="../src/ui/qgisapp.ui" line="1406"/>
         <source>Hide All Layers</source>
         <translation>Skrij vse sloje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1407"/>
+        <location filename="../src/ui/qgisapp.ui" line="1409"/>
         <source>Ctrl+Shift+H</source>
         <translation>Ctrl+Shift+H</translation>
     </message>
@@ -9260,12 +9270,12 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Urejanje vtičnikov...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1421"/>
+        <location filename="../src/ui/qgisapp.ui" line="1423"/>
         <source>Toggle Full Screen Mode</source>
         <translation>Celozaslonski način</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1356"/>
+        <location filename="../src/ui/qgisapp.ui" line="1358"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
@@ -9285,108 +9295,108 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="unfinished">Vstavi sloj</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="890"/>
+        <location filename="../src/ui/qgisapp.ui" line="892"/>
         <source>Select Feature(s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="893"/>
+        <location filename="../src/ui/qgisapp.ui" line="895"/>
         <source>Select Features by area or single click</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1433"/>
+        <location filename="../src/ui/qgisapp.ui" line="1435"/>
         <source>Project Properties...</source>
         <translation>Lastnosti projekta...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1436"/>
+        <location filename="../src/ui/qgisapp.ui" line="1438"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1445"/>
+        <location filename="../src/ui/qgisapp.ui" line="1447"/>
         <source>Options...</source>
         <translation>Možnosti...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1457"/>
+        <location filename="../src/ui/qgisapp.ui" line="1459"/>
         <source>Custom CRS...</source>
         <translation>Prilagojen koordinatni sistem...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1466"/>
+        <location filename="../src/ui/qgisapp.ui" line="1468"/>
         <source>Configure shortcuts...</source>
         <translation>Nastavitve bližnjic...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1478"/>
+        <location filename="../src/ui/qgisapp.ui" line="1480"/>
         <source>Local Histogram Stretch</source>
         <translation>Lokalni histogram</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1481"/>
+        <location filename="../src/ui/qgisapp.ui" line="1483"/>
         <source>Stretch histogram of active raster to view extents</source>
         <translation>Histogram aktivnih slojev</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1490"/>
+        <location filename="../src/ui/qgisapp.ui" line="1492"/>
         <source>Help Contents</source>
         <translation>Vsebina pomoči</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1493"/>
+        <location filename="../src/ui/qgisapp.ui" line="1495"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1498"/>
+        <location filename="../src/ui/qgisapp.ui" line="1500"/>
         <source>API documentation</source>
         <translation>Dokumentacija</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1507"/>
+        <location filename="../src/ui/qgisapp.ui" line="1509"/>
         <source>QGIS Home Page</source>
         <translation>Podpora na spletnih straneh</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1510"/>
+        <location filename="../src/ui/qgisapp.ui" line="1512"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1519"/>
+        <location filename="../src/ui/qgisapp.ui" line="1521"/>
         <source>Check QGIS Version</source>
         <translation>Različica</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1522"/>
+        <location filename="../src/ui/qgisapp.ui" line="1524"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
         <translation>Posodobitev programa (potreben dostop do spleta)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1531"/>
+        <location filename="../src/ui/qgisapp.ui" line="1533"/>
         <source>About</source>
         <translation>Vizitka</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1543"/>
+        <location filename="../src/ui/qgisapp.ui" line="1545"/>
         <source>QGIS Sponsors</source>
         <translation>Sponzorji</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1555"/>
-        <location filename="../src/ui/qgisapp.ui" line="1558"/>
+        <location filename="../src/ui/qgisapp.ui" line="1557"/>
+        <location filename="../src/ui/qgisapp.ui" line="1560"/>
         <source>Move Label</source>
         <translation>Premik oznake</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1570"/>
+        <location filename="../src/ui/qgisapp.ui" line="1572"/>
         <source>Rotate Label</source>
         <translation>Vrtenje oznake</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1586"/>
+        <location filename="../src/ui/qgisapp.ui" line="1588"/>
         <source>Change Label</source>
         <translation>Spremeni oznako</translation>
     </message>
@@ -9395,12 +9405,12 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
         <translation type="obsolete">Urejanje simbolov...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1600"/>
+        <location filename="../src/ui/qgisapp.ui" line="1602"/>
         <source>Python Console</source>
         <translation>Ukazni poziv</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1609"/>
+        <location filename="../src/ui/qgisapp.ui" line="1611"/>
         <source>Full histogram stretch</source>
         <translation>Popolni histogram</translation>
     </message>
@@ -13658,22 +13668,22 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>%1 geometrijskih napak.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10191"/>
+        <location filename="../src/app/qgisapp.cpp" line="10224"/>
         <source>minidump written to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10195"/>
+        <location filename="../src/app/qgisapp.cpp" line="10228"/>
         <source>writing of minidump to %1 failed (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10202"/>
+        <location filename="../src/app/qgisapp.cpp" line="10235"/>
         <source>creation of minidump to %1 failed (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10205"/>
+        <location filename="../src/app/qgisapp.cpp" line="10238"/>
         <source>Crash dumped</source>
         <translation type="unfinished"></translation>
     </message>
@@ -16365,7 +16375,7 @@ Prosim obrnite se na razvijalce.</translation>
         <translation type="obsolete">Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9555"/>
+        <location filename="../src/app/qgisapp.cpp" line="9588"/>
         <source>Exit QGIS</source>
         <translation>Izhod iz programa</translation>
     </message>
@@ -16983,38 +16993,38 @@ Prosim obrnite se na razvijalce.</translation>
         <translation type="obsolete">Nastavitve bližnjic</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1198"/>
+        <location filename="../src/app/qgisapp.cpp" line="1200"/>
         <source>Minimize</source>
         <translation>Pomanjšaj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1199"/>
+        <location filename="../src/app/qgisapp.cpp" line="1201"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1200"/>
+        <location filename="../src/app/qgisapp.cpp" line="1202"/>
         <source>Minimizes the active window to the dock</source>
         <translation>Zmanjšaj aktivno okno</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1203"/>
+        <location filename="../src/app/qgisapp.cpp" line="1205"/>
         <source>Zoom</source>
         <translation>Povečaj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1204"/>
+        <location filename="../src/app/qgisapp.cpp" line="1206"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
         <translation>Izberite predizbrano velikost ali lastno velikost okna</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1207"/>
+        <location filename="../src/app/qgisapp.cpp" line="1209"/>
         <source>Bring All to Front</source>
         <translation>Vse v ospredje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1208"/>
+        <location filename="../src/app/qgisapp.cpp" line="1210"/>
         <source>Bring forward all open windows</source>
         <translation>Vsa odprta okna v ospredje</translation>
     </message>
@@ -17070,8 +17080,8 @@ Prosim obrnite se na razvijalce.</translation>
         <translation type="obsolete">Upravitelj slogov V2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1312"/>
-        <location filename="../src/app/qgisapp.cpp" line="1318"/>
+        <location filename="../src/app/qgisapp.cpp" line="1314"/>
+        <location filename="../src/app/qgisapp.cpp" line="1320"/>
         <source>Failed to open Python console:</source>
         <translation>Neuspešno odpiranje Python konzole:</translation>
     </message>
@@ -17092,12 +17102,12 @@ Prosim obrnite se na razvijalce.</translation>
         <translation type="obsolete">&amp;Urejanje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1427"/>
+        <location filename="../src/app/qgisapp.cpp" line="1429"/>
         <source>Panels</source>
         <translation>Dodatna okna</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1429"/>
+        <location filename="../src/app/qgisapp.cpp" line="1431"/>
         <source>Toolbars</source>
         <translation>Orodja</translation>
     </message>
@@ -17166,23 +17176,23 @@ Prosim obrnite se na razvijalce.</translation>
         <translation type="obsolete">Pomoč</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1677"/>
+        <location filename="../src/app/qgisapp.cpp" line="1679"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
         <translation>Vrstica napredka, ki prikazuje stanje prikazanih slojev in druge časovno intenzivne dejavnosti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1696"/>
+        <location filename="../src/app/qgisapp.cpp" line="1698"/>
         <source>Toggle extents and mouse position display</source>
         <translation>Vključi/izključi prikaz obsega in pozicije kazalca</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1710"/>
-        <location filename="../src/app/qgisapp.cpp" line="8596"/>
+        <location filename="../src/app/qgisapp.cpp" line="1712"/>
+        <location filename="../src/app/qgisapp.cpp" line="8629"/>
         <source>Coordinate:</source>
         <translation>Koordinate:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1711"/>
+        <location filename="../src/app/qgisapp.cpp" line="1713"/>
         <source>Current map coordinate</source>
         <translation>Koordinate karte</translation>
     </message>
@@ -17195,22 +17205,22 @@ Prosim obrnite se na razvijalce.</translation>
         <translation type="obsolete">Koordinate karte (oblikovane kot x,y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1745"/>
+        <location filename="../src/app/qgisapp.cpp" line="1747"/>
         <source>Scale </source>
         <translation>Merilo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1746"/>
+        <location filename="../src/app/qgisapp.cpp" line="1748"/>
         <source>Current map scale</source>
         <translation>Merilo karte</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1759"/>
+        <location filename="../src/app/qgisapp.cpp" line="1761"/>
         <source>Displays the current map scale</source>
         <translation>Prikaz trenutnega merila</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1760"/>
+        <location filename="../src/app/qgisapp.cpp" line="1762"/>
         <source>Current map scale (formatted as x:y)</source>
         <translation>Merilo karte (oblikovano kot x:y)</translation>
     </message>
@@ -17219,17 +17229,17 @@ Prosim obrnite se na razvijalce.</translation>
         <translation type="obsolete">Zaustavi prikaz mape</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1766"/>
+        <location filename="../src/app/qgisapp.cpp" line="1768"/>
         <source>Render</source>
         <translation>Prikaži</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1770"/>
+        <location filename="../src/app/qgisapp.cpp" line="1772"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
         <translation>Če označeno, se prikažejo sloji kart in odgovarjajo ukaze in druge dogodke.Če ni označeno, ni prikazovanja. To vam omogoča, da dodate veliko število slojev katere simbolizirate, preden postanejo vidni.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1774"/>
+        <location filename="../src/app/qgisapp.cpp" line="1776"/>
         <source>Toggle map rendering</source>
         <translation>Vključi/izključi prikaz karte</translation>
     </message>
@@ -17246,49 +17256,49 @@ Prosim obrnite se na razvijalce.</translation>
  Končanje...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1796"/>
+        <location filename="../src/app/qgisapp.cpp" line="1798"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
         <translation>Ikona označuje ali je možna takojšnja sprememba koordinatnega sistema. Kliknite na ikonu za nastavitev lastnosti projekta, kjer lahko spremenite koordinatni sistem.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1800"/>
+        <location filename="../src/app/qgisapp.cpp" line="1802"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
         <translation>CRS status -Kliknite, da odprete dialog za koordinatni sistem</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1805"/>
+        <location filename="../src/app/qgisapp.cpp" line="1807"/>
         <source>Ready</source>
         <translation>Pripravljen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2641"/>
+        <location filename="../src/app/qgisapp.cpp" line="2645"/>
         <source>Compiled against GDAL/OGR</source>
         <translation>Prevedeno GDAL/oGR</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2642"/>
+        <location filename="../src/app/qgisapp.cpp" line="2646"/>
         <source>Running against GDAL/OGR</source>
         <translation>Zaganja GDAL/OGR</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9556"/>
+        <location filename="../src/app/qgisapp.cpp" line="9589"/>
         <source>Do you really want to quit QGIS?</source>
         <translation>Ali želite zapustiti program?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9664"/>
+        <location filename="../src/app/qgisapp.cpp" line="9697"/>
         <source>This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10006"/>
+        <location filename="../src/app/qgisapp.cpp" line="10039"/>
         <source>
 
 Always ignore these errors?</source>
         <translation>Vedno spregledam tovrstne napake?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10010"/>
+        <location filename="../src/app/qgisapp.cpp" line="10043"/>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
         <translation>
@@ -17320,7 +17330,7 @@ Always ignore these errors?</source>
         <translation type="obsolete">Premakni zaznambo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4632"/>
+        <location filename="../src/app/qgisapp.cpp" line="4665"/>
         <source>Labeling</source>
         <translation>Označevanje</translation>
     </message>
@@ -17404,7 +17414,7 @@ Always ignore these errors?</source>
         <translation type="obsolete">Nabor povpraševanj za trenutni sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1503"/>
+        <location filename="../src/app/qgisapp.cpp" line="1505"/>
         <source>&amp;Database</source>
         <translation>Podatko&amp;vno skladišče</translation>
     </message>
@@ -17413,22 +17423,22 @@ Always ignore these errors?</source>
         <translation type="obsolete">Oznaka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2199"/>
+        <location filename="../src/app/qgisapp.cpp" line="2203"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>Pregledni zemljevid se uprablja za pregled vsebine. Trenutni obseg je prikazan kot rdeč pravokotnik. Vsa ksloj na karti se lahko doda na pregledni zemljevid.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2208"/>
+        <location filename="../src/app/qgisapp.cpp" line="2212"/>
         <source>Overview</source>
         <translation>Pregleda karta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2300"/>
+        <location filename="../src/app/qgisapp.cpp" line="2304"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>Legenda karte, ki prikazuje vse trenutne sloje na karti. Kliknite na potrditveno polje, da se vam prikaže ali skrije sloj.. Dvojni klik na sloj v legendi prikaže nastavitve za sloj, ki jih lahko prilagodite po svoje.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2302"/>
+        <location filename="../src/app/qgisapp.cpp" line="2306"/>
         <source>Layers</source>
         <translation>Sloji</translation>
     </message>
@@ -17452,7 +17462,7 @@ Always ignore these errors?</source>
         <translation type="obsolete">QGIS različica %1 uporabljena koda %2.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2801"/>
+        <location filename="../src/app/qgisapp.cpp" line="2805"/>
         <source>%1 doesn&apos;t have any layers</source>
         <translation>%1 ne vsebuje slojev</translation>
     </message>
@@ -17723,18 +17733,18 @@ QWT Version: %1.</source>
         <translation type="obsolete">Izberite vektorski sloj...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3282"/>
+        <location filename="../src/app/qgisapp.cpp" line="3286"/>
         <source>Cannot get MSSQL select dialog from provider.</source>
         <translation>MSSQL manjka med ponudniki storitev.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3730"/>
+        <location filename="../src/app/qgisapp.cpp" line="3734"/>
         <source>Calculating...</source>
         <translation>Preračunavanje...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3730"/>
-        <location filename="../src/app/qgisapp.cpp" line="4803"/>
+        <location filename="../src/app/qgisapp.cpp" line="3734"/>
+        <location filename="../src/app/qgisapp.cpp" line="4836"/>
         <source>Abort...</source>
         <translation>Prekinitev...</translation>
     </message>
@@ -17743,41 +17753,41 @@ QWT Version: %1.</source>
         <translation type="obsolete">Najprej izberite vektorski sloj.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5030"/>
+        <location filename="../src/app/qgisapp.cpp" line="5063"/>
         <source>Saving done</source>
         <translation>Shranjevanje končano</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5031"/>
+        <location filename="../src/app/qgisapp.cpp" line="5064"/>
         <source>Export to vector file has been completed</source>
         <translation>Izvoz v vektorsko datoteko je končan</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5037"/>
+        <location filename="../src/app/qgisapp.cpp" line="5070"/>
         <source>Save error</source>
         <translation>Napaka pri shranjevanju</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5038"/>
+        <location filename="../src/app/qgisapp.cpp" line="5071"/>
         <source>Export to vector file failed.
 Error: %1</source>
         <translation>Izvoz v vektorsko datoteko ni bil uspešen.
 Napaka: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5612"/>
-        <location filename="../src/app/qgisapp.cpp" line="5678"/>
-        <location filename="../src/app/qgisapp.cpp" line="5715"/>
+        <location filename="../src/app/qgisapp.cpp" line="5645"/>
+        <location filename="../src/app/qgisapp.cpp" line="5711"/>
+        <location filename="../src/app/qgisapp.cpp" line="5748"/>
         <source>Not enough features selected</source>
         <translation>Označeno je premalo elementov</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5626"/>
+        <location filename="../src/app/qgisapp.cpp" line="5659"/>
         <source>Merged feature attributes</source>
         <translation>Spoji podatke elementov</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5698"/>
+        <location filename="../src/app/qgisapp.cpp" line="5731"/>
         <source>Union operation canceled</source>
         <translation>Združevanje prekinjeno</translation>
     </message>
@@ -17786,24 +17796,24 @@ Napaka: %1</translation>
         <translation type="obsolete">Merilna lestvica</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7335"/>
+        <location filename="../src/app/qgisapp.cpp" line="7368"/>
         <source>QGIS - Changes since last release</source>
         <translation>QGIS - Novosti zadnje različice</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7490"/>
-        <location filename="../src/app/qgisapp.cpp" line="7499"/>
+        <location filename="../src/app/qgisapp.cpp" line="7523"/>
+        <location filename="../src/app/qgisapp.cpp" line="7532"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7560"/>
-        <location filename="../src/app/qgisapp.cpp" line="7569"/>
+        <location filename="../src/app/qgisapp.cpp" line="7593"/>
+        <location filename="../src/app/qgisapp.cpp" line="7602"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
         <translation>Ko je izbran rasterski sloj lahko spreminjate osvetlitev in ostrino.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7595"/>
+        <location filename="../src/app/qgisapp.cpp" line="7628"/>
         <source>en</source>
         <comment>documentation language</comment>
         <translation>en</translation>
@@ -17813,12 +17823,12 @@ Napaka: %1</translation>
         <translation type="obsolete">http://www.qgis.org/en/commercial-support.html</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7722"/>
+        <location filename="../src/app/qgisapp.cpp" line="7755"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>Sloj %1 ni veljaven sloj, zato ga ni mogoče dodati na karto</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7854"/>
+        <location filename="../src/app/qgisapp.cpp" line="7887"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
         <translation>V projektu so sloj(i) v urejevalnem načinu, ki niso shranjeni!</translation>
     </message>
@@ -17827,7 +17837,7 @@ Napaka: %1</translation>
         <translation type="obsolete">Shranim trenutni projekt?%1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8828"/>
+        <location filename="../src/app/qgisapp.cpp" line="8861"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation>
@@ -17838,46 +17848,46 @@ Napaka: %1</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9373"/>
+        <location filename="../src/app/qgisapp.cpp" line="9406"/>
         <source>Error adding valid layer to map canvas</source>
         <translation>Neveljaven sloj za zemljevid</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9374"/>
-        <location filename="../src/app/qgisapp.cpp" line="9512"/>
+        <location filename="../src/app/qgisapp.cpp" line="9407"/>
+        <location filename="../src/app/qgisapp.cpp" line="9545"/>
         <source>Raster layer</source>
         <translation>Rasterski sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9690"/>
+        <location filename="../src/app/qgisapp.cpp" line="9723"/>
         <source>This project file was saved by an older version of QGIS</source>
         <translation>Projekt je shranjen v starejši različici</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6130"/>
-        <location filename="../src/app/qgisapp.cpp" line="6139"/>
-        <location filename="../src/app/qgisapp.cpp" line="6151"/>
-        <location filename="../src/app/qgisapp.cpp" line="9861"/>
+        <location filename="../src/app/qgisapp.cpp" line="6163"/>
+        <location filename="../src/app/qgisapp.cpp" line="6172"/>
+        <location filename="../src/app/qgisapp.cpp" line="6184"/>
+        <location filename="../src/app/qgisapp.cpp" line="9894"/>
         <source>Warning</source>
         <translation>Opozorilo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9862"/>
+        <location filename="../src/app/qgisapp.cpp" line="9895"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>Za sloj ni mogoče nastavljati lastnosti.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9902"/>
+        <location filename="../src/app/qgisapp.cpp" line="9935"/>
         <source>Authentication required</source>
         <translation>Zahtevana prijava</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9957"/>
+        <location filename="../src/app/qgisapp.cpp" line="9990"/>
         <source>Proxy authentication required</source>
         <translation>Zahtevana proxy prijava</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9990"/>
+        <location filename="../src/app/qgisapp.cpp" line="10023"/>
         <source>SSL errors occured accessing URL %1:</source>
         <translation>SSL napaka pri dostopu do spletnega naslova %1:</translation>
     </message>
@@ -17971,15 +17981,15 @@ Različica je prevedena v Qt %1, in se izvaja  Qt %2</translation>
         <translation type="obsolete">Napredni uporabniki lahko ustvarajo lastne obrazce z Qt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2808"/>
-        <location filename="../src/app/qgisapp.cpp" line="3139"/>
+        <location filename="../src/app/qgisapp.cpp" line="2812"/>
+        <location filename="../src/app/qgisapp.cpp" line="3143"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 je prepoznan kot neveljavni podatkovni vir</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2802"/>
-        <location filename="../src/app/qgisapp.cpp" line="2809"/>
-        <location filename="../src/app/qgisapp.cpp" line="3140"/>
+        <location filename="../src/app/qgisapp.cpp" line="2806"/>
+        <location filename="../src/app/qgisapp.cpp" line="2813"/>
+        <location filename="../src/app/qgisapp.cpp" line="3144"/>
         <source>Invalid Data Source</source>
         <translation>Neveljaven podatkovni vir</translation>
     </message>
@@ -18020,40 +18030,40 @@ Prosimo kontaktirajte razvijalce.</translation>
         <translation>QGIS - %1 (&apos;%2&apos;)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1216"/>
+        <location filename="../src/app/qgisapp.cpp" line="1218"/>
         <source>Current Edits</source>
         <translation>Trenutno spremenjeno</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3753"/>
-        <location filename="../src/app/qgisapp.cpp" line="3912"/>
-        <location filename="../src/app/qgisapp.cpp" line="3977"/>
+        <location filename="../src/app/qgisapp.cpp" line="3757"/>
+        <location filename="../src/app/qgisapp.cpp" line="3916"/>
+        <location filename="../src/app/qgisapp.cpp" line="3981"/>
         <source>QGIS files</source>
         <translation>QGIS datoteke</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5604"/>
-        <location filename="../src/app/qgisapp.cpp" line="5663"/>
+        <location filename="../src/app/qgisapp.cpp" line="5637"/>
+        <location filename="../src/app/qgisapp.cpp" line="5696"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to Layer-&gt;Toggle editing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6832"/>
+        <location filename="../src/app/qgisapp.cpp" line="6865"/>
         <source>No legend entries selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6833"/>
+        <location filename="../src/app/qgisapp.cpp" line="6866"/>
         <source>Select the layers and groups you want to remove in the legend.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6840"/>
+        <location filename="../src/app/qgisapp.cpp" line="6873"/>
         <source>Remove layers and groups</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="6840"/>
+        <location filename="../src/app/qgisapp.cpp" line="6873"/>
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
         <translation type="unfinished">
@@ -18064,7 +18074,7 @@ Prosimo kontaktirajte razvijalce.</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="6852"/>
+        <location filename="../src/app/qgisapp.cpp" line="6885"/>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation type="unfinished">
@@ -18075,17 +18085,17 @@ Prosimo kontaktirajte razvijalce.</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6927"/>
+        <location filename="../src/app/qgisapp.cpp" line="6960"/>
         <source>%1 (%2 type unsupported)</source>
         <translation>%1 (%2 nepodprt tip)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7879"/>
+        <location filename="../src/app/qgisapp.cpp" line="7912"/>
         <source>Do you want to save the current project? %1</source>
         <translation>Ali želite shraniti trenutni projekt? %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9355"/>
+        <location filename="../src/app/qgisapp.cpp" line="9388"/>
         <source>Invalid Layer</source>
         <translation>Neveljavni sloj</translation>
     </message>
@@ -18106,7 +18116,7 @@ Prosimo kontaktirajte razvijalce.</translation>
         <translation type="obsolete">Prostorska datoteka mora imeti končnico .shp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3751"/>
+        <location filename="../src/app/qgisapp.cpp" line="3755"/>
         <source>Choose a QGIS project file to open</source>
         <translation>Izberite projekt, ki ga želite odpreti</translation>
     </message>
@@ -18119,74 +18129,74 @@ Prosimo kontaktirajte razvijalce.</translation>
         <translation type="obsolete">Napaka pri branju projekta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3802"/>
+        <location filename="../src/app/qgisapp.cpp" line="3806"/>
         <source>Unable to open project</source>
         <translation>Projekta ni možno odpreti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3859"/>
+        <location filename="../src/app/qgisapp.cpp" line="3863"/>
         <source>Security warning</source>
         <translation>Varnostno opozorilo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3860"/>
+        <location filename="../src/app/qgisapp.cpp" line="3864"/>
         <source>project macros have been disabled.</source>
         <translation>makroji v projektu so onemogočeni.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3851"/>
+        <location filename="../src/app/qgisapp.cpp" line="3855"/>
         <source>Enable macros</source>
         <translation>Omogoči makre</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3883"/>
+        <location filename="../src/app/qgisapp.cpp" line="3887"/>
         <source>Project loaded</source>
         <translation>Projekt je naložen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3910"/>
+        <location filename="../src/app/qgisapp.cpp" line="3914"/>
         <source>Choose a QGIS project file</source>
         <translation>Izberite datoteko QGIS projekta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3942"/>
-        <location filename="../src/app/qgisapp.cpp" line="3996"/>
+        <location filename="../src/app/qgisapp.cpp" line="3946"/>
+        <location filename="../src/app/qgisapp.cpp" line="4000"/>
         <source>Saved project to: %1</source>
         <translation>Projekt je shranjen kot: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3954"/>
-        <location filename="../src/app/qgisapp.cpp" line="4003"/>
+        <location filename="../src/app/qgisapp.cpp" line="3958"/>
+        <location filename="../src/app/qgisapp.cpp" line="4007"/>
         <source>Unable to save project %1</source>
         <translation>Projekta %1 ni mogoče shraniti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3975"/>
+        <location filename="../src/app/qgisapp.cpp" line="3979"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>Shrani datoteko kot</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4260"/>
+        <location filename="../src/app/qgisapp.cpp" line="4264"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Ime datoteke za prepoznavo slike</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4265"/>
+        <location filename="../src/app/qgisapp.cpp" line="4269"/>
         <source>Saved map image to %1</source>
         <translation>Slika je shranjena kot %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4613"/>
+        <location filename="../src/app/qgisapp.cpp" line="4646"/>
         <source>Default system font substituted.</source>
         <translation>Privzeta sistemska pisava je zamenjana.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4633"/>
+        <location filename="../src/app/qgisapp.cpp" line="4666"/>
         <source>Font for layer &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; was not found (&lt;i&gt;%2&lt;/i&gt;). %3</source>
         <translation>Pisava za sloj &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; ne obstaja (&lt;i&gt;%2&lt;/i&gt;). %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4624"/>
+        <location filename="../src/app/qgisapp.cpp" line="4657"/>
         <source>Open labeling dialog</source>
         <translation>Odpri označevanje</translation>
     </message>
@@ -18287,176 +18297,176 @@ Prosimo kontaktirajte razvijalce.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2325"/>
+        <location filename="../src/app/qgisapp.cpp" line="2329"/>
         <source>Add Group</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2331"/>
+        <location filename="../src/app/qgisapp.cpp" line="2335"/>
         <source>Manage Layer Visibility</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2340"/>
+        <location filename="../src/app/qgisapp.cpp" line="2344"/>
         <source>Filter Legend By Map Content</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2348"/>
+        <location filename="../src/app/qgisapp.cpp" line="2352"/>
         <source>Expand All</source>
         <translation type="unfinished">Razširi vse</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2353"/>
+        <location filename="../src/app/qgisapp.cpp" line="2357"/>
         <source>Collapse All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2646"/>
+        <location filename="../src/app/qgisapp.cpp" line="2650"/>
         <source>Compiled against GEOS</source>
         <translation>Prevedeno GEOS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2647"/>
+        <location filename="../src/app/qgisapp.cpp" line="2651"/>
         <source>Running against GEOS</source>
         <translation>Izvajjanje GEOS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3707"/>
+        <location filename="../src/app/qgisapp.cpp" line="3711"/>
         <source>Layer creation failed. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3932"/>
+        <location filename="../src/app/qgisapp.cpp" line="3936"/>
         <source>Insufficient permissions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3933"/>
+        <location filename="../src/app/qgisapp.cpp" line="3937"/>
         <source>The project file is not writable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4035"/>
+        <location filename="../src/app/qgisapp.cpp" line="4039"/>
         <source>DXF export completed</source>
         <translation>DXF izvoz je zaključen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4039"/>
+        <location filename="../src/app/qgisapp.cpp" line="4043"/>
         <source>DXF export failed</source>
         <translation>DXF izvoz ni uspel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4644"/>
-        <location filename="../src/app/qgisapp.cpp" line="4665"/>
+        <location filename="../src/app/qgisapp.cpp" line="4677"/>
+        <location filename="../src/app/qgisapp.cpp" line="4698"/>
         <source>Commit errors</source>
         <translation>Potrdi napake</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4645"/>
-        <location filename="../src/app/qgisapp.cpp" line="4666"/>
+        <location filename="../src/app/qgisapp.cpp" line="4678"/>
+        <location filename="../src/app/qgisapp.cpp" line="4699"/>
         <source>Could not commit changes to layer %1</source>
         <translation>Sprememb sloja %1 ni mogoče potrditi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4647"/>
+        <location filename="../src/app/qgisapp.cpp" line="4680"/>
         <source>Errors: %1
 </source>
         <translation>Napake: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4654"/>
+        <location filename="../src/app/qgisapp.cpp" line="4687"/>
         <source>Show more</source>
         <translation>Prikaži več</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4704"/>
+        <location filename="../src/app/qgisapp.cpp" line="4737"/>
         <source>Labeling Options</source>
         <translation>Možnosti oznak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4705"/>
+        <location filename="../src/app/qgisapp.cpp" line="4738"/>
         <source>Please select a vector layer first</source>
         <translation>Najprej izberite vektorski sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4713"/>
+        <location filename="../src/app/qgisapp.cpp" line="4746"/>
         <source>Layer labeling settings</source>
         <translation>Nastavitev označevanja sloja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4805"/>
+        <location filename="../src/app/qgisapp.cpp" line="4838"/>
         <source>Reading raster</source>
         <translation>Prebiranje rastra</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4880"/>
+        <location filename="../src/app/qgisapp.cpp" line="4913"/>
         <source>Cannot write raster error code: %1</source>
         <translation>Rastra ni mogoče zapisati, koda: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5099"/>
-        <location filename="../src/app/qgisapp.cpp" line="7489"/>
-        <location filename="../src/app/qgisapp.cpp" line="7498"/>
-        <location filename="../src/app/qgisapp.cpp" line="7559"/>
-        <location filename="../src/app/qgisapp.cpp" line="7568"/>
+        <location filename="../src/app/qgisapp.cpp" line="5132"/>
+        <location filename="../src/app/qgisapp.cpp" line="7522"/>
+        <location filename="../src/app/qgisapp.cpp" line="7531"/>
+        <location filename="../src/app/qgisapp.cpp" line="7592"/>
+        <location filename="../src/app/qgisapp.cpp" line="7601"/>
         <source>No Layer Selected</source>
         <translation>Ni izbranih slojev</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5100"/>
+        <location filename="../src/app/qgisapp.cpp" line="5133"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>Za brisanje elementov je potrebno izbrati vektorski sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5108"/>
+        <location filename="../src/app/qgisapp.cpp" line="5141"/>
         <source>No Vector Layer Selected</source>
         <translation>Vektorski sloj ni izbran</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5109"/>
+        <location filename="../src/app/qgisapp.cpp" line="5142"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Elementi se lahko brišejo samo v vektorskih slojih</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5116"/>
+        <location filename="../src/app/qgisapp.cpp" line="5149"/>
         <source>Provider does not support deletion</source>
         <translation>Ponudnik ne omogoča brisanja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5117"/>
+        <location filename="../src/app/qgisapp.cpp" line="5150"/>
         <source>Data provider does not support deleting features</source>
         <translation>Ponudnik ne dopušča brisanje elementov</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5124"/>
-        <location filename="../src/app/qgisapp.cpp" line="5604"/>
-        <location filename="../src/app/qgisapp.cpp" line="5663"/>
+        <location filename="../src/app/qgisapp.cpp" line="5157"/>
+        <location filename="../src/app/qgisapp.cpp" line="5637"/>
+        <location filename="../src/app/qgisapp.cpp" line="5696"/>
         <source>Layer not editable</source>
         <translation>Sloja ni mogoče urejati</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5125"/>
+        <location filename="../src/app/qgisapp.cpp" line="5158"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>Sloj je samo za branje. Vključite urejanje v orodni vrstici.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5134"/>
+        <location filename="../src/app/qgisapp.cpp" line="5167"/>
         <source>No Features Selected</source>
         <translation>Brez označenih elementov</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5135"/>
+        <location filename="../src/app/qgisapp.cpp" line="5168"/>
         <source>The current layer has not selected features</source>
         <translation>Trenutni sloj je brez označenih elementov</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5140"/>
+        <location filename="../src/app/qgisapp.cpp" line="5173"/>
         <source>Delete features</source>
         <translation>Brisanje elementov</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="5140"/>
+        <location filename="../src/app/qgisapp.cpp" line="5173"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
@@ -18467,22 +18477,22 @@ Prosimo kontaktirajte razvijalce.</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5145"/>
+        <location filename="../src/app/qgisapp.cpp" line="5178"/>
         <source>Features deleted</source>
         <translation>Elementi so izbrisani</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5148"/>
+        <location filename="../src/app/qgisapp.cpp" line="5181"/>
         <source>Problem deleting features</source>
         <translation>Težava pri brisanju elementov</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5149"/>
+        <location filename="../src/app/qgisapp.cpp" line="5182"/>
         <source>A problem occured during deletion of features</source>
         <translation>Težava pri brisanju elementov</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="5154"/>
+        <location filename="../src/app/qgisapp.cpp" line="5187"/>
         <source>%n feature(s) deleted.</source>
         <comment>number of features deleted</comment>
         <translation>
@@ -18493,72 +18503,72 @@ Prosimo kontaktirajte razvijalce.</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5200"/>
+        <location filename="../src/app/qgisapp.cpp" line="5233"/>
         <source>Merging features...</source>
         <translation>Spajanje elementov...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5200"/>
+        <location filename="../src/app/qgisapp.cpp" line="5233"/>
         <source>Abort</source>
         <translation>Prekini</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5260"/>
+        <location filename="../src/app/qgisapp.cpp" line="5293"/>
         <source>Create unique print composer title</source>
         <translation>Enolični naziv tiskovine</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5263"/>
+        <location filename="../src/app/qgisapp.cpp" line="5296"/>
         <source>(title generated if left empty)</source>
         <translation>(privezi naziv)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5277"/>
+        <location filename="../src/app/qgisapp.cpp" line="5310"/>
         <source>Composer title</source>
         <translation>Naziv tiskovine</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5292"/>
+        <location filename="../src/app/qgisapp.cpp" line="5325"/>
         <source>Title can not be empty!</source>
         <translation>Naziv je obvezen!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5303"/>
+        <location filename="../src/app/qgisapp.cpp" line="5336"/>
         <source>Title already exists!</source>
         <translation>Naslov že obstaja!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5320"/>
-        <location filename="../src/app/qgisapp.cpp" line="5403"/>
+        <location filename="../src/app/qgisapp.cpp" line="5353"/>
+        <location filename="../src/app/qgisapp.cpp" line="5436"/>
         <source>Composer %1</source>
         <translation>Tiskovina %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5365"/>
+        <location filename="../src/app/qgisapp.cpp" line="5398"/>
         <source> copy</source>
         <translation>kopiraj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5589"/>
-        <location filename="../src/app/qgisapp.cpp" line="5652"/>
+        <location filename="../src/app/qgisapp.cpp" line="5622"/>
+        <location filename="../src/app/qgisapp.cpp" line="5685"/>
         <source>No active layer</source>
         <translation>Manjka aktivni sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5590"/>
-        <location filename="../src/app/qgisapp.cpp" line="5652"/>
+        <location filename="../src/app/qgisapp.cpp" line="5623"/>
+        <location filename="../src/app/qgisapp.cpp" line="5685"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>Manjka aktivni sloj. Izberite sloj iz seznama slojev</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5598"/>
-        <location filename="../src/app/qgisapp.cpp" line="5658"/>
+        <location filename="../src/app/qgisapp.cpp" line="5631"/>
+        <location filename="../src/app/qgisapp.cpp" line="5691"/>
         <source>Active layer is not vector</source>
         <translation>Aktivni sloj ni vektorski</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5598"/>
-        <location filename="../src/app/qgisapp.cpp" line="5658"/>
+        <location filename="../src/app/qgisapp.cpp" line="5631"/>
+        <location filename="../src/app/qgisapp.cpp" line="5691"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>Orodje za spajanje elementov deluje samo v vektorskem sloju. S seznama izberite vektorski sloj</translation>
     </message>
@@ -18567,181 +18577,181 @@ Prosimo kontaktirajte razvijalce.</translation>
         <translation type="obsolete">Elemente lahko združujete le v načinu za urejanje. Vključi urejanje sloja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5612"/>
-        <location filename="../src/app/qgisapp.cpp" line="5678"/>
-        <location filename="../src/app/qgisapp.cpp" line="5715"/>
+        <location filename="../src/app/qgisapp.cpp" line="5645"/>
+        <location filename="../src/app/qgisapp.cpp" line="5711"/>
+        <location filename="../src/app/qgisapp.cpp" line="5748"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>Za združevanje je potrebno izbrati dva elementa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5690"/>
-        <location filename="../src/app/qgisapp.cpp" line="5730"/>
+        <location filename="../src/app/qgisapp.cpp" line="5723"/>
+        <location filename="../src/app/qgisapp.cpp" line="5763"/>
         <source>Merge failed</source>
         <translation>Združevanje ni uspelo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5690"/>
-        <location filename="../src/app/qgisapp.cpp" line="5730"/>
+        <location filename="../src/app/qgisapp.cpp" line="5723"/>
+        <location filename="../src/app/qgisapp.cpp" line="5763"/>
         <source>An error occured during the merge operation</source>
         <translation>Napaka pri združevanju</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5698"/>
-        <location filename="../src/app/qgisapp.cpp" line="5737"/>
+        <location filename="../src/app/qgisapp.cpp" line="5731"/>
+        <location filename="../src/app/qgisapp.cpp" line="5770"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation>Geomtrijski tip, ki bi bil rezultat združevanja ni ustrezen za trenutni sloj, zato je postopek prekinjen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5743"/>
+        <location filename="../src/app/qgisapp.cpp" line="5776"/>
         <source>Merged features</source>
         <translation>Elementi so združeni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5849"/>
+        <location filename="../src/app/qgisapp.cpp" line="5882"/>
         <source>No active vector layer</source>
         <translation>Manjka aktivni vektorski sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5850"/>
+        <location filename="../src/app/qgisapp.cpp" line="5883"/>
         <source>To select features, choose a vector layer in the legend</source>
         <translation>Izberite vektorski sloj v legendi in označite element</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5887"/>
+        <location filename="../src/app/qgisapp.cpp" line="5920"/>
         <source>Features cut</source>
         <translation>Izrezani elementi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5913"/>
+        <location filename="../src/app/qgisapp.cpp" line="5946"/>
         <source>Features pasted</source>
         <translation>Elementi so prilepljeni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5998"/>
-        <location filename="../src/app/qgisapp.cpp" line="6005"/>
-        <location filename="../src/app/qgisapp.cpp" line="6011"/>
+        <location filename="../src/app/qgisapp.cpp" line="6031"/>
+        <location filename="../src/app/qgisapp.cpp" line="6038"/>
+        <location filename="../src/app/qgisapp.cpp" line="6044"/>
         <source>Paste features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5999"/>
+        <location filename="../src/app/qgisapp.cpp" line="6032"/>
         <source>no features could be successfully pasted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6006"/>
+        <location filename="../src/app/qgisapp.cpp" line="6039"/>
         <source>%1 features were successfully pasted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6012"/>
+        <location filename="../src/app/qgisapp.cpp" line="6045"/>
         <source>%1 of %2 features could be successfully pasted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6039"/>
+        <location filename="../src/app/qgisapp.cpp" line="6072"/>
         <source>Pasted</source>
         <translation>Prilepljeno</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6040"/>
+        <location filename="../src/app/qgisapp.cpp" line="6073"/>
         <source>New memory layer name</source>
         <translation>Nov naziv za spominski sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6041"/>
+        <location filename="../src/app/qgisapp.cpp" line="6074"/>
         <source>Layer name</source>
         <translation>Naziv sloja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6117"/>
+        <location filename="../src/app/qgisapp.cpp" line="6150"/>
         <source>No features in clipboard.</source>
         <translation>V odložišču ni elementov.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6121"/>
+        <location filename="../src/app/qgisapp.cpp" line="6154"/>
         <source>No features with geometry found, point type layer will be created.</source>
         <translation>Nobenih geometrijskih elementov ni bilo najdeno, ustvarjen bo točkovni sloj.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6125"/>
+        <location filename="../src/app/qgisapp.cpp" line="6158"/>
         <source>Multiple geometry types found, features with geometry different from %1 will be created without geometry.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6139"/>
+        <location filename="../src/app/qgisapp.cpp" line="6172"/>
         <source>Cannot create new layer</source>
         <translation>Ni mogoče ustvariti novega sloja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6152"/>
+        <location filename="../src/app/qgisapp.cpp" line="6185"/>
         <source>Cannot create field %1 (%2,%3)</source>
         <translation>Polja %1 (%2,%3) ni mogoče ustvariti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6210"/>
+        <location filename="../src/app/qgisapp.cpp" line="6243"/>
         <source>Cannot copy style: %1</source>
         <translation>Ni mogoče kopirati sloga: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6236"/>
+        <location filename="../src/app/qgisapp.cpp" line="6269"/>
         <source>Cannot parse style: %1:%2:%3</source>
         <translation>Ne morem razločiti:  %1:%2:%3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6248"/>
+        <location filename="../src/app/qgisapp.cpp" line="6281"/>
         <source>Cannot read style: %1</source>
         <translation>Ni mogoče uspešno prebrati sloga:%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6329"/>
+        <location filename="../src/app/qgisapp.cpp" line="6362"/>
         <source>Start editing failed</source>
         <translation>Urejanje ni mogoče</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6330"/>
+        <location filename="../src/app/qgisapp.cpp" line="6363"/>
         <source>Provider cannot be opened for editing</source>
         <translation>Ponudnik ne omogoča urejanja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6355"/>
+        <location filename="../src/app/qgisapp.cpp" line="6388"/>
         <source>Stop editing</source>
         <translation>Končaj urejanje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6356"/>
+        <location filename="../src/app/qgisapp.cpp" line="6389"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>Ali želite shraniti spremenjen sloj v %1?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6989"/>
+        <location filename="../src/app/qgisapp.cpp" line="7022"/>
         <source>Set scale visibility for selected layers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7613"/>
+        <location filename="../src/app/qgisapp.cpp" line="7646"/>
         <source>http://qgis.org/en/site/forusers/commercial_support.html</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10027"/>
+        <location filename="../src/app/qgisapp.cpp" line="10060"/>
         <source> Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10026"/>
+        <location filename="../src/app/qgisapp.cpp" line="10059"/>
         <source>A network request timed out, any data received is likely incomplete.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1318"/>
-        <location filename="../src/app/qgisapp.cpp" line="4879"/>
-        <location filename="../src/app/qgisapp.cpp" line="6209"/>
-        <location filename="../src/app/qgisapp.cpp" line="6235"/>
-        <location filename="../src/app/qgisapp.cpp" line="6247"/>
-        <location filename="../src/app/qgisapp.cpp" line="6386"/>
-        <location filename="../src/app/qgisapp.cpp" line="6466"/>
-        <location filename="../src/app/qgisapp.cpp" line="9375"/>
+        <location filename="../src/app/qgisapp.cpp" line="1320"/>
+        <location filename="../src/app/qgisapp.cpp" line="4912"/>
+        <location filename="../src/app/qgisapp.cpp" line="6242"/>
+        <location filename="../src/app/qgisapp.cpp" line="6268"/>
+        <location filename="../src/app/qgisapp.cpp" line="6280"/>
+        <location filename="../src/app/qgisapp.cpp" line="6419"/>
+        <location filename="../src/app/qgisapp.cpp" line="6499"/>
+        <location filename="../src/app/qgisapp.cpp" line="9408"/>
         <source>Error</source>
         <translation>Napaka</translation>
     </message>
@@ -18766,7 +18776,7 @@ Napake: %2
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6387"/>
+        <location filename="../src/app/qgisapp.cpp" line="6420"/>
         <source>Problems during roll back</source>
         <translation>Težava pri vračanju nazaj (roll back)</translation>
     </message>
@@ -18784,30 +18794,30 @@ Napake: %2
         <translation type="obsolete">Python konzola</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7313"/>
+        <location filename="../src/app/qgisapp.cpp" line="7346"/>
         <source>There is a new version of QGIS available</source>
         <translation>Nova različica QGIS-a je na razpolago</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7317"/>
+        <location filename="../src/app/qgisapp.cpp" line="7350"/>
         <source>You are running a development version of QGIS</source>
         <translation>Uporabljate razvojno različico QGIS-a</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7321"/>
+        <location filename="../src/app/qgisapp.cpp" line="7354"/>
         <source>You are running the current version of QGIS</source>
         <translation>Najnovejša različica QGIS-a</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7326"/>
+        <location filename="../src/app/qgisapp.cpp" line="7359"/>
         <source>Would you like more information?</source>
         <translation>Ali želite več informacij?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7329"/>
-        <location filename="../src/app/qgisapp.cpp" line="7342"/>
-        <location filename="../src/app/qgisapp.cpp" line="7347"/>
-        <location filename="../src/app/qgisapp.cpp" line="7368"/>
+        <location filename="../src/app/qgisapp.cpp" line="7362"/>
+        <location filename="../src/app/qgisapp.cpp" line="7375"/>
+        <location filename="../src/app/qgisapp.cpp" line="7380"/>
+        <location filename="../src/app/qgisapp.cpp" line="7401"/>
         <source>QGIS Version Information</source>
         <translation>Informacije o različici QGIS-a</translation>
     </message>
@@ -18816,17 +18826,17 @@ Napake: %2
         <translation type="obsolete">QGIS - spremembe glede na prejšnjo različico</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7347"/>
+        <location filename="../src/app/qgisapp.cpp" line="7380"/>
         <source>Unable to get current version information from server</source>
         <translation>Zadnja različica na strežniku ni dosegljiva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7357"/>
+        <location filename="../src/app/qgisapp.cpp" line="7390"/>
         <source>Connection refused - server may be down</source>
         <translation>Povezava prekinjena - strežnik ni dostopen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7360"/>
+        <location filename="../src/app/qgisapp.cpp" line="7393"/>
         <source>QGIS server was not found</source>
         <translation>QGIS server ni najden</translation>
     </message>
@@ -18839,7 +18849,7 @@ Napake: %2
         <translation type="obsolete">Neznana mrežna napaka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7368"/>
+        <location filename="../src/app/qgisapp.cpp" line="7401"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>Prekinjena je komunikacija z QGIS strežnikom
@@ -18864,7 +18874,7 @@ Napake: %2
         <translation>Zagon programa...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1488"/>
+        <location filename="../src/app/qgisapp.cpp" line="1490"/>
         <source>Window</source>
         <translation>Okno</translation>
     </message>
@@ -18873,17 +18883,17 @@ Napake: %2
         <translation type="obsolete">Vekt&amp;or</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1507"/>
+        <location filename="../src/app/qgisapp.cpp" line="1509"/>
         <source>&amp;Web</source>
         <translation>&amp;Splet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1726"/>
+        <location filename="../src/app/qgisapp.cpp" line="1728"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position. The format is lat,lon or east,north</source>
         <translation>Koordinate zemljevida ob trenutnem kurzorju. Ekran se posodablja s premikom miške. Dovoljeno je urejanje zemljevida na podani lokaciji. Oblika dolžina,širina ali vzhod,sever</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1730"/>
+        <location filename="../src/app/qgisapp.cpp" line="1732"/>
         <source>Current map coordinate (lat,lon or east,north)</source>
         <translation>Koordinate zemljevida (dolžina, širina ali vzhod,sever)</translation>
     </message>
@@ -18892,12 +18902,12 @@ Napake: %2
         <translation type="obsolete">Nadzor prikaza na ekranu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2390"/>
+        <location filename="../src/app/qgisapp.cpp" line="2394"/>
         <source>Map layer list that displays all layers in drawing order.</source>
         <translation>Seznam slojev na zemljevidu prikazanih po vrstnem redu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2391"/>
+        <location filename="../src/app/qgisapp.cpp" line="2395"/>
         <source>Layer order</source>
         <translation>Vrstni red slojev</translation>
     </message>
@@ -18912,28 +18922,28 @@ Napake: %2
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2576"/>
-        <location filename="../src/app/qgisapp.cpp" line="3678"/>
+        <location filename="../src/app/qgisapp.cpp" line="2580"/>
+        <location filename="../src/app/qgisapp.cpp" line="3682"/>
         <source>&lt; Blank &gt;</source>
         <translation>&lt; Prazno &gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2631"/>
+        <location filename="../src/app/qgisapp.cpp" line="2635"/>
         <source>QGIS version</source>
         <translation>Različica programa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2632"/>
+        <location filename="../src/app/qgisapp.cpp" line="2636"/>
         <source>QGIS code revision</source>
         <translation>Kodna različica</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2636"/>
+        <location filename="../src/app/qgisapp.cpp" line="2640"/>
         <source>Compiled against Qt</source>
         <translation>Prevedeno z Qt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2637"/>
+        <location filename="../src/app/qgisapp.cpp" line="2641"/>
         <source>Running against Qt</source>
         <translation>Izvaja se Qt</translation>
     </message>
@@ -18946,37 +18956,37 @@ Napake: %2
         <translation type="obsolete">GEOS Različica</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2651"/>
+        <location filename="../src/app/qgisapp.cpp" line="2655"/>
         <source>PostgreSQL Client Version</source>
         <translation>Različica PostgreSQL odjemalca</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2655"/>
+        <location filename="../src/app/qgisapp.cpp" line="2659"/>
         <source>No support.</source>
         <translation>Brez podpore.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2659"/>
+        <location filename="../src/app/qgisapp.cpp" line="2663"/>
         <source>SpatiaLite Version</source>
         <translation>Različica SpatialLite</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2665"/>
+        <location filename="../src/app/qgisapp.cpp" line="2669"/>
         <source>QWT Version</source>
         <translation>QWT različica</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2666"/>
+        <location filename="../src/app/qgisapp.cpp" line="2670"/>
         <source>PROJ.4 Version</source>
         <translation>PROJ.4 Različica</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2670"/>
+        <location filename="../src/app/qgisapp.cpp" line="2674"/>
         <source>QScintilla2 Version</source>
         <translation>QScintilla2 Različica</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2673"/>
+        <location filename="../src/app/qgisapp.cpp" line="2677"/>
         <source>This copy of QGIS writes debugging output.</source>
         <translation>Program zahteva zapis rezultat razhroščevanja.</translation>
     </message>
@@ -18985,137 +18995,137 @@ Napake: %2
         <translation type="obsolete">Izberite stisnjeni sloj...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2900"/>
+        <location filename="../src/app/qgisapp.cpp" line="2904"/>
         <source>Vector</source>
         <translation>Vektor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3163"/>
+        <location filename="../src/app/qgisapp.cpp" line="3167"/>
         <source>PostgreSQL</source>
         <translation>PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3163"/>
+        <location filename="../src/app/qgisapp.cpp" line="3167"/>
         <source>Cannot get PostgreSQL select dialog from provider.</source>
         <translation>Ni mogoče pridobiti PostgreSQL izbirni dialog.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3219"/>
+        <location filename="../src/app/qgisapp.cpp" line="3223"/>
         <source>%1 is an invalid layer - not loaded</source>
         <translation>%1 ni veljaven sloj - ni naloženo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3220"/>
+        <location filename="../src/app/qgisapp.cpp" line="3224"/>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>%1 je neveljaven. Prosim preverite &lt;a href=&quot;#messageLog&quot;&gt;sporočila&lt;/a&gt; za več informacij.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3246"/>
+        <location filename="../src/app/qgisapp.cpp" line="3250"/>
         <source>SpatiaLite</source>
         <translation>SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3246"/>
+        <location filename="../src/app/qgisapp.cpp" line="3250"/>
         <source>Cannot get SpatiaLite select dialog from provider.</source>
         <translation>Ni mogoče pridobiti SpatialLite izbirni dialog.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3261"/>
+        <location filename="../src/app/qgisapp.cpp" line="3265"/>
         <source>Delimited Text</source>
         <translation>Ločeno besedilo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3261"/>
+        <location filename="../src/app/qgisapp.cpp" line="3265"/>
         <source>Cannot get Delimited Text select dialog from provider.</source>
         <translation>Obrazca za ločilno besedilo ni mogoče pridobiti od ponudnika.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3282"/>
+        <location filename="../src/app/qgisapp.cpp" line="3286"/>
         <source>MSSQL</source>
         <translation>MSSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3299"/>
+        <location filename="../src/app/qgisapp.cpp" line="3303"/>
         <source>Oracle</source>
         <translation>Oracle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3299"/>
+        <location filename="../src/app/qgisapp.cpp" line="3303"/>
         <source>Cannot get Oracle select dialog from provider.</source>
         <translation>Ni mogoče pridobiti Oracle izbirni dialog.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3322"/>
+        <location filename="../src/app/qgisapp.cpp" line="3326"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3322"/>
+        <location filename="../src/app/qgisapp.cpp" line="3326"/>
         <source>Cannot get WMS select dialog from provider.</source>
         <translation>Ni mogoče pridobiti WMS izbirni dialog.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3339"/>
+        <location filename="../src/app/qgisapp.cpp" line="3343"/>
         <source>WCS</source>
         <translation>WCS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3339"/>
+        <location filename="../src/app/qgisapp.cpp" line="3343"/>
         <source>Cannot get WCS select dialog from provider.</source>
         <translation>Ni mogoče pridobiti WCS izbirni dialog.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3361"/>
+        <location filename="../src/app/qgisapp.cpp" line="3365"/>
         <source>WFS</source>
         <translation>WFS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3361"/>
+        <location filename="../src/app/qgisapp.cpp" line="3365"/>
         <source>Cannot get WFS select dialog from provider.</source>
         <translation>Ni mogoče pridobiti WFS izbirni dialog.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3548"/>
+        <location filename="../src/app/qgisapp.cpp" line="3552"/>
         <source>Default failed to open: %1</source>
         <translation>Priveto ni mogoče odpreti: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3552"/>
+        <location filename="../src/app/qgisapp.cpp" line="3556"/>
         <source>Default not found: %1</source>
         <translation>Privzeto ne obstaja: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3554"/>
+        <location filename="../src/app/qgisapp.cpp" line="3558"/>
         <source>Open Template Project</source>
         <translation>Odpri predlogo za projekt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3579"/>
+        <location filename="../src/app/qgisapp.cpp" line="3583"/>
         <source>Auto-open Project</source>
         <translation>Samodejno odpiranje projekta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3612"/>
+        <location filename="../src/app/qgisapp.cpp" line="3616"/>
         <source>Failed to open: %1</source>
         <translation>Napaka pri odpiranju: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3635"/>
+        <location filename="../src/app/qgisapp.cpp" line="3639"/>
         <source>Not valid project file: %1</source>
         <translation>Nevljavna projektna datoteka: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3648"/>
+        <location filename="../src/app/qgisapp.cpp" line="3652"/>
         <source>Project failed to open: %1</source>
         <translation>Projekta %1 ni mogoče odpreti.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3655"/>
+        <location filename="../src/app/qgisapp.cpp" line="3659"/>
         <source>Default template has been reopened: %1</source>
         <translation>Privzeta predloga je ponovno odprta: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3662"/>
+        <location filename="../src/app/qgisapp.cpp" line="3666"/>
         <source>File not found: %1</source>
         <translation>Datoteka ne obstaja: %1</translation>
     </message>
@@ -19124,17 +19134,17 @@ Napake: %2
         <translation type="obsolete">Qgis datoteke</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3788"/>
+        <location filename="../src/app/qgisapp.cpp" line="3792"/>
         <source>Loading project: %1</source>
         <translation>Nalagam projekt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4141"/>
+        <location filename="../src/app/qgisapp.cpp" line="4145"/>
         <source>Unable to load %1</source>
         <translation>Ne morem odpreti %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6467"/>
+        <location filename="../src/app/qgisapp.cpp" line="6500"/>
         <source>Could not %1 changes to layer %2
 
 Errors: %3
@@ -19144,44 +19154,44 @@ Errors: %3
 Napake: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6468"/>
+        <location filename="../src/app/qgisapp.cpp" line="6501"/>
         <source>rollback</source>
         <translation>razveljavi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6468"/>
+        <location filename="../src/app/qgisapp.cpp" line="6501"/>
         <source>cancel</source>
         <translation>prekini</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6498"/>
+        <location filename="../src/app/qgisapp.cpp" line="6531"/>
         <source>Save</source>
         <translation>Shrani</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6498"/>
-        <location filename="../src/app/qgisapp.cpp" line="6524"/>
-        <location filename="../src/app/qgisapp.cpp" line="6550"/>
+        <location filename="../src/app/qgisapp.cpp" line="6531"/>
+        <location filename="../src/app/qgisapp.cpp" line="6557"/>
+        <location filename="../src/app/qgisapp.cpp" line="6583"/>
         <source>all</source>
         <translation>vse</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6524"/>
+        <location filename="../src/app/qgisapp.cpp" line="6557"/>
         <source>Rollback</source>
         <translation>Razveljavi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6550"/>
+        <location filename="../src/app/qgisapp.cpp" line="6583"/>
         <source>Cancel</source>
         <translation>Prekini</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6566"/>
+        <location filename="../src/app/qgisapp.cpp" line="6599"/>
         <source>Current edits</source>
         <translation>Trenutno urejani</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6567"/>
+        <location filename="../src/app/qgisapp.cpp" line="6600"/>
         <source>%1 current changes for %2 layer(s)?</source>
         <translation>%1 sprememb za %2 sloj(ev)?</translation>
     </message>
@@ -19218,28 +19228,28 @@ Napake: %3</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6879"/>
+        <location filename="../src/app/qgisapp.cpp" line="6912"/>
         <source>copy</source>
         <translation>kopiraj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6883"/>
+        <location filename="../src/app/qgisapp.cpp" line="6916"/>
         <source>Plugin layer</source>
         <translation>Sloj vtičnika</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6895"/>
+        <location filename="../src/app/qgisapp.cpp" line="6928"/>
         <source>Memory layer</source>
         <translation>Spomiski sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6915"/>
-        <location filename="../src/app/qgisapp.cpp" line="6926"/>
+        <location filename="../src/app/qgisapp.cpp" line="6948"/>
+        <location filename="../src/app/qgisapp.cpp" line="6959"/>
         <source>Duplicate layer: </source>
         <translation>Podvoji sloj: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6916"/>
+        <location filename="../src/app/qgisapp.cpp" line="6949"/>
         <source>%1 (duplication resulted in invalid layer)</source>
         <translation>%1 (neveljacen sloj zaradi podvojenih vrednosti)</translation>
     </message>
@@ -19248,22 +19258,22 @@ Napake: %3</translation>
         <translation type="obsolete">%1 (%2 neveljaven tip)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7239"/>
+        <location filename="../src/app/qgisapp.cpp" line="7272"/>
         <source>Couldn&apos;t load Python support library: %1</source>
         <translation>Ni mogoče naložiti Python knjižnice: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7250"/>
+        <location filename="../src/app/qgisapp.cpp" line="7283"/>
         <source>Couldn&apos;t resolve python support library&apos;s instance() symbol.</source>
         <translation>Nemogoče je prepoznati simbole Python knjižnice.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7265"/>
+        <location filename="../src/app/qgisapp.cpp" line="7298"/>
         <source>Python support ENABLED :-) </source>
         <translation>Omogočena podpora za python :-) </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7363"/>
+        <location filename="../src/app/qgisapp.cpp" line="7396"/>
         <source>Unknown network socket error: %1</source>
         <translation>Nepoznana mrežna napaka: %1</translation>
     </message>
@@ -19272,18 +19282,18 @@ Napake: %3</translation>
         <translation type="obsolete">Izbran rasterski sloj ni veljaven</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7723"/>
-        <location filename="../src/app/qgisapp.cpp" line="7766"/>
+        <location filename="../src/app/qgisapp.cpp" line="7756"/>
+        <location filename="../src/app/qgisapp.cpp" line="7799"/>
         <source>Layer is not valid</source>
         <translation>Neveljaven sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7765"/>
+        <location filename="../src/app/qgisapp.cpp" line="7798"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Neveljavnega sloja ni mogoče dodati na zemljevid</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7878"/>
+        <location filename="../src/app/qgisapp.cpp" line="7911"/>
         <source>Save?</source>
         <translation>Shranim?</translation>
     </message>
@@ -19292,37 +19302,37 @@ Napake: %3</translation>
         <translation type="obsolete">Ali želite shraniti trenutni projekt?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8497"/>
+        <location filename="../src/app/qgisapp.cpp" line="8530"/>
         <source>Current CRS: %1 (OTFR enabled)</source>
         <translation>Koordinatni sistem: %1 (OTFR omogočen)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8504"/>
+        <location filename="../src/app/qgisapp.cpp" line="8537"/>
         <source>Current CRS: %1 (OTFR disabled)</source>
         <translation>Koordinatni sistem: %1 (OTFR ni omogočna)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8586"/>
+        <location filename="../src/app/qgisapp.cpp" line="8619"/>
         <source>Map coordinates for the current view extents</source>
         <translation>Koordinate zemljevida za trenutni obseg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8594"/>
+        <location filename="../src/app/qgisapp.cpp" line="8627"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>Koordinate zemljevida ob miškinem kazalcu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8662"/>
+        <location filename="../src/app/qgisapp.cpp" line="8695"/>
         <source>Extents:</source>
         <translation>Obseg:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8755"/>
+        <location filename="../src/app/qgisapp.cpp" line="8788"/>
         <source>Maptips require an active layer</source>
         <translation>Namigi karte se lahko prikažejo v aktivnem sloju</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9274"/>
+        <location filename="../src/app/qgisapp.cpp" line="9307"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Odpiranje rastrov (GDAL podpora)</translation>
     </message>
@@ -19331,12 +19341,12 @@ Napake: %3</translation>
         <translation type="obsolete">%1 neveljavna rasterska datoteka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9509"/>
+        <location filename="../src/app/qgisapp.cpp" line="9542"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 neveljavena rasterska datoteka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9514"/>
+        <location filename="../src/app/qgisapp.cpp" line="9547"/>
         <source>Unsupported Data Source</source>
         <translation>Nepodprta podatkovna struktura</translation>
     </message>
@@ -19349,23 +19359,23 @@ Napake: %3</translation>
         <translation type="obsolete">Zaznamek ni možen, ker je nekaj narobe z podatki</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9686"/>
+        <location filename="../src/app/qgisapp.cpp" line="9719"/>
         <source>Project file is older</source>
         <translation>Projekt je starejši</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9668"/>
+        <location filename="../src/app/qgisapp.cpp" line="9701"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation>&lt;p&gt; Datoteka je bila shranjena s starejšo različico QGIS. Pri shranjevanju se bo datoteka posodobila na najnovejšo različico. Morda datoteke ne boste mogli uporabljati s prejšnjimi različicami. &lt;p&gt; Čeprav razvijalci poskušajo ohraniti združljivost za nazaj, bi lahko bili nekateri podatki izgubljeni . Da bi izboljšali kakovost programa, lahko sporočilo o napaki pošljete na %3. Ne pozabite priložiti stare datoteke in napisati s katero različico je prišlo do napake. &lt;p&gt;To opozorilo lahko izkjučite, tako da odkljukate &apos;%5&apos; v meniju %4.&lt;p&gt;Različica datoteke: %1&lt;br&gt;Trenutna različica programa: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9684"/>
+        <location filename="../src/app/qgisapp.cpp" line="9717"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;Nastavitve:Možnosti:Splošno&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9685"/>
+        <location filename="../src/app/qgisapp.cpp" line="9718"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>Opozorilo pri odpiranju projektov s starejšimi različicami programa</translation>
     </message>
@@ -19389,7 +19399,7 @@ Napake: %3</translation>
         <translation type="obsolete">Poženi postopke</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisappinterface.cpp" line="582"/>
+        <location filename="../src/app/qgisappinterface.cpp" line="584"/>
         <source>Attributes changed</source>
         <translation>Sprememba podatkov</translation>
     </message>
@@ -41166,22 +41176,22 @@ v vrstici %2 stolpca %3</translation>
 <context>
     <name>QgsHandleBadLayers</name>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="68"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="70"/>
         <source>Browse</source>
         <translation>Brskaj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="83"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="84"/>
         <source>Layer name</source>
         <translation>Ime sloja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="84"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="85"/>
         <source>Type</source>
         <translation>Tip</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="85"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="86"/>
         <source>Provider</source>
         <translation>Ponudnik</translation>
     </message>
@@ -41194,44 +41204,43 @@ v vrstici %2 stolpca %3</translation>
         <translation type="obsolete">Nov podatkovni vir</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="86"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="87"/>
         <source>Datasource</source>
         <translation type="unfinished">Podatkovni vir</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="97"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="99"/>
         <source>none</source>
         <translation>noben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="251"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="259"/>
         <source>Select file to replace &apos;%1&apos;</source>
         <translation>Izberi dattoteko za zamenjavo  &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="256"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="264"/>
         <source>Please select exactly one file.</source>
         <translation>Prosim izberite samo eno datoteko.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="266"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="272"/>
         <source>Select new directory of selected files</source>
         <translation>Nova mapa za izbrane datoteke</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="268"/>
         <source>All files (*)</source>
-        <translation>Vse datoteke (*)</translation>
+        <translation type="obsolete">Vse datoteke (*)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="329"/>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="348"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="340"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="359"/>
         <source>Unhandled layer will be lost.</source>
         <translation>Nedokončan sloj bo izgubljen.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="330"/>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="349"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="341"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="360"/>
         <source>There are still %n unhandled layer(s), that will be lost if you closed now.</source>
         <comment>unhandled layers</comment>
         <translation>
@@ -41281,12 +41290,12 @@ v vrstici %2 stolpca %3</translation>
 <context>
     <name>QgsHandleBadLayersHandler</name>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="44"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="46"/>
         <source>Handle bad layers</source>
         <translation type="unfinished">Obdelava neprepoznanih slojev</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="45"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="47"/>
         <source>%1 of %2 bad layers were not fixable.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -58989,7 +58998,7 @@ Click on help button to get valid creation options for this format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="672"/>
+        <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="684"/>
         <source>Choose a file name to save the map image as</source>
         <translation type="unfinished"></translation>
     </message>
@@ -59056,22 +59065,22 @@ Click on help button to get valid creation options for this format.</source>
 <context>
     <name>QgsRasterInterface</name>
     <message>
-        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="581"/>
+        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="584"/>
         <source>Identify</source>
         <translation type="unfinished">Identificiraj</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="596"/>
+        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="599"/>
         <source>Build Pyramids</source>
         <translation type="unfinished">Zgradi piramide</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="586"/>
+        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="589"/>
         <source>Create Datasources</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="591"/>
+        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="594"/>
         <source>Remove Datasources</source>
         <translation type="unfinished"></translation>
     </message>
@@ -61659,7 +61668,7 @@ standard deviation ×</source>
 <context>
     <name>QgsRelationEditorWidget</name>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="48"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="49"/>
         <source>Toggle editing</source>
         <translation type="unfinished"></translation>
     </message>
@@ -61669,27 +61678,27 @@ standard deviation ×</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="62"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="61"/>
         <source>Delete feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="68"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="66"/>
         <source>Link feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="74"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="71"/>
         <source>Unlink feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="82"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="77"/>
         <source>Form view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="89"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="84"/>
         <source>Table view</source>
         <translation type="unfinished"></translation>
     </message>
@@ -61768,48 +61777,48 @@ standard deviation ×</source>
         <translation type="obsolete">(brez izbire)</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="81"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="82"/>
         <source>Open related feature form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="90"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="88"/>
         <source>Highlight feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="91"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="89"/>
         <source>Scale and highlight feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="92"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="90"/>
         <source>Pan and highlight feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="102"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="100"/>
         <source>Select on map</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="111"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="107"/>
         <source>No selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="131"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="124"/>
         <source>The relation is not valid. Please make sure your relation definitions are ok.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="264"/>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="382"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="269"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="387"/>
         <source>%1 (no selection)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="537"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="542"/>
         <source>Identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -69652,22 +69661,22 @@ Napaka je:%2</translation>
 <context>
     <name>QgsVisibilityPresets</name>
     <message>
-        <location filename="../src/app/qgsvisibilitypresets.cpp" line="43"/>
+        <location filename="../src/app/qgsvisibilitypresets.cpp" line="45"/>
         <source>Add Preset...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvisibilitypresets.cpp" line="46"/>
+        <location filename="../src/app/qgsvisibilitypresets.cpp" line="48"/>
         <source>Remove Current Preset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvisibilitypresets.cpp" line="211"/>
+        <location filename="../src/app/qgsvisibilitypresets.cpp" line="213"/>
         <source>Visibility Presets</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvisibilitypresets.cpp" line="211"/>
+        <location filename="../src/app/qgsvisibilitypresets.cpp" line="213"/>
         <source>Name of the new preset</source>
         <translation type="unfinished"></translation>
     </message>

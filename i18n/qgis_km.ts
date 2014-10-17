@@ -6165,7 +6165,7 @@ Open the results dialog to check it.</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="238"/>
+        <location filename="../src/ui/qgisapp.ui" line="240"/>
         <source>&amp;Edit</source>
         <translation>កែសម្រួល</translation>
     </message>
@@ -6200,137 +6200,137 @@ Open the results dialog to check it.</source>
         <translation>ស្រទាប់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="184"/>
+        <location filename="../src/ui/qgisapp.ui" line="186"/>
         <source>&amp;Plugins</source>
         <translation>កម្មវិធី​ជំនួយ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="192"/>
+        <location filename="../src/ui/qgisapp.ui" line="194"/>
         <source>&amp;Help</source>
         <translation>ជំនួយ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="206"/>
+        <location filename="../src/ui/qgisapp.ui" line="208"/>
         <source>&amp;Settings</source>
         <translation>ការ​កំណត់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="218"/>
+        <location filename="../src/ui/qgisapp.ui" line="220"/>
         <source>&amp;Raster</source>
         <translation>រ៉ាស្ទ័រ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="224"/>
+        <location filename="../src/ui/qgisapp.ui" line="226"/>
         <source>Vect&amp;or</source>
         <translation>វ៉ិចទ័រ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="228"/>
+        <location filename="../src/ui/qgisapp.ui" line="230"/>
         <source>&amp;OpenStreetMap</source>
         <translation>&amp;OpenStreetMap</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="288"/>
+        <location filename="../src/ui/qgisapp.ui" line="290"/>
         <source>File</source>
         <translation>ឯកសារ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="305"/>
+        <location filename="../src/ui/qgisapp.ui" line="307"/>
         <source>Manage Layers</source>
         <translation>គ្រប់គ្រង​ស្រទាប</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="326"/>
+        <location filename="../src/ui/qgisapp.ui" line="328"/>
         <source>Digitizing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="347"/>
+        <location filename="../src/ui/qgisapp.ui" line="349"/>
         <source>Advanced Digitizing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="374"/>
+        <location filename="../src/ui/qgisapp.ui" line="376"/>
         <source>Map Navigation</source>
         <translation>ការ​រុករក​តាម​ផែនទី</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="397"/>
+        <location filename="../src/ui/qgisapp.ui" line="399"/>
         <source>Attributes</source>
         <translation>គុណលក្ខណៈ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="416"/>
+        <location filename="../src/ui/qgisapp.ui" line="418"/>
         <source>Plugins</source>
         <translation>កម្មវិធី​ជំនួយ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="427"/>
+        <location filename="../src/ui/qgisapp.ui" line="429"/>
         <source>Help</source>
         <translation>ជំនួយ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="439"/>
+        <location filename="../src/ui/qgisapp.ui" line="441"/>
         <source>Raster</source>
         <translation>រ៉ាស្ទ័រ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="458"/>
+        <location filename="../src/ui/qgisapp.ui" line="460"/>
         <source>Label</source>
         <translation>ស្លាក</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="476"/>
+        <location filename="../src/ui/qgisapp.ui" line="478"/>
         <source>Vector</source>
         <translation>វ៉ិចទ័រ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="487"/>
+        <location filename="../src/ui/qgisapp.ui" line="489"/>
         <source>Database</source>
         <translation>មូលដ្ឋាន​ទិន្នន័យ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="498"/>
+        <location filename="../src/ui/qgisapp.ui" line="500"/>
         <source>Web</source>
         <translation>បណ្ដាញ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="516"/>
+        <location filename="../src/ui/qgisapp.ui" line="518"/>
         <source>Ctrl+N</source>
         <translation>បញ្ជា(Ctrl)+N</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="528"/>
+        <location filename="../src/ui/qgisapp.ui" line="530"/>
         <source>Ctrl+O</source>
         <translation>បញ្ជា+O (Ctrl+O)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="540"/>
+        <location filename="../src/ui/qgisapp.ui" line="542"/>
         <source>Ctrl+S</source>
         <translation>បញ្ជា+S (Ctrl+S)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="552"/>
+        <location filename="../src/ui/qgisapp.ui" line="554"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="561"/>
+        <location filename="../src/ui/qgisapp.ui" line="563"/>
         <source>Save as Image...</source>
         <translation>រក្សាទុក​ជា​រូបភាព...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="570"/>
+        <location filename="../src/ui/qgisapp.ui" line="572"/>
         <source>&amp;New Print Composer</source>
         <translation>បោះពុម្ព​កម្មវិធី​តែង​ថ្មី</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="573"/>
+        <location filename="../src/ui/qgisapp.ui" line="575"/>
         <source>Ctrl+P</source>
         <translation>បញ្ជា+P (Ctrl+P)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="582"/>
+        <location filename="../src/ui/qgisapp.ui" line="584"/>
         <source>Composer Manager...</source>
         <translation>កម្មវិធី​គ្រប់គ្រង​កម្មវិធី​តែង...</translation>
     </message>
@@ -6365,935 +6365,945 @@ Open the results dialog to check it.</source>
         <translation>បន្ថែម​ស្រទាប់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="242"/>
+        <location filename="../src/ui/qgisapp.ui" line="244"/>
         <source>Paste Features as</source>
         <translation>ភ្ជាប់​លក្ខណៈ​ពិសេស​ជា</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="513"/>
+        <location filename="../src/ui/qgisapp.ui" line="515"/>
         <source>&amp;New</source>
         <translation>ថ្មី</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="525"/>
+        <location filename="../src/ui/qgisapp.ui" line="527"/>
         <source>&amp;Open...</source>
         <translation>បើក...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="537"/>
+        <location filename="../src/ui/qgisapp.ui" line="539"/>
         <source>&amp;Save</source>
         <translation>រក្សាទុក</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="549"/>
+        <location filename="../src/ui/qgisapp.ui" line="551"/>
         <source>Save &amp;As...</source>
         <translation>រក្សាទុក​ជា...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="591"/>
+        <location filename="../src/ui/qgisapp.ui" line="593"/>
         <source>Exit QGIS</source>
         <translation>ចេញ​ពី QGIS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="594"/>
+        <location filename="../src/ui/qgisapp.ui" line="596"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="606"/>
+        <location filename="../src/ui/qgisapp.ui" line="608"/>
         <source>&amp;Undo</source>
         <translation>មិន​ធ្វើ​វិញ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="609"/>
+        <location filename="../src/ui/qgisapp.ui" line="611"/>
         <source>Ctrl+Z</source>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="618"/>
+        <location filename="../src/ui/qgisapp.ui" line="620"/>
         <source>&amp;Redo</source>
         <translation>ធ្វើ​វិញ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="621"/>
+        <location filename="../src/ui/qgisapp.ui" line="623"/>
         <source>Ctrl+Shift+Z</source>
         <translation>Ctrl+Shift+Z</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="630"/>
+        <location filename="../src/ui/qgisapp.ui" line="632"/>
         <source>Cut Features</source>
         <translation>កាត់​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="633"/>
+        <location filename="../src/ui/qgisapp.ui" line="635"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="642"/>
+        <location filename="../src/ui/qgisapp.ui" line="644"/>
         <source>Copy Features</source>
         <translation>ចម្លង​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="645"/>
+        <location filename="../src/ui/qgisapp.ui" line="647"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="654"/>
+        <location filename="../src/ui/qgisapp.ui" line="656"/>
         <source>Paste Features</source>
         <translation>បិទ​ភ្ជាប់​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="657"/>
+        <location filename="../src/ui/qgisapp.ui" line="659"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="669"/>
+        <location filename="../src/ui/qgisapp.ui" line="671"/>
         <source>Add Feature</source>
         <translation>បន្ថែម​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="672"/>
+        <location filename="../src/ui/qgisapp.ui" line="674"/>
         <source>Ctrl+.</source>
         <translation>Ctrl+.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="684"/>
+        <location filename="../src/ui/qgisapp.ui" line="686"/>
         <source>Move Feature(s)</source>
         <translation>ផ្លាស់ទី​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="696"/>
+        <location filename="../src/ui/qgisapp.ui" line="698"/>
         <source>Reshape Features</source>
         <translation>ប្ដូរ​ទំហំ​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="708"/>
+        <location filename="../src/ui/qgisapp.ui" line="710"/>
         <source>Split Features</source>
         <translation>ចែក​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="720"/>
+        <location filename="../src/ui/qgisapp.ui" line="722"/>
         <source>Split Parts</source>
         <translation>ចែក​ផ្នែក</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="729"/>
+        <location filename="../src/ui/qgisapp.ui" line="731"/>
         <source>Delete Selected</source>
         <translation>បាន​ជ្រើស​លុប</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="741"/>
+        <location filename="../src/ui/qgisapp.ui" line="743"/>
         <source>Add Ring</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="753"/>
+        <location filename="../src/ui/qgisapp.ui" line="755"/>
         <source>Add Part</source>
         <translation>បន្ថែម​ផ្នែក</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="765"/>
+        <location filename="../src/ui/qgisapp.ui" line="767"/>
         <source>Simplify Feature</source>
         <translation>លក្ខណៈ​ពិសេស​ងាយស្រួល</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="777"/>
+        <location filename="../src/ui/qgisapp.ui" line="779"/>
         <source>Delete Ring</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="789"/>
+        <location filename="../src/ui/qgisapp.ui" line="791"/>
         <source>Delete Part</source>
         <translation>លុប​ផ្នែក</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="798"/>
+        <location filename="../src/ui/qgisapp.ui" line="800"/>
         <source>Merge Selected Features</source>
         <translation>បញ្ចូល​លក្ខណៈ​ពិសេស​ដែល​បាន​ជ្រើស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="807"/>
+        <location filename="../src/ui/qgisapp.ui" line="809"/>
         <source>Merge Attributes of Selected Features</source>
         <translation>បញ្ចូល​គុណលក្ខណៈ​នៃ​លក្ខណៈ​ដែល​បាន​ជ្រើស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="819"/>
+        <location filename="../src/ui/qgisapp.ui" line="821"/>
         <source>Node Tool</source>
         <translation>ឧបករណ៍​ថ្នាំង</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="831"/>
+        <location filename="../src/ui/qgisapp.ui" line="833"/>
         <source>Rotate Point Symbols</source>
         <translation>បង្វិល​និមិត្ត​សញ្ញា​ចំណុច</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="836"/>
+        <location filename="../src/ui/qgisapp.ui" line="838"/>
         <source>Snapping Options...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="848"/>
+        <location filename="../src/ui/qgisapp.ui" line="850"/>
         <source>Pan Map</source>
         <translation>ម្ជុល​ផែនទី</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="860"/>
+        <location filename="../src/ui/qgisapp.ui" line="862"/>
         <source>Zoom In</source>
         <translation>ពង្រីក</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="863"/>
+        <location filename="../src/ui/qgisapp.ui" line="865"/>
         <source>Ctrl++</source>
         <translation>Ctrl++</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="875"/>
+        <location filename="../src/ui/qgisapp.ui" line="877"/>
         <source>Zoom Out</source>
         <translation>បង្រួម</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="878"/>
+        <location filename="../src/ui/qgisapp.ui" line="880"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="905"/>
+        <location filename="../src/ui/qgisapp.ui" line="907"/>
         <source>Select Features by Polygon</source>
         <translation>ជ្រើស​លក្ខណៈ​ពិសេស​តាម Polygon</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="917"/>
+        <location filename="../src/ui/qgisapp.ui" line="919"/>
         <source>Select Features by Freehand</source>
         <translation>ជ្រើស​លក្ខណៈ​ពិសេស​តាម Freehand</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="929"/>
+        <location filename="../src/ui/qgisapp.ui" line="931"/>
         <source>Select Features by Radius</source>
         <translation>ជ្រើស​លក្ខណៈ​ពិសេស​តាម​កាំ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="938"/>
+        <location filename="../src/ui/qgisapp.ui" line="940"/>
         <source>Deselect Features from All Layers</source>
         <translation>មិន​ជ្រើស​លក្ខណៈ​ពិសេស​ពី​ស្រទាប់​ទាំងអស់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="950"/>
+        <location filename="../src/ui/qgisapp.ui" line="952"/>
         <source>Identify Features</source>
         <translation>បង្ហាញ​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="953"/>
+        <location filename="../src/ui/qgisapp.ui" line="955"/>
         <source>Ctrl+Shift+I</source>
         <translation>Ctrl+Shift+I</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="965"/>
+        <location filename="../src/ui/qgisapp.ui" line="967"/>
         <source>Measure Line</source>
         <translation>ប្រវែង​បន្ទាត់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="968"/>
-        <location filename="../src/ui/qgisapp.ui" line="1250"/>
+        <location filename="../src/ui/qgisapp.ui" line="970"/>
+        <location filename="../src/ui/qgisapp.ui" line="1252"/>
         <source>Ctrl+Shift+M</source>
         <translation>Ctrl+Shift+M</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="980"/>
+        <location filename="../src/ui/qgisapp.ui" line="982"/>
         <source>Measure Area</source>
         <translation>គណនី​ផ្ទៃ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="983"/>
+        <location filename="../src/ui/qgisapp.ui" line="985"/>
         <source>Ctrl+Shift+J</source>
         <translation>Ctrl+Shift+J</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="995"/>
+        <location filename="../src/ui/qgisapp.ui" line="997"/>
         <source>Measure Angle</source>
         <translation>រង្វាស់​មុំ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1004"/>
+        <location filename="../src/ui/qgisapp.ui" line="1006"/>
         <source>Zoom Full</source>
         <translation>ពង្រីក​ពេញ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1007"/>
+        <location filename="../src/ui/qgisapp.ui" line="1009"/>
         <source>Ctrl+Shift+F</source>
         <translation>Ctrl+Shift+F</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1016"/>
+        <location filename="../src/ui/qgisapp.ui" line="1018"/>
         <source>Zoom to Layer</source>
         <translation>ពង្រីក​ទៅ​ស្រទាប់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1025"/>
+        <location filename="../src/ui/qgisapp.ui" line="1027"/>
         <source>Zoom to Selection</source>
         <translation>ពង្រីក​តាម​ការ​ជ្រើស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1028"/>
+        <location filename="../src/ui/qgisapp.ui" line="1030"/>
         <source>Ctrl+J</source>
         <translation>Ctrl+J</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1037"/>
+        <location filename="../src/ui/qgisapp.ui" line="1039"/>
         <source>Zoom Last</source>
         <translation>ពង្រីក​ចុងក្រោយ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1046"/>
+        <location filename="../src/ui/qgisapp.ui" line="1048"/>
         <source>Zoom Next</source>
         <translation>ពង្រីក​បន្ទាប់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1055"/>
+        <location filename="../src/ui/qgisapp.ui" line="1057"/>
         <source>Zoom Actual Size</source>
         <translation>ពង្រីក​ទំហំ​ជាក់ស្ដែង</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1058"/>
+        <location filename="../src/ui/qgisapp.ui" line="1060"/>
         <source>Zoom to Native Pixel Resolution</source>
         <translation>ពង្រីក​ទៅ​គុណភាព​បង្ហាញ​ភីកសែល​ដើម</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1070"/>
+        <location filename="../src/ui/qgisapp.ui" line="1072"/>
         <source>Map Tips</source>
         <translation>ព័ត៌មាន​ជំនួយ​ផែនទី</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1073"/>
+        <location filename="../src/ui/qgisapp.ui" line="1075"/>
         <source>Show information about a feature when the mouse is hovered over it</source>
         <translation>បង្ហាញ​ព័ត៌មាន​ជំនួយ​អំពី​លក្ខណៈ​ពិសេស នៅ​ពេល​កណ្ដុរ​សំកាំង​លើ​វា</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1082"/>
+        <location filename="../src/ui/qgisapp.ui" line="1084"/>
         <source>New Bookmark...</source>
         <translation>ចំណាំ​ថ្មី...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1085"/>
+        <location filename="../src/ui/qgisapp.ui" line="1087"/>
         <source>Ctrl+B</source>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1094"/>
+        <location filename="../src/ui/qgisapp.ui" line="1096"/>
         <source>Show Bookmarks</source>
         <translation>បង្ហាញ​ចំណាំ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1097"/>
+        <location filename="../src/ui/qgisapp.ui" line="1099"/>
         <source>Ctrl+Shift+B</source>
         <translation>Ctrl+Shift+B</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1106"/>
+        <location filename="../src/ui/qgisapp.ui" line="1108"/>
         <source>Refresh</source>
         <translation>ធ្វើ​ឲ្យ​ស្រស់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1121"/>
+        <location filename="../src/ui/qgisapp.ui" line="1123"/>
         <source>Text Annotation</source>
         <translation>ចំណារ​ពន្យល់​អត្ថបទ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1133"/>
+        <location filename="../src/ui/qgisapp.ui" line="1135"/>
         <source>Form Annotation</source>
         <translation>ចំណារ​ពន្យល់​បែបបទ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1145"/>
+        <location filename="../src/ui/qgisapp.ui" line="1147"/>
         <source>Move Annotation</source>
         <translation>ផ្លាស់ទី​ចំណារ​ពន្យល់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1154"/>
+        <location filename="../src/ui/qgisapp.ui" line="1156"/>
         <source>Labeling</source>
         <translation>ដាក់​ស្លាក</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1157"/>
+        <location filename="../src/ui/qgisapp.ui" line="1159"/>
         <source>Layer Labeling Options</source>
         <translation>ជម្រើស​ដាក់​ស្លាក​ស្រទាប់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1166"/>
+        <location filename="../src/ui/qgisapp.ui" line="1168"/>
         <source>New Shapefile Layer...</source>
         <translation>ស្រទាប់​ឯកសារ​រូបរាង​ថ្មី...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1169"/>
+        <location filename="../src/ui/qgisapp.ui" line="1171"/>
         <source>Ctrl+Shift+N</source>
         <translation>Ctrl+Shift+N</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1178"/>
+        <location filename="../src/ui/qgisapp.ui" line="1180"/>
         <source>New SpatiaLite Layer ...</source>
         <translation>ស្រទាប់ SpatiaLite ថ្មី ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1181"/>
+        <location filename="../src/ui/qgisapp.ui" line="1183"/>
         <source>Ctrl+Shift+A</source>
         <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1190"/>
+        <location filename="../src/ui/qgisapp.ui" line="1192"/>
         <source>Raster calculator ...</source>
         <translation>កម្មវិធី​គណនា​រ៉ាស្ទ័រ ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1199"/>
+        <location filename="../src/ui/qgisapp.ui" line="1201"/>
         <source>Add Vector Layer...</source>
         <translation>បន្ថែម​ស្រទាប់​វ៉ិចទ័រ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1202"/>
+        <location filename="../src/ui/qgisapp.ui" line="1204"/>
         <source>Ctrl+Shift+V</source>
         <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1211"/>
+        <location filename="../src/ui/qgisapp.ui" line="1213"/>
         <source>Add Raster Layer...</source>
         <translation>បន្ថែម​ស្រទាប់​រ៉ាស្ទ័រ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1214"/>
+        <location filename="../src/ui/qgisapp.ui" line="1216"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1223"/>
+        <location filename="../src/ui/qgisapp.ui" line="1225"/>
         <source>Add PostGIS Layers...</source>
         <translation>បន្ថែម​ស្រទាប់ PostGIS...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1226"/>
+        <location filename="../src/ui/qgisapp.ui" line="1228"/>
         <source>Ctrl+Shift+D</source>
         <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1235"/>
+        <location filename="../src/ui/qgisapp.ui" line="1237"/>
         <source>Add SpatiaLite Layer...</source>
         <translation>បន្ថែម​ស្រទាប់ SpatiaLite...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1238"/>
+        <location filename="../src/ui/qgisapp.ui" line="1240"/>
         <source>Ctrl+Shift+L</source>
         <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1247"/>
+        <location filename="../src/ui/qgisapp.ui" line="1249"/>
         <source>Add MSSQL Spatial Layer...</source>
         <translation>បន្ថែម​ស្រទាប់​ប្រវែង MSSQL...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1259"/>
+        <location filename="../src/ui/qgisapp.ui" line="1261"/>
         <source>Add Oracle Spatial Layer...</source>
         <translation>បន្ថែម​ស្រទាប់​ទំហំ​ការ​ព្យាករណ៍...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1262"/>
+        <location filename="../src/ui/qgisapp.ui" line="1264"/>
         <source>Ctrl+Shift+O</source>
         <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1271"/>
+        <location filename="../src/ui/qgisapp.ui" line="1273"/>
         <source>Add WMS/WMTS Layer...</source>
         <translation>បន្ថែម​ស្រទាប់ WMS/WMTS...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1274"/>
+        <location filename="../src/ui/qgisapp.ui" line="1276"/>
         <source>Ctrl+Shift+W</source>
         <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1283"/>
+        <location filename="../src/ui/qgisapp.ui" line="1285"/>
         <source>Open Attribute Table</source>
         <translation>បើក​តារាង​គុណលក្ខណៈ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1295"/>
+        <location filename="../src/ui/qgisapp.ui" line="1297"/>
         <source>Toggle Editing</source>
         <translation>បិទ/បើក​ ការ​កែសម្រួល</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1298"/>
+        <location filename="../src/ui/qgisapp.ui" line="1300"/>
         <source>Toggles the editing state of the current layer</source>
         <translation>បិទ/បើក ស្ថានភាព​ការ​កែសម្រួល​នៃ​ស្រទាប់​បច្ចុប្បន្ន</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1307"/>
+        <location filename="../src/ui/qgisapp.ui" line="1309"/>
         <source>Save for Selected Layer(s)</source>
         <translation>រក្សាទុក​ប្លង់​ដែល​បាន​ជ្រើស (s)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1310"/>
+        <location filename="../src/ui/qgisapp.ui" line="1312"/>
         <source>Save edits to current layer, but continue editing</source>
         <translation>រក្សាទុក​ការ​កែសម្រួល​ស្រទាប់​បច្ចុប្បន្ន, ប៉ុន្តែ​បន្ត​ការ​កែសម្រួល</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1315"/>
+        <location filename="../src/ui/qgisapp.ui" line="1317"/>
         <source>Save As...</source>
         <translation>​រក្សាទុកជា...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1324"/>
-        <location filename="../src/ui/qgisapp.ui" line="1327"/>
+        <location filename="../src/ui/qgisapp.ui" line="1326"/>
+        <location filename="../src/ui/qgisapp.ui" line="1329"/>
         <source>Remove Layer/Group</source>
         <translation>លុប​ចេញ​ពី ស្រទាប់/ក្រុម</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2174"/>
+        <location filename="../src/ui/qgisapp.ui" line="2176"/>
         <source>Add from Layer Definition File...</source>
         <translation>បន្ថែម​ពី​ឯកសារ​និយមន័យ​ស្រទាប់...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2179"/>
+        <location filename="../src/ui/qgisapp.ui" line="2181"/>
         <source>Save As Layer Definition File...</source>
         <translation>រក្សាទុក​ជា​ឯកសារ​និយមន័យ​ស្រទាប់...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2190"/>
+        <location filename="../src/ui/qgisapp.ui" line="2192"/>
         <source>Normal</source>
         <translation>ធម្មតា</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2193"/>
+        <location filename="../src/ui/qgisapp.ui" line="2195"/>
         <source>Normal preview mode</source>
         <translation>របៀប​មើល​ជា​មុន​ធម្មតា</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2201"/>
+        <location filename="../src/ui/qgisapp.ui" line="2203"/>
         <source>Simulate Photocopy (Grayscale)</source>
         <translation>ចម្លង​រូបថត (Grayscale)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2204"/>
+        <location filename="../src/ui/qgisapp.ui" line="2206"/>
         <source>Simulate photocopy (grayscale)</source>
         <translation>ចម្លង​រូបថត (grayscale)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2212"/>
+        <location filename="../src/ui/qgisapp.ui" line="2214"/>
         <source>Simulate Fax (Mono)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2215"/>
+        <location filename="../src/ui/qgisapp.ui" line="2217"/>
         <source>Simulate fax (mono)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2223"/>
+        <location filename="../src/ui/qgisapp.ui" line="2225"/>
         <source>Simulate Color Blindness (Protanope)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2226"/>
+        <location filename="../src/ui/qgisapp.ui" line="2228"/>
         <source>Simulate color blindness (protanope)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2234"/>
+        <location filename="../src/ui/qgisapp.ui" line="2236"/>
         <source>Simulate Color Blindness (Deuteranope)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2237"/>
+        <location filename="../src/ui/qgisapp.ui" line="2239"/>
         <source>Simulate color blindness (deuteranope)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2242"/>
+        <location filename="../src/ui/qgisapp.ui" line="2244"/>
         <source>Set Scale Visibility of Layer(s)</source>
         <translation>កំណត់​រូបភាព​មាត្រដ្ឋាន​នៃ​ស្រទាប់(s)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1330"/>
+        <location filename="../src/ui/qgisapp.ui" line="2253"/>
+        <source>Show Selected Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2262"/>
+        <source>Hide Selected Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="1332"/>
         <source>Ctrl+D</source>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1335"/>
+        <location filename="../src/ui/qgisapp.ui" line="1337"/>
         <source>Set CRS of Layer(s)</source>
         <translation>កំណត់​ស្រទាប់ CRS </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1338"/>
+        <location filename="../src/ui/qgisapp.ui" line="1340"/>
         <source>Ctrl+Shift+C</source>
         <translation>Ctrl+Shift+C</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1343"/>
+        <location filename="../src/ui/qgisapp.ui" line="1345"/>
         <source>Set Project CRS from Layer</source>
         <translation>កំណត់ CRS ចំណោល​ពី​ស្រទាប់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1348"/>
+        <location filename="../src/ui/qgisapp.ui" line="1350"/>
         <source>Properties...</source>
         <translation>លក្ខណៈ​សម្បត្តិ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1353"/>
+        <location filename="../src/ui/qgisapp.ui" line="1355"/>
         <source>Query...</source>
         <translation>ជ្រើសរើស...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1365"/>
+        <location filename="../src/ui/qgisapp.ui" line="1367"/>
         <source>Add to Overview</source>
         <translation>បន្ថែម​ទៅ​ទិដ្ឋភាព​ទូទៅ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1374"/>
+        <location filename="../src/ui/qgisapp.ui" line="1376"/>
         <source>Add All to Overview</source>
         <translation>បន្ថែម​ទាំងអស់​ទៅ​ទិដ្ឋភាព​ទូទៅ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1383"/>
+        <location filename="../src/ui/qgisapp.ui" line="1385"/>
         <source>Remove All from Overview</source>
         <translation>លុប​ទាំងអស់​ពី​ទិដ្ឋភាព​ទូទៅ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1392"/>
+        <location filename="../src/ui/qgisapp.ui" line="1394"/>
         <source>Show All Layers</source>
         <translation>បង្ហាញ​ស្រទាប់​ទាំងអស់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1395"/>
+        <location filename="../src/ui/qgisapp.ui" line="1397"/>
         <source>Ctrl+Shift+U</source>
         <translation>Ctrl+Shift+U</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1404"/>
+        <location filename="../src/ui/qgisapp.ui" line="1406"/>
         <source>Hide All Layers</source>
         <translation>លាក់​ស្រទាប់​ទាំងអស់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1407"/>
+        <location filename="../src/ui/qgisapp.ui" line="1409"/>
         <source>Ctrl+Shift+H</source>
         <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1416"/>
+        <location filename="../src/ui/qgisapp.ui" line="1418"/>
         <source>Manage and Install Plugins...</source>
         <translation>គ្រប់គ្រង និង​ដំឡើង​កម្មវិធី​ជំនួយ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2118"/>
-        <location filename="../src/ui/qgisapp.ui" line="2121"/>
+        <location filename="../src/ui/qgisapp.ui" line="2120"/>
+        <location filename="../src/ui/qgisapp.ui" line="2123"/>
         <source>Open Field Calculator</source>
         <translation>បើក​កម្មវិធី​គណនា​វាល</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2130"/>
+        <location filename="../src/ui/qgisapp.ui" line="2132"/>
         <source>Add Delimited Text Layer...</source>
         <translation>បន្ថែម​ស្រទាប់​អត្ថបទ​ដែល​បាន​កំណត់...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2133"/>
+        <location filename="../src/ui/qgisapp.ui" line="2135"/>
         <source>Add Delimited Text Layer</source>
         <translation>បន្ថែម​ស្រទាប់​អត្ថបទ​ដែល​បាន​កំណត់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2138"/>
+        <location filename="../src/ui/qgisapp.ui" line="2140"/>
         <source>New Vector Layer</source>
         <translation>ស្រទាប់​វ៉ិចទ័រ​ថ្មី</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2141"/>
+        <location filename="../src/ui/qgisapp.ui" line="2143"/>
         <source>Paste features in clipboard into a new OGR vector layer.</source>
         <translation>បិទភ្ជាប់​លក្ខណៈ​ពិសេស​នៅ​ក្នុង​ក្ដារតម្បៀតខ្ទាស់​ទៅ​កាន់​ស្រទាប់​វ៉ិចទ័រ OGR ថ្មី។</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2146"/>
+        <location filename="../src/ui/qgisapp.ui" line="2148"/>
         <source>New Memory Vector Layer</source>
         <translation>ស្រទាប់​វ៉ិចទ័រ​អង្គ​ចងចាំ​ថ្មី</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2149"/>
+        <location filename="../src/ui/qgisapp.ui" line="2151"/>
         <source>Paste features in clipboard into a new memory vector layer.</source>
         <translation>ភ្ជាប់​លក្ខណៈ​នៅ​ក្នុង​ក្ដារ​តម្បៀត​ខ្ទាស់​ទៅកាន់​ស្រទាប់​វ៉ិចទ័រ​អង្គចងចាំ​។</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1421"/>
+        <location filename="../src/ui/qgisapp.ui" line="1423"/>
         <source>Toggle Full Screen Mode</source>
         <translation>បិទ/បើក របៀប​អេក្រង់​ពេញ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="890"/>
+        <location filename="../src/ui/qgisapp.ui" line="892"/>
         <source>Select Feature(s)</source>
         <translation>ជ្រើស​លក្ខណៈ​ពិសេស(s)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="893"/>
+        <location filename="../src/ui/qgisapp.ui" line="895"/>
         <source>Select Features by area or single click</source>
         <translation>ជ្រើស​លក្ខណៈ​ពិសេស​តាម​តំបន់ ឬ​ចុច</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1109"/>
+        <location filename="../src/ui/qgisapp.ui" line="1111"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1356"/>
+        <location filename="../src/ui/qgisapp.ui" line="1358"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1424"/>
+        <location filename="../src/ui/qgisapp.ui" line="1426"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1433"/>
+        <location filename="../src/ui/qgisapp.ui" line="1435"/>
         <source>Project Properties...</source>
         <translation>លក្ខណសម្បត្តិ​ចំណោល...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1436"/>
+        <location filename="../src/ui/qgisapp.ui" line="1438"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1445"/>
+        <location filename="../src/ui/qgisapp.ui" line="1447"/>
         <source>Options...</source>
         <translation>ជម្រើស...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1457"/>
+        <location filename="../src/ui/qgisapp.ui" line="1459"/>
         <source>Custom CRS...</source>
         <translation>CRS ផ្ទាល់ខ្លួន...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1466"/>
+        <location filename="../src/ui/qgisapp.ui" line="1468"/>
         <source>Configure shortcuts...</source>
         <translation>កំណត់​រចនាសម្ព័ន្ធ​ផ្លូវកាត់...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1478"/>
+        <location filename="../src/ui/qgisapp.ui" line="1480"/>
         <source>Local Histogram Stretch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1481"/>
+        <location filename="../src/ui/qgisapp.ui" line="1483"/>
         <source>Stretch histogram of active raster to view extents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1490"/>
+        <location filename="../src/ui/qgisapp.ui" line="1492"/>
         <source>Help Contents</source>
         <translation>មាតិកា​ជំនួយ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1493"/>
+        <location filename="../src/ui/qgisapp.ui" line="1495"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1498"/>
+        <location filename="../src/ui/qgisapp.ui" line="1500"/>
         <source>API documentation</source>
         <translation>ឯកសារ API</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1507"/>
+        <location filename="../src/ui/qgisapp.ui" line="1509"/>
         <source>QGIS Home Page</source>
         <translation>គេហទំព័រ QGIS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1510"/>
+        <location filename="../src/ui/qgisapp.ui" line="1512"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1519"/>
+        <location filename="../src/ui/qgisapp.ui" line="1521"/>
         <source>Check QGIS Version</source>
         <translation>ពិនិត្យមើល​កំណែ QGIS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1522"/>
+        <location filename="../src/ui/qgisapp.ui" line="1524"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
         <translation>ពិនិត្យមើល​ប្រសិនបើ​កំណែ QGIS របស់​អ្នក​ទាន់​សម័យ (ទាមទារ​ការ​ភ្ជាប់​អ៊ីនធឺណិត)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1531"/>
+        <location filename="../src/ui/qgisapp.ui" line="1533"/>
         <source>About</source>
         <translation>អំពី</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1543"/>
+        <location filename="../src/ui/qgisapp.ui" line="1545"/>
         <source>QGIS Sponsors</source>
         <translation>អ្នក​គាំទ្រ QGIS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1555"/>
-        <location filename="../src/ui/qgisapp.ui" line="1558"/>
+        <location filename="../src/ui/qgisapp.ui" line="1557"/>
+        <location filename="../src/ui/qgisapp.ui" line="1560"/>
         <source>Move Label</source>
         <translation>ផ្លាស់ទី​ស្លាក</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1570"/>
+        <location filename="../src/ui/qgisapp.ui" line="1572"/>
         <source>Rotate Label</source>
         <translation>បង្វិល​ស្លាក</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1573"/>
+        <location filename="../src/ui/qgisapp.ui" line="1575"/>
         <source>Rotate Label
 Ctl (Cmd) increments by 15 deg.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1586"/>
+        <location filename="../src/ui/qgisapp.ui" line="1588"/>
         <source>Change Label</source>
         <translation>ប្ដូរ​ស្លាក</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1595"/>
+        <location filename="../src/ui/qgisapp.ui" line="1597"/>
         <source>Style Manager...</source>
         <translation>កម្មវិធី​គ្រប់គ្រង​រចនាប័ទ្ម...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1600"/>
+        <location filename="../src/ui/qgisapp.ui" line="1602"/>
         <source>Python Console</source>
         <translation>កុងសូល Python</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1609"/>
+        <location filename="../src/ui/qgisapp.ui" line="1611"/>
         <source>Full histogram stretch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1612"/>
+        <location filename="../src/ui/qgisapp.ui" line="1614"/>
         <source>Stretch Histogram to Full Dataset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1635"/>
+        <location filename="../src/ui/qgisapp.ui" line="1637"/>
         <source>Customization...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1643"/>
+        <location filename="../src/ui/qgisapp.ui" line="1645"/>
         <source>This is here just to avoid shortcut conflicts, the shortcut is caught in QgsCustomization</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1646"/>
+        <location filename="../src/ui/qgisapp.ui" line="1648"/>
         <source>Ctrl+M</source>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1651"/>
+        <location filename="../src/ui/qgisapp.ui" line="1653"/>
         <source>Embed Layers and Groups...</source>
         <translation>បង្កប់​ក្រុម និង​ស្រទាប់...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1654"/>
+        <location filename="../src/ui/qgisapp.ui" line="1656"/>
         <source>Embed layers and groups from other project files</source>
         <translation>បង្កប់​ស្រទាប់ និង​ក្រុម​ពី​ឯកសារ​គម្រោង​ផ្សេង</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1663"/>
+        <location filename="../src/ui/qgisapp.ui" line="1665"/>
         <source>&amp;Copyright Label</source>
         <translation>រក្សាសិទ្ធិ​ស្លាក</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1666"/>
+        <location filename="../src/ui/qgisapp.ui" line="1668"/>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
         <translation>បង្កើត​ច្បាស់​ចម្លង​ដែល​ត្រូវ​បាន​បង្ហាញ​នៅ​លើ​រូបភាព​ផែនទី។</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1675"/>
+        <location filename="../src/ui/qgisapp.ui" line="1677"/>
         <source>&amp;North Arrow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1678"/>
+        <location filename="../src/ui/qgisapp.ui" line="1680"/>
         <source>&quot;Creates a north arrow that is displayed on the map canvas&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1687"/>
+        <location filename="../src/ui/qgisapp.ui" line="1689"/>
         <source>&amp;Scale Bar</source>
         <translation>របារ​មាត្រដ្ឋាន</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1690"/>
-        <location filename="../src/ui/qgisapp.ui" line="1798"/>
+        <location filename="../src/ui/qgisapp.ui" line="1692"/>
+        <location filename="../src/ui/qgisapp.ui" line="1800"/>
         <source>Creates a scale bar that is displayed on the map canvas</source>
         <translation>បង្កើត​របារ​មាត្រដ្ឋាន​ដែល​ត្រូវ​បាន​បង្ហាញ​នៅ​លើ​រូបភាព​ផែនទី</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1699"/>
+        <location filename="../src/ui/qgisapp.ui" line="1701"/>
         <source>Add WFS Layer...</source>
         <translation>បន្ថែម​ស្រទាប WFS...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1702"/>
+        <location filename="../src/ui/qgisapp.ui" line="1704"/>
         <source>Add WFS Layer</source>
         <translation>បន្ថែម​ស្រទាប់ WFS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1714"/>
+        <location filename="../src/ui/qgisapp.ui" line="1716"/>
         <source>Feature Action</source>
         <translation>សកម្មភាព​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1717"/>
+        <location filename="../src/ui/qgisapp.ui" line="1719"/>
         <source>Run Feature Action</source>
         <translation>ដំណើរការ​សកម្មភាព​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1726"/>
-        <location filename="../src/ui/qgisapp.ui" line="1729"/>
+        <location filename="../src/ui/qgisapp.ui" line="1728"/>
+        <location filename="../src/ui/qgisapp.ui" line="1731"/>
         <source>Pan Map to Selection</source>
         <translation>ភ្ជាប់​ផែនទី​ទៅ​ជម្រើស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1741"/>
-        <location filename="../src/ui/qgisapp.ui" line="1744"/>
+        <location filename="../src/ui/qgisapp.ui" line="1743"/>
+        <location filename="../src/ui/qgisapp.ui" line="1746"/>
         <source>Touch zoom and pan</source>
         <translation>ប៉ះ​ពង្រីក ហើយ​ភ្ជាប់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1756"/>
+        <location filename="../src/ui/qgisapp.ui" line="1758"/>
         <source>Offset Curve</source>
         <translation>បន្ទាត់​កោង​អុហ្វសិត</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1765"/>
+        <location filename="../src/ui/qgisapp.ui" line="1767"/>
         <source>Copy style</source>
         <translation>ចម្លង​រចនាប័ទ្ម</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1774"/>
+        <location filename="../src/ui/qgisapp.ui" line="1776"/>
         <source>Paste style</source>
         <translation>បិទភ្ជាប់​រចនាប័ទ្ម</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1783"/>
+        <location filename="../src/ui/qgisapp.ui" line="1785"/>
         <source>Add WCS Layer...</source>
         <translation>បន្ថែម​ស្រទាប់ WCS...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1792"/>
+        <location filename="../src/ui/qgisapp.ui" line="1794"/>
         <source>&amp;Grid</source>
         <translation>ក្រឡា​ចត្រង្គ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1795"/>
+        <location filename="../src/ui/qgisapp.ui" line="1797"/>
         <source>Grid</source>
         <translation>ក្រឡាចត្រង្គ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1810"/>
+        <location filename="../src/ui/qgisapp.ui" line="1812"/>
         <source>Pin/Unpin Labels</source>
         <translation>ភ្ជាប់/មិន​ភ្ជាប់ ស្លាក</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1813"/>
+        <location filename="../src/ui/qgisapp.ui" line="1815"/>
         <source>Pin/Unpin Labels
 Click or marquee on label to pin
 Shift unpins, Ctl (Cmd) toggles state
@@ -7301,44 +7311,44 @@ Acts on all editable layers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1828"/>
-        <location filename="../src/ui/qgisapp.ui" line="1831"/>
+        <location filename="../src/ui/qgisapp.ui" line="1830"/>
+        <location filename="../src/ui/qgisapp.ui" line="1833"/>
         <source>Highlight Pinned Labels</source>
         <translation>រំលេច​ស្លាក​ដែល​បាន​ភ្ជាប់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1840"/>
-        <location filename="../src/ui/qgisapp.ui" line="1843"/>
+        <location filename="../src/ui/qgisapp.ui" line="1842"/>
+        <location filename="../src/ui/qgisapp.ui" line="1845"/>
         <source>New Blank Project</source>
         <translation>ចំណោល​ទទេ​ថ្មី</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1852"/>
+        <location filename="../src/ui/qgisapp.ui" line="1854"/>
         <source>Local Cumulative Cut Stretch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1855"/>
+        <location filename="../src/ui/qgisapp.ui" line="1857"/>
         <source>Local cumulative cut stretch using current extent, default limits and estimated values.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1864"/>
+        <location filename="../src/ui/qgisapp.ui" line="1866"/>
         <source>Full Dataset Cumulative Cut Stretch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1867"/>
+        <location filename="../src/ui/qgisapp.ui" line="1869"/>
         <source>Cumulative cut stretch using full dataset extent, default limits and estimated values.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1879"/>
+        <location filename="../src/ui/qgisapp.ui" line="1881"/>
         <source>Show/Hide Labels</source>
         <translation>បង្ហាញ/លាក់ ស្លាក</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1882"/>
+        <location filename="../src/ui/qgisapp.ui" line="1884"/>
         <source>Show/Hide Labels
 Click or marquee on feature to show label
 Shift+click or marquee on label to hide it
@@ -7349,128 +7359,128 @@ Shift+click នៅ​លើ​ស្លាក​ដើម្បី​លាក�
 សកម្មភាព​លើ​ស្រទាប់​ដែល​អាច​កែសម្រួល​បាន​សកម្ម​បច្ចុប្បន្ន</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1897"/>
-        <location filename="../src/ui/qgisapp.ui" line="1900"/>
+        <location filename="../src/ui/qgisapp.ui" line="1899"/>
+        <location filename="../src/ui/qgisapp.ui" line="1902"/>
         <source>Html Annotation</source>
         <translation>ចំណារ​ពន្យល់ Html</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1909"/>
-        <location filename="../src/ui/qgisapp.ui" line="1912"/>
+        <location filename="../src/ui/qgisapp.ui" line="1911"/>
+        <location filename="../src/ui/qgisapp.ui" line="1914"/>
         <source>Duplicate Layer(s)</source>
         <translation>ស្រទាប់​ស្ទួន</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1924"/>
+        <location filename="../src/ui/qgisapp.ui" line="1926"/>
         <source>SVG annotation</source>
         <translation>ចំណារ​ពន្យល់ SVG</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1933"/>
-        <location filename="../src/ui/qgisapp.ui" line="1936"/>
+        <location filename="../src/ui/qgisapp.ui" line="1935"/>
+        <location filename="../src/ui/qgisapp.ui" line="1938"/>
         <source>Save for All Layers</source>
         <translation>រក្សាទុក​សម្រាប់​ស្រទាប់​ទាំងអស់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1948"/>
-        <location filename="../src/ui/qgisapp.ui" line="1951"/>
+        <location filename="../src/ui/qgisapp.ui" line="1950"/>
+        <location filename="../src/ui/qgisapp.ui" line="1953"/>
         <source>Rollback for All Layers</source>
         <translation>ទៅ​សភាព​ដើម​វិញ​ចំពោះ​ស្រទាប់​ទាំងអស់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1963"/>
-        <location filename="../src/ui/qgisapp.ui" line="1966"/>
+        <location filename="../src/ui/qgisapp.ui" line="1965"/>
+        <location filename="../src/ui/qgisapp.ui" line="1968"/>
         <source>Cancel for All Layers</source>
         <translation>បោះបង់​សម្រាប់​ស្រទាប់​ទាំងអស់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1978"/>
-        <location filename="../src/ui/qgisapp.ui" line="1981"/>
+        <location filename="../src/ui/qgisapp.ui" line="1980"/>
+        <location filename="../src/ui/qgisapp.ui" line="1983"/>
         <source>Rollback for Selected Layer(s)</source>
         <translation>ទៅ​សភាព​ដើម​វិញ​ចំពោះ​ស្រទាប់​ដែល​បាន​ជ្រើស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1993"/>
-        <location filename="../src/ui/qgisapp.ui" line="1996"/>
+        <location filename="../src/ui/qgisapp.ui" line="1995"/>
+        <location filename="../src/ui/qgisapp.ui" line="1998"/>
         <source>Current Edits</source>
         <translation>ការ​កែសម្រួល​បច្ចុប្បន្ន</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2008"/>
-        <location filename="../src/ui/qgisapp.ui" line="2011"/>
+        <location filename="../src/ui/qgisapp.ui" line="2010"/>
+        <location filename="../src/ui/qgisapp.ui" line="2013"/>
         <source>Cancel for Selected Layer(s)</source>
         <translation>បោះបង់​សម្រាប់​ស្រទាប់​ដែល​បាន​ជ្រើស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2023"/>
-        <location filename="../src/ui/qgisapp.ui" line="2026"/>
+        <location filename="../src/ui/qgisapp.ui" line="2025"/>
+        <location filename="../src/ui/qgisapp.ui" line="2028"/>
         <source>Save Layer Edits</source>
         <translation>រក្សាទុក​ការ​កែសម្រួល​ស្រទាប់</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2038"/>
-        <location filename="../src/ui/qgisapp.ui" line="2041"/>
+        <location filename="../src/ui/qgisapp.ui" line="2040"/>
+        <location filename="../src/ui/qgisapp.ui" line="2043"/>
         <source>Rotate Feature(s)</source>
         <translation>បង្វិល​លក្ខណពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2046"/>
+        <location filename="../src/ui/qgisapp.ui" line="2048"/>
         <source>&amp;Download data</source>
         <translation>ទាញយក​ទិន្នន័យ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2051"/>
+        <location filename="../src/ui/qgisapp.ui" line="2053"/>
         <source>&amp;Import topology from XML</source>
         <translation>នាំចូល​ឋាន​វិជ្ជា​ពី XML</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2056"/>
+        <location filename="../src/ui/qgisapp.ui" line="2058"/>
         <source>&amp;Export topology to SpatiaLite</source>
         <translation>នាំចេញ​ឋានវិជ្ជា​ទៅ SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2065"/>
+        <location filename="../src/ui/qgisapp.ui" line="2067"/>
         <source>Increase brightness</source>
         <translation>បង្កើន​ពន្លឺ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2074"/>
+        <location filename="../src/ui/qgisapp.ui" line="2076"/>
         <source>Decrease brightness</source>
         <translation>បន្ថយ​ពន្លឺ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2083"/>
+        <location filename="../src/ui/qgisapp.ui" line="2085"/>
         <source>Increase contrast</source>
         <translation>បង្កើន​កម្រិត​ពណ៌</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2092"/>
+        <location filename="../src/ui/qgisapp.ui" line="2094"/>
         <source>Decrease contrast</source>
         <translation>បន្ថយ​កម្រិត​ពណ៌</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2101"/>
+        <location filename="../src/ui/qgisapp.ui" line="2103"/>
         <source>Select By Expression</source>
         <translation>ជ្រើស​តាម​កន្សោម</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2104"/>
+        <location filename="../src/ui/qgisapp.ui" line="2106"/>
         <source>Select features using an expression</source>
         <translation>ជ្រើស​លក្ខណៈ​ពិសេស​ដោយ​ប្រើ​កន្សោម​</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2109"/>
+        <location filename="../src/ui/qgisapp.ui" line="2111"/>
         <source>Need commercial support?</source>
         <translation>ត្រូវ​ការ​គាំទ្រ​ខាង​ពាណិជ្ជកម្ម?</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2154"/>
+        <location filename="../src/ui/qgisapp.ui" line="2156"/>
         <source>DXF Export...</source>
         <translation>នាំចេញ DXF...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2166"/>
-        <location filename="../src/ui/qgisapp.ui" line="2169"/>
+        <location filename="../src/ui/qgisapp.ui" line="2168"/>
+        <location filename="../src/ui/qgisapp.ui" line="2171"/>
         <source>Fill Ring</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9285,22 +9295,22 @@ Use iface to access QGIS API interface or Type help(iface) for more info</source
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10191"/>
+        <location filename="../src/app/qgisapp.cpp" line="10224"/>
         <source>minidump written to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10195"/>
+        <location filename="../src/app/qgisapp.cpp" line="10228"/>
         <source>writing of minidump to %1 failed (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10202"/>
+        <location filename="../src/app/qgisapp.cpp" line="10235"/>
         <source>creation of minidump to %1 failed (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10205"/>
+        <location filename="../src/app/qgisapp.cpp" line="10238"/>
         <source>Crash dumped</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12915,61 +12925,61 @@ Response was:
         <translation>QGIS ត្រៀម​រួចរាល់!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1198"/>
+        <location filename="../src/app/qgisapp.cpp" line="1200"/>
         <source>Minimize</source>
         <translation>បង្រួម​អប្បបរមា</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1199"/>
+        <location filename="../src/app/qgisapp.cpp" line="1201"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1200"/>
+        <location filename="../src/app/qgisapp.cpp" line="1202"/>
         <source>Minimizes the active window to the dock</source>
         <translation>អប្បបរមា​ធ្វើ​ឲ្យ​បង្អួច​សកម្ម​ក្នុង​ការ​ភ្ជាប់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1203"/>
+        <location filename="../src/app/qgisapp.cpp" line="1205"/>
         <source>Zoom</source>
         <translation>ពង្រីក</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1204"/>
+        <location filename="../src/app/qgisapp.cpp" line="1206"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
         <translation>បិទ/បើក​ ទំហំ​ដែល​បាន​កំណត់​ជា​មុន និង​ទំហំ​បង្អួច​កំណត់​ដោយ​អ្នក​ប្រើ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1207"/>
+        <location filename="../src/app/qgisapp.cpp" line="1209"/>
         <source>Bring All to Front</source>
         <translation>យក​ទាំងអស់​ពី​ពុម្ពអក្សរ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1208"/>
+        <location filename="../src/app/qgisapp.cpp" line="1210"/>
         <source>Bring forward all open windows</source>
         <translation>នាំ​បញ្ជូន​ទៅ​វីនដូ​ដែល​បើក​ទាំងអស់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1216"/>
+        <location filename="../src/app/qgisapp.cpp" line="1218"/>
         <source>Current Edits</source>
         <translation>ការ​កែសម្រួល​បច្ចុប្បន្ន</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1318"/>
-        <location filename="../src/app/qgisapp.cpp" line="4879"/>
-        <location filename="../src/app/qgisapp.cpp" line="6209"/>
-        <location filename="../src/app/qgisapp.cpp" line="6235"/>
-        <location filename="../src/app/qgisapp.cpp" line="6247"/>
-        <location filename="../src/app/qgisapp.cpp" line="6386"/>
-        <location filename="../src/app/qgisapp.cpp" line="6466"/>
-        <location filename="../src/app/qgisapp.cpp" line="9375"/>
+        <location filename="../src/app/qgisapp.cpp" line="1320"/>
+        <location filename="../src/app/qgisapp.cpp" line="4912"/>
+        <location filename="../src/app/qgisapp.cpp" line="6242"/>
+        <location filename="../src/app/qgisapp.cpp" line="6268"/>
+        <location filename="../src/app/qgisapp.cpp" line="6280"/>
+        <location filename="../src/app/qgisapp.cpp" line="6419"/>
+        <location filename="../src/app/qgisapp.cpp" line="6499"/>
+        <location filename="../src/app/qgisapp.cpp" line="9408"/>
         <source>Error</source>
         <translation>កំហុស</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1312"/>
-        <location filename="../src/app/qgisapp.cpp" line="1318"/>
+        <location filename="../src/app/qgisapp.cpp" line="1314"/>
+        <location filename="../src/app/qgisapp.cpp" line="1320"/>
         <source>Failed to open Python console:</source>
         <translation>បាន​បរាជ័យ​ក្នុង​ការ​បើក​កុងសូល Python ៖</translation>
     </message>
@@ -12993,138 +13003,138 @@ Please contact the developers.
         <translation>QGIS - %1 (&apos;%2&apos;)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1427"/>
+        <location filename="../src/app/qgisapp.cpp" line="1429"/>
         <source>Panels</source>
         <translation>បន្ទះ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1429"/>
+        <location filename="../src/app/qgisapp.cpp" line="1431"/>
         <source>Toolbars</source>
         <translation>របារ​ឧបករណ៍</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1488"/>
+        <location filename="../src/app/qgisapp.cpp" line="1490"/>
         <source>Window</source>
         <translation>វីនដូ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1503"/>
+        <location filename="../src/app/qgisapp.cpp" line="1505"/>
         <source>&amp;Database</source>
         <translation>មូលដ្ឋាន​ទិន្នន័យ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1507"/>
+        <location filename="../src/app/qgisapp.cpp" line="1509"/>
         <source>&amp;Web</source>
         <translation>វេបសាយ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1677"/>
+        <location filename="../src/app/qgisapp.cpp" line="1679"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
         <translation>របារ​វឌ្ឍនភាព​ដែល​បង្ហាញ​ស្ថានភាព​នៃ​ស្រទាប់ និង​ការ​ប្រតិបត្តិ​នៅ​ពេល​វេលា​ផ្សេង</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1696"/>
+        <location filename="../src/app/qgisapp.cpp" line="1698"/>
         <source>Toggle extents and mouse position display</source>
         <translation>បិទ/បើក ការ​បង្ហាញ​ទីតាំង​កណ្ដុរ និងប្រវែង</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1710"/>
-        <location filename="../src/app/qgisapp.cpp" line="8596"/>
+        <location filename="../src/app/qgisapp.cpp" line="1712"/>
+        <location filename="../src/app/qgisapp.cpp" line="8629"/>
         <source>Coordinate:</source>
         <translation>កូអរដោណេ៖</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1711"/>
+        <location filename="../src/app/qgisapp.cpp" line="1713"/>
         <source>Current map coordinate</source>
         <translation>កូអរដោណេ​ផែនទី​បច្ចុប្បន្ន</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1726"/>
+        <location filename="../src/app/qgisapp.cpp" line="1728"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position. The format is lat,lon or east,north</source>
         <translation>បង្ហាញ​កូអរដោណេ​ផែនទី​នៅ​ទីតាំង​ទស្សន៍​ទ្រនិច​បច្ចុប្បន្ន។ ទិដ្ឋភាព​ត្រូវ​បាន​ធ្វើ​បច្ចុប្បន្នភាព​​ជា​បន្ត​ដូច​ជា​​ផ្លាស់ទី​កណ្ដុរ។ វា​អនុញ្ញាត​ឲ្យ​កែសម្រួល​ការ​កំណត់​រូបភាព​ទៅ​កាន់​ទីតាំង​ដែល​បាន​ផ្ដល់។ ទ្រង់ទ្រាយ​រយៈ​ទទឹង,រយៈ​បណ្ដោយ ឬ​ខាង​កើត ខាង​ជើង</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1730"/>
+        <location filename="../src/app/qgisapp.cpp" line="1732"/>
         <source>Current map coordinate (lat,lon or east,north)</source>
         <translation>កូអរដោណេ​ផែនទី​បច្ចុប្បន្ន (រយៈ​ទទឹង,រយៈ​បណ្ដោយ ឬ​ខាងកើត ខាង​លិច)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1745"/>
+        <location filename="../src/app/qgisapp.cpp" line="1747"/>
         <source>Scale </source>
         <translation>មាត្រដ្ឋាន</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1746"/>
+        <location filename="../src/app/qgisapp.cpp" line="1748"/>
         <source>Current map scale</source>
         <translation>មាត្រដ្ឋាន​ផែនទី​បច្ចុប្បន្ន</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1759"/>
+        <location filename="../src/app/qgisapp.cpp" line="1761"/>
         <source>Displays the current map scale</source>
         <translation>បង្ហាញ​មាត្រដ្ឋាន​ផែនទី​បច្ចុប្បន្ន</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1760"/>
+        <location filename="../src/app/qgisapp.cpp" line="1762"/>
         <source>Current map scale (formatted as x:y)</source>
         <translation>មាត្រដ្ឋាន​ផែនទី​បច្ចុប្បន្ន (ដែល​មាន​ទ្រង់ទ្រាយ​ជា x:y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1766"/>
+        <location filename="../src/app/qgisapp.cpp" line="1768"/>
         <source>Render</source>
         <translation>បង្ហាញ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1770"/>
+        <location filename="../src/app/qgisapp.cpp" line="1772"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
         <translation>នៅ​ពេល​បាន​ពិនិត្យមើល, ស្រទាប់​ផែនទី​ត្រូវ​បាន​បង្ហាញ​​ជា​ចម្លើយ​តប​ចំពោះ​ពាក្យ​បញ្ជា​ផែនទី និង​ព្រឹត្តិការណ៍​ផ្សេង។ នៅ​ពេល​មិន​បាន​ពិនិត្យមើល, មិន​ទាន់​បង្ហាញ​រួច​រាល់។ វា​អនុញ្ញាត​ឲ្យ​អ្នក​បន្ថែម​ចំនួន​ស្រទាប់​យើង នឹង​ធ្វើ​សមកាលកម្ម​វា​មុន​ពេល​បង្ហាញ។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1774"/>
+        <location filename="../src/app/qgisapp.cpp" line="1776"/>
         <source>Toggle map rendering</source>
         <translation>បិទ/ការ​បង្ហាញ​ផែនទី</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1796"/>
+        <location filename="../src/app/qgisapp.cpp" line="1798"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
         <translation>រូបតំណាង​នេះ​បង្ហាញ​ថាតើ​នៅ​លើ​ការ​ប្លែង​ភាព​ប្រព័ន្ធ​ឯកសារ​យោង​ត្រូវ​បាន​បើក ឬ​មិន​បាន​បើក។ ចុច​រូបតំណាង ដើម្បី​នាំ​ប្រអប់​លក្ខណៈ​សម្បត្តិ​ចំណោល ដើម្បី​ជួន​ដំណើរការ​ឥរិយាបថ​នេះ។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1800"/>
+        <location filename="../src/app/qgisapp.cpp" line="1802"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
         <translation>ស្ថានភាព CRS - ចុច​ ដើម្បី​បើក​ប្រអប់​ប្រព័ន្ធ​សេចក្ដី​យោង​កូអរដោណេ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1805"/>
+        <location filename="../src/app/qgisapp.cpp" line="1807"/>
         <source>Ready</source>
         <translation>រួចរាល់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2199"/>
+        <location filename="../src/app/qgisapp.cpp" line="2203"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>ការ​ពិនិត្យមើល​រូបភាព​ផែនទី។ រូបភាព​នេះ​ត្រូវ​បាន​ប្រើ ដើម្បី​បង្ហាញ​ផែន​ទី​ឧបករណ៍​កំណត់​ទីតាំង​ដែល​បង្ហាញ​ប្រវែង​រូបភាព​ផែនទី​បច្ចុប្បន្ន។ ប្រវែង​បច្ចុប្បន្ន​ត្រូវ​បាន​បង្ហាញ​ចតុកោណកែង​ពណ៌​ក្រហម។ ស្រទាប់​មួយ​ចំនួន​នៅ​លើ​ផែនទី​អាច​ត្រូវ​បាន​បន្ថែម​ទៅ​រូបភាព​ទិដ្ឋភាព​ទូទៅ។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2208"/>
+        <location filename="../src/app/qgisapp.cpp" line="2212"/>
         <source>Overview</source>
         <translation>ទិដ្ឋភាព​ទូទៅ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2300"/>
+        <location filename="../src/app/qgisapp.cpp" line="2304"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>តាង​ផែនទី​ដែល​បង្ហាញ​ស្រទាប់​ទាំងអស់​នៅ​លើ​រូបភាព​ផែនទី​បច្ចុប្បន្ន។ ចុច​នៅ​លើ​ប្រអប់​ពិនិត្យមើល ដើម្បី​បើក ឬ​បិទ​ស្រទាប់។ ចុច​នៅ​លើ​ស្រទាប់​ក្នុង​តាំង ដើម្បី​​តាម​តម្រូវ​ការ​ការ​បង្ហាញ​របស់​វា និង​កំណត់​លក្ខណៈ​សម្បត្តិ​​ផ្សេង​ទៀត។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2302"/>
+        <location filename="../src/app/qgisapp.cpp" line="2306"/>
         <source>Layers</source>
         <translation>ស្រទាប់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2390"/>
+        <location filename="../src/app/qgisapp.cpp" line="2394"/>
         <source>Map layer list that displays all layers in drawing order.</source>
         <translation>បញ្ជី​ស្រទាប់​ផែនទី​ដែល​បង្ហាញ​ស្រទាប់​ទាំងអស់​នៅ​ក្នុង​លំដាប់​ការ​គូរ។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2391"/>
+        <location filename="../src/app/qgisapp.cpp" line="2395"/>
         <source>Layer order</source>
         <translation>លំដាប់​ស្រទាប់</translation>
     </message>
@@ -13134,149 +13144,149 @@ Please contact the developers.
         <translation>qgis.db ឯកជន</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2576"/>
-        <location filename="../src/app/qgisapp.cpp" line="3678"/>
+        <location filename="../src/app/qgisapp.cpp" line="2580"/>
+        <location filename="../src/app/qgisapp.cpp" line="3682"/>
         <source>&lt; Blank &gt;</source>
         <translation>&lt; Blank &gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2631"/>
+        <location filename="../src/app/qgisapp.cpp" line="2635"/>
         <source>QGIS version</source>
         <translation>កំណែ QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2632"/>
+        <location filename="../src/app/qgisapp.cpp" line="2636"/>
         <source>QGIS code revision</source>
         <translation>កំណែ​កូដ QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2636"/>
+        <location filename="../src/app/qgisapp.cpp" line="2640"/>
         <source>Compiled against Qt</source>
         <translation>ចងក្រង​ផ្ទុយ​នឹង Qt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2637"/>
+        <location filename="../src/app/qgisapp.cpp" line="2641"/>
         <source>Running against Qt</source>
         <translation>បាន​ដំណើរការ​ផ្ទុក​នឹង Qt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2641"/>
+        <location filename="../src/app/qgisapp.cpp" line="2645"/>
         <source>Compiled against GDAL/OGR</source>
         <translation>បាន​ចង់​ក្រង​ផ្ទុក​នឹង GDAL/OGR</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2642"/>
+        <location filename="../src/app/qgisapp.cpp" line="2646"/>
         <source>Running against GDAL/OGR</source>
         <translation>កំពុង​ដំណើរការ​ផ្ទុយ​នឹង GDAL/OGR</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2651"/>
+        <location filename="../src/app/qgisapp.cpp" line="2655"/>
         <source>PostgreSQL Client Version</source>
         <translation>កំណែ​ម៉ាស៊ីន​កូន PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2655"/>
+        <location filename="../src/app/qgisapp.cpp" line="2659"/>
         <source>No support.</source>
         <translation>មិន​គាំទ្រ។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2659"/>
+        <location filename="../src/app/qgisapp.cpp" line="2663"/>
         <source>SpatiaLite Version</source>
         <translation>កំណែ SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2665"/>
+        <location filename="../src/app/qgisapp.cpp" line="2669"/>
         <source>QWT Version</source>
         <translation>កំណែ QWT</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2666"/>
+        <location filename="../src/app/qgisapp.cpp" line="2670"/>
         <source>PROJ.4 Version</source>
         <translation>កំណែ PROJ.4</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2670"/>
+        <location filename="../src/app/qgisapp.cpp" line="2674"/>
         <source>QScintilla2 Version</source>
         <translation>កំណែ QScintilla2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2673"/>
+        <location filename="../src/app/qgisapp.cpp" line="2677"/>
         <source>This copy of QGIS writes debugging output.</source>
         <translation>ការ​ចម្លង QGIS នេះ​សរសេរ​លទ្ធផល​បំបាត់​កំហុស។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2801"/>
+        <location filename="../src/app/qgisapp.cpp" line="2805"/>
         <source>%1 doesn&apos;t have any layers</source>
         <translation>%1 មិន​មាន​ស្រទាប់​មួយ​ចំនួន</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2802"/>
-        <location filename="../src/app/qgisapp.cpp" line="2809"/>
-        <location filename="../src/app/qgisapp.cpp" line="3140"/>
+        <location filename="../src/app/qgisapp.cpp" line="2806"/>
+        <location filename="../src/app/qgisapp.cpp" line="2813"/>
+        <location filename="../src/app/qgisapp.cpp" line="3144"/>
         <source>Invalid Data Source</source>
         <translation>ប្រភព​ទិន្នន័យ​មិន​ត្រឹមត្រូវ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2808"/>
-        <location filename="../src/app/qgisapp.cpp" line="3139"/>
+        <location filename="../src/app/qgisapp.cpp" line="2812"/>
+        <location filename="../src/app/qgisapp.cpp" line="3143"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 មិន​ត្រឹមត្រូវ ឬ​មិន​បាន​ស្គាល់​ប្រភព​ទិន្នន័យ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2900"/>
+        <location filename="../src/app/qgisapp.cpp" line="2904"/>
         <source>Vector</source>
         <translation>វ៉ិចទ័រ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3163"/>
+        <location filename="../src/app/qgisapp.cpp" line="3167"/>
         <source>PostgreSQL</source>
         <translation>PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3163"/>
+        <location filename="../src/app/qgisapp.cpp" line="3167"/>
         <source>Cannot get PostgreSQL select dialog from provider.</source>
         <translation>មិន​អាច​ទទួល​បាន PostgreSQL ជ្រើស​ពី​ប្រអប់​កម្មវិធី​ផ្ដល់។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3219"/>
+        <location filename="../src/app/qgisapp.cpp" line="3223"/>
         <source>%1 is an invalid layer - not loaded</source>
         <translation>%1 ជា​ស្រទាប់​មិន​ត្រឹមត្រូវ - មិន​បាន​ផ្ទុក</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3220"/>
+        <location filename="../src/app/qgisapp.cpp" line="3224"/>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>%1 ជា​ស្រទាប់​មិន​ត្រឹមត្រូវ ហើយ​មិន​អាច​ត្រូវ​បាន​ផ្ទុក។ សូម​ពិនិត្យមើល &lt;a href=&quot;#messageLog&quot;&gt;កំណត់​ហេតុ​សារ&lt;/a&gt; សម្រាប់​ព័ត៌មាន​បន្ថែម។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3753"/>
-        <location filename="../src/app/qgisapp.cpp" line="3912"/>
-        <location filename="../src/app/qgisapp.cpp" line="3977"/>
+        <location filename="../src/app/qgisapp.cpp" line="3757"/>
+        <location filename="../src/app/qgisapp.cpp" line="3916"/>
+        <location filename="../src/app/qgisapp.cpp" line="3981"/>
         <source>QGIS files</source>
         <translation>ឯកសារ QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5604"/>
-        <location filename="../src/app/qgisapp.cpp" line="5663"/>
+        <location filename="../src/app/qgisapp.cpp" line="5637"/>
+        <location filename="../src/app/qgisapp.cpp" line="5696"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to Layer-&gt;Toggle editing</source>
         <translation>អាច​ធ្វើ​ការ​​បញ្ចូល​លក្ខណៈ​​សម្រាប់​ស្រទាប់​នៅ​ក្នុង​របៀប​កែសម្រួល។ ដើម្បី​ប្រើ​ឧបករណ៍​បញ្ចូល, ចូល​ទៅ​កាន់​ស្រទាប់-&gt;បិទ/បើក​ការ​កែសម្រួល</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6832"/>
+        <location filename="../src/app/qgisapp.cpp" line="6865"/>
         <source>No legend entries selected</source>
         <translation>មិន​មាន​ធាតុ​តាង​ដែល​បាន​ជ្រើស</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6833"/>
+        <location filename="../src/app/qgisapp.cpp" line="6866"/>
         <source>Select the layers and groups you want to remove in the legend.</source>
         <translation>ជ្រើស​ស្រទាប់ និង​ក្រុម​ដែល​អ្នក​ចង់​លុប​ចេញ​ពី​ក្នុង​តាង។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6840"/>
+        <location filename="../src/app/qgisapp.cpp" line="6873"/>
         <source>Remove layers and groups</source>
         <translation>លុប​ចេញ​ពី​ស្រទាប់ និង​ក្រុម</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="6840"/>
+        <location filename="../src/app/qgisapp.cpp" line="6873"/>
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
         <translation>
@@ -13285,7 +13295,7 @@ Please contact the developers.
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="6852"/>
+        <location filename="../src/app/qgisapp.cpp" line="6885"/>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation>
@@ -13294,240 +13304,240 @@ Please contact the developers.
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6927"/>
+        <location filename="../src/app/qgisapp.cpp" line="6960"/>
         <source>%1 (%2 type unsupported)</source>
         <translation>%1 (%2 ប្រភេទ​ដែល​មិន​បាន​គាំទ្រ)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7613"/>
+        <location filename="../src/app/qgisapp.cpp" line="7646"/>
         <source>http://qgis.org/en/site/forusers/commercial_support.html</source>
         <translation>http://qgis.org/en/site/forusers/commercial_support.html</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7879"/>
+        <location filename="../src/app/qgisapp.cpp" line="7912"/>
         <source>Do you want to save the current project? %1</source>
         <translation>តើ​អ្នក​ចង់​រក្សាទុក​ចំណោល​បច្ចុប្បន្ន​ឬ? %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9355"/>
+        <location filename="../src/app/qgisapp.cpp" line="9388"/>
         <source>Invalid Layer</source>
         <translation>ស្រទាប់​មិន​ត្រឹមត្រូវ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3246"/>
+        <location filename="../src/app/qgisapp.cpp" line="3250"/>
         <source>SpatiaLite</source>
         <translation>SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3246"/>
+        <location filename="../src/app/qgisapp.cpp" line="3250"/>
         <source>Cannot get SpatiaLite select dialog from provider.</source>
         <translation>មិន​អាច​ទទួល​បាន SpatiaLite ជ្រើស​ប្រអប់​ពី​កម្មវិធី​ផ្ដល់។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3261"/>
+        <location filename="../src/app/qgisapp.cpp" line="3265"/>
         <source>Delimited Text</source>
         <translation>អត្ថបទ​ដែល​បាន​កំណត់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3261"/>
+        <location filename="../src/app/qgisapp.cpp" line="3265"/>
         <source>Cannot get Delimited Text select dialog from provider.</source>
         <translation>មិន​អាច​ទទួល​បាន​អត្ថបទ​ដែល​បាន​កំណត់​ជ្រើស​ប្រអប់​ពី​កម្មវិធី​ផ្ដល់។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3282"/>
+        <location filename="../src/app/qgisapp.cpp" line="3286"/>
         <source>MSSQL</source>
         <translation>MSSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3282"/>
+        <location filename="../src/app/qgisapp.cpp" line="3286"/>
         <source>Cannot get MSSQL select dialog from provider.</source>
         <translation>មិន​អាច​ទទួល​បាន MSSQL ជ្រើស​ប្រអប់​ពី​កម្មវិធី​ផ្ដល់។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3299"/>
+        <location filename="../src/app/qgisapp.cpp" line="3303"/>
         <source>Oracle</source>
         <translation>ការ​ព្យាករណ៍</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3299"/>
+        <location filename="../src/app/qgisapp.cpp" line="3303"/>
         <source>Cannot get Oracle select dialog from provider.</source>
         <translation>មិន​អាច​ទទួល​បាន​ការ​ព្យាករណ៍​ជ្រើស​ប្រអប់​ពី​កម្មវិធី​ផ្ដល់។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3322"/>
+        <location filename="../src/app/qgisapp.cpp" line="3326"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3322"/>
+        <location filename="../src/app/qgisapp.cpp" line="3326"/>
         <source>Cannot get WMS select dialog from provider.</source>
         <translation>មិន​អាច​ទទួល​បាន WMS ជ្រើស​ប្រអប់​ពី​កម្មវិធី​ផ្ដល់។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3339"/>
+        <location filename="../src/app/qgisapp.cpp" line="3343"/>
         <source>WCS</source>
         <translation>WCS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3339"/>
+        <location filename="../src/app/qgisapp.cpp" line="3343"/>
         <source>Cannot get WCS select dialog from provider.</source>
         <translation>មិន​អាច​ទទួល​បាន WCS ជ្រើស​ប្រអប់​ពី​កម្មវិធី​ផ្ដល់។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3361"/>
+        <location filename="../src/app/qgisapp.cpp" line="3365"/>
         <source>WFS</source>
         <translation>WFS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3361"/>
+        <location filename="../src/app/qgisapp.cpp" line="3365"/>
         <source>Cannot get WFS select dialog from provider.</source>
         <translation>មិន​អាច​ទទួល​បាន WFS ជ្រើស​ប្រអប់​ពី​កម្មវិធី​ផ្ដល់។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3548"/>
+        <location filename="../src/app/qgisapp.cpp" line="3552"/>
         <source>Default failed to open: %1</source>
         <translation>បាន​បរាជ័យ​លំនាំដើម​ដើម្បី​បើក៖D %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3552"/>
+        <location filename="../src/app/qgisapp.cpp" line="3556"/>
         <source>Default not found: %1</source>
         <translation>រក​មិន​ឃើញ​លំនាំដើម៖ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3554"/>
+        <location filename="../src/app/qgisapp.cpp" line="3558"/>
         <source>Open Template Project</source>
         <translation>បើក​ចំណោល​ពុម្ព</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3579"/>
+        <location filename="../src/app/qgisapp.cpp" line="3583"/>
         <source>Auto-open Project</source>
         <translation>បើក​ចំណោល​ស្វ័យប្រវត្តិ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3612"/>
+        <location filename="../src/app/qgisapp.cpp" line="3616"/>
         <source>Failed to open: %1</source>
         <translation>បាន​បរាជ័យ​ក្នុង​ការ​បើក៖ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3635"/>
+        <location filename="../src/app/qgisapp.cpp" line="3639"/>
         <source>Not valid project file: %1</source>
         <translation>មិន​មាន​ឯកសារ​ចំណោល​ត្រឹមត្រូវ៖ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3648"/>
+        <location filename="../src/app/qgisapp.cpp" line="3652"/>
         <source>Project failed to open: %1</source>
         <translation>បាន​បរាជ័យ​ចំណោល​ដើម្បី​បើក៖ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3655"/>
+        <location filename="../src/app/qgisapp.cpp" line="3659"/>
         <source>Default template has been reopened: %1</source>
         <translation>ពុម្ព​លំនាំដើម​ត្រូវ​បាន​​ឆ្លើយតប៖ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3662"/>
+        <location filename="../src/app/qgisapp.cpp" line="3666"/>
         <source>File not found: %1</source>
         <translation>រក​មិនឃើញ​ឯកសារ ៖ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3730"/>
+        <location filename="../src/app/qgisapp.cpp" line="3734"/>
         <source>Calculating...</source>
         <translation>កំពុង​គណនា...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3730"/>
-        <location filename="../src/app/qgisapp.cpp" line="4803"/>
+        <location filename="../src/app/qgisapp.cpp" line="3734"/>
+        <location filename="../src/app/qgisapp.cpp" line="4836"/>
         <source>Abort...</source>
         <translation>បោះបង់...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3751"/>
+        <location filename="../src/app/qgisapp.cpp" line="3755"/>
         <source>Choose a QGIS project file to open</source>
         <translation>ជ្រើស​ឯកសារ​ចំណោល QGIS ដើម្បី​បើក</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3788"/>
+        <location filename="../src/app/qgisapp.cpp" line="3792"/>
         <source>Loading project: %1</source>
         <translation>ការ​ផ្ទុក​ចំណោល៖ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3802"/>
+        <location filename="../src/app/qgisapp.cpp" line="3806"/>
         <source>Unable to open project</source>
         <translation>មិន​អាច​បើក​ចំណោល</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3859"/>
+        <location filename="../src/app/qgisapp.cpp" line="3863"/>
         <source>Security warning</source>
         <translation>ការ​ព្រមាន​ពី​សុវត្ថិភាព</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3860"/>
+        <location filename="../src/app/qgisapp.cpp" line="3864"/>
         <source>project macros have been disabled.</source>
         <translation>បាន​បិទ​ចំណោល​ម៉ាក្រូស</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3851"/>
+        <location filename="../src/app/qgisapp.cpp" line="3855"/>
         <source>Enable macros</source>
         <translation>បើក​ម៉ាក្រូស</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3883"/>
+        <location filename="../src/app/qgisapp.cpp" line="3887"/>
         <source>Project loaded</source>
         <translation>បាន​ផ្ទុក​ចំណោល</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3910"/>
+        <location filename="../src/app/qgisapp.cpp" line="3914"/>
         <source>Choose a QGIS project file</source>
         <translation>ជ្រើស​ឯកសារ​ចំណោល QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3942"/>
-        <location filename="../src/app/qgisapp.cpp" line="3996"/>
+        <location filename="../src/app/qgisapp.cpp" line="3946"/>
+        <location filename="../src/app/qgisapp.cpp" line="4000"/>
         <source>Saved project to: %1</source>
         <translation>បាន​រក្សាទុក​ចំណោល​ទៅ៖ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3954"/>
-        <location filename="../src/app/qgisapp.cpp" line="4003"/>
+        <location filename="../src/app/qgisapp.cpp" line="3958"/>
+        <location filename="../src/app/qgisapp.cpp" line="4007"/>
         <source>Unable to save project %1</source>
         <translation>មិន​អាច​រក្សាទុក​ចំណោល %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3975"/>
+        <location filename="../src/app/qgisapp.cpp" line="3979"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>ជ្រើស​ឈ្មោះ​ឯកសារ​ដើម្បី​រក្សាទុក​ឯកសារ​ចំណោល QGIS ជា</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4141"/>
+        <location filename="../src/app/qgisapp.cpp" line="4145"/>
         <source>Unable to load %1</source>
         <translation>មិន​អាច​ផ្ទុក %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4260"/>
+        <location filename="../src/app/qgisapp.cpp" line="4264"/>
         <source>Choose a file name to save the map image as</source>
         <translation>ជ្រើស​ឈ្មោះ​ឯកសារ ដើម្បី​រក្សាទុក​រូបភាព​ផែនទី​ជា</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4265"/>
+        <location filename="../src/app/qgisapp.cpp" line="4269"/>
         <source>Saved map image to %1</source>
         <translation>បាន​រក្សាទុក​រូបភាព​ទៅ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4613"/>
+        <location filename="../src/app/qgisapp.cpp" line="4646"/>
         <source>Default system font substituted.</source>
         <translation>បាន​ដាក់​ស្នើ​ពុម្ព​ប្រព័ន្ធ​លំនាំដើម។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4632"/>
+        <location filename="../src/app/qgisapp.cpp" line="4665"/>
         <source>Labeling</source>
         <translation>បាន​ដាក់​ស្លាក</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4633"/>
+        <location filename="../src/app/qgisapp.cpp" line="4666"/>
         <source>Font for layer &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; was not found (&lt;i&gt;%2&lt;/i&gt;). %3</source>
         <translation>ពុម្ព​អក្សរ​សម្រាប់​ប្លង់ &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; មិន​ត្រូវ​បាន​រក​ឃើញ (&lt;i&gt;%2&lt;/i&gt;) ។ %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4624"/>
+        <location filename="../src/app/qgisapp.cpp" line="4657"/>
         <source>Open labeling dialog</source>
         <translation>បើក​ប្រអប់​ដែល​បាន​ដាក់​ស្លាក</translation>
     </message>
@@ -13628,199 +13638,199 @@ Please contact the developers.
         <translation>ពេលវេលា/កាលបរិច្ឆេទ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2325"/>
+        <location filename="../src/app/qgisapp.cpp" line="2329"/>
         <source>Add Group</source>
         <translation>បន្ថែម​ក្រុម</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2331"/>
+        <location filename="../src/app/qgisapp.cpp" line="2335"/>
         <source>Manage Layer Visibility</source>
         <translation>គ្រប់គ្រង​ភាព​ដែល​អាច​មើល​ឃើញ​នៃ​ស្រទាប់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2340"/>
+        <location filename="../src/app/qgisapp.cpp" line="2344"/>
         <source>Filter Legend By Map Content</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2348"/>
+        <location filename="../src/app/qgisapp.cpp" line="2352"/>
         <source>Expand All</source>
         <translation>ពង្រីក​ទាំងអស់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2353"/>
+        <location filename="../src/app/qgisapp.cpp" line="2357"/>
         <source>Collapse All</source>
         <translation>វេញ​ទាំងអស់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2646"/>
+        <location filename="../src/app/qgisapp.cpp" line="2650"/>
         <source>Compiled against GEOS</source>
         <translation>បាន​ចង់​ក្រង​ផ្ទុយ​ពី GEOS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2647"/>
+        <location filename="../src/app/qgisapp.cpp" line="2651"/>
         <source>Running against GEOS</source>
         <translation>បាន​ដំណើរការ​ផ្ទុយ​ពី GEOS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3707"/>
+        <location filename="../src/app/qgisapp.cpp" line="3711"/>
         <source>Layer creation failed. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further information.</source>
         <translation>បាន​បរាជ័យ​ការ​បង្កើត​ស្រទាប់។ សូម​ពិនិត្យមើល &lt;a href=&quot;#messageLog&quot;&gt;កំណត់​ហេតុ​សារ&lt;/a&gt; សម្រាប់​ព័ត៌មាន​បន្ថែម។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3932"/>
+        <location filename="../src/app/qgisapp.cpp" line="3936"/>
         <source>Insufficient permissions</source>
         <translation>មិន​មាន​សិទ្ធិ​គ្រប់គ្រាន់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3933"/>
+        <location filename="../src/app/qgisapp.cpp" line="3937"/>
         <source>The project file is not writable.</source>
         <translation>ឯកសារ​ចំណោល​មិន​អាច​សរសេរ​បាន។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4035"/>
+        <location filename="../src/app/qgisapp.cpp" line="4039"/>
         <source>DXF export completed</source>
         <translation>បាន​បញ្ចប់​ការ​នាំចេញ DXF</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4039"/>
+        <location filename="../src/app/qgisapp.cpp" line="4043"/>
         <source>DXF export failed</source>
         <translation>បាន​បរាជ័យ​ការ​នាំចេញ DXF</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4644"/>
-        <location filename="../src/app/qgisapp.cpp" line="4665"/>
+        <location filename="../src/app/qgisapp.cpp" line="4677"/>
+        <location filename="../src/app/qgisapp.cpp" line="4698"/>
         <source>Commit errors</source>
         <translation>កំហុស​ក្នុង​ការ​ស្នើ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4645"/>
-        <location filename="../src/app/qgisapp.cpp" line="4666"/>
+        <location filename="../src/app/qgisapp.cpp" line="4678"/>
+        <location filename="../src/app/qgisapp.cpp" line="4699"/>
         <source>Could not commit changes to layer %1</source>
         <translation>មិន​អាច​ដាក់​ស្នើ​ការ​ផ្លាស់ប្ដូរ​ទៅ​ស្រទាប់ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4647"/>
+        <location filename="../src/app/qgisapp.cpp" line="4680"/>
         <source>Errors: %1
 </source>
         <translation>កំហុស៖ %1
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4654"/>
+        <location filename="../src/app/qgisapp.cpp" line="4687"/>
         <source>Show more</source>
         <translation>បង្ហាញ​បន្ថែម</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4704"/>
+        <location filename="../src/app/qgisapp.cpp" line="4737"/>
         <source>Labeling Options</source>
         <translation>ជម្រើស​ការ​ដាក់​ស្នើ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4705"/>
+        <location filename="../src/app/qgisapp.cpp" line="4738"/>
         <source>Please select a vector layer first</source>
         <translation>សូម​ជ្រើស​ស្រទាប់​វ៉ិចទ័រ​ដំបូង</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4713"/>
+        <location filename="../src/app/qgisapp.cpp" line="4746"/>
         <source>Layer labeling settings</source>
         <translation>ការ​កំណត់​ការ​ដាក់​ស្លាក​ដំបូង</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4805"/>
+        <location filename="../src/app/qgisapp.cpp" line="4838"/>
         <source>Reading raster</source>
         <translation>កំពុង​អាន​រ៉ាស្ទ័រ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4880"/>
+        <location filename="../src/app/qgisapp.cpp" line="4913"/>
         <source>Cannot write raster error code: %1</source>
         <translation>មិន​អាច​សរសេរ​រ៉ាស្ទ័រ​កំហុស​កូដ៖ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5030"/>
+        <location filename="../src/app/qgisapp.cpp" line="5063"/>
         <source>Saving done</source>
         <translation>រក្សាទុក​រួចរាល់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5031"/>
+        <location filename="../src/app/qgisapp.cpp" line="5064"/>
         <source>Export to vector file has been completed</source>
         <translation>ការ​នាំចេញ​ទៅ​ឯកសារ​វ៉ិចទ័រ​ត្រូវ​បាន​បញ្ចប់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5037"/>
+        <location filename="../src/app/qgisapp.cpp" line="5070"/>
         <source>Save error</source>
         <translation>កំហុស​ក្នុង​ការ​រក្សាទុក</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5038"/>
+        <location filename="../src/app/qgisapp.cpp" line="5071"/>
         <source>Export to vector file failed.
 Error: %1</source>
         <translation>បាន​បរាជ័យ​ក្នុង​ការ​នាំចេញ​ទៅ​ឯកសារ​វ៉ិចទ័រ៖
 ៖ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5099"/>
-        <location filename="../src/app/qgisapp.cpp" line="7489"/>
-        <location filename="../src/app/qgisapp.cpp" line="7498"/>
-        <location filename="../src/app/qgisapp.cpp" line="7559"/>
-        <location filename="../src/app/qgisapp.cpp" line="7568"/>
+        <location filename="../src/app/qgisapp.cpp" line="5132"/>
+        <location filename="../src/app/qgisapp.cpp" line="7522"/>
+        <location filename="../src/app/qgisapp.cpp" line="7531"/>
+        <location filename="../src/app/qgisapp.cpp" line="7592"/>
+        <location filename="../src/app/qgisapp.cpp" line="7601"/>
         <source>No Layer Selected</source>
         <translation>មិន​បាន​ជ្រើស​ស្រទាប់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5100"/>
+        <location filename="../src/app/qgisapp.cpp" line="5133"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>ដើម្បី​លុប​លក្ខណៈ​ពិសេស, អ្នក​ត្រូវ​តែ​ជ្រើស​ស្រទាប់​វ៉ិចទ័រ​នៅ​ក្នុង​តាំង</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5108"/>
+        <location filename="../src/app/qgisapp.cpp" line="5141"/>
         <source>No Vector Layer Selected</source>
         <translation>មិន​បាន​ជ្រើស​ស្រទាប់​វ៉ិចទ័រ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5109"/>
+        <location filename="../src/app/qgisapp.cpp" line="5142"/>
         <source>Deleting features only works on vector layers</source>
         <translation>បាន​លុប​តែ​លក្ខណៈ​ការងារ​នៅ​លើ​ស្រទាប់​វ៉ិចទ័រ​ប៉ុណ្ណោះ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5116"/>
+        <location filename="../src/app/qgisapp.cpp" line="5149"/>
         <source>Provider does not support deletion</source>
         <translation>កម្មវិធី​ផ្ដល់​មិន​គាំទ្រ​ការ​លុប</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5117"/>
+        <location filename="../src/app/qgisapp.cpp" line="5150"/>
         <source>Data provider does not support deleting features</source>
         <translation>ការ​ផ្ដល់​ទិន្នន័យ​មិន​គាំទ្រ​ការ​លុប​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5124"/>
-        <location filename="../src/app/qgisapp.cpp" line="5604"/>
-        <location filename="../src/app/qgisapp.cpp" line="5663"/>
+        <location filename="../src/app/qgisapp.cpp" line="5157"/>
+        <location filename="../src/app/qgisapp.cpp" line="5637"/>
+        <location filename="../src/app/qgisapp.cpp" line="5696"/>
         <source>Layer not editable</source>
         <translation>ស្រទាប់​មិន​អាច​កែសម្រួល​បាន</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5125"/>
+        <location filename="../src/app/qgisapp.cpp" line="5158"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>ស្រទាប់​បច្ចុប្បន្ន​មិន​អាច​កែសម្រួល​បាន។ ជ្រើស &apos;ចាប់ផ្ដើម​កែសម្រួល&apos; នៅ​ក្នុង​របារ​ឧបករណ៍​ដែល​កំណត់​ឌីជីថល។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5134"/>
+        <location filename="../src/app/qgisapp.cpp" line="5167"/>
         <source>No Features Selected</source>
         <translation>មិន​បាន​ជ្រើស​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5135"/>
+        <location filename="../src/app/qgisapp.cpp" line="5168"/>
         <source>The current layer has not selected features</source>
         <translation>ស្រទាប់​បច្ចុប្បន្ន​មិន​ត្រូវ​បាន​ជ្រើស​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5140"/>
+        <location filename="../src/app/qgisapp.cpp" line="5173"/>
         <source>Delete features</source>
         <translation>លុប​គណៈ​ពិសេស</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="5140"/>
+        <location filename="../src/app/qgisapp.cpp" line="5173"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
@@ -13829,22 +13839,22 @@ Error: %1</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5145"/>
+        <location filename="../src/app/qgisapp.cpp" line="5178"/>
         <source>Features deleted</source>
         <translation>បាន​លុប​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5148"/>
+        <location filename="../src/app/qgisapp.cpp" line="5181"/>
         <source>Problem deleting features</source>
         <translation>បង្ហាញ​ក្នុង​ការ​លុប​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5149"/>
+        <location filename="../src/app/qgisapp.cpp" line="5182"/>
         <source>A problem occured during deletion of features</source>
         <translation>មាន​បញ្ហា​ក្នុង​ការ​លុប​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="5154"/>
+        <location filename="../src/app/qgisapp.cpp" line="5187"/>
         <source>%n feature(s) deleted.</source>
         <comment>number of features deleted</comment>
         <translation>
@@ -13853,246 +13863,246 @@ Error: %1</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5200"/>
+        <location filename="../src/app/qgisapp.cpp" line="5233"/>
         <source>Merging features...</source>
         <translation>បាន​បញ្ចូល​លក្ខណៈ​ពិសេស...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5200"/>
+        <location filename="../src/app/qgisapp.cpp" line="5233"/>
         <source>Abort</source>
         <translation>បោះបង់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5260"/>
+        <location filename="../src/app/qgisapp.cpp" line="5293"/>
         <source>Create unique print composer title</source>
         <translation>បង្កើត​ចំណង​ជើង​តែង​សម្រាប់​ការ​បោះពុម្ព​តែមួយ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5263"/>
+        <location filename="../src/app/qgisapp.cpp" line="5296"/>
         <source>(title generated if left empty)</source>
         <translation>(បាន​បង្កើត​ចំណងជើង ប្រសិនបើ​ទុក​ឲ្យ​វា​នៅ​ទទេ)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5277"/>
+        <location filename="../src/app/qgisapp.cpp" line="5310"/>
         <source>Composer title</source>
         <translation>ចំណងជើង​កម្មវិធី​តែង</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5292"/>
+        <location filename="../src/app/qgisapp.cpp" line="5325"/>
         <source>Title can not be empty!</source>
         <translation>ចំណងជើង​អាច​មិន​ទទេ!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5303"/>
+        <location filename="../src/app/qgisapp.cpp" line="5336"/>
         <source>Title already exists!</source>
         <translation>ចំណងជើង​មាន​រួចហើយ!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5320"/>
-        <location filename="../src/app/qgisapp.cpp" line="5403"/>
+        <location filename="../src/app/qgisapp.cpp" line="5353"/>
+        <location filename="../src/app/qgisapp.cpp" line="5436"/>
         <source>Composer %1</source>
         <translation>កម្មវិធី​តែង %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5365"/>
+        <location filename="../src/app/qgisapp.cpp" line="5398"/>
         <source> copy</source>
         <translation> ច្បាប់​ចម្លង</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5589"/>
-        <location filename="../src/app/qgisapp.cpp" line="5652"/>
+        <location filename="../src/app/qgisapp.cpp" line="5622"/>
+        <location filename="../src/app/qgisapp.cpp" line="5685"/>
         <source>No active layer</source>
         <translation>គ្មាន​ស្រទាប់​សកម្ម</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5590"/>
-        <location filename="../src/app/qgisapp.cpp" line="5652"/>
+        <location filename="../src/app/qgisapp.cpp" line="5623"/>
+        <location filename="../src/app/qgisapp.cpp" line="5685"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>គ្មាន​ស្រទាប់​សកម្ម។ សូម​ជ្រើស​ស្រទាប់​នៅ​ក្នុង​បញ្ជី​ស្រទាប់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5598"/>
-        <location filename="../src/app/qgisapp.cpp" line="5658"/>
+        <location filename="../src/app/qgisapp.cpp" line="5631"/>
+        <location filename="../src/app/qgisapp.cpp" line="5691"/>
         <source>Active layer is not vector</source>
         <translation>ស្រទាប់​សកម្ម​មិន​មែន​ជា​វ៉ិចទ័រ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5598"/>
-        <location filename="../src/app/qgisapp.cpp" line="5658"/>
+        <location filename="../src/app/qgisapp.cpp" line="5631"/>
+        <location filename="../src/app/qgisapp.cpp" line="5691"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>បញ្ចូល​ឧបករណ៍​លក្ខណៈ​ពិសេស​តែ​ការងារ​នៅ​លើ​ស្រទាប់​វ៉ិចទ័រ។ សូម​ជ្រើស​ស្រទាប់​វ៉ិចទ័រ​ពី​បញ្ជី​ស្រទាប់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5612"/>
-        <location filename="../src/app/qgisapp.cpp" line="5678"/>
-        <location filename="../src/app/qgisapp.cpp" line="5715"/>
+        <location filename="../src/app/qgisapp.cpp" line="5645"/>
+        <location filename="../src/app/qgisapp.cpp" line="5711"/>
+        <location filename="../src/app/qgisapp.cpp" line="5748"/>
         <source>Not enough features selected</source>
         <translation>មិន​បាន​ជ្រើស​លក្ខណៈ​ពិសេស​គ្រប់គ្រាន់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5612"/>
-        <location filename="../src/app/qgisapp.cpp" line="5678"/>
-        <location filename="../src/app/qgisapp.cpp" line="5715"/>
+        <location filename="../src/app/qgisapp.cpp" line="5645"/>
+        <location filename="../src/app/qgisapp.cpp" line="5711"/>
+        <location filename="../src/app/qgisapp.cpp" line="5748"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>បញ្ចូល​ឧបករណ៍​​តម្រូវ​ការ​យ៉ាងហោចណាស់​លក្ខណៈ​ពិសេស​ពីរ​ដែល​បាន​ជ្រើស</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5626"/>
+        <location filename="../src/app/qgisapp.cpp" line="5659"/>
         <source>Merged feature attributes</source>
         <translation>គុណលក្ខណៈ​លក្ខណៈ​ពិសេស​ដែល​បាន​បញ្ចូល</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5690"/>
-        <location filename="../src/app/qgisapp.cpp" line="5730"/>
+        <location filename="../src/app/qgisapp.cpp" line="5723"/>
+        <location filename="../src/app/qgisapp.cpp" line="5763"/>
         <source>Merge failed</source>
         <translation>បាន​បរាជ័យ​ក្នុង​ការ​បញ្ចូល</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5690"/>
-        <location filename="../src/app/qgisapp.cpp" line="5730"/>
+        <location filename="../src/app/qgisapp.cpp" line="5723"/>
+        <location filename="../src/app/qgisapp.cpp" line="5763"/>
         <source>An error occured during the merge operation</source>
         <translation>កំហុស​បាន​កើត​ឡើង​អំឡុង​ពេល​ប្រតិបត្តិការ​បញ្ចូល</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5698"/>
+        <location filename="../src/app/qgisapp.cpp" line="5731"/>
         <source>Union operation canceled</source>
         <translation>បោះបង់​ការ​ប្រតិបត្តិ​​សហការ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5698"/>
-        <location filename="../src/app/qgisapp.cpp" line="5737"/>
+        <location filename="../src/app/qgisapp.cpp" line="5731"/>
+        <location filename="../src/app/qgisapp.cpp" line="5770"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation>ប្រតិបត្តិការ​សហការ​ជា​​លទ្ធផល​នៅ​ក្នុង​ប្រភេទ​ធរណីមាត្រ​ដែល​មិន​ត្រូវ​គ្នា​ជាមួយ​ស្រទាប់​បច្ចុប្បន្ន ហើយ​ដូច្នេះ​វា​ត្រូវ​បាន​បោះបង់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5743"/>
+        <location filename="../src/app/qgisapp.cpp" line="5776"/>
         <source>Merged features</source>
         <translation>លក្ខណៈ​ពិសេស​ដែល​បាន​បញ្ចូល</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5849"/>
+        <location filename="../src/app/qgisapp.cpp" line="5882"/>
         <source>No active vector layer</source>
         <translation>គ្មាន​ស្រទាប់​វ៉ិចទ័រ​សកម្ម</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5850"/>
+        <location filename="../src/app/qgisapp.cpp" line="5883"/>
         <source>To select features, choose a vector layer in the legend</source>
         <translation>ដើម្បី​ជ្រើស​លក្ខណៈ​ពិសេស, ជ្រើស​ស្រទាប់​វ៉ិចទ័រ​នៅ​ក្នុង​តាង</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5887"/>
+        <location filename="../src/app/qgisapp.cpp" line="5920"/>
         <source>Features cut</source>
         <translation>កាត់​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5913"/>
+        <location filename="../src/app/qgisapp.cpp" line="5946"/>
         <source>Features pasted</source>
         <translation>បាន​បិទភ្ជាប់​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5998"/>
-        <location filename="../src/app/qgisapp.cpp" line="6005"/>
-        <location filename="../src/app/qgisapp.cpp" line="6011"/>
+        <location filename="../src/app/qgisapp.cpp" line="6031"/>
+        <location filename="../src/app/qgisapp.cpp" line="6038"/>
+        <location filename="../src/app/qgisapp.cpp" line="6044"/>
         <source>Paste features</source>
         <translation>បិទភ្ជាប់​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5999"/>
+        <location filename="../src/app/qgisapp.cpp" line="6032"/>
         <source>no features could be successfully pasted.</source>
         <translation>គ្មាន​លក្ខណៈ​ពិសេស​អាច​ត្រូវ​បាន​បិទភ្ជាប់​ដោយ​ជោគជ័យ។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6006"/>
+        <location filename="../src/app/qgisapp.cpp" line="6039"/>
         <source>%1 features were successfully pasted.</source>
         <translation>លក្ខណៈ​ពិសេស %1 ត្រូវ​បាន​បិទភ្ជាប់​ដោយ​ជោគជ័យ។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6012"/>
+        <location filename="../src/app/qgisapp.cpp" line="6045"/>
         <source>%1 of %2 features could be successfully pasted.</source>
         <translation>លក្ខណៈ​ពិសេស %1 នៃ %2 អាច​ត្រូវ​បាន​បិទភ្ជាប់​ដោយ​ជោគជ័យ។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6039"/>
+        <location filename="../src/app/qgisapp.cpp" line="6072"/>
         <source>Pasted</source>
         <translation>បាន​បិទភ្ជាប់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6040"/>
+        <location filename="../src/app/qgisapp.cpp" line="6073"/>
         <source>New memory layer name</source>
         <translation>ឈ្មោះ​ស្រទាប់​អង្គ​ចងចាំ​ថ្មី</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6041"/>
+        <location filename="../src/app/qgisapp.cpp" line="6074"/>
         <source>Layer name</source>
         <translation>ឈ្មោះ​ស្រទាប់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6117"/>
+        <location filename="../src/app/qgisapp.cpp" line="6150"/>
         <source>No features in clipboard.</source>
         <translation>គ្មាន​លក្ខណៈ​ពិសេស​នៅ​ក្នុង​ក្ដារ​ចុច។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6121"/>
+        <location filename="../src/app/qgisapp.cpp" line="6154"/>
         <source>No features with geometry found, point type layer will be created.</source>
         <translation>រក​មិន​ឃើញ​លក្ខណៈ​ពិសេស​​ជាមួយ​ធរណីមាត្រ, ស្រទាប់​ប្រភេទ​ចំណុច​នឹង​ត្រូវ​បាន​បង្កើត។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6125"/>
+        <location filename="../src/app/qgisapp.cpp" line="6158"/>
         <source>Multiple geometry types found, features with geometry different from %1 will be created without geometry.</source>
         <translation>រក​មិន​ឃើញ​ប្រភេទ​ចំណុច​ច្រើន, លក្ខណៈ​ពិសេស​ដែល​មាន​ភាព​ខុស​គ្នា​សម្រាប់​ធរណីមាត្រ​ពី %1 នឹង​ត្រូវ​បាន​​បង្កើត​ដោយ​គ្មាន​ធរណីមាត្រ។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6139"/>
+        <location filename="../src/app/qgisapp.cpp" line="6172"/>
         <source>Cannot create new layer</source>
         <translation>មិន​អាច​បង្កើត​ស្រទាប់​ថ្មី</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6152"/>
+        <location filename="../src/app/qgisapp.cpp" line="6185"/>
         <source>Cannot create field %1 (%2,%3)</source>
         <translation>មិន​អាច​បង្កើត​វាល %1 (%2,%3)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6210"/>
+        <location filename="../src/app/qgisapp.cpp" line="6243"/>
         <source>Cannot copy style: %1</source>
         <translation>មិន​អាច​ចម្លង​រចនាប័ទ្ម៖ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6236"/>
+        <location filename="../src/app/qgisapp.cpp" line="6269"/>
         <source>Cannot parse style: %1:%2:%3</source>
         <translation>មិន​អាច​ញែក​រចនាប័ទ្ម៖ %1:%2:%3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6248"/>
+        <location filename="../src/app/qgisapp.cpp" line="6281"/>
         <source>Cannot read style: %1</source>
         <translation>មិន​អាច​អាន​រចនាប័ទ្ម៖ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6329"/>
+        <location filename="../src/app/qgisapp.cpp" line="6362"/>
         <source>Start editing failed</source>
         <translation>បាន​បរាជ័យ​ក្នុង​ការ​ចាប់ផ្ដើម​កែសម្រួល</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6330"/>
+        <location filename="../src/app/qgisapp.cpp" line="6363"/>
         <source>Provider cannot be opened for editing</source>
         <translation>មិន​អាច​បើក​កម្មវិធី​ផ្ដល់​សម្រាប់​ការ​កែសម្រួល</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6355"/>
+        <location filename="../src/app/qgisapp.cpp" line="6388"/>
         <source>Stop editing</source>
         <translation>បញ្ឈប់​ការ​កែ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6356"/>
+        <location filename="../src/app/qgisapp.cpp" line="6389"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>តើ​អ្នក​ចង់​រក្សាទុក​ការ​ផ្លាស់ប្ដូរ​ទៅ​ស្រទាប់​ឬ %1?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6387"/>
+        <location filename="../src/app/qgisapp.cpp" line="6420"/>
         <source>Problems during roll back</source>
         <translation>បង្ហាញ​អំឡុង​ពេល​រមូរ​ថយក្រោយ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6467"/>
+        <location filename="../src/app/qgisapp.cpp" line="6500"/>
         <source>Could not %1 changes to layer %2
 
 Errors: %3
@@ -14103,229 +14113,229 @@ Errors: %3
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6468"/>
+        <location filename="../src/app/qgisapp.cpp" line="6501"/>
         <source>rollback</source>
         <translation>រមូរ​ថយក្រោយ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6468"/>
+        <location filename="../src/app/qgisapp.cpp" line="6501"/>
         <source>cancel</source>
         <translation>បោះបង់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6498"/>
+        <location filename="../src/app/qgisapp.cpp" line="6531"/>
         <source>Save</source>
         <translation>រក្សាទុក</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6498"/>
-        <location filename="../src/app/qgisapp.cpp" line="6524"/>
-        <location filename="../src/app/qgisapp.cpp" line="6550"/>
+        <location filename="../src/app/qgisapp.cpp" line="6531"/>
+        <location filename="../src/app/qgisapp.cpp" line="6557"/>
+        <location filename="../src/app/qgisapp.cpp" line="6583"/>
         <source>all</source>
         <translation>ទាំងអស់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6524"/>
+        <location filename="../src/app/qgisapp.cpp" line="6557"/>
         <source>Rollback</source>
         <translation>រមូរ​ថយក្រោយ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6550"/>
+        <location filename="../src/app/qgisapp.cpp" line="6583"/>
         <source>Cancel</source>
         <translation>បោះបង់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6566"/>
+        <location filename="../src/app/qgisapp.cpp" line="6599"/>
         <source>Current edits</source>
         <translation>ការ​កែសម្រួល​បច្ចុប្បន្ន</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6567"/>
+        <location filename="../src/app/qgisapp.cpp" line="6600"/>
         <source>%1 current changes for %2 layer(s)?</source>
         <translation>%1 ការ​ផ្លាស់ប្ដូរ​បច្ចុប្បន្ន​សម្រាប់​ស្រទាប់ %2 ?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6879"/>
+        <location filename="../src/app/qgisapp.cpp" line="6912"/>
         <source>copy</source>
         <translation>ចម្លង</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6883"/>
+        <location filename="../src/app/qgisapp.cpp" line="6916"/>
         <source>Plugin layer</source>
         <translation>ស្រទាប់​កម្មវិធី​ជំនួយ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6895"/>
+        <location filename="../src/app/qgisapp.cpp" line="6928"/>
         <source>Memory layer</source>
         <translation>ស្រទាប់​អង​ចងចាំ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6915"/>
-        <location filename="../src/app/qgisapp.cpp" line="6926"/>
+        <location filename="../src/app/qgisapp.cpp" line="6948"/>
+        <location filename="../src/app/qgisapp.cpp" line="6959"/>
         <source>Duplicate layer: </source>
         <translation>ស្ទួន​កម្មវិធី៖ </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6916"/>
+        <location filename="../src/app/qgisapp.cpp" line="6949"/>
         <source>%1 (duplication resulted in invalid layer)</source>
         <translation>%1 (មាន​លទ្ធផល​ស្ទួន​នៅ​ក្នុង​ស្រទាប់​មិន​ត្រឹមត្រូវ)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6989"/>
+        <location filename="../src/app/qgisapp.cpp" line="7022"/>
         <source>Set scale visibility for selected layers</source>
         <translation>កំណត់​មាត្រដ្ឋាន​ដែល​អាច​មើល​ឃើញ​សម្រាប់​ស្រទាប់​ដែល​បាន​ជ្រើស</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7239"/>
+        <location filename="../src/app/qgisapp.cpp" line="7272"/>
         <source>Couldn&apos;t load Python support library: %1</source>
         <translation>មិន​អាច​ផ្ទុក​បណ្ណាល័យ​គាំទ្រ Python ៖ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7250"/>
+        <location filename="../src/app/qgisapp.cpp" line="7283"/>
         <source>Couldn&apos;t resolve python support library&apos;s instance() symbol.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7265"/>
+        <location filename="../src/app/qgisapp.cpp" line="7298"/>
         <source>Python support ENABLED :-) </source>
         <translation>Python គាំទ្រ ENABLED :-) </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7313"/>
+        <location filename="../src/app/qgisapp.cpp" line="7346"/>
         <source>There is a new version of QGIS available</source>
         <translation>មិន​មាន​កំណែ​ថ្មី​នៃ​ QGIS ដែល​អាច​ប្រើ​បាន</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7317"/>
+        <location filename="../src/app/qgisapp.cpp" line="7350"/>
         <source>You are running a development version of QGIS</source>
         <translation>អ្នក​កំពុង​ដំណើរការ​ការ​អភិវឌ្ឍន៍​កំណែ QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7321"/>
+        <location filename="../src/app/qgisapp.cpp" line="7354"/>
         <source>You are running the current version of QGIS</source>
         <translation>អ្នក​កំពុង​ដំណើរការ​កំណែ QGIS បច្ចុប្បន្ន</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7326"/>
+        <location filename="../src/app/qgisapp.cpp" line="7359"/>
         <source>Would you like more information?</source>
         <translation>តើ​អ្នក​ចង់​ដឹង​ពី​ព័ត៌មាន​បន្ថែម?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7329"/>
-        <location filename="../src/app/qgisapp.cpp" line="7342"/>
-        <location filename="../src/app/qgisapp.cpp" line="7347"/>
-        <location filename="../src/app/qgisapp.cpp" line="7368"/>
+        <location filename="../src/app/qgisapp.cpp" line="7362"/>
+        <location filename="../src/app/qgisapp.cpp" line="7375"/>
+        <location filename="../src/app/qgisapp.cpp" line="7380"/>
+        <location filename="../src/app/qgisapp.cpp" line="7401"/>
         <source>QGIS Version Information</source>
         <translation>ព័ត៌មាន​កំណែ QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7335"/>
+        <location filename="../src/app/qgisapp.cpp" line="7368"/>
         <source>QGIS - Changes since last release</source>
         <translation>ការ​ផ្លាស់ប្ដូរ QGIS - ចាប់តាំង​ពីរ​កំណែ​ចុងក្រោយ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7347"/>
+        <location filename="../src/app/qgisapp.cpp" line="7380"/>
         <source>Unable to get current version information from server</source>
         <translation>មិន​អាច​ទទួល​បាន​ព័ត៌មាន​កំណែ​បច្ចុប្បន្ន​ពី​ម៉ាស៊ីន​មេ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7357"/>
+        <location filename="../src/app/qgisapp.cpp" line="7390"/>
         <source>Connection refused - server may be down</source>
         <translation>បាន​បដិសេធ​ការ​តភ្ជាប់ - ម៉ាស៊ីន​មេ​អាច​មាន​បញ្ហា</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7360"/>
+        <location filename="../src/app/qgisapp.cpp" line="7393"/>
         <source>QGIS server was not found</source>
         <translation>រក​មិន​ឃើញ​ម៉ាស៊ីន​មេ QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7363"/>
+        <location filename="../src/app/qgisapp.cpp" line="7396"/>
         <source>Unknown network socket error: %1</source>
         <translation>មិន​ស្គាល់​កំហុស​រន្ធ​បណ្ដាញ៖ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7368"/>
+        <location filename="../src/app/qgisapp.cpp" line="7401"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>មិន​អាច​ភ្ជាប់​ទំនាក់ទំនង​ជាមួយ​ម៉ាស៊ីន​មេ​កំណែ QGIS 
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7490"/>
-        <location filename="../src/app/qgisapp.cpp" line="7499"/>
+        <location filename="../src/app/qgisapp.cpp" line="7523"/>
+        <location filename="../src/app/qgisapp.cpp" line="7532"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>ដើម្បី​អនុវត្ត​ចំណងជើង​គំនូសតាង​ជា​របារ, អ្នក​ចាំបាច់​ជ្រើស​ស្រទាប់​ប្លង់។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7560"/>
-        <location filename="../src/app/qgisapp.cpp" line="7569"/>
+        <location filename="../src/app/qgisapp.cpp" line="7593"/>
+        <location filename="../src/app/qgisapp.cpp" line="7602"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
         <translation>ដើម្បី​ប្ដូរ​ពន្លឺ​ទៅ​កម្រិត​ពណ៌, អ្នក​ត្រូវ​ជ្រើស​ស្រទាប់​រ៉ាស្ទ័រ។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7595"/>
+        <location filename="../src/app/qgisapp.cpp" line="7628"/>
         <source>en</source>
         <comment>documentation language</comment>
         <translation>en</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7723"/>
-        <location filename="../src/app/qgisapp.cpp" line="7766"/>
+        <location filename="../src/app/qgisapp.cpp" line="7756"/>
+        <location filename="../src/app/qgisapp.cpp" line="7799"/>
         <source>Layer is not valid</source>
         <translation>ប្លង់​មិន​ត្រឹមត្រូវ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7722"/>
+        <location filename="../src/app/qgisapp.cpp" line="7755"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>ប្លង់ %1 ជា​ស្រទាប់​មិន​ត្រឹមត្រូវ ហើយ​មិន​អាច​បន្ថែម​ទៅ​ផែនទី</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7765"/>
+        <location filename="../src/app/qgisapp.cpp" line="7798"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>ស្រទាប់​មិន​មែន​ស្រទាប់​ត្រឹមត្រូវ ហើយ​មិន​អាច​បន្ថែម​ទៅ​ផែនទី</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7854"/>
+        <location filename="../src/app/qgisapp.cpp" line="7887"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
         <translation>ចំណោល​មាន​ស្រទាប់  ជា​របៀប​កែ​ដែល​មាន​ការ​កែសម្រួល​ដែល​មិន​បាន​រក្សាទុក, ដែល​នឹង​មិន​ត្រូវ​បាន​រក្សាទុក!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7878"/>
+        <location filename="../src/app/qgisapp.cpp" line="7911"/>
         <source>Save?</source>
         <translation>រក្សាទុក?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8497"/>
+        <location filename="../src/app/qgisapp.cpp" line="8530"/>
         <source>Current CRS: %1 (OTFR enabled)</source>
         <translation>បច្ចុប្បន្ន CRS ៖ %1 (បាន​បើក OTFR)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8504"/>
+        <location filename="../src/app/qgisapp.cpp" line="8537"/>
         <source>Current CRS: %1 (OTFR disabled)</source>
         <translation>បច្ចុប្បន្ន CRS ៖ %1 (បាន​បិទ OTFR)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8586"/>
+        <location filename="../src/app/qgisapp.cpp" line="8619"/>
         <source>Map coordinates for the current view extents</source>
         <translation>កូអរដោនេ​ផែនទី​សម្រាប់​ទំហំ​ទិដ្ឋភាព​បច្ចុប្បន្ន</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8594"/>
+        <location filename="../src/app/qgisapp.cpp" line="8627"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>កូអរដោនេ​ផែនទី​នៅ​ទីតាំង​ទស្សន៍​ទ្រនិច​កណ្ដុរ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8662"/>
+        <location filename="../src/app/qgisapp.cpp" line="8695"/>
         <source>Extents:</source>
         <translation>ទំហំ៖</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8755"/>
+        <location filename="../src/app/qgisapp.cpp" line="8788"/>
         <source>Maptips require an active layer</source>
         <translation>ព័ត៌មាន​ជំនួយ​ផែនទី​ទាមទារ​ស្រទាប់​សកម្ម</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8828"/>
+        <location filename="../src/app/qgisapp.cpp" line="8861"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation>
@@ -14334,112 +14344,112 @@ Errors: %3
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9274"/>
+        <location filename="../src/app/qgisapp.cpp" line="9307"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>បើក GDAL ដែល​បាន​គាំទ្រ​ប្រភព​ទិន្នន័យ​រ៉ាស្ទ័រ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9373"/>
+        <location filename="../src/app/qgisapp.cpp" line="9406"/>
         <source>Error adding valid layer to map canvas</source>
         <translation>កំហុស​ក្នុង​ការ​បន្ថែម​ស្រទាប់​ទៅ​រូបភាព​ផែនទី</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9374"/>
-        <location filename="../src/app/qgisapp.cpp" line="9512"/>
+        <location filename="../src/app/qgisapp.cpp" line="9407"/>
+        <location filename="../src/app/qgisapp.cpp" line="9545"/>
         <source>Raster layer</source>
         <translation>ស្រទាប់​រ៉ាស្ទ័រ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9509"/>
+        <location filename="../src/app/qgisapp.cpp" line="9542"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 មិន​គាំទ្រ​ប្រភព​ទិន្នន័យ​រ៉ាស្ទ័រ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9514"/>
+        <location filename="../src/app/qgisapp.cpp" line="9547"/>
         <source>Unsupported Data Source</source>
         <translation>ប្រភព​ទិន្នន័យ​ដែល​មិន​គាំទ្រ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9555"/>
+        <location filename="../src/app/qgisapp.cpp" line="9588"/>
         <source>Exit QGIS</source>
         <translation>ចេញ​ពី QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9556"/>
+        <location filename="../src/app/qgisapp.cpp" line="9589"/>
         <source>Do you really want to quit QGIS?</source>
         <translation>តើ​អ្នក​ពិត​ជា​ចង់​ចេញ​ពី QGIS ឬ?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9664"/>
+        <location filename="../src/app/qgisapp.cpp" line="9697"/>
         <source>This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.</source>
         <translation>ឯកសារ​ចំណោល​នេះ​​ត្រូវ​បាន​រក្សាទុក​ដោយ​កំណែ QGIS ចាស់។ នៅ​ពេល​រក្សាទុក​ឯកសារ​ចំណោល​នេះ, QGIS នឹង​ធ្វើ​បច្ចុប្បន្ន​វា ដើម្បី​​កំណែ​ថ្មី​បំផុត, វា​អាច​​គ្មាន​ប្រយោជន៍​សម្រាប់​កំណែ QGIS ចាស់។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9668"/>
+        <location filename="../src/app/qgisapp.cpp" line="9701"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9684"/>
+        <location filename="../src/app/qgisapp.cpp" line="9717"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;ការ​កំណត់៖ជម្រើស៖ទូទៅ&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9685"/>
+        <location filename="../src/app/qgisapp.cpp" line="9718"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>ព្រមាន​ខ្ញុំ​នៅ​ពេល​បើក​ឯកសារ​ចំណោល​ដែល​បាន​រក្សាទុក​ជាមួយ​កំណែ QGIS ចាស់។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9686"/>
+        <location filename="../src/app/qgisapp.cpp" line="9719"/>
         <source>Project file is older</source>
         <translation>ឯកសារ​ចំណោល​ចាស់​ជាង</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9690"/>
+        <location filename="../src/app/qgisapp.cpp" line="9723"/>
         <source>This project file was saved by an older version of QGIS</source>
         <translation>ឯកសារ​ចំណោល​នេះ​ត្រូវ​បាន​រក្សាទុក​ដោយ​កំណែ​ QGIS ចាស់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10027"/>
+        <location filename="../src/app/qgisapp.cpp" line="10060"/>
         <source> Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation> ចុច​ពិនិត្យមើល &lt;a href=&quot;#messageLog&quot;&gt;កំណត់​ហេតុ​សារ&lt;/a&gt; សម្រាប់​ព័ត៌មាន​បន្ថែម។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10026"/>
+        <location filename="../src/app/qgisapp.cpp" line="10059"/>
         <source>A network request timed out, any data received is likely incomplete.</source>
         <translation>អស់​ពេល​ក្នុង​ការ​ស្នើ​បណ្ដាញ, ទិន្នន័យ​ដែល​បាន​ទទួល​ទំនង​ជា​មិន​ពេញ​លេញ។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6130"/>
-        <location filename="../src/app/qgisapp.cpp" line="6139"/>
-        <location filename="../src/app/qgisapp.cpp" line="6151"/>
-        <location filename="../src/app/qgisapp.cpp" line="9861"/>
+        <location filename="../src/app/qgisapp.cpp" line="6163"/>
+        <location filename="../src/app/qgisapp.cpp" line="6172"/>
+        <location filename="../src/app/qgisapp.cpp" line="6184"/>
+        <location filename="../src/app/qgisapp.cpp" line="9894"/>
         <source>Warning</source>
         <translation>ការព្រមាន</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9862"/>
+        <location filename="../src/app/qgisapp.cpp" line="9895"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>ស្រទាប់​នេះ​មិន​មាន​ប្រអប់​លក្ខណៈ​សម្បត្តិ។</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9902"/>
+        <location filename="../src/app/qgisapp.cpp" line="9935"/>
         <source>Authentication required</source>
         <translation>បាន​ទាមទារ​ការ​ផ្ទៀងផ្ទាត់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9957"/>
+        <location filename="../src/app/qgisapp.cpp" line="9990"/>
         <source>Proxy authentication required</source>
         <translation>ការ​ផ្ទៀងផ្ទាត់​ប្រូកស៊ី​បាន​ទាមទារ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9990"/>
+        <location filename="../src/app/qgisapp.cpp" line="10023"/>
         <source>SSL errors occured accessing URL %1:</source>
         <translation>កំហុស SSL បាន​កើត​ឡើង​នៅ​ពេល​កំពុង​ដំណើរការ URL %1 ៖</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10006"/>
+        <location filename="../src/app/qgisapp.cpp" line="10039"/>
         <source>
 
 Always ignore these errors?</source>
@@ -14448,7 +14458,7 @@ Always ignore these errors?</source>
 ជានិច្ចកាល​មិន​អើពើ​កំហុស​ទាំងនេះ?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10010"/>
+        <location filename="../src/app/qgisapp.cpp" line="10043"/>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
         <translation>
@@ -14460,7 +14470,7 @@ Always ignore these errors?</source>
 <context>
     <name>QgisAppInterface</name>
     <message>
-        <location filename="../src/app/qgisappinterface.cpp" line="582"/>
+        <location filename="../src/app/qgisappinterface.cpp" line="584"/>
         <source>Attributes changed</source>
         <translation>គុណ​លក្ខណៈ​បាន​ផ្លាស់ប្ដូរ</translation>
     </message>
@@ -14619,10 +14629,6 @@ p, li { white-space: pre-wrap; }
         <source>No name specified. Please specify a name to create a new field.</source>
         <translation>មិន​បាន​បញ្ជាក់​ឈ្មោះ។ សូម​បញ្ជាក់​ឈ្មោះ ដើម្បី​បង្កើត​វាល​ថ្មី។</translation>
     </message>
-    <message>
-        <source>No expression specified. Please enter an expression that will be used to calculate the field values.</source>
-        <translation type="obsolete">មិន​បាន​បញ្ជាក់​ការ​អនុវត្ត។ សូម​បញ្ចូល​កន្សោម​ដែល​នឹង​ត្រូវ​បាន​ប្រើ ដើម្បី​គណនា​តម្លៃ​វាល។</translation>
-    </message>
 </context>
 <context>
     <name>QgsAddAttrDialogBase</name>
@@ -14630,26 +14636,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="14"/>
         <source>Add column</source>
         <translation>បន្ថែម​ជួរ​ឈរ</translation>
-    </message>
-    <message>
-        <source>Virtual Field</source>
-        <translation type="obsolete">វាល​និម្មិត</translation>
-    </message>
-    <message>
-        <source>&lt;i&gt;Permanent fields&lt;/i&gt; are saved in the data provider and it is possible to directly modify them.</source>
-        <translation type="obsolete">&lt;i&gt;ឯកសារ​អចិន្ត្រៃយ៍&lt;/i&gt; ត្រូវ​បាន​រក្សាទុក​នៅ​ក្នុង​កម្មវិធី​ផ្ដល់​ទិន្នន័យ ហើយ​វា​អាច​ធ្វើ​ការ​កែប្រែ​ពួក​វា​ដោយ​ផ្ទាល់។</translation>
-    </message>
-    <message>
-        <source>Permanent Field</source>
-        <translation type="obsolete">វាល​ជា​អចិន្ត្រៃយ៍</translation>
-    </message>
-    <message>
-        <source>Define an expression which will be used to calculate this field.</source>
-        <translation type="obsolete">កំណត់​កន្សោម​ដែល​នឹង​ត្រូវ​បាន​ប្រើ​សម្រាប់​គណនា​វាល​នេះ។</translation>
-    </message>
-    <message>
-        <source>Expression</source>
-        <translation type="obsolete">កន្សោម</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="23"/>
@@ -17451,12 +17437,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1739"/>
         <source>Choose a file name to save the map image as</source>
-        <translation type="unfinished">ជ្រើស​ឈ្មោះ​ឯកសារ ដើម្បី​រក្សាទុក​រូបភាព​ផែនទី​ជា</translation>
+        <translation>ជ្រើស​ឈ្មោះ​ឯកសារ ដើម្បី​រក្សាទុក​រូបភាព​ផែនទី​ជា</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1757"/>
         <source>Memory Allocation Error</source>
-        <translation type="unfinished"></translation>
+        <translation>កំហុស​ក្នុង​ការ​បម្រុង​ទុក​អង្គ​ចងចាំ​</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1758"/>
@@ -17467,28 +17453,28 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1779"/>
         <source>Image export error</source>
-        <translation type="unfinished"></translation>
+        <translation>កំហុស​ក្នុង​ការ​នាំចេញ​រូបភាព</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1825"/>
         <source>Directory where to save image files</source>
-        <translation type="unfinished"></translation>
+        <translation>ថត​ដែល​អ្នក​បាន​រក្សាទុក​ឯកសារ​រូបភាព</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1849"/>
         <source>Image format: </source>
-        <translation type="unfinished"></translation>
+        <translation>ទ្រង់ទ្រាយ​រូបភាព៖ </translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2041"/>
         <source>SVG warning</source>
-        <translation type="unfinished"></translation>
+        <translation>ការ​ព្រមាន SVG</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2042"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="3356"/>
         <source>Don&apos;t show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation>កុំ​បង្ហាញ​សារ​នេះ​ម្ដងទៀត</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2046"/>
@@ -17508,38 +17494,38 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2084"/>
         <source>SVG Format</source>
-        <translation type="unfinished"></translation>
+        <translation>ទ្រង់ទ្រាយ SVG</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2126"/>
         <source>Directory where to save SVG files</source>
-        <translation type="unfinished"></translation>
+        <translation>ថត​ដែល​រក្សាទុក​ឯកសារ​រូបភាព SVG</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2236"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2359"/>
         <source>SVG export error</source>
-        <translation type="unfinished"></translation>
+        <translation>កំហុស​ក្នុង​ការ​នាំចេញ SVG</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2328"/>
         <source> on page </source>
-        <translation type="unfinished"></translation>
+        <translation>នៅ​លើ​ទំព័រ</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2328"/>
         <source>SVG error</source>
-        <translation type="unfinished"></translation>
+        <translation>កំហុស SVG</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2328"/>
         <source>There was an error in SVG output for SVG layer </source>
-        <translation type="unfinished"></translation>
+        <translation>មាន​កំហុស​នៅ​ក្នុង​លទ្ធផល SVG សម្រាប់​ស្រទាប់ SVG </translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2501"/>
         <source> copy</source>
-        <translation type="unfinished"> ច្បាប់​ចម្លង</translation>
+        <translation> ចម្លង</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2508"/>
@@ -17559,7 +17545,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2540"/>
         <source>Save template</source>
-        <translation type="unfinished"></translation>
+        <translation>រក្សាទុក​ពុម្ព</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2542"/>
@@ -17569,17 +17555,17 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2566"/>
         <source>Save error</source>
-        <translation type="unfinished">កំហុស​ក្នុង​ការ​រក្សាទុក</translation>
+        <translation>កំហុស​ក្នុង​ការ​រក្សាទុក</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2566"/>
         <source>Error, could not save file</source>
-        <translation type="unfinished"></translation>
+        <translation>កំហុស, មិន​អាច​រក្សាទុក​ឯកសារ</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2579"/>
         <source>Load template</source>
-        <translation type="unfinished"></translation>
+        <translation>ផ្ទុក​ពុម្ព</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2592"/>
@@ -17589,7 +17575,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2592"/>
         <source>Error, could not read file</source>
-        <translation type="unfinished"></translation>
+        <translation>កំហុស, មិន​អាច​អានឯកសារ</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2609"/>
@@ -17629,7 +17615,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="3371"/>
         <source>Print as raster</source>
-        <translation type="unfinished"></translation>
+        <translation>បោះពុម្ព​ជា​រ៉ាស្ទ័រ</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="3610"/>
@@ -17735,7 +17721,7 @@ Please try a lower resolution or a smaller papersize</source>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="199"/>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="216"/>
         <source> mm</source>
-        <translation type="unfinished"> ម.ម​.</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="206"/>
@@ -17745,7 +17731,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="78"/>
         <source>Line style...</source>
-        <translation type="unfinished"></translation>
+        <translation>រចនាប័ទ្ម​បន្ទាត់...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="88"/>
@@ -17755,17 +17741,17 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="102"/>
         <source>Default</source>
-        <translation type="unfinished">លំនាំដើម</translation>
+        <translation>លំនាំដើម</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="109"/>
         <source>None</source>
-        <translation type="unfinished">គ្មាន</translation>
+        <translation>ទេ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="116"/>
         <source>SVG</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="125"/>
@@ -17785,7 +17771,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="223"/>
         <source>Start marker</source>
-        <translation type="unfinished"></translation>
+        <translation>ចាប់ផ្ដើម marker</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="235"/>
@@ -17796,7 +17782,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="244"/>
         <source>End marker</source>
-        <translation type="unfinished"></translation>
+        <translation>បញ្ចប់ marker</translation>
     </message>
 </context>
 <context>
@@ -17804,22 +17790,22 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodel.cpp" line="108"/>
         <source>Center</source>
-        <translation type="unfinished">កណ្ដាល</translation>
+        <translation>កណ្ដាល</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodel.cpp" line="110"/>
         <source>Right</source>
-        <translation type="unfinished">ស្ដាំ</translation>
+        <translation>ខាង​ស្ដាំ</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodel.cpp" line="113"/>
         <source>Left</source>
-        <translation type="unfinished">ឆ្វេង</translation>
+        <translation>ខាង​ឆ្វេង</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodel.cpp" line="147"/>
         <source>Attribute</source>
-        <translation type="unfinished">គុណលក្ខណៈ</translation>
+        <translation>គុណលក្ខណៈ</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodel.cpp" line="150"/>
@@ -17837,17 +17823,17 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodelv2.cpp" line="108"/>
         <source>Center</source>
-        <translation type="unfinished">កណ្ដាល</translation>
+        <translation>កណ្ដាល</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodelv2.cpp" line="110"/>
         <source>Right</source>
-        <translation type="unfinished">ស្ដាំ</translation>
+        <translation>ខាង​ស្ដាំ</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodelv2.cpp" line="113"/>
         <source>Left</source>
-        <translation type="unfinished">ឆ្វេង</translation>
+        <translation>ខាង​ឆ្វេង</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodelv2.cpp" line="126"/>
@@ -17857,12 +17843,12 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodelv2.cpp" line="126"/>
         <source>%1 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 mm</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodelv2.cpp" line="158"/>
         <source>Attribute</source>
-        <translation type="unfinished">គុណលក្ខណៈ</translation>
+        <translation>គុណលក្ខណៈ</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodelv2.cpp" line="161"/>
@@ -17877,7 +17863,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodelv2.cpp" line="167"/>
         <source>Width</source>
-        <translation type="unfinished">ទទឹង</translation>
+        <translation>ទទឹង</translation>
     </message>
 </context>
 <context>
@@ -17893,7 +17879,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="43"/>
         <source>Use existing frames</source>
-        <translation type="unfinished"></translation>
+        <translation>ប្រើ​ស៊ុម​ដែល​មាន​ស្រាប់</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="44"/>
@@ -17913,22 +17899,22 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="48"/>
         <source>Hide entire table</source>
-        <translation type="unfinished"></translation>
+        <translation>លាក់​តារាង​ទាំងអស់</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="49"/>
         <source>Show set message</source>
-        <translation type="unfinished"></translation>
+        <translation>បង្ហាញ​សារ​សំណុំ​</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="52"/>
         <source>Layer features</source>
-        <translation type="unfinished"></translation>
+        <translation>លក្ខណៈ​ពិសេស​ស្រទាប់</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="63"/>
         <source>Select header font color</source>
-        <translation type="unfinished"></translation>
+        <translation>ជ្រើស​ពណ៌​ពុម្ព​អក្សរ​បឋមកថា​​</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="66"/>
@@ -18157,7 +18143,7 @@ Please try a lower resolution or a smaller papersize</source>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="256"/>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="390"/>
         <source> mm</source>
-        <translation type="unfinished"> ម.ម​.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="126"/>
@@ -18229,7 +18215,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="537"/>
         <source>Left</source>
-        <translation type="unfinished">ឆ្វេង</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="542"/>
@@ -18239,7 +18225,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="547"/>
         <source>Right</source>
-        <translation type="unfinished">ស្ដាំ</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="518"/>
@@ -19254,7 +19240,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="52"/>
         <source>Left</source>
-        <translation type="unfinished">ឆ្វេង</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="52"/>
@@ -19264,7 +19250,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="52"/>
         <source>Right</source>
-        <translation type="unfinished">ស្ដាំ</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19285,7 +19271,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="239"/>
         <source> mm</source>
-        <translation type="unfinished"> ម.ម​.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="240"/>
@@ -19314,7 +19300,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="46"/>
         <source>Use existing frames</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ប្រើ​ស៊ុម​ដែល​មាន​ស្រាប់</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="47"/>
@@ -19490,7 +19476,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="230"/>
         <source> mm</source>
-        <translation type="unfinished"> ម.ម​.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="249"/>
@@ -19726,7 +19712,7 @@ Please try a lower resolution or a smaller papersize</source>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="146"/>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="444"/>
         <source> mm</source>
-        <translation type="unfinished"> ម.ម​.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="451"/>
@@ -20273,7 +20259,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="138"/>
         <source>Left</source>
-        <translation type="unfinished">ឆ្វេង</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="143"/>
@@ -20283,7 +20269,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="148"/>
         <source>Right</source>
-        <translation type="unfinished">ស្ដាំ</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="196"/>
@@ -20454,7 +20440,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="186"/>
         <source>Error, could not read file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">កំហុស, មិន​អាច​អានឯកសារ</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="203"/>
@@ -20509,7 +20495,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="421"/>
         <source> copy</source>
-        <translation type="unfinished"> ច្បាប់​ចម្លង</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="428"/>
@@ -21169,7 +21155,7 @@ Please try a lower resolution or a smaller papersize</source>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="923"/>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1099"/>
         <source> mm</source>
-        <translation type="unfinished"> ម.ម​.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="740"/>
@@ -21383,12 +21369,12 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="970"/>
         <source>Left</source>
-        <translation type="unfinished">ឆ្វេង</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="989"/>
         <source>Right</source>
-        <translation type="unfinished">ស្ដាំ</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1008"/>
@@ -22209,7 +22195,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="91"/>
         <source> mm</source>
-        <translation type="unfinished"> ម.ម​.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="101"/>
@@ -22318,7 +22304,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="43"/>
         <source>Select header font color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ជ្រើស​ពណ៌​ពុម្ព​អក្សរ​បឋមកថា​​</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="46"/>
@@ -22500,7 +22486,7 @@ Please try a lower resolution or a smaller papersize</source>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="122"/>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="249"/>
         <source> mm</source>
-        <translation type="unfinished"> ម.ម​.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="221"/>
@@ -22520,7 +22506,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="315"/>
         <source>Left</source>
-        <translation type="unfinished">ឆ្វេង</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="320"/>
@@ -22530,7 +22516,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="325"/>
         <source>Right</source>
-        <translation type="unfinished">ស្ដាំ</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23032,7 +23018,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="319"/>
         <source>Print as raster</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">បោះពុម្ព​ជា​រ៉ាស្ទ័រ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="292"/>
@@ -23079,7 +23065,7 @@ Please try a lower resolution or a smaller papersize</source>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="417"/>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="430"/>
         <source> mm</source>
-        <translation type="unfinished"> ម.ម​.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="402"/>
@@ -25644,7 +25630,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="130"/>
         <source>Right</source>
-        <translation type="unfinished">ស្ដាំ</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="131"/>
@@ -25654,7 +25640,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="132"/>
         <source>Left</source>
-        <translation type="unfinished">ឆ្វេង</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="320"/>
@@ -32754,64 +32740,59 @@ at line %2 column %3</source>
 <context>
     <name>QgsHandleBadLayers</name>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="68"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="70"/>
         <source>Browse</source>
         <translation>រកមើល</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="83"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="84"/>
         <source>Layer name</source>
         <translation type="unfinished">ឈ្មោះ​ស្រទាប់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="84"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="85"/>
         <source>Type</source>
         <translation>ប្រភេទ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="85"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="86"/>
         <source>Provider</source>
         <translation>ក្រុមហ៊ុន​ផ្ដល់</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="86"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="87"/>
         <source>Datasource</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="97"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="99"/>
         <source>none</source>
         <translation>គ្មាន</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="251"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="259"/>
         <source>Select file to replace &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="256"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="264"/>
         <source>Please select exactly one file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="266"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="272"/>
         <source>Select new directory of selected files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="268"/>
-        <source>All files (*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="329"/>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="348"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="340"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="359"/>
         <source>Unhandled layer will be lost.</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="330"/>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="349"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="341"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="360"/>
         <source>There are still %n unhandled layer(s), that will be lost if you closed now.</source>
         <comment>unhandled layers</comment>
         <translation type="unfinished">
@@ -32831,12 +32812,12 @@ at line %2 column %3</source>
 <context>
     <name>QgsHandleBadLayersHandler</name>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="44"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="46"/>
         <source>Handle bad layers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="45"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="47"/>
         <source>%1 of %2 bad layers were not fixable.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -35002,7 +34983,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2813"/>
         <source>SVG</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2406"/>
@@ -36715,7 +36696,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsmessageviewer.ui" line="49"/>
         <source>Don&apos;t show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">កុំ​បង្ហាញ​សារ​នេះ​ម្ដងទៀត</translation>
     </message>
 </context>
 <context>
@@ -40584,7 +40565,7 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsoptionsbase.ui" line="2840"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3297"/>
         <source> mm</source>
-        <translation type="unfinished"> ម.ម​.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3310"/>
@@ -46123,7 +46104,7 @@ Click on help button to get valid creation options for this format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="672"/>
+        <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="684"/>
         <source>Choose a file name to save the map image as</source>
         <translation type="unfinished">ជ្រើស​ឈ្មោះ​ឯកសារ ដើម្បី​រក្សាទុក​រូបភាព​ផែនទី​ជា</translation>
     </message>
@@ -46190,22 +46171,22 @@ Click on help button to get valid creation options for this format.</source>
 <context>
     <name>QgsRasterInterface</name>
     <message>
-        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="581"/>
+        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="584"/>
         <source>Identify</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="596"/>
+        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="599"/>
         <source>Build Pyramids</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="586"/>
+        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="589"/>
         <source>Create Datasources</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="591"/>
+        <location filename="../src/core/raster/qgsrasterinterface.cpp" line="594"/>
         <source>Remove Datasources</source>
         <translation type="unfinished"></translation>
     </message>
@@ -48027,7 +48008,7 @@ standard deviation ×</source>
 <context>
     <name>QgsRelationEditorWidget</name>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="48"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="49"/>
         <source>Toggle editing</source>
         <translation type="unfinished"></translation>
     </message>
@@ -48037,27 +48018,27 @@ standard deviation ×</source>
         <translation type="unfinished">បន្ថែម​លក្ខណៈ</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="62"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="61"/>
         <source>Delete feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="68"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="66"/>
         <source>Link feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="74"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="71"/>
         <source>Unlink feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="82"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="77"/>
         <source>Form view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="89"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="84"/>
         <source>Table view</source>
         <translation type="unfinished"></translation>
     </message>
@@ -48121,48 +48102,48 @@ standard deviation ×</source>
 <context>
     <name>QgsRelationReferenceWidget</name>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="81"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="82"/>
         <source>Open related feature form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="90"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="88"/>
         <source>Highlight feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="91"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="89"/>
         <source>Scale and highlight feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="92"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="90"/>
         <source>Pan and highlight feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="102"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="100"/>
         <source>Select on map</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="111"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="107"/>
         <source>No selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="131"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="124"/>
         <source>The relation is not valid. Please make sure your relation definitions are ok.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="264"/>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="382"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="269"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="387"/>
         <source>%1 (no selection)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="537"/>
+        <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="542"/>
         <source>Identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -51814,7 +51795,7 @@ There was a problem with your symbol database.</source>
         <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="313"/>
         <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="336"/>
         <source>SVG</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SVG</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="336"/>
@@ -54064,22 +54045,22 @@ Error was:%2</source>
 <context>
     <name>QgsVisibilityPresets</name>
     <message>
-        <location filename="../src/app/qgsvisibilitypresets.cpp" line="43"/>
+        <location filename="../src/app/qgsvisibilitypresets.cpp" line="45"/>
         <source>Add Preset...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvisibilitypresets.cpp" line="46"/>
+        <location filename="../src/app/qgsvisibilitypresets.cpp" line="48"/>
         <source>Remove Current Preset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvisibilitypresets.cpp" line="211"/>
+        <location filename="../src/app/qgsvisibilitypresets.cpp" line="213"/>
         <source>Visibility Presets</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvisibilitypresets.cpp" line="211"/>
+        <location filename="../src/app/qgsvisibilitypresets.cpp" line="213"/>
         <source>Name of the new preset</source>
         <translation type="unfinished"></translation>
     </message>
@@ -55949,7 +55930,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1921"/>
         <source>Left</source>
-        <translation type="unfinished">ឆ្វេង</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1922"/>
@@ -55959,7 +55940,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1922"/>
         <source>Right</source>
-        <translation type="unfinished">ស្ដាំ</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1952"/>
@@ -57287,7 +57268,7 @@ Problem with line %d</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="214"/>
         <source>Left</source>
-        <translation type="unfinished">ឆ្វេង</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="219"/>
@@ -57297,7 +57278,7 @@ Problem with line %d</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="224"/>
         <source>Right</source>
-        <translation type="unfinished">ស្ដាំ</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="233"/>
@@ -57380,7 +57361,7 @@ Problem with line %d</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="185"/>
         <source>Left</source>
-        <translation type="unfinished">ឆ្វេង</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="190"/>
@@ -57390,7 +57371,7 @@ Problem with line %d</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="195"/>
         <source>Right</source>
-        <translation type="unfinished">ស្ដាំ</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="204"/>
@@ -57950,7 +57931,7 @@ Problem with line %d</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="263"/>
         <source>Left</source>
-        <translation type="unfinished">ឆ្វេង</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="268"/>
@@ -57960,7 +57941,7 @@ Problem with line %d</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="273"/>
         <source>Right</source>
-        <translation type="unfinished">ស្ដាំ</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="282"/>
@@ -58038,7 +58019,7 @@ Problem with line %d</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="270"/>
         <source>Left</source>
-        <translation type="unfinished">ឆ្វេង</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="275"/>
@@ -58048,7 +58029,7 @@ Problem with line %d</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="280"/>
         <source>Right</source>
-        <translation type="unfinished">ស្ដាំ</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="289"/>
