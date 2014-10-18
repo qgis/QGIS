@@ -10203,7 +10203,7 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Values from data layers extents</source>
-        <translation>Wartości z zaksięgu warstwy</translation>
+        <translation>Wartości z zasięgu warstwy</translation>
     </message>
     <message>
         <source>Min X</source>
