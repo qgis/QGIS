@@ -4,7 +4,7 @@ class QgsComposerItemGroup: QgsComposerItem
 #include <qgscomposeritemgroup.h>
 %End
   public:
-    QgsComposerItemGroup( QgsComposition* c );
+    QgsComposerItemGroup( QgsComposition* c /TransferThis/ );
     ~QgsComposerItemGroup();
 
     /** return correct graphics item type. Added in v1.7 */
