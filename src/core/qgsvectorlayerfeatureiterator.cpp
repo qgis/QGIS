@@ -581,6 +581,7 @@ bool QgsVectorLayerFeatureIterator::prepareSimplification( const QgsSimplifyMeth
 
 bool QgsVectorLayerFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
 {
+  Q_UNUSED( methodType );
 #if 0
   // TODO[MD]: after merge
   QgsVectorDataProvider* provider = L->dataProvider();
