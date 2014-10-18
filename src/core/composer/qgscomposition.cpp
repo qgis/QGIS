@@ -187,15 +187,15 @@ QgsComposition::~QgsComposition()
   removePaperItems();
   deleteAndRemoveMultiFrames();
 
-  // clear pointers to QgsDataDefined objects
-  //TODO - should be qDeleteAll? Check original label code too for same leak.
-  mDataDefinedProperties.clear();
-
   // make sure that all composer items are removed before
   // this class is deconstructed - to avoid segfaults
   // when composer items access in destructor composition that isn't valid anymore
   QList<QGraphicsItem*> itemList = items();
   qDeleteAll( itemList );
+
+  // clear pointers to QgsDataDefined objects
+  qDeleteAll( mDataDefinedProperties );
+  mDataDefinedProperties.clear();
 
   //order is important here - we need to delete model last so that all items have already
   //been deleted. Deleting the undo stack will also delete any items which have been
@@ -925,13 +925,14 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
   {
     deleteAndRemoveMultiFrames();
 
-    //delete all items and emit itemRemoved signal
+    //delete all non paper items and emit itemRemoved signal
     QList<QGraphicsItem *> itemList = items();
     QList<QGraphicsItem *>::iterator itemIter = itemList.begin();
     for ( ; itemIter != itemList.end(); ++itemIter )
     {
       QgsComposerItem* cItem = dynamic_cast<QgsComposerItem*>( *itemIter );
-      if ( cItem )
+      QgsPaperItem* pItem = dynamic_cast<QgsPaperItem*>( *itemIter );
+      if ( cItem && !pItem )
       {
         removeItem( cItem );
         emit itemRemoved( cItem );
@@ -940,7 +941,7 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
     }
     mItemsModel->clear();
 
-    mPages.clear();
+    removePaperItems();
     mUndoStack->clear();
   }
 
@@ -2550,10 +2551,7 @@ void QgsComposition::addPaperItem()
 
 void QgsComposition::removePaperItems()
 {
-  for ( int i = 0; i < mPages.size(); ++i )
-  {
-    delete mPages.at( i );
-  }
+  qDeleteAll( mPages );
   mPages.clear();
   QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )0 ) );
 }
