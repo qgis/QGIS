@@ -24,6 +24,7 @@
 #include <QTextStream>
 #include <QImageReader>
 #include <QSqlDatabase>
+#include <QTcpSocket>
 
 /* Uncomment this block to use preloaded images
 #include <map>
@@ -50,6 +51,17 @@ QgsAbout::~QgsAbout()
 void QgsAbout::init()
 {
   setPluginInfo();
+
+  // check internet connection in order to hide/show the developers map widget
+  int DEVELOPERS_MAP_INDEX = 5;
+  QTcpSocket socket;
+  QString host = "qgis.org";
+  int port = 80;
+  socket.connectToHost( host, port );
+  if ( socket.waitForConnected( 1000 ) )
+    setDevelopersMap();
+  else
+    mOptionsListWidget->item( DEVELOPERS_MAP_INDEX )->setHidden( true );
 
   // set the 60x60 icon pixmap
   QPixmap icon( QgsApplication::iconsPath() + "qgis-icon-60x60.png" );
@@ -302,4 +314,11 @@ QString QgsAbout::fileSystemSafe( QString fileName )
   QgsDebugMsg( result );
 
   return result;
+}
+
+void QgsAbout::setDevelopersMap()
+{
+  developersMapView->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
+  QUrl url = QUrl::fromLocalFile( QgsApplication::developersMapFilePath() );
+  developersMapView->load( url );
 }

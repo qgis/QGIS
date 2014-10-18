@@ -439,6 +439,10 @@ const QString QgsApplication::contributorsFilePath()
 {
   return ABISYM( mPkgDataPath ) + QString( "/doc/CONTRIBUTORS" );
 }
+const QString QgsApplication::developersMapFilePath()
+{
+  return ABISYM( mPkgDataPath ) + QString( "/doc/developersmap.html" );
+}
 /*!
   Returns the path to the sponsors file.
 */
