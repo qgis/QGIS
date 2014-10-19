@@ -351,7 +351,7 @@ def exportTable(table):
 
     settings = QSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
-    output = getTempFilename('dbf')
+    output = getTempFilename()
     provider = table.dataProvider()
     isASCII = True
     try:
@@ -367,7 +367,7 @@ def exportTable(table):
         for feat in table.getFeatures():
             writer.addFeature(feat)
         del writer
-        return output
+        return output + '.dbf'
     else:
         filename = unicode(table.source())
         if unicode(table.source()).endswith('shp'):
