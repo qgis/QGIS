@@ -229,28 +229,11 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
   {
     arrowHeadHeight = mStopArrowHeadHeight;
   }
-
-  //prepare paint device
-  int dpi = ( p->device()->logicalDpiX() + p->device()->logicalDpiY() ) / 2;
-  double viewScaleFactor = horizontalViewScaleFactor();
-  int imageWidth = mArrowHeadWidth / 25.4 * dpi;
-  int imageHeight = arrowHeadHeight / 25.4 * dpi;
-
-  //make nicer preview
-  if ( mComposition && mComposition->plotStyle() == QgsComposition::Preview )
-  {
-    imageWidth *= qMin( viewScaleFactor, 10.0 );
-    imageHeight *= qMin( viewScaleFactor, 10.0 );
-  }
-  if ( imageWidth <= 0 || imageHeight <= 0 )
+  if ( mArrowHeadWidth <= 0 || arrowHeadHeight <= 0 )
   {
     //bad image size
     return;
   }
-
-  QImage markerImage( imageWidth, imageHeight, QImage::Format_ARGB32 );
-  QColor markerBG( 255, 255, 255, 0 ); //transparent white background
-  markerImage.fill( markerBG.rgba() );
 
   QPointF imageFixPoint;
   imageFixPoint.setX( mArrowHeadWidth / 2.0 );
@@ -283,10 +266,8 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
     }
   }
 
-  QPainter imagePainter( &markerImage );
-  r.render( &imagePainter );
-
   p->save();
+  p->setRenderHint( QPainter::Antialiasing );
   if ( mBoundsBehaviour == 22 )
   {
     //if arrow was created in versions prior to 2.4, use the old rendering style
@@ -313,8 +294,7 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
 
   p->rotate( ang );
   p->translate( -mArrowHeadWidth / 2.0, -arrowHeadHeight / 2.0 );
-
-  p->drawImage( QRectF( 0, 0, mArrowHeadWidth, arrowHeadHeight ), markerImage, QRectF( 0, 0, imageWidth, imageHeight ) );
+  r.render( p, QRectF( 0, 0,  mArrowHeadWidth, arrowHeadHeight ) );
   p->restore();
 
   return;
