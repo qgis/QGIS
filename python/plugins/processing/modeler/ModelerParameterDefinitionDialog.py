@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -24,6 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 
 __revision__ = '$Format:%H$'
+
+import math
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -203,6 +206,9 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.horizontalLayout2.addWidget(QLabel(self.tr('Min/Max values')))
             self.minTextBox = QLineEdit()
             self.maxTextBox = QLineEdit()
+            if self.param is not None:
+                self.minTextBox.setText(str(self.param.min))
+                self.maxTextBox.setText(str(self.param.max))
             self.horizontalLayout2.addWidget(self.minTextBox)
             self.horizontalLayout2.addWidget(self.maxTextBox)
             self.verticalLayout.addLayout(self.horizontalLayout2)
@@ -210,7 +216,10 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.defaultTextBox = QLineEdit()
             self.defaultTextBox.setText(self.tr('0'))
             if self.param is not None:
-                self.defaultTextBox.setText(str(self.param.default))
+                default = self.param.default
+                if self.param.isInteger:
+                    default = int(math.floor(default))
+                self.defaultTextBox.setText(str(default))
             self.horizontalLayout3.addWidget(self.defaultTextBox)
             self.verticalLayout.addLayout(self.horizontalLayout3)
         elif self.paramType \
@@ -312,7 +321,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 else:
                     vmax = float(vmax)
                 self.param = ParameterNumber(name, description, vmin, vmax,
-                        float(str(self.defaultTextBox.text())))
+                        str(self.defaultTextBox.text()))
             except:
                 QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                     self.tr('Wrong or missing parameter values'))
