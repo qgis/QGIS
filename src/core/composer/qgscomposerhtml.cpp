@@ -22,6 +22,8 @@
 #include "qgsexpression.h"
 #include "qgslogger.h"
 #include "qgsnetworkcontentfetcher.h"
+#include "qgsvectorlayer.h"
+#include "qgsproject.h"
 
 #include <QCoreApplication>
 #include <QPainter>
@@ -42,9 +44,11 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands )
     , mMaxBreakDistance( 10 )
     , mExpressionFeature( 0 )
     , mExpressionLayer( 0 )
+    , mDistanceArea( 0 )
     , mEnableUserStylesheet( false )
     , mFetcher( 0 )
 {
+  mDistanceArea = new QgsDistanceArea();
   mHtmlUnitsToMM = htmlUnitsToMM();
   mWebPage = new QWebPage();
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
@@ -92,14 +96,17 @@ QgsComposerHtml::QgsComposerHtml()
     , mMaxBreakDistance( 10 )
     , mExpressionFeature( 0 )
     , mExpressionLayer( 0 )
+    , mDistanceArea( 0 )
     , mFetcher( 0 )
 {
+  mDistanceArea = new QgsDistanceArea();
   mFetcher = new QgsNetworkContentFetcher();
   connect( mFetcher, SIGNAL( finished() ), this, SLOT( frameLoaded() ) );
 }
 
 QgsComposerHtml::~QgsComposerHtml()
 {
+  delete mDistanceArea;
   delete mWebPage;
   delete mRenderedPage;
   mFetcher->deleteLater();
@@ -179,7 +186,7 @@ void QgsComposerHtml::loadHtml()
   //evaluate expressions
   if ( mEvaluateExpressions )
   {
-    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, mExpressionFeature, mExpressionLayer );
+    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, mExpressionFeature, mExpressionLayer, 0, mDistanceArea );
   }
 
   mLoaded = false;
@@ -522,6 +529,22 @@ void QgsComposerHtml::setExpressionContext( QgsFeature* feature, QgsVectorLayer*
 {
   mExpressionFeature = feature;
   mExpressionLayer = layer;
+
+  //setup distance area conversion
+  if ( layer )
+  {
+    mDistanceArea->setSourceCrs( layer->crs().srsid() );
+  }
+  else if ( mComposition )
+  {
+    //set to composition's mapsettings' crs
+    mDistanceArea->setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
+  }
+  if ( mComposition )
+  {
+    mDistanceArea->setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
+  }
+  mDistanceArea->setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 }
 
 void QgsComposerHtml::refreshExpressionContext()

@@ -1989,7 +1989,7 @@ void QgsExpression::acceptVisitor( QgsExpression::Visitor& v ) const
 
 QString QgsExpression::replaceExpressionText( const QString &action, const QgsFeature *feat,
     QgsVectorLayer *layer,
-    const QMap<QString, QVariant> *substitutionMap )
+    const QMap<QString, QVariant> *substitutionMap , const QgsDistanceArea *distanceArea )
 {
   QString expr_action;
 
@@ -2028,6 +2028,12 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsFe
       QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
       expr_action += action.mid( start, index - start );
       continue;
+    }
+
+    if ( distanceArea )
+    {
+      //if QgsDistanceArea specified for area/distance conversion, use it
+      exp.setGeomCalculator( *distanceArea );
     }
 
     QVariant result;

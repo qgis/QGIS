@@ -24,6 +24,7 @@ class QImage;
 class QgsFeature;
 class QgsVectorLayer;
 class QgsNetworkContentFetcher;
+class QgsDistanceArea;
 
 class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 {
@@ -242,6 +243,8 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 
     QgsFeature* mExpressionFeature;
     QgsVectorLayer* mExpressionLayer;
+    QgsDistanceArea* mDistanceArea;
+
     QString mUserStylesheet;
     bool mEnableUserStylesheet;
 

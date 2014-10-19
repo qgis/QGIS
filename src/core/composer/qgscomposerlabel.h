@@ -22,6 +22,7 @@
 
 class QgsVectorLayer;
 class QgsFeature;
+class QgsDistanceArea;
 
 /** \ingroup MapComposer
  * A label that can be placed onto a map composition.
@@ -143,8 +144,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     QgsFeature* mExpressionFeature;
     QgsVectorLayer* mExpressionLayer;
     QMap<QString, QVariant> mSubstitutions;
-
-
+    QgsDistanceArea* mDistanceArea;
 };
 
 #endif
