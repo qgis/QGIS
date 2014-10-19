@@ -1811,6 +1811,30 @@ QgsComposerItemGroup *QgsComposition::groupItems( QList<QgsComposerItem *> items
   return itemGroup;
 }
 
+QList<QgsComposerItem *> QgsComposition::ungroupItems( QgsComposerItemGroup* group )
+{
+  QList<QgsComposerItem *> ungroupedItems;
+  if ( !group )
+  {
+    return ungroupedItems;
+  }
+
+  QSet<QgsComposerItem*> groupedItems = group->items();
+  QSet<QgsComposerItem*>::iterator itemIt = groupedItems.begin();
+  for ( ; itemIt != groupedItems.end(); ++itemIt )
+  {
+    ungroupedItems << ( *itemIt );
+  }
+
+  group->removeItems();
+  removeComposerItem( group, false, false );
+
+  emit itemRemoved( group );
+  delete( group );
+
+  return ungroupedItems;
+}
+
 void QgsComposition::updateZValues( const bool addUndoCommands )
 {
   int counter = mItemsModel->zOrderListSize();

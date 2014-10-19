@@ -474,9 +474,18 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Creates a new group from a list of composer items and adds it to the composition.
      * @param items items to include in group
      * @returns QgsComposerItemGroup of grouped items, if grouping was possible
-     * @note adde in QGIS 2.6
+     * @note added in QGIS 2.6
     */
     QgsComposerItemGroup* groupItems( QList<QgsComposerItem*> items );
+
+    /**Ungroups items by removing them from an item group and removing the group from the
+     * composition.
+     * @param group item group to ungroup
+     * @returns list of items removed from the group, or an empty list if ungrouping
+     * was not successful
+     * @note added in QGIS 2.6
+    */
+    QList<QgsComposerItem*> ungroupItems( QgsComposerItemGroup* group );
 
     /**Sorts the zList. The only time where this function needs to be called is from QgsComposer
      * after reading all the items from xml file

@@ -40,6 +40,7 @@ class TestQgsComposerGroup: public QObject
     QgsMapSettings mMapSettings;
     QgsComposerLabel* mItem1;
     QgsComposerLabel* mItem2;
+    QgsComposerItemGroup* mGroup;
     QString mReport;
 };
 
@@ -53,6 +54,8 @@ void TestQgsComposerGroup::initTestCase()
   mComposition->addItem( mItem1 );
   mItem2 = new QgsComposerLabel( mComposition );
   mComposition->addItem( mItem2 );
+
+  mGroup = 0;
 
   mReport = "<h1>Composer Grouped Item Tests</h1>\n";
 }
@@ -86,20 +89,39 @@ void TestQgsComposerGroup::createGroup()
   //group items
   QList<QgsComposerItem*> items;
   items << mItem1 << mItem2;
-  QgsComposerItemGroup* group = mComposition->groupItems( items );
+  mGroup = mComposition->groupItems( items );
 
   //check result
-  QVERIFY( group );
-  QCOMPARE( group->items().size(), 2 );
-  QVERIFY( group->items().contains( mItem1 ) );
-  QVERIFY( group->items().contains( mItem2 ) );
+  QVERIFY( mGroup );
+  QCOMPARE( mGroup->items().size(), 2 );
+  QVERIFY( mGroup->items().contains( mItem1 ) );
+  QVERIFY( mGroup->items().contains( mItem2 ) );
   QVERIFY( mItem1->isGroupMember() );
   QVERIFY( mItem2->isGroupMember() );
 }
 
 void TestQgsComposerGroup::ungroup()
 {
+  //test ungrouping items
 
+  //simple tests - check that we don't crash
+  mComposition->ungroupItems( 0 ); //no item
+
+  //ungroup mGroup
+  QList<QgsComposerItem*> ungroupedItems;
+  ungroupedItems = mComposition->ungroupItems( mGroup );
+
+  QCOMPARE( ungroupedItems.size(), 2 );
+  QVERIFY( ungroupedItems.contains( mItem1 ) );
+  QVERIFY( ungroupedItems.contains( mItem2 ) );
+
+  QVERIFY( !mItem1->isGroupMember() );
+  QVERIFY( !mItem2->isGroupMember() );
+
+  //should also be no groups left in the composition
+  QList<QgsComposerItemGroup*> groups;
+  mComposition->composerItems( groups );
+  QCOMPARE( groups.size(), 0 );
 }
 
 void TestQgsComposerGroup::deleteGroup()
