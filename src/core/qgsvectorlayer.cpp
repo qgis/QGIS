@@ -2140,7 +2140,7 @@ bool QgsVectorLayer::deleteAttributes( QList<int> attrs )
 
   qSort( attrs.begin(), attrs.end(), qGreater<int>() );
 
-  Q_FOREACH( int attr, attrs )
+  Q_FOREACH ( int attr, attrs )
   {
     if ( deleteAttribute( attr ) )
     {

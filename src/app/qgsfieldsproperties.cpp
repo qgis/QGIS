@@ -163,7 +163,7 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
 
       const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>( widgetDef );
 
-      Q_FOREACH( QgsAttributeEditorElement* wdg, container->children() )
+      Q_FOREACH ( QgsAttributeEditorElement* wdg, container->children() )
       {
         loadAttributeEditorTreeItem( wdg, newWidget );
       }
@@ -187,7 +187,7 @@ void QgsFieldsProperties::loadAttributeEditorTree()
   mDesignerTree->setAcceptDrops( true );
   mDesignerTree->setDragDropMode( QAbstractItemView::DragDrop );
 
-  Q_FOREACH( QgsAttributeEditorElement* wdg, mLayer->attributeEditorElements() )
+  Q_FOREACH ( QgsAttributeEditorElement* wdg, mLayer->attributeEditorElements() )
   {
     loadAttributeEditorTreeItem( wdg, mDesignerTree->invisibleRootItem() );
   }
@@ -272,7 +272,7 @@ void QgsFieldsProperties::loadRelations()
 
   int idx = 0;
 
-  Q_FOREACH( const QgsRelation& relation, relations )
+  Q_FOREACH ( const QgsRelation& relation, relations )
   {
     mRelationsList->insertRow( idx );
 
@@ -310,7 +310,7 @@ void QgsFieldsProperties::on_mAddItemButton_clicked()
   if ( parent->data( 0, DesignerTreeRole ).value<DesignerTreeItemData>().type() != DesignerTreeItemData::Container )
     return;
 
-  Q_FOREACH( QTableWidgetItem* item, listItems )
+  Q_FOREACH ( QTableWidgetItem* item, listItems )
   {
     if ( item->column() == 0 ) // Information is in the first column
       mDesignerTree->addItem( parent , item->data( DesignerTreeRole ).value<DesignerTreeItemData>() );
@@ -409,7 +409,7 @@ void QgsFieldsProperties::attributeTypeDialog()
   int index = -1;
   int row = -1;
 
-  Q_FOREACH( QTableWidgetItem* wdg, mIndexedWidgets )
+  Q_FOREACH ( QTableWidgetItem* wdg, mIndexedWidgets )
   {
     cfg = wdg->data( FieldConfigRole ).value<FieldConfig>();
     if ( cfg.mButton == pb )
@@ -542,7 +542,7 @@ void QgsFieldsProperties::on_mDeleteAttributeButton_clicked()
 {
   QSet<int> providerFields;
   QSet<int> expressionFields;
-  Q_FOREACH( QTableWidgetItem* item, mFieldsList->selectedItems() )
+  Q_FOREACH ( QTableWidgetItem* item, mFieldsList->selectedItems() )
   {
     if ( item->column() == 0 )
     {
@@ -588,7 +588,7 @@ void QgsFieldsProperties::updateButtons()
     mDeleteAttributeButton->setEnabled( mFieldsList->selectedItems().count() > 0 );
 
     // and only if all selected items have their origin in an expression
-    Q_FOREACH( QTableWidgetItem* item, mFieldsList->selectedItems() )
+    Q_FOREACH ( QTableWidgetItem* item, mFieldsList->selectedItems() )
     {
       if ( item->column() == 0 )
       {
@@ -841,7 +841,7 @@ QMimeData* QgsFieldsProperties::DragList::mimeData( const QList<QTableWidgetItem
   QByteArray encoded;
   QDataStream stream( &encoded, QIODevice::WriteOnly );
 
-  Q_FOREACH( const QTableWidgetItem* item, items )
+  Q_FOREACH ( const QTableWidgetItem* item, items )
   {
     // Relevant information is always in the UserRole of the first column
     if ( item && item->column() == 0 )
@@ -1011,7 +1011,7 @@ QMimeData* QgsFieldsProperties::DesignerTree::mimeData( const QList<QTreeWidgetI
   QByteArray encoded;
   QDataStream stream( &encoded, QIODevice::WriteOnly );
 
-  Q_FOREACH( const QTreeWidgetItem* item, items )
+  Q_FOREACH ( const QTreeWidgetItem* item, items )
   {
     if ( item )
     {

@@ -128,11 +128,11 @@ QVariant QgsGraduatedSymbolRendererV2Model::data( const QModelIndex &index, int 
     switch ( index.column() )
     {
       case 1:
-        {
-          int decimalPlaces=mRenderer->labelFormat().precision()+2;
-          if( decimalPlaces < 0 ) decimalPlaces=0;
-          return QString::number( range.lowerValue(), 'f', decimalPlaces ) + " - " + QString::number( range.upperValue(), 'f', decimalPlaces );
-        }
+      {
+        int decimalPlaces = mRenderer->labelFormat().precision() + 2;
+        if ( decimalPlaces < 0 ) decimalPlaces = 0;
+        return QString::number( range.lowerValue(), 'f', decimalPlaces ) + " - " + QString::number( range.upperValue(), 'f', decimalPlaces );
+      }
       case 2: return range.label();
       default: return QVariant();
     }
@@ -149,7 +149,7 @@ QVariant QgsGraduatedSymbolRendererV2Model::data( const QModelIndex &index, int 
   {
     switch ( index.column() )
     {
-      // case 1: return rangeStr;
+        // case 1: return rangeStr;
       case 2: return range.label();
       default: return QVariant();
     }
@@ -399,8 +399,8 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
 
   cboGraduatedColorRamp->populate( mStyle );
 
-  spinPrecision->setMinimum( QgsRendererRangeV2LabelFormat::MinPrecision);
-  spinPrecision->setMaximum( QgsRendererRangeV2LabelFormat::MaxPrecision);
+  spinPrecision->setMinimum( QgsRendererRangeV2LabelFormat::MinPrecision );
+  spinPrecision->setMaximum( QgsRendererRangeV2LabelFormat::MaxPrecision );
 
   // set project default color ramp
   QString defaultColorRamp = QgsProject::instance()->readEntry( "DefaultStyles", "/ColorRamp", "" );
@@ -743,8 +743,8 @@ void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
   const QgsRendererRangeV2& range = mRenderer->ranges()[rangeIdx];
   // Add arbitrary 2 to number of decimal places to retain a bit extra.
   // Ensures users can see if legend is not completely honest!
-  int decimalPlaces = mRenderer->labelFormat().precision()+2;
-  if( decimalPlaces < 0 ) decimalPlaces=0;
+  int decimalPlaces = mRenderer->labelFormat().precision() + 2;
+  if ( decimalPlaces < 0 ) decimalPlaces = 0;
   dialog.setLowerValue( QString::number( range.lowerValue(), 'f', decimalPlaces ) );
   dialog.setUpperValue( QString::number( range.upperValue(), 'f', decimalPlaces ) );
 

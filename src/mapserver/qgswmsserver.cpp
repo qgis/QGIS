@@ -659,7 +659,7 @@ QImage* QgsWMSServer::getLegendGraphics()
   {
     QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
     QgsLayerTreeLayer *layer = rootGroup.addLayer( ml );
-    if( !ml->title().isEmpty() )
+    if ( !ml->title().isEmpty() )
       layer->setLayerName( ml->title() );
   }
   QgsLayerTreeModel legendModel( &rootGroup );

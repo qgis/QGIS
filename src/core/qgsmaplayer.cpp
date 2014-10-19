@@ -606,7 +606,7 @@ QDomDocument QgsMapLayer::asLayerDefinition( QList<QgsMapLayer *> layers, QStrin
   foreach ( QgsMapLayer* layer, layers )
   {
     QDomElement layerelm = doc.createElement( "maplayer" );
-    layer->writeLayerXML( layerelm, doc, relativeBasePath  );
+    layer->writeLayerXML( layerelm, doc, relativeBasePath );
     layerelm.removeChild( layerelm.firstChildElement( "id" ) );
     layerselm.appendChild( layerelm );
   }

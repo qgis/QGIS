@@ -14,19 +14,19 @@ __revision__ = '$Format:%H$'
 
 import qgis
 from utilities import (
-            unittest, 
+            unittest,
             TestCase,
             getQgisTestApp,
             )
 from qgis.core import (
-            QgsGraduatedSymbolRendererV2, 
-            QgsRendererRangeV2, 
+            QgsGraduatedSymbolRendererV2,
+            QgsRendererRangeV2,
             QgsRendererRangeV2LabelFormat,
-            QgsMarkerSymbolV2, 
+            QgsMarkerSymbolV2,
             QgsVectorGradientColorRampV2,
-            QgsVectorLayer, 
-            QgsFeature, 
-            QgsGeometry, 
+            QgsVectorLayer,
+            QgsFeature,
+            QgsGeometry,
             QgsPoint,
             QgsSymbolV2,
             QgsSymbolLayerV2Utils,
@@ -237,7 +237,7 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
                              "Number format error {0}:{1}:{2} => {3}".format(
                              precision,trim,value,result))
 
-        # Label tests - label format, expected result. 
+        # Label tests - label format, expected result.
         # Labels will be evaluated with lower=1.23 upper=2.34, precision=2
         ltests=(
             ("%1 - %2","1.23 - 2.34"),
@@ -342,8 +342,8 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
             renderer.setScaleMethod(sm)
             self.assertEqual(str(sm),str(renderer.scaleMethod()),
                 "Get/set renderer scale method")
-        
-        
+
+
 
     def testQgsGraduatedSymbolRendererV2_2(self):
         """Test QgsGraduatedSymbolRendererV2: Adding /removing/editing classes """
