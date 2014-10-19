@@ -126,12 +126,53 @@ void TestQgsComposerGroup::ungroup()
 
 void TestQgsComposerGroup::deleteGroup()
 {
+  //group items
+  QList<QgsComposerItem*> groupItems;
+  groupItems << mItem1 << mItem2;
+  mGroup = mComposition->groupItems( groupItems );
+  QList<QgsComposerItem*> items;
+  mComposition->composerItems( items );
+  //expect initially 4 items, as paper counts as an item
+  QCOMPARE( items.size(), 4 );
 
+  //test that deleting group also removes all grouped items
+  mComposition->removeComposerItem( mGroup );
+  mComposition->composerItems( items );
+
+  //expect a single item (paper item)
+  QCOMPARE( items.size(), 1 );
+  QVERIFY( mItem1->isRemoved() );
+  QVERIFY( mItem2->isRemoved() );
 }
 
 void TestQgsComposerGroup::undoRedo()
 {
+#if 0 //expected fail - see #11371
+  //test for crash when undo/redoing with groups
 
+  //create some items
+  mItem1 = new QgsComposerLabel( mComposition );
+  mComposition->addItem( mItem1 );
+  mItem2 = new QgsComposerLabel( mComposition );
+  mComposition->addItem( mItem2 );
+
+  //group items
+  QList<QgsComposerItem*> items;
+  items << mItem1 << mItem2;
+  mGroup = mComposition->groupItems( items );
+
+  //move, and ungroup
+  mGroup->beginCommand( "move" );
+  mGroup->move( 10.0, 20.0 );
+  mGroup->endCommand();
+  mComposition->ungroupItems( mGroup );
+
+  //undo
+  mComposition->undoStack()->undo();
+
+  //redo
+  mComposition->undoStack()->redo();
+#endif
 }
 
 QTEST_MAIN( TestQgsComposerGroup )
