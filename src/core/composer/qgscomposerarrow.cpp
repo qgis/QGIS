@@ -242,6 +242,12 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
     imageWidth *= qMin( viewScaleFactor, 10.0 );
     imageHeight *= qMin( viewScaleFactor, 10.0 );
   }
+  if ( imageWidth <= 0 || imageHeight <= 0 )
+  {
+    //bad image size
+    return;
+  }
+
   QImage markerImage( imageWidth, imageHeight, QImage::Format_ARGB32 );
   QColor markerBG( 255, 255, 255, 0 ); //transparent white background
   markerImage.fill( markerBG.rgba() );
@@ -317,32 +323,34 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
 void QgsComposerArrow::setStartMarker( const QString& svgPath )
 {
   QSvgRenderer r;
+  mStartMarkerFile = svgPath;
   if ( svgPath.isEmpty() || !r.load( svgPath ) )
   {
-    return;
-    // mStartArrowHeadHeight = 0;
+    mStartArrowHeadHeight = 0;
   }
-  mStartMarkerFile = svgPath;
-
-  //calculate mArrowHeadHeight from svg file and mArrowHeadWidth
-  QRect viewBox = r.viewBox();
-  mStartArrowHeadHeight = mArrowHeadWidth / viewBox.width() * viewBox.height();
+  else
+  {
+    //calculate mArrowHeadHeight from svg file and mArrowHeadWidth
+    QRect viewBox = r.viewBox();
+    mStartArrowHeadHeight = mArrowHeadWidth / viewBox.width() * viewBox.height();
+  }
   adaptItemSceneRect();
 }
 
 void QgsComposerArrow::setEndMarker( const QString& svgPath )
 {
   QSvgRenderer r;
+  mEndMarkerFile = svgPath;
   if ( svgPath.isEmpty() || !r.load( svgPath ) )
   {
-    return;
-    // mStopArrowHeadHeight = 0;
+    mStopArrowHeadHeight = 0;
   }
-  mEndMarkerFile = svgPath;
-
-  //calculate mArrowHeadHeight from svg file and mArrowHeadWidth
-  QRect viewBox = r.viewBox();
-  mStopArrowHeadHeight = mArrowHeadWidth / viewBox.width() * viewBox.height();
+  else
+  {
+    //calculate mArrowHeadHeight from svg file and mArrowHeadWidth
+    QRect viewBox = r.viewBox();
+    mStopArrowHeadHeight = mArrowHeadWidth / viewBox.width() * viewBox.height();
+  }
   adaptItemSceneRect();
 }
 
