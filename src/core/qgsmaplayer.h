@@ -205,6 +205,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** stores state in Dom node
        @param layerElement is a Dom element corresponding to ``maplayer'' tag
        @param document is a the dom document being written
+       @param relativeBasePath base path for relative paths
        @note
 
        The Dom node corresponds to a Dom document project file XML element to be

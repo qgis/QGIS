@@ -5375,7 +5375,19 @@ void QgisApp::deleteComposer( QgsComposer* c )
   mPrintComposersMenu->removeAction( c->windowAction() );
   markDirty();
   emit composerRemoved( c->view() );
+
+  //save a reference to the composition
+  QgsComposition* composition = c->composition();
+
+  //first, delete the composer. This must occur before deleting the composition as some of the cleanup code in
+  //composer or in composer item widgets may require the composition to still be around
   delete c;
+
+  //next, delete the composition
+  if ( composition )
+  {
+    delete composition;
+  }
 }
 
 QgsComposer* QgisApp::duplicateComposer( QgsComposer* currentComposer, QString title )
@@ -5465,8 +5477,19 @@ void QgisApp::deletePrintComposers()
   for ( ; it != mPrintComposers.end(); ++it )
   {
     emit composerWillBeRemoved(( *it )->view() );
-    delete(( *it )->composition() );
+
+    //save a reference to the composition
+    QgsComposition* composition = ( *it )->composition();
+
+    //first, delete the composer. This must occur before deleting the composition as some of the cleanup code in
+    //composer or in composer item widgets may require the composition to still be around
     delete( *it );
+
+    //next, delete the composition
+    if ( composition )
+    {
+      delete composition;
+    }
   }
   mPrintComposers.clear();
   mLastComposerId = 0;

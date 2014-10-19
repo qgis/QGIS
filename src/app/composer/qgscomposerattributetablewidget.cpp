@@ -565,14 +565,17 @@ void QgsComposerAttributeTableWidget::updateRelationsCombo()
   QgsVectorLayer* atlasLayer = atlasCoverageLayer();
   if ( atlasLayer )
   {
-    QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mComposerTable->composition()->atlasComposition().coverageLayer() );
+    QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( atlasLayer );
     Q_FOREACH ( const QgsRelation& relation, relations )
     {
       mRelationsComboBox->addItem( relation.name(), relation.id() );
     }
+    if ( mComposerTable )
+    {
+      mRelationsComboBox->setCurrentIndex( mRelationsComboBox->findData( mComposerTable->relationId() ) );
+    }
   }
 
-  mRelationsComboBox->setCurrentIndex( mRelationsComboBox->findData( mComposerTable->relationId() ) );
   mRelationsComboBox->blockSignals( false );
 }
 

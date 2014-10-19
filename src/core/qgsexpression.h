@@ -183,10 +183,18 @@ class CORE_EXPORT QgsExpression
 
        Additional substitutions can be passed through the substitutionMap
        parameter
+       @param action
+       @param feat
+       @param layer
+       @param substitutionMap
+       @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
+       and area conversion
     */
     static QString replaceExpressionText( const QString &action, const QgsFeature *feat,
                                           QgsVectorLayer *layer,
-                                          const QMap<QString, QVariant> *substitutionMap = 0 );
+                                          const QMap<QString, QVariant> *substitutionMap = 0,
+                                          const QgsDistanceArea* distanceArea = 0
+                                        );
     enum UnaryOperator
     {
       uoNot,

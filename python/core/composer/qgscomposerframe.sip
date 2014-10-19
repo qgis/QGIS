@@ -6,7 +6,7 @@ class QgsComposerFrame: QgsComposerItem
 %End
 
  public:
-    QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height );
+    QgsComposerFrame( QgsComposition* c /TransferThis/, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height );
     ~QgsComposerFrame();
 
     /**Sets the visible part of the multiframe's content which is visible within

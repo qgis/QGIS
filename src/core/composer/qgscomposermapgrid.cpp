@@ -979,26 +979,26 @@ void QgsComposerMapGrid::drawCoordinateAnnotations( QPainter* p, const QList< QP
   for ( ; it != hLines.constEnd(); ++it )
   {
     currentAnnotationString = gridAnnotationString( it->first, QgsComposerMapGrid::Latitude );
-    drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString );
-    drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString );
+    drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString, QgsComposerMapGrid::Latitude );
+    drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString, QgsComposerMapGrid::Latitude );
   }
 
   it = vLines.constBegin();
   for ( ; it != vLines.constEnd(); ++it )
   {
     currentAnnotationString =  gridAnnotationString( it->first, QgsComposerMapGrid::Longitude );
-    drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString );
-    drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString );
+    drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString, QgsComposerMapGrid::Longitude );
+    drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString, QgsComposerMapGrid::Longitude );
   }
 }
 
-void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString ) const
+void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString, const AnnotationCoordinate coordinateType ) const
 {
   if ( !mComposerMap )
   {
     return;
   }
-  QgsComposerMapGrid::BorderSide frameBorder = borderForLineCoord( pos );
+  QgsComposerMapGrid::BorderSide frameBorder = borderForLineCoord( pos, coordinateType );
   double textWidth = QgsComposerUtils::textWidthMM( mGridAnnotationFont, annotationString );
   //relevant for annotations is the height of digits
   double textHeight = QgsComposerUtils::fontHeightCharacterMM( mGridAnnotationFont, QChar( '0' ) );
@@ -1610,44 +1610,62 @@ int QgsComposerMapGrid::yGridLinesCRSTransform( const QgsRectangle& bbox, const 
 void QgsComposerMapGrid::sortGridLinesOnBorders( const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines,  QMap< double, double >& leftFrameEntries,
     QMap< double, double >& rightFrameEntries, QMap< double, double >& topFrameEntries, QMap< double, double >& bottomFrameEntries ) const
 {
-  QList< QPair< double, QPointF > > borderPositions;
+  QList< QgsMapAnnotation > borderPositions;
   QList< QPair< double, QLineF > >::const_iterator it = hLines.constBegin();
   for ( ; it != hLines.constEnd(); ++it )
   {
-    borderPositions << qMakePair( it->first, it->second.p1() );
-    borderPositions << qMakePair( it->first, it->second.p2() );
+    QgsMapAnnotation p1;
+    p1.coordinate = it->first;
+    p1.itemPosition = it->second.p1();
+    p1.coordinateType = QgsComposerMapGrid::Latitude;
+    borderPositions << p1;
+
+    QgsMapAnnotation p2;
+    p2.coordinate = it->first;
+    p2.itemPosition = it->second.p2();
+    p2.coordinateType = QgsComposerMapGrid::Latitude;
+    borderPositions << p2;
   }
   it = vLines.constBegin();
   for ( ; it != vLines.constEnd(); ++it )
   {
-    borderPositions << qMakePair( it->first, it->second.p1() );
-    borderPositions << qMakePair( it->first, it->second.p2() );
+    QgsMapAnnotation p1;
+    p1.coordinate = it->first;
+    p1.itemPosition = it->second.p1();
+    p1.coordinateType = QgsComposerMapGrid::Longitude;
+    borderPositions << p1;
+
+    QgsMapAnnotation p2;
+    p2.coordinate = it->first;
+    p2.itemPosition = it->second.p2();
+    p2.coordinateType = QgsComposerMapGrid::Longitude;
+    borderPositions << p2;
   }
 
-  QList< QPair< double, QPointF > >::const_iterator bIt = borderPositions.constBegin();
+  QList< QgsMapAnnotation >::const_iterator bIt = borderPositions.constBegin();
   for ( ; bIt != borderPositions.constEnd(); ++bIt )
   {
-    QgsComposerMapGrid::BorderSide frameBorder = borderForLineCoord( bIt->second );
+    QgsComposerMapGrid::BorderSide frameBorder = borderForLineCoord( bIt->itemPosition, bIt->coordinateType );
     if ( frameBorder == QgsComposerMapGrid::Left )
     {
-      leftFrameEntries.insert( bIt->second.y(), bIt->first );
+      leftFrameEntries.insert( bIt->itemPosition.y(), bIt->coordinate );
     }
     else if ( frameBorder == QgsComposerMapGrid::Right )
     {
-      rightFrameEntries.insert( bIt->second.y(), bIt->first );
+      rightFrameEntries.insert( bIt->itemPosition.y(), bIt->coordinate );
     }
     else if ( frameBorder == QgsComposerMapGrid::Top )
     {
-      topFrameEntries.insert( bIt->second.x(), bIt->first );
+      topFrameEntries.insert( bIt->itemPosition.x(), bIt->coordinate );
     }
     else //Bottom
     {
-      bottomFrameEntries.insert( bIt->second.x(), bIt->first );
+      bottomFrameEntries.insert( bIt->itemPosition.x(), bIt->coordinate );
     }
   }
 }
 
-QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( const QPointF& p ) const
+QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( const QPointF& p , const AnnotationCoordinate coordinateType ) const
 {
   if ( !mComposerMap )
   {
@@ -1655,6 +1673,40 @@ QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( const QPo
   }
 
   double framePenWidth = mComposerMap->hasFrame() ? mComposerMap->pen().widthF() : 0.000000001;
+
+  //check for corner coordinates
+  if (( p.y() <= framePenWidth && p.x() <= framePenWidth )  // top left
+      || ( p.y() <= framePenWidth && p.x() >= ( mComposerMap->rect().width() - framePenWidth ) ) //top right
+      || ( p.y() >= ( mComposerMap->rect().height() - framePenWidth ) && p.x() <= framePenWidth ) //bottom left
+      || ( p.y() >= ( mComposerMap->rect().height() - framePenWidth ) && p.x() >= ( mComposerMap->rect().width() - framePenWidth ) ) //bottom right
+     )
+  {
+    //coordinate is in corner - fall back to preferred side for coordinate type
+    if ( coordinateType == QgsComposerMapGrid::Latitude )
+    {
+      if ( p.x() <= framePenWidth )
+      {
+        return QgsComposerMapGrid::Left;
+      }
+      else
+      {
+        return QgsComposerMapGrid::Right;
+      }
+    }
+    else
+    {
+      if ( p.y() <= framePenWidth )
+      {
+        return QgsComposerMapGrid::Top;
+      }
+      else
+      {
+        return QgsComposerMapGrid::Bottom;
+      }
+    }
+  }
+
+  //otherwise, guess side based on point
   if ( p.y() <= framePenWidth )
   {
     return QgsComposerMapGrid::Top;

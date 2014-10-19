@@ -7767,6 +7767,14 @@ Acts on currently active editable layer</source>
         <source>Remove Layer/Group</source>
         <translation>Noņemt slāni/grupu</translation>
     </message>
+    <message>
+        <source>Show Selected Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide Selected Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -32789,7 +32797,7 @@ rindā %2 kolonnā %3</translation>
     </message>
     <message>
         <source>All files (*)</source>
-        <translation>Visi faili (*)</translation>
+        <translation type="obsolete">Visi faili (*)</translation>
     </message>
     <message>
         <source>Unhandled layer will be lost.</source>

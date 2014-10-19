@@ -202,6 +202,15 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
         painter->translate( dX, dY );
       }
     }
+    else if ( mResizeMode == ZoomResizeFrame )
+    {
+      if ( mPictureRotation != 0 )
+      {
+        painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
+        painter->rotate( mPictureRotation );
+        painter->translate( -boundRectWidthMM / 2.0, -boundRectHeightMM / 2.0 );
+      }
+    }
 
     if ( mMode == SVG )
     {
@@ -510,9 +519,9 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
 
   if ( mResizeMode == ZoomResizeFrame && !rect().isEmpty() && !( currentPictureSize.isEmpty() ) )
   {
-    //if width has changed less than height, then fix width and set height correspondingly
+    //if width has changed more than height, then fix width and set height correspondingly
     //else, do the opposite
-    if ( qAbs( rect().width() - rectangle.width() ) <
+    if ( qAbs( rect().width() - rectangle.width() ) >
          qAbs( rect().height() - rectangle.height() ) )
     {
       newRect.setHeight( currentPictureSize.height() * newRect.width() / currentPictureSize.width() );
@@ -532,7 +541,7 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
   }
 
   //find largest scaling of picture with this rotation which fits in item
-  if ( mResizeMode == Zoom )
+  if ( mResizeMode == Zoom || mResizeMode == ZoomResizeFrame )
   {
     QRectF rotatedImageRect = QgsComposerUtils::largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), newRect, mPictureRotation );
     mPictureWidth = rotatedImageRect.width();
@@ -556,6 +565,7 @@ void QgsComposerPicture::setRotation( double r )
 
 void QgsComposerPicture::setPictureRotation( double r )
 {
+  double oldRotation = mPictureRotation;
   mPictureRotation = r;
 
   if ( mResizeMode == Zoom )
@@ -566,6 +576,23 @@ void QgsComposerPicture::setPictureRotation( double r )
     mPictureWidth = rotatedImageRect.width();
     mPictureHeight = rotatedImageRect.height();
     update();
+  }
+  else if ( mResizeMode == ZoomResizeFrame )
+  {
+    QSizeF currentPictureSize = pictureSize();
+    QRectF oldRect = QRectF( pos().x(), pos().y(), rect().width(), rect().height() );
+
+    //calculate actual size of image inside frame
+    QRectF rotatedImageRect = QgsComposerUtils::largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), rect(), oldRotation );
+
+    //rotate image rect by new rotation and get bounding box
+    QTransform tr;
+    tr.rotate( mPictureRotation );
+    QRectF newRect = tr.mapRect( QRectF( 0, 0, rotatedImageRect.width(), rotatedImageRect.height() ) );
+
+    //keep the center in the same location
+    newRect.moveCenter( oldRect.center() );
+    setSceneRect( newRect );
   }
 
   emit pictureRotationChanged( mPictureRotation );

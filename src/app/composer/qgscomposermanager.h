@@ -17,10 +17,31 @@
 #ifndef QGSCOMPOSERMANAGER_H
 #define QGSCOMPOSERMANAGER_H
 
+#include <QItemDelegate>
+
 #include "ui_qgscomposermanagerbase.h"
 
 class QListWidgetItem;
 class QgsComposer;
+
+/**Delegate for a line edit for renaming a composer. Prevents entry of duplicate composer names.*/
+class QgsComposerNameDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    QgsComposerNameDelegate( QObject *parent = 0 );
+
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
+                           const QModelIndex &index ) const;
+
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+    void setModelData( QWidget *editor, QAbstractItemModel *model,
+                       const QModelIndex &index ) const;
+
+    void updateEditorGeometry( QWidget *editor,
+                               const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+};
 
 /**A dialog that shows the existing composer instances. Lets the user add new
 instances and change title of existing ones*/

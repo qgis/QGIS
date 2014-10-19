@@ -21,6 +21,8 @@
 #include "qgsexpression.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgscomposermodel.h"
+#include "qgsvectorlayer.h"
+#include "qgsproject.h"
 
 #include <QCoreApplication>
 #include <QDate>
@@ -32,12 +34,20 @@
 #include <QWebPage>
 #include <QEventLoop>
 
-QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
-    QgsComposerItem( composition ), mHtmlState( 0 ), mHtmlUnitsToMM( 1.0 ),
-    mHtmlLoaded( false ), mMargin( 1.0 ), mFontColor( QColor( 0, 0, 0 ) ),
-    mHAlignment( Qt::AlignLeft ), mVAlignment( Qt::AlignTop ),
-    mExpressionFeature( 0 ), mExpressionLayer( 0 )
+QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
+    : QgsComposerItem( composition )
+    , mHtmlState( 0 )
+    , mHtmlUnitsToMM( 1.0 )
+    , mHtmlLoaded( false )
+    , mMargin( 1.0 )
+    , mFontColor( QColor( 0, 0, 0 ) )
+    , mHAlignment( Qt::AlignLeft )
+    , mVAlignment( Qt::AlignTop )
+    , mExpressionFeature( 0 )
+    , mExpressionLayer( 0 )
+    , mDistanceArea( 0 )
 {
+  mDistanceArea = new QgsDistanceArea();
   mHtmlUnitsToMM = htmlUnitsToMM();
 
   //get default composer font from settings
@@ -71,6 +81,7 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
 
 QgsComposerLabel::~QgsComposerLabel()
 {
+  delete mDistanceArea;
 }
 
 void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
@@ -221,6 +232,23 @@ void QgsComposerLabel::setExpressionContext( QgsFeature* feature, QgsVectorLayer
   mExpressionFeature = feature;
   mExpressionLayer = layer;
   mSubstitutions = substitutions;
+
+  //setup distance area conversion
+  if ( layer )
+  {
+    mDistanceArea->setSourceCrs( layer->crs().srsid() );
+  }
+  else if ( mComposition )
+  {
+    //set to composition's mapsettings' crs
+    mDistanceArea->setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
+  }
+  if ( mComposition )
+  {
+    mDistanceArea->setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
+  }
+  mDistanceArea->setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+
   // Force label to redraw -- fixes label printing for labels with blend modes when used with atlas
   update();
 }
@@ -248,7 +276,7 @@ QString QgsComposerLabel::displayText() const
   replaceDateText( displayText );
   QMap<QString, QVariant> subs = mSubstitutions;
   subs[ "$page" ] = QVariant(( int )mComposition->itemPageNumber( this ) + 1 );
-  return QgsExpression::replaceExpressionText( displayText, mExpressionFeature, mExpressionLayer, &subs );
+  return QgsExpression::replaceExpressionText( displayText, mExpressionFeature, mExpressionLayer, &subs, mDistanceArea );
 }
 
 void QgsComposerLabel::replaceDateText( QString& text ) const
@@ -422,7 +450,7 @@ QString QgsComposerLabel::displayName() const
   }
 
   //if no id, default to portion of label text
-  QString text = displayText();
+  QString text = mText;
   if ( text.isEmpty() )
   {
     return tr( "<label>" );

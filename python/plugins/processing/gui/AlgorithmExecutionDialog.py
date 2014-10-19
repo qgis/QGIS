@@ -175,9 +175,9 @@ class AlgorithmExecutionDialog(QDialog):
                 return param.setValue(widget.selectedoptions)
             else:
                 if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-                    options = dataobjects.getVectorLayers()
+                    options = dataobjects.getVectorLayers(sorting=False)
                 else:
-                    options = dataobjects.getRasterLayers()
+                    options = dataobjects.getRasterLayers(sorting=False)
                 return param.setValue([options[i] for i in widget.selectedoptions])
         elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs,
                         ParameterExtent)):

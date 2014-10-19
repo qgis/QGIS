@@ -37,7 +37,10 @@ QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
     //cancel running request
     mReply->abort();
   }
-  mReply->deleteLater();
+  if ( mReply )
+  {
+    mReply->deleteLater();
+  }
 }
 
 void QgsNetworkContentFetcher::fetchContent( const QUrl url )

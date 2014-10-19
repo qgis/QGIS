@@ -14,6 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef QGSCOMPOSERITEMGROUP_H
+#define QGSCOMPOSERITEMGROUP_H
 
 #include "qgscomposeritem.h"
 #include <QSet>
@@ -72,3 +74,5 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
     QSet<QgsComposerItem*> mItems;
     QRectF mBoundingRectangle;
 };
+
+#endif

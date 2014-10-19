@@ -504,7 +504,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   connectCompositionSlots();
   connectOtherSlots();
 
-  mComposition->setParent( mView );
   mView->setComposition( mComposition );
   //this connection is set up after setting the view's composition, as we don't want setComposition called
   //for new composers

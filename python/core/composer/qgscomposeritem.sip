@@ -5,6 +5,9 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
 {
 %TypeHeaderCode
 #include <qgscomposeritem.h>
+#include <qgscomposerarrow.h>
+#include <qgscomposerframe.h>
+#include <qgscomposeritemgroup.h>
 #include <qgscomposerlabel.h>
 #include <qgscomposerlegend.h>
 #include <qgscomposermap.h>
@@ -13,6 +16,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
 #include <qgscomposerscalebar.h>
 #include <qgscomposershape.h>
 #include <qgscomposertable.h>
+#include <qgscomposertexttable.h>
 #include <qgscomposerattributetable.h>
 %End
 
@@ -25,16 +29,14 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     sipClass = sipClass_QgsComposerItem;
     *sipCppRet = static_cast<QgsComposerItem*>(sipCpp);
     break;
-#if 0
   case QgsComposerItem::ComposerArrow:
     sipClass = sipClass_QgsComposerArrow;
     *sipCppRet = static_cast<QgsComposerArrow*>(sipCpp);
-    break;
+    break; 
   case QgsComposerItem::ComposerItemGroup:
     sipClass = sipClass_QgsComposerItemGroup;
     *sipCppRet = static_cast<QgsComposerItemGroup*>(sipCpp);
     break;
-#endif
   case QgsComposerItem::ComposerLabel:
     sipClass = sipClass_QgsComposerLabel;
     *sipCppRet = static_cast<QgsComposerLabel*>(sipCpp);
@@ -71,12 +73,14 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     sipClass = sipClass_QgsComposerAttributeTable;
     *sipCppRet = static_cast<QgsComposerAttributeTable*>(sipCpp);
     break;
-/*
   case QgsComposerItem::ComposerTextTable:
     sipClass = sipClass_QgsComposerTextTable;
     *sipCppRet = static_cast<QgsComposerTextTable*>(sipCpp);
     break;
-*/
+  case QgsComposerItem::ComposerFrame:
+    sipClass = sipClass_QgsComposerFrame;
+    *sipCppRet = static_cast<QgsComposerFrame*>(sipCpp);
+    break;
   default:
     sipClass = 0;
   }

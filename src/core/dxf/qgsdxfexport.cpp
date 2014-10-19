@@ -371,7 +371,7 @@ void QgsDxfExport::writeGroup( QColor color, int exactMatchCode, int rgbCode, in
   int minDistAt = -1;
   int minDist = INT_MAX;
 
-  for ( int i = 1; i < sizeof( mDxfColors ) / sizeof( *mDxfColors ); ++i )
+  for ( int i = 1; i < ( int )( sizeof( mDxfColors ) / sizeof( *mDxfColors ) ); ++i )
   {
     int dist = color_distance( color.rgba(), i );
     if ( dist == 0 )
@@ -390,7 +390,7 @@ void QgsDxfExport::writeGroup( QColor color, int exactMatchCode, int rgbCode, in
   writeGroup( exactMatchCode, minDistAt );
   int c = ( color.red() & 0xff ) * 0x10000 + ( color.green() & 0xff ) * 0x100 + ( color.blue() & 0xff );
   writeGroup( rgbCode, c );
-  if( transparencyCode != -1 && color.alpha() < 255 )
+  if ( transparencyCode != -1 && color.alpha() < 255 )
     writeGroup( transparencyCode, 0x2000000 | color.alpha() );
 }
 
@@ -491,7 +491,7 @@ int QgsDxfExport::writeHandle( int code, int handle )
   if ( handle == 0 )
     handle = mNextHandleId++;
 
-  Q_ASSERT(( "DXF handle too large", handle < DXF_HANDMAX ) );
+  Q_ASSERT_X( handle < DXF_HANDMAX, "QgsDxfExport::writeHandle(int, int)", "DXF handle too large" );
 
   writeGroup( code, QString( "%1" ).arg( handle, 0, 16 ) );
   return handle;
@@ -1000,7 +1000,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
     {
       QgsSymbolV2LevelItem& item = level[i];
       QHash< QgsSymbolV2*, QList<QgsFeature> >::iterator levelIt = features.find( item.symbol() );
-      if( levelIt == features.end() )
+      if ( levelIt == features.end() )
       {
         QgsDebugMsg( QString( "No feature found for symbol on %1 %2.%3" ).arg( layer->id() ).arg( l ).arg( i ) );
         continue;

@@ -203,9 +203,9 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 
     if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
+      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
 
-      QgsMapLayer* layer = nodeLayer->layer();
+      QgsMapLayer *layer = nodeLayer->layer();
       if ( !layer )
         return QVariant();
 
@@ -218,39 +218,47 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
           return QIcon( rlayer->previewAsPixmap( QSize( 32, 32 ) ) );
         }
       }
-      else if ( layer->type() == QgsMapLayer::VectorLayer )
-      {
-        QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( layer );
-        if ( vlayer->isEditable() )
-        {
-          if ( vlayer->isModified() )
-            return QIcon( QgsApplication::getThemePixmap( "/mIconEditableEdits.png" ) );
-          else
-            return QIcon( QgsApplication::getThemePixmap( "/mIconEditable.png" ) );
-        }
-      }
 
-      // if there's just on legend entry that should be embedded in layer - do that!
-      if ( testFlag( ShowLegend ) && mLegendNodes[nodeLayer].count() == 1 && mLegendNodes[nodeLayer][0]->isEmbeddedInParent() )
-        return mLegendNodes[nodeLayer][0]->data( Qt::DecorationRole );
+      QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer*>( layer );
 
       if ( layer->type() == QgsMapLayer::RasterLayer )
       {
         return QgsLayerItem::iconRaster();
       }
+
+      QIcon icon;
+
+      // if there's just on legend entry that should be embedded in layer - do that!
+      if ( testFlag( ShowLegend ) && mLegendNodes[nodeLayer].count() == 1 && mLegendNodes[nodeLayer][0]->isEmbeddedInParent() )
+      {
+        icon = QIcon( qvariant_cast<QPixmap>( mLegendNodes[nodeLayer][0]->data( Qt::DecorationRole ) ) );
+      }
       else if ( layer->type() == QgsMapLayer::VectorLayer )
       {
-        QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( layer );
         if ( vlayer->geometryType() == QGis::Point )
-          return QgsLayerItem::iconPoint();
+          icon = QgsLayerItem::iconPoint();
         else if ( vlayer->geometryType() == QGis::Line )
-          return QgsLayerItem::iconLine();
+          icon = QgsLayerItem::iconLine();
         else if ( vlayer->geometryType() == QGis::Polygon )
-          return QgsLayerItem::iconPolygon();
+          icon = QgsLayerItem::iconPolygon();
         else if ( vlayer->geometryType() == QGis::NoGeometry )
-          return QgsLayerItem::iconTable();
+          icon = QgsLayerItem::iconTable();
+        else
+          icon = QgsLayerItem::iconDefault();
       }
-      return QgsLayerItem::iconDefault();
+
+      if ( vlayer && vlayer->isEditable() )
+      {
+        QPixmap pixmap( icon.pixmap( 16, 16 ) );
+
+        QPainter painter( &pixmap );
+        painter.drawPixmap( 0, 0, 16, 16, QgsApplication::getThemePixmap( vlayer->isModified() ? "/mIconEditableEdits.png" : "/mIconEditable.png" ) );
+        painter.end();
+
+        icon = QIcon( pixmap );
+      }
+
+      return icon;
     }
   }
   else if ( role == Qt::CheckStateRole )

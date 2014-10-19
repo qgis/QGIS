@@ -41,6 +41,8 @@ QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): Q
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/ComposerManager/geometry" ).toByteArray() );
 
+  mComposerListWidget->setItemDelegate( new QgsComposerNameDelegate( mComposerListWidget ) );
+
   connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
   connect( QgisApp::instance(), SIGNAL( composerAdded( QgsComposerView* ) ), this, SLOT( refreshComposers() ) );
   connect( QgisApp::instance(), SIGNAL( composerRemoved( QgsComposerView* ) ), this, SLOT( refreshComposers() ) );
@@ -486,4 +488,62 @@ void QgsComposerManager::on_mComposerListWidget_itemChanged( QListWidgetItem * i
     it.value()->setTitle( item->text() );
   }
   mComposerListWidget->sortItems();
+}
+
+
+//
+// QgsComposerNameDelegate
+//
+
+QgsComposerNameDelegate::QgsComposerNameDelegate( QObject *parent )
+    : QItemDelegate( parent )
+{
+
+}
+
+QWidget *QgsComposerNameDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  Q_UNUSED( option );
+  Q_UNUSED( index );
+
+  //create a line edit
+  QLineEdit *lineEdit = new QLineEdit( parent );
+  return lineEdit;
+}
+
+void QgsComposerNameDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+{
+  QString text = index.model()->data( index, Qt::EditRole ).toString();
+  QLineEdit *lineEdit = static_cast<QLineEdit*>( editor );
+  lineEdit->setText( text );
+}
+
+void QgsComposerNameDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+{
+  QLineEdit *lineEdit = static_cast<QLineEdit*>( editor );
+  QString value = lineEdit->text();
+
+  //has name changed?
+  bool changed = model->data( index, Qt::EditRole ).toString() != value;
+
+  //check if name already exists
+  QStringList cNames;
+  foreach ( QgsComposer* c, QgisApp::instance()->printComposers() )
+  {
+    cNames << c->title();
+  }
+  if ( changed && cNames.contains( value ) )
+  {
+    //name exists!
+    QMessageBox::warning( 0, tr( "Rename composer" ), tr( "There is already a composer named \"%1\"" ).arg( value ) );
+    return;
+  }
+
+  model->setData( index, QVariant( value ), Qt::EditRole );
+}
+
+void QgsComposerNameDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  Q_UNUSED( index );
+  editor->setGeometry( option.rect );
 }
