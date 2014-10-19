@@ -1791,6 +1791,26 @@ void QgsComposition::unlockAllItems()
   QgsProject::instance()->dirty( true );
 }
 
+QgsComposerItemGroup *QgsComposition::groupItems( QList<QgsComposerItem *> items )
+{
+  if ( items.size() < 2 )
+  {
+    //not enough items for a group
+    return 0;
+  }
+
+  QgsComposerItemGroup* itemGroup = new QgsComposerItemGroup( this );
+
+  QList<QgsComposerItem*>::iterator itemIter = items.begin();
+  for ( ; itemIter != items.end(); ++itemIter )
+  {
+    itemGroup->addItem( *itemIter );
+  }
+
+  addItem( itemGroup );
+  return itemGroup;
+}
+
 void QgsComposition::updateZValues( const bool addUndoCommands )
 {
   int counter = mItemsModel->zOrderListSize();

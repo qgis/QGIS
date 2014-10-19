@@ -1777,20 +1777,16 @@ void QgsComposerView::groupItems()
     return;
   }
 
+  //group selected items
   QList<QgsComposerItem*> selectionList = composition()->selectedComposerItems();
-  if ( selectionList.size() < 2 )
-  {
-    return; //not enough items for a group
-  }
-  QgsComposerItemGroup* itemGroup = new QgsComposerItemGroup( composition() );
+  QgsComposerItemGroup* itemGroup = composition()->groupItems( selectionList );
 
-  QList<QgsComposerItem*>::iterator itemIter = selectionList.begin();
-  for ( ; itemIter != selectionList.end(); ++itemIter )
+  if ( !itemGroup )
   {
-    itemGroup->addItem( *itemIter );
+    //group could not be created
+    return;
   }
 
-  composition()->addItem( itemGroup );
   itemGroup->setSelected( true );
   emit selectedItemChanged( itemGroup );
 }
