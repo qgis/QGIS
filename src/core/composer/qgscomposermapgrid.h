@@ -808,6 +808,14 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     QRectF mPrevPaintRect;
     QPolygonF mPrevMapPolygon;
 
+    class QgsMapAnnotation
+    {
+      public:
+        double coordinate;
+        QPointF itemPosition;
+        QgsComposerMapGrid::AnnotationCoordinate coordinateType;
+    };
+
     /**Draws the map grid*/
     void drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines ) const;
 
@@ -817,13 +825,14 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
         @param vLines vertical coordinate lines in item coordinates*/
     void drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines ) const;
 
-    void drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString ) const;
+    void drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString, const AnnotationCoordinate coordinateType ) const;
 
     /**Draws a single annotation
-        @param p drawing painter
-        @param pos item coordinates where to draw
-        @param rotation text rotation
-        @param annotationText the text to draw*/
+     * @param p drawing painter
+     * @param pos item coordinates where to draw
+     * @param rotation text rotation
+     * @param annotationText the text to draw
+    */
     void drawAnnotation( QPainter* p, const QPointF& pos, int rotation, const QString& annotationText ) const;
 
     QString gridAnnotationString( double value, AnnotationCoordinate coord ) const;
@@ -849,8 +858,11 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     void drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, BorderSide border ) const;
 
-    /**Returns the item border of a point (in item coordinates)*/
-    BorderSide borderForLineCoord( const QPointF& p ) const;
+    /**Returns the item border of a point (in item coordinates)
+     * @param p point
+     * @param coordinateType coordinate type
+    */
+    BorderSide borderForLineCoord( const QPointF& p, const AnnotationCoordinate coordinateType ) const;
 
     /**Get parameters for drawing grid in CRS different to map CRS*/
     int crsGridParams( QgsRectangle& crsRect, QgsCoordinateTransform& inverseTransform ) const;
