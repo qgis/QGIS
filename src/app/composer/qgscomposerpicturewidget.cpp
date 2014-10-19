@@ -225,7 +225,8 @@ void QgsComposerPictureWidget::on_mResizeModeComboBox_currentIndexChanged( int i
   mPicture->endCommand();
 
   //disable picture rotation for non-zoom modes
-  mRotationGroupBox->setEnabled( mPicture->resizeMode() == QgsComposerPicture::Zoom );
+  mRotationGroupBox->setEnabled( mPicture->resizeMode() == QgsComposerPicture::Zoom ||
+                                 mPicture->resizeMode() == QgsComposerPicture::ZoomResizeFrame );
 
   //disable anchor point control for certain zoom modes
   if ( mPicture->resizeMode() == QgsComposerPicture::Zoom ||
@@ -408,7 +409,8 @@ void QgsComposerPictureWidget::setGuiElementValues()
 
     mResizeModeComboBox->setCurrentIndex(( int )mPicture->resizeMode() );
     //disable picture rotation for non-zoom modes
-    mRotationGroupBox->setEnabled( mPicture->resizeMode() == QgsComposerPicture::Zoom );
+    mRotationGroupBox->setEnabled( mPicture->resizeMode() == QgsComposerPicture::Zoom ||
+                                   mPicture->resizeMode() == QgsComposerPicture::ZoomResizeFrame );
 
     mAnchorPointComboBox->setCurrentIndex(( int )mPicture->pictureAnchor() );
     //disable anchor point control for certain zoom modes
