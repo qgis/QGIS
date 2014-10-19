@@ -55,11 +55,11 @@ class rasterize(GdalAlgorithm):
                           self.INPUT))
         self.addParameter(ParameterSelection(self.DIMENSIONS,
                           'Set output raster size', ['Output size in pixels',
-                          'Output resolution in map units per pixel'], 0))
+                          'Output resolution in map units per pixel'], 1))
         self.addParameter(ParameterNumber(self.WIDTH, 'Horizontal', 0.0,
-                          99999999.999999, 3000.0))
+                          99999999.999999, 100.0))
         self.addParameter(ParameterNumber(self.HEIGHT, 'Vertical', 0.0,
-                          99999999.999999, 3000.0))
+                          99999999.999999, 100.0))
 
         self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
 
