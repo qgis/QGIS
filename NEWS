@@ -1,6 +1,6 @@
 QGIS News
 Change history for the QGIS Project
-Sunday October 19, 2014
+Monday October 20, 2014
 
 
 ------------------------------------------------------------------------
@@ -34,8 +34,8 @@ Sunday October 19, 2014
 ------------------------------------------------------------------------
 
 
-Last Updated: Sunday October 19, 2014
-Last Change : Sunday October 19, 2014
+Last Updated: Monday October 20, 2014
+Last Change : Monday October 20, 2014
 
 
   1. What's new in Version 2.6.0 'Brighton'?
@@ -67,19 +67,19 @@ This is a minor release increment with the following new features:
 - Multiple overviews for a map item 
 - HTML item improvements 
 - Composer map grid improvements 
-- Processing: On-line collection of models and scripts 
-- On-line collection of models and scripts
+- Processing now has an online collection of models and scripts 
+- Processing graphical modeller completely rewritten
 - API changes for QGIS widgets 
 - Enhancements of searching with GetFeatureInfo request 
 - Add a precision setting for GetFeatureInfo geometry attributes 
 - Better random colour choice 
 - Symbology UI Improvements 
-- Syntax highlighting code editor 
+- Syntax highlighting code and expression editor 
 - User defined color palettes 
 - New color picker dialog 
 - Single select feature tool merged into select by rectangle 
 - Add layer to map canvas behaviour 
-- Add icon size 48 and 64 
+- Support icon sizes of 48 and 64 pixels
 - New colour buttons 
 - Context menu for identify tool 
 
