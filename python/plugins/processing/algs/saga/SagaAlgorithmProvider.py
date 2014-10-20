@@ -47,12 +47,14 @@ class SagaAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         if SagaUtils.findSagaFolder() is None:
-            ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                        SagaUtils.SAGA_208,
-                                        'Use SAGA 2.0.8 syntax', not isMac()))
             if isWindows() or isMac():
                 ProcessingConfig.addSetting(Setting(self.getDescription(),
                                             SagaUtils.SAGA_FOLDER, 'SAGA folder', ''))
+                ProcessingConfig.addSetting(Setting(self.getDescription(),
+                    SagaUtils.SAGA_LATEST,
+                    'Use latest most recent version(%s) instead of base one (%s)'
+                    % (SagaUtils.LATEST_VERSION_NUMBER, SagaUtils.BASE_VERSION_NUMBER),
+                    not isMac()))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
                                     SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION,
                                     'Enable SAGA Import/Export optimizations',

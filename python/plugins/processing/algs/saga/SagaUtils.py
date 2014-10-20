@@ -34,16 +34,17 @@ from qgis.core import *
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import *
-from processing.tests.TestData import polygons
-
 
 class SagaUtils:
 
-    SAGA_208 = 'SAGA_208'
+    SAGA_LATEST = 'SAGA_LATEST'
     SAGA_LOG_COMMANDS = 'SAGA_LOG_COMMANDS'
     SAGA_LOG_CONSOLE = 'SAGA_LOG_CONSOLE'
     SAGA_FOLDER = 'SAGA_FOLDER'
     SAGA_IMPORT_EXPORT_OPTIMIZATION = 'SAGA_IMPORT_EXPORT_OPTIMIZATION'
+
+    LATEST_VERSION_NUMBER = '2.1.2'
+    BASE_VERSION_NUMBER = '2.0.8'
 
     isSagaInstalled = False
 
@@ -87,7 +88,7 @@ class SagaUtils:
         if SagaUtils.findSagaFolder() is not None:
             return not isMac();
         else:
-            return ProcessingConfig.getSetting(SagaUtils.SAGA_208)
+            return not ProcessingConfig.getSetting(SagaUtils.SAGA_LATEST)
 
     @staticmethod
     def sagaDescriptionPath():
@@ -113,6 +114,29 @@ class SagaUtils:
 
         fout.write('exit')
         fout.close()
+
+    @staticmethod
+    def getSagaInstalledVersion():
+        if isWindows():
+            commands = [os.path.join(SagaUtils.sagaPath(), "saga_cmd.exe"), "-v"]
+        elif isMac():
+            commands = [os.path.join(SagaUtils.sagaPath(), "saga_cmd"), "-v"]
+        else:
+            commands = ["saga_cmd", "-v"]
+        proc = subprocess.Popen(
+            commands,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stdin=open(os.devnull),
+            stderr=subprocess.STDOUT,
+            universal_newlines=True,
+            ).stdout
+        lines = proc.readlines()
+        for line in lines:
+            if line.startswith("SAGA Version:"):
+                return line.split(" ")[-1].strip()
+        return None
+
 
     @staticmethod
     def executeSaga(progress):
@@ -168,12 +192,21 @@ class SagaUtils:
                 return
 
         try:
-            from processing import runalg
-            result = runalg('saga:polygoncentroids', polygons(), 0, None)
-            if result is None or not os.path.exists(result['CENTROIDS']):
+            installedVersion = SagaUtils.getSagaInstalledVersion()
+            if installedVersion is None:
                 return 'It seems that SAGA is not correctly installed in \
                         your system.\nPlease install it before running SAGA \
                         algorithms.'
+            if installedVersion not in [SagaUtils.LATEST_VERSION_NUMBER, SagaUtils.BASE_VERSION_NUMBER]:
+                return ('The installed version (%s) is not supported\n'
+                        'You must installed SAGA %s or SAGA %s'
+                        % (installedVersion, SagaUtils.LATEST_VERSION_NUMBER,
+                           SagaUtils.BASE_VERSION_NUMBER))
+            expectedVersion = SagaUtils.BASE_VERSION_NUMBER if SagaUtils.isSaga208() else SagaUtils.LATEST_VERSION_NUMBER
+            if expectedVersion != installedVersion:
+                return ('The installed version (%s) does not match the version'
+                        'configured in the Processing settings (%s)\n'
+                        'Please, modify your configuration' % (installedVersion, expectedVersion))
         except:
             s = traceback.format_exc()
             return 'Error while checking SAGA installation. SAGA might not \
