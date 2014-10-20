@@ -53,9 +53,11 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
     mIconDataDefineExpressionError = QgsApplication::getThemeIcon( "/mIconDataDefineExpressionError.svg" );
   }
 
+  setFocusPolicy( Qt::StrongFocus );
+
   // set default tool button icon properties
-  setFixedSize( 28, 24 );
-  setStyleSheet( QString( "QToolButton{ background: none; border: none;}" ) );
+  setFixedSize( 30, 26 );
+  setStyleSheet( QString( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }" ) );
   setIconSize( QSize( 24, 24 ) );
   setPopupMode( QToolButton::InstantPopup );
 
