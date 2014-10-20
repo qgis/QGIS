@@ -329,8 +329,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
     int geomType;
     long featuresCounted;
 
-    //! There are deleted feature - REPACK before creating a spatialindex
-    bool mDeletedFeatures;
+    //! Data has been modified - REPACK before creating a spatialindex
+    bool mDataModified;
 
     mutable QStringList mSubLayerList;
 
