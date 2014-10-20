@@ -1456,6 +1456,8 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     }
     if ( atlasOnASingleFile )
     {
+      //prepare for first feature, so that we know paper size to begin with
+      atlasMap->prepareForFeature( 0 );
       mComposition->beginPrintAsPDF( printer, outputFileName );
       // set the correct resolution
       mComposition->beginPrint( printer );
@@ -1615,6 +1617,8 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
   }
   else
   {
+    //prepare for first feature, so that we know paper size to begin with
+    atlasMap->prepareForFeature( 0 );
 
     mComposition->beginPrint( mPrinter, true );
     QPainter painter( &mPrinter );

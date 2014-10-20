@@ -816,6 +816,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     bool dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue,
                               QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
 
+    /**Returns whether a data defined property has been set and is currently active.
+     * @param property data defined property to test
+     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
+     * @note this method was added in version 2.5
+    */
+    bool dataDefinedActive( const QgsComposerObject::DataDefinedProperty property,
+                            const QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const;
+
     /**Evaluates a data defined property and returns the calculated value.
      * @param property data defined property to evaluate
      * @param feature current atlas feature to evaluate property for
@@ -833,6 +841,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @note this method was added in version 2.5
     */
     void prepareDataDefinedExpression( QgsDataDefined *dd, QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties ) const;
+
+    /**Check whether any data defined page settings are active.
+     * @returns true if any data defined page settings are active.
+     * @note this method was added in version 2.5
+    */
+    bool ddPageSizeActive() const;
 
   private slots:
     /*Prepares all data defined expressions*/

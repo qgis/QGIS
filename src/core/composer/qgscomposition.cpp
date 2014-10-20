@@ -2620,8 +2620,11 @@ void QgsComposition::beginPrintAsPDF( QPrinter& printer, const QString& file )
   // https://bugreports.qt-project.org/browse/QTBUG-33583 - PDF output converts text to outline
   // Also an issue with PDF paper size using QPrinter::NativeFormat on Mac (always outputs portrait letter-size)
   printer.setOutputFormat( QPrinter::PdfFormat );
-  printer.setOutputFileName( file );
+
   refreshPageSize();
+  //must set orientation to portrait before setting paper size, otherwise size will be flipped
+  //for landscape sized outputs (#11352)
+  printer.setOrientation( QPrinter::Portrait );
   printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
 
   // TODO: add option for this in Composer
@@ -2640,9 +2643,15 @@ bool QgsComposition::exportAsPDF( const QString& file )
 
 void QgsComposition::doPrint( QPrinter& printer, QPainter& p, bool startNewPage )
 {
-  //set the page size again so that data defined page size takes effect
-  refreshPageSize();
-  printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
+  if ( ddPageSizeActive() )
+  {
+    //set the page size again so that data defined page size takes effect
+    refreshPageSize();
+    //must set orientation to portrait before setting paper size, otherwise size will be flipped
+    //for landscape sized outputs (#11352)
+    printer.setOrientation( QPrinter::Portrait );
+    printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
+  }
 
   //QgsComposition starts page numbering at 0
   int fromPage = ( printer.fromPage() < 1 ) ? 0 : printer.fromPage() - 1 ;
@@ -2699,12 +2708,14 @@ void QgsComposition::beginPrint( QPrinter &printer, const bool evaluateDDPageSiz
   //set user-defined resolution
   printer.setResolution( printResolution() );
 
-  if ( evaluateDDPageSize )
+  if ( evaluateDDPageSize && ddPageSizeActive() )
   {
     //set data defined page size
     refreshPageSize();
+    //must set orientation to portrait before setting paper size, otherwise size will be flipped
+    //for landscape sized outputs (#11352)
+    printer.setOrientation( QPrinter::Portrait );
     printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
-    printer.setOrientation( paperWidth() > paperHeight() ? QPrinter::Landscape : QPrinter::Portrait );
   }
 }
 
@@ -2885,6 +2896,15 @@ bool QgsComposition::setAtlasMode( const AtlasMode mode )
   return true;
 }
 
+bool QgsComposition::ddPageSizeActive() const
+{
+  //check if any data defined page settings are active
+  return dataDefinedActive( QgsComposerObject::PresetPaperSize, &mDataDefinedProperties ) ||
+         dataDefinedActive( QgsComposerObject::PaperWidth, &mDataDefinedProperties ) ||
+         dataDefinedActive( QgsComposerObject::PaperHeight, &mDataDefinedProperties ) ||
+         dataDefinedActive( QgsComposerObject::PaperOrientation, &mDataDefinedProperties );
+}
+
 void QgsComposition::refreshPageSize()
 {
   double pageWidth = mPageWidth;
@@ -3040,6 +3060,35 @@ bool QgsComposition::dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty
   }
 
   return false;
+}
+
+bool QgsComposition::dataDefinedActive( const QgsComposerObject::DataDefinedProperty property, const QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const
+{
+  if ( property == QgsComposerObject::AllProperties || property == QgsComposerObject::NoProperty )
+  {
+    //invalid property
+    return false;
+  }
+  if ( !dataDefinedProperties->contains( property ) )
+  {
+    //missing property
+    return false;
+  }
+
+  QgsDataDefined* dd = 0;
+  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = dataDefinedProperties->find( property );
+  if ( it != dataDefinedProperties->constEnd() )
+  {
+    dd = it.value();
+  }
+
+  if ( !dd )
+  {
+    return false;
+  }
+
+  //found the data defined property, return whether it is active
+  return dd->isActive();
 }
 
 QVariant QgsComposition::dataDefinedValue( QgsComposerObject::DataDefinedProperty property, const QgsFeature *feature, const QgsFields *fields, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const
