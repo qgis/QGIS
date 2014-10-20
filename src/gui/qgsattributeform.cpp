@@ -237,7 +237,12 @@ bool QgsAttributeForm::save()
 
   emit featureSaved( updatedFeature );
 
-  mLayer->triggerRepaint();
+  // [MD] disabled trigger of repaint as it interferes with other stuff (#11361).
+  // This code should be revisited - and the signals should be fired (+ layer repainted)
+  // only when actually doing any changes. I am unsure if it is actually a good idea
+  // to call save() whenever some code asks for vector layer's modified status
+  // (which is the case when attribute table is open)
+  //mLayer->triggerRepaint();
 
   mIsSaving = false;
 
