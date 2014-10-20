@@ -45,7 +45,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-133</y>
+        <y>0</y>
         <width>392</width>
         <height>711</height>
        </rect>
@@ -453,6 +453,27 @@
    <header location="global">qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mLayerComboBox</tabstop>
+  <tabstop>mRefreshPushButton</tabstop>
+  <tabstop>mAttributesPushButton</tabstop>
+  <tabstop>mMarginSpinBox</tabstop>
+  <tabstop>mMaximumColumnsSpinBox</tabstop>
+  <tabstop>mShowOnlyVisibleFeaturesCheckBox</tabstop>
+  <tabstop>mComposerMapComboBox</tabstop>
+  <tabstop>mFeatureFilterCheckBox</tabstop>
+  <tabstop>mFeatureFilterEdit</tabstop>
+  <tabstop>mFeatureFilterButton</tabstop>
+  <tabstop>mShowGridGroupCheckBox</tabstop>
+  <tabstop>mGridStrokeWidthSpinBox</tabstop>
+  <tabstop>mGridColorButton</tabstop>
+  <tabstop>mHeaderFontPushButton</tabstop>
+  <tabstop>mHeaderFontColorButton</tabstop>
+  <tabstop>mHeaderHAlignmentComboBox</tabstop>
+  <tabstop>mContentFontPushButton</tabstop>
+  <tabstop>mContentFontColorButton</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

@@ -23,16 +23,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -60,9 +51,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>330</width>
-        <height>553</height>
+        <y>-5</y>
+        <width>314</width>
+        <height>554</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -371,10 +362,19 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mSearchDirectoriesComboBox</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>mPictureLineEdit</tabstop>
   <tabstop>mPictureBrowseButton</tabstop>
+  <tabstop>mSourceDDBtn</tabstop>
+  <tabstop>mResizeModeComboBox</tabstop>
+  <tabstop>mAnchorPointComboBox</tabstop>
+  <tabstop>mPreviewListWidget</tabstop>
+  <tabstop>mSearchDirectoriesComboBox</tabstop>
+  <tabstop>mRemoveDirectoryButton</tabstop>
+  <tabstop>mAddDirectoryButton</tabstop>
+  <tabstop>mPictureRotationSpinBox</tabstop>
   <tabstop>mRotationFromComposerMapCheckBox</tabstop>
+  <tabstop>mComposerMapComboBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

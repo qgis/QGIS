@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>294</width>
+    <width>300</width>
     <height>506</height>
    </rect>
   </property>
@@ -23,16 +23,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -56,9 +47,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>292</width>
-        <height>504</height>
+        <y>-111</y>
+        <width>284</width>
+        <height>599</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -488,6 +479,26 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>mPaperSizeComboBox</tabstop>
+  <tabstop>mPaperSizeDDBtn</tabstop>
+  <tabstop>mPaperWidthDoubleSpinBox</tabstop>
+  <tabstop>mPaperWidthDDBtn</tabstop>
+  <tabstop>mPaperHeightDoubleSpinBox</tabstop>
+  <tabstop>mPaperHeightDDBtn</tabstop>
+  <tabstop>mPaperUnitsComboBox</tabstop>
+  <tabstop>mNumPagesSpinBox</tabstop>
+  <tabstop>mNumPagesDDBtn</tabstop>
+  <tabstop>mPaperOrientationComboBox</tabstop>
+  <tabstop>mPaperOrientationDDBtn</tabstop>
+  <tabstop>mPageStyleButton</tabstop>
+  <tabstop>mResolutionSpinBox</tabstop>
+  <tabstop>mPrintAsRasterCheckBox</tabstop>
+  <tabstop>mGenerateWorldFileCheckBox</tabstop>
+  <tabstop>mWorldFileMapComboBox</tabstop>
+  <tabstop>mGridResolutionSpinBox</tabstop>
+  <tabstop>mOffsetXSpinBox</tabstop>
+  <tabstop>mOffsetYSpinBox</tabstop>
+  <tabstop>mSnapToleranceSpinBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

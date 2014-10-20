@@ -145,6 +145,12 @@
  </customwidgets>
  <tabstops>
   <tabstop>mComposerListWidget</tabstop>
+  <tabstop>mTemplate</tabstop>
+  <tabstop>mAddButton</tabstop>
+  <tabstop>mTemplatePathLineEdit</tabstop>
+  <tabstop>mTemplatePathBtn</tabstop>
+  <tabstop>mTemplatesUserDirBtn</tabstop>
+  <tabstop>mTemplatesDefaultDirBtn</tabstop>
   <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources/>

@@ -17,16 +17,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -54,9 +45,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-84</y>
-        <width>390</width>
-        <height>448</height>
+        <y>-157</y>
+        <width>391</width>
+        <height>517</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -293,6 +284,25 @@
    <header>qgsdatadefinedbutton.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mRadioUrlSource</tabstop>
+  <tabstop>mUrlLineEdit</tabstop>
+  <tabstop>mFileToolButton</tabstop>
+  <tabstop>mUrlDDBtn</tabstop>
+  <tabstop>mRadioManualSource</tabstop>
+  <tabstop>mInsertExpressionButton</tabstop>
+  <tabstop>mEvaluateExpressionsCheckbox</tabstop>
+  <tabstop>mReloadPushButton</tabstop>
+  <tabstop>mResizeModeComboBox</tabstop>
+  <tabstop>mAddFramePushButton</tabstop>
+  <tabstop>mEmptyFrameCheckBox</tabstop>
+  <tabstop>mHideEmptyBgCheckBox</tabstop>
+  <tabstop>mUseSmartBreaksCheckBox</tabstop>
+  <tabstop>mMaxDistanceSpinBox</tabstop>
+  <tabstop>mUserStylesheetCheckBox</tabstop>
+  <tabstop>mReloadPushButton2</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

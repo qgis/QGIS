@@ -23,16 +23,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -62,7 +53,7 @@
         <x>0</x>
         <y>0</y>
         <width>302</width>
-        <height>686</height>
+        <height>682</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -324,10 +315,25 @@
    <header>qgscolorbuttonv2.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mTextEdit</tabstop>
+  <tabstop>mHtmlCheckBox</tabstop>
+  <tabstop>mInsertExpressionButton</tabstop>
+  <tabstop>mFontButton</tabstop>
+  <tabstop>mFontColorButton</tabstop>
+  <tabstop>mMarginDoubleSpinBox</tabstop>
+  <tabstop>mLeftRadioButton</tabstop>
+  <tabstop>mCenterRadioButton</tabstop>
+  <tabstop>mRightRadioButton</tabstop>
+  <tabstop>mTopRadioButton</tabstop>
+  <tabstop>mMiddleRadioButton</tabstop>
+  <tabstop>mBottomRadioButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup"/>
   <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup"/>
  </buttongroups>
 </ui>

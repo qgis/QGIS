@@ -23,16 +23,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -63,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-805</y>
-        <width>438</width>
-        <height>1872</height>
+        <y>0</y>
+        <width>444</width>
+        <height>2196</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -1300,14 +1291,14 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDataDefinedButton</class>
    <extends>QToolButton</extends>
    <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>
@@ -1337,10 +1328,11 @@
   <tabstop>mSetToMapCanvasExtentButton</tabstop>
   <tabstop>mViewExtentInCanvasButton</tabstop>
   <tabstop>mAtlasCheckBox</tabstop>
+  <tabstop>mAtlasMarginRadio</tabstop>
   <tabstop>mAtlasMarginSpinBox</tabstop>
+  <tabstop>mAtlasMarginDDBtn</tabstop>
   <tabstop>mAtlasPredefinedScaleRadio</tabstop>
   <tabstop>mAtlasFixedScaleRadio</tabstop>
-  <tabstop>mAtlasMarginRadio</tabstop>
   <tabstop>mAddGridPushButton</tabstop>
   <tabstop>mRemoveGridPushButton</tabstop>
   <tabstop>mGridUpButton</tabstop>
@@ -1356,7 +1348,10 @@
   <tabstop>mOffsetYSpinBox</tabstop>
   <tabstop>mCrossWidthSpinBox</tabstop>
   <tabstop>mGridLineStyleButton</tabstop>
+  <tabstop>mGridMarkerStyleButton</tabstop>
   <tabstop>mGridBlendComboBox</tabstop>
+  <tabstop>mFrameStyleComboBox</tabstop>
+  <tabstop>mFrameWidthSpinBox</tabstop>
   <tabstop>mGridFramePenSizeSpinBox</tabstop>
   <tabstop>mGridFramePenColorButton</tabstop>
   <tabstop>mGridFrameFill1ColorButton</tabstop>
@@ -1365,8 +1360,6 @@
   <tabstop>mCheckGridRightSide</tabstop>
   <tabstop>mCheckGridTopSide</tabstop>
   <tabstop>mCheckGridBottomSide</tabstop>
-  <tabstop>mFrameStyleComboBox</tabstop>
-  <tabstop>mFrameWidthSpinBox</tabstop>
   <tabstop>mDrawAnnotationGroupBox</tabstop>
   <tabstop>mAnnotationFormatComboBox</tabstop>
   <tabstop>mAnnotationPositionLeftComboBox</tabstop>
@@ -1381,7 +1374,6 @@
   <tabstop>mAnnotationFontColorButton</tabstop>
   <tabstop>mDistanceToMapFrameSpinBox</tabstop>
   <tabstop>mCoordinatePrecisionSpinBox</tabstop>
-  <tabstop>mGridMarkerStyleButton</tabstop>
   <tabstop>mAddOverviewPushButton</tabstop>
   <tabstop>mRemoveOverviewPushButton</tabstop>
   <tabstop>mOverviewUpButton</tabstop>

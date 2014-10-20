@@ -23,16 +23,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -41,23 +32,14 @@
       <enum>QFrame::StyledPanel</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
       <property name="horizontalSpacing">
        <number>0</number>
       </property>
       <property name="verticalSpacing">
        <number>3</number>
+      </property>
+      <property name="margin">
+       <number>0</number>
       </property>
       <item row="0" column="1">
        <widget class="QCheckBox" name="mUseAtlasCheckBox">
@@ -109,7 +91,7 @@
            <x>0</x>
            <y>0</y>
            <width>431</width>
-           <height>569</height>
+           <height>567</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="mainLayout">
@@ -302,7 +284,7 @@
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -316,6 +298,21 @@
    <header location="global">qgsfieldcombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mUseAtlasCheckBox</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mAtlasCoverageLayerComboBox</tabstop>
+  <tabstop>mAtlasHideCoverageCheckBox</tabstop>
+  <tabstop>mAtlasFeatureFilterCheckBox</tabstop>
+  <tabstop>mAtlasFeatureFilterEdit</tabstop>
+  <tabstop>mAtlasFeatureFilterButton</tabstop>
+  <tabstop>mAtlasFilenamePatternEdit</tabstop>
+  <tabstop>mAtlasFilenameExpressionButton</tabstop>
+  <tabstop>mAtlasSingleFileCheckBox</tabstop>
+  <tabstop>mAtlasSortFeatureCheckBox</tabstop>
+  <tabstop>mAtlasSortFeatureKeyComboBox</tabstop>
+  <tabstop>mAtlasSortFeatureDirectionButton</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

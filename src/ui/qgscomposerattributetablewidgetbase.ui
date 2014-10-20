@@ -45,7 +45,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-91</y>
+        <y>-400</y>
         <width>392</width>
         <height>1192</height>
        </rect>
@@ -704,6 +704,40 @@
    <header location="global">qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mSourceComboBox</tabstop>
+  <tabstop>mLayerComboBox</tabstop>
+  <tabstop>mRelationsComboBox</tabstop>
+  <tabstop>mRefreshPushButton</tabstop>
+  <tabstop>mAttributesPushButton</tabstop>
+  <tabstop>mMaximumRowsSpinBox</tabstop>
+  <tabstop>mUniqueOnlyCheckBox</tabstop>
+  <tabstop>mShowOnlyVisibleFeaturesCheckBox</tabstop>
+  <tabstop>mComposerMapComboBox</tabstop>
+  <tabstop>mIntersectAtlasCheckBox</tabstop>
+  <tabstop>mFeatureFilterCheckBox</tabstop>
+  <tabstop>mFeatureFilterEdit</tabstop>
+  <tabstop>mFeatureFilterButton</tabstop>
+  <tabstop>mDrawEmptyCheckBox</tabstop>
+  <tabstop>mMarginSpinBox</tabstop>
+  <tabstop>mHeaderModeComboBox</tabstop>
+  <tabstop>mEmptyModeComboBox</tabstop>
+  <tabstop>mEmptyMessageLineEdit</tabstop>
+  <tabstop>mBackgroundColorButton</tabstop>
+  <tabstop>mShowGridGroupCheckBox</tabstop>
+  <tabstop>mGridStrokeWidthSpinBox</tabstop>
+  <tabstop>mGridColorButton</tabstop>
+  <tabstop>mHeaderFontPushButton</tabstop>
+  <tabstop>mHeaderFontColorButton</tabstop>
+  <tabstop>mHeaderHAlignmentComboBox</tabstop>
+  <tabstop>mContentFontPushButton</tabstop>
+  <tabstop>mContentFontColorButton</tabstop>
+  <tabstop>mResizeModeComboBox</tabstop>
+  <tabstop>mAddFramePushButton</tabstop>
+  <tabstop>mEmptyFrameCheckBox</tabstop>
+  <tabstop>mHideEmptyBgCheckBox</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

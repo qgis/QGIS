@@ -671,8 +671,13 @@
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorButtonV2</class>
@@ -685,16 +690,47 @@
    <header>qgspenstylecombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mPageSpinBox</tabstop>
+  <tabstop>mXPosSpin</tabstop>
+  <tabstop>mXPositionDDBtn</tabstop>
+  <tabstop>mYPosSpin</tabstop>
+  <tabstop>mYPositionDDBtn</tabstop>
+  <tabstop>mWidthSpin</tabstop>
+  <tabstop>mWidthDDBtn</tabstop>
+  <tabstop>mHeightSpin</tabstop>
+  <tabstop>mHeightDDBtn</tabstop>
+  <tabstop>mUpperLeftCheckBox</tabstop>
+  <tabstop>mUpperMiddleCheckBox</tabstop>
+  <tabstop>mUpperRightCheckBox</tabstop>
+  <tabstop>mMiddleLeftCheckBox</tabstop>
+  <tabstop>mMiddleCheckBox</tabstop>
+  <tabstop>mMiddleRightCheckBox</tabstop>
+  <tabstop>mLowerLeftCheckBox</tabstop>
+  <tabstop>mLowerMiddleCheckBox</tabstop>
+  <tabstop>mLowerRightCheckBox</tabstop>
+  <tabstop>mItemRotationSpinBox</tabstop>
+  <tabstop>mItemRotationDDBtn</tabstop>
+  <tabstop>mFrameGroupBox</tabstop>
+  <tabstop>mFrameColorButton</tabstop>
+  <tabstop>mOutlineWidthSpinBox</tabstop>
+  <tabstop>mFrameJoinStyleCombo</tabstop>
+  <tabstop>mBackgroundGroupBox</tabstop>
+  <tabstop>mBackgroundColorButton</tabstop>
+  <tabstop>mItemIdLineEdit</tabstop>
+  <tabstop>mBlendModeCombo</tabstop>
+  <tabstop>mBlendModeDDBtn</tabstop>
+  <tabstop>mTransparencySlider</tabstop>
+  <tabstop>mTransparencySpnBx</tabstop>
+  <tabstop>mTransparencyDDBtn</tabstop>
+  <tabstop>mExcludeFromPrintsCheckBox</tabstop>
+  <tabstop>mExcludePrintsDDBtn</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -51,7 +51,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-124</y>
+        <y>-427</y>
         <width>369</width>
         <height>817</height>
        </rect>
@@ -585,7 +585,7 @@
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -604,6 +604,29 @@
    <header>qgspenstylecombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mMapComboBox</tabstop>
+  <tabstop>mStyleComboBox</tabstop>
+  <tabstop>mUnitsComboBox</tabstop>
+  <tabstop>mUnitLabelLineEdit</tabstop>
+  <tabstop>mMapUnitsPerBarUnitSpinBox</tabstop>
+  <tabstop>mSegmentsLeftSpinBox</tabstop>
+  <tabstop>mNumberOfSegmentsSpinBox</tabstop>
+  <tabstop>mSegmentSizeSpinBox</tabstop>
+  <tabstop>mHeightSpinBox</tabstop>
+  <tabstop>mBoxSizeSpinBox</tabstop>
+  <tabstop>mLabelBarSpaceSpinBox</tabstop>
+  <tabstop>mLineWidthSpinBox</tabstop>
+  <tabstop>mLineJoinStyleCombo</tabstop>
+  <tabstop>mLineCapStyleCombo</tabstop>
+  <tabstop>mAlignmentComboBox</tabstop>
+  <tabstop>mFontButton</tabstop>
+  <tabstop>mFontColorButton</tabstop>
+  <tabstop>mFillColorButton</tabstop>
+  <tabstop>mFillColor2Button</tabstop>
+  <tabstop>mStrokeColorButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

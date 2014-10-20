@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>372</width>
-        <height>1327</height>
+        <y>-319</y>
+        <width>375</width>
+        <height>1291</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -868,9 +868,9 @@
  <tabstops>
   <tabstop>scrollArea</tabstop>
   <tabstop>mTitleLineEdit</tabstop>
+  <tabstop>mTitleAlignCombo</tabstop>
   <tabstop>mMapComboBox</tabstop>
   <tabstop>mWrapCharLineEdit</tabstop>
-  <tabstop>mTitleAlignCombo</tabstop>
   <tabstop>mCheckBoxAutoUpdate</tabstop>
   <tabstop>mUpdateAllPushButton</tabstop>
   <tabstop>mItemTreeView</tabstop>
@@ -894,13 +894,13 @@
   <tabstop>mSymbolHeightSpinBox</tabstop>
   <tabstop>mWmsLegendWidthSpinBox</tabstop>
   <tabstop>mWmsLegendHeightSpinBox</tabstop>
+  <tabstop>mTitleSpaceBottomSpinBox</tabstop>
   <tabstop>mGroupSpaceSpinBox</tabstop>
   <tabstop>mLayerSpaceSpinBox</tabstop>
   <tabstop>mSymbolSpaceSpinBox</tabstop>
   <tabstop>mIconLabelSpaceSpinBox</tabstop>
   <tabstop>mBoxSpaceSpinBox</tabstop>
   <tabstop>mColumnSpaceSpinBox</tabstop>
-  <tabstop>mTitleSpaceBottomSpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
