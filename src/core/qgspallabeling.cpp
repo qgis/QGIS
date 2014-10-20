@@ -3944,7 +3944,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
         //for diagrams, remove the additional 'd' at the end of the layer id
         QString layerId = layerName;
         layerId.chop( 1 );
-        mResults->mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), QString( "" ), layerId, QFont(), true, false );
+        mResults->mLabelSearchTree->insertLabel( *it, QString( palGeometry->strId() ).toInt(), QString( "" ), layerId, QFont(), true, false );
       }
       continue;
     }
@@ -4020,7 +4020,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     if ( mResults->mLabelSearchTree )
     {
       QString labeltext = (( QgsPalGeometry* )( *it )->getFeaturePart()->getUserGeometry() )->text();
-      mResults->mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), layerName, labeltext, dFont, false, palGeometry->isPinned() );
+      mResults->mLabelSearchTree->insertLabel( *it, QString( palGeometry->strId() ).toInt(), layerName, labeltext, dFont, false, palGeometry->isPinned() );
     }
   }
 
@@ -4719,7 +4719,7 @@ void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
 
   // generate pixmap representation of label component drawing
   bool mapUnits = ( tmpLyr.shadowRadiusUnits == QgsPalLayerSettings::MapUnits );
-  double radius = tmpLyr.scaleToPixelContext( tmpLyr.shadowRadius , context, tmpLyr.shadowRadiusUnits, !mapUnits, tmpLyr.shadowRadiusMapUnitScale );
+  double radius = tmpLyr.scaleToPixelContext( tmpLyr.shadowRadius, context, tmpLyr.shadowRadiusUnits, !mapUnits, tmpLyr.shadowRadiusMapUnitScale );
   radius /= ( mapUnits ? tmpLyr.vectorScaleFactor / component.dpiRatio() : 1 );
   radius = ( int )( radius + 0.5 );
 

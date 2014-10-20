@@ -525,7 +525,7 @@ void QgsComposition::setStatusMessage( const QString & message )
   emit statusMsgChanged( message );
 }
 
-QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position , const bool ignoreLocked ) const
+QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position, const bool ignoreLocked ) const
 {
   return composerItemAt( position, 0, ignoreLocked );
 }
@@ -2654,7 +2654,7 @@ void QgsComposition::doPrint( QPrinter& printer, QPainter& p, bool startNewPage 
   }
 
   //QgsComposition starts page numbering at 0
-  int fromPage = ( printer.fromPage() < 1 ) ? 0 : printer.fromPage() - 1 ;
+  int fromPage = ( printer.fromPage() < 1 ) ? 0 : printer.fromPage() - 1;
   int toPage = ( printer.toPage() < 1 ) ? numPages() - 1 : printer.toPage() - 1;
 
   bool pageExported = false;

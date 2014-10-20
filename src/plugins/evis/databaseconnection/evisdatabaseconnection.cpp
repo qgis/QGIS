@@ -51,52 +51,52 @@ eVisDatabaseConnection::eVisDatabaseConnection( QString hostname, int port, QStr
 /**
 * Public method called to finalize a connection to a database
 */
-bool eVisDatabaseConnection::connect( )
+bool eVisDatabaseConnection::connect()
 {
   //If a database is currnently open close the connection
-  if ( !mDatabase.isOpen( ) )
+  if ( !mDatabase.isOpen() )
   {
-    mDatabase.close( );
+    mDatabase.close();
   }
 
   //Add the correct database to the list of database connections, Reuse a connection if the connection exists in the list already.
-  if ( MSACCESS == databaseType( ) && !mDatabase.contains( "odbc" ) )
+  if ( MSACCESS == databaseType() && !mDatabase.contains( "odbc" ) )
   {
     mDatabase = QSqlDatabase::addDatabase( "QODBC", "odbc" );
   }
-  else if ( MSACCESS == databaseType( ) )
+  else if ( MSACCESS == databaseType() )
   {
     mDatabase = QSqlDatabase::database( "odbc" );
   }
-  else if ( QMYSQL == databaseType( ) && !mDatabase.contains( "mysql" ) )
+  else if ( QMYSQL == databaseType() && !mDatabase.contains( "mysql" ) )
   {
     mDatabase = QSqlDatabase::addDatabase( "QMYSQL", "mysql" );
   }
-  else if ( QMYSQL == databaseType( ) )
+  else if ( QMYSQL == databaseType() )
   {
     mDatabase = QSqlDatabase::database( "mysql" );
   }
-  else if ( QODBC == databaseType( ) && !mDatabase.contains( "odbc" ) )
+  else if ( QODBC == databaseType() && !mDatabase.contains( "odbc" ) )
   {
     mDatabase = QSqlDatabase::addDatabase( "QODBC", "odbc" );
   }
-  else if ( QODBC == databaseType( ) )
+  else if ( QODBC == databaseType() )
   {
     mDatabase = QSqlDatabase::database( "odbc" );
   }
-  else if ( QPSQL == databaseType( ) && !mDatabase.contains( "postgres" ) )
+  else if ( QPSQL == databaseType() && !mDatabase.contains( "postgres" ) )
   {
     mDatabase = QSqlDatabase::addDatabase( "QPSQL", "postgres" );
   }
-  else if ( QPSQL == databaseType( ) )
+  else if ( QPSQL == databaseType() )
   {
     mDatabase = QSqlDatabase::database( "postgres" );
   }
-  else if ( QSQLITE == databaseType( ) && !mDatabase.contains( "sqlite" ) )
+  else if ( QSQLITE == databaseType() && !mDatabase.contains( "sqlite" ) )
   {
     mDatabase = QSqlDatabase::addDatabase( "QSQLITE", "sqlite" );
   }
-  else if ( QSQLITE == databaseType( ) )
+  else if ( QSQLITE == databaseType() )
   {
     mDatabase = QSqlDatabase::database( "sqlite" );
   }
@@ -107,12 +107,12 @@ bool eVisDatabaseConnection::connect( )
   }
 
   //Do a little extra validation of connection information
-  if ( mHostName.isEmpty( ) && ( QMYSQL == databaseType( ) || QPSQL == databaseType( ) ) )
+  if ( mHostName.isEmpty() && ( QMYSQL == databaseType() || QPSQL == databaseType() ) )
   {
     setLastError( "Host name was empty" );
     return false;
   }
-  else if ( !mHostName.isEmpty( ) )
+  else if ( !mHostName.isEmpty() )
   {
     mDatabase.setHostName( mHostName );
   }
@@ -122,12 +122,12 @@ bool eVisDatabaseConnection::connect( )
     mDatabase.setPort( mPort );
   }
 
-  if ( mDatabaseName.isEmpty( ) )
+  if ( mDatabaseName.isEmpty() )
   {
     setLastError( "Database name was empty" );
     return false;
   }
-  else if ( MSACCESS == databaseType( ) )
+  else if ( MSACCESS == databaseType() )
   {
     mDatabase.setDatabaseName( "DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=" + mDatabaseName );
   }
@@ -136,20 +136,20 @@ bool eVisDatabaseConnection::connect( )
     mDatabase.setDatabaseName( mDatabaseName );
   }
 
-  if ( !mUsername.isEmpty( ) )
+  if ( !mUsername.isEmpty() )
   {
     mDatabase.setUserName( mUsername );
   }
 
-  if ( !mPassword.isEmpty( ) )
+  if ( !mPassword.isEmpty() )
   {
     mDatabase.setPassword( mPassword );
   }
 
   //Try to actually open the database
-  if ( !mDatabase.open( ) )
+  if ( !mDatabase.open() )
   {
-    setLastError( mDatabase.lastError( ).text( ) );
+    setLastError( mDatabase.lastError().text() );
     return false;
   }
 
@@ -162,7 +162,7 @@ bool eVisDatabaseConnection::connect( )
 */
 QSqlQuery* eVisDatabaseConnection::query( QString sqlStatement )
 {
-  if ( mDatabase.isOpen( ) )
+  if ( mDatabase.isOpen() )
   {
     //mQuery = QSqlQuery( sqlStatement, mDatabase ); //NOTE: A little against convention, the constructor also executes the query
 
@@ -170,13 +170,13 @@ QSqlQuery* eVisDatabaseConnection::query( QString sqlStatement )
     mQuery = QSqlQuery( mDatabase );
     mQuery.setForwardOnly( true );
     mQuery.exec( sqlStatement );
-    if ( mQuery.isActive( ) )
+    if ( mQuery.isActive() )
     {
       return &mQuery;
     }
     else
     {
-      setLastError( mQuery.lastError( ).text( ) );
+      setLastError( mQuery.lastError().text() );
       return 0;
     }
   }
@@ -207,13 +207,13 @@ void eVisDatabaseConnection::resetConnectionParameters( QString hostname, int po
 /**
 * Returns a list of tables for the current active database connection
 */
-QStringList eVisDatabaseConnection::tables( )
+QStringList eVisDatabaseConnection::tables()
 {
-  if ( mDatabase.isOpen( ) )
+  if ( mDatabase.isOpen() )
   {
-    return mDatabase.tables( );
+    return mDatabase.tables();
   }
 
   setLastError( "Database connection was not open." );
-  return QStringList( );
+  return QStringList();
 }

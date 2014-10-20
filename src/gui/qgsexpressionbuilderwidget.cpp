@@ -34,7 +34,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   mLoadGroupBox->hide();
 //  highlighter = new QgsExpressionHighlighter( txtExpressionString->document() );
 
-  mModel = new QStandardItemModel( );
+  mModel = new QStandardItemModel();
   mProxyModel = new QgsExpressionItemSearchProxy();
   mProxyModel->setSourceModel( mModel );
   expressionTree->setModel( mProxyModel );
@@ -55,7 +55,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
   // TODO Can we move this stuff to QgsExpression, like the functions?
   registerItem( "Operators", "+", " + ", tr( "Addition operator" ) );
-  registerItem( "Operators", "-", " -" , tr( "Subtraction operator" ) );
+  registerItem( "Operators", "-", " - ", tr( "Subtraction operator" ) );
   registerItem( "Operators", "*", " * ", tr( "Multiplication operator" ) );
   registerItem( "Operators", "/", " / ", tr( "Division operator" ) );
   registerItem( "Operators", "%", " % ", tr( "Modulo operator" ) );

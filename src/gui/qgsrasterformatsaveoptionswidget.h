@@ -99,7 +99,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
     QString currentProfileKey() const;
     QString createOptions( QString profile ) const;
     void deleteCreateOptions( QString profile );
-    void setCreateOptions( );
+    void setCreateOptions();
     void setCreateOptions( QString profile, QString options );
     void setCreateOptions( QString profile, QStringList list );
     QStringList profiles() const;

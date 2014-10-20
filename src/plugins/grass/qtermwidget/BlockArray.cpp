@@ -126,7 +126,7 @@ const Block* BlockArray::at( size_t i )
 //         return 0;
 //     }
 
-  size_t j = i; // (current - (index - i) + (index/size+1)*size) % size ;
+  size_t j = i; // (current - (index - i) + (index/size+1)*size) % size;
 
   assert( j < size );
   unmap();

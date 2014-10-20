@@ -104,7 +104,7 @@ bool QgsPluginSortFilterProxyModel::filterByPhrase( QModelIndex &index ) const
 
 
 
-int QgsPluginSortFilterProxyModel::countWithCurrentStatus( )
+int QgsPluginSortFilterProxyModel::countWithCurrentStatus()
 {
   int result = 0;
   for ( int i = 0; i < sourceModel()->rowCount(); ++i )
@@ -112,7 +112,7 @@ int QgsPluginSortFilterProxyModel::countWithCurrentStatus( )
     QModelIndex idx = sourceModel()->index( i, 0 );
     if ( filterByStatus( idx ) && sourceModel()->data( idx, SPACER_ROLE ).toString().isEmpty() )
     {
-      result++ ;
+      result++;
     }
   }
   return result;
@@ -120,7 +120,7 @@ int QgsPluginSortFilterProxyModel::countWithCurrentStatus( )
 
 
 
-void QgsPluginSortFilterProxyModel::sortPluginsByName( )
+void QgsPluginSortFilterProxyModel::sortPluginsByName()
 {
   setAcceptedSpacers();
   sort( 0, Qt::AscendingOrder );
@@ -129,7 +129,7 @@ void QgsPluginSortFilterProxyModel::sortPluginsByName( )
 
 
 
-void QgsPluginSortFilterProxyModel::sortPluginsByDownloads( )
+void QgsPluginSortFilterProxyModel::sortPluginsByDownloads()
 {
   setAcceptedSpacers();
   sort( 0, Qt::DescendingOrder );
@@ -138,7 +138,7 @@ void QgsPluginSortFilterProxyModel::sortPluginsByDownloads( )
 
 
 
-void QgsPluginSortFilterProxyModel::sortPluginsByVote( )
+void QgsPluginSortFilterProxyModel::sortPluginsByVote()
 {
   setAcceptedSpacers();
   sort( 0, Qt::DescendingOrder );
@@ -147,7 +147,7 @@ void QgsPluginSortFilterProxyModel::sortPluginsByVote( )
 
 
 
-void QgsPluginSortFilterProxyModel::sortPluginsByStatus( )
+void QgsPluginSortFilterProxyModel::sortPluginsByStatus()
 {
   setAcceptedSpacers( "status" );
   sort( 0, Qt::DescendingOrder );

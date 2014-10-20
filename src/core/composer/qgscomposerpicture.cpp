@@ -37,14 +37,14 @@
 #include <QEventLoop>
 #include <QCoreApplication>
 
-QgsComposerPicture::QgsComposerPicture( QgsComposition *composition ) :
-    QgsComposerItem( composition ),
-    mMode( Unknown ),
-    mPictureRotation( 0 ),
-    mRotationMap( 0 ),
-    mResizeMode( QgsComposerPicture::Zoom ),
-    mPictureAnchor( UpperLeft ),
-    mHasExpressionError( false )
+QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
+    : QgsComposerItem( composition )
+    , mMode( Unknown )
+    , mPictureRotation( 0 )
+    , mRotationMap( 0 )
+    , mResizeMode( QgsComposerPicture::Zoom )
+    , mPictureAnchor( UpperLeft )
+    , mHasExpressionError( false )
 {
   mPictureWidth = rect().width();
   init();
@@ -130,7 +130,7 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
       boundRectHeightMM = rect().height();
       int imageRectWidthPixels = mImage.width();
       int imageRectHeightPixels = mImage.height();
-      imageRect = clippedImageRect( boundRectWidthMM, boundRectHeightMM ,
+      imageRect = clippedImageRect( boundRectWidthMM, boundRectHeightMM,
                                     QSize( imageRectWidthPixels, imageRectHeightPixels ) );
     }
     else
@@ -214,11 +214,11 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
 
     if ( mMode == SVG )
     {
-      mSVG.render( painter, QRectF( 0, 0, boundRectWidthMM,  boundRectHeightMM ) );
+      mSVG.render( painter, QRectF( 0, 0, boundRectWidthMM, boundRectHeightMM ) );
     }
     else if ( mMode == RASTER )
     {
-      painter->drawImage( QRectF( 0, 0, boundRectWidthMM,  boundRectHeightMM ), mImage, imageRect );
+      painter->drawImage( QRectF( 0, 0, boundRectWidthMM, boundRectHeightMM ), mImage, imageRect );
     }
 
     painter->restore();
@@ -713,7 +713,7 @@ bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerPictureElem.setAttribute( "anchorPoint", QString::number(( int )mPictureAnchor ) );
 
   //rotation
-  composerPictureElem.setAttribute( "pictureRotation",  QString::number( mPictureRotation ) );
+  composerPictureElem.setAttribute( "pictureRotation", QString::number( mPictureRotation ) );
   if ( !mRotationMap )
   {
     composerPictureElem.setAttribute( "mapId", -1 );

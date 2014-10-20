@@ -878,7 +878,7 @@ QString QgsCoordinateTransform::stripDatumTransform( const QString& proj4 )
   {
     currentParameter = parameterSplit.at( i );
     if ( !currentParameter.startsWith( "towgs84", Qt::CaseInsensitive )
-         && !currentParameter.startsWith( "nadgrids",  Qt::CaseInsensitive ) )
+         && !currentParameter.startsWith( "nadgrids", Qt::CaseInsensitive ) )
     {
       newProjString.append( "+" );
       newProjString.append( currentParameter );

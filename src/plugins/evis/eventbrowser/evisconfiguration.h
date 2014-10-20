@@ -40,20 +40,20 @@ class eVisConfiguration
 {
 
   public:
-    eVisConfiguration( );
+    eVisConfiguration();
 
-    QString basePath( );
-    QString compassBearingField( );
-    double compassOffset( );
-    QString compassOffsetField( );
-    QString eventImagePathField( );
+    QString basePath();
+    QString compassBearingField();
+    double compassOffset();
+    QString compassOffsetField();
+    QString eventImagePathField();
 
-    bool isApplyPathRulesToDocsSet( );
-    bool isAttributeCompassOffsetSet( );
-    bool isDisplayCompassBearingSet( );
-    bool isEventImagePathRelative( );
-    bool isManualCompassOffsetSet( );
-    bool isUseOnlyFilenameSet( );
+    bool isApplyPathRulesToDocsSet();
+    bool isAttributeCompassOffsetSet();
+    bool isDisplayCompassBearingSet();
+    bool isEventImagePathRelative();
+    bool isManualCompassOffsetSet();
+    bool isUseOnlyFilenameSet();
 
     void setApplyPathRulesToDocs( bool );
     void setAttributeCompassOffset( bool );

@@ -44,7 +44,7 @@ class CORE_EXPORT QgsLegendModelV2 : public QgsLayerTreeModel
   public:
     QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
 
-    QVariant data( const QModelIndex& index,  int role ) const;
+    QVariant data( const QModelIndex& index, int role ) const;
 
     Qt::ItemFlags flags( const QModelIndex &index ) const;
 };

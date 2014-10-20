@@ -108,7 +108,7 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
     // Calculate row/col limits (before tmpExtent is aligned)
     int fromRow = qRound(( theExtent.yMaximum() - tmpExtent.yMaximum() ) / yRes );
     int toRow = qRound(( theExtent.yMaximum() - tmpExtent.yMinimum() ) / yRes ) - 1;
-    int fromCol = qRound(( tmpExtent.xMinimum() - theExtent.xMinimum() ) / xRes ) ;
+    int fromCol = qRound(( tmpExtent.xMinimum() - theExtent.xMinimum() ) / xRes );
     int toCol = qRound(( tmpExtent.xMaximum() - theExtent.xMinimum() ) / xRes ) - 1;
 
     QgsDebugMsg( QString( "fromRow = %1 toRow = %2 fromCol = %3 toCol = %4" ).arg( fromRow ).arg( toRow ).arg( fromCol ).arg( toCol ) );

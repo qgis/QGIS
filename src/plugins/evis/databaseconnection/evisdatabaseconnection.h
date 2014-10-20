@@ -57,7 +57,7 @@ class eVisDatabaseConnection
     eVisDatabaseConnection( QString, int, QString, QString, QString, DATABASE_TYPE );
 
     /** \brief Public method that finalizes a connection to a databse */
-    bool connect( );
+    bool connect();
 
     /** \brief Public method that passes an SQL statement to the database for execution */
     QSqlQuery* query( QString );
@@ -66,22 +66,22 @@ class eVisDatabaseConnection
     void resetConnectionParameters( QString, int, QString, QString, QString, DATABASE_TYPE );
 
     /** \brief Returns a list of tables in the current database */
-    QStringList tables( );
+    QStringList tables();
 
     /** \brief Accessor to the database type */
-    DATABASE_TYPE databaseType( )
+    DATABASE_TYPE databaseType()
     {
       return mDatabaseType;
     }
 
     /** \brief Public method for closing the current database connection */
-    void close( )
+    void close()
     {
-      mDatabase.close( );
+      mDatabase.close();
     }
 
     /** \brief Public method for requesting the last error reported by the database connect or query */
-    QString lastError( )
+    QString lastError()
     {
       return mLastError;
     }

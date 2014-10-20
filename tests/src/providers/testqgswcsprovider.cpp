@@ -91,7 +91,7 @@ void TestQgsWcsProvider::cleanupTestCase()
   }
 }
 
-void TestQgsWcsProvider::read( )
+void TestQgsWcsProvider::read()
 {
   bool ok = true;
   QStringList versions;

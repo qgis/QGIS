@@ -90,7 +90,7 @@ void QgsAttributeForm::addInterface( QgsAttributeFormInterface* iface )
 
 bool QgsAttributeForm::editable()
 {
-  return mFeature.isValid() && mLayer->isEditable() ;
+  return mFeature.isValid() && mLayer->isEditable();
 }
 
 void QgsAttributeForm::setIsAddDialog( bool isAddDialog )
@@ -638,7 +638,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
           {
             gbLayout->addWidget( mypLabel, index, 0, 1, 2 );
             ++index;
-            gbLayout->addWidget( editor, index, 0, 1 , 2 );
+            gbLayout->addWidget( editor, index, 0, 1, 2 );
           }
           else
           {
@@ -649,7 +649,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
 
         ++index;
       }
-      gbLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding ), index , 0 );
+      gbLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding ), index, 0 );
 
       labelText = QString::null;
       labelOnTop = true;

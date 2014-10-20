@@ -313,7 +313,7 @@ void QgsFieldsProperties::on_mAddItemButton_clicked()
   Q_FOREACH ( QTableWidgetItem* item, listItems )
   {
     if ( item->column() == 0 ) // Information is in the first column
-      mDesignerTree->addItem( parent , item->data( DesignerTreeRole ).value<DesignerTreeItemData>() );
+      mDesignerTree->addItem( parent, item->data( DesignerTreeRole ).value<DesignerTreeItemData>() );
   }
 }
 
@@ -342,7 +342,7 @@ void QgsFieldsProperties::on_mAddTabOrGroupButton_clicked()
   else
   {
     QTreeWidgetItem* tabItem = addTabOrGroup.tab();
-    mDesignerTree->addContainer( tabItem , name );
+    mDesignerTree->addContainer( tabItem, name );
   }
 }
 
@@ -500,7 +500,7 @@ void QgsFieldsProperties::editingToggled()
 
 QgsFieldsProperties::FieldConfig QgsFieldsProperties::configForRow( int row )
 {
-  foreach ( QTableWidgetItem* wdg , mIndexedWidgets )
+  foreach ( QTableWidgetItem* wdg, mIndexedWidgets )
   {
     if ( wdg->row() == row )
     {
@@ -515,7 +515,7 @@ QgsFieldsProperties::FieldConfig QgsFieldsProperties::configForRow( int row )
 
 void QgsFieldsProperties::setConfigForRow( int row, QgsFieldsProperties::FieldConfig cfg )
 {
-  foreach ( QTableWidgetItem* wdg , mIndexedWidgets )
+  foreach ( QTableWidgetItem* wdg, mIndexedWidgets )
   {
     if ( wdg->row() == row )
     {
@@ -863,7 +863,7 @@ QMimeData* QgsFieldsProperties::DragList::mimeData( const QList<QTableWidgetItem
 QTreeWidgetItem* QgsFieldsProperties::DesignerTree::addContainer( QTreeWidgetItem* parent, QString title )
 {
   QTreeWidgetItem *newItem = new QTreeWidgetItem( QStringList() << title );
-  newItem->setBackground( 0 , QBrush( Qt::lightGray ) );
+  newItem->setBackground( 0, QBrush( Qt::lightGray ) );
   newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
   newItem->setData( 0, DesignerTreeRole, DesignerTreeItemData( DesignerTreeItemData::Container, title ).asQVariant() );
   parent->addChild( newItem );
@@ -878,7 +878,7 @@ QTreeWidgetItem* QgsFieldsProperties::DesignerTree::addItem( QTreeWidgetItem* pa
   if ( data.type() == DesignerTreeItemData::Container )
   {
     newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
-    newItem->setBackground( 0 , QBrush( Qt::lightGray ) );
+    newItem->setBackground( 0, QBrush( Qt::lightGray ) );
 
 #if 0
     switch ( data.type() )
@@ -897,7 +897,7 @@ QTreeWidgetItem* QgsFieldsProperties::DesignerTree::addItem( QTreeWidgetItem* pa
     }
 #endif
   }
-  newItem->setData( 0 , DesignerTreeRole, data.asQVariant() );
+  newItem->setData( 0, DesignerTreeRole, data.asQVariant() );
   parent->addChild( newItem );
 
   return newItem;

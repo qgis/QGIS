@@ -48,8 +48,8 @@ class eVisDatabaseLayerFieldSelectionGui : public QDialog, private Ui::eVisDatab
     void setFieldList( QStringList* );
 
   public slots:
-    void on_buttonBox_accepted( );
-    void on_buttonBox_rejected( );
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
 
   signals:
     /** \brief Signal emitted when the user has entered the layername, selected the field names, and pressed the accept button */

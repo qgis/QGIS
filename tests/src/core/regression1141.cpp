@@ -78,7 +78,7 @@ void Regression1141::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
   // compute our test file name:
-  QString myTmpDir = QDir::tempPath() + QDir::separator() ;
+  QString myTmpDir = QDir::tempPath() + QDir::separator();
   mFileName = myTmpDir +  "ąęćń.shp";
 }
 

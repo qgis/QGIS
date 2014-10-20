@@ -490,7 +490,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   layerName.appendChild( layerNameText );
 
   // layer title
-  QDomElement layerTitle = document.createElement( "title" ) ;
+  QDomElement layerTitle = document.createElement( "title" );
   QDomText layerTitleText = document.createTextNode( title() );
   layerTitle.appendChild( layerTitleText );
 
@@ -522,7 +522,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   QString aDataUrl = dataUrl();
   if ( !aDataUrl.isEmpty() )
   {
-    QDomElement layerDataUrl = document.createElement( "dataUrl" ) ;
+    QDomElement layerDataUrl = document.createElement( "dataUrl" );
     QDomText layerDataUrlText = document.createTextNode( aDataUrl );
     layerDataUrl.appendChild( layerDataUrlText );
     layerDataUrl.setAttribute( "format", dataUrlFormat() );
@@ -533,7 +533,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   QString aLegendUrl = legendUrl();
   if ( !aLegendUrl.isEmpty() )
   {
-    QDomElement layerLegendUrl = document.createElement( "legendUrl" ) ;
+    QDomElement layerLegendUrl = document.createElement( "legendUrl" );
     QDomText layerLegendUrlText = document.createTextNode( aLegendUrl );
     layerLegendUrl.appendChild( layerLegendUrlText );
     layerLegendUrl.setAttribute( "format", legendUrlFormat() );
@@ -544,7 +544,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   QString aAttribution = attribution();
   if ( !aAttribution.isEmpty() )
   {
-    QDomElement layerAttribution = document.createElement( "attribution" ) ;
+    QDomElement layerAttribution = document.createElement( "attribution" );
     QDomText layerAttributionText = document.createTextNode( aAttribution );
     layerAttribution.appendChild( layerAttributionText );
     layerAttribution.setAttribute( "href", attributionUrl() );
@@ -555,7 +555,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   QString aMetadataUrl = metadataUrl();
   if ( !aMetadataUrl.isEmpty() )
   {
-    QDomElement layerMetadataUrl = document.createElement( "metadataUrl" ) ;
+    QDomElement layerMetadataUrl = document.createElement( "metadataUrl" );
     QDomText layerMetadataUrlText = document.createTextNode( aMetadataUrl );
     layerMetadataUrl.appendChild( layerMetadataUrlText );
     layerMetadataUrl.setAttribute( "type", metadataUrlType() );
@@ -808,7 +808,7 @@ QString QgsMapLayer::capitaliseLayerName( const QString& name )
   return layerName;
 }
 
-QString QgsMapLayer::styleURI( )
+QString QgsMapLayer::styleURI()
 {
   QString myURI = publicSource();
 

@@ -100,7 +100,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
   // add results to the menu
   bool singleLayer = mLayerIdResults.count() == 1;
   int count = 0;
-  QMapIterator< QgsMapLayer*, QList<QgsMapToolIdentify::IdentifyResult> > it( mLayerIdResults ) ;
+  QMapIterator< QgsMapLayer*, QList<QgsMapToolIdentify::IdentifyResult> > it( mLayerIdResults );
   while ( it.hasNext() )
   {
     if ( mMaxLayerDisplay != 0 && count > mMaxLayerDisplay )
@@ -232,7 +232,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
   }
   if ( mShowFeatureActions )
   {
-    layerActions << QgsMapLayerActionRegistry::instance()->mapLayerActions( layer, targets ) ;
+    layerActions << QgsMapLayerActionRegistry::instance()->mapLayerActions( layer, targets );
 
     if ( layerActions.count() > nCustomActions )
     {
@@ -255,7 +255,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     if ( !createMenu && mShowFeatureActions )
     {
       QgsActionMenu* featureActionMenu = new QgsActionMenu( layer, &( results[0].mFeature ), this );
-      createMenu  = featureActionMenu->actions().count() > 0 ;
+      createMenu  = featureActionMenu->actions().count() > 0;
       delete featureActionMenu;
     }
   }
@@ -518,7 +518,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::results( QAction* act
   if ( actData.mAllResults )
   {
     // this means "All" action was triggered
-    QMapIterator< QgsMapLayer*, QList<QgsMapToolIdentify::IdentifyResult> > it( mLayerIdResults ) ;
+    QMapIterator< QgsMapLayer*, QList<QgsMapToolIdentify::IdentifyResult> > it( mLayerIdResults );
     while ( it.hasNext() )
     {
       it.next();

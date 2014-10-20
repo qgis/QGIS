@@ -64,7 +64,7 @@ void QgsTextAnnotationItem::paint( QPainter * painter )
   painter->translate( mOffsetFromReferencePoint.x() + frameWidth / 2.0,
                       mOffsetFromReferencePoint.y() + frameWidth / 2.0 );
 
-  QRectF clipRect = QRectF( 0, 0, mFrameSize.width() - frameWidth / 2.0, mFrameSize.height() - frameWidth / 2.0 ) ;
+  QRectF clipRect = QRectF( 0, 0, mFrameSize.width() - frameWidth / 2.0, mFrameSize.height() - frameWidth / 2.0 );
   if ( painter->hasClipping() )
   {
     //QTextDocument::drawContents will draw text outside of the painter's clip region

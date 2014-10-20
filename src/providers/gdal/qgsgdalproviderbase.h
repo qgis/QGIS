@@ -40,7 +40,7 @@
 class QgsGdalProviderBase
 {
   public:
-    QgsGdalProviderBase( );
+    QgsGdalProviderBase();
 
     ~QgsGdalProviderBase();
 

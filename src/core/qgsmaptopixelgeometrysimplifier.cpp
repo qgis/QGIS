@@ -417,8 +417,8 @@ bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry, int simpl
   QgsRectangle envelope = geometry->boundingBox();
   QGis::WkbType wkbType = geometry->wkbType();
 
-  unsigned char* wkb = ( unsigned char* )geometry->asWkb( );
-  size_t wkbSize = geometry->wkbSize( );
+  unsigned char* wkb = ( unsigned char* )geometry->asWkb();
+  size_t wkbSize = geometry->wkbSize();
 
   // Simplify the geometry rewriting temporally its WKB-stream for saving calloc's.
   if ( simplifyWkbGeometry( simplifyFlags, wkbType, wkb, wkbSize, wkb, targetWkbSize, envelope, tolerance ) )

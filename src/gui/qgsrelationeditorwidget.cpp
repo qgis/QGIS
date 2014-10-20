@@ -88,8 +88,8 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget* parent )
   buttonLayout->addWidget( mTableViewButton );
   // button group
   mViewModeButtonGroup = new QButtonGroup( this );
-  mViewModeButtonGroup->addButton( mFormViewButton ,  QgsDualView::AttributeEditor );
-  mViewModeButtonGroup->addButton( mTableViewButton , QgsDualView::AttributeTable );
+  mViewModeButtonGroup->addButton( mFormViewButton, QgsDualView::AttributeEditor );
+  mViewModeButtonGroup->addButton( mTableViewButton, QgsDualView::AttributeTable );
 
   // add buttons layout
   topLayout->addLayout( buttonLayout );

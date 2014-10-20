@@ -54,7 +54,7 @@ bool QgsComposerTextTable::writeXML( QDomElement& elem, QDomDocument & doc ) con
 {
   QDomElement composerTableElem = doc.createElement( "ComposerTextTable" );
   //todo: write headers and text entries
-  bool ok = _writeXML( composerTableElem , doc );
+  bool ok = _writeXML( composerTableElem, doc );
   elem.appendChild( composerTableElem );
   return ok;
 }

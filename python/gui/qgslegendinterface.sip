@@ -85,13 +85,13 @@ class QgsLegendInterface : QObject
     void groupIndexChanged( int oldIndex, int newIndex );
 
     /* //! emitted when group relations have changed */
-    void groupRelationsChanged( );
+    void groupRelationsChanged();
 
     /* //! emitted when an item (group/layer) is added */
     void itemAdded( QModelIndex index );
 
     /* //! emitted when an item (group/layer) is removed */
-    void itemRemoved( );
+    void itemRemoved();
 
     //! Emitted whenever current (selected) layer changes
     //  the pointer to layer can be null if no layer is selected

@@ -476,7 +476,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int theBandNo,
         }
         double myValue = blk->value( i );
 
-        int myBinIndex = static_cast <int>( qFloor(( myValue - myMinimum ) /  myBinSize ) ) ;
+        int myBinIndex = static_cast <int>( qFloor(( myValue - myMinimum ) /  myBinSize ) );
 
         if (( myBinIndex < 0 || myBinIndex > ( myBinCount - 1 ) ) && !theIncludeOutOfRange )
         {

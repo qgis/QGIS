@@ -853,7 +853,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     void drawGridLine( const QPolygonF& line, QgsRenderContext &context ) const;
 
-    void sortGridLinesOnBorders( const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines,  QMap< double, double >& leftFrameEntries,
+    void sortGridLinesOnBorders( const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, QMap< double, double >& leftFrameEntries,
                                  QMap< double, double >& rightFrameEntries, QMap< double, double >& topFrameEntries, QMap< double, double >& bottomFrameEntries ) const;
 
     void drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, BorderSide border ) const;
@@ -869,10 +869,10 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     static QPolygonF trimLineToMap( const QPolygonF& line, const QgsRectangle& rect );
 
-    QPolygonF scalePolygon( const QPolygonF &polygon,  const double scale ) const;
+    QPolygonF scalePolygon( const QPolygonF &polygon, const double scale ) const;
 
     /**Draws grid if CRS is different to map CRS*/
-    void drawGridCRSTransform( QgsRenderContext &context , double dotsPerMM, QList< QPair< double, QLineF > > &horizontalLines,
+    void drawGridCRSTransform( QgsRenderContext &context, double dotsPerMM, QList< QPair< double, QLineF > > &horizontalLines,
                                QList< QPair< double, QLineF > > &verticalLines );
 
     void drawGridNoTransform( QgsRenderContext &context, double dotsPerMM, QList<QPair<double, QLineF> > &horizontalLines, QList<QPair<double, QLineF> > &verticalLines ) const;

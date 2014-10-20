@@ -94,7 +94,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
 
   QUrl qurl( httpurl );
 
-  http = new QHttp( );
+  http = new QHttp();
   // Create a header so we can set the user agent (Per WMS RFC).
   QHttpRequestHeader header( "GET", qurl.host() );
   // Set host in the header

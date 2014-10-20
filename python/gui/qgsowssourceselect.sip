@@ -132,7 +132,7 @@ class QgsOWSSourceSelect : QDialog
      *
      * \retval false if the layers could not be retrieved or parsed
      */
-    virtual void populateLayerList( );
+    virtual void populateLayerList();
 
     //! create an item including possible parents
     //! @note not available in python bindings

@@ -38,8 +38,8 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
       AllOptions = ~0
     };
 
-    QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = 0,  Qt::WindowFlags fl = 0 );
-    QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, bool layerHasSelectedFeatures, int options = AllOptions, QWidget* parent = 0,  Qt::WindowFlags fl = 0 );
+    QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = 0, Qt::WindowFlags fl = 0 );
+    QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, bool layerHasSelectedFeatures, int options = AllOptions, QWidget* parent = 0, Qt::WindowFlags fl = 0 );
     ~QgsVectorLayerSaveAsDialog();
 
     QString format() const;

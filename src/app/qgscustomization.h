@@ -65,7 +65,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
     QString widgetPath( QWidget * theWidget, QString thePath = QString() );
 
     void setCatch( bool on );
-    bool catchOn( );
+    bool catchOn();
 
   private slots:
     //void on_btnQgisUser_clicked();
@@ -93,7 +93,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
 
   private:
     void init();
-    QTreeWidgetItem * createTreeItemWidgets( );
+    QTreeWidgetItem * createTreeItemWidgets();
     QTreeWidgetItem * readWidgetsXmlNode( QDomNode theNode );
 
     QString mLastDirSettingsName;
@@ -143,7 +143,7 @@ class APP_EXPORT QgsCustomization : public QObject
     void preNotify( QObject * receiver, QEvent * event, bool * done );
 
   protected:
-    QgsCustomization( );
+    QgsCustomization();
     ~QgsCustomization();
     QgsCustomizationDialog *pDialog;
 
@@ -152,10 +152,10 @@ class APP_EXPORT QgsCustomization : public QObject
     QString mStatusPath;
 
     void updateMenu( QMenu* menu, QSettings* settings );
-    void createTreeItemMenus( );
-    void createTreeItemToolbars( );
-    void createTreeItemDocks( );
-    void createTreeItemStatus( );
+    void createTreeItemMenus();
+    void createTreeItemToolbars();
+    void createTreeItemDocks();
+    void createTreeItemStatus();
     void addTreeItemMenu( QTreeWidgetItem* parentItem, QMenu* menu );
     void addTreeItemActions( QTreeWidgetItem* parentItem, const QList<QAction*>& actions );
     QList<QTreeWidgetItem*> mMainWindowItems;

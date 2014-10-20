@@ -76,7 +76,7 @@ void QgsGpsMarker::paint( QPainter* p )
   setPos( pt );
 
   float myHalfSize = mSize / 2.0;
-  mSvg.render( p, QRectF( 0 - myHalfSize , 0 - myHalfSize, mSize, mSize ) );
+  mSvg.render( p, QRectF( 0 - myHalfSize, 0 - myHalfSize, mSize, mSize ) );
 }
 
 

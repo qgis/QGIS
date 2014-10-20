@@ -123,31 +123,31 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void on_leFilter_textChanged( QString theText );
 
     //! Upgrade all upgradeable plugins
-    void on_buttonUpgradeAll_clicked( );
+    void on_buttonUpgradeAll_clicked();
 
     //! Install selected plugin
-    void on_buttonInstall_clicked( );
+    void on_buttonInstall_clicked();
 
     //! Uninstall selected plugin
-    void on_buttonUninstall_clicked( );
+    void on_buttonUninstall_clicked();
 
     //! Enable/disable buttons according to selected repository
-    void on_treeRepositories_itemSelectionChanged( );
+    void on_treeRepositories_itemSelectionChanged();
 
     //! Edit selected repository
     void on_treeRepositories_doubleClicked( QModelIndex );
 
     //! Define new repository connection
-    void on_buttonAddRep_clicked( );
+    void on_buttonAddRep_clicked();
 
     //! Edit selected repository connection
-    void on_buttonEditRep_clicked( );
+    void on_buttonEditRep_clicked();
 
     //! Delete selected repository connection
-    void on_buttonDeleteRep_clicked( );
+    void on_buttonDeleteRep_clicked();
 
     //! Reload all repositories
-    void on_buttonRefreshRepos_clicked( );
+    void on_buttonRefreshRepos_clicked();
 
     //! Reload plugin metadata registry after allowing/disallowing experimental plugins
     void on_ckbExperimental_toggled( bool state );
@@ -156,16 +156,16 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void on_ckbDeprecated_toggled( bool state );
 
     //! Open help browser
-    void on_buttonBox_helpRequested( ) { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
     //! Reimplement QgsOptionsDialogBase method to prevent modifying the tab list by signals from the stacked widget
     void optionsStackedWidget_CurrentChanged( int indx ) { Q_UNUSED( indx ) }
 
     //! Only show plugins from selected repository (e.g. for inspection)
-    void setRepositoryFilter( );
+    void setRepositoryFilter();
 
     //! Enable all repositories disabled by "Enable selected repository only"
-    void clearRepositoryFilter( );
+    void clearRepositoryFilter();
 
     //! show the given message in the Plugin Manager internal message bar
     void pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration = -1 );
@@ -182,22 +182,22 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     bool isPluginEnabled( QString key );
 
     //! Return true if there are plugins available for download in the metadata registry
-    bool hasAvailablePlugins( );
+    bool hasAvailablePlugins();
 
     //! Return true if there are installed plugins also available for download in the metadata registry
-    bool hasReinstallablePlugins( );
+    bool hasReinstallablePlugins();
 
     //! Return true if there are upgradeable plugins in metadata the registry
-    bool hasUpgradeablePlugins( );
+    bool hasUpgradeablePlugins();
 
     //! Return true if there are new plugins in the metadata registry
-    bool hasNewPlugins( );
+    bool hasNewPlugins();
 
     //! Return true if there are plugins in the metadata registry that are newer installed than available
-    bool hasNewerPlugins( );
+    bool hasNewerPlugins();
 
     //! Return true if there are invalid plugins in the metadata registry
-    bool hasInvalidPlugins( );
+    bool hasInvalidPlugins();
 
     QStandardItemModel *mModelPlugins;
 

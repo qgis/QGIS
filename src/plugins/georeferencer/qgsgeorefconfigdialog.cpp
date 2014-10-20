@@ -49,7 +49,7 @@ QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent ) :
   mPaperSizeComboBox->addItem( tr( "Arch C (18x24 inches)" ), QSizeF( 457.2, 609.6 ) );
   mPaperSizeComboBox->addItem( tr( "Arch D (24x36 inches)" ), QSizeF( 609.6, 914.4 ) );
   mPaperSizeComboBox->addItem( tr( "Arch E (36x48 inches)" ), QSizeF( 914.4, 1219.2 ) );
-  mPaperSizeComboBox->addItem( tr( "Arch E1 (30x42 inches)" ) , QSizeF( 762, 1066.8 ) );
+  mPaperSizeComboBox->addItem( tr( "Arch E1 (30x42 inches)" ), QSizeF( 762, 1066.8 ) );
 
   mPaperSizeComboBox->setCurrentIndex( 2 ); //A3
 

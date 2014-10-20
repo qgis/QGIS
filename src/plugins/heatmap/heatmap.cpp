@@ -115,7 +115,7 @@ void Heatmap::run()
   //check that dialog found a suitable vector layer
   if ( !d.inputVectorLayer() )
   {
-    mQGisIface->messageBar()->pushMessage( tr( "Layer not found" ), tr( "The heatmap plugin requires at least one point vector layer" ),  QgsMessageBar::INFO, mQGisIface->messageTimeout() );
+    mQGisIface->messageBar()->pushMessage( tr( "Layer not found" ), tr( "The heatmap plugin requires at least one point vector layer" ), QgsMessageBar::INFO, mQGisIface->messageTimeout() );
     return;
   }
 
@@ -392,7 +392,7 @@ double Heatmap::calculateKernelValue( const double distance, const int bandwidth
   switch ( shape )
   {
     case Heatmap::Triangular:
-      return triangularKernel( distance , bandwidth, outputType );
+      return triangularKernel( distance, bandwidth, outputType );
 
     case Heatmap::Uniform:
       return uniformKernel( distance, bandwidth, outputType );

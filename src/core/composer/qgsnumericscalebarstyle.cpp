@@ -80,7 +80,7 @@ void QgsNumericScaleBarStyle::draw( QPainter* p, double xOffset ) const
 
   //text destination is item's rect, excluding the margin and frame
   QRectF painterRect( penWidth + margin, penWidth + margin, mScaleBar->rect().width() - 2 * penWidth - 2 * margin, mScaleBar->rect().height() - 2 * penWidth - 2 * margin );
-  QgsComposerUtils::drawText( p, painterRect, scaleText(), mScaleBar->font(),  mScaleBar->fontColor(), hAlign, Qt::AlignTop );
+  QgsComposerUtils::drawText( p, painterRect, scaleText(), mScaleBar->font(), mScaleBar->fontColor(), hAlign, Qt::AlignTop );
 
   p->restore();
 }

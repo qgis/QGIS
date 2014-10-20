@@ -491,7 +491,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * @param mapUnitScale a mapUnitScale clamper
      * @return font pixel size
      */
-    int sizeToPixel( double size, const QgsRenderContext& c , SizeUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() ) const;
+    int sizeToPixel( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() ) const;
 
     /** Calculates size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
      * @param size size to convert

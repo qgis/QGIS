@@ -64,12 +64,12 @@ void eVisEventIdTool::canvasReleaseEvent( QMouseEvent* theMouseEvent )
     return;
 
   //Check to see if there is a layer selected
-  if ( mCanvas->currentLayer( ) )
+  if ( mCanvas->currentLayer() )
   {
     //Check to see if the current layer is a vector layer
-    if ( QgsMapLayer::VectorLayer == mCanvas->currentLayer( )->type( ) )
+    if ( QgsMapLayer::VectorLayer == mCanvas->currentLayer()->type() )
     {
-      select( mCanvas->getCoordinateTransform( )->toMapCoordinates( theMouseEvent->x( ), theMouseEvent->y( ) ) );
+      select( mCanvas->getCoordinateTransform()->toMapCoordinates( theMouseEvent->x(), theMouseEvent->y() ) );
     }
     else
     {
@@ -92,16 +92,16 @@ void eVisEventIdTool::select( QgsPoint thePoint )
   if ( 0 == mCanvas )
     return;
 
-  QgsVectorLayer* myLayer = ( QgsVectorLayer* )mCanvas->currentLayer( );
+  QgsVectorLayer* myLayer = ( QgsVectorLayer* )mCanvas->currentLayer();
 
   // create the search rectangle. this was modeled after the QgsMapIdentifyTool in core QGIS application
   double searchWidth = QgsMapTool::searchRadiusMU( mCanvas );
 
   QgsRectangle myRectangle;
-  myRectangle.setXMinimum( thePoint.x( ) - searchWidth );
-  myRectangle.setXMaximum( thePoint.x( ) + searchWidth );
-  myRectangle.setYMinimum( thePoint.y( ) - searchWidth );
-  myRectangle.setYMaximum( thePoint.y( ) + searchWidth );
+  myRectangle.setXMinimum( thePoint.x() - searchWidth );
+  myRectangle.setXMaximum( thePoint.x() + searchWidth );
+  myRectangle.setYMinimum( thePoint.y() - searchWidth );
+  myRectangle.setYMaximum( thePoint.y() + searchWidth );
 
   //Transform rectange to map coordinates
   myRectangle = toLayerCoordinates( myLayer, myRectangle );

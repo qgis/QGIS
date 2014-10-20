@@ -211,7 +211,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
   composerItemElem.setAttribute( "frameJoinStyle", QgsSymbolLayerV2Utils::encodePenJoinStyle( mFrameJoinStyle ) );
-  composerItemElem.setAttribute( "itemRotation",  QString::number( mItemRotation ) );
+  composerItemElem.setAttribute( "itemRotation", QString::number( mItemRotation ) );
   composerItemElem.setAttribute( "uuid", mUuid );
   composerItemElem.setAttribute( "id", mId );
   composerItemElem.setAttribute( "visibility", isVisible() );
@@ -399,7 +399,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode", "0" ).toUInt() ) );
 
   //transparency
-  setTransparency( itemElem.attribute( "transparency" , "0" ).toInt() );
+  setTransparency( itemElem.attribute( "transparency", "0" ).toInt() );
 
   mExcludeFromExports = itemElem.attribute( "excludeFromExports", "0" ).toInt();
   mEvaluatedExcludeFromExports = mExcludeFromExports;
@@ -1028,7 +1028,7 @@ void QgsComposerItem::setItemRotation( const double r, const bool adjustPosition
   refreshRotation( true, adjustPosition );
 }
 
-void QgsComposerItem::refreshRotation( const bool updateItem , const bool adjustPosition )
+void QgsComposerItem::refreshRotation( const bool updateItem, const bool adjustPosition )
 {
   double rotation = mItemRotation;
 
@@ -1054,7 +1054,7 @@ void QgsComposerItem::refreshRotation( const bool updateItem , const bool adjust
   {
     //adjustPosition set, so shift the position of the item so that rotation occurs around item center
     //create a line from the centrepoint of the rect() to its origin, in scene coordinates
-    QLineF refLine = QLineF( mapToScene( QPointF( rect().width() / 2.0, rect().height() / 2.0 ) ) , mapToScene( QPointF( 0 , 0 ) ) );
+    QLineF refLine = QLineF( mapToScene( QPointF( rect().width() / 2.0, rect().height() / 2.0 ) ), mapToScene( QPointF( 0, 0 ) ) );
     //rotate this line by the current rotation angle
     refLine.setAngle( refLine.angle() - rotation + mEvaluatedItemRotation );
     //get new end point of line - this is the new item position

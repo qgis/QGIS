@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSRECT_H
-#define QGSRECT_H
+#ifndef QGSRECTANGLE_H
+#define QGSRECTANGLE_H
 
 #include <iosfwd>
 #include <QDomDocument>
@@ -213,11 +213,11 @@ inline double QgsRectangle::height() const
 
 inline QgsPoint QgsRectangle::center() const
 {
-  return QgsPoint( xmin + width() / 2,  ymin + height() / 2 );
+  return QgsPoint( xmin + width() / 2, ymin + height() / 2 );
 }
 inline std::ostream& operator << ( std::ostream& os, const QgsRectangle &r )
 {
   return os << r.toString().toLocal8Bit().data();
 }
 
-#endif // QGSRECT_H
+#endif // QGSRECTANGLE_H

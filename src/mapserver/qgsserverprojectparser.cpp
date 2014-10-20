@@ -540,7 +540,7 @@ QString QgsServerProjectParser::layerName( const QDomElement& layerElem ) const
   {
     return QString();
   }
-  return nameElem.text().replace( "," , "%60" ); //commas are not allowed in layer names
+  return nameElem.text().replace( ",", "%60" ); //commas are not allowed in layer names
 }
 
 QString QgsServerProjectParser::serviceUrl() const

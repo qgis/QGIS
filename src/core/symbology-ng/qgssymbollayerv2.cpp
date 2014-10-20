@@ -204,8 +204,11 @@ void QgsSymbolLayerV2::copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) 
 
 
 QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
-    : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked ), mSizeUnit( QgsSymbolV2::MM ),  mOffsetUnit( QgsSymbolV2::MM ),
-    mHorizontalAnchorPoint( HCenter ), mVerticalAnchorPoint( VCenter )
+    : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked )
+    , mSizeUnit( QgsSymbolV2::MM )
+    , mOffsetUnit( QgsSymbolV2::MM )
+    , mHorizontalAnchorPoint( HCenter )
+    , mVerticalAnchorPoint( VCenter )
 {
   mOffsetExpression = NULL;
   mHorizontalAnchorExpression = NULL;
@@ -213,12 +216,14 @@ QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
 }
 
 QgsLineSymbolLayerV2::QgsLineSymbolLayerV2( bool locked )
-    : QgsSymbolLayerV2( QgsSymbolV2::Line, locked ), mWidthUnit( QgsSymbolV2::MM )
+    : QgsSymbolLayerV2( QgsSymbolV2::Line, locked )
+    , mWidthUnit( QgsSymbolV2::MM )
 {
 }
 
 QgsFillSymbolLayerV2::QgsFillSymbolLayerV2( bool locked )
-    : QgsSymbolLayerV2( QgsSymbolV2::Fill, locked ), mAngle( 0.0 )
+    : QgsSymbolLayerV2( QgsSymbolV2::Fill, locked )
+    , mAngle( 0.0 )
 {
 }
 

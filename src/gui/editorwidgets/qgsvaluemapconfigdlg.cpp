@@ -161,7 +161,7 @@ void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
 
 void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 {
-  QString fileName = QFileDialog::getOpenFileName( 0 , tr( "Select a file" ) );
+  QString fileName = QFileDialog::getOpenFileName( 0, tr( "Select a file" ) );
   if ( fileName.isNull() )
     return;
 

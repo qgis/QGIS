@@ -452,7 +452,7 @@ namespace pal
       else if ( alpha < a90 + gamma2 ) // top
       {
         //lx += -xrm/2.0 - tan(alpha+a90)*(distlabel + yrm/2);
-        lx += -xrm * ( alpha - a90 + gamma2 ) / ( 2 * gamma2 ) ;
+        lx += -xrm * ( alpha - a90 + gamma2 ) / ( 2 * gamma2 );
         ly += distlabel;
       }
       else if ( alpha < a180 - gamma1 )  // top left
@@ -490,7 +490,7 @@ namespace pal
       else
         cost = 0.0001 + 0.0020 * double( icost ) / double( nbp - 1 );
 
-      ( *lPos )[i] = new LabelPosition( i, lx, ly, xrm, yrm, angle, cost,  this );
+      ( *lPos )[i] = new LabelPosition( i, lx, ly, xrm, yrm, angle, cost, this );
 
       icost += inc;
 
@@ -671,9 +671,9 @@ namespace pal
         bool belowLine = ( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) );
 
         if ( aboveLine )
-          positions->push_back( new LabelPosition( i, bx + cos( beta ) *distlabel , by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
+          positions->push_back( new LabelPosition( i, bx + cos( beta ) *distlabel, by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
         if ( belowLine )
-          positions->push_back( new LabelPosition( i, bx - cos( beta ) *( distlabel + yrm ) , by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha, cost, this, isRightToLeft ) );   // Line
+          positions->push_back( new LabelPosition( i, bx - cos( beta ) *( distlabel + yrm ), by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha, cost, this, isRightToLeft ) );   // Line
         if ( flags & FLAG_ON_LINE )
           positions->push_back( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
       }
@@ -1225,10 +1225,10 @@ namespace pal
               ry += box->y[0];
 
               // Only accept candidate that center is in the polygon
-              if ( isPointInPolygon( mapShape->nbPoints, mapShape->x, mapShape->y, rx,  ry ) )
+              if ( isPointInPolygon( mapShape->nbPoints, mapShape->x, mapShape->y, rx, ry ) )
               {
                 // cost is set to minimal value, evaluated later
-                positions->push_back( new LabelPosition( id++, rx - dlx, ry - dly , xrm, yrm, alpha, 0.0001, this ) ); // Polygon
+                positions->push_back( new LabelPosition( id++, rx - dlx, ry - dly, xrm, yrm, alpha, 0.0001, this ) ); // Polygon
               }
             }
           }
@@ -1324,7 +1324,7 @@ namespace pal
     {
       nbp = 1;
       *lPos = new LabelPosition *[nbp];
-      ( *lPos )[0] = new LabelPosition( 0, f->fixedPosX, f->fixedPosY, f->label_x, f->label_y, angle, 0.0,  this );
+      ( *lPos )[0] = new LabelPosition( 0, f->fixedPosX, f->fixedPosY, f->label_x, f->label_y, angle, 0.0, this );
     }
     else
     {

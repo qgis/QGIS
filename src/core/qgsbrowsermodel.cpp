@@ -93,7 +93,7 @@ void QgsBrowserModel::addRootItems()
   if ( mFavourites )
   {
     connectItem( mFavourites );
-    mRootItems << mFavourites ;
+    mRootItems << mFavourites;
   }
 
   // add drives

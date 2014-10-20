@@ -675,7 +675,7 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
   QString typeName = parameterFromUrl( "typename" );
   QgsGml dataReader( typeName, geometryAttribute, mFields );
 
-  connect( &dataReader, SIGNAL( dataProgressAndSteps( int , int ) ), this, SLOT( handleWFSProgressMessage( int, int ) ) );
+  connect( &dataReader, SIGNAL( dataProgressAndSteps( int, int ) ), this, SLOT( handleWFSProgressMessage( int, int ) ) );
 
   //also connect to statusChanged signal of qgisapp (if it exists)
   QWidget* mainWindow = 0;

@@ -133,7 +133,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
     for ( int i = 0; i < layerCount; i++ )
     {
 
-      QgsMapLayer *layer ;
+      QgsMapLayer *layer;
       if ( layerList.isEmpty() )
         layer = mCanvas->layer( i );
       else

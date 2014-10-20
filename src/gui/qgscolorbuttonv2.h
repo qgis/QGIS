@@ -317,12 +317,12 @@ class GUI_EXPORT QgsColorButtonV2: public QToolButton
     /**
      * Reimplemented to accept dragged colors
      */
-    void dragEnterEvent( QDragEnterEvent * e ) ;
+    void dragEnterEvent( QDragEnterEvent * e );
 
     /**
      * Reimplemented to reset button appearance after drag leave
      */
-    void dragLeaveEvent( QDragLeaveEvent *e ) ;
+    void dragLeaveEvent( QDragLeaveEvent *e );
 
     /**
      * Reimplemented to accept dropped colors
@@ -374,7 +374,7 @@ class GUI_EXPORT QgsColorButtonV2: public QToolButton
      * @param showChecks set to true to display a checkboard pattern behind
      * transparent colors
      */
-    QPixmap createMenuIcon( const QColor color , const bool showChecks = true );
+    QPixmap createMenuIcon( const QColor color, const bool showChecks = true );
 
   private slots:
 

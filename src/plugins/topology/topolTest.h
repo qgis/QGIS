@@ -119,7 +119,7 @@ class topolTest: public QObject
      * @param layer1 pointer to the first layer
      * @param layer2 pointer to the second layer
      */
-    ErrorList checkOverlapWithLayer( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2 , bool isExtent );
+    ErrorList checkOverlapWithLayer( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
     /**
      * Checks for self-intersections in the layer
      * @param tolerance not used
@@ -147,7 +147,7 @@ class topolTest: public QObject
      * @param layer1 pointer to the first layer
      * @param layer2 not used
      */
-    ErrorList checkDanglingLines( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2 , bool isExtent );
+    ErrorList checkDanglingLines( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
     /**
      * Checks for points not covered by any segment
      * @param tolerance not used

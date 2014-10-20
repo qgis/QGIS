@@ -699,7 +699,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
     return errorList;
   }
 
-  //qDebug() << "difference gometry - " << diffGeoms->exportToWkt() ;
+  //qDebug() << "difference gometry - " << diffGeoms->exportToWkt();
 
   QList<QgsGeometry*> geomColl = diffGeoms->asGeometryCollection();
 
@@ -1360,7 +1360,7 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
 
       if ( g2->intersects( endPoint ) )
       {
-        touchEndPoint = true ;
+        touchEndPoint = true;
       }
 
       if ( touchStartPoint && touchEndPoint )

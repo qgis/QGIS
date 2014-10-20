@@ -525,7 +525,7 @@ void QgsGlobePluginDialog::setStereoMode()
   //http://www.openscenegraph.org/projects/osg/wiki/Support/UserGuides/StereoSettings
   //http://www.openscenegraph.org/documentation/OpenSceneGraphReferenceDocs/a00181.html
 
-  QString stereoMode = comboStereoMode->currentText() ;
+  QString stereoMode = comboStereoMode->currentText();
   if ( "OFF" == stereoMode )
   {
     osg::DisplaySettings::instance()->setStereo( false );
@@ -654,7 +654,7 @@ void QgsGlobePluginDialog::saveStereoConfig()
 
 void QgsGlobePluginDialog::updateStereoDialog()
 {
-  QString stereoMode = comboStereoMode->currentText() ;
+  QString stereoMode = comboStereoMode->currentText();
   screenDistance->setEnabled( true );
   screenHeight->setEnabled( true );
   screenWidth->setEnabled( true );

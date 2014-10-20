@@ -257,17 +257,17 @@ static int cell_draw( char *name,
           {
             //int nul = -2000000000;
             int nul = -2147483648;
-            fwrite( &nul , 4, 1, fo );
+            fwrite( &nul, 4, 1, fo );
           }
           else if ( data_type == DCELL_TYPE )
           {
             //double nul = -1e+300;
-            fwrite( &dnul , 8, 1, fo );
+            fwrite( &dnul, 8, 1, fo );
           }
           else if ( data_type == FCELL_TYPE )
           {
             //double nul = -1e+30;
-            fwrite( &fnul , 4, 1, fo );
+            fwrite( &fnul, 4, 1, fo );
           }
         }
         else

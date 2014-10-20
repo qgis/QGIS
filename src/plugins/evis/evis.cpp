@@ -121,10 +121,10 @@ void eVis::initGui()
   mEventIdToolActionPointer->setWhatsThis( tr( "Open an Event Browers and display the selected feature" ) );
   mEventBrowserActionPointer->setWhatsThis( tr( "Open an Event Browser to explore the current layer's features" ) );
 
-  // Connect the action to the runmQGisIface->mapCanvas( )
-  connect( mDatabaseConnectionActionPointer, SIGNAL( activated( ) ), this, SLOT( launchDatabaseConnection( ) ) );
-  connect( mEventIdToolActionPointer, SIGNAL( triggered( ) ), this, SLOT( launchEventIdTool( ) ) );
-  connect( mEventBrowserActionPointer, SIGNAL( activated( ) ), this, SLOT( launchEventBrowser( ) ) );
+  // Connect the action to the runmQGisIface->mapCanvas()
+  connect( mDatabaseConnectionActionPointer, SIGNAL( activated() ), this, SLOT( launchDatabaseConnection() ) );
+  connect( mEventIdToolActionPointer, SIGNAL( triggered() ), this, SLOT( launchEventIdTool() ) );
+  connect( mEventBrowserActionPointer, SIGNAL( activated() ), this, SLOT( launchEventBrowser() ) );
 
 
   // Add the icon to the toolbar
@@ -140,40 +140,40 @@ void eVis::initGui()
 }
 
 //method defined in interface
-void eVis::help( )
+void eVis::help()
 {
   //implement me!
 }
 
-void eVis::launchDatabaseConnection( )
+void eVis::launchDatabaseConnection()
 {
-  eVisDatabaseConnectionGui *myPluginGui = new eVisDatabaseConnectionGui( &mTemporaryFileList, mQGisIface->mainWindow( ), QgisGui::ModalDialogFlags );
+  eVisDatabaseConnectionGui *myPluginGui = new eVisDatabaseConnectionGui( &mTemporaryFileList, mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 
   connect( myPluginGui, SIGNAL( drawVectorLayer( QString, QString, QString ) ), this, SLOT( drawVectorLayer( QString, QString, QString ) ) );
-  myPluginGui->show( );
+  myPluginGui->show();
 }
 
-void eVis::launchEventIdTool( )
+void eVis::launchEventIdTool()
 {
   if ( 0 == mIdTool )
   {
-    mIdTool = new eVisEventIdTool( mQGisIface->mapCanvas( ) );
+    mIdTool = new eVisEventIdTool( mQGisIface->mapCanvas() );
     mIdTool->setAction( mEventIdToolActionPointer );
   }
   else
   {
-    mQGisIface->mapCanvas( )->setMapTool( mIdTool );
+    mQGisIface->mapCanvas()->setMapTool( mIdTool );
   }
 }
 
-void eVis::launchEventBrowser( )
+void eVis::launchEventBrowser()
 {
-  eVisGenericEventBrowserGui *myPluginGui = new eVisGenericEventBrowserGui( mQGisIface->mainWindow( ), mQGisIface, QgisGui::ModalDialogFlags );
+  eVisGenericEventBrowserGui *myPluginGui = new eVisGenericEventBrowserGui( mQGisIface->mainWindow(), mQGisIface, QgisGui::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 }
 
-void eVis::unload( )
+void eVis::unload()
 {
   // remove the GUI
   mQGisIface->removePluginDatabaseMenu( "&eVis", mDatabaseConnectionActionPointer );
@@ -188,9 +188,9 @@ void eVis::unload( )
   mQGisIface->removeDatabaseToolBarIcon( mEventBrowserActionPointer );
   delete mEventBrowserActionPointer;
 
-  while ( mTemporaryFileList.size( ) > 0 )
+  while ( mTemporaryFileList.size() > 0 )
   {
-    delete( mTemporaryFileList.takeLast( ) );
+    delete( mTemporaryFileList.takeLast() );
   }
 
   if ( 0 != mIdTool )
@@ -227,25 +227,25 @@ QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
-QGISEXTERN QString name( )
+QGISEXTERN QString name()
 {
   return sName;
 }
 
 // Return the description
-QGISEXTERN QString description( )
+QGISEXTERN QString description()
 {
   return sDescription;
 }
 
 // Return the category
-QGISEXTERN QString category( )
+QGISEXTERN QString category()
 {
   return sCategory;
 }
 
 // Return the type ( either UI or MapLayer plugin )
-QGISEXTERN int type( )
+QGISEXTERN int type()
 {
   return sPluginType;
 }
@@ -257,7 +257,7 @@ QGISEXTERN QString icon()
 }
 
 // Return the version number for the plugin
-QGISEXTERN QString version( )
+QGISEXTERN QString version()
 {
   return sPluginVersion;
 }

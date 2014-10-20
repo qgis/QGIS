@@ -26,7 +26,7 @@ class QgsValidatedDoubleSpinBox : public QDoubleSpinBox
 
     QValidator::State validate( QString& input, int& pos ) const
     {
-      QValidator::State state = QDoubleSpinBox::validate( input , pos );
+      QValidator::State state = QDoubleSpinBox::validate( input, pos );
       if ( state != QValidator::Acceptable )
       {
         return state;

@@ -838,7 +838,7 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
     mLastExtent.removeAt( i );
   }
 
-  mLastExtent.append( extent() ) ;
+  mLastExtent.append( extent() );
 
   // adjust history to no more than 20
   if ( mLastExtent.size() > 20 )
@@ -1815,7 +1815,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
   }
 }
 
-void QgsMapCanvas::zoomByFactor( double scaleFactor , const QgsPoint* center )
+void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPoint* center )
 {
   QgsRectangle r = mapSettings().visibleExtent();
   r.scale( scaleFactor, center );

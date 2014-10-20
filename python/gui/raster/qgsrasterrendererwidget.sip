@@ -24,7 +24,7 @@ class QgsRasterRendererWidget: QWidget
     virtual QString max( int index = 0 );
     virtual void setMin( QString value, int index = 0 );
     virtual void setMax( QString value, int index = 0 );
-    virtual QString stdDev( );
+    virtual QString stdDev();
     virtual void setStdDev( QString value );
     virtual int selectedBand( int index = 0 );
 

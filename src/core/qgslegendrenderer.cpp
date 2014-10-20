@@ -526,7 +526,7 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer* nodeLayer, QPainter
   for ( QStringList::Iterator layerItemPart = lines.begin(); layerItemPart != lines.end(); ++layerItemPart )
   {
     y += mSettings.fontAscentMillimeters( layerFont );
-    if ( painter ) mSettings.drawText( painter, point.x(), y, *layerItemPart , layerFont );
+    if ( painter ) mSettings.drawText( painter, point.x(), y, *layerItemPart, layerFont );
     qreal width = mSettings.textWidthMillimeters( layerFont, *layerItemPart );
     size.rwidth() = qMax( width, size.width() );
     if ( layerItemPart != lines.end() )

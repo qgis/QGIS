@@ -503,7 +503,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& 
   return whereClause;
 }
 
-QString QgsPostgresUtils::whereClause( QgsFeatureIds featureIds,  const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, QSharedPointer<QgsPostgresSharedData> sharedData )
+QString QgsPostgresUtils::whereClause( QgsFeatureIds featureIds, const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, QSharedPointer<QgsPostgresSharedData> sharedData )
 {
   QStringList whereClauses;
   foreach ( const QgsFeatureId featureId, featureIds )
@@ -1452,7 +1452,7 @@ QString QgsPostgresProvider::paramValue( QString fieldValue, const QString &defa
 
 
 /* private */
-bool QgsPostgresProvider::getTopoLayerInfo( )
+bool QgsPostgresProvider::getTopoLayerInfo()
 {
   QString sql = QString( "SELECT t.name, l.layer_id "
                          "FROM topology.layer l, topology.topology t "
@@ -1481,7 +1481,7 @@ bool QgsPostgresProvider::getTopoLayerInfo( )
 }
 
 /* private */
-void QgsPostgresProvider::dropOrphanedTopoGeoms( )
+void QgsPostgresProvider::dropOrphanedTopoGeoms()
 {
   QString sql = QString( "DELETE FROM %1.relation WHERE layer_id = %2 AND "
                          "topogeo_id NOT IN ( SELECT id(%3) FROM %4.%5 )" )

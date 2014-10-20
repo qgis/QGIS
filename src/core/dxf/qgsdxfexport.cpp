@@ -835,7 +835,7 @@ void QgsDxfExport::writeEntities()
       continue;
     }
 
-    QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM , 1.0, false, 0, 0 );
+    QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM, 1.0, false, 0, 0 );
     QgsFeatureRendererV2* renderer = vl->rendererV2();
     renderer->startRender( ctx, vl->pendingFields() );
 
@@ -939,7 +939,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
   QHash< QgsSymbolV2*, QList<QgsFeature> > features;
 
   QgsRenderContext ctx = renderContext();
-  QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM , 1.0, false, 0, 0 );
+  QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM, 1.0, false, 0, 0 );
   renderer->startRender( ctx, layer->pendingFields() );
 
   //get iterator
@@ -3212,7 +3212,7 @@ void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, QColor 
     writeGroup( 62, 1 );
     writeGroup( 0, pt + QgsVector( -halfSize, -halfSize ) );
     writeGroup( 1, pt + QgsVector( halfSize, -halfSize ) );
-    writeGroup( 2, pt + QgsVector( -halfSize,  halfSize ) );
+    writeGroup( 2, pt + QgsVector( -halfSize, halfSize ) );
     writeGroup( 3, pt + QgsVector( halfSize,  halfSize ) );
   }
 #endif //0
@@ -3710,7 +3710,7 @@ QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > QgsDxfExport::symbolLayers()
       }
       for ( int i = 0; i < maxSymbolLayers; ++i )
       {
-        symbolLayers.append( qMakePair(( *symbolIt )->symbolLayer( i ), *symbolIt ) ) ;
+        symbolLayers.append( qMakePair(( *symbolIt )->symbolLayer( i ), *symbolIt ) );
       }
     }
   }

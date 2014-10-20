@@ -333,7 +333,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
 
   if ( mCollapseButton->height() < rectTitle.height() ) // triangle's height > title text's, offset triangle
   {
-    offsetTopTri += ( rectTitle.height() - mCollapseButton->height() ) / 2 ;
+    offsetTopTri += ( rectTitle.height() - mCollapseButton->height() ) / 2;
 //    offsetTopTri += rectTitle.top();
   }
   else if ( rectTitle.height() < mCollapseButton->height() ) // title text's height < triangle's, offset title

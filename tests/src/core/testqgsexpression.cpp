@@ -264,8 +264,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "log10(100)" ) << "log10(100)" << false << QVariant( 2. );
       QTest::newRow( "log(2,32)" ) << "log(2,32)" << false << QVariant( 5. );
       QTest::newRow( "log(10,1000)" ) << "log(10,1000)" << false << QVariant( 3. );
-      QTest::newRow( "log(-2,32)" ) << "log(-2,32)" << false << QVariant( );
-      QTest::newRow( "log(2,-32)" ) << "log(2,-32)" << false << QVariant( );
+      QTest::newRow( "log(-2,32)" ) << "log(-2,32)" << false << QVariant();
+      QTest::newRow( "log(2,-32)" ) << "log(2,-32)" << false << QVariant();
       QTest::newRow( "log(0.5,32)" ) << "log(0.5,32)" << false << QVariant( -5. );
       QTest::newRow( "round(1234.557,2) - round up" ) << "round(1234.557,2)" << false << QVariant( 1234.56 );
       QTest::newRow( "round(1234.554,2) - round down" ) << "round(1234.554,2)" << false << QVariant( 1234.55 );
@@ -350,7 +350,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "condition else" ) << "case when 1=0 then 'bad' else 678 end" << false << QVariant( 678 );
       QTest::newRow( "condition null" ) << "case when length(123)=0 then 111 end" << false << QVariant();
       QTest::newRow( "condition 2 when" ) << "case when 2>3 then 23 when 3>2 then 32 else 0 end" << false << QVariant( 32 );
-      QTest::newRow( "coalesce null" ) << "coalesce(NULL)" << false << QVariant( );
+      QTest::newRow( "coalesce null" ) << "coalesce(NULL)" << false << QVariant();
       QTest::newRow( "coalesce mid-null" ) << "coalesce(1, NULL, 3)" << false << QVariant( 1 );
       QTest::newRow( "coalesce exp" ) << "coalesce(NULL, 1+1)" << false << QVariant( 2 );
       QTest::newRow( "regexp match" ) << "regexp_match('abc','.b.')" << false << QVariant( 1 );

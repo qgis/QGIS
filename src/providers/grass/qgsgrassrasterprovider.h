@@ -54,7 +54,7 @@ class QgsCoordinateTransform;
 class QgsGrassRasterValue
 {
   public:
-    QgsGrassRasterValue( );
+    QgsGrassRasterValue();
     ~QgsGrassRasterValue();
     void start( QString gisdbase, QString location, QString mapset, QString map );
     // returns raster value, NaN for no data

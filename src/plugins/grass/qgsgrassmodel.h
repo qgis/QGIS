@@ -47,13 +47,13 @@ class QgsGrassModel: public QAbstractItemModel
     void refresh();
 
     // Refresh item
-    void refreshItem( QgsGrassModelItem *item ) ;
+    void refreshItem( QgsGrassModelItem *item );
 
     // Remove items missing in the list
-    void removeItems( QgsGrassModelItem *item, QStringList list ) ;
+    void removeItems( QgsGrassModelItem *item, QStringList list );
 
     // Add items missing in children
-    void addItems( QgsGrassModelItem *item, QStringList list, int type ) ;
+    void addItems( QgsGrassModelItem *item, QStringList list, int type );
 
     //! Item type
     int itemType( const QModelIndex &index ) const;
@@ -62,7 +62,7 @@ class QgsGrassModel: public QAbstractItemModel
     QString uri( const QModelIndex &index ) const;
 
     // Index
-    QModelIndex index( QgsGrassModelItem *item ) ;
+    QModelIndex index( QgsGrassModelItem *item );
 
     // Name
     QString itemName( const QModelIndex &index );

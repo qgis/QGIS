@@ -1134,7 +1134,7 @@ void QgsComposer::on_mActionRefreshView_triggered()
   if ( mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
     //block signals from atlas, since the later call to mComposition->refreshItems() will
-    //also trigger items to refresh atlas dependant properties
+    //also trigger items to refresh atlas dependent properties
     mComposition->atlasComposition().blockSignals( true );
     mComposition->atlasComposition().refreshFeature();
     mComposition->atlasComposition().blockSignals( false );
@@ -1723,7 +1723,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     int answer = QMessageBox::warning( 0, tr( "Big image" ),
                                        tr( "To create image %1x%2 requires about %3 MB of memory. Proceed?" )
                                        .arg( width ).arg( height ).arg( memuse ),
-                                       QMessageBox::Ok | QMessageBox::Cancel,  QMessageBox::Ok );
+                                       QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok );
 
     raise();
     if ( answer == QMessageBox::Cancel )
@@ -1764,7 +1764,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
                                   "may result in a memory overflow.\n"
                                   "Please try a lower resolution or a smaller papersize" )
                               .arg( i + 1 ).arg( width ).arg( height ).arg( dpi ),
-                              QMessageBox::Ok ,  QMessageBox::Ok );
+                              QMessageBox::Ok, QMessageBox::Ok );
         mView->setPaintingEnabled( true );
         return;
       }
@@ -2255,7 +2255,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
       //width and height in pixel
       const int width = ( int )( mComposition->paperWidth() * mComposition->printResolution() / 25.4 );
       const int height = ( int )( mComposition->paperHeight() * mComposition->printResolution() / 25.4 );
-      QList< QgsPaperItem* > paperItems( mComposition->pages() ) ;
+      QList< QgsPaperItem* > paperItems( mComposition->pages() );
 
       for ( int i = 0; i < mComposition->numPages(); ++i )
       {
@@ -2532,7 +2532,7 @@ void QgsComposer::on_mActionComposerManager_triggered()
   // NOTE: Avoid crash where composer that spawned modal manager from toolbar ends up
   // being deleted by user, but event loop tries to return to composer on manager close
   // (does not seem to be an issue for menu action)
-  QTimer::singleShot( 0, mQgis->actionShowComposerManager(), SLOT( trigger() ) ) ;
+  QTimer::singleShot( 0, mQgis->actionShowComposerManager(), SLOT( trigger() ) );
 }
 
 void QgsComposer::on_mActionSaveAsTemplate_triggered()

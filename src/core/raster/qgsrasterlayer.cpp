@@ -318,7 +318,7 @@ QgsLegendColorList QgsRasterLayer::legendSymbologyItems() const
 
 QString QgsRasterLayer::metadata()
 {
-  QString myMetadata ;
+  QString myMetadata;
   myMetadata += "<p class=\"glossy\">" + tr( "Driver" ) + "</p>\n";
   myMetadata += "<p>";
   myMetadata += mDataProvider->description();

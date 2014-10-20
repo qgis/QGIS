@@ -316,7 +316,7 @@ bool QgsOfflineEditing::createSpatialiteDB( const QString& offlineDbPath )
   QDir path = fullPath.dir();
 
   // Must be sure there is destination directory ~/.qgis
-  QDir().mkpath( path.absolutePath( ) );
+  QDir().mkpath( path.absolutePath() );
 
   // creating/opening the new database
   QString dbPath = newDb.fileName();

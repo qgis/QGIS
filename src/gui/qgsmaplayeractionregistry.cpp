@@ -16,30 +16,33 @@
 #include "qgsmaplayeractionregistry.h"
 
 
-QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, Targets targets ) : QAction( name, parent ),
-    mSingleLayer( false ),
-    mActionLayer( 0 ),
-    mSpecificLayerType( false ),
-    mTargets( targets )
+QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, Targets targets )
+    : QAction( name, parent )
+    , mSingleLayer( false )
+    , mActionLayer( 0 )
+    , mSpecificLayerType( false )
+    , mTargets( targets )
 {
 }
 
 /**Creates a map layer action which can run only on a specific layer*/
-QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer* layer , Targets targets ) : QAction( name, parent ),
-    mSingleLayer( true ),
-    mActionLayer( layer ),
-    mSpecificLayerType( false ),
-    mTargets( targets )
+QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer* layer, Targets targets )
+    : QAction( name, parent )
+    , mSingleLayer( true )
+    , mActionLayer( layer )
+    , mSpecificLayerType( false )
+    , mTargets( targets )
 {
 }
 
 /**Creates a map layer action which can run on a specific type of layer*/
-QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer::LayerType layerType, Targets targets ) : QAction( name, parent ),
-    mSingleLayer( false ),
-    mActionLayer( 0 ),
-    mSpecificLayerType( true ),
-    mLayerType( layerType ),
-    mTargets( targets )
+QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer::LayerType layerType, Targets targets )
+    : QAction( name, parent )
+    , mSingleLayer( false )
+    , mActionLayer( 0 )
+    , mSpecificLayerType( true )
+    , mLayerType( layerType )
+    , mTargets( targets )
 {
 }
 

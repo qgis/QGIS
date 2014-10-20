@@ -33,7 +33,7 @@
 const char NS_SEPARATOR = '?';
 const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 
-QgsGmlFeatureClass::QgsGmlFeatureClass( )
+QgsGmlFeatureClass::QgsGmlFeatureClass()
 {
 }
 
@@ -294,7 +294,7 @@ QList<QDomElement> QgsGmlSchema::domElements( const QDomElement &element, const 
         }
         else
         {
-          list.append( domElements( el,  names.join( "." ) ) );
+          list.append( domElements( el, names.join( "." ) ) );
         }
       }
     }

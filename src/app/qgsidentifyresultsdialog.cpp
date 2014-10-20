@@ -174,7 +174,7 @@ QSize QgsIdentifyResultsWebView::sizeHint() const
   }
   else
   {
-    QgsDebugMsg( "parent not available" ) ;
+    QgsDebugMsg( "parent not available" );
   }
 
   // Always keep some minimum size, e.g. if page is not yet loaded
@@ -264,7 +264,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mOpenFormButton->setDisabled( true );
 
   QSettings mySettings;
-  mDock = new QDockWidget( tr( "Identify Results" ) , QgisApp::instance() );
+  mDock = new QDockWidget( tr( "Identify Results" ), QgisApp::instance() );
   mDock->setObjectName( "IdentifyResultsDock" );
   mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mDock->setWidget( this );
@@ -368,7 +368,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsMapToolIdentify::IdentifyResult re
   }
   else if ( result.mLayer->type() == QgsMapLayer::RasterLayer )
   {
-    addFeature( qobject_cast<QgsRasterLayer *>( result.mLayer ), result.mLabel, result.mAttributes, result.mDerivedAttributes, result.mFields,  result.mFeature, result.mParams );
+    addFeature( qobject_cast<QgsRasterLayer *>( result.mLayer ), result.mLabel, result.mAttributes, result.mDerivedAttributes, result.mFields, result.mFeature, result.mParams );
   }
 }
 
@@ -386,7 +386,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     connect( vlayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerDestroyed() ) );
     connect( vlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
     connect( vlayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ),
-             this,   SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
+             this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
     connect( vlayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
     connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   }
@@ -1387,7 +1387,7 @@ void QgsIdentifyResultsDialog::disconnectLayer( QObject *layer )
     disconnect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
     disconnect( vlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
     disconnect( vlayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ),
-                this,   SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
+                this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
     disconnect( vlayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
     disconnect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   }

@@ -33,7 +33,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
 {
   setupUi( this );
 
-  cmbTransformType->addItem( tr( "Linear" ) , ( int )QgsGeorefTransform::Linear ) ;
+  cmbTransformType->addItem( tr( "Linear" ), ( int )QgsGeorefTransform::Linear );
   cmbTransformType->addItem( tr( "Helmert" ), ( int )QgsGeorefTransform::Helmert );
   cmbTransformType->addItem( tr( "Polynomial 1" ), ( int )QgsGeorefTransform::PolynomialOrder1 );
   cmbTransformType->addItem( tr( "Polynomial 2" ), ( int )QgsGeorefTransform::PolynomialOrder2 );

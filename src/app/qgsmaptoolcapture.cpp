@@ -195,7 +195,7 @@ int QgsMapToolCapture::addVertex( const QPoint &p )
 
   if ( !mTempRubberBand )
   {
-    mTempRubberBand = createRubberBand( mCaptureMode == CapturePolygon ? QGis::Polygon : QGis::Line , true );
+    mTempRubberBand = createRubberBand( mCaptureMode == CapturePolygon ? QGis::Polygon : QGis::Line, true );
   }
   else
   {
@@ -207,7 +207,7 @@ int QgsMapToolCapture::addVertex( const QPoint &p )
   }
   else if ( mCaptureMode == CapturePolygon )
   {
-    const QgsPoint *firstPoint = mRubberBand->getPoint( 0 , 0 );
+    const QgsPoint *firstPoint = mRubberBand->getPoint( 0, 0 );
     mTempRubberBand->addPoint( *firstPoint );
     mTempRubberBand->movePoint( mapPoint );
     mTempRubberBand->addPoint( mapPoint );

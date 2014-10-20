@@ -185,7 +185,7 @@ QextSerialEnumerator::~QextSerialEnumerator( )
             spDevInfoData.cbSize = sizeof(SP_DEVINFO_DATA);
             for(int i=0; SetupDiEnumDeviceInfo(devInfo, i, &spDevInfoData); i++)
             {
-                DWORD nSize=0 ;
+                DWORD nSize=0;
                 TCHAR buf[MAX_PATH];
                 if ( SetupDiGetDeviceInstanceId(devInfo, &spDevInfoData, buf, MAX_PATH, &nSize) &&
                         deviceID.contains(TCHARToQString(buf))) // we found a match

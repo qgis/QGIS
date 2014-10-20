@@ -54,7 +54,7 @@ QModelIndex QgsFieldModel::indexFromName( const QString &fieldName )
     int exprIdx = mExpression.indexOf( fldName );
     if ( exprIdx != -1 )
     {
-      return index( mFields.count() + exprIdx , 0 );
+      return index( mFields.count() + exprIdx, 0 );
     }
   }
 

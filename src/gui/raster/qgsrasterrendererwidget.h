@@ -48,11 +48,11 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     void setRasterLayer( QgsRasterLayer* layer ) { mRasterLayer = layer; }
     const QgsRasterLayer* rasterLayer() const { return mRasterLayer; }
 
-    virtual QString min( int index = 0 ) { Q_UNUSED( index ); return QString( ); }
-    virtual QString max( int index = 0 ) { Q_UNUSED( index ); return QString( ); }
+    virtual QString min( int index = 0 ) { Q_UNUSED( index ); return QString(); }
+    virtual QString max( int index = 0 ) { Q_UNUSED( index ); return QString(); }
     virtual void setMin( QString value, int index = 0 ) { Q_UNUSED( index ); Q_UNUSED( value ); }
     virtual void setMax( QString value, int index = 0 ) { Q_UNUSED( index ); Q_UNUSED( value ); }
-    virtual QString stdDev( ) { return QString( ); }
+    virtual QString stdDev() { return QString(); }
     virtual void setStdDev( QString value ) { Q_UNUSED( value ); }
     virtual int selectedBand( int index = 0 ) { Q_UNUSED( index ); return -1; }
 

@@ -585,7 +585,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
 
     // no dups detected or overwrite is allowed
     settings.beginGroup( "/Qgis/connections-" + service.toLower() );
-    settings.setValue( QString( "/" + connectionName + "/url" ) , child.attribute( "url" ) );
+    settings.setValue( QString( "/" + connectionName + "/url" ), child.attribute( "url" ) );
     settings.setValue( QString( "/" + connectionName + "/ignoreGetMapURI" ), child.attribute( "ignoreGetMapURI" ) == "true" );
     settings.setValue( QString( "/" + connectionName + "/ignoreGetFeatureInfoURI" ), child.attribute( "ignoreGetFeatureInfoURI" ) == "true" );
     settings.setValue( QString( "/" + connectionName + "/ignoreAxisOrientation" ), child.attribute( "ignoreAxisOrientation" ) == "true" );
@@ -672,7 +672,7 @@ void QgsManageConnectionsDialog::loadWFSConnections( const QDomDocument &doc, co
 
     // no dups detected or overwrite is allowed
     settings.beginGroup( "/Qgis/connections-wfs" );
-    settings.setValue( QString( "/" + connectionName + "/url" ) , child.attribute( "url" ) );
+    settings.setValue( QString( "/" + connectionName + "/url" ), child.attribute( "url" ) );
     settings.endGroup();
 
     if ( !child.attribute( "username" ).isEmpty() )

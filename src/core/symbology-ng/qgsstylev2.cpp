@@ -1176,7 +1176,7 @@ QStringList QgsStyleV2::symbolsOfSmartgroup( StyleEntity type, int id )
       }
       else if ( constraint == "!name" )
       {
-        QStringList all = type == SymbolEntity ? symbolNames() : colorRampNames() ;
+        QStringList all = type == SymbolEntity ? symbolNames() : colorRampNames();
         foreach ( const QString &str, all )
         {
           if ( !str.contains( param, Qt::CaseInsensitive ) )

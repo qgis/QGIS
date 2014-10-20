@@ -27,7 +27,7 @@
 //For model testing
 //#include "modeltest.h"
 
-QgsColorSchemeList::QgsColorSchemeList( QWidget *parent , QgsColorScheme *scheme, const QString context, const QColor baseColor )
+QgsColorSchemeList::QgsColorSchemeList( QWidget *parent, QgsColorScheme *scheme, const QString context, const QColor baseColor )
     : QTreeView( parent )
     , mScheme( scheme )
 {

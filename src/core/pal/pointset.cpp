@@ -195,7 +195,7 @@ namespace pal
 
   void PointSet::splitPolygons( LinkedList<PointSet*> *shapes_toProcess,
                                 LinkedList<PointSet*> *shapes_final,
-                                double xrm, double yrm , char *uid )
+                                double xrm, double yrm, char *uid )
   {
 #ifdef _DEBUG_
     std::cout << "splitPolygons: " << uid << std::endl;
@@ -404,7 +404,7 @@ namespace pal
           }
           else   // point fronting i->j => compute pependicular distance  => create a new point
           {
-            b = cross_product( x[i], y[i], x[j], y[j],  x[retainedPt], y[retainedPt] ) / seg_length;
+            b = cross_product( x[i], y[i], x[j], y[j], x[retainedPt], y[retainedPt] ) / seg_length;
             b *= b;
             ps = i;
             pe = j;

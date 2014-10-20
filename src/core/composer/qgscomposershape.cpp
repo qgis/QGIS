@@ -143,23 +143,23 @@ void QgsComposerShape::drawShape( QPainter* p )
   switch ( mShape )
   {
     case Ellipse:
-      p->drawEllipse( QRectF( 0, 0 , rect().width(), rect().height() ) );
+      p->drawEllipse( QRectF( 0, 0, rect().width(), rect().height() ) );
       break;
     case Rectangle:
       //if corner radius set, then draw a rounded rectangle
       if ( mCornerRadius > 0 )
       {
-        p->drawRoundedRect( QRectF( 0, 0 , rect().width(), rect().height() ), mCornerRadius, mCornerRadius );
+        p->drawRoundedRect( QRectF( 0, 0, rect().width(), rect().height() ), mCornerRadius, mCornerRadius );
       }
       else
       {
-        p->drawRect( QRectF( 0, 0 , rect().width(), rect().height() ) );
+        p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
       }
       break;
     case Triangle:
       QPolygonF triangle;
       triangle << QPointF( 0, rect().height() );
-      triangle << QPointF( rect().width() , rect().height() );
+      triangle << QPointF( rect().width(), rect().height() );
       triangle << QPointF( rect().width() / 2.0, 0 );
       p->drawPolygon( triangle );
       break;
@@ -200,7 +200,7 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
     {
       //create an ellipse
       QPainterPath ellipsePath;
-      ellipsePath.addEllipse( QRectF( 0, 0 , rect().width() * dotsPerMM, rect().height() * dotsPerMM ) );
+      ellipsePath.addEllipse( QRectF( 0, 0, rect().width() * dotsPerMM, rect().height() * dotsPerMM ) );
       QPolygonF ellipsePoly = ellipsePath.toFillPolygon( t );
       shapePolygon = ti.map( ellipsePoly );
       break;
@@ -211,7 +211,7 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
       if ( mCornerRadius > 0 )
       {
         QPainterPath roundedRectPath;
-        roundedRectPath.addRoundedRect( QRectF( 0, 0 , rect().width() * dotsPerMM, rect().height() * dotsPerMM ), mCornerRadius * dotsPerMM, mCornerRadius * dotsPerMM );
+        roundedRectPath.addRoundedRect( QRectF( 0, 0, rect().width() * dotsPerMM, rect().height() * dotsPerMM ), mCornerRadius * dotsPerMM, mCornerRadius * dotsPerMM );
         QPolygonF roundedPoly = roundedRectPath.toFillPolygon( t );
         shapePolygon = ti.map( roundedPoly );
       }

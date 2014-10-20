@@ -472,7 +472,7 @@ QString QgsComposerHtml::displayName() const
 bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
   QDomElement htmlElem = doc.createElement( "ComposerHtml" );
-  htmlElem.setAttribute( "contentMode",  QString::number(( int ) mContentMode ) );
+  htmlElem.setAttribute( "contentMode", QString::number(( int ) mContentMode ) );
   htmlElem.setAttribute( "url", mUrl.toString() );
   htmlElem.setAttribute( "html", mHtml );
   htmlElem.setAttribute( "evaluateExpressions", mEvaluateExpressions ? "true" : "false" );

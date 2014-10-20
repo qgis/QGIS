@@ -87,10 +87,10 @@ class DualEdgeTriangulation: Triangulation
     /**returns the number of a HalfEdge from a triangle in which 'point' is in. If the number -10 is returned, this means, that 'point' is outside the convex hull. If -5 is returned, then numerical problems with the leftOfTest occured (and the value of the possible edge is stored in the variable 'mUnstableEdge'. -20 means, that the inserted point is exactly on an edge (the number is stored in the variable 'mEdgeWithPoint'). -25 means, that the point is already in the triangulation (the number of the point is stored in the member 'mTwiceInsPoint'. If -100 is returned, this means that something else went wrong*/
     int baseEdgeOfTriangle( Point3D* point );
     /**Checks, if 'edge' has to be swapped because of the empty circle criterion. If so, doSwap(...) is called.*/
-    bool checkSwap( unsigned int edge, unsigned int recursivDeep );
+    bool checkSwap( unsigned int edge, unsigned int recursiveDeep );
     /**Swaps 'edge' and test recursively for other swaps (delaunay criterion)*/
-    void doSwap( unsigned int edge, unsigned int recursivDeep );
-    /**Swaps 'edge' and does no recursiv testing*/
+    void doSwap( unsigned int edge, unsigned int recursiveDeep );
+    /**Swaps 'edge' and does no recursive testing*/
     void doOnlySwap( unsigned int edge );
     /**Returns true, if it is possible to swap an edge, otherwise false(concave quad or edge on (or outside) the convex hull)*/
     bool swapPossible( unsigned int edge );

@@ -154,7 +154,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   mypSatellitesGrid->attach( mpSatellitesWidget );
 
   //QwtLegend *legend = new QwtLegend;
-  //mpSatellitesWidget->insertLegend(legend,  QwtPolarPlot::BottomLegend);
+  //mpSatellitesWidget->insertLegend(legend, QwtPolarPlot::BottomLegend);
   QVBoxLayout *mpPolarLayout = new QVBoxLayout( mpPolarWidget );
   mpPolarLayout->setContentsMargins( 0, 0, 0, 0 );
   mpPolarLayout->addWidget( mpSatellitesWidget );
@@ -310,7 +310,7 @@ void QgsGPSInformationWidget::on_mSpinTrackWidth_valueChanged( int theValue )
   }
 }
 
-void QgsGPSInformationWidget::on_mBtnTrackColor_clicked( )
+void QgsGPSInformationWidget::on_mBtnTrackColor_clicked()
 {
   QColor myColor = QColorDialog::getColor( mTrackColor, this );
   if ( myColor.isValid() )  // check that a color was picked
@@ -323,33 +323,33 @@ void QgsGPSInformationWidget::on_mBtnTrackColor_clicked( )
   }
 }
 
-void QgsGPSInformationWidget::on_mBtnPosition_clicked( )
+void QgsGPSInformationWidget::on_mBtnPosition_clicked()
 {
   mStackedWidget->setCurrentIndex( 0 );
   if ( mNmea )
     displayGPSInformation( mNmea->currentGPSInformation() );
 }
 
-void QgsGPSInformationWidget::on_mBtnSignal_clicked( )
+void QgsGPSInformationWidget::on_mBtnSignal_clicked()
 {
   mStackedWidget->setCurrentIndex( 1 );
   if ( mNmea )
     displayGPSInformation( mNmea->currentGPSInformation() );
 }
 
-void QgsGPSInformationWidget::on_mBtnSatellites_clicked( )
+void QgsGPSInformationWidget::on_mBtnSatellites_clicked()
 {
   mStackedWidget->setCurrentIndex( 2 );
   if ( mNmea )
     displayGPSInformation( mNmea->currentGPSInformation() );
 }
 
-void QgsGPSInformationWidget::on_mBtnOptions_clicked( )
+void QgsGPSInformationWidget::on_mBtnOptions_clicked()
 {
   mStackedWidget->setCurrentIndex( 3 );
 }
 
-void QgsGPSInformationWidget::on_mBtnDebug_clicked( )
+void QgsGPSInformationWidget::on_mBtnDebug_clicked()
 {
   mStackedWidget->setCurrentIndex( 4 );
 }
@@ -598,10 +598,10 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
         }
 #if (QWT_POLAR_VERSION<0x010000)
         mypMarker->setSymbol( QwtSymbol( QwtSymbol::Ellipse,
-                                         symbolBrush , QPen( myColor ), markerSize ) );
+                                         symbolBrush, QPen( myColor ), markerSize ) );
 #else
         mypMarker->setSymbol( new QwtSymbol( QwtSymbol::Ellipse,
-                                             symbolBrush , QPen( myColor ), markerSize ) );
+                                             symbolBrush, QPen( myColor ), markerSize ) );
 #endif
         mypMarker->setLabelAlignment( Qt::AlignHCenter | Qt::AlignTop );
         QwtText text( QString::number( currentInfo.id ) );
@@ -696,7 +696,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
            ( radRecenterWhenNeeded->isChecked() && !myExtentLimit.contains( myPoint ) ) )
       {
         mpCanvas->setExtent( myRect );
-        mpCanvas->refresh( );
+        mpCanvas->refresh();
       }
     } //otherwise never recenter automatically
 
@@ -729,7 +729,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
   } // show marker
 }
 
-void QgsGPSInformationWidget::on_mBtnAddVertex_clicked( )
+void QgsGPSInformationWidget::on_mBtnAddVertex_clicked()
 {
   addVertex();
 }
@@ -740,7 +740,7 @@ void QgsGPSInformationWidget::addVertex()
 
   if ( !mpRubberBand )
   {
-    createRubberBand( );
+    createRubberBand();
   }
 
   // we store the capture list in wgs84 and then transform to layer crs when
@@ -764,15 +764,15 @@ void QgsGPSInformationWidget::addVertex()
   mpRubberBand->addPoint( myPoint );
 }
 
-void QgsGPSInformationWidget::on_mBtnResetFeature_clicked( )
+void QgsGPSInformationWidget::on_mBtnResetFeature_clicked()
 {
   mNmea->disconnect( this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
-  createRubberBand( ); //deletes existing rubberband
+  createRubberBand(); //deletes existing rubberband
   mCaptureList.clear();
   connectGpsSlot();
 }
 
-void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
+void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mpCanvas->currentLayer() );
   QGis::WkbType layerWKBType = vlayer->wkbType();
@@ -986,13 +986,13 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
   mBtnCloseFeature->setFocus( Qt::OtherFocusReason );
 }
 
-void QgsGPSInformationWidget::connectGpsSlot( )
+void QgsGPSInformationWidget::connectGpsSlot()
 {
   connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation& ) ),
            this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
 }
 
-void QgsGPSInformationWidget::on_mBtnRefreshDevices_clicked( )
+void QgsGPSInformationWidget::on_mBtnRefreshDevices_clicked()
 {
   populateDevices();
 }
@@ -1018,7 +1018,7 @@ void QgsGPSInformationWidget::populateDevices()
   mCboDevices->setCurrentIndex( idx < 0 ? 0 : idx );
 }
 
-void QgsGPSInformationWidget::createRubberBand( )
+void QgsGPSInformationWidget::createRubberBand()
 {
   if ( mpRubberBand )
   {

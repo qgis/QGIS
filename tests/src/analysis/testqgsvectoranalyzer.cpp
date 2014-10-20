@@ -28,14 +28,14 @@ class TestQgsVectorAnalyzer: public QObject
     void init() ;// will be called before each testfunction is executed.
     void cleanup() ;// will be called after every testfunction.
     /** Our tests proper begin here */
-    void singleToMulti( );
-    void multiToSingle( );
-    void extractNodes( );
-    void polygonsToLines( );
-    void exportGeometryInfo( );
-    void simplifyGeometry( );
-    void polygonCentroids( );
-    void layerExtent( );
+    void singleToMulti();
+    void multiToSingle();
+    void extractNodes();
+    void polygonsToLines();
+    void exportGeometryInfo();
+    void simplifyGeometry();
+    void polygonCentroids();
+    void layerExtent();
   private:
     QgsGeometryAnalyzer mAnalyzer;
     QgsVectorLayer * mpLineLayer;
@@ -88,43 +88,43 @@ void  TestQgsVectorAnalyzer::cleanup()
 {
 
 }
-void TestQgsVectorAnalyzer::singleToMulti( )
+void TestQgsVectorAnalyzer::singleToMulti()
 {
 
 }
-void TestQgsVectorAnalyzer::multiToSingle( )
+void TestQgsVectorAnalyzer::multiToSingle()
 {
 
 }
-void TestQgsVectorAnalyzer::extractNodes( )
+void TestQgsVectorAnalyzer::extractNodes()
 {
 
 }
-void TestQgsVectorAnalyzer::polygonsToLines( )
+void TestQgsVectorAnalyzer::polygonsToLines()
 {
 
 }
-void TestQgsVectorAnalyzer::exportGeometryInfo( )
+void TestQgsVectorAnalyzer::exportGeometryInfo()
 {
 }
 
-void TestQgsVectorAnalyzer::simplifyGeometry( )
+void TestQgsVectorAnalyzer::simplifyGeometry()
 {
-  QString myTmpDir = QDir::tempPath() + QDir::separator() ;
+  QString myTmpDir = QDir::tempPath() + QDir::separator();
   QString myFileName = myTmpDir +  "simplify_layer.shp";
   QVERIFY( mAnalyzer.simplify( mpLineLayer, myFileName, 1.0 ) );
 }
 
-void TestQgsVectorAnalyzer::polygonCentroids( )
+void TestQgsVectorAnalyzer::polygonCentroids()
 {
-  QString myTmpDir = QDir::tempPath() + QDir::separator() ;
+  QString myTmpDir = QDir::tempPath() + QDir::separator();
   QString myFileName = myTmpDir +  "centroid_layer.shp";
   QVERIFY( mAnalyzer.centroids( mpPolyLayer, myFileName ) );
 }
 
-void TestQgsVectorAnalyzer::layerExtent( )
+void TestQgsVectorAnalyzer::layerExtent()
 {
-  QString myTmpDir = QDir::tempPath() + QDir::separator() ;
+  QString myTmpDir = QDir::tempPath() + QDir::separator();
   QString myFileName = myTmpDir +  "extent_layer.shp";
   QVERIFY( mAnalyzer.extent( mpPointLayer, myFileName ) );
 }

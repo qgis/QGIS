@@ -27,8 +27,8 @@ QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
   setupUi( this );
   setWidget( dockWidgetContents );
 
-  connect( undoButton, SIGNAL( clicked() ), this, SLOT( undo( ) ) );
-  connect( redoButton, SIGNAL( clicked() ), this, SLOT( redo( ) ) );
+  connect( undoButton, SIGNAL( clicked() ), this, SLOT( undo() ) );
+  connect( redoButton, SIGNAL( clicked() ), this, SLOT( redo() ) );
   connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
            this, SLOT( layerChanged( QgsMapLayer* ) ) );
 
@@ -127,7 +127,7 @@ void QgsUndoWidget::indexChanged( int curIndx )
   mPreviousCount = curCount;
 }
 
-void QgsUndoWidget::undo( )
+void QgsUndoWidget::undo()
 {
   if ( mUndoStack )
     mUndoStack->undo();

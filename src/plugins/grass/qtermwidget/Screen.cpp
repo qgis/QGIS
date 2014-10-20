@@ -1234,7 +1234,7 @@ void Screen::getSelectionEnd( int& column , int& line )
 void Screen::setSelectionStart( /*const ScreenCursor& viewCursor ,*/ const int x, const int y, const bool mode )
 {
 //  kDebug(1211) << "setSelBeginXY(" << x << "," << y << ")";
-  sel_begin = loc( x, y ); //+histCursor) ;
+  sel_begin = loc( x, y ); //+histCursor);
 
   /* FIXME, HACK to correct for x too far to the right... */
   if ( x == columns ) sel_begin--;

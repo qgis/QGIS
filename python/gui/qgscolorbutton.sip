@@ -135,7 +135,7 @@ class QgsColorButton: QPushButton
     /**
      * Reimplemented to accept dragged colors
      */
-    void dragEnterEvent( QDragEnterEvent * e ) ;
+    void dragEnterEvent( QDragEnterEvent * e );
 
     /**
      * Reimplemented to accept dropped colors

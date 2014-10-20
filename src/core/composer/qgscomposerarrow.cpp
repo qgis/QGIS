@@ -285,16 +285,16 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
     double angleRad = ang / 180 * M_PI;
     rotatedFixPoint.setX( fixPoint.x() * cos( angleRad ) + fixPoint.y() * -sin( angleRad ) );
     rotatedFixPoint.setY( fixPoint.x() * sin( angleRad ) + fixPoint.y() * cos( angleRad ) );
-    p->translate( canvasPoint.x() - rotatedFixPoint.x() , canvasPoint.y() - rotatedFixPoint.y() );
+    p->translate( canvasPoint.x() - rotatedFixPoint.x(), canvasPoint.y() - rotatedFixPoint.y() );
   }
   else
   {
-    p->translate( canvasPoint.x() , canvasPoint.y() );
+    p->translate( canvasPoint.x(), canvasPoint.y() );
   }
 
   p->rotate( ang );
   p->translate( -mArrowHeadWidth / 2.0, -arrowHeadHeight / 2.0 );
-  r.render( p, QRectF( 0, 0,  mArrowHeadWidth, arrowHeadHeight ) );
+  r.render( p, QRectF( 0, 0, mArrowHeadWidth, arrowHeadHeight ) );
   p->restore();
 
   return;
@@ -520,7 +520,7 @@ bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument&
   if ( !styleElem.isNull() )
   {
     QDomElement lineStyleElem = styleElem.firstChildElement( "symbol" );
-    if ( !lineStyleElem.isNull( ) )
+    if ( !lineStyleElem.isNull() )
     {
       delete mLineSymbol;
       mLineSymbol = dynamic_cast<QgsLineSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( lineStyleElem ) );

@@ -900,7 +900,7 @@ void QgsDelimitedTextProvider::recordInvalidLine( QString message )
   }
 }
 
-void QgsDelimitedTextProvider::reportErrors( QStringList messages , bool showDialog )
+void QgsDelimitedTextProvider::reportErrors( QStringList messages, bool showDialog )
 {
   if ( !mInvalidLines.isEmpty() || ! messages.isEmpty() )
   {

@@ -781,7 +781,7 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
   QgsDebugMsg( QString( "Setting  gisdbase, location: %1, %2" ).arg( gisdbase ).arg( location ) );
 
   // Find the vector
-  const char *ms = G_find_vector2( mapName.toUtf8().data(), mapset.toUtf8().data() ) ;
+  const char *ms = G_find_vector2( mapName.toUtf8().data(), mapset.toUtf8().data() );
 
   if ( !ms )
   {
@@ -1510,28 +1510,28 @@ int QgsGrassProvider::lineAlive( int line )
 {
   QgsDebugMsgLevel( "entered.", 3 );
 
-  return ( Vect_line_alive( mMap, line ) ) ;
+  return ( Vect_line_alive( mMap, line ) );
 }
 
 int QgsGrassProvider::nodeAlive( int node )
 {
   QgsDebugMsgLevel( "QgsGrassProvider::nodeAlive", 3 );
 
-  return ( Vect_node_alive( mMap, node ) ) ;
+  return ( Vect_node_alive( mMap, node ) );
 }
 
 int QgsGrassProvider::numUpdatedLines( void )
 {
   QgsDebugMsg( QString( "numUpdatedLines = %1" ).arg( Vect_get_num_updated_lines( mMap ) ) );
 
-  return ( Vect_get_num_updated_lines( mMap ) ) ;
+  return ( Vect_get_num_updated_lines( mMap ) );
 }
 
 int QgsGrassProvider::numUpdatedNodes( void )
 {
   QgsDebugMsg( QString( "numUpdatedNodes = %1" ).arg( Vect_get_num_updated_nodes( mMap ) ) );
 
-  return ( Vect_get_num_updated_nodes( mMap ) ) ;
+  return ( Vect_get_num_updated_nodes( mMap ) );
 }
 
 int QgsGrassProvider::updatedLine( int idx )
@@ -1539,7 +1539,7 @@ int QgsGrassProvider::updatedLine( int idx )
   QgsDebugMsg( QString( "idx = %1" ).arg( idx ) );
   QgsDebugMsg( QString( "  updatedLine = %1" ).arg( Vect_get_updated_line( mMap, idx ) ) );
 
-  return ( Vect_get_updated_line( mMap, idx ) ) ;
+  return ( Vect_get_updated_line( mMap, idx ) );
 }
 
 int QgsGrassProvider::updatedNode( int idx )
@@ -1547,7 +1547,7 @@ int QgsGrassProvider::updatedNode( int idx )
   QgsDebugMsg( QString( "idx = %1" ).arg( idx ) );
   QgsDebugMsg( QString( "  updatedNode = %1" ).arg( Vect_get_updated_node( mMap, idx ) ) );
 
-  return ( Vect_get_updated_node( mMap, idx ) ) ;
+  return ( Vect_get_updated_node( mMap, idx ) );
 }
 
 // ------------------ Attributes -------------------------------------------------
@@ -2129,7 +2129,7 @@ QString QgsGrassProvider::primitiveTypeName( int type )
 
 // -------------------------------------------------------------------------------
 
-int QgsGrassProvider::cidxGetNumFields( )
+int QgsGrassProvider::cidxGetNumFields()
 {
   return ( Vect_cidx_get_num_fields( mMap ) );
 }

@@ -307,7 +307,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
      * @see setoffsetAlongLine
      * @see setOffsetAlongLineUnit
     */
-    void renderOffsetVertexAlongLine( const QPolygonF& points, int vertex, double distance , QgsSymbolV2RenderContext &context );
+    void renderOffsetVertexAlongLine( const QPolygonF& points, int vertex, double distance, QgsSymbolV2RenderContext &context );
 };
 
 #endif

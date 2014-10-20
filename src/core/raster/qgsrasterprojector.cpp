@@ -89,7 +89,7 @@ QgsRasterProjector::QgsRasterProjector(
 }
 
 QgsRasterProjector::QgsRasterProjector()
-    : QgsRasterInterface( 0 ), mSrcDatumTransform( -1 ), mDestDatumTransform( -1 ) , pHelperTop( 0 ), pHelperBottom( 0 )
+    : QgsRasterInterface( 0 ), mSrcDatumTransform( -1 ), mDestDatumTransform( -1 ), pHelperTop( 0 ), pHelperBottom( 0 )
 {
   QgsDebugMsg( "Entered" );
 }
@@ -206,13 +206,13 @@ void QgsRasterProjector::calc()
     myRow.append( QgsPoint() );
     myRow.append( QgsPoint() );
     myRow.append( QgsPoint() );
-    mCPMatrix.insert( i,  myRow );
+    mCPMatrix.insert( i, myRow );
     // And the legal points
     QList<bool> myLegalRow;
     myLegalRow.append( bool( false ) );
     myLegalRow.append( bool( false ) );
     myLegalRow.append( bool( false ) );
-    mCPLegalMatrix.insert( i,  myLegalRow );
+    mCPLegalMatrix.insert( i, myLegalRow );
   }
   for ( int i = 0; i < mCPRows; i++ )
   {
@@ -597,8 +597,8 @@ void QgsRasterProjector::insertRows( const QgsCoordinateTransform* ct )
       myLegalRow.append( false );
     }
     QgsDebugMsgLevel( QString( "insert new row at %1" ).arg( 1 + r*2 ), 3 );
-    mCPMatrix.insert( 1 + r*2,  myRow );
-    mCPLegalMatrix.insert( 1 + r*2,  myLegalRow );
+    mCPMatrix.insert( 1 + r*2, myRow );
+    mCPLegalMatrix.insert( 1 + r*2, myLegalRow );
   }
   mCPRows += mCPRows - 1;
   for ( int r = 1; r < mCPRows - 1; r += 2 )
@@ -615,8 +615,8 @@ void QgsRasterProjector::insertCols( const QgsCoordinateTransform* ct )
     QList<bool> myLegalRow;
     for ( int c = 0; c < mCPCols - 1; c++ )
     {
-      mCPMatrix[r].insert( 1 + c*2,  QgsPoint() );
-      mCPLegalMatrix[r].insert( 1 + c*2,  false );
+      mCPMatrix[r].insert( 1 + c*2, QgsPoint() );
+      mCPLegalMatrix[r].insert( 1 + c*2, false );
     }
   }
   mCPCols += mCPCols - 1;
@@ -859,7 +859,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
       if ( doNoData && inputBlock->isNoData( srcRow, srcCol ) )
       {
         outputBlock->setIsNoData( i, j );
-        continue ;
+        continue;
       }
 
       qgssize destIndex = ( qgssize )i * width + j;

@@ -331,7 +331,7 @@ void QgsDecorationGrid::render( QPainter * p )
     mMarkerSymbol->stopRender( context );
   }
 
-  // p->setClipRect( thisPaintRect , Qt::NoClip );
+  // p->setClipRect( thisPaintRect, Qt::NoClip );
 
   if ( mShowGridAnnotation )
   {
@@ -799,7 +799,7 @@ void QgsDecorationGrid::setDirty( bool dirty )
 bool QgsDecorationGrid::getIntervalFromExtent( double* values, bool useXAxis )
 {
   // get default interval from current extents
-  // calculate a default interval that is approx (extent width)/5 , adjusted so that it is a rounded number
+  // calculate a default interval that is approx (extent width)/5, adjusted so that it is a rounded number
   // e.g. 12.7 -> 10  66556 -> 70000
   double interval = 0;
   QgsRectangle extent = QgisApp::instance()->mapCanvas()->extent();

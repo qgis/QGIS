@@ -770,7 +770,7 @@ class QgsComposerMap : QgsComposerItem
   public slots:
 
     /**Called if map canvas has changed*/
-    void updateCachedImage( );
+    void updateCachedImage();
     /**Call updateCachedImage if item is in render mode*/
     void renderModeUpdateCachedImage();
 

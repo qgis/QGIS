@@ -352,7 +352,7 @@ QVector<QgsPoint> QgsMapToolSimplify::getPointList( QgsFeature& f )
 
 
 
-bool QgsSimplifyFeature::simplifyLine( QgsFeature& lineFeature,  double tolerance )
+bool QgsSimplifyFeature::simplifyLine( QgsFeature& lineFeature, double tolerance )
 {
   QgsGeometry* line = lineFeature.geometry();
   if ( line->type() != QGis::Line )
@@ -365,7 +365,7 @@ bool QgsSimplifyFeature::simplifyLine( QgsFeature& lineFeature,  double toleranc
   return true;
 }
 
-bool QgsSimplifyFeature::simplifyPolygon( QgsFeature& polygonFeature,  double tolerance )
+bool QgsSimplifyFeature::simplifyPolygon( QgsFeature& polygonFeature, double tolerance )
 {
   QgsGeometry* polygon = polygonFeature.geometry();
   if ( polygon->type() != QGis::Polygon )

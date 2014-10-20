@@ -307,7 +307,7 @@ struct QgsProject::Imp
   bool dirty;
 
   Imp()
-      : title( )
+      : title()
       , dirty( false )
   {                             // top property node is the root
     // "properties" that contains all plug-in

@@ -100,7 +100,7 @@ class APP_EXPORT QgsIdentifyPlotCurve
 
     QgsIdentifyPlotCurve() { mPlotCurve = 0; }
     QgsIdentifyPlotCurve( const QMap<QString, QString> &attributes,
-                          QwtPlot* plot, const QString &title = QString(), QColor color = QColor() ) ;
+                          QwtPlot* plot, const QString &title = QString(), QColor color = QColor() );
     ~QgsIdentifyPlotCurve();
 
   private:

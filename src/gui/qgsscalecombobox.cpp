@@ -161,7 +161,7 @@ void QgsScaleComboBox::fixupScale()
   double oldScale = mScale;
   bool ok, userSetScale;
   QStringList txtList = currentText().split( ':' );
-  txtList.size() == 2 ? userSetScale = false : userSetScale = true ;
+  userSetScale = txtList.size() != 2;
 
   // QgsDebugMsg( QString( "entered with oldScale: %1" ).arg( oldScale ) );
   newScale = toDouble( currentText(), &ok );

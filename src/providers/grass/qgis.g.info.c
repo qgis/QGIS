@@ -125,7 +125,7 @@ int main( int argc, char **argv )
       char *wkt;
       projinfo = G_get_projinfo();
       projunits = G_get_projunits();
-      wkt = GPJ_grass_to_wkt( projinfo, projunits,  0, 0 );
+      wkt = GPJ_grass_to_wkt( projinfo, projunits, 0, 0 );
       fprintf( stdout, "%s", wkt );
     }
   }

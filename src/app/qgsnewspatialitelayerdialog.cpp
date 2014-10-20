@@ -226,7 +226,7 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
   else
   {
     // XXX query failed -- warn the user some how
-    QMessageBox::warning( 0, tr( "Error" ),  tr( "Failed to load SRIDS: %1" ).arg( sqlite3_errmsg( db ) ) );
+    QMessageBox::warning( 0, tr( "Error" ), tr( "Failed to load SRIDS: %1" ).arg( sqlite3_errmsg( db ) ) );
     status = false;
   }
   // close the statement

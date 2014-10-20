@@ -855,7 +855,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mLogViewer->setShowToolTips( true );
 } // QgisApp ctor
 
-QgisApp::QgisApp( )
+QgisApp::QgisApp()
     : QMainWindow( 0, 0 )
     , mOverviewMapCursor( 0 )
     , mQgisInterface( 0 )
@@ -1140,7 +1140,7 @@ void QgisApp::createActions()
   connect( mActionNewVectorLayer, SIGNAL( triggered() ), this, SLOT( newVectorLayer() ) );
   connect( mActionNewSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
   connect( mActionShowRasterCalculator, SIGNAL( triggered() ), this, SLOT( showRasterCalculator() ) );
-  connect( mActionEmbedLayers, SIGNAL( triggered() ) , this, SLOT( embedLayers() ) );
+  connect( mActionEmbedLayers, SIGNAL( triggered() ), this, SLOT( embedLayers() ) );
   connect( mActionAddLayerDefinition, SIGNAL( triggered() ), this, SLOT( addLayerDefinition() ) );
   connect( mActionAddOgrLayer, SIGNAL( triggered() ), this, SLOT( addVectorLayer() ) );
   connect( mActionAddRasterLayer, SIGNAL( triggered() ), this, SLOT( addRasterLayer() ) );
@@ -2267,7 +2267,7 @@ QToolBar *QgisApp::addToolBar( QString name )
   return toolBar;
 }
 
-void QgisApp::addToolBar( QToolBar* toolBar , Qt::ToolBarArea area )
+void QgisApp::addToolBar( QToolBar* toolBar, Qt::ToolBarArea area )
 {
   QMainWindow::addToolBar( area, toolBar );
   // add to the Toolbar submenu
@@ -2343,7 +2343,7 @@ void QgisApp::initLayerTreeView()
   mBtnFilterLegend->setCheckable( true );
   mBtnFilterLegend->setToolTip( tr( "Filter Legend By Map Content" ) );
   mBtnFilterLegend->setIcon( QgsApplication::getThemeIcon( "/mActionFilter.png" ) );
-  connect( mBtnFilterLegend, SIGNAL( clicked() ), this,  SLOT( toggleFilterLegendByMap() ) );
+  connect( mBtnFilterLegend, SIGNAL( clicked() ), this, SLOT( toggleFilterLegendByMap() ) );
 
   // expand / collapse tool buttons
   QToolButton* btnExpandAll = new QToolButton;
@@ -2495,7 +2495,7 @@ void QgisApp::projectReadDecorationItems()
 {
   foreach ( QgsDecorationItem* item, mDecorationItems )
   {
-    item->projectRead( );
+    item->projectRead();
   }
 }
 
@@ -3093,7 +3093,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     }
     QgsDebugMsg( "Layer type " + layertype );
     // the user has done his choice
-    loadOGRSublayers( layertype , uri, chooseSublayersDialog.selectionNames() );
+    loadOGRSublayers( layertype, uri, chooseSublayersDialog.selectionNames() );
   }
 }
 
@@ -3128,7 +3128,7 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
       composedURI += "|geometrytype=" + layerType;
     }
 
-    // addVectorLayer( composedURI,  list.at( i ), "ogr" );
+    // addVectorLayer( composedURI, list.at( i ), "ogr" );
 
     QgsDebugMsg( "Creating new vector layer using " + composedURI );
     QString name = list.at( i );
@@ -3610,7 +3610,7 @@ void QgisApp::fileOpenAfterLaunch()
     settings.setValue( "/qgis/projOpenedOKAtLaunch", QVariant( true ) );
 
     // set auto-open project back to 'New' to avoid re-opening bad project
-    settings.setValue( "/qgis/projOpenAtLaunch" , QVariant( 0 ) );
+    settings.setValue( "/qgis/projOpenAtLaunch", QVariant( 0 ) );
 
     messageBar()->pushMessage( autoOpenMsgTitle,
                                tr( "Failed to open: %1" ).arg( projPath ),
@@ -3644,7 +3644,7 @@ void QgisApp::fileOpenAfterLaunch()
   if ( QFile::exists( projPath ) )
   {
     // set flag to check on next app launch if the following project opened OK
-    settings.setValue( "/qgis/projOpenedOKAtLaunch" , QVariant( false ) );
+    settings.setValue( "/qgis/projOpenedOKAtLaunch", QVariant( false ) );
 
     if ( !addProject( projPath ) )
     {
@@ -3671,7 +3671,7 @@ void QgisApp::fileOpenAfterLaunch()
 void QgisApp::fileOpenedOKAfterLaunch()
 {
   QSettings settings;
-  settings.setValue( "/qgis/projOpenedOKAtLaunch" , QVariant( true ) );
+  settings.setValue( "/qgis/projOpenedOKAtLaunch", QVariant( true ) );
 }
 
 void QgisApp::fileNewFromTemplateAction( QAction * qAction )
@@ -6053,20 +6053,20 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
   {
     messageBar()->pushMessage( tr( "Paste features" ),
                                tr( "no features could be successfully pasted." ),
-                               QgsMessageBar::WARNING , messageTimeout() );
+                               QgsMessageBar::WARNING, messageTimeout() );
 
   }
   else if ( nCopiedFeatures == nTotalFeatures )
   {
     messageBar()->pushMessage( tr( "Paste features" ),
                                tr( "%1 features were successfully pasted." ).arg( nCopiedFeatures ),
-                               QgsMessageBar::INFO , messageTimeout() );
+                               QgsMessageBar::INFO, messageTimeout() );
   }
   else
   {
     messageBar()->pushMessage( tr( "Paste features" ),
                                tr( "%1 of %2 features could be successfully pasted." ).arg( nCopiedFeatures ).arg( nTotalFeatures ),
-                               QgsMessageBar::WARNING , messageTimeout() );
+                               QgsMessageBar::WARNING, messageTimeout() );
   }
 
   mMapCanvas->refresh();
@@ -6183,7 +6183,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
 
   if ( !message.isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Warning" ), message , QMessageBox::Ok );
+    QMessageBox::warning( this, tr( "Warning" ), message, QMessageBox::Ok );
     return 0;
   }
 
@@ -6834,7 +6834,7 @@ void QgisApp::userCenter()
 
   mMapCanvas->setExtent(
     QgsRectangle(
-      x - r.width() / 2.0,  y - r.height() / 2.0,
+      x - r.width() / 2.0, y - r.height() / 2.0,
       x + r.width() / 2.0, y + r.height() / 2.0
     )
   );
@@ -6969,7 +6969,7 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
     {
       msgBars.append( new QgsMessageBarItem(
                         tr( "Duplicate layer: " ),
-                        tr( "%1 (duplication resulted in invalid layer)" ).arg( selectedLyr->name() ) ,
+                        tr( "%1 (duplication resulted in invalid layer)" ).arg( selectedLyr->name() ),
                         QgsMessageBar::WARNING,
                         0,
                         mInfoBar ) );
