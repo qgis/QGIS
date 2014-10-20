@@ -6010,6 +6010,8 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
         dstAttr[ dst ] = pasteVectorLayer->dataProvider()->defaultValue( dst );
         if ( !dstAttr[ dst ].isNull() )
           continue;
+        else if ( pasteVectorLayer->providerType() == "spatialite" )
+          continue;
       }
 
       dstAttr[ dst ] = srcAttr[ src ];
