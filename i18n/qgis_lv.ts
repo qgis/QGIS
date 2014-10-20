@@ -3965,7 +3965,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Contour</source>
-        <translation>Kontūra</translation>
+        <translation type="obsolete">Kontūra</translation>
     </message>
     <message>
         <source>Builds vector contour lines from a DEM</source>
@@ -3989,7 +3989,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Merge</source>
-        <translation>Apvienot</translation>
+        <translation type="obsolete">Apvienot</translation>
     </message>
     <message>
         <source>Build a quick mosaic from a set of images</source>
@@ -3997,7 +3997,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Sieve</source>
-        <translation>Attīrīt</translation>
+        <translation type="obsolete">Attīrīt</translation>
     </message>
     <message>
         <source>Removes small raster polygons</source>
@@ -4013,7 +4013,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Near black</source>
-        <translation>Tuvu melnam</translation>
+        <translation type="obsolete">Tuvu melnam</translation>
     </message>
     <message>
         <source>Convert nearly black/white borders to exact value</source>
@@ -4041,7 +4041,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation>Informācija</translation>
+        <translation type="obsolete">Informācija</translation>
     </message>
     <message>
         <source>Lists information about raster dataset</source>
@@ -4049,7 +4049,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation>Piešķirt projekciju</translation>
+        <translation type="obsolete">Piešķirt projekciju</translation>
     </message>
     <message>
         <source>Add projection info to the raster</source>
@@ -4065,11 +4065,11 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Clipper</source>
-        <translation>Izgriezt</translation>
+        <translation type="obsolete">Izgriezt</translation>
     </message>
     <message>
         <source>RGB to PCT</source>
-        <translation>RGB uz PCT</translation>
+        <translation type="obsolete">RGB uz PCT</translation>
     </message>
     <message>
         <source>Convert a 24bit RGB image to 8bit paletted</source>
@@ -4077,7 +4077,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>PCT to RGB</source>
-        <translation>PCT uz RGB</translation>
+        <translation type="obsolete">PCT uz RGB</translation>
     </message>
     <message>
         <source>Convert an 8bit paletted image to 24bit RGB</source>
@@ -4085,7 +4085,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>GdalTools settings</source>
-        <translation>GdalTools iestatījumi</translation>
+        <translation type="obsolete">GdalTools iestatījumi</translation>
     </message>
     <message>
         <source>Various settings for Gdal Tools</source>
@@ -4101,7 +4101,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Tile index</source>
-        <translation>Daļas indekss</translation>
+        <translation type="obsolete">Daļas indekss</translation>
     </message>
     <message>
         <source>Build a shapefile as a raster tileindex</source>
@@ -4125,39 +4125,39 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Build Virtual Raster (Catalog)</source>
-        <translation>Veidot virtuālo rastru (katalogu)</translation>
+        <translation type="obsolete">Veidot virtuālo rastru (katalogu)</translation>
     </message>
     <message>
         <source>Rasterize (Vector to raster)</source>
-        <translation>Rasterizēt (vektorus uz rastru)</translation>
+        <translation type="obsolete">Rasterizēt (vektorus uz rastru)</translation>
     </message>
     <message>
         <source>Polygonize (Raster to vector)</source>
-        <translation>Poligonizēt (rastrs uz vektoru)</translation>
+        <translation type="obsolete">Poligonizēt (rastrs uz vektoru)</translation>
     </message>
     <message>
         <source>Proximity (Raster distance)</source>
-        <translation>Tuvums (rastra attālums)</translation>
+        <translation type="obsolete">Tuvums (rastra attālums)</translation>
     </message>
     <message>
         <source>Warp (Reproject)</source>
-        <translation>Iegrozīt (pārprojicēt)</translation>
+        <translation type="obsolete">Iegrozīt (pārprojicēt)</translation>
     </message>
     <message>
         <source>Grid (Interpolation)</source>
-        <translation>Tīkls (Interpolācija)</translation>
+        <translation type="obsolete">Tīkls (Interpolācija)</translation>
     </message>
     <message>
         <source>Translate (Convert format)</source>
-        <translation>Tulkot (formātu konvertācija)</translation>
+        <translation type="obsolete">Tulkot (formātu konvertācija)</translation>
     </message>
     <message>
         <source>Build overviews (Pyramids)</source>
-        <translation>Radīt pārskatus (Piramīdas)</translation>
+        <translation type="obsolete">Radīt pārskatus (Piramīdas)</translation>
     </message>
     <message>
         <source>DEM (Terrain models)</source>
-        <translation>Digitālais reljefa modelis (Reljefa modeļi)</translation>
+        <translation type="obsolete">Digitālais reljefa modelis (Reljefa modeļi)</translation>
     </message>
     <message>
         <source>Projections</source>
@@ -4165,7 +4165,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Extract projection</source>
-        <translation>Atarhivēt projekciju</translation>
+        <translation type="obsolete">Atarhivēt projekciju</translation>
     </message>
     <message>
         <source>Extract projection information from raster(s)</source>
@@ -4185,7 +4185,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Fill nodata</source>
-        <translation>Aizpildīt iztrūktošos datus</translation>
+        <translation type="obsolete">Aizpildīt iztrūktošos datus</translation>
     </message>
     <message>
         <source>Fill raster regions by interpolation from edges</source>
@@ -4218,6 +4218,94 @@ Install it and try again.</source>
         <translation>Nav iespējams ielādēt {0} spraudni. 
 Trūkst nepieciešamais &quot;{1}&quot; modulis. 
 Instalējiet to un mēģiniet vēlreiz.</translation>
+    </message>
+    <message>
+        <source>Warp (Reproject)...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign Projection...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extract Projection...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rasterize (Vector to Raster)...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygonize (Raster to Vector)...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translate (Convert Format)...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RGB to PCT...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PCT to RGB...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Contour...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clipper...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sieve...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Near Black...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fill nodata...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Proximity (Raster Distance)...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid (Interpolation)...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DEM (Terrain Models)...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Build Virtual Raster (Catalog)...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Merge...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Information...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Build Overviews (Pyramids)...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tile Index...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GdalTools Settings...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6115,7 +6203,7 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     <name>Heatmap</name>
     <message>
         <source>Heatmap</source>
-        <translation>Siltuma karte</translation>
+        <translation type="obsolete">Siltuma karte</translation>
     </message>
     <message>
         <source>Creates a heatmap raster for the input point vector.</source>
@@ -6163,6 +6251,10 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>QGIS will now load the partially-computed raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Heatmap...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6993,7 +7085,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>New SpatiaLite Layer ...</source>
-        <translation>Jauns SpatiaLite slānis...</translation>
+        <translation type="obsolete">Jauns SpatiaLite slānis...</translation>
     </message>
     <message>
         <source>Ctrl+Shift+A</source>
@@ -7001,7 +7093,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Raster calculator ...</source>
-        <translation>Rastra kalkulators...</translation>
+        <translation type="obsolete">Rastra kalkulators...</translation>
     </message>
     <message>
         <source>Add Vector Layer...</source>
@@ -7165,7 +7257,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Configure shortcuts...</source>
-        <translation>Konfigurēt īsceļus...</translation>
+        <translation type="obsolete">Konfigurēt īsceļus...</translation>
     </message>
     <message>
         <source>Local Histogram Stretch</source>
@@ -7185,7 +7277,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>API documentation</source>
-        <translation>API dokumentācija</translation>
+        <translation type="obsolete">API dokumentācija</translation>
     </message>
     <message>
         <source>QGIS Home Page</source>
@@ -7241,7 +7333,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Full histogram stretch</source>
-        <translation>Pilnīga histogrammas izstiepšana</translation>
+        <translation type="obsolete">Pilnīga histogrammas izstiepšana</translation>
     </message>
     <message>
         <source>Stretch histogram to full dataset</source>
@@ -7529,7 +7621,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>SVG annotation</source>
-        <translation>SVG anotācija</translation>
+        <translation type="obsolete">SVG anotācija</translation>
     </message>
     <message>
         <source>Save for All Layers</source>
@@ -7565,35 +7657,35 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>&amp;Download data</source>
-        <translation>Lejupielādēt datus</translation>
+        <translation type="obsolete">Lejupielādēt datus</translation>
     </message>
     <message>
         <source>&amp;Import topology from XML</source>
-        <translation>Importēt topoloģiju no XML</translation>
+        <translation type="obsolete">Importēt topoloģiju no XML</translation>
     </message>
     <message>
         <source>&amp;Export topology to SpatiaLite</source>
-        <translation>Eksportēt topoloģiju uz SpatiaLite</translation>
+        <translation type="obsolete">Eksportēt topoloģiju uz SpatiaLite</translation>
     </message>
     <message>
         <source>Increase brightness</source>
-        <translation>Palielināt spilgtumu</translation>
+        <translation type="obsolete">Palielināt spilgtumu</translation>
     </message>
     <message>
         <source>Decrease brightness</source>
-        <translation>Samazināt spilgtumu</translation>
+        <translation type="obsolete">Samazināt spilgtumu</translation>
     </message>
     <message>
         <source>Increase contrast</source>
-        <translation>Palielināt kontrastu</translation>
+        <translation type="obsolete">Palielināt kontrastu</translation>
     </message>
     <message>
         <source>Decrease contrast</source>
-        <translation>Samazināt kontrastu</translation>
+        <translation type="obsolete">Samazināt kontrastu</translation>
     </message>
     <message>
         <source>Select By Expression</source>
-        <translation>Izvēlēties pēc izteiksmes</translation>
+        <translation type="obsolete">Izvēlēties pēc izteiksmes</translation>
     </message>
     <message>
         <source>Select features using an expression</source>
@@ -7681,7 +7773,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Need commercial support?</source>
-        <translation>Nepieciešams biznesa atbalsts?</translation>
+        <translation type="obsolete">Nepieciešams biznesa atbalsts?</translation>
     </message>
     <message>
         <source>DXF Export...</source>
@@ -7773,6 +7865,74 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Hide Selected Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New SpatiaLite Layer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster Calculator...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configure Shortcuts...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>API Documentation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Full Histogram Stretch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Touch Zoom and Pan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SVG Annotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Download Data...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Import Topology from XML...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Export Topology to SpatiaLite...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Increase Brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decrease Brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Increase Contrast</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decrease Contrast</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select By Expression...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Need Commercial Support?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Field Calculator...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8201,6 +8361,10 @@ Acts on currently active editable layer</source>
     <message>
         <source>Could not load model %s
 %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load model %s</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9628,27 +9792,27 @@ See the log for more information.</source>
     <name>Processing</name>
     <message>
         <source>Processing</source>
-        <translation>Apstrāde</translation>
+        <translation type="obsolete">Apstrāde</translation>
     </message>
     <message>
         <source>Toolbox</source>
-        <translation>Rīki</translation>
+        <translation type="obsolete">Rīki</translation>
     </message>
     <message>
         <source>Graphical modeler</source>
-        <translation>Grafiskās modelēšanas rīks</translation>
+        <translation type="obsolete">Grafiskās modelēšanas rīks</translation>
     </message>
     <message>
         <source>History and log</source>
-        <translation>Vēsture un žurnāls</translation>
+        <translation type="obsolete">Vēsture un žurnāls</translation>
     </message>
     <message>
         <source>Options and configuration</source>
-        <translation>Iestatījumi un konfigurācija</translation>
+        <translation type="obsolete">Iestatījumi un konfigurācija</translation>
     </message>
     <message>
         <source>&amp;Results viewer</source>
-        <translation>&amp;Rezultātu pārlūks</translation>
+        <translation type="obsolete">&amp;Rezultātu pārlūks</translation>
     </message>
     <message>
         <source>&amp;Commander</source>
@@ -9665,6 +9829,30 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Error in %s. Missing parameter value for parameter %s.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pro&amp;cessing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Toolbox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Graphical &amp;Modeler...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;History and Log...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Options...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Results Viewer...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -18293,11 +18481,11 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>View</source>
-        <translation>Skats</translation>
+        <translation type="obsolete">Skats</translation>
     </message>
     <message>
         <source>Layout</source>
-        <translation>Izkārtojums</translation>
+        <translation type="obsolete">Izkārtojums</translation>
     </message>
     <message>
         <source>PDF Format</source>
@@ -18413,11 +18601,11 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>Panels</source>
-        <translation>Paneļi</translation>
+        <translation type="obsolete">Paneļi</translation>
     </message>
     <message>
         <source>Toolbars</source>
-        <translation>Rīkjoslas</translation>
+        <translation type="obsolete">Rīkjoslas</translation>
     </message>
     <message>
         <source>Close</source>
@@ -18425,7 +18613,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>Print Composers</source>
-        <translation>Drukas veidotāji</translation>
+        <translation type="obsolete">Drukas veidotāji</translation>
     </message>
     <message>
         <source>Window</source>
@@ -18558,15 +18746,15 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Edit</source>
-        <translation>Rediģēt</translation>
+        <translation type="obsolete">Rediģēt</translation>
     </message>
     <message>
         <source>Atlas</source>
-        <translation>Atlants</translation>
+        <translation type="obsolete">Atlants</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation>Parametri</translation>
+        <translation type="obsolete">Parametri</translation>
     </message>
     <message>
         <source>%1%</source>
@@ -18642,19 +18830,19 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Simulate Photocopy (Grayscale)</source>
-        <translation>Simulēt kopiju (pelēktoņu)</translation>
+        <translation type="obsolete">Simulēt kopiju (pelēktoņu)</translation>
     </message>
     <message>
         <source>Simulate Fax (Mono)</source>
-        <translation>Simulēt faksu (melnbalts)</translation>
+        <translation type="obsolete">Simulēt faksu (melnbalts)</translation>
     </message>
     <message>
         <source>Simulate Color Blindness (Protanope)</source>
-        <translation>Simulēt krāsu aklumu (protanope)</translation>
+        <translation type="obsolete">Simulēt krāsu aklumu (protanope)</translation>
     </message>
     <message>
         <source>Simulate Color Blindness (Deuteranope)</source>
-        <translation>Simulēt krāsu aklumu (deuteranope)</translation>
+        <translation type="obsolete">Simulēt krāsu aklumu (deuteranope)</translation>
     </message>
     <message>
         <source>Feature filter parser error: %1</source>
@@ -18675,6 +18863,62 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Items</source>
         <translation>Vienumi</translation>
+    </message>
+    <message>
+        <source>&amp;Composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Print &amp;Composers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished">&amp;Rediģēt</translation>
+    </message>
+    <message>
+        <source>&amp;Normal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulate Photocopy (&amp;Grayscale)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulate Fax (&amp;Mono)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulate Color Blindness (&amp;Protanope)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulate Color Blindness (&amp;Deuteranope)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;View</source>
+        <translation type="unfinished">&amp;Skats</translation>
+    </message>
+    <message>
+        <source>P&amp;anels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Toolbars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Atlas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Settings</source>
+        <translation type="unfinished">&amp;Iestatījumi</translation>
     </message>
 </context>
 <context>
@@ -19342,27 +19586,27 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Zoom In</source>
-        <translation>Tuvināt</translation>
+        <translation type="obsolete">Tuvināt</translation>
     </message>
     <message>
         <source>Zoom Out</source>
-        <translation>Tālināt</translation>
+        <translation type="obsolete">Tālināt</translation>
     </message>
     <message>
         <source>Add Image</source>
-        <translation>Pievienot attēlu</translation>
+        <translation type="obsolete">Pievienot attēlu</translation>
     </message>
     <message>
         <source>Zoom Full</source>
-        <translation>Tuvināt kopskatu</translation>
+        <translation type="obsolete">Tuvināt kopskatu</translation>
     </message>
     <message>
         <source>Add Map</source>
-        <translation>Pievienot karti</translation>
+        <translation type="obsolete">Pievienot karti</translation>
     </message>
     <message>
         <source>Add Label</source>
-        <translation>Pievienot  birku</translation>
+        <translation type="obsolete">Pievienot  birku</translation>
     </message>
     <message>
         <source>Add Vector Legend</source>
@@ -19370,31 +19614,31 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Move Item</source>
-        <translation>Pārvietot vienumu</translation>
+        <translation type="obsolete">Pārvietot vienumu</translation>
     </message>
     <message>
         <source>Export as Image...</source>
-        <translation>Eksportēt kā attēlu...</translation>
+        <translation type="obsolete">Eksportēt kā attēlu...</translation>
     </message>
     <message>
         <source>Export as PDF...</source>
-        <translation>Eksportēt kā PDF...</translation>
+        <translation type="obsolete">Eksportēt kā PDF...</translation>
     </message>
     <message>
         <source>Export as SVG...</source>
-        <translation>Eksportēt kā SVG...</translation>
+        <translation type="obsolete">Eksportēt kā SVG...</translation>
     </message>
     <message>
         <source>Add Scalebar</source>
-        <translation>Pievienot mērogjoslu</translation>
+        <translation type="obsolete">Pievienot mērogjoslu</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation>Atsvaidzināt</translation>
+        <translation type="obsolete">Atsvaidzināt</translation>
     </message>
     <message>
         <source>Move Content</source>
-        <translation>Pārvietot saturu</translation>
+        <translation type="obsolete">Pārvietot saturu</translation>
     </message>
     <message>
         <source>Move item content</source>
@@ -19402,7 +19646,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Group</source>
-        <translation>Grupa</translation>
+        <translation type="obsolete">Grupa</translation>
     </message>
     <message>
         <source>Group items</source>
@@ -19410,7 +19654,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Ungroup</source>
-        <translation>Atgrupēt</translation>
+        <translation type="obsolete">Atgrupēt</translation>
     </message>
     <message>
         <source>Ungroup items</source>
@@ -19418,7 +19662,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Raise</source>
-        <translation>Pacelt</translation>
+        <translation type="obsolete">Pacelt</translation>
     </message>
     <message>
         <source>Raise selected items</source>
@@ -19426,7 +19670,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Lower</source>
-        <translation>Zemāk</translation>
+        <translation type="obsolete">Zemāk</translation>
     </message>
     <message>
         <source>Lower selected items</source>
@@ -19434,7 +19678,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Bring to Front</source>
-        <translation>Pārvietot uz priekšu</translation>
+        <translation type="obsolete">Pārvietot uz priekšu</translation>
     </message>
     <message>
         <source>Move selected items to top</source>
@@ -19442,7 +19686,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Send to Back</source>
-        <translation>Pārvietot uz aizmuguri</translation>
+        <translation type="obsolete">Pārvietot uz aizmuguri</translation>
     </message>
     <message>
         <source>Move selected items to bottom</source>
@@ -19530,7 +19774,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Page Setup</source>
-        <translation>Lapas iestatījumi</translation>
+        <translation type="obsolete">Lapas iestatījumi</translation>
     </message>
     <message>
         <source>Undo</source>
@@ -19562,7 +19806,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Add Legend</source>
-        <translation>Pievienot leģendu</translation>
+        <translation type="obsolete">Pievienot leģendu</translation>
     </message>
     <message>
         <source>Add new legend</source>
@@ -19634,7 +19878,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Save as Template</source>
-        <translation>Saglabāt kā veidni</translation>
+        <translation type="obsolete">Saglabāt kā veidni</translation>
     </message>
     <message>
         <source>Align Left</source>
@@ -19662,7 +19906,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Add Arrow</source>
-        <translation>Pievienot bultu</translation>
+        <translation type="obsolete">Pievienot bultu</translation>
     </message>
     <message>
         <source>Add Table</source>
@@ -19694,11 +19938,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Add HTML</source>
-        <translation>Pievienot HTML</translation>
+        <translation type="obsolete">Pievienot HTML</translation>
     </message>
     <message>
         <source>Composer Manager</source>
-        <translation>Drukas veidotāja pārvaldnieks</translation>
+        <translation type="obsolete">Drukas veidotāja pārvaldnieks</translation>
     </message>
     <message>
         <source>Composer manager</source>
@@ -19706,7 +19950,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>&amp;New Composer</source>
-        <translation>&amp;Jauns veidotājs</translation>
+        <translation type="obsolete">&amp;Jauns veidotājs</translation>
     </message>
     <message>
         <source>New composer</source>
@@ -19730,7 +19974,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>&amp;Duplicate Composer</source>
-        <translation>&amp;Dublēt veidotāju</translation>
+        <translation type="obsolete">&amp;Dublēt veidotāju</translation>
     </message>
     <message>
         <source>Duplicate composer</source>
@@ -19746,11 +19990,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Lock Selected Items</source>
-        <translation>Slēgt izvēlētos vienumus</translation>
+        <translation type="obsolete">Slēgt izvēlētos vienumus</translation>
     </message>
     <message>
         <source>Unlock All</source>
-        <translation>Atslēgt visus</translation>
+        <translation type="obsolete">Atslēgt visus</translation>
     </message>
     <message>
         <source>Unlock All Items</source>
@@ -19786,7 +20030,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Show Grid</source>
-        <translation>Rādīt tīklu</translation>
+        <translation type="obsolete">Rādīt tīklu</translation>
     </message>
     <message>
         <source>Show grid</source>
@@ -19798,7 +20042,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Snap to Grid</source>
-        <translation>Pielipt tīklam</translation>
+        <translation type="obsolete">Pielipt tīklam</translation>
     </message>
     <message>
         <source>Snap to grid</source>
@@ -19809,19 +20053,11 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>Ctrl+Shift+&apos;</translation>
     </message>
     <message>
-        <source>Show Guides</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Show guides</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Ctrl+;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Snap to Guides</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -19833,19 +20069,11 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Smart Guides</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Smart guides</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Ctrl+Alt+;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Clear Guides</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -19893,10 +20121,6 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished">Ctrl+Shift+L</translation>
     </message>
     <message>
-        <source>Pa&amp;ste in Place</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Paste in place</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19917,20 +20141,12 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>De&amp;select All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Deselect all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Ctrl+Shift+A</source>
         <translation type="unfinished">Ctrl+Shift+A</translation>
-    </message>
-    <message>
-        <source>Select &amp;All</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Select all items</source>
@@ -19977,14 +20193,6 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Composer Options...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show Rulers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Show rulers</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19993,59 +20201,19 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished">Ctrl+R</translation>
     </message>
     <message>
-        <source>First Feature</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Previous Feature</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Next Feature</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Last Feature</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Preview Atlas</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Print Atlas...</source>
-        <translation>Drukāt atlantu...</translation>
-    </message>
-    <message>
-        <source>Export Atlas as Images...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export Atlas as SVG...</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Drukāt atlantu...</translation>
     </message>
     <message>
         <source>Atlas Settings</source>
-        <translation>Atlanta iestatījumi</translation>
-    </message>
-    <message>
-        <source>Export Atlas as PDF...</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Atlanta iestatījumi</translation>
     </message>
     <message>
         <source>Export Atlas as PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Add Items from Template</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Add items from template</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add Attribute Table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -20086,6 +20254,218 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Ctrl+Alt+/</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom &amp;Full</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom &amp;In</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom &amp;Out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to &amp;100%</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add &amp;Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Lab&amp;el</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Legen&amp;d</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move &amp;Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export as &amp;Image...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Export as PDF...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export as S&amp;VG...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add &amp;Scalebar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Refresh</source>
+        <translation type="unfinished">&amp;Atsvaidzināt</translation>
+    </message>
+    <message>
+        <source>Show &amp;Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S&amp;nap to Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show G&amp;uides</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Snap to Guides</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S&amp;mart Guides</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Clear Guides</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Im&amp;age</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move &amp;Content</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Ungroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Raise</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Lower</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bring to &amp;Front</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send to &amp;Back</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add Items from Template...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save as &amp;Template...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Arro&amp;w</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Attribute &amp;Table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pa&amp;ge Setup...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add &amp;HTML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer &amp;Manager...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;New Composer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Duplicate Composer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loc&amp;k Selected Items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unl&amp;ock All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste in P&amp;lace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D&amp;eselect All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Select All</source>
+        <translation type="unfinished">&amp;Izvēlēties visus</translation>
+    </message>
+    <message>
+        <source>Composer &amp;Options...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Ru&amp;lers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;First Feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>P&amp;revious Feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Next Feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Last Feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preview &amp;Atlas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Print Atlas...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export Atlas as &amp;Images...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export Atlas as S&amp;VG...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Export Atlas as PDF...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Atlas &amp;Settings</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -22187,6 +22567,17 @@ Please try a lower resolution or a smaller papersize</source>
     <name>QgsComposerMultiFrame</name>
     <message>
         <source>&lt;frame&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerNameDelegate</name>
+    <message>
+        <source>Rename composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There is already a composer named &quot;%1&quot;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -29573,6 +29964,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>&amp;Georeferencer</source>
         <translation>&amp;Telpiskā piesaiste</translation>
+    </message>
+    <message>
+        <source>&amp;Georeferencer...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -38871,7 +39266,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Change ...</source>
-        <translation type="unfinished">Mainīt...</translation>
+        <translation type="obsolete">Mainīt...</translation>
     </message>
     <message>
         <source>Layer Order</source>
@@ -38965,6 +39360,10 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <source>Selected Coordinate Reference System</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change...</source>
+        <translation type="unfinished">Mainīt...</translation>
     </message>
 </context>
 <context>
@@ -47341,11 +47740,11 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <source>Load Style ...</source>
-        <translation>Ielādēt stilu...</translation>
+        <translation type="obsolete">Ielādēt stilu...</translation>
     </message>
     <message>
         <source>Save Style ...</source>
-        <translation>Saglabāt stilu...</translation>
+        <translation type="obsolete">Saglabāt stilu...</translation>
     </message>
     <message>
         <source>Default R:1 G:2 B:3</source>
@@ -47676,6 +48075,14 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Load Style...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Style...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayerSaveAsDialog</name>
@@ -47776,7 +48183,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Change ...</source>
-        <translation>Mainīt...</translation>
+        <translation type="obsolete">Mainīt...</translation>
     </message>
     <message>
         <source>Extent</source>
@@ -47902,6 +48309,10 @@ datasets with maximum width and height specified below.</source>
     <message>
         <source>VRT Tiles</source>
         <translation>VRT flīzes</translation>
+    </message>
+    <message>
+        <source>Change...</source>
+        <translation type="unfinished">Mainīt...</translation>
     </message>
 </context>
 <context>
@@ -48257,7 +48668,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Ruggedness index</source>
-        <translation>Robustuma indekss</translation>
+        <translation type="obsolete">Robustuma indekss</translation>
     </message>
     <message>
         <source>Total curvature</source>
@@ -48273,7 +48684,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Terrain analysis</source>
-        <translation type="unfinished">Reljefa analīze</translation>
+        <translation type="obsolete">Reljefa analīze</translation>
     </message>
     <message>
         <source>Hillshade</source>
@@ -48309,6 +48720,26 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Calculating ruggedness...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Terrain Analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Aspect...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hillshade...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relief...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ruggedness Index...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -54352,11 +54783,11 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <source>Load Style ...</source>
-        <translation>Ielādēt stilu...</translation>
+        <translation type="obsolete">Ielādēt stilu...</translation>
     </message>
     <message>
         <source>Save Style ...</source>
-        <translation>Saglabāt stilu...</translation>
+        <translation type="obsolete">Saglabāt stilu...</translation>
     </message>
     <message>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
@@ -54752,6 +55183,14 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <source>image/jpg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load Style...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Style...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -55167,7 +55606,7 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <source>Change ...</source>
-        <translation>Mainīt...</translation>
+        <translation type="obsolete">Mainīt...</translation>
     </message>
     <message>
         <source>Coordinate reference system</source>
@@ -55232,6 +55671,10 @@ Kļūda bija %2</translation>
     <message>
         <source>Use title for layer name</source>
         <translation>Lietot virsrakstu kā slāņa nosaukumu</translation>
+    </message>
+    <message>
+        <source>Change...</source>
+        <translation type="unfinished">Mainīt...</translation>
     </message>
 </context>
 <context>
@@ -55612,7 +56055,7 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <source>Change ...</source>
-        <translation>Mainīt...</translation>
+        <translation type="obsolete">Mainīt...</translation>
     </message>
     <message>
         <source>Ready</source>
@@ -55669,6 +56112,10 @@ Kļūda bija %2</translation>
     <message>
         <source>Add Layer(s) from a WM(T)S Server</source>
         <translation>Pievienot slāņus no WM(T)S servera</translation>
+    </message>
+    <message>
+        <source>Change...</source>
+        <translation type="unfinished">Mainīt...</translation>
     </message>
 </context>
 <context>
@@ -61962,35 +62409,35 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation>Attālumu matrica</translation>
+        <translation type="obsolete">Attālumu matrica</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation>Summēt līniju garumus</translation>
+        <translation type="obsolete">Summēt līniju garumus</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation>Punkti poligonā</translation>
+        <translation type="obsolete">Punkti poligonā</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation>Pamata statistika</translation>
+        <translation type="obsolete">Pamata statistika</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation>Parādīt unikālās vērtības</translation>
+        <translation type="obsolete">Parādīt unikālās vērtības</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation>Tuvākā kaimiņa analīze</translation>
+        <translation type="obsolete">Tuvākā kaimiņa analīze</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation>Vidējās koordiātes</translation>
+        <translation type="obsolete">Vidējās koordiātes</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation>Līniju krustpunkti</translation>
+        <translation type="obsolete">Līniju krustpunkti</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
@@ -61998,31 +62445,31 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation>Nejauša izvēle</translation>
+        <translation type="obsolete">Nejauša izvēle</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation>Nejauša izvēle apakškopās</translation>
+        <translation type="obsolete">Nejauša izvēle apakškopās</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation>Nejauši punkti</translation>
+        <translation type="obsolete">Nejauši punkti</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation>Regulāri punkti</translation>
+        <translation type="obsolete">Regulāri punkti</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation>Vektoru tīkls</translation>
+        <translation type="obsolete">Vektoru tīkls</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation>Izvēle pēc vietas</translation>
+        <translation type="obsolete">Izvēle pēc vietas</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation>Poligons no slāņa apjoma</translation>
+        <translation type="obsolete">Poligons no slāņa apjoma</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
@@ -62038,7 +62485,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation>Definēt pašreizējo projekciju</translation>
+        <translation type="obsolete">Definēt pašreizējo projekciju</translation>
     </message>
     <message>
         <source>Join attributes</source>
@@ -62046,15 +62493,15 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation>Apvienot atribūtus pēc atrašanās vietas</translation>
+        <translation type="obsolete">Apvienot atribūtus pēc atrašanās vietas</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation>Sadalīt vektoru slāni</translation>
+        <translation type="obsolete">Sadalīt vektoru slāni</translation>
     </message>
     <message>
         <source>Merge shapefiles to one</source>
-        <translation>Apvienot vairākus Shapefile vienā</translation>
+        <translation type="obsolete">Apvienot vairākus Shapefile vienā</translation>
     </message>
     <message>
         <source>fTools Information</source>
@@ -62062,31 +62509,31 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation>Buferis</translation>
+        <translation type="obsolete">Buferis</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation>Pārklāt</translation>
+        <translation type="obsolete">Pārklāt</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation>Apvienot</translation>
+        <translation type="obsolete">Apvienot</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation>Simetriskā starpība</translation>
+        <translation type="obsolete">Simetriskā starpība</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation>Izgriezt</translation>
+        <translation type="obsolete">Izgriezt</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation>Izšķīdināt</translation>
+        <translation type="obsolete">Izšķīdināt</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation>Starpība</translation>
+        <translation type="obsolete">Starpība</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
@@ -62094,27 +62541,27 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation>Eksportēt/pievienot ģeometrijas kolonnas</translation>
+        <translation type="obsolete">Eksportēt/pievienot ģeometrijas kolonnas</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation>Pārbaudīt ģeometrijas korektumu</translation>
+        <translation type="obsolete">Pārbaudīt ģeometrijas korektumu</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation>Poligona centroīdi</translation>
+        <translation type="obsolete">Poligona centroīdi</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation>Izvilkt mezglus</translation>
+        <translation type="obsolete">Izvilkt mezglus</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation>Vienkāršot ģeometriju</translation>
+        <translation type="obsolete">Vienkāršot ģeometriju</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation>Pārveidot poligonus līnijās</translation>
+        <translation type="obsolete">Pārveidot poligonus līnijās</translation>
     </message>
     <message>
         <source>&amp;Vector</source>
@@ -62122,19 +62569,19 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation>Pārklājuma laukums(-i)</translation>
+        <translation type="obsolete">Pārklājuma laukums(-i)</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation>Delonē triangulācija</translation>
+        <translation type="obsolete">Delonē triangulācija</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation>Saliktu par viendaļīgu</translation>
+        <translation type="obsolete">Saliktu par viendaļīgu</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation>Viendaļīgu par saliktu</translation>
+        <translation type="obsolete">Viendaļīgu par saliktu</translation>
     </message>
     <message>
         <source>Vect&amp;or</source>
@@ -62142,27 +62589,191 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Voronoi Polygons</source>
-        <translation>Voronoja poligoni</translation>
+        <translation type="obsolete">Voronoja poligoni</translation>
     </message>
     <message>
         <source>Lines to polygons</source>
-        <translation>Pārveidot līnijas poligonos</translation>
+        <translation type="obsolete">Pārveidot līnijas poligonos</translation>
     </message>
     <message>
         <source>Densify geometries</source>
-        <translation>Sabiezināt ģeometriju</translation>
+        <translation type="obsolete">Sabiezināt ģeometriju</translation>
     </message>
     <message>
         <source>Create spatial index</source>
-        <translation>Izveidot telpisko indeksu</translation>
+        <translation type="obsolete">Izveidot telpisko indeksu</translation>
     </message>
     <message>
         <source>Eliminate sliver polygons</source>
-        <translation>Novērst skaidu poligonus</translation>
+        <translation type="obsolete">Novērst skaidu poligonus</translation>
     </message>
     <message>
         <source>QGIS version detected: </source>
         <translation>Detektētā QGIS versija: </translation>
+    </message>
+    <message>
+        <source>Distance Matrix...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum Line Lengths...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Points in Polygon...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Basic Statistics...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>List Unique Values...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest Neighbour Analysis...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean Coordinate(s)...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line Intersections...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Random Selection...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Random Selection Within Subsets...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Random Points...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Regular Points...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector Grid...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select by Location...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon from Layer Extent...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convex Hull(s)...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer(s)...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Intersect...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Union...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symetrical Difference...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clip...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolve...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Difference...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Eliminate Sliver Polygons...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export/Add Geometry Columns...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check Geometry Validity...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon Centroids...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delaunay Triangulation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Voronoi Polygons...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extract Nodes...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simplify Geometries...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Densify Geometries...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multipart to Singleparts...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Singleparts to Multipart...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygons to Lines...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lines to Polygons...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Define Current Projection...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join Attributes by Location...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Split Vector Layer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Merge Shapefiles to One...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Spatial Index...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
