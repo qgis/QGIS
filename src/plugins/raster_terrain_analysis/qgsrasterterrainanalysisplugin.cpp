@@ -87,19 +87,19 @@ void QgsRasterTerrainAnalysisPlugin::initGui()
       return;
     }
 
-    mTerrainAnalysisMenu = new QMenu( tr( "Terrain analysis" ), rasterMenu );
+    mTerrainAnalysisMenu = new QMenu( tr( "Terrain Analysis" ), rasterMenu );
     mTerrainAnalysisMenu->setObjectName( "mTerrainAnalysisMenu" );
     mTerrainAnalysisMenu->setIcon( QIcon( ":/raster/dem.png" ) );
     QAction *slopeAction = mTerrainAnalysisMenu->addAction( tr( "Slope" ), this, SLOT( slope() ) );
     slopeAction->setObjectName( "slopeAction" );
 
-    QAction *aspectAction = mTerrainAnalysisMenu->addAction( tr( "Aspect" ), this, SLOT( aspect() ) );
+    QAction *aspectAction = mTerrainAnalysisMenu->addAction( tr( "Aspect..." ), this, SLOT( aspect() ) );
     aspectAction->setObjectName( "aspectAction" );
-    QAction *hilshadeAction = mTerrainAnalysisMenu->addAction( tr( "Hillshade" ), this, SLOT( hillshade() ) );
+    QAction *hilshadeAction = mTerrainAnalysisMenu->addAction( tr( "Hillshade..." ), this, SLOT( hillshade() ) );
     hilshadeAction->setObjectName( "hilshadeAction" );
-    QAction *reliefAction = mTerrainAnalysisMenu->addAction( tr( "Relief" ), this, SLOT( relief() ) );
+    QAction *reliefAction = mTerrainAnalysisMenu->addAction( tr( "Relief..." ), this, SLOT( relief() ) );
     reliefAction->setObjectName( "reliefAction" );
-    QAction *ruggednesIndex = mTerrainAnalysisMenu->addAction( tr( "Ruggedness index" ), this, SLOT( ruggedness() ) );
+    QAction *ruggednesIndex = mTerrainAnalysisMenu->addAction( tr( "Ruggedness Index..." ), this, SLOT( ruggedness() ) );
     ruggednesIndex->setObjectName( "ruggednesIndex" );
 
     rasterMenu->addMenu( mTerrainAnalysisMenu );

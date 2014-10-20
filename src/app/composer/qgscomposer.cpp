@@ -182,6 +182,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionPan->setCheckable( true );
   mActionMouseZoom->setCheckable( true );
   mActionAddArrow->setCheckable( true );
+  mActionAddHtml->setCheckable( true );
 
   mActionShowGrid->setCheckable( true );
   mActionSnapGrid->setCheckable( true );
@@ -200,14 +201,14 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   appMenu->addAction( mQgis->actionOptions() );
 #endif
 
-  QMenu *composerMenu = menuBar()->addMenu( tr( "Composer" ) );
+  QMenu *composerMenu = menuBar()->addMenu( tr( "&Composer" ) );
   composerMenu->addAction( mActionSaveProject );
   composerMenu->addSeparator();
   composerMenu->addAction( mActionNewComposer );
   composerMenu->addAction( mActionDuplicateComposer );
   composerMenu->addAction( mActionComposerManager );
 
-  mPrintComposersMenu = new QMenu( tr( "Print Composers" ), this );
+  mPrintComposersMenu = new QMenu( tr( "Print &Composers" ), this );
   mPrintComposersMenu->setObjectName( "mPrintComposersMenu" );
   connect( mPrintComposersMenu, SIGNAL( aboutToShow() ), this, SLOT( populatePrintComposersMenu() ) );
   composerMenu->addMenu( mPrintComposersMenu );
@@ -246,7 +247,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionPaste->setIcon( QgsApplication::getThemeIcon( "/mActionEditPaste.png" ) );
   connect( mActionPaste, SIGNAL( triggered() ), this, SLOT( actionPasteTriggered() ) );
 
-  QMenu *editMenu = menuBar()->addMenu( tr( "Edit" ) );
+  QMenu *editMenu = menuBar()->addMenu( tr( "&Edit" ) );
   editMenu->addAction( mActionUndo );
   editMenu->addAction( mActionRedo );
   editMenu->addSeparator();
@@ -269,24 +270,24 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   editMenu->addAction( mActionSelectNextBelow );
   editMenu->addAction( mActionSelectNextAbove );
 
-  mActionPreviewModeOff = new QAction( tr( "Normal" ), this );
+  mActionPreviewModeOff = new QAction( tr( "&Normal" ), this );
   mActionPreviewModeOff->setStatusTip( tr( "Normal" ) );
   mActionPreviewModeOff->setCheckable( true );
   mActionPreviewModeOff->setChecked( true );
   connect( mActionPreviewModeOff, SIGNAL( triggered() ), this, SLOT( disablePreviewMode() ) );
-  mActionPreviewModeGrayscale = new QAction( tr( "Simulate Photocopy (Grayscale)" ), this );
+  mActionPreviewModeGrayscale = new QAction( tr( "Simulate Photocopy (&Grayscale)" ), this );
   mActionPreviewModeGrayscale->setStatusTip( tr( "Simulate photocopy (grayscale)" ) );
   mActionPreviewModeGrayscale->setCheckable( true );
   connect( mActionPreviewModeGrayscale, SIGNAL( triggered() ), this, SLOT( activateGrayscalePreview() ) );
-  mActionPreviewModeMono = new QAction( tr( "Simulate Fax (Mono)" ), this );
+  mActionPreviewModeMono = new QAction( tr( "Simulate Fax (&Mono)" ), this );
   mActionPreviewModeMono->setStatusTip( tr( "Simulate fax (mono)" ) );
   mActionPreviewModeMono->setCheckable( true );
   connect( mActionPreviewModeMono, SIGNAL( triggered() ), this, SLOT( activateMonoPreview() ) );
-  mActionPreviewProtanope = new QAction( tr( "Simulate Color Blindness (Protanope)" ), this );
+  mActionPreviewProtanope = new QAction( tr( "Simulate Color Blindness (&Protanope)" ), this );
   mActionPreviewProtanope->setStatusTip( tr( "Simulate color blindness (Protanope)" ) );
   mActionPreviewProtanope->setCheckable( true );
   connect( mActionPreviewProtanope, SIGNAL( triggered() ), this, SLOT( activateProtanopePreview() ) );
-  mActionPreviewDeuteranope = new QAction( tr( "Simulate Color Blindness (Deuteranope)" ), this );
+  mActionPreviewDeuteranope = new QAction( tr( "Simulate Color Blindness (&Deuteranope)" ), this );
   mActionPreviewDeuteranope->setStatusTip( tr( "Simulate color blindness (Deuteranope)" ) );
   mActionPreviewDeuteranope->setCheckable( true );
   connect( mActionPreviewDeuteranope, SIGNAL( triggered() ), this, SLOT( activateDeuteranopePreview() ) );
@@ -299,7 +300,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionPreviewProtanope->setActionGroup( mPreviewGroup );
   mActionPreviewDeuteranope->setActionGroup( mPreviewGroup );
 
-  QMenu *viewMenu = menuBar()->addMenu( tr( "View" ) );
+  QMenu *viewMenu = menuBar()->addMenu( tr( "&View" ) );
   //Ctrl+= should also trigger zoom in
   QShortcut* ctrlEquals = new QShortcut( QKeySequence( "Ctrl+=" ), this );
   connect( ctrlEquals, SIGNAL( activated() ), mActionZoomIn, SLOT( trigger() ) );
@@ -307,7 +308,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 #ifndef Q_WS_MAC
   //disabled for OSX - see #10761
   //also see http://qt-project.org/forums/viewthread/3630 QGraphicsEffects are not well supported on OSX
-  QMenu *previewMenu = viewMenu->addMenu( "Preview" );
+  QMenu *previewMenu = viewMenu->addMenu( "&Preview" );
   previewMenu->addAction( mActionPreviewModeOff );
   previewMenu->addAction( mActionPreviewModeGrayscale );
   previewMenu->addAction( mActionPreviewModeMono );
@@ -334,9 +335,9 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   viewMenu->addAction( mActionShowRulers );
 
   // Panel and toolbar submenus
-  mPanelMenu = new QMenu( tr( "Panels" ), this );
+  mPanelMenu = new QMenu( tr( "P&anels" ), this );
   mPanelMenu->setObjectName( "mPanelMenu" );
-  mToolbarMenu = new QMenu( tr( "Toolbars" ), this );
+  mToolbarMenu = new QMenu( tr( "&Toolbars" ), this );
   mToolbarMenu->setObjectName( "mToolbarMenu" );
   viewMenu->addSeparator();
   viewMenu->addMenu( mPanelMenu );
@@ -347,7 +348,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mToolbarMenu->addAction( mItemActionToolbar->toggleViewAction() );
   mToolbarMenu->addAction( mItemToolbar->toggleViewAction() );
 
-  QMenu *layoutMenu = menuBar()->addMenu( tr( "Layout" ) );
+  QMenu *layoutMenu = menuBar()->addMenu( tr( "&Layout" ) );
   layoutMenu->addAction( mActionAddNewMap );
   layoutMenu->addAction( mActionAddNewLabel );
   layoutMenu->addAction( mActionAddNewScalebar );
@@ -356,6 +357,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   layoutMenu->addAction( mActionAddArrow );
   //layoutMenu->addAction( mActionAddTable );
   layoutMenu->addAction( mActionAddAttributeTable );
+  layoutMenu->addAction( mActionAddHtml );
   layoutMenu->addSeparator();
   layoutMenu->addAction( mActionSelectMoveItem );
   layoutMenu->addAction( mActionMoveItemContent );
@@ -370,7 +372,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   layoutMenu->addAction( mActionLockItems );
   layoutMenu->addAction( mActionUnlockAll );
 
-  QMenu *atlasMenu = menuBar()->addMenu( tr( "Atlas" ) );
+  QMenu *atlasMenu = menuBar()->addMenu( tr( "&Atlas" ) );
   atlasMenu->addAction( mActionAtlasPreview );
   atlasMenu->addAction( mActionAtlasFirst );
   atlasMenu->addAction( mActionAtlasPrev );
@@ -394,7 +396,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   atlasExportToolButton->setDefaultAction( mActionExportAtlasAsImage );
   mAtlasToolbar->insertWidget( mActionAtlasSettings, atlasExportToolButton );
 
-  QMenu *settingsMenu = menuBar()->addMenu( tr( "Settings" ) );
+  QMenu *settingsMenu = menuBar()->addMenu( tr( "&Settings" ) );
   settingsMenu->addAction( mActionOptions );
 
 #ifdef Q_WS_MAC
