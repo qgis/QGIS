@@ -519,16 +519,30 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
 
   if ( mResizeMode == ZoomResizeFrame && !rect().isEmpty() && !( currentPictureSize.isEmpty() ) )
   {
-    //if width has changed more than height, then fix width and set height correspondingly
-    //else, do the opposite
-    if ( qAbs( rect().width() - rectangle.width() ) >
-         qAbs( rect().height() - rectangle.height() ) )
+    QSizeF targetImageSize;
+    if ( mPictureRotation == 0 )
     {
-      newRect.setHeight( currentPictureSize.height() * newRect.width() / currentPictureSize.width() );
+      targetImageSize = currentPictureSize;
     }
     else
     {
-      newRect.setWidth( currentPictureSize.width() * newRect.height() / currentPictureSize.height() );
+      //calculate aspect ratio of bounds of rotated image
+      QTransform tr;
+      tr.rotate( mPictureRotation );
+      QRectF rotatedBounds = tr.mapRect( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ) );
+      targetImageSize = QSizeF( rotatedBounds.width(), rotatedBounds.height() );
+    }
+
+    //if height has changed more than width, then fix width and set height correspondingly
+    //else, do the opposite
+    if ( qAbs( rect().width() - rectangle.width() ) <
+         qAbs( rect().height() - rectangle.height() ) )
+    {
+      newRect.setHeight( targetImageSize.height() * newRect.width() / targetImageSize.width() );
+    }
+    else
+    {
+      newRect.setWidth( targetImageSize.width() * newRect.height() / targetImageSize.height() );
     }
   }
   else if ( mResizeMode == FrameToImageSize )
@@ -592,7 +606,8 @@ void QgsComposerPicture::setPictureRotation( double r )
 
     //keep the center in the same location
     newRect.moveCenter( oldRect.center() );
-    setSceneRect( newRect );
+    QgsComposerItem::setSceneRect( newRect );
+    emit itemChanged();
   }
 
   emit pictureRotationChanged( mPictureRotation );
