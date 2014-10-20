@@ -115,6 +115,11 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
         return;
       }
 
+      if ( !isCapturing() )
+        return;
+
+      // we are now going to finish the capturing
+
       if ( mode() == CapturePolygon )
       {
         //close polygon

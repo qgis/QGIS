@@ -268,6 +268,11 @@ void QgsMapToolCapture::startCapturing()
   mCapturing = true;
 }
 
+bool QgsMapToolCapture::isCapturing() const
+{
+  return mCapturing;
+}
+
 void QgsMapToolCapture::stopCapturing()
 {
   if ( mRubberBand )

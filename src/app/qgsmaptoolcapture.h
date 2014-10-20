@@ -79,6 +79,7 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
     void undo();
 
     void startCapturing();
+    bool isCapturing() const;
     void stopCapturing();
     void deleteTempRubberBand();
 

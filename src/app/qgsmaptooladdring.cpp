@@ -72,6 +72,9 @@ void QgsMapToolAddRing::canvasReleaseEvent( QMouseEvent * e )
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( !isCapturing() )
+      return;
+
     deleteTempRubberBand();
 
     closePolygon();
