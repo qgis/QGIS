@@ -343,6 +343,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mToolbarMenu->setObjectName( "mToolbarMenu" );
   viewMenu->addSeparator();
   viewMenu->addAction( mActionToggleFullScreen );
+  viewMenu->addAction( mActionHidePanels );
   viewMenu->addMenu( mPanelMenu );
   viewMenu->addMenu( mToolbarMenu );
   // toolBar already exists, add other widgets as they are created
@@ -1244,6 +1245,16 @@ void QgsComposer::on_mActionToggleFullScreen_triggered()
   {
     showNormal();
   }
+}
+
+void QgsComposer::on_mActionHidePanels_triggered()
+{
+  bool showPanels = !mActionHidePanels->isChecked();
+  mItemDock->setVisible( showPanels );
+  mGeneralDock->setVisible( showPanels );
+  mUndoDock->setVisible( showPanels );
+  mAtlasDock->setVisible( showPanels );
+  mItemsDock->setVisible( showPanels );
 }
 
 void QgsComposer::disablePreviewMode()
@@ -3568,6 +3579,14 @@ void QgsComposer::createComposerView()
   mView->setHorizontalRuler( mHorizontalRuler );
   mView->setVerticalRuler( mVerticalRuler );
   mViewLayout->addWidget( mView, 1, 1 );
+
+  //view does not accept focus via tab
+  mView->setFocusPolicy( Qt::ClickFocus );
+  //instead, if view is focused and tab is pressed than mActionHidePanels is triggered,
+  //to toggle display of panels
+  QShortcut* tab = new QShortcut( Qt::Key_Tab, mView );
+  tab->setContext( Qt::WidgetWithChildrenShortcut );
+  connect( tab, SIGNAL( activated() ), mActionHidePanels, SLOT( trigger() ) );
 }
 
 void QgsComposer::writeWorldFile( QString worldFileName, double a, double b, double c, double d, double e, double f ) const

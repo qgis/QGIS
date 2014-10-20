@@ -362,6 +362,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Toggle full screen mode
     void on_mActionToggleFullScreen_triggered();
 
+    //! Toggle panels
+    void on_mActionHidePanels_triggered();
+
     //! Save window state
     void saveWindowState();
 
