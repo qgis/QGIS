@@ -38,6 +38,7 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
     QTextCodec* mEncoding;
     QgsFields mFields;
     OGRwkbGeometryType mOgrGeometryTypeFilter;
+    QString mDriverName;
 
     friend class QgsOgrFeatureIterator;
 };

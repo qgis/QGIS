@@ -523,7 +523,7 @@ void QgsRasterInterface::cumulativeCut( int theBandNo,
 
   //get band stats to specify real histogram min/max (fix #9793 Byte bands)
   QgsRasterBandStats stats = bandStatistics( theBandNo, QgsRasterBandStats::Min, theExtent, theSampleSize );
-  if( stats.maximumValue < stats.minimumValue )
+  if ( stats.maximumValue < stats.minimumValue )
     return;
 
   // for byte bands make sure bin count == actual range

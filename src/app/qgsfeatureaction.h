@@ -50,7 +50,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
      *
      * @return true if feature was added if showModal is true. If showModal is false, returns true in every case
      */
-    bool addFeature(const QgsAttributeMap& defaultAttributes = QgsAttributeMap() , bool showModal = true );
+    bool addFeature( const QgsAttributeMap& defaultAttributes = QgsAttributeMap() , bool showModal = true );
 
   private slots:
     void onFeatureSaved( const QgsFeature& feature );
