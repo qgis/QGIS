@@ -162,28 +162,31 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
       // Group subitems
       QList<Atom> groupAtoms = createAtomList( nodeGroup, splitLayer );
 
-      Nucleon nucleon;
-      nucleon.item = node;
-      nucleon.size = drawGroupTitle( nodeGroup );
+      if ( nodeLegendStyle( nodeGroup ) != QgsComposerLegendStyle::Hidden )
+      {
+        Nucleon nucleon;
+        nucleon.item = node;
+        nucleon.size = drawGroupTitle( nodeGroup );
 
-      if ( groupAtoms.size() > 0 )
-      {
-        // Add internal space between this group title and the next nucleon
-        groupAtoms[0].size.rheight() += spaceAboveAtom( groupAtoms[0] );
-        // Prepend this group title to the first atom
-        groupAtoms[0].nucleons.prepend( nucleon );
-        groupAtoms[0].size.rheight() += nucleon.size.height();
-        groupAtoms[0].size.rwidth() = qMax( nucleon.size.width(), groupAtoms[0].size.width() );
-      }
-      else
-      {
-        // no subitems, append new atom
-        Atom atom;
-        atom.nucleons.append( nucleon );
-        atom.size.rwidth() += nucleon.size.width();
-        atom.size.rheight() += nucleon.size.height();
-        atom.size.rwidth() = qMax( nucleon.size.width(), atom.size.width() );
-        groupAtoms.append( atom );
+        if ( groupAtoms.size() > 0 )
+        {
+          // Add internal space between this group title and the next nucleon
+          groupAtoms[0].size.rheight() += spaceAboveAtom( groupAtoms[0] );
+          // Prepend this group title to the first atom
+          groupAtoms[0].nucleons.prepend( nucleon );
+          groupAtoms[0].size.rheight() += nucleon.size.height();
+          groupAtoms[0].size.rwidth() = qMax( nucleon.size.width(), groupAtoms[0].size.width() );
+        }
+        else
+        {
+          // no subitems, append new atom
+          Atom atom;
+          atom.nucleons.append( nucleon );
+          atom.size.rwidth() += nucleon.size.width();
+          atom.size.rheight() += nucleon.size.height();
+          atom.size.rwidth() = qMax( nucleon.size.width(), atom.size.width() );
+          groupAtoms.append( atom );
+        }
       }
       atoms.append( groupAtoms );
     }
