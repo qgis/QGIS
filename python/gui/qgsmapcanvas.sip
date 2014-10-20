@@ -58,7 +58,7 @@ class QgsMapCanvas : QGraphicsView
 
     //! Get access to properties used for map rendering
     //! @note added in 2.4
-    const QgsMapSettings& mapSettings() const;
+    const QgsMapSettings& mapSettings() const /KeepReference/;
 
     //! sets whether to use projections for this layer set
     //! @note added in 2.4
