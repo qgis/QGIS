@@ -59,6 +59,9 @@
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mTextGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -98,6 +101,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mAppearanceGroup">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Appearance</string>
          </property>
@@ -313,13 +319,16 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>mTextGroupBox</tabstop>
   <tabstop>mTextEdit</tabstop>
   <tabstop>mHtmlCheckBox</tabstop>
   <tabstop>mInsertExpressionButton</tabstop>
+  <tabstop>mAppearanceGroup</tabstop>
   <tabstop>mFontButton</tabstop>
   <tabstop>mFontColorButton</tabstop>
   <tabstop>mMarginDoubleSpinBox</tabstop>

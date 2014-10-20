@@ -19,6 +19,9 @@
    </property>
    <item>
     <widget class="QgsCollapsibleGroupBoxBasic" name="mGeneralOptionsGroupBox">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
      <property name="title">
       <string>Position and size</string>
      </property>
@@ -308,6 +311,9 @@
    </item>
    <item>
     <widget class="QgsCollapsibleGroupBoxBasic" name="mTransformsGroupBox">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
      <property name="title">
       <string>Rotation</string>
      </property>
@@ -537,6 +543,9 @@
    </item>
    <item>
     <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
      <property name="title">
       <string>Item ID</string>
      </property>
@@ -562,6 +571,9 @@
    </item>
    <item>
     <widget class="QgsCollapsibleGroupBoxBasic" name="groupRendering">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
      <property name="title">
       <string>Rendering</string>
      </property>
@@ -683,6 +695,7 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsPenJoinStyleComboBox</class>
@@ -696,6 +709,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mGeneralOptionsGroupBox</tabstop>
   <tabstop>mPageSpinBox</tabstop>
   <tabstop>mXPosSpin</tabstop>
   <tabstop>mXPositionDDBtn</tabstop>
@@ -714,6 +728,7 @@
   <tabstop>mLowerLeftCheckBox</tabstop>
   <tabstop>mLowerMiddleCheckBox</tabstop>
   <tabstop>mLowerRightCheckBox</tabstop>
+  <tabstop>mTransformsGroupBox</tabstop>
   <tabstop>mItemRotationSpinBox</tabstop>
   <tabstop>mItemRotationDDBtn</tabstop>
   <tabstop>mFrameGroupBox</tabstop>
@@ -722,7 +737,9 @@
   <tabstop>mFrameJoinStyleCombo</tabstop>
   <tabstop>mBackgroundGroupBox</tabstop>
   <tabstop>mBackgroundColorButton</tabstop>
+  <tabstop>groupBox</tabstop>
   <tabstop>mItemIdLineEdit</tabstop>
+  <tabstop>groupRendering</tabstop>
   <tabstop>mBlendModeCombo</tabstop>
   <tabstop>mBlendModeDDBtn</tabstop>
   <tabstop>mTransparencySlider</tabstop>

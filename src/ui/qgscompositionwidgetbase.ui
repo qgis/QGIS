@@ -34,6 +34,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="focusPolicy">
+      <enum>Qt::WheelFocus</enum>
+     </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -47,7 +50,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-111</y>
+        <y>0</y>
         <width>284</width>
         <height>599</height>
        </rect>
@@ -55,6 +58,9 @@
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Paper and quality</string>
          </property>
@@ -345,6 +351,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSnapToGridGroupCheckBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Guides and Grid</string>
          </property>
@@ -479,6 +488,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>groupBox</tabstop>
   <tabstop>mPaperSizeComboBox</tabstop>
   <tabstop>mPaperSizeDDBtn</tabstop>
   <tabstop>mPaperWidthDoubleSpinBox</tabstop>
@@ -495,6 +505,7 @@
   <tabstop>mPrintAsRasterCheckBox</tabstop>
   <tabstop>mGenerateWorldFileCheckBox</tabstop>
   <tabstop>mWorldFileMapComboBox</tabstop>
+  <tabstop>mSnapToGridGroupCheckBox</tabstop>
   <tabstop>mGridResolutionSpinBox</tabstop>
   <tabstop>mOffsetXSpinBox</tabstop>
   <tabstop>mOffsetYSpinBox</tabstop>

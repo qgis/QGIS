@@ -53,6 +53,9 @@
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>HTML Source</string>
          </property>
@@ -130,6 +133,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="frameGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Frames</string>
          </property>
@@ -286,6 +292,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>groupBox</tabstop>
   <tabstop>mRadioUrlSource</tabstop>
   <tabstop>mUrlLineEdit</tabstop>
   <tabstop>mFileToolButton</tabstop>
@@ -294,6 +301,7 @@
   <tabstop>mInsertExpressionButton</tabstop>
   <tabstop>mEvaluateExpressionsCheckbox</tabstop>
   <tabstop>mReloadPushButton</tabstop>
+  <tabstop>frameGroupBox</tabstop>
   <tabstop>mResizeModeComboBox</tabstop>
   <tabstop>mAddFramePushButton</tabstop>
   <tabstop>mEmptyFrameCheckBox</tabstop>

@@ -51,7 +51,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-5</y>
+        <y>0</y>
         <width>314</width>
         <height>554</height>
        </rect>
@@ -59,6 +59,9 @@
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mPreviewGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -212,6 +215,9 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Search directories</string>
          </property>
@@ -308,6 +314,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mRotationGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Image rotation</string>
          </property>
@@ -363,15 +372,18 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>mPreviewGroupBox</tabstop>
   <tabstop>mPictureLineEdit</tabstop>
   <tabstop>mPictureBrowseButton</tabstop>
   <tabstop>mSourceDDBtn</tabstop>
   <tabstop>mResizeModeComboBox</tabstop>
   <tabstop>mAnchorPointComboBox</tabstop>
+  <tabstop>mSearchDirectoriesGroupBox</tabstop>
   <tabstop>mPreviewListWidget</tabstop>
   <tabstop>mSearchDirectoriesComboBox</tabstop>
   <tabstop>mRemoveDirectoryButton</tabstop>
   <tabstop>mAddDirectoryButton</tabstop>
+  <tabstop>mRotationGroupBox</tabstop>
   <tabstop>mPictureRotationSpinBox</tabstop>
   <tabstop>mRotationFromComposerMapCheckBox</tabstop>
   <tabstop>mComposerMapComboBox</tabstop>

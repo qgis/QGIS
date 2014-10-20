@@ -53,6 +53,9 @@
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -127,6 +130,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>groupBox</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mShapeComboBox</tabstop>
   <tabstop>mCornerRadiusSpinBox</tabstop>

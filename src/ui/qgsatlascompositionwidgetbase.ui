@@ -79,6 +79,9 @@
       </item>
       <item row="1" column="0" colspan="3">
        <widget class="QScrollArea" name="scrollArea">
+        <property name="focusPolicy">
+         <enum>Qt::WheelFocus</enum>
+        </property>
         <property name="widgetResizable">
          <bool>true</bool>
         </property>
@@ -102,6 +105,9 @@
            <widget class="QgsCollapsibleGroupBoxBasic" name="mConfigurationGroup">
             <property name="enabled">
              <bool>false</bool>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
             </property>
             <property name="title">
              <string>Configuration</string>
@@ -184,6 +190,9 @@
            <widget class="QgsCollapsibleGroupBoxBasic" name="mOutputGroup">
             <property name="enabled">
              <bool>false</bool>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
             </property>
             <property name="title">
              <string>Output</string>
@@ -300,12 +309,13 @@
  </customwidgets>
  <tabstops>
   <tabstop>mUseAtlasCheckBox</tabstop>
-  <tabstop>scrollArea</tabstop>
+  <tabstop>mConfigurationGroup</tabstop>
   <tabstop>mAtlasCoverageLayerComboBox</tabstop>
   <tabstop>mAtlasHideCoverageCheckBox</tabstop>
   <tabstop>mAtlasFeatureFilterCheckBox</tabstop>
   <tabstop>mAtlasFeatureFilterEdit</tabstop>
   <tabstop>mAtlasFeatureFilterButton</tabstop>
+  <tabstop>mOutputGroup</tabstop>
   <tabstop>mAtlasFilenamePatternEdit</tabstop>
   <tabstop>mAtlasFilenameExpressionButton</tabstop>
   <tabstop>mAtlasSingleFileCheckBox</tabstop>

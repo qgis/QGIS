@@ -53,6 +53,9 @@
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -122,6 +125,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_5">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Feature filtering</string>
          </property>
@@ -227,6 +233,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_6">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Appearance</string>
          </property>
@@ -358,6 +367,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mShowGridGroupCheckBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Show grid</string>
          </property>
@@ -439,6 +451,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_3">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Fonts and text styling</string>
          </property>
@@ -623,6 +638,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="frameGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Frames</string>
          </property>
@@ -697,6 +715,7 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
@@ -706,11 +725,13 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>groupBox</tabstop>
   <tabstop>mSourceComboBox</tabstop>
   <tabstop>mLayerComboBox</tabstop>
   <tabstop>mRelationsComboBox</tabstop>
   <tabstop>mRefreshPushButton</tabstop>
   <tabstop>mAttributesPushButton</tabstop>
+  <tabstop>groupBox_5</tabstop>
   <tabstop>mMaximumRowsSpinBox</tabstop>
   <tabstop>mUniqueOnlyCheckBox</tabstop>
   <tabstop>mShowOnlyVisibleFeaturesCheckBox</tabstop>
@@ -719,6 +740,7 @@
   <tabstop>mFeatureFilterCheckBox</tabstop>
   <tabstop>mFeatureFilterEdit</tabstop>
   <tabstop>mFeatureFilterButton</tabstop>
+  <tabstop>groupBox_6</tabstop>
   <tabstop>mDrawEmptyCheckBox</tabstop>
   <tabstop>mMarginSpinBox</tabstop>
   <tabstop>mHeaderModeComboBox</tabstop>
@@ -728,11 +750,13 @@
   <tabstop>mShowGridGroupCheckBox</tabstop>
   <tabstop>mGridStrokeWidthSpinBox</tabstop>
   <tabstop>mGridColorButton</tabstop>
+  <tabstop>groupBox_3</tabstop>
   <tabstop>mHeaderFontPushButton</tabstop>
   <tabstop>mHeaderFontColorButton</tabstop>
   <tabstop>mHeaderHAlignmentComboBox</tabstop>
   <tabstop>mContentFontPushButton</tabstop>
   <tabstop>mContentFontColorButton</tabstop>
+  <tabstop>frameGroupBox</tabstop>
   <tabstop>mResizeModeComboBox</tabstop>
   <tabstop>mAddFramePushButton</tabstop>
   <tabstop>mEmptyFrameCheckBox</tabstop>
