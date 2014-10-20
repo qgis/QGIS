@@ -359,6 +359,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Atlas settings
     void on_mActionAtlasSettings_triggered();
 
+    //! Toggle full screen mode
+    void on_mActionToggleFullScreen_triggered();
+
     //! Save window state
     void saveWindowState();
 

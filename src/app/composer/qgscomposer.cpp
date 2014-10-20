@@ -342,6 +342,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mToolbarMenu = new QMenu( tr( "&Toolbars" ), this );
   mToolbarMenu->setObjectName( "mToolbarMenu" );
   viewMenu->addSeparator();
+  viewMenu->addAction( mActionToggleFullScreen );
   viewMenu->addMenu( mPanelMenu );
   viewMenu->addMenu( mToolbarMenu );
   // toolBar already exists, add other widgets as they are created
@@ -1231,6 +1232,18 @@ void QgsComposer::on_mActionAtlasSettings_triggered()
   }
 
   mAtlasDock->raise();
+}
+
+void QgsComposer::on_mActionToggleFullScreen_triggered()
+{
+  if ( mActionToggleFullScreen->isChecked() )
+  {
+    showFullScreen();
+  }
+  else
+  {
+    showNormal();
+  }
 }
 
 void QgsComposer::disablePreviewMode()
