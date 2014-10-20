@@ -176,6 +176,8 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context );
 
+    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;

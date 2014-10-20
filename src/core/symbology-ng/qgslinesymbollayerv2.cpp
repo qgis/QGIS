@@ -274,8 +274,10 @@ void QgsSimpleLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, 
   renderPolyline( points, context );
   if ( rings )
   {
+    mOffset = -mOffset; // invert the offset for rings!
     foreach ( const QPolygonF& ring, *rings )
       renderPolyline( ring, context );
+    mOffset = -mOffset;
   }
 
   if ( mDrawInsidePolygon )
@@ -845,6 +847,18 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
       else
         renderPolylineVertex( points2, context, placement );
     }
+  }
+}
+
+void QgsMarkerLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
+{
+  renderPolyline( points, context );
+  if ( rings )
+  {
+    mOffset = -mOffset; // invert the offset for rings!
+    foreach ( const QPolygonF& ring, *rings )
+      renderPolyline( ring, context );
+    mOffset = -mOffset;
   }
 }
 
