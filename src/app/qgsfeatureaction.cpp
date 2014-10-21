@@ -192,18 +192,17 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
     dialog->setIsAddDialog( true );
     dialog->setEditCommandMessage( text() );
 
-    connect( dialog->attributeForm(), SIGNAL( featureSaved( QgsFeature ) ), this, SLOT( onFeatureSaved( QgsFeature ) ) );
+    connect( dialog->attributeForm(), SIGNAL( featureSaved( const QgsFeature & ) ), this, SLOT( onFeatureSaved( const QgsFeature & ) ) );
 
-    if ( showModal )
+    if ( !showModal )
     {
-      dialog->setAttribute( Qt::WA_DeleteOnClose );
-      dialog->exec();
-    }
-    else
-    {
+      setParent( dialog ); // keep dialog until the dialog is closed and destructed
       dialog->show(); // will also delete the dialog on close (show() is overridden)
       return true;
     }
+
+    dialog->setAttribute( Qt::WA_DeleteOnClose );
+    dialog->exec();
   }
 
   // Will be set in the onFeatureSaved SLOT
