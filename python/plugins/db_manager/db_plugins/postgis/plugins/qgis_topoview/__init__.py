@@ -96,16 +96,11 @@ def run(item, action, mainwindow):
         iface.mapCanvas().setRenderFlag( False )
         try:
                 supergroup = legend.addGroup(u'Topology "%s"' % toponame, False)
-                # should not be needed: http://hub.qgis.org/issues/6938
-                legend.setGroupVisible(supergroup, False)
-
                 provider = db.dbplugin().providerName()
                 uri = db.uri();
 
                 # FACES
                 group = legend.addGroup(u'Faces', False, supergroup)
-                # should not be needed: http://hub.qgis.org/issues/6938
-                legend.setGroupVisible(group, False)
 
           # face mbr
                 uri.setDataSource(toponame, 'face', 'mbr', '', 'face_id')
@@ -152,8 +147,6 @@ def run(item, action, mainwindow):
 
                 # NODES
                 group = legend.addGroup(u'Nodes', False, supergroup)
-                # should not be needed: http://hub.qgis.org/issues/6938
-                legend.setGroupVisible(group, False)
 
           # node
                 uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
@@ -181,8 +174,6 @@ def run(item, action, mainwindow):
 
                 # EDGES
                 group = legend.addGroup(u'Edges', False, supergroup)
-                # should not be needed: http://hub.qgis.org/issues/6938
-                legend.setGroupVisible(group, False)
 
           # edge
                 uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
