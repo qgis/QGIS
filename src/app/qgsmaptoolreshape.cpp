@@ -96,7 +96,15 @@ void QgsMapToolReshape::canvasReleaseEvent( QMouseEvent * e )
       QgsGeometry* geom = f.geometry();
       if ( geom )
       {
-        reshapeReturn = geom->reshapeGeometry( points() );
+        try {
+          reshapeReturn = geom->reshapeGeometry( points() );
+        } catch( ... ) {
+          vlayer->destroyEditCommand();
+          stopCapturing();
+          emit messageEmitted( tr( "An error occurs during the reshaping, capture has been cancelled" ), QgsMessageBar::WARNING );
+          return;
+        }
+
         if ( reshapeReturn == 0 )
         {
           vlayer->changeGeometry( f.id(), geom );
