@@ -97,7 +97,7 @@ bool QgsFeatureAction::viewFeatureForm( QgsHighlight *h )
 
   QgsAttributeDialog *dialog = newDialog( true );
   dialog->setHighlight( h );
-  dialog->show();
+  dialog->show(); // will also delete the dialog on close (show() is overridden)
 
   return true;
 }
@@ -122,7 +122,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
   }
   else
   {
-    dialog->show();
+    dialog->show(); // will also delete the dialog on close (show() is overridden)
   }
 
   return true;
@@ -196,11 +196,12 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
 
     if ( showModal )
     {
+      dialog->setAttribute( Qt::WA_DeleteOnClose );
       dialog->exec();
     }
     else
     {
-      dialog->show();
+      dialog->show(); // will also delete the dialog on close (show() is overridden)
       return true;
     }
   }
