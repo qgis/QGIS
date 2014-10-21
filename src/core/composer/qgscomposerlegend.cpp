@@ -355,7 +355,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   //composer map
   if ( !itemElem.attribute( "map" ).isEmpty() )
   {
-    mComposerMap = mComposition->getComposerMapById( itemElem.attribute( "map" ).toInt() );
+    setComposerMap( mComposition->getComposerMapById( itemElem.attribute( "map" ).toInt() ) );
   }
 
   QDomElement layerTreeElem = itemElem.firstChildElement( "layer-tree-group" );
@@ -442,7 +442,15 @@ QString QgsComposerLegend::displayName() const
 
 void QgsComposerLegend::setComposerMap( const QgsComposerMap* map )
 {
+  if ( mComposerMap )
+  {
+    disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+    disconnect( mComposerMap, SIGNAL( itemChanged() ), this, SLOT( updateFilterByMap() ) );
+    disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateFilterByMap() ) );
+  }
+
   mComposerMap = map;
+
   if ( map )
   {
     QObject::connect( map, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
@@ -455,17 +463,14 @@ void QgsComposerLegend::setComposerMap( const QgsComposerMap* map )
 
 void QgsComposerLegend::invalidateCurrentMap()
 {
-  if ( mComposerMap )
-  {
-    disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
-    disconnect( mComposerMap, SIGNAL( itemChanged() ), this, SLOT( updateFilterByMap() ) );
-    disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateFilterByMap() ) );
-  }
-  mComposerMap = 0;
+  setComposerMap( 0 );
 }
 
 void QgsComposerLegend::updateFilterByMap()
 {
+  if ( isRemoved() )
+    return;
+
   if ( mComposerMap && mLegendFilterByMap )
   {
     int dpi = mComposition->printResolution();
