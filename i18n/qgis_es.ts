@@ -14290,6 +14290,18 @@ La respuesta fue:
         <source>Comma Separated Value [CSV]</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Override the header file used - in place of header.dxf.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Override the trailer file used - in place of trailer.dxf.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>path to the GCT : the GCT file describe the GeoConcept types definitions: In this file, every line must start with //# followed by a keyword. Lines starting with // are comments.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -44591,7 +44603,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Reset the User Interface settings, to reset QGIS to it&apos;s default view</source>
-        <translation>Restablecer la configuración de la interfaz de usuario, para restablecer QGIS a su vista predeterminada</translation>
+        <translation type="obsolete">Restablecer la configuración de la interfaz de usuario, para restablecer QGIS a su vista predeterminada</translation>
     </message>
     <message>
         <source>Map update interval</source>
@@ -44695,6 +44707,10 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Use native color chooser dialogs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset user interface to default settings (restart required)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
