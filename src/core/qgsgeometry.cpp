@@ -32,6 +32,8 @@ email                : morb at ozemail dot com dot au
 #include "qgsmessagelog.h"
 #include "qgsgeometryvalidator.h"
 
+#include <QDebug>
+
 #ifndef Q_WS_WIN
 #include <netinet/in.h>
 #else
@@ -96,7 +98,7 @@ static void throwGEOSException( const char *fmt, ... )
   vsnprintf( buffer, sizeof buffer, fmt, ap );
   va_end( ap );
 
-  QgsDebugMsg( QString( "GEOS exception: %1" ).arg( buffer ) );
+  qWarning() << QString( "GEOS exception: %1" ).arg( buffer );
 
   throw GEOSException( QString::fromUtf8( buffer ) );
 }
@@ -4877,7 +4879,15 @@ GEOSGeometry* QgsGeometry::reshapePolygon( const GEOSGeometry* polygon, const GE
 
   GEOSGeom_destroy_r( geosinit.ctxt, reshapeResult );
 
-  newRing = GEOSGeom_createLinearRing_r( geosinit.ctxt, newCoordSequence );
+  try
+  {
+    newRing = GEOSGeom_createLinearRing_r( geosinit.ctxt, newCoordSequence );
+  }
+  catch ( GEOSException &e )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+  }
+
   if ( !newRing )
   {
     delete [] innerRings;
