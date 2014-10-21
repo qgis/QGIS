@@ -103,10 +103,18 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
   //adjust box if width or height is too small
   QSizeF size = legendRenderer.minimumSize();
-  if ( size.height() > rect().height() )
-    setSceneRect( QRectF( pos().x(), pos().y(), rect().width(), size.height() ) );
-  if ( size.width() > rect().width() )
-    setSceneRect( QRectF( pos().x(), pos().y(), size.width(), rect().height() ) );
+  if ( size.height() > rect().height() || size.width() > rect().width() )
+  {
+    //need to resize box
+    QRectF targetRect = QRectF( pos().x(), pos().y(), rect().width(), rect().height() );
+    if ( size.height() > targetRect.height() )
+      targetRect.setHeight( size.height() );
+    if ( size.width() > rect().width() )
+      targetRect.setWidth( size.width() );
+
+    //set new rect, respecting position mode and data defined size/position
+    setSceneRect( evalItemRect( targetRect, true ) );
+  }
 
   legendRenderer.drawLegend( painter );
 
@@ -137,7 +145,9 @@ void QgsComposerLegend::adjustBoxSize()
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
   {
-    setSceneRect( QRectF( pos().x(), pos().y(), size.width(), size.height() ) );
+    QRectF targetRect = QRectF( pos().x(), pos().y(), size.width(), size.height() );
+    //set new rect, respecting position mode and data defined size/position
+    setSceneRect( evalItemRect( targetRect, true ) );
   }
 }
 

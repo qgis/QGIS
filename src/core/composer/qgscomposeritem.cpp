@@ -708,7 +708,7 @@ void QgsComposerItem::setSceneRect( const QRectF& rectangle )
   emit sizeChanged();
 }
 
-QRectF QgsComposerItem::evalItemRect( const QRectF &newRect )
+QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOnly )
 {
   QRectF result = newRect;
 
@@ -737,14 +737,29 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect )
   }
 
   double x = result.left();
-  //initially adjust for position mode to get top-left coordinate
-  if ( mLastUsedPositionMode == UpperMiddle || mLastUsedPositionMode == Middle || mLastUsedPositionMode == LowerMiddle )
+  //initially adjust for position mode to get x coordinate
+  if ( !resizeOnly )
   {
-    x += newRect.width() / 2.0;
+    //adjust x-coordinate if placement is not done to a left point
+    if ( mLastUsedPositionMode == UpperMiddle || mLastUsedPositionMode == Middle || mLastUsedPositionMode == LowerMiddle )
+    {
+      x += newRect.width() / 2.0;
+    }
+    else if ( mLastUsedPositionMode == UpperRight || mLastUsedPositionMode == MiddleRight || mLastUsedPositionMode == LowerRight )
+    {
+      x += newRect.width();
+    }
   }
-  else if ( mLastUsedPositionMode == UpperRight || mLastUsedPositionMode == MiddleRight || mLastUsedPositionMode == LowerRight )
+  else
   {
-    x += newRect.width();
+    if ( mLastUsedPositionMode == UpperMiddle || mLastUsedPositionMode == Middle || mLastUsedPositionMode == LowerMiddle )
+    {
+      x += rect().width() / 2.0;
+    }
+    else if ( mLastUsedPositionMode == UpperRight || mLastUsedPositionMode == MiddleRight || mLastUsedPositionMode == LowerRight )
+    {
+      x += rect().width();
+    }
   }
   if ( dataDefinedEvaluate( QgsComposerObject::PositionX, exprVal ) )
   {
@@ -758,16 +773,30 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect )
   }
 
   double y = result.top();
-  //adjust y-coordinate if placement is not done to an upper point
-  if ( mLastUsedPositionMode == MiddleLeft || mLastUsedPositionMode == Middle || mLastUsedPositionMode == MiddleRight )
+  //initially adjust for position mode to get y coordinate
+  if ( !resizeOnly )
   {
-    y += newRect.height() / 2.0;
+    //adjust y-coordinate if placement is not done to an upper point
+    if ( mLastUsedPositionMode == MiddleLeft || mLastUsedPositionMode == Middle || mLastUsedPositionMode == MiddleRight )
+    {
+      y += newRect.height() / 2.0;
+    }
+    else if ( mLastUsedPositionMode == LowerLeft || mLastUsedPositionMode == LowerMiddle || mLastUsedPositionMode == LowerRight )
+    {
+      y += newRect.height();
+    }
   }
-  else if ( mLastUsedPositionMode == LowerLeft || mLastUsedPositionMode == LowerMiddle || mLastUsedPositionMode == LowerRight )
+  else
   {
-    y += newRect.height();
+    if ( mLastUsedPositionMode == MiddleLeft || mLastUsedPositionMode == Middle || mLastUsedPositionMode == MiddleRight )
+    {
+      y += rect().height() / 2.0;
+    }
+    else if ( mLastUsedPositionMode == LowerLeft || mLastUsedPositionMode == LowerMiddle || mLastUsedPositionMode == LowerRight )
+    {
+      y += rect().height();
+    }
   }
-
   if ( dataDefinedEvaluate( QgsComposerObject::PositionY, exprVal ) )
   {
     bool ok;

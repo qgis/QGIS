@@ -389,7 +389,7 @@ void QgsComposerScaleBar::adjustBoxSize()
   QRectF box = mStyle->calculateBoxSize();
 
   //update rect for data defined size and position
-  QRectF newRect = evalItemRect( box );
+  QRectF newRect = evalItemRect( box, true );
 
   //scale bars have a minimum size, respect that regardless of data defined settings
   if ( newRect.width() < box.width() )
