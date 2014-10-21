@@ -70,7 +70,7 @@ class rasterize(GdalAlgorithm):
 	self.addParameter(ParameterSelection(self.RTYPE, 'Raster type',
                           self.TYPE, 0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
+        self.addOutput(OutputRaster(self.OUTPUT, 'Output layer: mandatory to choose an existing raster layer if the (*) option is selected'))
 
     def processAlgorithm(self, progress):
         writeOver = self.getParameterValue(self.WRITEOVER)
