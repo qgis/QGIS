@@ -845,6 +845,11 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       else
       {
         QgsComposerLegend* newLegend = new QgsComposerLegend( composition() );
+        QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
+        if ( mapItemList.size() > 0 )
+        {
+          newLegend->setComposerMap( mapItemList.at( 0 ) );
+        }
         newLegend->setSceneRect( QRectF( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() ) );
         composition()->addComposerLegend( newLegend );
         newLegend->updateLegend();
