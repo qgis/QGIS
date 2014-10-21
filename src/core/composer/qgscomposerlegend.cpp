@@ -353,6 +353,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   mSettings.setWrapChar( itemElem.attribute( "wrapChar" ) );
 
   //composer map
+  mLegendFilterByMap = itemElem.attribute( "legendFilterByMap", "0" ).toInt();
   if ( !itemElem.attribute( "map" ).isEmpty() )
   {
     setComposerMap( mComposition->getComposerMapById( itemElem.attribute( "map" ).toInt() ) );
@@ -368,8 +369,6 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
     _readXML( composerItemElem, doc );
   }
-
-  mLegendFilterByMap = itemElem.attribute( "legendFilterByMap", "0" ).toInt();
 
   // < 2.0 projects backward compatibility >>>>>
   //title font
