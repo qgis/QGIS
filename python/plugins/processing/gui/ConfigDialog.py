@@ -229,6 +229,8 @@ class SettingDelegate(QStyledItemDelegate):
         return QStyledItemDelegate.eventFilter(self, editor, event)
 
     def convertValue(self, value):
+	if value is None:
+            return ""
         try:
             return int(value)
         except ValueError:
