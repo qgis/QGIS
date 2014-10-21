@@ -51,6 +51,9 @@ class translate(GdalAlgorithm):
     SRS = 'SRS'
     SDS = 'SDS'
     EXTRA = 'EXTRA'
+    RTYPE = 'RTYPE'
+    
+    TYPE = ['Byte','Int16','UInt16','UInt32','Int32','Float32','Float64','CInt16','CInt32','CFloat32','CFloat64']
 
     def commandLineName(self):
         return "gdalogr:translate"
@@ -79,6 +82,8 @@ class translate(GdalAlgorithm):
             False))
         self.addParameter(ParameterString(self.EXTRA,
                           'Additional creation parameters', '', optional=True))
+	self.addParameter(ParameterSelection(self.RTYPE, 'Output raster type',
+			  self.TYPE, 5))
         self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):
@@ -96,6 +101,8 @@ class translate(GdalAlgorithm):
         arguments = []
         arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
+        arguments.append('-ot')
+        arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
         if outsizePerc == 'True':
             arguments.append('-outsize')
             arguments.append(outsize + '%')

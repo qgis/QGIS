@@ -44,6 +44,9 @@ class proximity(GdalAlgorithm):
     NODATA = 'NODATA'
     BUF_VAL = 'BUF_VAL'
     OUTPUT = 'OUTPUT'
+    RTYPE = 'RTYPE'
+    
+    TYPE = ['Byte','Int16','UInt16','UInt32','Int32','Float32','Float64','CInt16','CInt32','CFloat32','CFloat64']
 
     DISTUNITS = ['GEO', 'PIXEL']
 
@@ -64,13 +67,16 @@ class proximity(GdalAlgorithm):
         self.addParameter(ParameterNumber(self.BUF_VAL,
                           'Fixed buf val (negative value to ignore)', -1,
                           9999, -1))
-
+        self.addParameter(ParameterSelection(self.RTYPE, 'Output raster type',
+			  self.TYPE, 5))
         self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):
         output = self.getOutputValue(self.OUTPUT)
 
         arguments = []
+        arguments.append('-ot')
+        arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])        
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(output)
 
