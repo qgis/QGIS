@@ -4303,7 +4303,7 @@ pole geometrii - kolumnę z unikatowymi wartościami</translation>
     </message>
     <message>
         <source>Select folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz katalog</translation>
     </message>
     <message>
         <source>Open file</source>
@@ -8115,12 +8115,12 @@ Open the results dialog to check it.</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1180"/>
         <source>New SpatiaLite Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowa warstwa SpatiaLite...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1192"/>
         <source>Raster Calculator...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulator rastra...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1225"/>
@@ -8141,7 +8141,7 @@ Open the results dialog to check it.</source>
         <location filename="../src/ui/qgisapp.ui" line="1326"/>
         <location filename="../src/ui/qgisapp.ui" line="1329"/>
         <source>Remove Layer/Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń warstwę/grupę</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1418"/>
@@ -8331,12 +8331,12 @@ Open the results dialog to check it.</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2253"/>
         <source>Show Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż wybrane</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2262"/>
         <source>Hide Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukryj wybrane</translation>
     </message>
     <message>
         <source>Need Support?</source>
@@ -8398,12 +8398,12 @@ Open the results dialog to check it.</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1468"/>
         <source>Configure Shortcuts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfiguracja skrótów...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1500"/>
         <source>API Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>API dla programistów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1575"/>
@@ -8415,7 +8415,7 @@ Ctl (Cmd) obraca o 15 stopni.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1611"/>
         <source>Full Histogram Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Pełne wzmocnienie kontrastu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1653"/>
@@ -8441,7 +8441,7 @@ Ctl (Cmd) obraca o 15 stopni.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1743"/>
         <source>Touch Zoom and Pan</source>
-        <translation type="unfinished"></translation>
+        <translation>Powiększ i przesuń</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1746"/>
@@ -8551,57 +8551,57 @@ Działa na aktualnie edytowanej warstwie</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1926"/>
         <source>SVG Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2048"/>
         <source>&amp;Download Data...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pobierz dane...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2053"/>
         <source>&amp;Import Topology from XML...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Wczytaj topologię z XML...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2058"/>
         <source>&amp;Export Topology to SpatiaLite...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Eksportuj topologię do SpatiaLite...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2067"/>
         <source>Increase Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozjaśnij</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2076"/>
         <source>Decrease Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Przyciemnij</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2085"/>
         <source>Increase Contrast</source>
-        <translation type="unfinished"></translation>
+        <translation>Zwiększ kontrast</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2094"/>
         <source>Decrease Contrast</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmniejsz kontrast</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2103"/>
         <source>Select By Expression...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz wyrażeniem...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2111"/>
         <source>Need Commercial Support?</source>
-        <translation type="unfinished"></translation>
+        <translation>Wsparcie komercyjne</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2120"/>
         <source>Open Field Calculator...</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwórz kalkulator pól...</translation>
     </message>
     <message>
         <source>Composer manager...</source>
@@ -9285,7 +9285,7 @@ Działa na aktualnie edytowanej warstwie</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="895"/>
         <source>Select Features by area or single click</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wybierz obiekty w obszarze lub wskazując</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1435"/>
@@ -41662,7 +41662,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="300"/>
         <source>Layer selection</source>
-        <translation>wybór warstwy</translation>
+        <translation>zaznaczone warstwy</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="402"/>
