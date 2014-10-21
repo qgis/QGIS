@@ -55,9 +55,11 @@ QgsLayerTreeGroup* QgsLayerTreeGroup::addGroup( const QString &name )
   return grp;
 }
 
-QgsLayerTreeLayer*QgsLayerTreeGroup::insertLayer( int index, QgsMapLayer* layer )
+QgsLayerTreeLayer*QgsLayerTreeGroup::insertLayer( int index, QgsMapLayer* layer, Qt::CheckState checked )
 {
   QgsLayerTreeLayer* ll = new QgsLayerTreeLayer( layer );
+  ll->setVisible( checked );
+
   insertChildNode( index, ll );
   return ll;
 }
