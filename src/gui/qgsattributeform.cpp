@@ -133,6 +133,8 @@ bool QgsAttributeForm::save()
 
   mIsSaving = true;
 
+  bool changedLayer = false;
+
   bool success = true;
 
   emit beforeSave( success );
@@ -194,6 +196,7 @@ bool QgsAttributeForm::save()
         {
           mFeature.setAttributes( updatedFeature.attributes() );
           mLayer->endEditCommand();
+          changedLayer = true;
         }
         else
           mLayer->destroyEditCommand();
@@ -226,6 +229,7 @@ bool QgsAttributeForm::save()
         {
           mLayer->endEditCommand();
           mFeature.setAttributes( dst );
+          changedLayer = true;
         }
         else
         {
@@ -237,12 +241,13 @@ bool QgsAttributeForm::save()
 
   emit featureSaved( updatedFeature );
 
-  // [MD] disabled trigger of repaint as it interferes with other stuff (#11361).
+  // [MD] Refresh canvas only when absolutely necessary - it interferes with other stuff (#11361).
   // This code should be revisited - and the signals should be fired (+ layer repainted)
   // only when actually doing any changes. I am unsure if it is actually a good idea
   // to call save() whenever some code asks for vector layer's modified status
   // (which is the case when attribute table is open)
-  //mLayer->triggerRepaint();
+  if ( changedLayer )
+    mLayer->triggerRepaint();
 
   mIsSaving = false;
 
