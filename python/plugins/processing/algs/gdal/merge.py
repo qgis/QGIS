@@ -61,7 +61,7 @@ class merge(GdalAlgorithm):
     def processAlgorithm(self, progress):
         arguments = []
         arguments.append('-ot')
-	arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
+        arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
         if self.getParameterValue(merge.SEPARATE):
             arguments.append('-separate')
         if self.getParameterValue(merge.PCT):

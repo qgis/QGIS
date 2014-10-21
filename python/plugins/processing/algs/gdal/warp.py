@@ -72,7 +72,7 @@ class warp(GdalAlgorithm):
     def processAlgorithm(self, progress):
         arguments = []
         arguments.append('-ot')
-	arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
+        arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
         arguments.append('-s_srs')
         arguments.append(str(self.getParameterValue(self.SOURCE_SRS)))
         arguments.append('-t_srs')

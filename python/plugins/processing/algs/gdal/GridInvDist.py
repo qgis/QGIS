@@ -109,7 +109,7 @@ class GridInvDist(GdalAlgorithm):
         arguments.append('-a')
         arguments.append(params)
         arguments.append('-ot')
-	arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
+        arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
 

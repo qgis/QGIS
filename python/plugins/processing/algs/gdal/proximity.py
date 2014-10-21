@@ -76,7 +76,7 @@ class proximity(GdalAlgorithm):
 
         arguments = []
         arguments.append('-ot')
-	arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])        
+        arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])        
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(output)
 

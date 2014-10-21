@@ -102,7 +102,7 @@ class translate(GdalAlgorithm):
         arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
         arguments.append('-ot')
-	arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
+        arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
         if outsizePerc == 'True':
             arguments.append('-outsize')
             arguments.append(outsize + '%')
