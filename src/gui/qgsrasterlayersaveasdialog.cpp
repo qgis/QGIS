@@ -64,6 +64,12 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
     mFormatComboBox->addItem( myFormat );
   }
 
+  mExtentGroupBox->setOutputCrs( outputCrs() );
+  mExtentGroupBox->setOriginalExtent( mDataProvider->extent(), mLayerCrs );
+  mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
+  mExtentGroupBox->setOutputExtentFromCurrent();
+  connect( mExtentGroupBox, SIGNAL( extentChanged( QgsRectangle ) ), this, SLOT( extentChanged() ) );
+
   //fill reasonable default values depending on the provider
   if ( mDataProvider )
   {
@@ -130,12 +136,6 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
   {
     okButton->setEnabled( false );
   }
-
-  mExtentGroupBox->setOutputCrs( outputCrs() );
-  mExtentGroupBox->setOriginalExtent( mDataProvider->extent(), mLayerCrs );
-  mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
-  mExtentGroupBox->setOutputExtentFromOriginal();
-  connect( mExtentGroupBox, SIGNAL( extentChanged( QgsRectangle ) ), this, SLOT( extentChanged() ) );
 }
 
 void QgsRasterLayerSaveAsDialog::setValidators()
