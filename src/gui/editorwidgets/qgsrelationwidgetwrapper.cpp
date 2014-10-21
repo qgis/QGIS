@@ -56,10 +56,9 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
   const QgsAttributeEditorContext* ctx = &context();
   do
   {
-    if ( ctx->relation().name() == mRelation.name() && ctx->relationMode() == QgsAttributeEditorContext::Multiple )
+    if ( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
     {
-      w->setSaveCollapsedState( false );
-      w->setCollapsed( true );
+      w->setVisible( false );
       break;
     }
     ctx = ctx->parentContext();
