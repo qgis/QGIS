@@ -104,21 +104,6 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     //! Connection name
     QString connName();
 
-    //! Connection info (uri)
-    QString connectionInfo();
-
-    //! Connection Proxy Host
-    QString connProxyHost();
-
-    //! Connection Proxy Port
-    int connProxyPort();
-
-    //! Connection Proxy User
-    QString connProxyUser();
-
-    //! Connection Proxy Pass
-    QString connProxyPass();
-
     //! Set the server connection combo box to that stored in the config file.
     void setConnectionListPosition();
 
@@ -180,7 +165,6 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     QString mConnName;
 
     //! URI for selected connection
-    QString mConnectionInfo;
     QgsDataSourceURI mUri;
 
     //! layer name derived from latest layer selection (updated as long it's not edited manually)

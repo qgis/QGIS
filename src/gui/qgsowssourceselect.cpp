@@ -351,8 +351,6 @@ void QgsOWSSourceSelect::on_mConnectButton_clicked()
   mConnName = mConnectionsComboBox->currentText();
 
   QgsOWSConnection connection( mService, mConnectionsComboBox->currentText() );
-  //QgsDataProvider *theProvider = connection.provider();
-  mConnectionInfo = connection.connectionInfo();
   mUri = connection.uri();
 
   QApplication::setOverrideCursor( Qt::WaitCursor );

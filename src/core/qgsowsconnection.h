@@ -27,20 +27,11 @@
 #include <QStringList>
 #include <QPushButton>
 
-class QgisApp;
-//class QgsDataProvider;
-class QgsDataProvider;
-/*class QButtonGroup;*/
-/*class QgsNumericSortTreeWidgetItem;*/
-class QDomDocument;
-class QDomElement;
-
 /*!
  * \brief   Connections management
  */
 class CORE_EXPORT QgsOWSConnection : public QObject
 {
-//    Q_OBJECT
 
   public:
     /**
@@ -49,6 +40,7 @@ class CORE_EXPORT QgsOWSConnection : public QObject
      * @param theConnName connection name
      */
     QgsOWSConnection( const QString & theService, const QString & theConnName );
+
     //! Destructor
     ~QgsOWSConnection();
 
@@ -59,12 +51,12 @@ class CORE_EXPORT QgsOWSConnection : public QObject
     static QString selectedConnection( const QString & theService );
     static void setSelectedConnection( const QString & theService, const QString & name );
 
-  public:
-    //QgsDataProvider *provider();
-    QString connectionInfo();
     QString mConnName;
-    QString mConnectionInfo;
     QgsDataSourceURI uri();
+    QString mConnectionInfo;
+
+    Q_DECL_DEPRECATED QString connectionInfo();
+
   private:
     QgsDataSourceURI mUri;
     QString mService;

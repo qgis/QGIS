@@ -9949,6 +9949,21 @@ void QgisApp::namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *a
   QString username = auth->user();
   QString password = auth->password();
 
+  if ( username.isEmpty() && password.isEmpty() && reply->request().hasRawHeader( "Authorization" ) )
+  {
+    QByteArray header( reply->request().rawHeader( "Authorization" ) );
+    if ( header.startsWith( "Basic " ) )
+    {
+      QByteArray auth( QByteArray::fromBase64( header.mid( 6 ) ) );
+      int pos = auth.indexOf( ":" );
+      if ( pos >= 0 )
+      {
+        username = auth.left( pos );
+        password = auth.mid( pos + 1 );
+      }
+    }
+  }
+
   {
     QMutexLocker lock( QgsCredentials::instance()->mutex() );
 

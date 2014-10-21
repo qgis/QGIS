@@ -11,6 +11,7 @@ class QgsOWSConnection : QObject
      * @param theConnName connection name
      */
     QgsOWSConnection( const QString & theService, const QString & theConnName );
+
     //! Destructor
     ~QgsOWSConnection();
 
@@ -21,10 +22,9 @@ class QgsOWSConnection : QObject
     static QString selectedConnection( const QString & theService );
     static void setSelectedConnection( const QString & theService, const QString & name );
 
-  public:
-    //QgsDataProvider *provider();
-    QString connectionInfo();
     QString mConnName;
-    QString mConnectionInfo;
     QgsDataSourceURI uri();
+    QString mConnectionInfo;
+
+    QString connectionInfo() /Deprecated/;
 };
