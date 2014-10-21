@@ -194,12 +194,12 @@ QModelIndex QgsFeatureListModel::mapFromMaster( const QModelIndex &sourceIndex )
 
 QItemSelection QgsFeatureListModel::mapSelectionFromMaster( const QItemSelection& selection ) const
 {
-  return mapSelectionFromSource( mFilterModel->mapSelectionFromSource( selection ) ) ;
+  return mapSelectionFromSource( mFilterModel->mapSelectionFromSource( selection ) );
 }
 
 QItemSelection QgsFeatureListModel::mapSelectionToMaster( const QItemSelection& selection ) const
 {
-  return mFilterModel->mapSelectionToSource( mapSelectionToSource( selection ) ) ;
+  return mFilterModel->mapSelectionToSource( mapSelectionToSource( selection ) );
 }
 
 // Override some methods from QAbstractProxyModel, not that interesting

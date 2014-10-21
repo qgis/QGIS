@@ -43,7 +43,7 @@ class TestQgsWcsPublicServers: public QObject
     };
     struct Server
     {
-      Server( ) {}
+      Server() {}
       Server( const QString & u ) : url( u ) {}
       QString url; // URL
       QString description; // notes

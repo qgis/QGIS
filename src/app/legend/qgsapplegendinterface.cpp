@@ -85,7 +85,7 @@ void QgsAppLegendInterface::moveLayer( QgsMapLayer * ml, int groupIndex )
   if ( !nodeLayer || !QgsLayerTree::isGroup( nodeLayer->parent() ) )
     return;
 
-  group->insertLayer( 0, ml );
+  group->insertChildNode( 0, nodeLayer->clone() );
 
   QgsLayerTreeGroup* nodeLayerParentGroup = QgsLayerTree::toGroup( nodeLayer->parent() );
   nodeLayerParentGroup->removeChildNode( nodeLayer );

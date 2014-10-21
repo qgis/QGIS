@@ -40,8 +40,8 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
 
   public:
     QgsOracleSourceSelectDelegate( QObject *parent = NULL )
-        :  QItemDelegate( parent )
-        ,  mConn( 0 )
+        : QItemDelegate( parent )
+        , mConn( 0 )
     {}
 
     ~QgsOracleSourceSelectDelegate()

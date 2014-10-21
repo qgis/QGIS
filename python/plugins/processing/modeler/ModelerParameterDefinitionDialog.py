@@ -47,7 +47,7 @@ from processing.core.parameters import ParameterFile
 class ModelerParameterDefinitionDialog(QDialog):
 
     PARAMETER_NUMBER = 'Number'
-    PARAMETER_RASTER = 'Raster Layer'
+    PARAMETER_RASTER = 'Raster layer'
     PARAMETER_TABLE = 'Table'
     PARAMETER_VECTOR = 'Vector layer'
     PARAMETER_STRING = 'String'

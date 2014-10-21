@@ -211,16 +211,16 @@ class Dialog(QDialog, Ui_Dialog):
           if len(featErrors) >= 10:
             err_msg = "Too many features couldn't be calculated due to conversion error. "
             err_msg += "Please check out message log for more info."
-            msgLogInstance = QgsMessageLog.instance( )
+            msgLogInstance = QgsMessageLog.instance()
             msgLogInstance.logMessage( "WARNING - fTools: " + self.tr( "Random Points" ) )
             msgLogInstance.logMessage( "The following feature ids should be checked." )
             for feat in featErrors:
-              msgLogInstance.logMessage( "Feature id: %d" % feat.id( ) )
+              msgLogInstance.logMessage( "Feature id: %d" % feat.id() )
             msgLogInstance.logMessage( "End of features to be checked." )
           else:
             features_ids = []
             for feat in featErrors:
-              features_ids.append( str( feat.id( ) ) )
+              features_ids.append( str( feat.id() ) )
             erroneous_ids = ', '.join(features_ids)
             err_msg = "The following features IDs couldn't be calculated due to conversion error: %s" % erroneous_ids
           self.iface.messageBar().pushMessage("Errors", err_msg)

@@ -308,7 +308,7 @@ void QgsGraduatedSymbolRendererV2Model::deleteRows( QList<int> rows )
   }
 }
 
-void QgsGraduatedSymbolRendererV2Model::removeAllRows( )
+void QgsGraduatedSymbolRendererV2Model::removeAllRows()
 {
   beginRemoveRows( QModelIndex(), 0, mRenderer->ranges().size() - 1 );
   mRenderer->deleteAllClasses();
@@ -461,32 +461,32 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2Widget::renderer()
 
 void QgsGraduatedSymbolRendererV2Widget::connectUpdateHandlers()
 {
-  connect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ) , this, SLOT( classifyGraduated() ) );
-  connect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( classifyGraduated() ) );
-  connect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( reapplyColorRamp() ) );
-  connect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ) , this, SLOT( reapplyColorRamp() ) );
+  connect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ), this, SLOT( classifyGraduated() ) );
+  connect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( classifyGraduated() ) );
+  connect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ), this, SLOT( reapplyColorRamp() ) );
+  connect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ), this, SLOT( reapplyColorRamp() ) );
   connect( spinPrecision, SIGNAL( valueChanged( int ) ), this, SLOT( labelFormatChanged() ) );
   connect( cbxTrimTrailingZeroes, SIGNAL( toggled( bool ) ), this, SLOT( labelFormatChanged() ) );
   connect( txtFormat, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
 
   connect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
-  connect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SLOT( modelDataChanged( ) ) );
+  connect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SLOT( modelDataChanged() ) );
 }
 
 // Connect/disconnect event handlers which trigger updating renderer
 
 void QgsGraduatedSymbolRendererV2Widget::disconnectUpdateHandlers()
 {
-  disconnect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ) , this, SLOT( classifyGraduated() ) );
-  disconnect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( classifyGraduated() ) );
-  disconnect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( reapplyColorRamp() ) );
-  disconnect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ) , this, SLOT( reapplyColorRamp() ) );
+  disconnect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ), this, SLOT( classifyGraduated() ) );
+  disconnect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( classifyGraduated() ) );
+  disconnect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ), this, SLOT( reapplyColorRamp() ) );
+  disconnect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ), this, SLOT( reapplyColorRamp() ) );
   disconnect( spinPrecision, SIGNAL( valueChanged( int ) ), this, SLOT( labelFormatChanged() ) );
   disconnect( cbxTrimTrailingZeroes, SIGNAL( toggled( bool ) ), this, SLOT( labelFormatChanged() ) );
   disconnect( txtFormat, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
 
   disconnect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
-  disconnect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SLOT( modelDataChanged( ) ) );
+  disconnect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SLOT( modelDataChanged() ) );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount )

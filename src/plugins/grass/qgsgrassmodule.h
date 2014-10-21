@@ -317,7 +317,7 @@ class QgsGrassModuleStandardOptions: QWidget, public QgsGrassModuleOptions
     QStringList checkOutput();
     void freezeOutput();
     void thawOutput();
-    QStringList ready() ;
+    QStringList ready();
     QStringList output( int type );
     bool hasOutput( int type );
     QStringList checkRegion();
@@ -524,7 +524,7 @@ class QgsGrassModuleOption: public QgsGrassModuleGroupBoxItem
     // Returns emppty string or name of existing output
     QString outputExists();
 
-    QString ready() ;
+    QString ready();
 
     //! Current value
     QString value();
@@ -648,7 +648,7 @@ class QgsGrassModuleInput: public QgsGrassModuleGroupBoxItem
 
     QString currentMap();
 
-    QString ready() ;
+    QString ready();
 
     //! Does this options causes use of region?
     //  Raster input/output uses region by default
@@ -914,7 +914,7 @@ class QgsGrassModuleFile: public QgsGrassModuleGroupBoxItem
 
     // Reimplemented methods from QgsGrassModuleOptions
     QStringList options();
-    QString ready() ;
+    QString ready();
 
   public slots:
     // browse files

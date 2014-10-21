@@ -49,7 +49,7 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
   QStringList connStringParts;
 
   mConnectionInfo = settings.value( key + "/url" ).toString();
-  mUri.setParam( "url",  settings.value( key + "/url" ).toString() );
+  mUri.setParam( "url", settings.value( key + "/url" ).toString() );
 
   // Check for credentials and prepend to the connection info
   QString username = settings.value( credentialsKey + "/username" ).toString();

@@ -569,7 +569,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
         QgsExpression* expression = new QgsExpression(( *columnIt )->attribute() );
         expression->setCurrentRowNumber( counter + 1 );
         expression->prepare( layer->pendingFields() );
-        QVariant value = expression->evaluate( f ) ;
+        QVariant value = expression->evaluate( f );
         currentRow << value;
       }
     }

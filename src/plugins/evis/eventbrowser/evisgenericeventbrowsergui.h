@@ -63,7 +63,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     eVisGenericEventBrowserGui( QWidget* parent, QgsMapCanvas* canvas, Qt::WindowFlags fl );
 
     /** \Brief Destructor */
-    ~eVisGenericEventBrowserGui( );
+    ~eVisGenericEventBrowserGui();
 
   protected:
     void closeEvent( QCloseEvent *event );
@@ -126,31 +126,31 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
 
     //Methods
     /** \brief Applies parameters on the Options tabs and saves the configuration */
-    void accept( );
+    void accept();
 
     /** \brief Modifies the Event Image Path according to the local and global settings */
-    void buildEventImagePath( );
+    void buildEventImagePath();
 
     /** \brief Method that loads the image in the browser */
-    void displayImage( );
+    void displayImage();
 
     /** \brief Generic method to get a feature by id. Access mLocalFeatureList when layer is of type delimitedtext otherwise calls existing methods in mDataProvider */
     QgsFeature* featureAtId( QgsFeatureId );
 
     /** \brief Functionality common to both constructors */
-    bool initBrowser( );
+    bool initBrowser();
 
     /** \brief Set all of the gui objects based on the current configuration*/
-    void initOptionsTab( );
+    void initOptionsTab();
 
     /** \brief Method called to load data into the browser */
-    void loadRecord( );
+    void loadRecord();
 
     /** \brief Reset all gui items on the options tab to a 'system default' */
-    void restoreDefaultOptions( );
+    void restoreDefaultOptions();
 
     /** \brief Sets the base path to the path of the data source */
-    void setBasePathToDataSource( );
+    void setBasePathToDataSource();
 
   private slots:
     void launchExternalApplication( QTreeWidgetItem *, int );
@@ -165,16 +165,16 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     void on_displayArea_currentChanged( int );
     void on_dsboxCompassOffset_valueChanged( double );
     void on_leBasePath_textChanged( QString );
-    void on_pbtnAddFileType_clicked( );
-    void on_pbtnDeleteFileType_clicked( );
-    void on_pbtnNext_clicked( );
-    void on_pbtnPrevious_clicked( );
-    void on_pbtnResetApplyPathRulesToDocs_clicked( );
-    void on_pbtnResetBasePathData_clicked( );
-    void on_pbtnResetCompassBearingData_clicked( );
-    void on_pbtnResetCompassOffsetData_clicked( );
-    void on_pbtnResetEventImagePathData_clicked( );
-    void on_pbtnResetUseOnlyFilenameData_clicked( );
+    void on_pbtnAddFileType_clicked();
+    void on_pbtnDeleteFileType_clicked();
+    void on_pbtnNext_clicked();
+    void on_pbtnPrevious_clicked();
+    void on_pbtnResetApplyPathRulesToDocs_clicked();
+    void on_pbtnResetBasePathData_clicked();
+    void on_pbtnResetCompassBearingData_clicked();
+    void on_pbtnResetCompassOffsetData_clicked();
+    void on_pbtnResetEventImagePathData_clicked();
+    void on_pbtnResetUseOnlyFilenameData_clicked();
     void on_rbtnManualCompassOffset_toggled( bool );
     void on_tableFileTypeAssociations_cellDoubleClicked( int, int );
     /** \brief Slot called when the map canvas is done refreshing. Draws the highlighting symbol over the current selected feature */

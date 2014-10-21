@@ -1574,7 +1574,7 @@
          <item>
           <widget class="QPushButton" name="pbnLoadStyle">
            <property name="text">
-            <string>Load Style ...</string>
+            <string>Load Style...</string>
            </property>
           </widget>
          </item>
@@ -1595,7 +1595,7 @@
          <item>
           <widget class="QPushButton" name="pbnSaveStyleAs">
            <property name="text">
-            <string>Save Style ...</string>
+            <string>Save Style...</string>
            </property>
           </widget>
          </item>

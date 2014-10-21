@@ -129,7 +129,7 @@ int QgsColorWidget::hue() const
 {
   if ( mCurrentColor.hue() >= 0 )
   {
-    return mCurrentColor.hue() ;
+    return mCurrentColor.hue();
   }
   else
   {
@@ -405,7 +405,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   }
 
   //draw wheel centered on widget
-  QPointF center = QPointF( width() / 2.0 , height() / 2.0 );
+  QPointF center = QPointF( width() / 2.0, height() / 2.0 );
   imagePainter.drawImage( QPointF( center.x() - ( mWheelImage->width() / 2.0 ), center.y() - ( mWheelImage->height() / 2.0 ) ), *mWheelImage );
 
   //draw hue marker
@@ -500,7 +500,7 @@ void QgsColorWheel::resizeEvent( QResizeEvent *event )
 
 void QgsColorWheel::setColorFromPos( const QPointF pos )
 {
-  QPointF center = QPointF( width() / 2.0 , height() / 2.0 );
+  QPointF center = QPointF( width() / 2.0, height() / 2.0 );
   //line from center to mouse position
   QLineF line = QLineF( center.x(), center.y(), pos.x(), pos.y() );
 
@@ -521,7 +521,7 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
 
     double eventAngleRadians = line.angle() * M_PI / 180.0;
     double hueRadians = h * M_PI / 180.0;
-    double rad0 = fmod( eventAngleRadians + 2.0 * M_PI - hueRadians , 2.0 * M_PI );
+    double rad0 = fmod( eventAngleRadians + 2.0 * M_PI - hueRadians, 2.0 * M_PI );
     double rad1 = fmod( rad0, (( 2.0 / 3.0 ) * M_PI ) ) - ( M_PI / 3.0 );
     double length = mWheelImage->width() / 2.0;
     double triangleLength = length - mWheelThickness - 1;
@@ -538,7 +538,7 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
       rad2 = qMin( rad2, M_PI / 3.0 );
       rad2 = qMax( rad2, -M_PI / 3.0 );
       eventAngleRadians += rad2 - rad1;
-      rad0 = fmod( eventAngleRadians + 2.0 * M_PI - hueRadians , 2.0 * M_PI );
+      rad0 = fmod( eventAngleRadians + 2.0 * M_PI - hueRadians, 2.0 * M_PI );
       rad1 = fmod( rad0, (( 2.0 / 3.0 ) * M_PI ) ) - ( M_PI / 3.0 );
       b = tan( rad1 ) * a;
       r = sqrt( a * a + b * b );
@@ -636,7 +636,7 @@ void QgsColorWheel::createWheel()
   //cut hole in center of circle to make a ring
   p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
   p.setBrush( QBrush( Qt::black ) );
-  p.drawEllipse( QPointF( 0.0 , 0.0 ), wheelRadius - mWheelThickness, wheelRadius  - mWheelThickness );
+  p.drawEllipse( QPointF( 0.0, 0.0 ), wheelRadius - mWheelThickness, wheelRadius  - mWheelThickness );
   p.end();
 
   mWheelDirty = false;
@@ -668,8 +668,8 @@ void QgsColorWheel::createTriangle()
   //some rather ugly shortcuts to obtain corners and midpoints of triangle
   QLineF line1 = QLineF( center.x(), center.y(), center.x() - triangleRadius * cos( M_PI / 3.0 ), center.y() - triangleRadius * sin( M_PI / 3.0 ) );
   QLineF line2 = QLineF( center.x(), center.y(), center.x() + triangleRadius, center.y() );
-  QLineF line3 = QLineF( center.x(), center.y(), center.x() - triangleRadius * cos( M_PI / 3.0 ) , center.y() + triangleRadius * sin( M_PI / 3.0 ) );
-  QLineF line4 = QLineF( center.x(), center.y(), center.x() - triangleRadius * cos( M_PI / 3.0 ) , center.y() );
+  QLineF line3 = QLineF( center.x(), center.y(), center.x() - triangleRadius * cos( M_PI / 3.0 ), center.y() + triangleRadius * sin( M_PI / 3.0 ) );
+  QLineF line4 = QLineF( center.x(), center.y(), center.x() - triangleRadius * cos( M_PI / 3.0 ), center.y() );
   QLineF line5 = QLineF( center.x(), center.y(), ( line2.p2().x() + line1.p2().x() ) / 2.0, ( line2.p2().y() + line1.p2().y() ) / 2.0 );
   line1.setAngle( line1.angle() + angle );
   line2.setAngle( line2.angle() + angle );
@@ -1096,7 +1096,7 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
     int ypos = mMargin + ( height() - 2 * mMargin - 1 ) - ( height() - 2 * mMargin - 1 ) * ( double )componentValue() / componentRange();
     painter.setBrush( Qt::white );
     painter.setPen( Qt::NoPen );
-    painter.drawRect( mMargin, ypos - 1, width( ) - 2 * mMargin - 1, 3 );
+    painter.drawRect( mMargin, ypos - 1, width() - 2 * mMargin - 1, 3 );
     painter.setPen( Qt::black );
     painter.drawLine( mMargin, ypos, width() - mMargin - 1, ypos );
   }

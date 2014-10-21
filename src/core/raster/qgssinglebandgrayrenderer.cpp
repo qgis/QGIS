@@ -66,7 +66,7 @@ QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, Q
   if ( !contrastEnhancementElem.isNull() )
   {
     QgsContrastEnhancement* ce = new QgsContrastEnhancement(( QGis::DataType )(
-          input->dataType( grayBand ) ) ) ;
+          input->dataType( grayBand ) ) );
     ce->readXML( contrastEnhancementElem );
     r->setContrastEnhancement( ce );
   }

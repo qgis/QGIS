@@ -298,7 +298,7 @@ QString QgsMultiBandColorRendererWidget::min( int index )
     default:
       break;
   }
-  return QString( );
+  return QString();
 }
 
 QString QgsMultiBandColorRendererWidget::max( int index )
@@ -317,7 +317,7 @@ QString QgsMultiBandColorRendererWidget::max( int index )
     default:
       break;
   }
-  return QString( );
+  return QString();
 }
 
 void QgsMultiBandColorRendererWidget::setMin( QString value, int index )

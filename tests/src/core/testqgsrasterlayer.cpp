@@ -363,8 +363,8 @@ void TestQgsRasterLayer::checkScaleOffset()
   QVERIFY( myRasterLayer );
   if ( ! myRasterLayer->isValid() )
   {
-    qDebug() << QString( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() ) ;
-    mReport += QString( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() ) ;
+    qDebug() << QString( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() );
+    mReport += QString( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() );
     delete myRasterLayer;
     QVERIFY( false );
   }

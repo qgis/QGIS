@@ -47,7 +47,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     ~QgsRelationReferenceWidget();
 
-    void setRelation( QgsRelation relation , bool allowNullValue );
+    void setRelation( QgsRelation relation, bool allowNullValue );
 
     void setRelationEditable( bool editable );
 

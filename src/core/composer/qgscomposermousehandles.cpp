@@ -205,15 +205,15 @@ void QgsComposerMouseHandles::selectionChanged()
       {
         QObject::connect( item, SIGNAL( sizeChanged() ), this, SLOT( selectedItemSizeChanged() ) );
         QObject::connect( item, SIGNAL( itemRotationChanged( double ) ), this, SLOT( selectedItemRotationChanged() ) );
-        QObject::connect( item, SIGNAL( frameChanged( ) ), this, SLOT( selectedItemSizeChanged() ) );
-        QObject::connect( item, SIGNAL( lockChanged( ) ), this, SLOT( selectedItemSizeChanged() ) );
+        QObject::connect( item, SIGNAL( frameChanged() ), this, SLOT( selectedItemSizeChanged() ) );
+        QObject::connect( item, SIGNAL( lockChanged() ), this, SLOT( selectedItemSizeChanged() ) );
       }
       else
       {
         QObject::disconnect( item, SIGNAL( sizeChanged() ), this, 0 );
         QObject::disconnect( item, SIGNAL( itemRotationChanged( double ) ), this, 0 );
-        QObject::disconnect( item, SIGNAL( frameChanged( ) ), this, 0 );
-        QObject::disconnect( item, SIGNAL( lockChanged( ) ), this, 0 );
+        QObject::disconnect( item, SIGNAL( frameChanged() ), this, 0 );
+        QObject::disconnect( item, SIGNAL( lockChanged() ), this, 0 );
       }
     }
   }
@@ -1038,19 +1038,19 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
   //handle non-normalised resizes - eg, dragging the left handle so far to the right that it's past the right handle
   if ( mBeginHandleWidth + rx >= 0 && mBeginHandleHeight + ry >= 0 )
   {
-    mResizeRect = QRectF( 0, 0,  mBeginHandleWidth + rx, mBeginHandleHeight + ry );
+    mResizeRect = QRectF( 0, 0, mBeginHandleWidth + rx, mBeginHandleHeight + ry );
   }
   else if ( mBeginHandleHeight + ry >= 0 )
   {
-    mResizeRect = QRectF( QPointF( -( mBeginHandleWidth + rx ), 0 ),  QPointF( 0, mBeginHandleHeight + ry ) );
+    mResizeRect = QRectF( QPointF( -( mBeginHandleWidth + rx ), 0 ), QPointF( 0, mBeginHandleHeight + ry ) );
   }
   else if ( mBeginHandleWidth + rx >= 0 )
   {
-    mResizeRect = QRectF( QPointF( 0, -( mBeginHandleHeight + ry ) ),  QPointF( mBeginHandleWidth + rx, 0 ) );
+    mResizeRect = QRectF( QPointF( 0, -( mBeginHandleHeight + ry ) ), QPointF( mBeginHandleWidth + rx, 0 ) );
   }
   else
   {
-    mResizeRect = QRectF( QPointF( -( mBeginHandleWidth + rx ), -( mBeginHandleHeight + ry ) ),  QPointF( 0, 0 ) );
+    mResizeRect = QRectF( QPointF( -( mBeginHandleWidth + rx ), -( mBeginHandleHeight + ry ) ), QPointF( 0, 0 ) );
   }
 
   setRect( 0, 0, fabs( mBeginHandleWidth + rx ), fabs( mBeginHandleHeight + ry ) );
@@ -1099,7 +1099,7 @@ QPointF QgsComposerMouseHandles::snapPoint( const QPointF& point, QgsComposerMou
     {
       yLineCoord = mComposition->paperHeight() * numPages + mComposition->spaceBetweenPages() * ( numPages - 1 );
     }
-    item->setLine( QLineF( alignX, 0, alignX,  yLineCoord ) );
+    item->setLine( QLineF( alignX, 0, alignX, yLineCoord ) );
     item->show();
   }
   else

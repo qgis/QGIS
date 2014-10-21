@@ -51,13 +51,13 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     void setAcceptedSpacers( QString spacers = "" );
 
     //! Return number of item with status filter matching (no other filters are considered)
-    int countWithCurrentStatus( );
+    int countWithCurrentStatus();
 
   public slots:
-    void sortPluginsByName( );
-    void sortPluginsByDownloads( );
-    void sortPluginsByVote( );
-    void sortPluginsByStatus( );
+    void sortPluginsByName();
+    void sortPluginsByDownloads();
+    void sortPluginsByVote();
+    void sortPluginsByStatus();
 
   protected:
     //! Filter by status: this method is used in both filterAcceptsRow and countWithCurrentStatus.

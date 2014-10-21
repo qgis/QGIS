@@ -216,7 +216,7 @@ bool QgsComposerAttributeTableColumnModelV2::setData( const QModelIndex& index, 
       emit dataChanged( index, index );
       return true;
     case 3:
-      column->setWidth( value.toDouble( ) );
+      column->setWidth( value.toDouble() );
       emit dataChanged( index, index );
       return true;
     default:

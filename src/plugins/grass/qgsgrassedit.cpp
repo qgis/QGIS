@@ -546,7 +546,7 @@ void QgsGrassEdit::init()
   mCatModeBox->addItem( tr( "Next not used" ), CAT_MODE_NEXT );
   mCatModeBox->addItem( tr( "Manual entry" ), CAT_MODE_MANUAL );
   mCatModeBox->addItem( tr( "No category" ), CAT_MODE_NOCAT );
-  catModeChanged( );
+  catModeChanged();
 
   // TODO: how to get keyboard events from canvas (shortcuts)
 

@@ -87,19 +87,19 @@ void QgsRasterTerrainAnalysisPlugin::initGui()
       return;
     }
 
-    mTerrainAnalysisMenu = new QMenu( tr( "Terrain analysis" ), rasterMenu );
+    mTerrainAnalysisMenu = new QMenu( tr( "Terrain Analysis" ), rasterMenu );
     mTerrainAnalysisMenu->setObjectName( "mTerrainAnalysisMenu" );
     mTerrainAnalysisMenu->setIcon( QIcon( ":/raster/dem.png" ) );
     QAction *slopeAction = mTerrainAnalysisMenu->addAction( tr( "Slope" ), this, SLOT( slope() ) );
     slopeAction->setObjectName( "slopeAction" );
 
-    QAction *aspectAction = mTerrainAnalysisMenu->addAction( tr( "Aspect" ), this, SLOT( aspect() ) );
+    QAction *aspectAction = mTerrainAnalysisMenu->addAction( tr( "Aspect..." ), this, SLOT( aspect() ) );
     aspectAction->setObjectName( "aspectAction" );
-    QAction *hilshadeAction = mTerrainAnalysisMenu->addAction( tr( "Hillshade" ), this, SLOT( hillshade() ) );
+    QAction *hilshadeAction = mTerrainAnalysisMenu->addAction( tr( "Hillshade..." ), this, SLOT( hillshade() ) );
     hilshadeAction->setObjectName( "hilshadeAction" );
-    QAction *reliefAction = mTerrainAnalysisMenu->addAction( tr( "Relief" ), this, SLOT( relief() ) );
+    QAction *reliefAction = mTerrainAnalysisMenu->addAction( tr( "Relief..." ), this, SLOT( relief() ) );
     reliefAction->setObjectName( "reliefAction" );
-    QAction *ruggednesIndex = mTerrainAnalysisMenu->addAction( tr( "Ruggedness index" ), this, SLOT( ruggedness() ) );
+    QAction *ruggednesIndex = mTerrainAnalysisMenu->addAction( tr( "Ruggedness Index..." ), this, SLOT( ruggedness() ) );
     ruggednesIndex->setObjectName( "ruggednesIndex" );
 
     rasterMenu->addMenu( mTerrainAnalysisMenu );
@@ -148,7 +148,7 @@ void QgsRasterTerrainAnalysisPlugin::relief()
     QProgressDialog p( tr( "Calculating relief..." ), tr( "Abort" ), 0, 0 );
     p.setWindowModality( Qt::WindowModal );
     relief.processRaster( &p );
-    if ( d.addResultToProject( ) )
+    if ( d.addResultToProject() )
     {
       mIface->addRasterLayer( outputFile, QFileInfo( outputFile ).baseName() );
     }
@@ -167,7 +167,7 @@ void QgsRasterTerrainAnalysisPlugin::slope()
     QProgressDialog p( tr( "Calculating slope..." ), tr( "Abort" ), 0, 0 );
     p.setWindowModality( Qt::WindowModal );
     slope.processRaster( &p );
-    if ( d.addResultToProject( ) )
+    if ( d.addResultToProject() )
     {
       mIface->addRasterLayer( outputFile, QFileInfo( outputFile ).baseName() );
     }
@@ -186,7 +186,7 @@ void QgsRasterTerrainAnalysisPlugin::aspect()
     QProgressDialog p( tr( "Calculating aspect..." ), tr( "Abort" ), 0, 0 );
     p.setWindowModality( Qt::WindowModal );
     aspect.processRaster( &p );
-    if ( d.addResultToProject( ) )
+    if ( d.addResultToProject() )
     {
       mIface->addRasterLayer( outputFile, QFileInfo( outputFile ).baseName() );
     }
@@ -205,7 +205,7 @@ void QgsRasterTerrainAnalysisPlugin::ruggedness()
     QProgressDialog p( tr( "Calculating ruggedness..." ), tr( "Abort" ), 0, 0 );
     p.setWindowModality( Qt::WindowModal );
     ruggedness.processRaster( &p );
-    if ( d.addResultToProject( ) )
+    if ( d.addResultToProject() )
     {
       mIface->addRasterLayer( outputFile, QFileInfo( outputFile ).baseName() );
     }

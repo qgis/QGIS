@@ -889,7 +889,7 @@ void QgsWMSServer::legendParameters( double& boxSpace, double& layerSpace, doubl
   QMap<QString, QString>::const_iterator layerFontBoldIt = mParameters.find( "LAYERFONTBOLD" );
   if ( layerFontBoldIt != mParameters.constEnd() )
   {
-    layerFont.setBold( layerFontBoldIt.value().compare( "TRUE" , Qt::CaseInsensitive ) == 0 );
+    layerFont.setBold( layerFontBoldIt.value().compare( "TRUE", Qt::CaseInsensitive ) == 0 );
   }
   QMap<QString, QString>::const_iterator layerFontItalicIt = mParameters.find( "LAYERFONTITALIC" );
   if ( layerFontItalicIt != mParameters.constEnd() )
@@ -927,7 +927,7 @@ void QgsWMSServer::legendParameters( double& boxSpace, double& layerSpace, doubl
   QMap<QString, QString>::const_iterator itemFontBoldIt = mParameters.find( "ITEMFONTBOLD" );
   if ( itemFontBoldIt != mParameters.constEnd() )
   {
-    itemFont.setBold( itemFontBoldIt.value().compare( "TRUE" , Qt::CaseInsensitive ) == 0 );
+    itemFont.setBold( itemFontBoldIt.value().compare( "TRUE", Qt::CaseInsensitive ) == 0 );
   }
   QMap<QString, QString>::const_iterator itemFontItalicIt = mParameters.find( "ITEMFONTITALIC" );
   if ( itemFontItalicIt != mParameters.constEnd() )
@@ -1202,7 +1202,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   QgsDebugMsg( QString( "mMapRenderer->mapUnitsPerPixel() = %1" ).arg( mMapRenderer->mapUnitsPerPixel() ) );
 
   //find out the current scale denominator and set it to the SLD parser
-  QgsScaleCalculator scaleCalc(( outputImage->logicalDpiX() + outputImage->logicalDpiY() ) / 2 , mMapRenderer->destinationCrs().mapUnits() );
+  QgsScaleCalculator scaleCalc(( outputImage->logicalDpiX() + outputImage->logicalDpiY() ) / 2, mMapRenderer->destinationCrs().mapUnits() );
   QgsRectangle mapExtent = mMapRenderer->extent();
   double scaleDenominator = scaleCalc.calculate( mapExtent, outputImage->width() );
   mConfigParser->setScaleDenominator( scaleDenominator );
@@ -1516,7 +1516,7 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
   }
 
   //find out the current scale denominater and set it to the SLD parser
-  QgsScaleCalculator scaleCalc(( theImage->logicalDpiX() + theImage->logicalDpiY() ) / 2 , mMapRenderer->destinationCrs().mapUnits() );
+  QgsScaleCalculator scaleCalc(( theImage->logicalDpiX() + theImage->logicalDpiY() ) / 2, mMapRenderer->destinationCrs().mapUnits() );
   QgsRectangle mapExtent = mMapRenderer->extent();
   mConfigParser->setScaleDenominator( scaleCalc.calculate( mapExtent, theImage->width() ) );
 
@@ -2957,7 +2957,7 @@ QString QgsWMSServer::relationValue( const QString& attributeVal, QgsVectorLayer
   return attributeVal;
 }
 
-int QgsWMSServer::getImageQuality( ) const
+int QgsWMSServer::getImageQuality() const
 {
 
   // First taken from QGIS project

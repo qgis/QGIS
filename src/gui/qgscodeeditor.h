@@ -42,7 +42,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * @param margin False: Enable folding for code editor
      * @note added in 2.6
      */
-    QgsCodeEditor( QWidget *parent = 0, QString title = "" , bool folding = false, bool margin = false );
+    QgsCodeEditor( QWidget *parent = 0, QString title = "", bool folding = false, bool margin = false );
     ~QgsCodeEditor();
 
     /** Set the widget title

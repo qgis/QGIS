@@ -5267,7 +5267,7 @@ int QgsGeometry::pointContainedInLine( const GEOSGeometry* point, const GEOSGeom
 
 int QgsGeometry::geomDigits( const GEOSGeometry* geom )
 {
-  GEOSGeometry* bbox = GEOSEnvelope_r( geosinit.ctxt,  geom );
+  GEOSGeometry* bbox = GEOSEnvelope_r( geosinit.ctxt, geom );
   if ( !bbox )
     return -1;
 
@@ -5606,7 +5606,7 @@ double QgsGeometry::distance( QgsGeometry& geom )
 
   try
   {
-    GEOSDistance_r( geosinit.ctxt,  mGeos, geom.mGeos, &dist );
+    GEOSDistance_r( geosinit.ctxt, mGeos, geom.mGeos, &dist );
   }
   CATCH_GEOS( -1.0 )
 

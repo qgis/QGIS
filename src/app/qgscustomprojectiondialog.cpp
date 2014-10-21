@@ -57,7 +57,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   // we just check whether there is our database [MD]
   QFileInfo myFileInfo;
   myFileInfo.setFile( QgsApplication::qgisSettingsDirPath() );
-  if ( !myFileInfo.exists( ) )
+  if ( !myFileInfo.exists() )
   {
     QgsDebugMsg( "The qgis.db does not exist" );
   }
@@ -116,7 +116,7 @@ void QgsCustomProjectionDialog::populateList()
       existingCRSnames[id] = name;
       existingCRSparameters[id] = crs.toProj4();
 
-      newItem = new QTreeWidgetItem( leNameList, QStringList( ) );
+      newItem = new QTreeWidgetItem( leNameList, QStringList() );
       newItem->setText( QGIS_CRS_NAME_COLUMN, name );
       newItem->setText( QGIS_CRS_ID_COLUMN, id );
       newItem->setText( QGIS_CRS_PARAMETERS_COLUMN, crs.toProj4() );
@@ -312,7 +312,7 @@ void QgsCustomProjectionDialog::on_pbnAdd_clicked()
   QString id = "";
   QgsCoordinateReferenceSystem parameters;
 
-  QTreeWidgetItem* newItem = new QTreeWidgetItem( leNameList, QStringList( ) );
+  QTreeWidgetItem* newItem = new QTreeWidgetItem( leNameList, QStringList() );
 
   newItem->setText( QGIS_CRS_NAME_COLUMN, name );
   newItem->setText( QGIS_CRS_ID_COLUMN, id );

@@ -540,7 +540,7 @@ bool QgsStyleV2ManagerDialog::addColorRamp()
 bool QgsStyleV2ManagerDialog::addColorRamp( QAction* action )
 {
   // pass the action text, which is the color ramp type
-  QString rampName = addColorRampStatic( this , mStyle,
+  QString rampName = addColorRampStatic( this, mStyle,
                                          action ? action->text() : QString() );
   if ( !rampName.isEmpty() )
   {
@@ -581,7 +581,7 @@ bool QgsStyleV2ManagerDialog::editSymbol()
   QgsSymbolV2* symbol = mStyle->symbol( symbolName );
 
   // let the user edit the symbol and update list when done
-  QgsSymbolV2SelectorDialog dlg( symbol, mStyle, NULL , this );
+  QgsSymbolV2SelectorDialog dlg( symbol, mStyle, NULL, this );
   if ( dlg.exec() == 0 )
   {
     delete symbol;

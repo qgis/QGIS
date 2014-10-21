@@ -90,7 +90,7 @@ bool QgsRasterShaderFunction::shade( double theValue, int* theReturnRedValue, in
   @param theReturnAlphaValue  The alpha component of the new RGBA value
   @return True if the return values are valid otherwise false
 */
-bool QgsRasterShaderFunction::shade( double theRedValue, double theGreenValue, double theBlueValue, double theAlphaValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue , int *theReturnAlphaValue )
+bool QgsRasterShaderFunction::shade( double theRedValue, double theGreenValue, double theBlueValue, double theAlphaValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int *theReturnAlphaValue )
 {
   Q_UNUSED( theRedValue );
   Q_UNUSED( theGreenValue );

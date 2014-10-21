@@ -158,7 +158,7 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     bool mEmbeddedMode;
 
     // queue another query for the thread
-    void addSearchGeometryColumn( QString connectionName, QgsMssqlLayerProperty layerProperty , bool estimateMetadata );
+    void addSearchGeometryColumn( QString connectionName, QgsMssqlLayerProperty layerProperty, bool estimateMetadata );
 
     // Set the position of the database connection list to the last
     // used one.

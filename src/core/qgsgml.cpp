@@ -184,7 +184,7 @@ int QgsGml::getFeatures( const QByteArray &data, QGis::WkbType* wkbType, QgsRect
   return 0;
 }
 
-void QgsGml::setFinished( )
+void QgsGml::setFinished()
 {
   mFinished = true;
 }

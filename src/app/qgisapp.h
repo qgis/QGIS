@@ -116,7 +116,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Constructor
     QgisApp( QSplashScreen *splash, bool restorePlugins = true, QWidget * parent = 0, Qt::WindowFlags fl = Qt::Window );
     //! Constructor for unit tests
-    QgisApp( );
+    QgisApp();
     //! Destructor
     ~QgisApp();
     /**
@@ -1038,7 +1038,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void layerSubsetString();
 
     //! map tool changed
-    void mapToolChanged( QgsMapTool *newTool , QgsMapTool* oldTool );
+    void mapToolChanged( QgsMapTool *newTool, QgsMapTool* oldTool );
 
     /** Called when some layer's editing mode was toggled on/off
      * @note added in 1.9 */
@@ -1195,7 +1195,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void changeLabelProperties();
 
     void renderDecorationItems( QPainter *p );
-    void projectReadDecorationItems( );
+    void projectReadDecorationItems();
 
     //! clear out any stuff from project
     void closeProject();

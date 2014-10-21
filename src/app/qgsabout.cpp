@@ -215,7 +215,7 @@ void QgsAbout::setVersion( QString v )
   txtVersion->setHtml( v );
 }
 
-void QgsAbout::setWhatsNew( )
+void QgsAbout::setWhatsNew()
 {
   QString myStyle = QgsApplication::reportStyleSheet();
   txtWhatsNew->clear();

@@ -66,7 +66,7 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModel: public QAbstractTableMod
      * @param direction direction to move the attribute table column
      * @note added in 2.3
      */
-    bool moveRow( int row , ShiftDirection direction );
+    bool moveRow( int row, ShiftDirection direction );
 
     /**Resets the attribute table's columns to match the source layer's fields. Remove all existing
      * attribute table columns and column customisations.

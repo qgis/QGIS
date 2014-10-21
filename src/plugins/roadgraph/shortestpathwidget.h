@@ -48,7 +48,7 @@ class RgShortestPathWidget : public QDockWidget
     /**
      * Standard constructor
      */
-    RgShortestPathWidget( QWidget * , RoadGraphPlugin * );
+    RgShortestPathWidget( QWidget *, RoadGraphPlugin * );
 
     /**
      * destructor

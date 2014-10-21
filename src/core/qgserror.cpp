@@ -123,7 +123,7 @@ QString QgsError::message( QgsErrorMessage::Format theFormat ) const
   return str;
 }
 
-QString QgsError::summary( ) const
+QString QgsError::summary() const
 {
   // The first message in chain is usually the real error given by backend/server
   return mMessageList.first().message();

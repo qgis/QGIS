@@ -23,16 +23,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -63,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-805</y>
-        <width>438</width>
-        <height>1872</height>
+        <y>-1149</y>
+        <width>444</width>
+        <height>2196</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -77,6 +68,9 @@
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -216,6 +210,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mExtentsCheckBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Extents</string>
          </property>
@@ -440,6 +437,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mGridGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Grids</string>
          </property>
@@ -746,6 +746,9 @@
              </item>
              <item row="9" column="0" colspan="2">
               <widget class="QgsCollapsibleGroupBoxBasic" name="mGridFrameGroupBox">
+               <property name="focusPolicy">
+                <enum>Qt::StrongFocus</enum>
+               </property>
                <property name="title">
                 <string>Grid frame</string>
                </property>
@@ -1127,6 +1130,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mOverviewsGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Overviews</string>
          </property>
@@ -1300,14 +1306,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDataDefinedButton</class>
    <extends>QToolButton</extends>
    <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>
@@ -1317,6 +1324,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>groupBox</tabstop>
   <tabstop>mPreviewModeComboBox</tabstop>
   <tabstop>mUpdatePreviewButton</tabstop>
   <tabstop>mScaleLineEdit</tabstop>
@@ -1326,6 +1334,7 @@
   <tabstop>mDrawCanvasItemsCheckBox</tabstop>
   <tabstop>mKeepLayerListCheckBox</tabstop>
   <tabstop>mLayerListFromPresetButton</tabstop>
+  <tabstop>mExtentsCheckBox</tabstop>
   <tabstop>mXMinLineEdit</tabstop>
   <tabstop>mXMinDDBtn</tabstop>
   <tabstop>mYMinLineEdit</tabstop>
@@ -1337,10 +1346,12 @@
   <tabstop>mSetToMapCanvasExtentButton</tabstop>
   <tabstop>mViewExtentInCanvasButton</tabstop>
   <tabstop>mAtlasCheckBox</tabstop>
+  <tabstop>mAtlasMarginRadio</tabstop>
   <tabstop>mAtlasMarginSpinBox</tabstop>
+  <tabstop>mAtlasMarginDDBtn</tabstop>
   <tabstop>mAtlasPredefinedScaleRadio</tabstop>
   <tabstop>mAtlasFixedScaleRadio</tabstop>
-  <tabstop>mAtlasMarginRadio</tabstop>
+  <tabstop>mGridGroupBox</tabstop>
   <tabstop>mAddGridPushButton</tabstop>
   <tabstop>mRemoveGridPushButton</tabstop>
   <tabstop>mGridUpButton</tabstop>
@@ -1356,7 +1367,11 @@
   <tabstop>mOffsetYSpinBox</tabstop>
   <tabstop>mCrossWidthSpinBox</tabstop>
   <tabstop>mGridLineStyleButton</tabstop>
+  <tabstop>mGridMarkerStyleButton</tabstop>
   <tabstop>mGridBlendComboBox</tabstop>
+  <tabstop>mGridFrameGroupBox</tabstop>
+  <tabstop>mFrameStyleComboBox</tabstop>
+  <tabstop>mFrameWidthSpinBox</tabstop>
   <tabstop>mGridFramePenSizeSpinBox</tabstop>
   <tabstop>mGridFramePenColorButton</tabstop>
   <tabstop>mGridFrameFill1ColorButton</tabstop>
@@ -1365,8 +1380,6 @@
   <tabstop>mCheckGridRightSide</tabstop>
   <tabstop>mCheckGridTopSide</tabstop>
   <tabstop>mCheckGridBottomSide</tabstop>
-  <tabstop>mFrameStyleComboBox</tabstop>
-  <tabstop>mFrameWidthSpinBox</tabstop>
   <tabstop>mDrawAnnotationGroupBox</tabstop>
   <tabstop>mAnnotationFormatComboBox</tabstop>
   <tabstop>mAnnotationPositionLeftComboBox</tabstop>
@@ -1381,7 +1394,7 @@
   <tabstop>mAnnotationFontColorButton</tabstop>
   <tabstop>mDistanceToMapFrameSpinBox</tabstop>
   <tabstop>mCoordinatePrecisionSpinBox</tabstop>
-  <tabstop>mGridMarkerStyleButton</tabstop>
+  <tabstop>mOverviewsGroupBox</tabstop>
   <tabstop>mAddOverviewPushButton</tabstop>
   <tabstop>mRemoveOverviewPushButton</tabstop>
   <tabstop>mOverviewUpButton</tabstop>

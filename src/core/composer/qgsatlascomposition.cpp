@@ -463,13 +463,13 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool upda
   {
     if (( *mit )->atlasDriven() )
     {
-      //map is atlas driven, so update it's bounds (causes a redraw)
+      // map is atlas driven, so update it's bounds (causes a redraw)
       prepareMap( *mit );
     }
     else
     {
-      //map is not atlas driven, so manually force a redraw (to reflect possibly atlas
-      //dependant symbology)
+      // map is not atlas driven, so manually force a redraw (to reflect possibly atlas
+      // dependent symbology)
       ( *mit )->cache();
     }
   }

@@ -249,7 +249,7 @@ bool QgsComposerMapGrid::writeXML( QDomElement& elem, QDomDocument& doc ) const
   mapGridElem.setAttribute( "intervalY", qgsDoubleToString( mGridIntervalY ) );
   mapGridElem.setAttribute( "offsetX", qgsDoubleToString( mGridOffsetX ) );
   mapGridElem.setAttribute( "offsetY", qgsDoubleToString( mGridOffsetY ) );
-  mapGridElem.setAttribute( "crossLength",  qgsDoubleToString( mCrossLength ) );
+  mapGridElem.setAttribute( "crossLength", qgsDoubleToString( mCrossLength ) );
 
   QDomElement lineStyleElem = doc.createElement( "lineStyle" );
   QDomElement gridLineStyleElem = QgsSymbolLayerV2Utils::saveSymbol( QString(), mGridLineSymbol, doc );
@@ -283,7 +283,7 @@ bool QgsComposerMapGrid::writeXML( QDomElement& elem, QDomDocument& doc ) const
   mapGridElem.setAttribute( "rightAnnotationDirection", mRightGridAnnotationDirection );
   mapGridElem.setAttribute( "topAnnotationDirection", mTopGridAnnotationDirection );
   mapGridElem.setAttribute( "bottomAnnotationDirection", mBottomGridAnnotationDirection );
-  mapGridElem.setAttribute( "frameAnnotationDistance",  QString::number( mAnnotationFrameDistance ) );
+  mapGridElem.setAttribute( "frameAnnotationDistance", QString::number( mAnnotationFrameDistance ) );
   mapGridElem.setAttribute( "annotationFont", mGridAnnotationFont.toString() );
   mapGridElem.setAttribute( "annotationFontColor", QgsSymbolLayerV2Utils::encodeColor( mGridAnnotationFontColor ) );
   mapGridElem.setAttribute( "annotationPrecision", mGridAnnotationPrecision );
@@ -324,7 +324,7 @@ bool QgsComposerMapGrid::readXML( const QDomElement& itemElem, const QDomDocumen
   if ( !lineStyleElem.isNull() )
   {
     QDomElement symbolElem = lineStyleElem.firstChildElement( "symbol" );
-    if ( !symbolElem.isNull( ) )
+    if ( !symbolElem.isNull() )
     {
       delete mGridLineSymbol;
       mGridLineSymbol = dynamic_cast<QgsLineSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( symbolElem ) );
@@ -344,7 +344,7 @@ bool QgsComposerMapGrid::readXML( const QDomElement& itemElem, const QDomDocumen
   if ( !markerStyleElem.isNull() )
   {
     QDomElement symbolElem = markerStyleElem.firstChildElement( "symbol" );
-    if ( !symbolElem.isNull( ) )
+    if ( !symbolElem.isNull() )
     {
       delete mGridMarkerSymbol;
       mGridMarkerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( symbolElem ) );
@@ -462,7 +462,7 @@ void QgsComposerMapGrid::drawGridCRSTransform( QgsRenderContext &context, double
       }
       else if ( mGridStyle == QgsComposerMapGrid::Markers )
       {
-        drawGridMarker( QPointF( x, y ) * dotsPerMM , context );
+        drawGridMarker( QPointF( x, y ) * dotsPerMM, context );
       }
     }
   }
@@ -673,7 +673,7 @@ void QgsComposerMapGrid::drawGridNoTransform( QgsRenderContext &context, double 
           }
           else if ( mGridStyle == QgsComposerMapGrid::Markers )
           {
-            drawGridMarker( intersectionPoint * dotsPerMM , context );
+            drawGridMarker( intersectionPoint * dotsPerMM, context );
           }
         }
       }
@@ -1607,7 +1607,7 @@ int QgsComposerMapGrid::yGridLinesCRSTransform( const QgsRectangle& bbox, const 
   return 0;
 }
 
-void QgsComposerMapGrid::sortGridLinesOnBorders( const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines,  QMap< double, double >& leftFrameEntries,
+void QgsComposerMapGrid::sortGridLinesOnBorders( const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, QMap< double, double >& leftFrameEntries,
     QMap< double, double >& rightFrameEntries, QMap< double, double >& topFrameEntries, QMap< double, double >& bottomFrameEntries ) const
 {
   QList< QgsMapAnnotation > borderPositions;
@@ -1665,7 +1665,7 @@ void QgsComposerMapGrid::sortGridLinesOnBorders( const QList< QPair< double, QLi
   }
 }
 
-QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( const QPointF& p , const AnnotationCoordinate coordinateType ) const
+QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( const QPointF& p, const AnnotationCoordinate coordinateType ) const
 {
   if ( !mComposerMap )
   {

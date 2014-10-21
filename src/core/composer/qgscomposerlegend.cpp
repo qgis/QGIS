@@ -100,6 +100,14 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
   QgsLegendRenderer legendRenderer( mLegendModel2, mSettings );
   legendRenderer.setLegendSize( rect().size() );
+
+  //adjust box if width or height is too small
+  QSizeF size = legendRenderer.minimumSize();
+  if ( size.height() > rect().height() )
+    setSceneRect( QRectF( pos().x(), pos().y(), rect().width(), size.height() ) );
+  if ( size.width() > rect().width() )
+    setSceneRect( QRectF( pos().x(), pos().y(), size.width(), rect().height() ) );
+
   legendRenderer.drawLegend( painter );
 
   painter->restore();
@@ -116,7 +124,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 {
   QgsLegendRenderer legendRenderer( mLegendModel2, mSettings );
   QSizeF size = legendRenderer.minimumSize();
-  if ( !painter )
+  if ( painter )
     legendRenderer.drawLegend( painter );
   return size;
 }

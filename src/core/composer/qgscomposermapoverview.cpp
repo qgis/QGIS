@@ -180,7 +180,7 @@ bool QgsComposerMapOverview::readXML( const QDomElement &itemElem, const QDomDoc
   mCentered = ( itemElem.attribute( "centered", "0" ) != "0" );
 
   QDomElement frameStyleElem = itemElem.firstChildElement( "symbol" );
-  if ( !frameStyleElem.isNull( ) )
+  if ( !frameStyleElem.isNull() )
   {
     delete mFrameSymbol;
     mFrameSymbol = dynamic_cast<QgsFillSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( frameStyleElem ) );

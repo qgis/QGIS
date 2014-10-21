@@ -42,7 +42,10 @@ class rasterize(GdalAlgorithm):
     DIMENSIONS = 'DIMENSIONS'
     WIDTH = 'WIDTH'
     HEIGHT = 'HEIGHT'
+    RTYPE = 'RTYPE'
     OUTPUT = 'OUTPUT'
+    
+    TYPE = ['Byte','Int16','UInt16','UInt32','Int32','Float32','Float64','CInt16','CInt32','CFloat32','CFloat64']
 
     def commandLineName(self):
         return "gdalogr:rasterize"
@@ -60,6 +63,8 @@ class rasterize(GdalAlgorithm):
                           99999999.999999, 100.0))
         self.addParameter(ParameterNumber(self.HEIGHT, 'Vertical', 0.0,
                           99999999.999999, 100.0))
+	self.addParameter(ParameterSelection(self.RTYPE, 'Raster type',
+                          self.TYPE, 0))
 
         self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
 
@@ -67,6 +72,9 @@ class rasterize(GdalAlgorithm):
         arguments = []
         arguments.append('-a')
         arguments.append(str(self.getParameterValue(self.FIELD)))
+        
+        arguments.append('-ot')
+        arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
 
         dimType = self.getParameterValue(self.DIMENSIONS)
         if dimType == 0:

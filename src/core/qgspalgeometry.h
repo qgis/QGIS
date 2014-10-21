@@ -99,7 +99,7 @@ class QgsPalGeometry : public PalGeometry
           charWidth = fm->width( QString( mText[i] ) ) + wordSpaceFix;
         }
 
-        ptSize = xform->toMapCoordinatesF((( double ) charWidth ) / fontScale , 0.0 );
+        ptSize = xform->toMapCoordinatesF((( double ) charWidth ) / fontScale, 0.0 );
         mInfo->char_info[i].width = ptSize.x() - ptZero.x();
       }
       return mInfo;

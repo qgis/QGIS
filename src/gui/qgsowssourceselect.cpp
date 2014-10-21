@@ -335,7 +335,7 @@ QgsNumericSortTreeWidgetItem *QgsOWSSourceSelect::createItem(
   return item;
 }
 
-void QgsOWSSourceSelect::populateLayerList( )
+void QgsOWSSourceSelect::populateLayerList()
 {
 }
 
@@ -351,7 +351,7 @@ void QgsOWSSourceSelect::on_mConnectButton_clicked()
   mConnName = mConnectionsComboBox->currentText();
 
   QgsOWSConnection connection( mService, mConnectionsComboBox->currentText() );
-  //QgsDataProvider *theProvider = connection.provider( );
+  //QgsDataProvider *theProvider = connection.provider();
   mConnectionInfo = connection.connectionInfo();
   mUri = connection.uri();
 

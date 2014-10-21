@@ -201,7 +201,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       }
 
       //create QgsFeature with wkb representation
-      QgsFeature* f = new QgsFeature( vlayer->pendingFields(),  0 );
+      QgsFeature* f = new QgsFeature( vlayer->pendingFields(), 0 );
 
       QgsGeometry *g;
 

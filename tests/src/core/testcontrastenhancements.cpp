@@ -73,9 +73,9 @@ void TestContrastEnhancements::clipMinMaxEnhancementTest()
   // Original pixel value 0.0 Should be out of range thus clipped
   QVERIFY( !myEnhancement.isValueInDisplayableRange( 0.0 ) );
   //Original pixel value of 10.0 should be scaled to 10.0
-  QVERIFY( 10.0 == myEnhancement.enhance( 10.0 ) ) ;
+  QVERIFY( 10.0 == myEnhancement.enhance( 10.0 ) );
   //Original pixel value of 240 should be scaled to 240
-  QVERIFY( 240.0 == myEnhancement.enhance( 240.0 ) ) ;
+  QVERIFY( 240.0 == myEnhancement.enhance( 240.0 ) );
 }
 
 void TestContrastEnhancements::linearMinMaxEnhancementWithClipTest()
@@ -86,9 +86,9 @@ void TestContrastEnhancements::linearMinMaxEnhancementWithClipTest()
   // Original pixel value 0.0 Should be out of range thus clipped
   QVERIFY( !myEnhancement.isValueInDisplayableRange( 0.0 ) );
   //Original pixel value of 10.0 should be scaled to 0.0
-  QVERIFY( 0.0 == myEnhancement.enhance( 10.0 ) ) ;
+  QVERIFY( 0.0 == myEnhancement.enhance( 10.0 ) );
   //Original pixel value of 240 should be scaled to 255
-  QVERIFY( 255.0 == myEnhancement.enhance( 240.0 ) ) ;
+  QVERIFY( 255.0 == myEnhancement.enhance( 240.0 ) );
 }
 
 void TestContrastEnhancements::linearMinMaxEnhancementTest()
@@ -98,9 +98,9 @@ void TestContrastEnhancements::linearMinMaxEnhancementTest()
   //0 should be scaled to 10 and not clipped
   QVERIFY( myEnhancement.isValueInDisplayableRange( 0.0 ) );
   //Original pixel value of 10.0 should be scaled to 0.0
-  QVERIFY( 0.0 == myEnhancement.enhance( 10.0 ) ) ;
+  QVERIFY( 0.0 == myEnhancement.enhance( 10.0 ) );
   //Original pixel value of 240 should be scaled to 255
-  QVERIFY( 255.0 == myEnhancement.enhance( 240.0 ) ) ;
+  QVERIFY( 255.0 == myEnhancement.enhance( 240.0 ) );
 }
 QTEST_MAIN( TestContrastEnhancements )
 #include "moc_testcontrastenhancements.cxx"

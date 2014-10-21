@@ -54,14 +54,17 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>372</width>
-        <height>1327</height>
+        <y>-319</y>
+        <width>375</width>
+        <height>1291</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mMainPropertiesColGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -155,6 +158,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mLegendItemColGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Legend items</string>
          </property>
@@ -394,6 +400,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mFontsColGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Fonts</string>
          </property>
@@ -486,6 +495,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mColumnsColGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Columns</string>
          </property>
@@ -544,6 +556,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSymbolsColGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Symbol</string>
          </property>
@@ -605,6 +620,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSymbolsColGroupBox_2">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>WMS LegendGraphic</string>
          </property>
@@ -672,6 +690,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSpacingColGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Spacing</string>
          </property>
@@ -858,6 +879,7 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsLayerTreeView</class>
@@ -867,10 +889,12 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>mMainPropertiesColGroupBox</tabstop>
   <tabstop>mTitleLineEdit</tabstop>
+  <tabstop>mTitleAlignCombo</tabstop>
   <tabstop>mMapComboBox</tabstop>
   <tabstop>mWrapCharLineEdit</tabstop>
-  <tabstop>mTitleAlignCombo</tabstop>
+  <tabstop>mLegendItemColGroupBox</tabstop>
   <tabstop>mCheckBoxAutoUpdate</tabstop>
   <tabstop>mUpdateAllPushButton</tabstop>
   <tabstop>mItemTreeView</tabstop>
@@ -882,25 +906,30 @@
   <tabstop>mEditPushButton</tabstop>
   <tabstop>mCountToolButton</tabstop>
   <tabstop>mFilterByMapToolButton</tabstop>
+  <tabstop>mFontsColGroupBox</tabstop>
   <tabstop>mTitleFontButton</tabstop>
   <tabstop>mLayerFontButton</tabstop>
   <tabstop>mGroupFontButton</tabstop>
   <tabstop>mItemFontButton</tabstop>
   <tabstop>mFontColorButton</tabstop>
+  <tabstop>mColumnsColGroupBox</tabstop>
   <tabstop>mColumnCountSpinBox</tabstop>
   <tabstop>mEqualColumnWidthCheckBox</tabstop>
   <tabstop>mSplitLayerCheckBox</tabstop>
+  <tabstop>mSymbolsColGroupBox</tabstop>
   <tabstop>mSymbolWidthSpinBox</tabstop>
   <tabstop>mSymbolHeightSpinBox</tabstop>
+  <tabstop>mSymbolsColGroupBox_2</tabstop>
   <tabstop>mWmsLegendWidthSpinBox</tabstop>
   <tabstop>mWmsLegendHeightSpinBox</tabstop>
+  <tabstop>mSpacingColGroupBox</tabstop>
+  <tabstop>mTitleSpaceBottomSpinBox</tabstop>
   <tabstop>mGroupSpaceSpinBox</tabstop>
   <tabstop>mLayerSpaceSpinBox</tabstop>
   <tabstop>mSymbolSpaceSpinBox</tabstop>
   <tabstop>mIconLabelSpaceSpinBox</tabstop>
   <tabstop>mBoxSpaceSpinBox</tabstop>
   <tabstop>mColumnSpaceSpinBox</tabstop>
-  <tabstop>mTitleSpaceBottomSpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

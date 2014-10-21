@@ -57,7 +57,7 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
                                       QgsGrassPlugin *plugin, QWidget * parent,
                                       Qt::WindowFlags f ) :
     QWizard( parent, f ),
-    QgsGrassNewMapsetBase( )
+    QgsGrassNewMapsetBase()
 {
   QgsDebugMsg( "QgsGrassNewMapset()" );
 
@@ -228,14 +228,14 @@ void QgsGrassNewMapset::databaseChanged()
 }
 
 /*************************** LOCATION *******************************/
-void QgsGrassNewMapset::setLocationPage( )
+void QgsGrassNewMapset::setLocationPage()
 {
   QgsDebugMsg( "entered." );
 
   setLocations();
 }
 
-void QgsGrassNewMapset::setLocations( )
+void QgsGrassNewMapset::setLocations()
 {
   QgsDebugMsg( "entered." );
 
@@ -1417,7 +1417,7 @@ void QgsGrassNewMapset::pageSelected( int index )
 
         mProjectionSelector = new QgsProjectionSelector( mProjectionFrame, "Projection", 0 );
         mProjectionSelector->setEnabled( false );
-        projectionLayout->addWidget( mProjectionSelector, 0 , 0 );
+        projectionLayout->addWidget( mProjectionSelector, 0, 0 );
 
         mProjectionSelector->show();
 

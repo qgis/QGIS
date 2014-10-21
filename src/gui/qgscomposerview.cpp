@@ -1676,7 +1676,7 @@ void QgsComposerView::setZoomLevel( double zoomLevel )
 
   //desired pixel width for 1mm on screen
   double scale = zoomLevel * dpi / 25.4;
-  setTransform( QTransform::fromScale( scale , scale ) );
+  setTransform( QTransform::fromScale( scale, scale ) );
 
   updateRulers();
   update();

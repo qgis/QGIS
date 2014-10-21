@@ -83,7 +83,7 @@ QString QgsGrassElementDialog::getItem( QString element,
   mDialog = new QDialog( mParent );
   mDialog->setWindowTitle( title );
   QVBoxLayout *layout = new QVBoxLayout( mDialog );
-  QHBoxLayout *buttonLayout = new QHBoxLayout( );
+  QHBoxLayout *buttonLayout = new QHBoxLayout();
 
   mLabel = new QLabel( label );
   layout->addWidget( mLabel );
@@ -109,7 +109,7 @@ QString QgsGrassElementDialog::getItem( QString element,
   mErrorLabel->adjustSize();
   mErrorLabel->setMinimumHeight( mErrorLabel->height() + 5 );
 
-  mOkButton = new QPushButton( );
+  mOkButton = new QPushButton();
   mCancelButton = new QPushButton( tr( "Cancel" ) );
 
   layout->insertLayout( -1, buttonLayout );

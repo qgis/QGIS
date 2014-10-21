@@ -121,7 +121,7 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
 
   // enable the right click for extended menu so it behaves as a contextual menu
   // this would be removed when a true contextual menu is brought in QGIS
-  bool extendedMenu = e->modifiers() == Qt::ShiftModifier || e->button() == Qt::RightButton ;
+  bool extendedMenu = e->modifiers() == Qt::ShiftModifier || e->button() == Qt::RightButton;
   identifyMenu()->setExecWithSingleResult( extendedMenu );
   identifyMenu()->setShowFeatureActions( extendedMenu );
   IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;

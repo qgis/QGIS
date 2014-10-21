@@ -436,7 +436,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //!A textual description of the srs.
     QString mDescription;
     //!The official proj4 acronym for the projection family
-    QString mProjectionAcronym ;
+    QString mProjectionAcronym;
     //!The official proj4 acronym for the ellipoid
     QString mEllipsoidAcronym;
     //!Whether this is a geographic or projected coordinate system
@@ -489,16 +489,16 @@ inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateReferenc
   }
   else
   {
-    mySummary += "Undefined" ;
+    mySummary += "Undefined";
   }
-  mySummary += "\n\t\tProjection  : " ;
+  mySummary += "\n\t\tProjection  : ";
   if ( !r.projectionAcronym().isNull() )
   {
     mySummary += r.projectionAcronym();
   }
   else
   {
-    mySummary += "Undefined" ;
+    mySummary += "Undefined";
   }
 
   mySummary += "\n\t\tEllipsoid   : ";
@@ -508,17 +508,17 @@ inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateReferenc
   }
   else
   {
-    mySummary += "Undefined" ;
+    mySummary += "Undefined";
   }
 
-  mySummary += "\n\t\tProj4String  : " ;
+  mySummary += "\n\t\tProj4String  : ";
   if ( !r.toProj4().isNull() )
   {
     mySummary += r.toProj4();
   }
   else
   {
-    mySummary += "Undefined" ;
+    mySummary += "Undefined";
   }
   // Using streams we need to use local 8 Bit
   return os << mySummary.toLocal8Bit().data() << std::endl;

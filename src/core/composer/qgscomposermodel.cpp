@@ -30,7 +30,7 @@
 #include <QMessageBox>
 #include <QIcon>
 
-QgsComposerModel::QgsComposerModel( QgsComposition* composition , QObject *parent )
+QgsComposerModel::QgsComposerModel( QgsComposition* composition, QObject *parent )
     : QAbstractItemModel( parent )
     , mComposition( composition )
 {
@@ -318,7 +318,7 @@ QMimeData* QgsComposerModel::mimeData( const QModelIndexList &indexes ) const
   return mimeData;
 }
 
-bool zOrderDescending( QgsComposerItem* item1 , QgsComposerItem* item2 )
+bool zOrderDescending( QgsComposerItem* item1, QgsComposerItem* item2 )
 {
   return item1->zValue() > item2->zValue();
 }
@@ -560,7 +560,7 @@ void QgsComposerModel::removeItem( QgsComposerItem * item )
 
   //remove item from model
   int row = itemIndex.row();
-  beginRemoveRows( QModelIndex() , row, row );
+  beginRemoveRows( QModelIndex(), row, row );
   mItemZList.removeAt( pos );
   refreshItemsInScene();
   endRemoveRows();
@@ -590,7 +590,7 @@ void QgsComposerModel::setItemRemoved( QgsComposerItem *item )
 
   //removing item
   int row = itemIndex.row();
-  beginRemoveRows( QModelIndex() , row, row );
+  beginRemoveRows( QModelIndex(), row, row );
   item->setIsRemoved( true );
   refreshItemsInScene();
   endRemoveRows();
@@ -930,7 +930,7 @@ Qt::ItemFlags QgsComposerModel::flags( const QModelIndex & index ) const
   }
 }
 
-QModelIndex QgsComposerModel::indexForItem( QgsComposerItem *item , const int column )
+QModelIndex QgsComposerModel::indexForItem( QgsComposerItem *item, const int column )
 {
   if ( !item )
   {

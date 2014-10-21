@@ -45,7 +45,7 @@ QgsWCSSourceSelect::~QgsWCSSourceSelect()
 {
 }
 
-void QgsWCSSourceSelect::populateLayerList( )
+void QgsWCSSourceSelect::populateLayerList()
 {
   QgsDebugMsg( "entered" );
 
@@ -113,7 +113,7 @@ QString QgsWCSSourceSelect::selectedIdentifier()
   return identifier;
 }
 
-void QgsWCSSourceSelect::addClicked( )
+void QgsWCSSourceSelect::addClicked()
 {
   QgsDebugMsg( "entered" );
   QgsDataSourceURI uri = mUri;

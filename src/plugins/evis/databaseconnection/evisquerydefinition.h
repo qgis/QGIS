@@ -43,37 +43,37 @@ class eVisQueryDefinition
 
   public:
     /** \brief Constructor */
-    eVisQueryDefinition( );
+    eVisQueryDefinition();
 
     /** \brief Accessor for query description */
-    QString description( ) { return mDescription; }
+    QString description() { return mDescription; }
 
     /** \brief Accessor for query short description */
-    QString shortDescription( ) { return mShortDescription; }
+    QString shortDescription() { return mShortDescription; }
 
     /** \brief Accessor for database type */
-    QString databaseType( ) { return mDatabaseType; }
+    QString databaseType() { return mDatabaseType; }
 
     /** \brief Accessor for database host name */
-    QString databaseHost( ) { return mDatabaseHost; }
+    QString databaseHost() { return mDatabaseHost; }
 
     /** \brief Accessor for database port */
-    int databasePort( ) { return mDatabasePort; }
+    int databasePort() { return mDatabasePort; }
 
     /** \brief Accessor for database name */
-    QString databaseName( ) { return mDatabaseName; }
+    QString databaseName() { return mDatabaseName; }
 
     /** \brief Accessor for database username */
-    QString databaseUsername( ) { return mDatabaseUsername; }
+    QString databaseUsername() { return mDatabaseUsername; }
 
     /** \brief Accessor for database password */
-    QString databasePassword( ) { return mDatabasePassword; }
+    QString databasePassword() { return mDatabasePassword; }
 
     /** \brief Accessor for SQL statement */
-    QString sqlStatement( ) { return mSqlStatement; }
+    QString sqlStatement() { return mSqlStatement; }
 
     /** \brief Accessor for auto connection flag */
-    bool autoConnect( ) { return mAutoConnect; }
+    bool autoConnect() { return mAutoConnect; }
 
     /** \brief Mutator for query description */
     void setDescription( QString description ) { mDescription = description; }

@@ -242,7 +242,7 @@ int TestQgsWcsPublicServers::issueOffender( const QString & url, const QString &
   return offender;
 }
 
-void TestQgsWcsPublicServers::test( )
+void TestQgsWcsPublicServers::test()
 {
   QStringList versions;
   QStringList serverUrls;
@@ -428,7 +428,7 @@ void TestQgsWcsPublicServers::test( )
             myStream << "  <ServiceURL>" + serverUrl + "?" + "</ServiceURL>\n";
             myStream << "  <CoverageName>" + myCoverage.identifier + "</CoverageName>\n";
             myStream << "  <Version>" + version + "</Version>\n";
-            myStream << QString( "  <Timeout>%1</Timeout>\n" ).arg( mTimeout / 1000., 0, 'd' ) ;
+            myStream << QString( "  <Timeout>%1</Timeout>\n" ).arg( mTimeout / 1000., 0, 'd' );
             myStream << "</WCS_GDAL>\n";
 
             myGdalXmlFile.close();
@@ -827,11 +827,11 @@ QString TestQgsWcsPublicServers::cells( QStringList theValues, QString theClass,
     QString colspanStr, rowspanStr;
     if ( colspan > 1 && i == theValues.size() - 1 )
     {
-      colspanStr = QString( "colspan=%1" ).arg( colspan - theValues.size() + 1 ) ;
+      colspanStr = QString( "colspan=%1" ).arg( colspan - theValues.size() + 1 );
     }
     if ( rowspan > 1 )
     {
-      rowspanStr = QString( "rowspan=%1" ).arg( rowspan ) ;
+      rowspanStr = QString( "rowspan=%1" ).arg( rowspan );
     }
     myRow += QString( "<td class='cell %1' %2 %3>%4</td>" ).arg( theClass ).arg( colspanStr ).arg( rowspanStr ).arg( val );
   }
@@ -847,7 +847,7 @@ QString TestQgsWcsPublicServers::row( QStringList theValues, QString theClass )
     QString colspan;
     if ( theValues.size() < mHead.size() && i == ( theValues.size() - 1 ) )
     {
-      colspan = QString( "colspan=%1" ).arg( mHead.size() - theValues.size() + 1 ) ;
+      colspan = QString( "colspan=%1" ).arg( mHead.size() - theValues.size() + 1 );
     }
     myRow += QString( "<td class='cell %1' %2>%3</td>" ).arg( theClass ).arg( colspan ).arg( val );
   }
@@ -982,7 +982,7 @@ int main( int argc, char *argv[] )
     return 1;
   }
 
-  QString myCacheDirPath = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[optind] ) ).absoluteFilePath() ) ;
+  QString myCacheDirPath = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[optind] ) ).absoluteFilePath() );
 
   QgsDebugMsg( "myCacheDirPath = " + myCacheDirPath );
 

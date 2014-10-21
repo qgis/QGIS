@@ -64,7 +64,7 @@ class TestQgsBlendModes(TestCase):
         self.mPointLayer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
         self.mMapRegistry.addMapLayer(self.mPointLayer)
 
-        self.mSimplifyMethod = QgsVectorSimplifyMethod() ;
+        self.mSimplifyMethod = QgsVectorSimplifyMethod();
         self.mSimplifyMethod.setSimplifyHints(QgsVectorSimplifyMethod.NoSimplification);
 
         # create polygon layer

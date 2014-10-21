@@ -80,12 +80,12 @@ void QgsSvgAnnotationItem::paint( QPainter* painter )
     if ( widthRatio <= heightRatio )
     {
       renderWidth = mFrameSize.width();
-      renderHeight = viewBox.height() * mFrameSize.width() / viewBox.width() ;
+      renderHeight = viewBox.height() * mFrameSize.width() / viewBox.width();
     }
     else
     {
       renderHeight = mFrameSize.height();
-      renderWidth = viewBox.width() * mFrameSize.height() / viewBox.height() ;
+      renderWidth = viewBox.width() * mFrameSize.height() / viewBox.height();
     }
 
     mSvgRenderer.render( painter, QRectF( mOffsetFromReferencePoint.x(), mOffsetFromReferencePoint.y(), renderWidth,

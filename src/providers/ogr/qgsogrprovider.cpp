@@ -132,7 +132,7 @@ void QgsOgrProvider::repack()
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
 
   // run REPACK on shape files
-  if ( mDeletedFeatures )
+  if ( mDataModified )
   {
     QByteArray sql = QByteArray( "REPACK " ) + layerName;   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
     QgsDebugMsg( QString( "SQL: %1" ).arg( FROM8( sql ) ) );
@@ -176,7 +176,7 @@ void QgsOgrProvider::repack()
       }
     }
 
-    mDeletedFeatures = false;
+    mDataModified = false;
   }
 }
 
@@ -267,7 +267,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     , ogrDriver( 0 )
     , valid( false )
     , featuresCounted( -1 )
-    , mDeletedFeatures( false )
+    , mDataModified( false )
 {
   QgsCPLErrorHandler handler;
 
@@ -810,7 +810,7 @@ void QgsOgrProvider::setRelevantFields( OGRLayerH ogrLayer, bool fetchGeometry, 
 }
 
 
-void QgsOgrUtils::setRelevantFields( OGRLayerH ogrLayer, int fieldCount,  bool fetchGeometry, const QgsAttributeList &fetchAttributes )
+void QgsOgrUtils::setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes )
 {
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
   if ( OGR_L_TestCapability( ogrLayer, OLCIgnoreFields ) )
@@ -1378,11 +1378,7 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
   bool returnvalue = true;
   for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
   {
-    if ( deleteFeature( *it ) )
-    {
-      mDeletedFeatures = true;
-    }
-    else
+    if ( !deleteFeature( *it ) )
     {
       returnvalue = false;
     }
@@ -2463,6 +2459,8 @@ bool QgsOgrProvider::syncToDisc()
       }
     }
   }
+
+  mDataModified = true;
 
   return true;
 }

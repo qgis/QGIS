@@ -61,7 +61,7 @@ class DL_Extrusion
      */
     ~DL_Extrusion()
     {
-      delete direction ;
+      delete direction;
     }
 
 

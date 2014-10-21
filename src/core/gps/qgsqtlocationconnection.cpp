@@ -22,7 +22,7 @@
 #include <QTimer>
 #include <QMetaType>
 
-QgsQtLocationConnection::QgsQtLocationConnection( ): QgsGPSConnection( new QLocalSocket() )
+QgsQtLocationConnection::QgsQtLocationConnection(): QgsGPSConnection( new QLocalSocket() )
 {
   //needed to fix https://sourceforge.net/p/necessitas/tickets/146/
   qRegisterMetaType< QList<QGeoSatelliteInfo> >( "QList<QGeoSatelliteInfo>" );
@@ -70,14 +70,14 @@ void QgsQtLocationConnection::parseData()
     {
       // mInfo.HorizontalAccuracy;
       mLastGPSInformation.latitude = mInfo.coordinate().latitude();
-      mLastGPSInformation.longitude = mInfo.coordinate().longitude() ;
+      mLastGPSInformation.longitude = mInfo.coordinate().longitude();
       mLastGPSInformation.elevation = mInfo.coordinate().altitude();
       mLastGPSInformation.speed = mInfo.attribute( QGeoPositionInfo::GroundSpeed ) * 3.6; // m/s to km/h
       mLastGPSInformation.direction = mInfo.attribute( QGeoPositionInfo::Direction );
       mLastGPSInformation.utcDateTime = mInfo.timestamp();
       mLastGPSInformation.fixType = mInfo.coordinate().type() + 1;
       //< fixType, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D)
-      //< coordinate().type(),  returns 0 = Fix not available; 1 = 2D; 2 = 3D)
+      //< coordinate().type(), returns 0 = Fix not available; 1 = 2D; 2 = 3D)
       mLastGPSInformation.hacc = mInfo.attribute( QGeoPositionInfo::HorizontalAccuracy );   //< Horizontal dilution of precision
       mLastGPSInformation.vacc = mInfo.attribute( QGeoPositionInfo::VerticalAccuracy );   //< Vertical dilution of precision
 

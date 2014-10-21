@@ -329,8 +329,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
     int geomType;
     long featuresCounted;
 
-    //! There are deleted feature - REPACK before creating a spatialindex
-    bool mDeletedFeatures;
+    //! Data has been modified - REPACK before creating a spatialindex
+    bool mDataModified;
 
     mutable QStringList mSubLayerList;
 
@@ -351,7 +351,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 class QgsOgrUtils
 {
   public:
-    static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount,  bool fetchGeometry, const QgsAttributeList &fetchAttributes );
+    static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes );
     static OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec* encoding, const QString& subsetString );
     static QByteArray quotedIdentifier( QByteArray field, const QString& ogrDriverName );
 };

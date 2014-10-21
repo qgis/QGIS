@@ -395,7 +395,7 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
   protected:
 
     // populates the model
-    void addRootItems( );
+    void addRootItems();
     void removeRootItems();
 
     QVector<QgsCptCityDataItem*> mRootItems;

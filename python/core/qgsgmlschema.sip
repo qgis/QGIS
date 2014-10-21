@@ -4,7 +4,7 @@
 class QgsGmlFeatureClass
 {
   public:
-    QgsGmlFeatureClass( );
+    QgsGmlFeatureClass();
     QgsGmlFeatureClass( QString name, QString path );
 
     ~QgsGmlFeatureClass();

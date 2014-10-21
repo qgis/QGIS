@@ -450,7 +450,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
           {
             mypPainter->setRenderHint( QPainter::Antialiasing );
           }
-          mypPainter->scale( rasterScaleFactor,  rasterScaleFactor );
+          mypPainter->scale( rasterScaleFactor, rasterScaleFactor );
           mRenderContext.setPainter( mypPainter );
         }
       }

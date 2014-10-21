@@ -342,7 +342,7 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
   double br = frexp( b, &bexp );
 
   return aexp == bexp &&
-         qRound( ar * pow( 10.0, significantDigits ) ) == qRound( br * pow( 10.0, significantDigits ) ) ;
+         qRound( ar * pow( 10.0, significantDigits ) ) == qRound( br * pow( 10.0, significantDigits ) );
 }
 
 bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );

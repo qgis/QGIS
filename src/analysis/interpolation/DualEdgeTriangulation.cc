@@ -295,7 +295,7 @@ int DualEdgeTriangulation::addPoint( Point3D* p )
         {
           toswap = index;
           index = mHalfEdge[mHalfEdge[mHalfEdge[index]->getNext()]->getDual()]->getNext();
-          checkSwap( toswap , 0 );
+          checkSwap( toswap, 0 );
           if ( toswap == cwedge )
           {
             break;
@@ -329,9 +329,9 @@ int DualEdgeTriangulation::addPoint( Point3D* p )
         mHalfEdge.at( nextnextnumber )->setNext(( int )edge6 );
 
         //check, if there are swaps necessary
-        checkSwap( number , 0 );
-        checkSwap( nextnumber , 0 );
-        checkSwap( nextnextnumber , 0 );
+        checkSwap( number, 0 );
+        checkSwap( nextnumber, 0 );
+        checkSwap( nextnextnumber, 0 );
       }
 
       //the point is exactly on an existing edge (the number of the edge is stored in the variable 'mEdgeWithPoint'---------------
@@ -364,10 +364,10 @@ int DualEdgeTriangulation::addPoint( Point3D* p )
         mHalfEdge[edgef]->setNext( nedge2 );
 
         //swap edges if necessary
-        checkSwap( edgec , 0 );
-        checkSwap( edged , 0 );
-        checkSwap( edgee , 0 );
-        checkSwap( edgef , 0 );
+        checkSwap( edgec, 0 );
+        checkSwap( edged, 0 );
+        checkSwap( edgee, 0 );
+        checkSwap( edgef, 0 );
       }
 
       else if ( number == -100 || number == -5 )//this means unknown problems or a numerical error occured in 'baseEdgeOfTriangle'
@@ -679,7 +679,7 @@ bool DualEdgeTriangulation::calcPoint( double x, double y, Point3D* result )
   }
 }
 
-bool DualEdgeTriangulation::checkSwap( unsigned int edge, unsigned int recursivDeep )
+bool DualEdgeTriangulation::checkSwap( unsigned int edge, unsigned int recursiveDeep )
 {
   if ( swapPossible( edge ) )
   {
@@ -687,9 +687,9 @@ bool DualEdgeTriangulation::checkSwap( unsigned int edge, unsigned int recursivD
     Point3D* ptb = mPointVector[mHalfEdge[mHalfEdge[edge]->getNext()]->getPoint()];
     Point3D* ptc = mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[edge]->getNext()]->getNext()]->getPoint()];
     Point3D* ptd = mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[edge]->getDual()]->getNext()]->getPoint()];
-    if ( MathUtils::inCircle( ptd, pta, ptb, ptc ) && recursivDeep < 100 )//empty circle criterion violated
+    if ( MathUtils::inCircle( ptd, pta, ptb, ptc ) && recursiveDeep < 100 )//empty circle criterion violated
     {
-      doSwap( edge , recursivDeep );//swap the edge (recursiv)
+      doSwap( edge, recursiveDeep );//swap the edge (recursive)
       return true;
     }
   }
@@ -714,7 +714,7 @@ void DualEdgeTriangulation::doOnlySwap( unsigned int edge )
   mHalfEdge[edge2]->setPoint( mHalfEdge[edge5]->getPoint() );
 }
 
-void DualEdgeTriangulation::doSwap( unsigned int edge, unsigned int recursivDeep )
+void DualEdgeTriangulation::doSwap( unsigned int edge, unsigned int recursiveDeep )
 {
   unsigned int edge1 = edge;
   unsigned int edge2 = mHalfEdge[edge]->getDual();
@@ -730,11 +730,11 @@ void DualEdgeTriangulation::doSwap( unsigned int edge, unsigned int recursivDeep
   mHalfEdge[edge6]->setNext( edge3 );
   mHalfEdge[edge1]->setPoint( mHalfEdge[edge3]->getPoint() );//change the points to which edge1 and edge2 point
   mHalfEdge[edge2]->setPoint( mHalfEdge[edge5]->getPoint() );
-  recursivDeep++;
-  checkSwap( edge3 , recursivDeep );
-  checkSwap( edge6 , recursivDeep );
-  checkSwap( edge4 , recursivDeep );
-  checkSwap( edge5 , recursivDeep );
+  recursiveDeep++;
+  checkSwap( edge3, recursiveDeep );
+  checkSwap( edge6, recursiveDeep );
+  checkSwap( edge4, recursiveDeep );
+  checkSwap( edge5, recursiveDeep );
 }
 
 #if 0
@@ -1556,7 +1556,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   //optimisation of the new edges
   for ( iter = crossedEdges.begin(); iter != crossedEdges.end(); ++iter )
   {
-    checkSwap(( *( iter ) ) , 0 );
+    checkSwap(( *( iter ) ), 0 );
   }
 
   return leftPolygon.first();
@@ -3244,11 +3244,11 @@ int DualEdgeTriangulation::splitHalfEdge( int edge, float position )
   mHalfEdge[edge]->setPoint( mPointVector.count() - 1 );
   mHalfEdge[mHalfEdge[edge3]->getNext()]->setNext( edge6 );
 
-  //test four times recursively for swaping
-  checkSwap( mHalfEdge[edge5]->getNext() , 0 );
-  checkSwap( mHalfEdge[edge2]->getNext() , 0 );
-  checkSwap( mHalfEdge[dualedge]->getNext() , 0 );
-  checkSwap( mHalfEdge[edge3]->getNext() , 0 );
+  //test four times recursively for swapping
+  checkSwap( mHalfEdge[edge5]->getNext(), 0 );
+  checkSwap( mHalfEdge[edge2]->getNext(), 0 );
+  checkSwap( mHalfEdge[dualedge]->getNext(), 0 );
+  checkSwap( mHalfEdge[edge3]->getNext(), 0 );
 
   mDecorator->addPoint( new Point3D( p->getX(), p->getY(), 0 ) );//dirty hack to enforce update of decorators
 

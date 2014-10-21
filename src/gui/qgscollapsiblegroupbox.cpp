@@ -79,6 +79,8 @@ void QgsCollapsibleGroupBoxBasic::init()
   // TODO set size (as well as margins) depending on theme, in updateStyle()
   mCollapseButton->setIconSize( QSize( 12, 12 ) );
   mCollapseButton->setIcon( mCollapseIcon );
+  setFocusProxy( mCollapseButton );
+  setFocusPolicy( Qt::StrongFocus );
 
   connect( mCollapseButton, SIGNAL( clicked() ), this, SLOT( toggleCollapsed() ) );
   connect( this, SIGNAL( toggled( bool ) ), this, SLOT( checkToggled( bool ) ) );
@@ -331,7 +333,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
 
   if ( mCollapseButton->height() < rectTitle.height() ) // triangle's height > title text's, offset triangle
   {
-    offsetTopTri += ( rectTitle.height() - mCollapseButton->height() ) / 2 ;
+    offsetTopTri += ( rectTitle.height() - mCollapseButton->height() ) / 2;
 //    offsetTopTri += rectTitle.top();
   }
   else if ( rectTitle.height() < mCollapseButton->height() ) // title text's height < triangle's, offset title
@@ -397,7 +399,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
   QString ssd;
   ssd = QString( "QgsCollapsibleGroupBoxBasic > QToolButton#%1, QgsCollapsibleGroupBox > QToolButton#%1 {" ).arg( mCollapseButton->objectName() );
   ssd += "  background-color: rgba(255, 255, 255, 0); border: none;";
-  ssd += "}";
+  ssd += QString( "} QgsCollapsibleGroupBoxBasic > QToolButton#%1:focus, QgsCollapsibleGroupBox > QToolButton#%1:focus {  border: 1px solid palette(highlight); }" ).arg( mCollapseButton->objectName() );
   mCollapseButton->setStyleSheet( ssd );
   if ( offsetLeft != 0 || offsetTopTri != 0 )
     mCollapseButton->move( offsetLeft, offsetTopTri );

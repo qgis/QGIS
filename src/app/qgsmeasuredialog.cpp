@@ -301,7 +301,7 @@ void QgsMeasureDialog::updateUi()
         QGis::UnitType dummyUnits;
         convertMeasurement( d, dummyUnits, false );
 
-        QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale::system().toString( d , 'f', mDecimalPlaces ) ) );
+        QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale::system().toString( d, 'f', mDecimalPlaces ) ) );
         item->setTextAlignment( 0, Qt::AlignRight );
         mTable->addTopLevelItem( item );
         mTable->scrollToItem( item );

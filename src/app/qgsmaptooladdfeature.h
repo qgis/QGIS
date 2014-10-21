@@ -25,6 +25,6 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolCapture
     virtual ~QgsMapToolAddFeature();
     void canvasReleaseEvent( QMouseEvent * e );
 
-    bool addFeature( QgsVectorLayer *vlayer, QgsFeature *f , bool showModal = true );
+    bool addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bool showModal = true );
     void activate();
 };

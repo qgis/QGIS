@@ -127,7 +127,7 @@ void QgsDateTimeEdit::resizeEvent( QResizeEvent * event )
   QSize sz = mClearButton->sizeHint();
 
 
-  mClearButton->move( rect().right() - frameWidth() - spinButtonWidth() - sz.width() ,
+  mClearButton->move( rect().right() - frameWidth() - spinButtonWidth() - sz.width(),
                       ( rect().bottom() + 1 - sz.height() ) / 2 );
 
   mNullLabel->move( 0, 0 );

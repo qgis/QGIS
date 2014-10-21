@@ -30,7 +30,7 @@ void QgsPhotoWidgetWrapper::selectFileName()
 {
   if ( mLineEdit )
   {
-    QString fileName = QFileDialog::getOpenFileName( 0 , tr( "Select a picture" ), QFileInfo( mLineEdit->text() ).absolutePath() );
+    QString fileName = QFileDialog::getOpenFileName( 0, tr( "Select a picture" ), QFileInfo( mLineEdit->text() ).absolutePath() );
     if ( !fileName.isNull() )
       mLineEdit->setText( QDir::toNativeSeparators( fileName ) );
   }

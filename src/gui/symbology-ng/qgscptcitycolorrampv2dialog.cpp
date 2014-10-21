@@ -284,14 +284,14 @@ void QgsCptCityColorRampV2Dialog::updateTreeView( QgsCptCityDataItem *item, bool
   else if ( item->type() == QgsCptCityDataItem::Selection )
   {
     lblSchemePath->setText( "" );
-    clearCopyingInfo( );
+    clearCopyingInfo();
     updateListWidget( item );
     lblCollectionInfo->setText( QString( "%1 (%2)" ).arg( item->info() ).arg( item->leafCount() ) );
   }
   else if ( item->type() == QgsCptCityDataItem::AllRamps )
   {
     lblSchemePath->setText( "" );
-    clearCopyingInfo( );
+    clearCopyingInfo();
     updateListWidget( item );
     lblCollectionInfo->setText( tr( "All Ramps (%1)" ).arg( item->leafCount() ) );
   }
@@ -588,7 +588,7 @@ bool QgsCptCityColorRampV2Dialog::updateRamp()
   mListWidget->clear();
   mListRamps.clear();
   cboVariantName->clear();
-  clearCopyingInfo( );
+  clearCopyingInfo();
   lblCollectionInfo->clear();
 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );

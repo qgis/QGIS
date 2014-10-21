@@ -116,7 +116,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * @param mapLayer
      * @param layerElem
      */
-    void readMapLayer( QgsMapLayer* mapLayer , const QDomElement& layerElem );
+    void readMapLayer( QgsMapLayer* mapLayer, const QDomElement& layerElem );
 
     /**
      * Read all old-style editor widget configuration from a map node. Will update
@@ -136,7 +136,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * @param layerElem  The XML element to which the config will be written
      * @param doc        The document from which to create elements
      */
-    void writeMapLayer( QgsMapLayer* mapLayer , QDomElement& layerElem, QDomDocument& doc ) const;
+    void writeMapLayer( QgsMapLayer* mapLayer, QDomElement& layerElem, QDomDocument& doc ) const;
 
     /**
      * Will connect to appropriate signals from map layers to load and save style

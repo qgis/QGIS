@@ -197,7 +197,7 @@ QPair< int, int > QgsComposerTableV2::rowRange( const QRectF extent, const int f
   if ( frameIndex >= frameCount() )
   {
     //bad frame index
-    return qMakePair( 0 , 0 );
+    return qMakePair( 0, 0 );
   }
 
   //loop through all previous frames to calculate how many rows are visible in each

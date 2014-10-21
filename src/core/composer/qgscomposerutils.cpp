@@ -351,7 +351,7 @@ void QgsComposerUtils::readDataDefinedProperty( const QgsComposerObject::DataDef
   else
   {
     //QgsDataDefined for property doesn't currently exist, need to add new
-    dd = new QgsDataDefined( );
+    dd = new QgsDataDefined();
     dataDefinedProperties->insert( property, dd );
   }
 

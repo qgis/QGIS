@@ -393,7 +393,7 @@ void ModelTest::checkChildren( const QModelIndex &parent, int currentDepth )
       }
 
       // Check that we can get back our real parent.
-//            qDebug() << model->parent ( index ) << parent ;
+//            qDebug() << model->parent ( index ) << parent;
       Q_ASSERT( model->parent( index ) == parent );
 
       // recursively go down the children

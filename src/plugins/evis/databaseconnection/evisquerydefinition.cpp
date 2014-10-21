@@ -29,7 +29,7 @@
 /**
 * Constructor
 */
-eVisQueryDefinition::eVisQueryDefinition( )
+eVisQueryDefinition::eVisQueryDefinition()
 {
   mDatabaseType = "";
   mDatabaseHost = "";

@@ -319,16 +319,16 @@ inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateTransfor
   }
   else
   {
-    mySummary += "No" ;
+    mySummary += "No";
   }
-  mySummary += "\n\tShort Circuit?  : " ;
+  mySummary += "\n\tShort Circuit?  : ";
   if ( r.isShortCircuited() )
   {
     mySummary += "Yes";
   }
   else
   {
-    mySummary += "No" ;
+    mySummary += "No";
   }
 
   mySummary += "\n\tSource Spatial Ref Sys  : ";
@@ -338,17 +338,17 @@ inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateTransfor
   }
   else
   {
-    mySummary += "Undefined" ;
+    mySummary += "Undefined";
   }
 
-  mySummary += "\n\tDest Spatial Ref Sys  : " ;
+  mySummary += "\n\tDest Spatial Ref Sys  : ";
   if ( r.destCRS() )
   {
     mySummary << r.destCRS();
   }
   else
   {
-    mySummary += "Undefined" ;
+    mySummary += "Undefined";
   }
 #endif
 

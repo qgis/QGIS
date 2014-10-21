@@ -243,7 +243,7 @@ void QgsVectorGradientColorRampV2::addStopsToGradient( QGradient* gradient, doub
     {
       rampColor.setAlpha( rampColor.alpha() * alpha );
     }
-    gradient->setColorAt( it->offset , rampColor );
+    gradient->setColorAt( it->offset, rampColor );
   }
 }
 
@@ -608,7 +608,7 @@ QString QgsCptCityColorRampV2::descFileName() const
                                           QgsCptCityArchive::defaultBaseDir() );
 }
 
-QgsStringMap QgsCptCityColorRampV2::copyingInfo( ) const
+QgsStringMap QgsCptCityColorRampV2::copyingInfo() const
 {
   return QgsCptCityArchive::copyingInfo( copyingFileName() );
 }

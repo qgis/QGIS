@@ -783,7 +783,7 @@ QgsRubberBand* QgsMapToolNodeTool::createRubberBandMarker( QgsPoint center, QgsV
   return marker;
 }
 
-int QgsMapToolNodeTool::firstSelectedVertex( )
+int QgsMapToolNodeTool::firstSelectedVertex()
 {
   if ( mSelectedFeature )
   {

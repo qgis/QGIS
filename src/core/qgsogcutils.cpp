@@ -123,7 +123,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLPoint( const QDomElement& geometryEleme
   }
 
   QgsPolyline::const_iterator point_it = pointCoordinate.begin();
-  char e = htonl( 1 ) != 1 ;
+  char e = htonl( 1 ) != 1;
   double x = point_it->x();
   double y = point_it->y();
   int size = 1 + sizeof( int ) + 2 * sizeof( double );
@@ -172,7 +172,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLLineString( const QDomElement& geometry
     }
   }
 
-  char e = htonl( 1 ) != 1 ;
+  char e = htonl( 1 ) != 1;
   int size = 1 + 2 * sizeof( int ) + lineCoordinates.size() * 2 * sizeof( double );
 
   QGis::WkbType type = QGis::WKBLineString;
@@ -297,7 +297,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLPolygon( const QDomElement& geometryEle
   unsigned char* wkb = new unsigned char[size];
 
   //char e = QgsApplication::endian();
-  char e = htonl( 1 ) != 1 ;
+  char e = htonl( 1 ) != 1;
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   int nPointsInRing = 0;
   double x, y;
@@ -402,7 +402,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiPoint( const QDomElement& geometry
   unsigned char* wkb = new unsigned char[size];
 
   //fill the wkb content
-  char e = htonl( 1 ) != 1 ;
+  char e = htonl( 1 ) != 1;
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   double x, y;
   memcpy( &( wkb )[wkbPosition], &e, 1 );
@@ -540,7 +540,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement& geo
   unsigned char* wkb = new unsigned char[size];
 
   //fill the wkb content
-  char e = htonl( 1 ) != 1 ;
+  char e = htonl( 1 ) != 1;
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   int nPoints; //number of points in a line
   double x, y;
@@ -735,7 +735,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement& geomet
   QGis::WkbType type = QGis::WKBMultiPolygon;
   unsigned char* wkb = new unsigned char[size];
 
-  char e = htonl( 1 ) != 1 ;
+  char e = htonl( 1 ) != 1;
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   double x, y;
   int nRings;

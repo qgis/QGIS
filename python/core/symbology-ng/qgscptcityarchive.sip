@@ -343,6 +343,6 @@ class QgsCptCityBrowserModel : QAbstractItemModel
   protected:
 
     // populates the model
-    void addRootItems( );
+    void addRootItems();
     void removeRootItems();
 };

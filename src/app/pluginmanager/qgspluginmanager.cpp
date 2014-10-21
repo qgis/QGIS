@@ -169,17 +169,17 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils* pythonUtils )
   vwPlugins->addAction( actionSortByVote );
   vwPlugins->addAction( actionSortByStatus );
   vwPlugins->setContextMenuPolicy( Qt::ActionsContextMenu );
-  connect( actionSortByName, SIGNAL( triggered( ) ), mModelProxy, SLOT( sortPluginsByName( ) ) );
-  connect( actionSortByDownloads, SIGNAL( triggered( ) ), mModelProxy, SLOT( sortPluginsByDownloads( ) ) );
-  connect( actionSortByVote, SIGNAL( triggered( ) ), mModelProxy, SLOT( sortPluginsByVote( ) ) );
-  connect( actionSortByStatus, SIGNAL( triggered( ) ), mModelProxy, SLOT( sortPluginsByStatus( ) ) );
+  connect( actionSortByName, SIGNAL( triggered() ), mModelProxy, SLOT( sortPluginsByName() ) );
+  connect( actionSortByDownloads, SIGNAL( triggered() ), mModelProxy, SLOT( sortPluginsByDownloads() ) );
+  connect( actionSortByVote, SIGNAL( triggered() ), mModelProxy, SLOT( sortPluginsByVote() ) );
+  connect( actionSortByStatus, SIGNAL( triggered() ), mModelProxy, SLOT( sortPluginsByStatus() ) );
 
   // get the QSettings group from the installer
   QString settingsGroup;
   QgsPythonRunner::eval( "pyplugin_installer.instance().exportSettingsGroup()", settingsGroup );
 
   // Initialize list of allowed checking intervals
-  mCheckingOnStartIntervals << 0 << 1 << 3 << 7 << 14 << 30 ;
+  mCheckingOnStartIntervals << 0 << 1 << 3 << 7 << 14 << 30;
 
   // Initialize the "Settings" tab widgets
   QSettings settings;
@@ -199,7 +199,7 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils* pythonUtils )
   }
 
 
-  int interval = settings.value( settingsGroup + "/checkOnStartInterval", "" ).toInt( );
+  int interval = settings.value( settingsGroup + "/checkOnStartInterval", "" ).toInt();
   int indx = mCheckingOnStartIntervals.indexOf( interval ); // if none found, just use -1 index.
   comboInterval->setCurrentIndex( indx );
 }
@@ -548,7 +548,7 @@ void QgsPluginManager::reloadModelData()
   {
     // TODO: implement better sort method instead of these dummy -Z statuses
     mModelPlugins->appendRow( createSpacerItem( tr( "Only locally available", "category: plugins that are only locally available" ), "orphanZ" ) );
-    if ( hasReinstallablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Reinstallable", "category: plugins that are installed and available" )  , "installedZ" ) );
+    if ( hasReinstallablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Reinstallable", "category: plugins that are installed and available" ), "installedZ" ) );
     if ( hasUpgradeablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Upgradeable", "category: plugins that are installed and there is a newer version available" ), "upgradeableZ" ) );
     if ( hasNewerPlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Downgradeable", "category: plugins that are installed and there is an OLDER version available" ), "newerZ" ) );
     if ( hasAvailablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Installable", "category: plugins that are available for installation" ), "not installedZ" ) );
@@ -804,17 +804,17 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
     }
     html += "<br/>";
   }
-  html += "<br/>" ;
+  html += "<br/>";
 
   if ( ! metadata->value( "author_email" ).isEmpty() )
   {
     html += QString( "%1: <a href='mailto:%2'>%3</a>" ).arg( tr( "Author" ) ).arg( metadata->value( "author_email" ) ).arg( metadata->value( "author_name" ) );
-    html += "<br/><br/>" ;
+    html += "<br/><br/>";
   }
   else if ( ! metadata->value( "author_name" ).isEmpty() )
   {
     html += QString( "%1: %2" ).arg( tr( "Author" ) ).arg( metadata->value( "author_name" ) );
-    html += "<br/><br/>" ;
+    html += "<br/><br/>";
   }
 
   if ( ! metadata->value( "version_installed" ).isEmpty() )
@@ -830,7 +830,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
 
   if ( ! metadata->value( "changelog" ).isEmpty() )
   {
-    html += "<br/>" ;
+    html += "<br/>";
     QString changelog = tr( "changelog:<br/>%1 <br/>" ).arg( metadata->value( "changelog" ) );
     html += changelog.replace( "\n", "<br/>" );
   }
@@ -880,7 +880,7 @@ void QgsPluginManager::selectTabItem( int idx )
 
 
 
-void QgsPluginManager::clearPythonPluginMetadata( )
+void QgsPluginManager::clearPythonPluginMetadata()
 {
   for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
@@ -899,7 +899,7 @@ void QgsPluginManager::clearPythonPluginMetadata( )
 
 
 
-void QgsPluginManager::addPluginMetadata( QString key,  QMap<QString, QString> metadata )
+void QgsPluginManager::addPluginMetadata( QString key, QMap<QString, QString> metadata )
 {
   mPlugins.insert( key, metadata );
 }
@@ -947,7 +947,7 @@ void QgsPluginManager::addToRepositoryList( QMap<QString, QString> repository )
     QAction* actionClearFilter = new QAction( tr( "Clear filter" ), treeRepositories );
     actionClearFilter->setEnabled( repository.value( "inspection_filter" ) == "true" );
     treeRepositories->addAction( actionClearFilter );
-    connect( actionClearFilter, SIGNAL( triggered( ) ), this, SLOT( clearRepositoryFilter() ) );
+    connect( actionClearFilter, SIGNAL( triggered() ), this, SLOT( clearRepositoryFilter() ) );
   }
 
   QString key = repository.value( "name" );
@@ -1038,32 +1038,32 @@ void QgsPluginManager::setCurrentTab( int idx )
     {
       case PLUGMAN_TAB_ALL:
         // all (statuses ends with Z are for spacers to always sort properly)
-        acceptedStatuses << "installed" << "not installed" << "new" << "orphan" << "newer" << "upgradeable" << "not installedZ" << "installedZ" << "upgradeableZ" << "orphanZ" << "newerZZ" << "" ;
+        acceptedStatuses << "installed" << "not installed" << "new" << "orphan" << "newer" << "upgradeable" << "not installedZ" << "installedZ" << "upgradeableZ" << "orphanZ" << "newerZZ" << "";
         tabTitle = "all_plugins";
         break;
       case PLUGMAN_TAB_INSTALLED:
         // installed (statuses ends with Z are for spacers to always sort properly)
-        acceptedStatuses << "installed" << "orphan" << "newer" << "upgradeable" << "installedZ" << "upgradeableZ" << "orphanZ" << "newerZZ" << "" ;
+        acceptedStatuses << "installed" << "orphan" << "newer" << "upgradeable" << "installedZ" << "upgradeableZ" << "orphanZ" << "newerZZ" << "";
         tabTitle = "installed_plugins";
         break;
       case PLUGMAN_TAB_NOT_INSTALLED:
         // not installed (get more)
-        acceptedStatuses << "not installed" << "new" ;
+        acceptedStatuses << "not installed" << "new";
         tabTitle = "not_installed_plugins";
         break;
       case PLUGMAN_TAB_UPGRADEABLE:
         // upgradeable
-        acceptedStatuses << "upgradeable" ;
+        acceptedStatuses << "upgradeable";
         tabTitle = "upgradeable_plugins";
         break;
       case PLUGMAN_TAB_NEW:
         // new
-        acceptedStatuses << "new" ;
+        acceptedStatuses << "new";
         tabTitle = "new_plugins";
         break;
       case PLUGMAN_TAB_INVALID:
         // invalid
-        acceptedStatuses << "invalid" ;
+        acceptedStatuses << "invalid";
         tabTitle = "invalid_plugins";
         break;
     }
@@ -1203,28 +1203,28 @@ void QgsPluginManager::on_leFilter_textChanged( QString theText )
 
 
 
-void QgsPluginManager::on_buttonUpgradeAll_clicked( )
+void QgsPluginManager::on_buttonUpgradeAll_clicked()
 {
   QgsPythonRunner::run( "pyplugin_installer.instance().upgradeAllUpgradeable()" );
 }
 
 
 
-void QgsPluginManager::on_buttonInstall_clicked( )
+void QgsPluginManager::on_buttonInstall_clicked()
 {
   QgsPythonRunner::run( QString( "pyplugin_installer.instance().installPlugin('%1')" ).arg( mCurrentlyDisplayedPlugin ) );
 }
 
 
 
-void QgsPluginManager::on_buttonUninstall_clicked( )
+void QgsPluginManager::on_buttonUninstall_clicked()
 {
   QgsPythonRunner::run( QString( "pyplugin_installer.instance().uninstallPlugin('%1')" ).arg( mCurrentlyDisplayedPlugin ) );
 }
 
 
 
-void QgsPluginManager::on_treeRepositories_itemSelectionChanged( )
+void QgsPluginManager::on_treeRepositories_itemSelectionChanged()
 {
   buttonEditRep->setEnabled( ! treeRepositories -> selectedItems().isEmpty() );
   buttonDeleteRep->setEnabled( ! treeRepositories -> selectedItems().isEmpty() );
@@ -1239,7 +1239,7 @@ void QgsPluginManager::on_treeRepositories_doubleClicked( QModelIndex )
 
 
 
-void QgsPluginManager::setRepositoryFilter( )
+void QgsPluginManager::setRepositoryFilter()
 {
   QTreeWidgetItem * current = treeRepositories->currentItem();
   if ( current )
@@ -1253,7 +1253,7 @@ void QgsPluginManager::setRepositoryFilter( )
 
 
 
-void QgsPluginManager::clearRepositoryFilter( )
+void QgsPluginManager::clearRepositoryFilter()
 {
   QgsDebugMsg( "Enabling all repositories back" );
   QgsPythonRunner::run( QString( "pyplugin_installer.instance().setRepositoryInspectionFilter()" ) );
@@ -1261,7 +1261,7 @@ void QgsPluginManager::clearRepositoryFilter( )
 
 
 
-void QgsPluginManager::on_buttonRefreshRepos_clicked( )
+void QgsPluginManager::on_buttonRefreshRepos_clicked()
 {
   QgsDebugMsg( "Refreshing repositories..." );
   QgsPythonRunner::run( "pyplugin_installer.instance().reloadAndExportData()" );
@@ -1269,7 +1269,7 @@ void QgsPluginManager::on_buttonRefreshRepos_clicked( )
 
 
 
-void QgsPluginManager::on_buttonAddRep_clicked( )
+void QgsPluginManager::on_buttonAddRep_clicked()
 {
   QgsDebugMsg( "Adding repository connection..." );
   QgsPythonRunner::run( "pyplugin_installer.instance().addRepository()" );
@@ -1277,7 +1277,7 @@ void QgsPluginManager::on_buttonAddRep_clicked( )
 
 
 
-void QgsPluginManager::on_buttonEditRep_clicked( )
+void QgsPluginManager::on_buttonEditRep_clicked()
 {
   QTreeWidgetItem * current = treeRepositories->currentItem();
   if ( current )
@@ -1291,7 +1291,7 @@ void QgsPluginManager::on_buttonEditRep_clicked( )
 
 
 
-void QgsPluginManager::on_buttonDeleteRep_clicked( )
+void QgsPluginManager::on_buttonDeleteRep_clicked()
 {
   QTreeWidgetItem * current = treeRepositories->currentItem();
   if ( current )
@@ -1353,9 +1353,9 @@ bool QgsPluginManager::isPluginEnabled( QString key )
 
 
 
-bool QgsPluginManager::hasAvailablePlugins( )
+bool QgsPluginManager::hasAvailablePlugins()
 {
-  for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
+  for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
         ++it )
   {
@@ -1370,9 +1370,9 @@ bool QgsPluginManager::hasAvailablePlugins( )
 
 
 
-bool QgsPluginManager::hasReinstallablePlugins( )
+bool QgsPluginManager::hasReinstallablePlugins()
 {
-  for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
+  for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
         ++it )
   {
@@ -1388,9 +1388,9 @@ bool QgsPluginManager::hasReinstallablePlugins( )
 
 
 
-bool QgsPluginManager::hasUpgradeablePlugins( )
+bool QgsPluginManager::hasUpgradeablePlugins()
 {
-  for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
+  for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
         ++it )
   {
@@ -1405,9 +1405,9 @@ bool QgsPluginManager::hasUpgradeablePlugins( )
 
 
 
-bool QgsPluginManager::hasNewPlugins( )
+bool QgsPluginManager::hasNewPlugins()
 {
-  for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
+  for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
         ++it )
   {
@@ -1422,9 +1422,9 @@ bool QgsPluginManager::hasNewPlugins( )
 
 
 
-bool QgsPluginManager::hasNewerPlugins( )
+bool QgsPluginManager::hasNewerPlugins()
 {
-  for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
+  for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
         ++it )
   {
@@ -1439,9 +1439,9 @@ bool QgsPluginManager::hasNewerPlugins( )
 
 
 
-bool QgsPluginManager::hasInvalidPlugins( )
+bool QgsPluginManager::hasInvalidPlugins()
 {
-  for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
+  for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
         ++it )
   {
@@ -1456,7 +1456,7 @@ bool QgsPluginManager::hasInvalidPlugins( )
 
 
 
-void QgsPluginManager::updateWindowTitle( )
+void QgsPluginManager::updateWindowTitle()
 {
   QListWidgetItem *curitem = mOptListWidget->currentItem();
   if ( curitem )

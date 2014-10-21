@@ -312,7 +312,7 @@ void QgsCategorizedSymbolRendererV2Model::deleteRows( QList<int> rows )
   }
 }
 
-void QgsCategorizedSymbolRendererV2Model::removeAllRows( )
+void QgsCategorizedSymbolRendererV2Model::removeAllRows()
 {
   beginRemoveRows( QModelIndex(), 0, mRenderer->categories().size() - 1 );
   mRenderer->deleteAllCategories();
@@ -651,7 +651,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
     QgsFeature feature;
     while ( fit.nextFeature( feature ) )
     {
-      QVariant value = expression->evaluate( feature ) ;
+      QVariant value = expression->evaluate( feature );
       if ( unique_vals.contains( value ) )
         continue;
       unique_vals << value;

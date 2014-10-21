@@ -490,7 +490,7 @@ void QgsSymbolV2SelectorDialog::saveSymbol()
 {
   bool ok;
   QString name = QInputDialog::getText( this, tr( "Symbol name" ),
-                                        tr( "Please enter name for the symbol:" ) , QLineEdit::Normal, tr( "New symbol" ), &ok );
+                                        tr( "Please enter name for the symbol:" ), QLineEdit::Normal, tr( "New symbol" ), &ok );
   if ( !ok || name.isEmpty() )
     return;
 

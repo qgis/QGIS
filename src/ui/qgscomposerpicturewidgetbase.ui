@@ -23,16 +23,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -61,13 +52,16 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>330</width>
-        <height>553</height>
+        <width>314</width>
+        <height>554</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mPreviewGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -221,6 +215,9 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Search directories</string>
          </property>
@@ -317,6 +314,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mRotationGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Image rotation</string>
          </property>
@@ -371,10 +371,22 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mSearchDirectoriesComboBox</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mPreviewGroupBox</tabstop>
   <tabstop>mPictureLineEdit</tabstop>
   <tabstop>mPictureBrowseButton</tabstop>
+  <tabstop>mSourceDDBtn</tabstop>
+  <tabstop>mResizeModeComboBox</tabstop>
+  <tabstop>mAnchorPointComboBox</tabstop>
+  <tabstop>mSearchDirectoriesGroupBox</tabstop>
+  <tabstop>mPreviewListWidget</tabstop>
+  <tabstop>mSearchDirectoriesComboBox</tabstop>
+  <tabstop>mRemoveDirectoryButton</tabstop>
+  <tabstop>mAddDirectoryButton</tabstop>
+  <tabstop>mRotationGroupBox</tabstop>
+  <tabstop>mPictureRotationSpinBox</tabstop>
   <tabstop>mRotationFromComposerMapCheckBox</tabstop>
+  <tabstop>mComposerMapComboBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

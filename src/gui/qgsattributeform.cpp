@@ -90,7 +90,7 @@ void QgsAttributeForm::addInterface( QgsAttributeFormInterface* iface )
 
 bool QgsAttributeForm::editable()
 {
-  return mFeature.isValid() && mLayer->isEditable() ;
+  return mFeature.isValid() && mLayer->isEditable();
 }
 
 void QgsAttributeForm::setIsAddDialog( bool isAddDialog )
@@ -237,7 +237,12 @@ bool QgsAttributeForm::save()
 
   emit featureSaved( updatedFeature );
 
-  mLayer->triggerRepaint();
+  // [MD] disabled trigger of repaint as it interferes with other stuff (#11361).
+  // This code should be revisited - and the signals should be fired (+ layer repainted)
+  // only when actually doing any changes. I am unsure if it is actually a good idea
+  // to call save() whenever some code asks for vector layer's modified status
+  // (which is the case when attribute table is open)
+  //mLayer->triggerRepaint();
 
   mIsSaving = false;
 
@@ -633,7 +638,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
           {
             gbLayout->addWidget( mypLabel, index, 0, 1, 2 );
             ++index;
-            gbLayout->addWidget( editor, index, 0, 1 , 2 );
+            gbLayout->addWidget( editor, index, 0, 1, 2 );
           }
           else
           {
@@ -644,7 +649,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
 
         ++index;
       }
-      gbLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding ), index , 0 );
+      gbLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding ), index, 0 );
 
       labelText = QString::null;
       labelOnTop = true;

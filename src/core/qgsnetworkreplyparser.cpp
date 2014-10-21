@@ -66,7 +66,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
     // Lines should be terminated by CRLF ("\r\n") but any new line combination may appear
     QByteArray data = mReply->readAll();
     int from, to;
-    from = data.indexOf( boundary.toAscii(), 0 ) + boundary.length() + 1 ;
+    from = data.indexOf( boundary.toAscii(), 0 ) + boundary.length() + 1;
     //QVector<QByteArray> partHeaders;
     //QVector<QByteArray> partBodies;
     while ( true )

@@ -41,7 +41,7 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   QgisInterface *iface,
   QWidget * parent, Qt::WindowFlags f )
     : QMainWindow( iface->mainWindow(), Qt::Dialog )
-    , QgsGrassMapcalcBase( )
+    , QgsGrassMapcalcBase()
     , QgsGrassModuleOptions( tools, module, iface, false )
     , mTool( -1 )
     , mObject( 0 )
@@ -655,7 +655,7 @@ void QgsGrassMapcalc::setOption()
         if ( mMapComboBox->itemText( i ) == mObject->label()
              && mMaps[i] == mObject->value() )
         {
-          mMapComboBox->setCurrentIndex( i ) ;
+          mMapComboBox->setCurrentIndex( i );
           found = true;
         }
       }
@@ -892,7 +892,7 @@ void QgsGrassMapcalc::updateMaps()
     QString mapset = split.last();
     split.pop_back(); // mapset
 
-    //QDir locDir ( sep + split.join ( QString(sep) ) ) ;
+    //QDir locDir ( sep + split.join ( QString(sep) ) );
     //QString loc = locDir.canonicalPath();
 
     QString loc =  source.remove( QRegExp( "/[^/]+/[^/]+/[^/]+$" ) );
@@ -1610,7 +1610,7 @@ void QgsGrassMapcalcObject::paint( QPainter * painter,
 
       int lx = mRect.x() + mSpace;
       int ly = mRect.y() + mSpace + i * ( mTextHeight + mSpace );
-      QRect lr( lx, ly, metrics.width( l ), mTextHeight ) ;
+      QRect lr( lx, ly, metrics.width( l ), mTextHeight );
 
       painter->drawText( lr, Qt::AlignCenter | Qt::TextSingleLine, l );
     }
