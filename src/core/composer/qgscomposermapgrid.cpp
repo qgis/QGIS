@@ -26,6 +26,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgslogger.h"
 
 #include <QPainter>
 #include <QPen>
@@ -1525,8 +1526,16 @@ int QgsComposerMapGrid::xGridLinesCRSTransform( const QgsRectangle& bbox, const 
         cont = false;
       }
 
-      QgsPoint mapPoint = t.transform( currentX, currentLevel ); //transform back to map crs
-      gridLine.append( mComposerMap->mapToItemCoords( QPointF( mapPoint.x(), mapPoint.y() ) ) ); //transform back to composer coords
+      try
+      {
+        QgsPoint mapPoint = t.transform( currentX, currentLevel ); //transform back to map crs
+        gridLine.append( mComposerMap->mapToItemCoords( QPointF( mapPoint.x(), mapPoint.y() ) ) ); //transform back to composer coords
+      }
+      catch ( QgsCsException & cse )
+      {
+        QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
+      }
+
       currentX += step;
       if ( crosses180 && currentX > 180.0 )
       {
@@ -1583,10 +1592,18 @@ int QgsComposerMapGrid::yGridLinesCRSTransform( const QgsRectangle& bbox, const 
       {
         cont = false;
       }
-      //transform back to map crs
-      QgsPoint mapPoint = t.transform( currentLevel, currentY );
-      //transform back to composer coords
-      gridLine.append( mComposerMap->mapToItemCoords( QPointF( mapPoint.x(), mapPoint.y() ) ) );
+      try
+      {
+        //transform back to map crs
+        QgsPoint mapPoint = t.transform( currentLevel, currentY );
+        //transform back to composer coords
+        gridLine.append( mComposerMap->mapToItemCoords( QPointF( mapPoint.x(), mapPoint.y() ) ) );
+      }
+      catch ( QgsCsException & cse )
+      {
+        QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
+      }
+
       currentY += step;
     }
     //clip grid line to map polygon
@@ -2018,39 +2035,47 @@ int QgsComposerMapGrid::crsGridParams( QgsRectangle& crsRect, QgsCoordinateTrans
     return 1;
   }
 
-  QgsCoordinateTransform tr( mComposerMap->composition()->mapSettings().destinationCrs(), mCRS );
-  QPolygonF mapPolygon = mComposerMap->transformedMapPolygon();
-  QRectF mbr = mapPolygon.boundingRect();
-  QgsRectangle mapBoundingRect( mbr.left(), mbr.bottom(), mbr.right(), mbr.top() );
-
-
-  if ( mCRS.geographicFlag() )
+  try
   {
-    //handle crossing the 180 degree longitude line
-    QgsPoint lowerLeft( mapBoundingRect.xMinimum(), mapBoundingRect.yMinimum() );
-    QgsPoint upperRight( mapBoundingRect.xMaximum(), mapBoundingRect.yMaximum() );
+    QgsCoordinateTransform tr( mComposerMap->composition()->mapSettings().destinationCrs(), mCRS );
+    QPolygonF mapPolygon = mComposerMap->transformedMapPolygon();
+    QRectF mbr = mapPolygon.boundingRect();
+    QgsRectangle mapBoundingRect( mbr.left(), mbr.bottom(), mbr.right(), mbr.top() );
 
-    lowerLeft = tr.transform( lowerLeft.x(), lowerLeft.y() );
-    upperRight = tr.transform( upperRight.x(), upperRight.y() );
 
-    if ( lowerLeft.x() > upperRight.x() )
+    if ( mCRS.geographicFlag() )
     {
-      //we've crossed the line
-      crsRect = tr.transformBoundingBox( mapBoundingRect, QgsCoordinateTransform::ForwardTransform, true );
+      //handle crossing the 180 degree longitude line
+      QgsPoint lowerLeft( mapBoundingRect.xMinimum(), mapBoundingRect.yMinimum() );
+      QgsPoint upperRight( mapBoundingRect.xMaximum(), mapBoundingRect.yMaximum() );
+
+      lowerLeft = tr.transform( lowerLeft.x(), lowerLeft.y() );
+      upperRight = tr.transform( upperRight.x(), upperRight.y() );
+
+      if ( lowerLeft.x() > upperRight.x() )
+      {
+        //we've crossed the line
+        crsRect = tr.transformBoundingBox( mapBoundingRect, QgsCoordinateTransform::ForwardTransform, true );
+      }
+      else
+      {
+        //didn't cross the line
+        crsRect = tr.transformBoundingBox( mapBoundingRect );
+      }
     }
     else
     {
-      //didn't cross the line
       crsRect = tr.transformBoundingBox( mapBoundingRect );
     }
-  }
-  else
-  {
-    crsRect = tr.transformBoundingBox( mapBoundingRect );
-  }
 
-  inverseTransform.setSourceCrs( mCRS );
-  inverseTransform.setDestCRS( mComposerMap->composition()->mapSettings().destinationCrs() );
+    inverseTransform.setSourceCrs( mCRS );
+    inverseTransform.setDestCRS( mComposerMap->composition()->mapSettings().destinationCrs() );
+  }
+  catch ( QgsCsException & cse )
+  {
+    QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
+    return 1;
+  }
   return 0;
 }
 
