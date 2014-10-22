@@ -1852,6 +1852,8 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     outputCRS = &layer->crs();
   }
 
+  QGis::WkbType wkbType = layer->wkbType();
+
   if ( layer->providerType() == "ogr" )
   {
     QStringList theURIParts = layer->dataProvider()->dataSourceUri().split( "|" );
@@ -1863,10 +1865,16 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
         *errorMessage = QObject::tr( "Cannot overwrite a OGR layer in place" );
       return ErrCreateDataSource;
     }
+
+    // Shapefiles might contain multi types although wkbType() only reports singles
+    if ( layer->storageType() == "ESRI Shapefile" )
+    {
+      wkbType = QGis::multiType( wkbType );
+    }
   }
 
   QgsVectorFileWriter* writer =
-    new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFields() : layer->pendingFields(), layer->wkbType(), outputCRS, driverName, datasourceOptions, layerOptions, newFilename, symbologyExport );
+    new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFields() : layer->pendingFields(), wkbType, outputCRS, driverName, datasourceOptions, layerOptions, newFilename, symbologyExport );
   writer->setSymbologyScaleDenominator( symbologyScale );
 
   if ( newFilename )
