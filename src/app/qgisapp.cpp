@@ -2315,6 +2315,7 @@ void QgisApp::initLayerTreeView()
 
   mLayerTreeView->setModel( model );
   mLayerTreeView->setMenuProvider( new QgsAppLayerTreeViewMenuProvider( mLayerTreeView, mMapCanvas ) );
+  mLayerTreeView->setAutoSelectAddedLayers( true );
 
   setupLayerTreeViewFromSettings();
 
@@ -3797,6 +3798,11 @@ bool QgisApp::addProject( QString projectFile )
   // close the previous opened project if any
   closeProject();
 
+  // temporarily disable auto-select for project loading
+  // (having it on all the time would give inconsistent results,
+  // e.g. we select the first node if it is a layer, but not if it is a group)
+  mLayerTreeView->setAutoSelectAddedLayers( false );
+
   if ( ! QgsProject::instance()->read( projectFile ) )
   {
     QApplication::restoreOverrideCursor();
@@ -3811,6 +3817,8 @@ bool QgisApp::addProject( QString projectFile )
     mMapCanvas->refresh();
     return false;
   }
+
+  mLayerTreeView->setAutoSelectAddedLayers( true );
 
   setTitleBarText_( *this );
   int  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );

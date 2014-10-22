@@ -49,14 +49,13 @@ void QgsLayerTreeRegistryBridge::layersAdded( QList<QgsMapLayer*> layers )
   if ( !mEnabled )
     return;
 
-  int i = 0;
+  QList<QgsLayerTreeNode*> nodes;
   foreach ( QgsMapLayer* layer, layers )
   {
     QgsLayerTreeLayer* nodeLayer = new QgsLayerTreeLayer( layer );
     nodeLayer->setVisible( mNewLayersVisible ? Qt::Checked : Qt::Unchecked );
 
-    // add new layer to the top
-    mInsertionPointGroup->insertChildNode( mInsertionPointIndex + i++, nodeLayer );
+    nodes << nodeLayer;
 
     // check whether the layer is marked as embedded
     QString projectFile = QgsProject::instance()->layerIsEmbedded( nodeLayer->layerId() );
@@ -66,6 +65,9 @@ void QgsLayerTreeRegistryBridge::layersAdded( QList<QgsMapLayer*> layers )
       nodeLayer->setCustomProperty( "embedded_project", projectFile );
     }
   }
+
+  // add new layers to the right place
+  mInsertionPointGroup->insertChildNodes( mInsertionPointIndex, nodes );
 }
 
 void QgsLayerTreeRegistryBridge::layersWillBeRemoved( QStringList layerIds )
