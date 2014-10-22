@@ -57,7 +57,8 @@ set CMAKE_OPT=^
 	-G "Visual Studio 9 2008" ^
 	-D BUILDNAME="OSGeo4W-Nightly-VC9" ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
-	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /MP /Od /D NDEBUG /D QGISDEBUG"
+	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /MP /Od /D NDEBUG /D QGISDEBUG" ^
+	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb
 goto devenv
 
 :devenv_x86_64
@@ -76,12 +77,13 @@ set CMAKE_OPT=^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/bin/sip.exe ^
 	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /Zi /MP /Od /D NDEBUG /D QGISDEBUG" ^
+	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
 	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
 
 :devenv
 set PYTHONPATH=
-path %PF86%\CMake 2.8\bin;%PATH%;c:\cygwin\bin
+path %PF86%\CMake\bin;%PF86%\CMake 2.8\bin;%PATH%;c:\cygwin\bin
 
 PROMPT qgis%VERSION%$g 
 
@@ -256,6 +258,11 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	bin/designer-%PACKAGENAME%.bat.tmpl ^
 	etc/postinstall/%PACKAGENAME%.bat ^
 	etc/preremove/%PACKAGENAME%.bat
+if errorlevel 1 (echo tar failed & goto error)
+
+if not exist %ARCH%\release\qgis\%PACKAGENAME%-pdb mkdir %ARCH%\release\qgis\%PACKAGENAME%-pdb
+tar -C %BUILDDIR% -cjf %ARCH%/release/qgis/%PACKAGENAME%-pdb/%PACKAGENAME%-pdb-%VERSION%-%PACKAGE%.tar.bz2 ^
+	apps/%PACKAGENAME%/pdb
 if errorlevel 1 (echo tar failed & goto error)
 
 goto end
