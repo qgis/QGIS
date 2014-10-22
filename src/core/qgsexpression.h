@@ -646,6 +646,9 @@ class CORE_EXPORT QgsExpression
     static void initFunctionHelp();
     static QHash<QString, QString> gFunctionHelpTexts;
     static QHash<QString, QString> gGroups;
+
+  private:
+    Q_DISABLE_COPY( QgsExpression )  // for now - until we have proper copy constructor / implicit sharing
 };
 
 Q_DECLARE_METATYPE( QgsExpression::Interval );

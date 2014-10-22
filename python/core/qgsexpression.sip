@@ -454,4 +454,8 @@ class QgsExpression
 
   protected:
     void initGeomCalculator();
+
+  private:
+    QgsExpression( const QgsExpression& );
+    QgsExpression & operator=( const QgsExpression& );
 };
