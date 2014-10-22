@@ -17199,7 +17199,7 @@ Wersja binarna została skompilowana z Qt %1, a bieżąca działa z Qt %2</trans
         <location filename="../src/app/qgisapp.cpp" line="5660"/>
         <location filename="../src/app/qgisapp.cpp" line="5719"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to Layer-&gt;Toggle editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Łączenie obiektów dostępne jest jedynie w trybie edycji warstwy. Aby użyć tego narzędzia wybierz  Warstwa-&gt;Przełącz tryb edycji</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6890"/>
@@ -17950,12 +17950,12 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2335"/>
         <source>Manage Layer Visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Widoczność warstw</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2344"/>
         <source>Filter Legend By Map Content</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokazuj tylko klasy obecne w zasięgu widoku mapy</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2352"/>
@@ -22199,7 +22199,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/ui/qgscolordialog.ui" line="14"/>
         <location filename="../src/ui/qgscolordialog.ui" line="646"/>
         <source>Color picker</source>
-        <translation type="unfinished"></translation>
+        <translation>Próbnik koloru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="39"/>
@@ -22239,7 +22239,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="172"/>
         <source>HTML notation</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapis HTML</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="527"/>
@@ -22249,12 +22249,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="547"/>
         <source>Color wheel</source>
-        <translation type="unfinished"></translation>
+        <translation>Koło kolorów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="564"/>
         <source>Color swatches</source>
-        <translation type="unfinished"></translation>
+        <translation>Zestawy kolorów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="581"/>
@@ -22264,7 +22264,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="654"/>
         <source>Sample average radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Promień uśredniania próbki</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="661"/>
@@ -22274,92 +22274,92 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="676"/>
         <source>Sample color</source>
-        <translation type="unfinished"></translation>
+        <translation>Pobierz kolor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="683"/>
         <source>&lt;i&gt;Press space to sample a color from under the mouse cursor&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;Naciśnij spację, aby pobrać kolor spod kursora myszy&lt;/i&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="740"/>
         <source>Current</source>
-        <translation type="unfinished"></translation>
+        <translation>Bieżący</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="750"/>
         <source>Old</source>
-        <translation type="unfinished"></translation>
+        <translation>Poprzedni</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="834"/>
         <source>Import Colors...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj kolory...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="837"/>
         <source>Import colors from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj kolory z pliku</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="842"/>
         <source>Export Colors...</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj kolory...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="845"/>
         <source>Export colors to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj kolory do pliku</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="850"/>
         <source>Paste Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Wklej kolory</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="853"/>
         <source>Paste colors from clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Wklej kolory ze schowka</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="858"/>
         <source>Import Palette...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj paletę....</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="861"/>
         <source>Import palette from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj paletę z pliku</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="866"/>
         <source>Remove Palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń paletę</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="869"/>
         <source>Remove current palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń bieżącą paletę</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="874"/>
         <source>New Palette...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowa paleta...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="877"/>
         <source>Create a new palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz nową paletę</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="882"/>
         <source>Copy Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiuj kolory</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="885"/>
         <source>Copy selected colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiuj zaznaczone kolory</translation>
     </message>
 </context>
 <context>
@@ -22507,7 +22507,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/gui/qgscolorswatchgrid.cpp" line="128"/>
         <source>rgb(%1, %2, %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>rgb(%1, %2, %3)</translation>
     </message>
 </context>
 <context>
@@ -50697,12 +50697,12 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2289"/>
         <source>Standard colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Standardowe kolory</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2295"/>
         <source>Paste colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Wklej kolory</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2302"/>
@@ -50712,22 +50712,22 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2309"/>
         <source>Add color</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj kolor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2316"/>
         <source>Remove color</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń kolor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2336"/>
         <source>Copy colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiuj kolory</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2343"/>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2628"/>
@@ -50959,7 +50959,7 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="629"/>
         <source>Use native color chooser dialogs</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj natywnych okien dialogowych wyboru koloru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="647"/>
@@ -51040,7 +51040,7 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1097"/>
         <source>Reset user interface to default settings (restart required)</source>
-        <translation type="unfinished"></translation>
+        <translation>Przywróć domyślne ustawienia interfejsu graficznego (wymaga restartu)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1213"/>
@@ -51219,12 +51219,12 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3284"/>
         <source>Grid and guide defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślne dla siatki i prowadnic</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3290"/>
         <source>Grid spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Odstęp siatki</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3351"/>
@@ -54151,7 +54151,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="803"/>
         <source>code_repository</source>
-        <translation type="unfinished"></translation>
+        <translation>repozytorium kodu źródłowego</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="811"/>
@@ -54698,7 +54698,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="97"/>
         <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="100"/>
         <source>Select color</source>
-        <translation type="unfinished">Wybierz kolor</translation>
+        <translation>Wybierz kolor</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="218"/>
@@ -54747,7 +54747,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspointdisplacementrendererwidgetbase.ui" line="78"/>
         <source>Label font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Czcionka etykiety:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspointdisplacementrendererwidgetbase.ui" line="85"/>
@@ -54757,7 +54757,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspointdisplacementrendererwidgetbase.ui" line="125"/>
         <source>Max scale denominator:</source>
-        <translation type="unfinished"></translation>
+        <translation>max. mianownik skali:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspointdisplacementrendererwidgetbase.ui" line="138"/>
@@ -54987,7 +54987,7 @@ Błąd: brak wyników w buforze</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="633"/>
         <source>Database connection was successful, but no accessible tables were found. Please verify that you have SELECT privilege on a table carrying PostGIS geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Połączenie z bazą danych powiodło się, lecz nie odnaleziono dostępnych tabel. Sprawdź czy masz uprawnienia SELECT do tabeli zawierającej geometrię PostGIS.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="884"/>
@@ -55706,7 +55706,7 @@ Poszukać brakujących warstw?</translation>
     <message>
         <location filename="../src/core/qgscolorscheme.h" line="236"/>
         <source>Project colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolory projektu</translation>
     </message>
 </context>
 <context>
@@ -55908,38 +55908,38 @@ Kontynuować?</translation>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1666"/>
         <source>Select palette file</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz plik palety</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1677"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1686"/>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>Niepoprawny plik</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1677"/>
         <source>Error, file does not exist or is not readable</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd, plik nie istnieje lub brak dostępu do odczytu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1686"/>
         <source>Error, no colors found in palette file</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd, nie znaleziono kolorów w pliku palety</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1695"/>
         <source>Palette file</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik palety</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1715"/>
         <source>Error exporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd eksportu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1715"/>
         <source>Error writing palette file</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd podczas zapisu pliku palety</translation>
     </message>
     <message>
         <source>Transparency %1%</source>
@@ -56239,7 +56239,7 @@ Kontynuować?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1937"/>
         <source>GetFeatureInfo geometry precision (decimal places)</source>
-        <translation type="unfinished"></translation>
+        <translation>Precyzja geometrii w GetFeatureInfo (miejsca dziesiętne)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1961"/>
@@ -56416,7 +56416,7 @@ Kontynuować?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="426"/>
         <source>Project file</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik projektu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="455"/>
@@ -56478,37 +56478,37 @@ Kontynuować?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1314"/>
         <source>Project colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolory projektu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1320"/>
         <source>Copy colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiuj kolory</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1340"/>
         <source>Add color</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj kolor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1347"/>
         <source>Paste colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Wklej kolory</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1354"/>
         <source>Remove color</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń kolor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1364"/>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1371"/>
         <source>Export</source>
-        <translation type="unfinished">Eksportuj</translation>
+        <translation>Eksportuj</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1564"/>
@@ -56523,12 +56523,12 @@ Kontynuować?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="2008"/>
         <source>Geometry precision (decimal places)</source>
-        <translation type="unfinished"></translation>
+        <translation>Precyzja geometrii (miejsca dziesiętne)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1847"/>
         <source>Use layer ids as names</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj identyfikatorów warstw jako nazw</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1982"/>
@@ -57085,17 +57085,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="30"/>
         <source>Advanced options</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaawansowane</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="36"/>
         <source>Suffix</source>
-        <translation type="unfinished"></translation>
+        <translation>Przyrostek</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="43"/>
         <source>Inactive</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieaktywny</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="106"/>
@@ -57106,7 +57106,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="208"/>
         <source>Allow NULL</source>
-        <translation type="unfinished"></translation>
+        <translation>NULL jest dopuszczalne</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="89"/>
@@ -62829,7 +62829,7 @@ kontrastu</translation>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="70"/>
         <source>Avoid intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Unikaj nakładania się tworzonych poligonów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="95"/>
@@ -65038,7 +65038,7 @@ Nadpisać ją?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="769"/>
         <source>Ungrouped</source>
-        <translation>Rozgrupowane</translation>
+        <translation>Niepogrupowane</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="776"/>
@@ -68709,22 +68709,22 @@ Błąd:%2</translation>
     <message>
         <location filename="../src/app/qgsvisibilitypresets.cpp" line="45"/>
         <source>Add Preset...</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj zestaw...</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvisibilitypresets.cpp" line="48"/>
         <source>Remove Current Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń bieżący zestaw</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvisibilitypresets.cpp" line="213"/>
         <source>Visibility Presets</source>
-        <translation type="unfinished"></translation>
+        <translation>Zestawy</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvisibilitypresets.cpp" line="213"/>
         <source>Name of the new preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa dla nowego zestawu</translation>
     </message>
 </context>
 <context>

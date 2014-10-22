@@ -2,28 +2,7 @@
 class QgsRasterRenderer : QgsRasterInterface
 {
 %TypeHeaderCode
-    #include "qgsrasterrenderer.h"
-    #include "qgspalettedrasterrenderer.h"
-    #include "qgsmultibandcolorrenderer.h"
-    #include "qgssinglebandpseudocolorrenderer.h"
-    #include "qgssinglebandgrayrenderer.h"
-    #include "qgssinglebandcolordatarenderer.h"
-    #include "qgsrasterinterface.h"
-%End
-
-%ConvertToSubClassCode
-  if (dynamic_cast<QgsPalettedRasterRenderer*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsPalettedRasterRenderer;
-  else if (dynamic_cast<QgsMultiBandColorRenderer*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsMultiBandColorRenderer;
-  else if (dynamic_cast<QgsSingleBandPseudoColorRenderer*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsSingleBandPseudoColorRenderer;
-  else if (dynamic_cast<QgsSingleBandGrayRenderer*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsSingleBandGrayRenderer;
-  else if (dynamic_cast<QgsSingleBandGrayRenderer*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsSingleBandGrayRenderer;
-  else
-    sipClass = 0;
+#include "qgsrasterrenderer.h"
 %End
 
   public:
