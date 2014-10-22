@@ -42201,11 +42201,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsOWSConnection</name>
     <message>
         <source>WMS Password for %1</source>
-        <translation>Contraseña WMS para %1</translation>
+        <translation type="obsolete">Contraseña WMS para %1</translation>
     </message>
     <message>
         <source>Password</source>
-        <translation>Contraseña</translation>
+        <translation type="obsolete">Contraseña</translation>
     </message>
 </context>
 <context>
@@ -60204,7 +60204,7 @@ Objetos espaciales</translation>
     <name>QgsWMSConnection</name>
     <message>
         <source>WMS Password for %1</source>
-        <translation>Contraseña WMS para %1</translation>
+        <translation type="obsolete">Contraseña WMS para %1</translation>
     </message>
 </context>
 <context>

@@ -39067,11 +39067,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsOWSConnection</name>
     <message>
         <source>WMS Password for %1</source>
-        <translation>WMS parole priekš %1</translation>
+        <translation type="obsolete">WMS parole priekš %1</translation>
     </message>
     <message>
         <source>Password</source>
-        <translation>Parole</translation>
+        <translation type="obsolete">Parole</translation>
     </message>
 </context>
 <context>
@@ -55716,7 +55716,7 @@ Kļūda bija %2</translation>
     <name>QgsWMSConnection</name>
     <message>
         <source>WMS Password for %1</source>
-        <translation>WMS parole priekš %1</translation>
+        <translation type="obsolete">WMS parole priekš %1</translation>
     </message>
 </context>
 <context>
