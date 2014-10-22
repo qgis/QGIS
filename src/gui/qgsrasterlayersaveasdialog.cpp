@@ -136,6 +136,8 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
   mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
   mExtentGroupBox->setOutputExtentFromOriginal();
   connect( mExtentGroupBox, SIGNAL( extentChanged( QgsRectangle ) ), this, SLOT( extentChanged() ) );
+
+  recalcResolutionSize();
 }
 
 void QgsRasterLayerSaveAsDialog::setValidators()
