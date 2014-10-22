@@ -110,7 +110,7 @@ column_ref_quoted  "\""{col_str_char}*"\""
 
 dig         [0-9]
 num_int     {dig}+
-num_float   {dig}*\.{dig}+([eE][-+]?{dig}+)?
+num_float   {dig}*(\.{dig}+([eE][-+]?{dig}+)?|[eE][-+]?{dig}+)
 
 str_char    ('')|(\\.)|[^'\\]
 string      "'"{str_char}*"'"
@@ -159,14 +159,14 @@ string      "'"{str_char}*"'"
 
 ","   { return COMMA; }
 
-{num_float}  { yylval->numberFloat  = cLocale.toDouble( QString::fromAscii(yytext) ); return NUMBER_FLOAT; }
+{num_float}  { yylval->numberFloat = cLocale.toDouble( QString::fromAscii(yytext) ); return NUMBER_FLOAT; }
 {num_int}  {
 	bool ok;
-  yylval->numberInt = cLocale.toInt( QString::fromAscii(yytext), &ok, 10 );
+	yylval->numberInt = cLocale.toInt( QString::fromAscii(yytext), &ok, 10 );
 	if( ok )
 		return NUMBER_INT;
 
-  yylval->numberFloat  = cLocale.toDouble( QString::fromAscii(yytext), &ok );
+	yylval->numberFloat = cLocale.toDouble( QString::fromAscii(yytext), &ok );
 	if( ok )
 		return NUMBER_FLOAT;
 

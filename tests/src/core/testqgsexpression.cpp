@@ -148,6 +148,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "literal int" ) << "123" << false << QVariant( 123 );
       QTest::newRow( "literal double" ) << "1.2" << false << QVariant( 1.2 );
       QTest::newRow( "literal text" ) << "'hello'" << false << QVariant( "hello" );
+      QTest::newRow( "literal double" ) << ".000001" << false << QVariant( 0.000001 );
+      QTest::newRow( "literal double" ) << "1.0e-6" << false << QVariant( 0.000001 );
+      QTest::newRow( "literal double" ) << "1e-6" << false << QVariant( 0.000001 );
 
       // unary minus
       QTest::newRow( "unary minus double" ) << "-1.3" << false << QVariant( -1.3 );
