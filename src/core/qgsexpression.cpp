@@ -2414,7 +2414,7 @@ QString QgsExpression::NodeBinaryOperator::dump() const
   QString fmt;
   fmt += lOp && lOp->precedence() < precedence() ? "(%1)" : "%1";
   fmt += " %2 ";
-  fmt += rOp && rOp->precedence() < precedence() ? "(%3)" : "%3";
+  fmt += rOp && rOp->precedence() <= precedence() ? "(%3)" : "%3";
 
   return fmt.arg( mOpLeft->dump() ).arg( BinaryOperatorText[mOp] ).arg( mOpRight->dump() );
 }
