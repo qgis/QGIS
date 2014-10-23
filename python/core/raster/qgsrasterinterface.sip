@@ -31,7 +31,12 @@ class QgsRasterInterface
   else if (dynamic_cast<QgsHueSaturationFilter*>(sipCpp))
     sipClass = sipClass_QgsHueSaturationFilter;
   else if (dynamic_cast<QgsRasterDataProvider*>(sipCpp))
+  {
     sipClass = sipClass_QgsRasterDataProvider;
+    // use static cast because QgsRasterDataProvider has multiple inheritance
+    // and we would end up with bad pointer otherwise!
+    *sipCppRet = static_cast<QgsRasterDataProvider*>(sipCpp);
+  }
   else if (dynamic_cast<QgsRasterNuller*>(sipCpp))
     sipClass = sipClass_QgsRasterNuller;
   else if (dynamic_cast<QgsRasterProjector*>(sipCpp))
