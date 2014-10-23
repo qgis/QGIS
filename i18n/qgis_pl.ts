@@ -10144,43 +10144,43 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Any</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">dowolny</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">punkt</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">linia</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">poligon</translation>
     </message>
     <message>
         <source>Mandatory</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wymagane</translation>
     </message>
     <message>
         <source>Data type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Typ danych</translation>
     </message>
     <message>
         <source>Vector (any)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">wektor (dowolny)</translation>
     </message>
     <message>
         <source>Vector (point)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">wektor (punkt)</translation>
     </message>
     <message>
         <source>Vector (line)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">wektor (linia)</translation>
     </message>
     <message>
         <source>Vector (polygon)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">wektor (poligon)</translation>
     </message>
     <message>
         <source>Raster</source>
@@ -10192,7 +10192,7 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Min/Max values</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">min/max</translation>
     </message>
     <message>
         <source>Default value</source>
@@ -10212,7 +10212,7 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Katalog</translation>
     </message>
     <message>
         <source>Unable to define parameter</source>
@@ -10695,27 +10695,27 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Pro&amp;cessing</source>
-        <translation type="unfinished"></translation>
+        <translation>Geoprocesing</translation>
     </message>
     <message>
         <source>&amp;Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Narzędzia</translation>
     </message>
     <message>
         <source>Graphical &amp;Modeler...</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelarz graficzny...</translation>
     </message>
     <message>
         <source>&amp;History and Log...</source>
-        <translation type="unfinished"></translation>
+        <translation>Historia i plik zdarzeń...</translation>
     </message>
     <message>
         <source>&amp;Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje...</translation>
     </message>
     <message>
         <source>&amp;Results Viewer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Podgląd wyników...</translation>
     </message>
     <message>
         <source>&amp;Commander</source>
@@ -10724,15 +10724,16 @@ Linia z błędem: %1</translation>
     <message>
         <source>Could not load provider: %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się wczytanie źródła: %s
+%s</translation>
     </message>
     <message>
         <source>Error in %s. Wrong parameter value %s for parameter %s.</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd w %s. Niepoprawna wartość %s dla parametru %s.</translation>
     </message>
     <message>
         <source>Error in %s. Missing parameter value for parameter %s.</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd w %s. Brak wartości dla parametru %s.</translation>
     </message>
 </context>
 <context>
@@ -10743,63 +10744,63 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Show extra info in Log panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodatkowe informacje w panelu zdarzeń</translation>
     </message>
     <message>
         <source>Keep dialog open after running an algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie zamykaj okna po zakończeniu</translation>
     </message>
     <message>
         <source>Use only selected features</source>
-        <translation type="unfinished">Użyj tylko wybranych obiektów</translation>
+        <translation>Użyj tylko wybranych obiektów</translation>
     </message>
     <message>
         <source>Use filename as layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa warstwy z nazwy pliku</translation>
     </message>
     <message>
         <source>Show recently executed algorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż ostatnie algorytmy</translation>
     </message>
     <message>
         <source>Output folder</source>
-        <translation type="unfinished">Katalog wyjściowy</translation>
+        <translation>Katalog wyjściowy</translation>
     </message>
     <message>
         <source>Show layer CRS definition in selection boxes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pokaż definicję układu współrzędnych </translation>
     </message>
     <message>
         <source>Warn before executing if layer CRS&apos;s do not match</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl ostrzeżenie gdy różne układy współrzędnych</translation>
     </message>
     <message>
         <source>Style for raster layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Styl warstw rastrowych</translation>
     </message>
     <message>
         <source>Style for point layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Styl warstw punktowych</translation>
     </message>
     <message>
         <source>Style for line layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Styl warstw liniowych</translation>
     </message>
     <message>
         <source>Style for polygon layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Styl warstw poligonowych</translation>
     </message>
     <message>
         <source>Pre-execution script</source>
-        <translation type="unfinished"></translation>
+        <translation>Skrypt przed</translation>
     </message>
     <message>
         <source>Post-execution script</source>
-        <translation type="unfinished"></translation>
+        <translation>Skrypt po</translation>
     </message>
     <message>
         <source>Recent algs</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostatnie algorytmy</translation>
     </message>
 </context>
 <context>
