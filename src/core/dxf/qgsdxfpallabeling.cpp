@@ -78,6 +78,7 @@ void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& 
 
     //label text
     QString text = g->text();
+    QString txt = label->getPartId() == -1 ? text : QString( text[ label->getPartId()] );
 
     //angle
     double angle = label->getAlpha() * 180 / M_PI;
@@ -91,14 +92,79 @@ void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& 
     }
     mDxfExport->writePolyline( line, g->dxfLayer(), "CONTINUOUS", 1, 0.01, true );
 #endif
-    text = text.replace( tmpLyr.wrapChar.isEmpty() ? "\n" : tmpLyr.wrapChar, "\\P" );
 
-    text.prepend( QString( "\\f%1|i%2|b%3;\\H%4;\\W0.5;" )
-                  .arg( tmpLyr.textFont.family() )
-                  .arg( tmpLyr.textFont.italic() ? 1 : 0 )
-                  .arg( tmpLyr.textFont.bold() ? 1 : 0 )
-                  .arg( label->getHeight() / ( 1 + text.count( "\\P" ) ) * 0.75 ) );
+    QString wrapchr = tmpLyr.wrapChar.isEmpty() ? "\n" : tmpLyr.wrapChar;
 
-    mDxfExport->writeMText( g->dxfLayer(), text, QgsPoint( label->getX(), label->getY() ), label->getWidth() * 1.1, angle, tmpLyr.textColor );
+    //add the direction symbol if needed
+    if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line && tmpLyr.addDirectionSymbol )
+    {
+      bool prependSymb = false;
+      QString symb = tmpLyr.rightDirectionSymbol;
+
+      if ( label->getReversed() )
+      {
+        prependSymb = true;
+        symb = tmpLyr.leftDirectionSymbol;
+      }
+
+      if ( tmpLyr.reverseDirectionSymbol )
+      {
+        if ( symb == tmpLyr.rightDirectionSymbol )
+        {
+          prependSymb = true;
+          symb = tmpLyr.leftDirectionSymbol;
+        }
+        else
+        {
+          prependSymb = false;
+          symb = tmpLyr.rightDirectionSymbol;
+        }
+      }
+
+      if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolAbove )
+      {
+        prependSymb = true;
+        symb = symb + wrapchr;
+      }
+      else if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolBelow )
+      {
+        prependSymb = false;
+        symb = wrapchr + symb;
+      }
+
+      if ( prependSymb )
+      {
+        txt.prepend( symb );
+      }
+      else
+      {
+        txt.append( symb );
+      }
+    }
+
+    txt = txt.replace( wrapchr, "\\P" );
+
+    if ( tmpLyr.textFont.underline() )
+    {
+      txt.prepend( "\\L" ).append( "\\l" );
+    }
+
+    if ( tmpLyr.textFont.overline() )
+    {
+      txt.prepend( "\\O" ).append( "\\o" );
+    }
+
+    if ( tmpLyr.textFont.strikeOut() )
+    {
+      txt.prepend( "\\K" ).append( "\\k" );
+    }
+
+    txt.prepend( QString( "\\f%1|i%2|b%3;\\H%4;\\W0.75;" )
+                 .arg( tmpLyr.textFont.family() )
+                 .arg( tmpLyr.textFont.italic() ? 1 : 0 )
+                 .arg( tmpLyr.textFont.bold() ? 1 : 0 )
+                 .arg( label->getHeight() / ( 1 + txt.count( "\\P" ) ) * 0.75 ) );
+
+    mDxfExport->writeMText( g->dxfLayer(), txt, QgsPoint( label->getX(), label->getY() ), label->getWidth() * 1.1, angle, tmpLyr.textColor );
   }
 }

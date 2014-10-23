@@ -74,7 +74,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
 
         polyProvider = polyLayer.dataProvider()
         fields = polyProvider.fields()
-        fields.append(QgsField(fieldName, QVariant.Int))        
+        fields.append(QgsField(fieldName, QVariant.Int))
 
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
                 polyLayer.pendingFields(), fieldName)
