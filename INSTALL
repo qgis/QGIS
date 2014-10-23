@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Friday July 25, 2014
+Thursday October 23, 2014
 
 
-Last Updated: Friday July 25, 2014
-Last Change : Friday July 25, 2014
+Last Updated: Thursday October 23, 2014
+Last Change : Sunday September 28, 2014
 
 
   1. Introduction
@@ -1457,9 +1457,8 @@ your own risk.
     5.4.5. Additional dependencies: SIP
     ===================================
 
-Mt Lion note: SIP 4.15.7 appears to not work on Mt Lion. Install either
-prior version: 4.14.6.
-later version: 4.16.3+
+Mt Lion note: SIP 4.15.7 appears to not work on Mt Lion.  Install either
+a prior version to 4.14.6 or a later version 4.16.3+
 
 Retrieve the python bindings toolkit SIP from
 
@@ -1520,7 +1519,6 @@ for Mavericks:
   python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin \
   -e /usr/local/include -v /usr/local/share/sip --arch=x86_64 -s MacOSX10.9.sdk
 
-
 continue...
 
 Then continue with compilation and installation:
@@ -1560,7 +1558,7 @@ Save the qscintilla.pro file and build the QScintilla2 C++ library:
   sudo make install
 
 adjust the install_name_tool command for the version installed of QScintilla installed:
-  
+
   sudo install_name_tool -id /usr/local/lib/libqscintilla2.11.dylib \
     /usr/local/lib/libqscintilla2.11.dylib
 
@@ -1646,7 +1644,7 @@ Then make again.
 This will create the Qsci.so module in /Library/Python/2.x/site-packages/PyQt4.
 Like PyQt, it needs help to not install in system locations.
 
-Snow Leopard: substitute ‘2.6’ for Python version
+Snow Leopard: substitute '2.6' for Python version
 
   cd <QScintilla2 source dir>
   cd Python
