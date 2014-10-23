@@ -754,6 +754,10 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
     statement = QString( "INSERT INTO [%1].[%2] (" ).arg( mSchemaName, mTableName );
 
     bool first = true;
+    if ( !mDatabase.isOpen() )
+    {
+       mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+    }
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
 
@@ -951,6 +955,10 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
     statement += QString( "[%1] %2" ).arg( it->name(), type );
   }
 
+  if ( !mDatabase.isOpen() )
+  {
+    mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+  }
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
   if ( !query.exec( statement ) )
@@ -977,6 +985,11 @@ bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
       statement += ",";
 
     statement += QString( "[%1]" ).arg( mAttributeFields[*it].name() );
+  }
+
+  if ( !mDatabase.isOpen() )
+  {
+     mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
   }
 
   QSqlQuery query = QSqlQuery( mDatabase );
@@ -1015,6 +1028,10 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap & at
     statement = QString( "UPDATE [%1].[%2] SET " ).arg( mSchemaName, mTableName );
 
     bool first = true;
+    if ( !mDatabase.isOpen() )
+    {
+      mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+    }
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
 
@@ -1121,6 +1138,10 @@ bool QgsMssqlProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     QString statement;
     statement = QString( "UPDATE [%1].[%2] SET " ).arg( mSchemaName, mTableName );
 
+    if ( !mDatabase.isOpen() )
+    {
+       mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+    }
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
 
@@ -1190,6 +1211,10 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds & id )
       featureIds += "," + FID_TO_STRING( *it );
   }
 
+  if ( !mDatabase.isOpen() )
+  {
+     mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+  }
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
   QString statement;
@@ -1221,6 +1246,10 @@ bool QgsMssqlProvider::createSpatialIndex()
   if ( mUseEstimatedMetadata )
     UpdateStatistics( false );
 
+  if ( !mDatabase.isOpen() )
+  {
+     mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+  }
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
   QString statement;
@@ -1250,6 +1279,10 @@ bool QgsMssqlProvider::createSpatialIndex()
 
 bool QgsMssqlProvider::createAttributeIndex( int field )
 {
+  if ( !mDatabase.isOpen() )
+  {
+     mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+  }
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
   QString statement;
