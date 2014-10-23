@@ -81,13 +81,6 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     //! Get list of selected layers
     QList<QgsMapLayer*> selectedLayers() const;
 
-    //! if enabled, current selection will be automatically changed to the newly added layer node.
-    //! This is purely for user's convenience so they do not need to click on the layer explicitly.
-    //! @note added in 2.6
-    void setAutoSelectAddedLayers( bool enabled ) { mAutoSelectAddedLayers = enabled; }
-    //! @note added in 2.6
-    bool autoSelectAddedLayers() const { return mAutoSelectAddedLayers; }
-
   public slots:
     //! Force refresh of layer symbology. Normally not needed as the changes of layer's renderer are monitored by the model
     void refreshLayerSymbology( const QString& layerId );
@@ -121,8 +114,6 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeViewMenuProvider* mMenuProvider;
     //! Keeps track of current layer ID (to check when to emit signal about change of current layer)
     QString mCurrentLayerID;
-    //! Indicates whether the view should select newly added layers when they are added to the model
-    bool mAutoSelectAddedLayers;
 };
 
 

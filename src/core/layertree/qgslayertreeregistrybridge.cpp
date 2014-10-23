@@ -68,6 +68,9 @@ void QgsLayerTreeRegistryBridge::layersAdded( QList<QgsMapLayer*> layers )
 
   // add new layers to the right place
   mInsertionPointGroup->insertChildNodes( mInsertionPointIndex, nodes );
+
+  // tell other components that layers have been added - this signal is used in QGIS to auto-select the first layer
+  emit addedLayersToLayerTree( layers );
 }
 
 void QgsLayerTreeRegistryBridge::layersWillBeRemoved( QStringList layerIds )

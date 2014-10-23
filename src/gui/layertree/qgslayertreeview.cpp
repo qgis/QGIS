@@ -28,7 +28,6 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
     : QTreeView( parent )
     , mDefaultActions( 0 )
     , mMenuProvider( 0 )
-    , mAutoSelectAddedLayers( false )
 {
   setHeaderHidden( true );
 
@@ -137,10 +136,6 @@ void QgsLayerTreeView::modelRowsInserted( QModelIndex index, int start, int end 
   {
     updateExpandedStateFromNode( children[i] );
   }
-
-  // make newly added layer active (if auto-select is enabled)
-  if ( mAutoSelectAddedLayers && QgsLayerTree::isLayer( children[start] ) )
-    setCurrentIndex( layerTreeModel()->node2index( children[start] ) );
 
   // make sure we still have correct current layer
   onCurrentChanged();

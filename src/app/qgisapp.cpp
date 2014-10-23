@@ -2315,13 +2315,14 @@ void QgisApp::initLayerTreeView()
 
   mLayerTreeView->setModel( model );
   mLayerTreeView->setMenuProvider( new QgsAppLayerTreeViewMenuProvider( mLayerTreeView, mMapCanvas ) );
-  mLayerTreeView->setAutoSelectAddedLayers( true );
 
   setupLayerTreeViewFromSettings();
 
   connect( mLayerTreeView, SIGNAL( doubleClicked( QModelIndex ) ), this, SLOT( layerTreeViewDoubleClicked( QModelIndex ) ) );
   connect( mLayerTreeView, SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( activeLayerChanged( QgsMapLayer* ) ) );
   connect( mLayerTreeView->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( updateNewLayerInsertionPoint() ) );
+  connect( QgsProject::instance()->layerTreeRegistryBridge(), SIGNAL( addedLayersToLayerTree( QList<QgsMapLayer*> ) ),
+           this, SLOT( autoSelectAddedLayer( QList<QgsMapLayer*> ) ) );
 
   // add group tool button
   QToolButton* btnAddGroup = new QToolButton;
@@ -2447,6 +2448,15 @@ void QgisApp::updateNewLayerInsertionPoint()
   QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionPoint( parentGroup, index );
 }
 
+void QgisApp::autoSelectAddedLayer( QList<QgsMapLayer*> layers )
+{
+  if ( layers.count() )
+  {
+    QgsLayerTreeLayer* nodeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( layers[0]->id() );
+    QModelIndex index = mLayerTreeView->layerTreeModel()->node2index( nodeLayer );
+    mLayerTreeView->setCurrentIndex( index );
+  }
+}
 
 void QgisApp::createMapTips()
 {
@@ -3782,7 +3792,6 @@ void QgisApp::enableProjectMacros()
   QgsPythonRunner::run( "qgis.utils.reloadProjectMacros()" );
 }
 
-
 /**
   adds a saved project to qgis, usually called on startup by specifying a
   project file on the command line
@@ -3798,11 +3807,6 @@ bool QgisApp::addProject( QString projectFile )
   // close the previous opened project if any
   closeProject();
 
-  // temporarily disable auto-select for project loading
-  // (having it on all the time would give inconsistent results,
-  // e.g. we select the first node if it is a layer, but not if it is a group)
-  mLayerTreeView->setAutoSelectAddedLayers( false );
-
   if ( ! QgsProject::instance()->read( projectFile ) )
   {
     QApplication::restoreOverrideCursor();
@@ -3817,8 +3821,6 @@ bool QgisApp::addProject( QString projectFile )
     mMapCanvas->refresh();
     return false;
   }
-
-  mLayerTreeView->setAutoSelectAddedLayers( true );
 
   setTitleBarText_( *this );
   int  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
