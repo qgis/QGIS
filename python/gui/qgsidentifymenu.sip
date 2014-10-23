@@ -83,4 +83,7 @@ class QgsIdentifyMenu : QMenu
      * @param selectedAction if specified, this will allow to know which action has been triggered
      */
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> idResults, QPoint pos );
+
+  protected:
+    virtual void closeEvent( QCloseEvent *e );
 };

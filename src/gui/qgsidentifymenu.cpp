@@ -151,6 +151,12 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
   }
 }
 
+void QgsIdentifyMenu::closeEvent( QCloseEvent* e )
+{
+  deleteRubberBands();
+  QMenu::closeEvent( e );
+}
+
 void QgsIdentifyMenu::addRasterLayer( QgsMapLayer* layer )
 {
   QAction* layerAction;
