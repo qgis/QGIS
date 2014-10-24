@@ -159,7 +159,7 @@ class Grid(GeoAlgorithm):
 
             ft.setGeometry(QgsGeometry.fromPolyline(polyline))
             ft.setAttributes([originX, y, originX + (col * hSpacing), y])
-            writer.addFeature(feature)
+            writer.addFeature(ft)
 
     def _rectangleGridPoly(self, writer, width, height, originX, originY,
                            hSpacing, vSpacing):
@@ -230,8 +230,8 @@ class Grid(GeoAlgorithm):
         ft = QgsFeature()
 
         # To preserve symmetry, hspacing is fixed relative to vspacing
-        xXertexLo = 0.288675134594813 * vSpacing;
-        xXertexHi = 0.577350269189626 * vSpacing;
+        xVertexLo = 0.288675134594813 * vSpacing;
+        xVertexHi = 0.577350269189626 * vSpacing;
         hSpacing = xVertexLo + xVertexHi
 
         halfVSpacing = vSpacing / 2
