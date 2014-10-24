@@ -2153,6 +2153,8 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, const Q
         int iL = getIntValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
         int iR = getIntValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
         if ( mOp == boDiv && iR == 0 ) return QVariant(); // silently handle division by zero and return NULL
+        // integer division gives a float number
+        if ( mOp == boDiv && iL < iR ) return QVariant( computeDouble( iL, iR ) );
         return QVariant( computeInt( iL, iR ) );
       }
       else if ( isDateTimeSafe( vL ) && isIntervalSafe( vR ) )
