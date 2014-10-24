@@ -22,6 +22,7 @@
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
 #include "qgscomposermodel.h"
+#include "qgsmaplayerregistry.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendrenderer.h"
@@ -308,6 +309,46 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   return _writeXML( composerLegendElem, doc );
 }
 
+static void _readOldLegendGroup( QDomElement& elem, QgsLayerTreeGroup* parentGroup )
+{
+  QDomElement itemElem = elem.firstChildElement();
+
+  while ( !itemElem.isNull() )
+  {
+
+    if ( itemElem.tagName() == "LayerItem" )
+    {
+      QString layerId = itemElem.attribute( "layerId" );
+      if ( QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId ) )
+      {
+        QgsLayerTreeLayer* nodeLayer = parentGroup->addLayer( layer );
+        QString userText = itemElem.attribute( "userText" );
+        if ( !userText.isEmpty() )
+          nodeLayer->setCustomProperty( "legend/title-label", userText );
+        QString style = itemElem.attribute( "style" );
+        if ( !style.isEmpty() )
+          nodeLayer->setCustomProperty( "legend/title-style", style );
+        QString showFeatureCount = itemElem.attribute( "showFeatureCount" );
+        if ( showFeatureCount.toInt() )
+          nodeLayer->setCustomProperty( "showFeatureCount", 1 );
+
+        // support for individual legend items (user text, order) not implemented yet
+      }
+    }
+    else if ( itemElem.tagName() == "GroupItem" )
+    {
+      QgsLayerTreeGroup* nodeGroup = parentGroup->addGroup( itemElem.attribute( "userText" ) );
+      QString style = itemElem.attribute( "style" );
+      if ( !style.isEmpty() )
+        nodeGroup->setCustomProperty( "legend/title-style", style );
+
+      _readOldLegendGroup( itemElem, nodeGroup );
+    }
+
+    itemElem = itemElem.nextSiblingElement();
+  }
+}
+
 bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument& doc )
 {
   if ( itemElem.isNull() )
@@ -369,8 +410,20 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
     setComposerMap( mComposition->getComposerMapById( itemElem.attribute( "map" ).toInt() ) );
   }
 
-  QDomElement layerTreeElem = itemElem.firstChildElement( "layer-tree-group" );
-  setCustomLayerTree( QgsLayerTreeGroup::readXML( layerTreeElem ) );
+  QDomElement oldLegendModelElem = itemElem.firstChildElement( "Model" );
+  if ( !oldLegendModelElem.isNull() )
+  {
+    // QGIS <= 2.4
+    QgsLayerTreeGroup* nodeRoot = new QgsLayerTreeGroup();
+    _readOldLegendGroup( oldLegendModelElem, nodeRoot );
+    setCustomLayerTree( nodeRoot );
+  }
+  else
+  {
+    // QGIS >= 2.6
+    QDomElement layerTreeElem = itemElem.firstChildElement( "layer-tree-group" );
+    setCustomLayerTree( QgsLayerTreeGroup::readXML( layerTreeElem ) );
+  }
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
