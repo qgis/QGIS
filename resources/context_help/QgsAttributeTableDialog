@@ -1,5 +1,5 @@
 <h3>Attribute table</h3>
-The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking <label>Open attribute table in a dock window</label> in <label>Settings > Options > General</label>.<p>
+The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking <label>Open attribute table in a dock window</label> in <label>Settings > Options > Data Sources</label>.<p>
 
 The number of total number of layer features, filtered features and selected features is printed on the window header.<p>
 <p>
@@ -8,6 +8,7 @@ The number of total number of layer features, filtered features and selected fea
 <a href="#Filtering">Filtering</a><br/>
 <a href="#Editing">Editing</a><br/>
 <a href="#FieldCalc">Field Calculator</a><br/>
+<a href="#FieldCalcBar">Field Calculator bar</a><br/>
 
 <a name="Selecting">
 <h4>Selecting</h4>
@@ -45,6 +46,13 @@ To edit values, you first have to switch the layer to editing mode. To switch to
 
 <a name="FieldCalc">
 <h4>Field Calculator</h4>
+</a>
+The <label>Field Calculator</label> button in the attribute table allows performing calculations on basis of existing attribute values or defined functions, e.g. to calculate length or area of geometry features.<br>
+The results can be written to a new attribute column or it can be used to update values in an already existing column.<br>
+The vector layer needs to be in editing mode, before you can click on the <label>Field calculator</label> icon to open the dialog.
+
+<a name="FieldCalcBar">
+<h4>Field Calculator Bar</h4>
 </a>
 The <label>Field Calculator</label> button in the attribute table allows performing calculations on basis of existing attribute values or defined functions, e.g. to calculate length or area of geometry features.<br>
 The results can be written to a new attribute column or it can be used to update values in an already existing column.<br>
