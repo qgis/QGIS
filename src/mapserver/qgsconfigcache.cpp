@@ -40,6 +40,12 @@ QgsConfigCache::~QgsConfigCache()
 {
 }
 
+QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& filePath )
+{
+  QDomDocument* doc = xmlDocument( filePath );
+  return new QgsServerProjectParser( doc, filePath );
+}
+
 QgsWCSProjectParser* QgsConfigCache::wcsConfiguration( const QString& filePath )
 {
   QgsWCSProjectParser* p = mWCSConfigCache.object( filePath );
