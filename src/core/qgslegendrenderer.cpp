@@ -208,6 +208,12 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
 
       QList<QgsLayerTreeModelLegendNode*> legendNodes = mLegendModel->layerLegendNodes( nodeLayer );
 
+      // workaround for the issue that "filtering by map" does not remove layer nodes that have no symbols present
+      // on the map. We explicitly skip such layers here. In future ideally that should be handled directly
+      // in the layer tree model
+      if ( legendNodes.isEmpty() && mLegendModel->legendFilterByMap() )
+        continue;
+
       QList<Atom> layerAtoms;
 
       for ( int j = 0; j < legendNodes.count(); j++ )
