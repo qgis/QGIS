@@ -76,6 +76,15 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         QgsExpression* filter() const;
         QString filterExpression() const;
         QString description() const;
+        //! @note added in 2.6
+        bool checkState() const;
+
+        //! Unique rule identifier (for identification of rule within renderer)
+        //! @note added in 2.6
+        QString ruleKey() const;
+        //! Override the assigned rule key (should be used just internally by rule-based renderer)
+        //! @note added in 2.6
+        void setRuleKey( const QString& key );
 
         //! set a new symbol (or NULL). Deletes old symbol.
         void setSymbol( QgsSymbolV2* sym /Transfer/ );
@@ -84,6 +93,8 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         void setScaleMaxDenom( int scaleMaxDenom );
         void setFilterExpression( QString filterExp );
         void setDescription( QString description );
+        //! @note added in 2.6
+        void setCheckState( bool state );
 
         //! clone this rule, return new instance
         QgsRuleBasedRendererV2::Rule* clone() const /Factory/;
@@ -134,6 +145,10 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         void takeChild( QgsRuleBasedRendererV2::Rule* rule );
         //! take child rule out, set parent as null
         QgsRuleBasedRendererV2::Rule* takeChildAt( int i ) /TransferBack/;
+
+        //! Try to find a rule given its unique key
+        //! @note added in 2.6
+        QgsRuleBasedRendererV2::Rule* findRuleByKey( QString key );
 
         void updateElseRules();
 

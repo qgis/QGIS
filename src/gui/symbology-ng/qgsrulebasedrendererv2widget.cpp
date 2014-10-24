@@ -938,7 +938,9 @@ QMimeData *QgsRuleBasedRendererV2Model::mimeData( const QModelIndexList &indexes
     if ( !index.isValid() || index.column() != 0 )
       continue;
 
-    QgsRuleBasedRendererV2::Rule* rule = ruleForIndex( index );
+    // we use a clone of the existing rule because it has a new unique rule key
+    // non-unique rule keys would confuse other components using them (e.g. legend)
+    QgsRuleBasedRendererV2::Rule* rule = ruleForIndex( index )->clone();
     QDomDocument doc;
     QgsSymbolV2Map symbols;
 
@@ -948,6 +950,8 @@ QMimeData *QgsRuleBasedRendererV2Model::mimeData( const QModelIndexList &indexes
     QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols( symbols, "symbols", doc );
     rootElem.appendChild( symbolsElem );
     doc.appendChild( rootElem );
+
+    delete rule;
 
     stream << doc.toString( -1 );
   }

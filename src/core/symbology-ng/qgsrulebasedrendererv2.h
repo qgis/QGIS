@@ -113,6 +113,9 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! Unique rule identifier (for identification of rule within renderer)
         //! @note added in 2.6
         QString ruleKey() const { return mRuleKey; }
+        //! Override the assigned rule key (should be used just internally by rule-based renderer)
+        //! @note added in 2.6
+        void setRuleKey( const QString& key ) { mRuleKey = key; }
 
         //! set a new symbol (or NULL). Deletes old symbol.
         void setSymbol( QgsSymbolV2* sym );

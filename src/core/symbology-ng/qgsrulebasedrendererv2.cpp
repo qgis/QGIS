@@ -257,7 +257,6 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::clone() const
 {
   QgsSymbolV2* sym = mSymbol ? mSymbol->clone() : NULL;
   Rule* newrule = new Rule( sym, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mLabel, mDescription );
-  newrule->mRuleKey = mRuleKey;
   newrule->setCheckState( mCheckState );
   // clone children
   foreach ( Rule* rule, mChildren )
@@ -850,7 +849,18 @@ QList<QString> QgsRuleBasedRendererV2::usedAttributes()
 
 QgsFeatureRendererV2* QgsRuleBasedRendererV2::clone() const
 {
-  QgsRuleBasedRendererV2* r = new QgsRuleBasedRendererV2( mRootRule->clone() );
+  QgsRuleBasedRendererV2::Rule* clonedRoot = mRootRule->clone();
+
+  // normally with clone() the individual rules get new keys (UUID), but here we want to keep
+  // the tree of rules intact, so that other components that may use the rule keys work nicely (e.g. visibility presets)
+  clonedRoot->setRuleKey( mRootRule->ruleKey() );
+  RuleList origDescendants = mRootRule->descendants();
+  RuleList clonedDescendants = clonedRoot->descendants();
+  Q_ASSERT( origDescendants.count() == clonedDescendants.count() );
+  for ( int i = 0; i < origDescendants.count(); ++i )
+    clonedDescendants[i]->setRuleKey( origDescendants[i]->ruleKey() );
+
+  QgsRuleBasedRendererV2* r = new QgsRuleBasedRendererV2( clonedRoot );
 
   r->setUsingSymbolLevels( usingSymbolLevels() );
   return r;
