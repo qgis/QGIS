@@ -2,7 +2,7 @@
 name=Processing
 description=Spatial data processing framework for QGIS
 category=Analysis
-version=2.4
+version=2.6
 qgisMinimumVersion=2.0
 
 author=Victor Olaya
