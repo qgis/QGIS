@@ -16,14 +16,16 @@
  ***************************************************************************/
 
 #include "qgsdxfexportdialog.h"
+
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgslayertree.h"
 #include "qgslayertreegroup.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgis.h"
 #include "qgsfieldcombobox.h"
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
 
 #include <QFileDialog>
 #include <QPushButton>
@@ -181,6 +183,7 @@ bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const Q
 QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers( const QModelIndexList &selectedIndexes ) const
 {
   QList< QPair<QgsVectorLayer *, int> > layers;
+  QHash< QgsMapLayer *, int > layerIdx;
 
   foreach ( const QModelIndex &idx, selectedIndexes )
   {
@@ -191,18 +194,40 @@ QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers( c
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( treeLayer->layer() );
         Q_ASSERT( vl );
-        layers << qMakePair<QgsVectorLayer *, int>( vl, mAttributeIdx.value( vl, -1 ) );
+        if ( !layerIdx.contains( vl ) )
+        {
+          layerIdx.insert( vl, layers.size() );
+          layers << qMakePair<QgsVectorLayer *, int>( vl, mAttributeIdx.value( vl, -1 ) );
+        }
       }
     }
     else if ( QgsLayerTree::isLayer( node ) )
     {
       QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
       Q_ASSERT( vl );
-      layers << qMakePair<QgsVectorLayer *, int>( vl, mAttributeIdx.value( vl, -1 ) );
+      if ( !layerIdx.contains( vl ) )
+      {
+        layerIdx.insert( vl, layers.size() );
+        layers << qMakePair<QgsVectorLayer *, int>( vl, mAttributeIdx.value( vl, -1 ) );
+      }
     }
   }
 
-  return layers;
+  QList<QgsMapLayer*> inDrawingOrder = QgisApp::instance()->mapCanvas()->layers();
+  QList< QPair<QgsVectorLayer *, int> > layersInOrder;
+
+  for ( int i = 0; i < inDrawingOrder.size(); i++ )
+  {
+    int idx = layerIdx.value( inDrawingOrder[i], -1 );
+    if ( idx < 0 )
+      continue;
+
+    layersInOrder << layers[idx];
+  }
+
+  Q_ASSERT( layersInOrder.size() == layers.size() );
+
+  return layersInOrder;
 }
 
 
