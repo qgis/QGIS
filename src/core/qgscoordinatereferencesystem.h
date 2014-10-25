@@ -237,7 +237,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     bool readXML( QDomNode & theNode );
     /*! Stores state to the given Dom node in the given document.
      * Below is an example of the generated tag.
-     \verbatim
+     \code{.xml}
       <spatialrefsys>
           <proj4>+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs </proj4>
            <srsid>2585</srsid>
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
            <projectionacronym>longlat</projectionacronym>
            <ellipsoidacronym>WGS84</ellipsoidacronym>
        </spatialrefsys>
-     \endverbatim
+     \endcode
      * @param theNode The node in which state will be restored
      * @param theDoc The document in which state will be stored
      * @return bool True on success, False on failure

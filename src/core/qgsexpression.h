@@ -38,7 +38,7 @@ Class for parsing and evaluation of expressions (formerly called "search strings
 The expressions try to follow both syntax and semantics of SQL expressions.
 
 Usage:
-
+\code{.cpp}
   QgsExpression exp("gid*2 > 10 and type not in ('D','F'));
   if (exp.hasParserError())
   {
@@ -53,6 +53,7 @@ Usage:
   {
     // examine the result
   }
+\endcode
 
 Possible QVariant value types:
 - invalid (null)
