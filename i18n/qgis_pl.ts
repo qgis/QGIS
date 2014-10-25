@@ -7702,7 +7702,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Log files (*.log *.LOG)</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik zdarzeń (*.log *.LOG)</translation>
     </message>
     <message>
         <source>Create test</source>
@@ -10476,7 +10476,7 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pliki %s (*.%s)</translation>
     </message>
 </context>
 <context>
@@ -10490,7 +10490,7 @@ Linia z błędem: %1</translation>
     <name>OutputRaster</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pliki %s (*.%s)</translation>
     </message>
 </context>
 <context>
@@ -10524,7 +10524,7 @@ Linia z błędem: %1</translation>
     <name>OutputVector</name>
     <message>
         <source>%s files (*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pliki %s (*.%s)</translation>
     </message>
 </context>
 <context>
@@ -10565,28 +10565,28 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pliki %s (*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParameterRaster</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pliki %s (*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParameterTable</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pliki %s (*.%s)</translation>
     </message>
 </context>
 <context>
     <name>ParameterVector</name>
     <message>
         <source>%s files(*.%s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pliki %s (*.%s)</translation>
     </message>
 </context>
 <context>
@@ -10600,15 +10600,15 @@ Linia z błędem: %1</translation>
     <name>ParametersPanel</name>
     <message>
         <source>[Not selected]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Nie wybrano]</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż parametry zaawansowane</translation>
     </message>
     <message>
         <source> [optional]</source>
-        <translation type="unfinished"></translation>
+        <translation>[opcjonalne]</translation>
     </message>
     <message>
         <source>Iterate over this layer</source>
@@ -10616,15 +10616,15 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Open output file after running algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Wczytaj plik wynikowy po zakończeniu</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukryj parametry zaawansowane</translation>
     </message>
     <message>
         <source>[not set]</source>
-        <translation type="unfinished"></translation>
+        <translation>[brak]</translation>
     </message>
 </context>
 <context>
@@ -10653,7 +10653,7 @@ Linia z błędem: %1</translation>
     <name>Postprocessing</name>
     <message>
         <source>Loading resulting layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Wczytywanie warstw wynikowych</translation>
     </message>
 </context>
 <context>
@@ -13182,7 +13182,7 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="82"/>
         <source>Empty filename given</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak nazwy pliku</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="587"/>
@@ -13198,7 +13198,7 @@ Błąd (%2): %3</translation>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="636"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="2227"/>
         <source>Comma Separated Value [CSV]</source>
-        <translation type="unfinished"></translation>
+        <translation>Comma Separated Value [CSV]</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="774"/>
@@ -13547,7 +13547,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="122"/>
         <source>Selection extends beyond layer&apos;s coordinate system</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybór wykracza poza układ współrzędnych warstwy.</translation>
     </message>
     <message>
         <source>CRS undefined - defaulting to default CRS</source>
@@ -19079,7 +19079,7 @@ Ta wersja QGIS została skompilowana bez wsparcia SpatiaLite.</translation>
     <message>
         <location filename="../src/customwidgets/qgiscustomwidgets.h" line="32"/>
         <source>QGIS custom widgets</source>
-        <translation type="unfinished"></translation>
+        <translation>Widżety QGIS</translation>
     </message>
 </context>
 <context>
@@ -19249,12 +19249,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsactionmenu.cpp" line="45"/>
         <source>&amp;Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Akcje</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsactionmenu.cpp" line="134"/>
         <source>Not supported on your platform</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie obsługiwane przez ten system.</translation>
     </message>
 </context>
 <context>
@@ -19273,7 +19273,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsaddattrdialog.cpp" line="100"/>
         <source>No name specified. Please specify a name to create a new field.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie podano nazwy. Proszę podać nazwę tworzonego pola.</translation>
     </message>
 </context>
 <context>
@@ -19348,7 +19348,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsaddjoindialogbase.ui" line="64"/>
         <source>Choose which fields are joined</source>
-        <translation type="unfinished"></translation>
+        <translation>Dołącz tylko wybrane pola</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddjoindialogbase.ui" line="50"/>
@@ -19403,7 +19403,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsannotationwidget.cpp" line="48"/>
         <source>Transparent frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Przezroczysta ramka</translation>
     </message>
     <message>
         <location filename="../src/app/qgsannotationwidget.cpp" line="51"/>
@@ -19413,7 +19413,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsannotationwidget.cpp" line="54"/>
         <source>Transparent</source>
-        <translation type="unfinished"></translation>
+        <translation>Przezroczyste</translation>
     </message>
 </context>
 <context>
@@ -19859,7 +19859,7 @@ Błąd:
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="319"/>
         <source>Choose Icon...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz ikonę...</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="364"/>
@@ -19967,7 +19967,7 @@ Błąd:
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="296"/>
         <source>Icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Ikona</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="377"/>
@@ -20460,12 +20460,12 @@ Błąd:
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="590"/>
         <source>Failed to add field</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się dodanie atrybutu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="590"/>
         <source>Failed to add field &apos;%1&apos; of type &apos;%2&apos;. Is the field name unique?</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się dodanie atrybutu &apos;%1&apos; typu &apos;%2&apos;. Czy jego nazwa aby nie powtarza się?</translation>
     </message>
     <message>
         <source>Attribute Error</source>
@@ -20671,7 +20671,7 @@ Błąd:
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="571"/>
         <source>Switch to table view</source>
-        <translation type="unfinished"></translation>
+        <translation>Widok tabeli</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="642"/>
@@ -20727,7 +20727,7 @@ Błąd:
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="551"/>
         <source>Switch to form view</source>
-        <translation type="unfinished"></translation>
+        <translation>Widok formularza</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="554"/>
@@ -21204,7 +21204,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="46"/>
         <source>Edit Widget Properties - %1 (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Edytuj właściwości widżetu - %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -22056,7 +22056,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/gui/qgscodeeditorcss.cpp" line="30"/>
         <source>CSS Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Edytor CSS</translation>
     </message>
 </context>
 <context>
@@ -22064,7 +22064,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/gui/qgscodeeditorhtml.cpp" line="30"/>
         <source>HTML Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Edytor HTML</translation>
     </message>
 </context>
 <context>
@@ -22072,7 +22072,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/gui/qgscodeeditorpython.cpp" line="34"/>
         <source>Python Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Edytor Pythona</translation>
     </message>
 </context>
 <context>
@@ -22080,7 +22080,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/gui/qgscodeeditorsql.cpp" line="30"/>
         <source>SQL Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Edytor SQL</translation>
     </message>
 </context>
 <context>
@@ -22129,7 +22129,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/gui/qgscolorbutton.cpp" line="350"/>
         <source>Pick color</source>
-        <translation type="unfinished"></translation>
+        <translation>Wskaż kolor</translation>
     </message>
 </context>
 <context>
@@ -22137,7 +22137,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/customwidgets/qgscolorbuttonplugin.cpp" line="74"/>
         <source>Select color</source>
-        <translation type="unfinished">Wybierz kolor</translation>
+        <translation>Wybierz kolor</translation>
     </message>
 </context>
 <context>
@@ -22155,7 +22155,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/gui/qgscolorbuttonv2.cpp" line="392"/>
         <source>Default color</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolor domyślny</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolorbuttonv2.cpp" line="423"/>
@@ -22170,12 +22170,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/gui/qgscolorbuttonv2.cpp" line="446"/>
         <source>Pick color</source>
-        <translation type="unfinished"></translation>
+        <translation>Wskaż kolor</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolorbuttonv2.cpp" line="450"/>
         <source>Choose color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz kolor...</translation>
     </message>
 </context>
 <context>
@@ -22183,7 +22183,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/customwidgets/qgscolorbuttonv2plugin.cpp" line="74"/>
         <source>Select color</source>
-        <translation type="unfinished">Wybierz kolor</translation>
+        <translation>Wybierz kolor</translation>
     </message>
 </context>
 <context>
@@ -22368,7 +22368,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="132"/>
         <source>Reset</source>
-        <translation type="unfinished">Wyczyść</translation>
+        <translation>Wyczyść</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="290"/>
@@ -22381,7 +22381,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/gui/qgscolordialog.cpp" line="383"/>
         <location filename="../src/gui/qgscolordialog.cpp" line="425"/>
         <source>Select palette file</source>
-        <translation type="unfinished">Wybierz plik palety</translation>
+        <translation>Wybierz plik palety</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="394"/>
@@ -22390,53 +22390,53 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/gui/qgscolordialog.cpp" line="449"/>
         <location filename="../src/gui/qgscolordialog.cpp" line="456"/>
         <source>Invalid file</source>
-        <translation type="unfinished">Niepoprawny plik</translation>
+        <translation>Niepoprawny plik</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="394"/>
         <location filename="../src/gui/qgscolordialog.cpp" line="436"/>
         <source>Error, file does not exist or is not readable</source>
-        <translation type="unfinished">Błąd, plik nie istnieje lub brak dostępu do odczytu</translation>
+        <translation>Błąd, plik nie istnieje lub nie można go odczytać</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="403"/>
         <source>Error, no colors found in palette file</source>
-        <translation type="unfinished">Błąd, nie znaleziono kolorów w pliku palety</translation>
+        <translation>Błąd, nie znaleziono kolorów w pliku palety</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="449"/>
         <source>Palette file is not readable</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można odczytać pliku palety</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="456"/>
         <source>No colors found in palette file</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie znaleziono kolorów w pliku palety</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="489"/>
         <source>Remove Color Palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń paletę kolorów</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="490"/>
         <source>Are you sure you want to remove %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy na pewno chcesz usunąć %1?</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="514"/>
         <source>Create New Palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz nową paletę</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="514"/>
         <source>Enter a name for the new palette:</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj nazwę nowej palety:</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="515"/>
         <source>New palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowa paleta</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="529"/>
@@ -22446,17 +22446,17 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="567"/>
         <source>Palette file</source>
-        <translation type="unfinished">Plik palety</translation>
+        <translation>Plik palety</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="587"/>
         <source>Error exporting</source>
-        <translation type="unfinished">Błąd eksportu</translation>
+        <translation>Błąd eksportu</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="587"/>
         <source>Error writing palette file</source>
-        <translation type="unfinished">Błąd podczas zapisu pliku palety</translation>
+        <translation>Błąd podczas zapisu pliku palety</translation>
     </message>
 </context>
 <context>
@@ -22516,32 +22516,32 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/gui/qgscolorwidgets.cpp" line="1433"/>
         <source>rgb( %1, %2, %3 )</source>
-        <translation type="unfinished"></translation>
+        <translation>rgb( %1, %2, %3 )</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolorwidgets.cpp" line="1436"/>
         <source>rgba( %1, %2, %3, %4 )</source>
-        <translation type="unfinished"></translation>
+        <translation>rgba( %1, %2, %3, %4 )</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolorwidgets.cpp" line="1472"/>
         <source>#RRGGBB</source>
-        <translation type="unfinished"></translation>
+        <translation>#RRGGBB</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolorwidgets.cpp" line="1474"/>
         <source>#RRGGBBAA</source>
-        <translation type="unfinished"></translation>
+        <translation>#RRGGBBAA</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolorwidgets.cpp" line="1476"/>
         <source>rgb( r, g, b )</source>
-        <translation type="unfinished"></translation>
+        <translation>rgb( r, g, b )</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolorwidgets.cpp" line="1478"/>
         <source>rgba( r, g, b, a )</source>
-        <translation type="unfinished"></translation>
+        <translation>rgba( r, g, b, a )</translation>
     </message>
 </context>
 <context>
@@ -22738,62 +22738,62 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="250"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">&amp;Edycja</translation>
+        <translation>&amp;Edycja</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="273"/>
         <source>&amp;Normal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Zwykły</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="278"/>
         <source>Simulate Photocopy (&amp;Grayscale)</source>
-        <translation type="unfinished"></translation>
+        <translation>Odcienie szarości</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="282"/>
         <source>Simulate Fax (&amp;Mono)</source>
-        <translation type="unfinished"></translation>
+        <translation>Czarno-biały</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="286"/>
         <source>Simulate Color Blindness (&amp;Protanope)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ślepota barw (protanopia)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="290"/>
         <source>Simulate Color Blindness (&amp;Deuteranope)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ślepota barw (daltonizm)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="303"/>
         <source>&amp;View</source>
-        <translation type="unfinished">&amp;Widok</translation>
+        <translation>&amp;Widok</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="338"/>
         <source>P&amp;anels</source>
-        <translation type="unfinished"></translation>
+        <translation>P&amp;anele</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="340"/>
         <source>&amp;Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>Paski &amp;narzędzi</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="351"/>
         <source>&amp;Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Układ</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="375"/>
         <source>&amp;Atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Atlas</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="399"/>
         <source>&amp;Settings</source>
-        <translation type="unfinished">&amp;Ustawienia</translation>
+        <translation>&amp;Ustawienia</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1450"/>
@@ -22839,7 +22839,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1784"/>
         <source>Image export error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd eksportu obrazu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1830"/>
@@ -22865,7 +22865,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2241"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2364"/>
         <source>SVG export error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd eksportu SVG</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2333"/>
@@ -22930,12 +22930,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="204"/>
         <source>&amp;Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Wydruk</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="211"/>
         <source>Print &amp;Composers</source>
-        <translation type="unfinished"></translation>
+        <translation>Wydruki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="232"/>
@@ -23035,7 +23035,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="531"/>
         <source>Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Obiekty</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="827"/>
@@ -23099,7 +23099,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2242"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2365"/>
         <source>Error creating %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd tworzenia %1.</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1763"/>
@@ -23237,37 +23237,37 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="75"/>
         <source>Arrow head outline width</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerokość obrysu grotu strzałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="101"/>
         <source>Arrow head fill color</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolor wypełnienia grotu strzałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="114"/>
         <source>Arrow head outline color</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolor obrysu grotu strzałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="49"/>
         <source>Select arrow head fill color</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz kolor wypełnienia grotu strzałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="44"/>
         <source>Select arrow head outline color</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz kolor obrysu grotu strzałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="47"/>
         <source>Transparent outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Przezroczysty obrys</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="52"/>
         <source>Transparent fill</source>
-        <translation type="unfinished">Przezroczyste wypełnienie</translation>
+        <translation>Przezroczyste wypełnienie</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="183"/>
@@ -23295,7 +23295,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="317"/>
         <source>Arrow line style changed</source>
-        <translation type="unfinished"></translation>
+        <translation>zmieniono styl linii strzałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="236"/>
@@ -23372,7 +23372,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="72"/>
         <source>Line style...</source>
-        <translation type="unfinished"></translation>
+        <translation>Styl linii...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="99"/>
@@ -23392,17 +23392,17 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="122"/>
         <source>Arrow outline color</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolor obrysu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="154"/>
         <source>Arrow fill color</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolor wypełnienia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="186"/>
         <source>Arrow outline width</source>
-        <translation>Szerokość obrysu strzałki</translation>
+        <translation>Szerokość obrysu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="220"/>
@@ -35538,7 +35538,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="463"/>
         <source>Error opening log file.</source>
-        <translation>Błąd podczas otwierania pliku log.</translation>
+        <translation>Błąd podczas otwierania pliku zdarzeń.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="486"/>
@@ -35717,7 +35717,7 @@ Błędy:  %2
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="1041"/>
         <source>Save GPS log file as</source>
-        <translation>Zapisz pliki log GPS jako</translation>
+        <translation>Zapisz pliki zdarzeń GPS jako</translation>
     </message>
     <message>
         <source>NMEA files (*.nmea)</source>
@@ -36168,12 +36168,12 @@ szary = brak danych
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="929"/>
         <source>Log File</source>
-        <translation>Plik log</translation>
+        <translation>Plik zdarzeń</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="978"/>
         <source>browse for log file</source>
-        <translation>wyszukaj plik log</translation>
+        <translation>wyszukaj plik zdarzeń</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="991"/>
