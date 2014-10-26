@@ -3382,7 +3382,7 @@ colonna geometrica, colonna con valori interi univoci</translation>
     </message>
     <message>
         <source>Use min covering extent from input layers</source>
-        <translation>Usa copertura minima dell&apos;estensione dai layer in input</translation>
+        <translation>Usa estensione minima dell&apos;estensione dai layer in input</translation>
     </message>
 </context>
 <context>
@@ -19983,12 +19983,12 @@ Prova una risoluzione minore o una minor dimensione di stampa</translation>
 <context>
     <name>QgsComposerLegend</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="440"/>
+        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="493"/>
         <source>&lt;legend&gt;</source>
         <translation>&lt;legend&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="444"/>
+        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="497"/>
         <source>%1...</source>
         <translation>%1...</translation>
     </message>
@@ -26214,12 +26214,12 @@ Errore di elaborazione:
 <context>
     <name>QgsDxfExportDialog</name>
     <message>
-        <location filename="../src/app/qgsdxfexportdialog.cpp" line="345"/>
+        <location filename="../src/app/qgsdxfexportdialog.cpp" line="370"/>
         <source>Export as DXF</source>
         <translation>Esporta come DXF</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsdxfexportdialog.cpp" line="345"/>
+        <location filename="../src/app/qgsdxfexportdialog.cpp" line="370"/>
         <source>DXF files *.dxf *.DXF</source>
         <translation>File DXF *.dxf *.DXF</translation>
     </message>

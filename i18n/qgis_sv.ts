@@ -19986,12 +19986,12 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
 <context>
     <name>QgsComposerLegend</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="440"/>
+        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="493"/>
         <source>&lt;legend&gt;</source>
         <translation>&lt;teckenförklaring&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="444"/>
+        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="497"/>
         <source>%1...</source>
         <translation>%1...</translation>
     </message>
@@ -26217,12 +26217,12 @@ Tolkningsfel:
 <context>
     <name>QgsDxfExportDialog</name>
     <message>
-        <location filename="../src/app/qgsdxfexportdialog.cpp" line="345"/>
+        <location filename="../src/app/qgsdxfexportdialog.cpp" line="370"/>
         <source>Export as DXF</source>
         <translation>Exportera som DXF</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsdxfexportdialog.cpp" line="345"/>
+        <location filename="../src/app/qgsdxfexportdialog.cpp" line="370"/>
         <source>DXF files *.dxf *.DXF</source>
         <translation>DXF-filer *.dxf *.DXF</translation>
     </message>
@@ -58919,7 +58919,37 @@ geometry types and don&apos;t offer to add others.
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Skapa en ny Oracle anslutning&lt;/h3&gt;
+Denna dialog låter dig definiera inställningar för en anslutning till en Oracle databas.
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;label&gt;Namn&lt;/label&gt; Ett namn för att identifiera anslutningsinställningarna.
+
+&lt;li&gt; &lt;label&gt;Databas&lt;/label&gt; SID eller SERVICE_NAME till Oracle instansen.
+
+&lt;li&gt; &lt;label&gt;Värd&lt;/label&gt; Namn eller IP-adress till datorn som är värd för databasservern.
+
+&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; IP port som används av databasservern.
+
+&lt;li&gt; &lt;label&gt;Användarnamn&lt;/label&gt; Databasanvändarnamn.
+&lt;li&gt; &lt;label&gt;Lösenord&lt;/label&gt; Databaslösenord.
+
+&lt;li&gt; &lt;label&gt;Spara Användarnamn&lt;/label&gt; Anger om användarnamn skall sparas i databasens anslutningsinställningar.
+
+&lt;li&gt; &lt;label&gt;Spara Lösenord&lt;/label&gt; Anger om lösenord skall sparas i databasens anslutningsinställningar.  &lt;font color=&quot;red&quot;&gt;Lösenord sparas i &lt;strong&gt;klartext&lt;/strong&gt; i systemkonfigurationen och projektfilen!&lt;/font&gt;
+
+&lt;li&gt; &lt;label&gt;Leta endast i metadatatabellen&lt;/label&gt; Begränsar visade tabeller till dem som finns i all_sdo_geom_metadata vyn. Detta kan snabba upp den initiala visningen av rumsliga tabeller.
+
+&lt;li&gt; &lt;label&gt;Leta endast efter användarens tabeller&lt;/label&gt; Vid sökning efter rumsliga tabeller begränsa detta till tabeller som ägs av användaren.
+
+&lt;li&gt; &lt;label&gt;Visa även tabeller utan geometri&lt;/label&gt;  Anger om även tabeller utan geometri skall visas som standard.
+
+&lt;li&gt; &lt;label&gt;Använd uppskattad tabellstatistik för lagrets metadata&lt;/label&gt; När lagret skapas krävs flera metadata för Oracle tabellen. Detta omfattar information som antal rader, geometrityp och rumslig utsträckning för data i geometrikolumnen. Om tabellen innehåller ett stort antal rader så kan fastställande av dessa metadata ta lång tid. Genom att aktivera detta alternativ så kommer ett antal snabba tabelloperationer utföras: Antal rader fastställs genom all_tables.num_rows. Tabellutsträckning fastställs alltid med SDO_TUNE.EXTENTS_OF även om ett filter tillämpas. Tabellgeometrin fastställs av de första 100 icke-null geometriraderna i tabellen.
+
+&lt;li&gt; &lt;label&gt;Endast existerande geometrityper&lt;/label&gt; Visa endast existerande geometrityper och erbjud inte att lägga till ytterligare.
+
+&lt;/ul&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="775"/>
@@ -58969,7 +58999,46 @@ To filter a layer before adding it to the map, double click on its name or use &
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Lägg till PostGIS data&lt;/h3&gt;
+Denna dialogruta gör det möjligt att lägga till PostGIS lager (tabeller
+ med geometrikolumner) till QGIS kartblad.
+&lt;p&gt;
+&lt;a href=&quot;#connect&quot;&gt;Uppkopplingar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#add&quot;&gt;Lägga till lager&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#filter&quot;&gt;Filtrera ett lager&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#search&quot;&gt;Sökalternativ&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;connect&quot;&gt;
+&lt;h4&gt;Uppkopplingar&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;Välj uppkopplingen som skall användas från rull-listan och
+    klicka på &lt;label&gt;Anslut&lt;/label&gt;.
+&lt;li&gt;Om det inte finns några uppkopplingar, använd knappen &lt;label&gt;Ny&lt;/label&gt;
+    för att skapa en uppkoppling.
+&lt;li&gt;För att redigera ett lager, klicka på knappen &lt;label&gt;Redigera&lt;/label&gt;.
+&lt;/ul&gt;
+&lt;a name=&quot;add&quot;&gt;
+&lt;h4&gt;Lägga till lager&lt;/h4&gt;
+&lt;/a&gt;
+För att lägga till ett lager:
+&lt;ol&gt;
+&lt;li&gt;Välj önskad uppkoppling från rull-listan.
+&lt;li&gt;Klicka &lt;label&gt;Anslut&lt;/label&gt;.
+&lt;li&gt;Hitta lagret du vill lägga till och klicka på det för att välja det.
+&lt;li&gt;Du kan välja ytterligare lager genom att hålla nere Ctrl-tangenten när du klickar.
+&lt;li&gt;Klicka &lt;label&gt;Lägg till&lt;/label&gt; för att lägga till lagret/lagren till kartan.
+&lt;/ol&gt;
+&lt;a name=&quot;filter&quot;&gt;
+&lt;h4&gt;Filtrera ett lager&lt;/h4&gt;
+&lt;/a&gt;
+För att filtrera ett lager inan du lägger till det till kartan, dubbeklicka på namnet eller använd &lt;label&gt;Bygg fråga&lt;/label&gt;. Detta öppnar frågebyggaren, som gör det möjligt att skapa en SQL-fråga för att filtrera poster.
+
+&lt;a name=&quot;search&quot;&gt;
+&lt;h4&gt;Sökalternativ&lt;/h4&gt;
+&lt;/a&gt;
+Genom att välja &lt;label&gt;Sökalternativ&lt;/label&gt; möjliggörs ytterligare alternativ för  att söka i olika kolumntyper samt att använda 2 söklägen: &lt;label&gt;Wildcard&lt;/label&gt; eller &lt;label&gt;RegExp&lt;/label&gt;.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="715"/>
@@ -59033,7 +59102,66 @@ The field calculator allows you to update fields with expressions.
 &lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negative value of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Fältkalkylatorn&lt;/h3&gt;
+Fältkalkylatorn låter dig uppdatera fält med uttryck.
+
+&lt;h4&gt;Stödda uttryck&lt;/h4&gt;
+
+&lt;table border=1&gt;
+&lt;tr&gt;
+  &lt;th&gt;Uttryck&lt;/th&gt;
+  &lt;th&gt;Beskrivning&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;
+    &lt;tt&gt;column_name&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&quot;column_name&quot;&lt;/tt&gt;
+  &lt;/td&gt;
+  &lt;td&gt;värde för fältet &lt;tt&gt;column_name&lt;/tt&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&apos;&lt;tt&gt;string&lt;/tt&gt;&apos;&lt;/td&gt;&lt;td&gt;ordagrann textsträng&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;number&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;nummer&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NULL&lt;/td&gt;&lt;td&gt;null värde&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;exp(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Euler&apos;s tal e upphöjt till &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ln(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;naturlig log (m.a.o bas e) av &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;log10(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;log bas 10 av &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;log(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;b&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;log bas &lt;tt&gt;b&lt;/tt&gt; av &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;sqrt(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;kvadratrot&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;sin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;sinus för &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;cos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;cosinus för &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;tan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;tangens för &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;asin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;invers sinus för &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;acos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;invers cosinus för &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;atan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;invers tangens för &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to int(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;omvandla text &lt;tt&gt;a&lt;/tt&gt; till heltal&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to real(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;omvandla text &lt;tt&gt;a&lt;/tt&gt; till real&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to string(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;omvandla tal &lt;tt&gt;a&lt;/tt&gt; till text&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;lower(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;omvandla text &lt;tt&gt;a&lt;/tt&gt; till gemener&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;upper(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;omvandla text &lt;tt&gt;a&lt;/tt&gt; till versaler&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;length(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;längd på text &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;atan2(&lt;tt&gt;y&lt;/tt&gt;,&lt;tt&gt;x&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;invers tangens för &lt;tt&gt;y&lt;/tt&gt;/&lt;tt&gt;x&lt;/tt&gt; användande tecknet för båda argumenten till att fastställa kvadraten på resultatet.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;ersätt-detta&lt;/tt&gt;,&lt;tt&gt;med-detta&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;ersätter &lt;tt&gt;ersätt-detta&lt;/tt&gt; med &lt;tt&gt;med-detta&lt;/tt&gt; i text &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;regexp_replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;ersätt-detta&lt;/tt&gt;,&lt;tt&gt;med-detta&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;ersätt regular expression &lt;tt&gt;ersätt-detta&lt;/tt&gt; med &lt;tt&gt;med-detta&lt;/tt&gt; i text &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;substr(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;från&lt;/tt&gt;,&lt;tt&gt;len&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;&lt;tt&gt;antal&lt;/tt&gt; tecken i text &lt;tt&gt;a&lt;/tt&gt; med början på &lt;tt&gt;från&lt;/tt&gt; (första tecknet är 1)&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; || &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;slå samman text &lt;tt&gt;a&lt;/tt&gt; och &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$rownum&lt;/td&gt;&lt;td&gt;aktuellt radnummer&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$area&lt;/td&gt;&lt;td&gt;yta för polygon&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$perimeter&lt;/td&gt;&lt;td&gt;omkrets för polygon&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$length&lt;/td&gt;&lt;td&gt;längd på linje&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$id&lt;/td&gt;&lt;td&gt;objektid&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$x&lt;/td&gt;&lt;td&gt;x koordinat för punkt&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$y&lt;/td&gt;&lt;td&gt;y koordinat för punkt&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;xat(&lt;tt&gt;n&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;x koordinat för den &lt;tt&gt;n&lt;/tt&gt;:te punkten på en linje (räknas från 0; negativa tal anger den sista punkten)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yat(&lt;tt&gt;n&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;y koordinat för den &lt;tt&gt;n&lt;/tt&gt;:te punkten på en linje (räknas från 0; negativa tal anger den sista punkten)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ^ &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; upphöjt till &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; * &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; multiplicerat med &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; / &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; dividerat med &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; + &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; plus &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; - &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; minus &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;+&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;positivt tecken&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negativt värde på &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="795"/>
@@ -59162,7 +59290,58 @@ The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table al
 The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
 The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Attributtabellen&lt;/h3&gt;
+Attributtabellen visar objekt i ett utvalt lager. Varje rad i tabellen representerar ett kartobjekt med tillhörande attribut i flera kolumner. Objekten i tabellen går att söka efter, välja ut, flyttas eller till och med redigeras. Som standard visas attributtabellen i ett separat fönster. Om du öppnar den och inte kan se den, är det troligt att den är dold under QGIS huvudfönster. Du kan även docka fönstret genom att markera &lt;label&gt;Öppna attributtabell i dockat fönster&lt;/label&gt; i &lt;label&gt;Inställningar &gt; Alternativ &gt; Datakällor&lt;/label&gt;.&lt;p&gt;
+
+Det totala antalet lagerobjekt, filtrerade och utvalda objekt visas i fönstertitelraden.&lt;p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;Urval&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;Sortering&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;Filtrering&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;Redigering&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;Fältkalkylator&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;Selecting&quot;&gt;
+&lt;h4&gt;Urval&lt;/h4&gt;
+&lt;/a&gt;
+Rader kan väljas genom att klicka på radnumret till vänster om raden. Efterföljande rader kan väljas genom att hålla musknappen nere och flytta musen till slutet på markeringen. Flera rader som inte ligger efter varandra kan väljas genom att hålla &lt;label&gt;Ctrl&lt;/label&gt; knappen nedtryckt.&lt;br&gt;
+Ett kontinuerligt urval kan göras genom att hålla &lt;label&gt;Shift&lt;/label&gt; knappen nedtryckt och klicka på flera rader till vänster. Alla mellanliggande rader kommer att bli markerade.
+
+&lt;a name=&quot;Sorting&quot;&gt;
+&lt;h4&gt;Sortering&lt;/h4&gt;
+&lt;/a&gt;
+Varje kolumn kan sorteras genom att klicka på kolumnrubriken. En liten pil indikerar sorteringsordningen (nedåtpil betyder fallande värden uppifrån och ned, uppåtpil betyder stigande värden uppifrån och ned).&lt;br&gt;
+Aktivera &lt;label&gt;Flytta markerat överst&lt;/label&gt; knappen (ctrl+T) för att alltid visa dessa överst, oavsett sorteringsordning.
+
+&lt;a name=&quot;Filtering&quot;&gt;
+&lt;h4&gt;Filtrering&lt;/h4&gt;
+&lt;/a&gt;
+För att bara hantera delar av dina data kan du använda filterknappen nere till vänster. Följande alternativ är tillgängliga.
+&lt;h5&gt;Visa alla objekt&lt;/h5&gt;
+Visar alla objekt i lagret.
+&lt;h5&gt;Visa valda objekt&lt;/h5&gt;
+Visar alla objekt som för tillfället är valda.
+&lt;h5&gt;Visa endast objekt synliga i kartfönstret&lt;/h5&gt;
+Visar alla objekt som för tillfället är synliga i kartan. Hänsyn tas även till om lagret har skalberoende visning inställt.
+&lt;h5&gt;Visa redigerade och nya objekt&lt;/h5&gt;
+Visar endast redigerade och nya objekt. I detta läge kommer objekt med ej verkställda ändringar att visas och det kan därför vara ett bra filter för att kontrollera ändringar, innan dessa verkställs. Notera att raderade objekt inte visas i detta läge.
+&lt;h5&gt;Kolumnfilter&lt;/h5&gt;
+Ett enkelt filter, som låter dig filtrera på attribut. Om attributet innehåller text, så letar det även efter substrängar. En sökning efter &lt;b&gt;bil&lt;/b&gt; kommer även att visa rader som innehåller &lt;b&gt;stabil&lt;/b&gt;. När filtertexten ändrats, tryck på &lt;label&gt;Enter&lt;/label&gt; eller klicka på &lt;label&gt;Verkställ&lt;/label&gt;.Du kan även växla läge med kryssrutan &lt;label&gt;Skilj på gemener/VERSALER&lt;/label&gt;, vilket får ditt filter att även hitta &lt;b&gt;Buss&lt;/b&gt; när söktexten är &lt;b&gt;buss&lt;/b&gt;.   
+&lt;h5&gt;Avancerade filter&lt;/h5&gt;
+För mer avancerade sökningar finns detta läge där det går att använda en kraftfull frågebyggare, som liknar SQL WHERE kommandot. Använd den inbyggda hjälpen i frågebyggaren för detaljer om hur dessa frågor byggs upp.
+
+&lt;a name=&quot;Editing&quot;&gt;
+&lt;h4&gt;Redigering&lt;/h4&gt;
+&lt;/a&gt;
+För att redigera värden måste du först växla lagret till redigeringsläge. För att växla till redigeringsläge så klickar man på &lt;label&gt;Växla redigeringsläge&lt;/label&gt; (pennan) knappen eller använder &lt;label&gt;Ctrl + E&lt;/label&gt;. Efteråt dubbelklicakr man på det värde man vill ändra eller placerar markören där och använder &lt;label&gt;Space&lt;/label&gt;-tangenten. Du kan anpassa widgetar som används för fältredigering i &lt;label&gt;lageregenskaper &gt; Fält&lt;/label&gt;.
+
+&lt;a name=&quot;FieldCalc&quot;&gt;
+&lt;h4&gt;Fältkalkylatorn&lt;/h4&gt;
+&lt;/a&gt;
+&lt;label&gt;Fältkalkylator&lt;/label&gt;-knappen i attributtabellen låter dig utföra beräkningar baserade på existerande attributvärden eller definierade funktioner, som beräkning av längd eller area för geometriska objekt.&lt;br&gt;
+Resultatet kan skrivas till ett nytt attribut eller användas för att uppdatera ett värde i en redan existerande kolumn.&lt;br&gt;
+Vektorlagret behöver vara i redigeringsläge, innan det går att klicka på &lt;label&gt;Fältkalkylator&lt;/label&gt;-ikonen för att öppna dialogen.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="11"/>
@@ -59425,7 +59604,44 @@ The Coordinate Reference System (CRS) tab allows you to set the projection for t
 &lt;/a&gt;
 On this tab you can choose on which layers the identify tool will work.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Projektegenskaper&lt;/h3&gt;
+I denna dialogruta kan du justera många inställningar som berör &lt;label&gt;Projektet&lt;/label&gt;. Ett projekt är en sparad mängd med lager och deras inställningar, samt annan information för att läsa in projektet från hårddisk.&lt;p&gt;
+
+&lt;a href=&quot;#general&quot;&gt;Flikan Allmänt&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#crs&quot;&gt;Fliken Referenskoordinatsystem&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#layers&quot;&gt;Fliken Identifiera lager&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;Fliken Allmänt&lt;/h4&gt;
+&lt;table border=1&gt;
+&lt;tr&gt;
+&lt;td&gt;Projekttitel&lt;/td&gt;&lt;td&gt;En beskrivande titel för projektet. Denna titel visas i titelfältet i QGIS-fönstret&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Kartenheter&lt;/td&gt;&lt;td&gt;Välj lämplig kartenhet för lagren i projektet&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Precision&lt;/td&gt;&lt;td&gt;Använda manuell inställning för att bestämma vilken precision som koordinaterna skall visas i. När muspekaren flyttas över kartvyn, ändras koordinaterna och visas i statusfältet med den precision du har valt. Automatisk (standard) använder sig av standardinställningen beroende på kartenhet.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Digitalisering&lt;/td&gt;&lt;td&gt;Här kan du ställa in toleransen för fästning i bildpunkter, linjens bredd vid digitalisering, och färgen på de digitaliserade linjerna.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Färg för valda&lt;/td&gt;&lt;td&gt;Valda objeket på kartan använder denna färg.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;crs&quot;&gt;
+&lt;h4&gt;Fliken Referenskoordinatsystem&lt;/h4&gt;
+&lt;/a&gt;
+Fliken Referenskoordinatsystem låter dig bestämma projektion för det aktuella projektet och aktivera omedelbar koordinattransformation. Du behöver inte spara projektet för att aktivera &apos;omedelbar&apos; koordinattransformation.
+&lt;p&gt;För att använda &apos;omedelbar&apos; koordinattransformation klicka på &lt;label&gt;Aktivera omedelbar koordinattransformation&lt;/label&gt; kryssrutan. Välj sedan den projektion som projektet (kartfönstret) skall ha från listan med geografiska och projicerade koordinatsystem.
+&lt;p&gt;Du kan hitta ett koordinatsystem genom att skriva in dess namn, EPSG kod eller QGIS ID.
+&lt;p&gt;De senast använda koordinatsystemen visas i en lista i fönstrets nederkant för att vara enklare att hitta.
+
+&lt;a name=&quot;layers&quot;&gt;
+&lt;h4&gt;Fliken Identifiera lager&lt;/h4&gt;
+&lt;/a&gt;
+På denna flik kan du välja vilka lager som identifieraverktyget skall fungera på.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1191"/>
@@ -61697,7 +61913,22 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 &lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen left()&lt;/h3&gt;
+Returnerar en deltext som innehåller de &lt;i&gt;n&lt;/i&gt; mest vänstra bokstäverna i en text.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;left(text, längd)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+&lt;code&gt;text&lt;/code&gt; - är en text. Texten.
+&lt;br&gt;
+&lt;code&gt;längd&lt;/code&gt; - är heltal. Antalet bokstäver från vänster som ska returneras.
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="241"/>
@@ -62681,7 +62912,19 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; xmax($geometry) &amp;rarr; returns maximum x coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen xmax&lt;/h3&gt;
+Returnerar den största x-koordinaten från geometrin. Beräkningen sker i geometrins referenskoordinatsystem.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;xmax(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+geom &amp;rarr; en geometri
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;pre&gt;xmax($geometry) &amp;rarr; returnerar den största x-koordinaten från $geometry&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="634"/>
@@ -63068,7 +63311,20 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4,  2 1 )&apos; ))  )    &amp;rarr; returns MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; returns LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen combine&lt;/h3&gt;
+Returnerar kombinationen av geometri a och geometri b.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;combine( geometri a , geometri b)&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+geometri &amp;rarr; geometri
+geometri &amp;rarr; geometri
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4, 2 1 )&apos; )) ) &amp;rarr; returnerar MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
+&lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6, 2 1 )&apos; )) ) &amp;rarr; returnerar LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1348"/>
@@ -63086,7 +63342,20 @@ b &amp;rarr; geometry
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen intersects&lt;/h3&gt;
+Returnerar 1 om geometrierna skär varandra spatialt (delar samma utrymme) och 0 om de inte gör det.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;intersects( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+a &amp;rarr; geometri
+b &amp;rarr; geometri
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returnerar 1&lt;/pre&gt;
+&lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; )) &amp;rarr; returnerar 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="715"/>
@@ -63145,7 +63414,20 @@ b &amp;rarr; geometry
 &lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen disjoint&lt;/h3&gt;
+Returnerar 1 om geometrierna inte skär varandra spatialt - om de inte delar samma utrymme.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;disjoint( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+a &amp;rarr; geometri
+b &amp;rarr; geometri
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returnerar 1&lt;/pre&gt;
+&lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; )) &amp;rarr; returnerar 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1282"/>
@@ -63162,7 +63444,19 @@ text &amp;rarr; Well-Known Text (WKT) representation of a geometry
 &lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen geomFromWKT&lt;/h3&gt;
+Returnerar en geometri skapad från en Well-Known Text (WKT).
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;geomFromWKT(text)&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+text &amp;rarr; Well-Known Text (WKT) representation av en geometri.
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; returnerar en geometri.&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="673"/>
@@ -63198,7 +63492,20 @@ None
 &lt;pre&gt;attribute( $atlasfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current atlas feature&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen $atlasfeature&lt;/h3&gt;
+Vid skapande av en atlas så returneras det nuvarande objektet i iterationen av täcklagret. Denna funktion kan användas tillsammans med 
+funktionen &apos;attribute&apos; för att returnera attributvärden för det nuvarande atlasobjektet.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasfeature&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+Inga
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;pre&gt;attribute( $atlasfeature, &apos;name&apos; ) &amp;rarr; returnerar värdet som finns i attributet &apos;namn&apos; för det nuvarande atlasobjektet&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="69"/>
@@ -63216,7 +63523,19 @@ None
 &lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen $currentfeature&lt;/h3&gt;
+Returnerar det nuvarande objektet som evalueras. Denna funktion kan användas tillsammans med funktionen &apos;attribute&apos; för att returnera attributvärden för det nuvarande objektet.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$currentfeature&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+Inga
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returnerar värdet som finns i attributet &apos;namn&apos; för det nuvarande objektet&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="109"/>
@@ -63265,7 +63584,18 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen $uuid&lt;/h3&gt;
+Genererar ett &apos;Universally Unique Identifier (UUID)&apos; för varje rad genom att använda Qt-metoden &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/quuid.html#createUuid&apos;&gt;QUuid::createUuid&lt;/a&gt;. Varje UUID är 38 bokstäver långt.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$uuid&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+Inga
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="418"/>
@@ -63359,7 +63689,13 @@ Returns the first feature of a layer matching a given attribute value
 &lt;pre&gt;getFeature( layer, attributeField, value )&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen getFeature&lt;/h3&gt;
+Returnerar det första objektet i ett lager som matchar ett givet attributvärde.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;getFeature( lager, attributfält, värde )&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1992"/>
@@ -63938,7 +64274,20 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen max()&lt;/h3&gt;
+Returnerar det största värdet i en lista med värden.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+max(&lt;i&gt;värde&lt;i&gt;[,&lt;i&gt;värde&lt;/i&gt;...])
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt; värde&lt;/i&gt; &amp;rarr; ett tal.&lt;br&gt;
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+max(2,10.2,5.5) &amp;rarr; 10.2
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1810"/>

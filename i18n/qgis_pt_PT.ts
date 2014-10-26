@@ -19978,12 +19978,12 @@ Por favor, tente uma resolução mais baixa ou um tamanho de papel mais pequeno<
 <context>
     <name>QgsComposerLegend</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="440"/>
+        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="493"/>
         <source>&lt;legend&gt;</source>
         <translation>&lt;legend&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="444"/>
+        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="497"/>
         <source>%1...</source>
         <translation>%1...</translation>
     </message>
@@ -26207,12 +26207,12 @@ Erro de análise:
 <context>
     <name>QgsDxfExportDialog</name>
     <message>
-        <location filename="../src/app/qgsdxfexportdialog.cpp" line="345"/>
+        <location filename="../src/app/qgsdxfexportdialog.cpp" line="370"/>
         <source>Export as DXF</source>
         <translation>Exportar como DXF</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsdxfexportdialog.cpp" line="345"/>
+        <location filename="../src/app/qgsdxfexportdialog.cpp" line="370"/>
         <source>DXF files *.dxf *.DXF</source>
         <translation>Ficheiros DXF *.dxf *.DXF</translation>
     </message>
@@ -62871,7 +62871,7 @@ Returns the length of a string.
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;função length()&lt;/h3&gt;
-Retornas o comprimento de uma cadeia de texto.
+Retorna o comprimento de uma cadeia de texto.
 
 &lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
      length(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
@@ -62882,7 +62882,8 @@ Retornas o comprimento de uma cadeia de texto.
 
 &lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     length(&apos;OLÁ&apos;) &amp;rarr; 3&lt;/p&gt;
+     length(&apos;OLÁ&apos;) &amp;rarr; 5&lt;/p&gt;
+
 </translation>
     </message>
     <message>
@@ -62933,7 +62934,7 @@ b &amp;rarr; geometry
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;função bbox&lt;/h3&gt;
-Returna 1 se as geometrias intersectam espacialmente a caixa envolvente definida e 0 se não.
+Retorna 1 se as geometrias intersectam espacialmente a caixa envolvente definida e 0 se não.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
 &lt;pre&gt;bbox( a, b )&lt;/pre&gt;
@@ -62944,7 +62945,8 @@ b &amp;rarr; geometry
 
 &lt;h4&gt;Examplo&lt;/h4&gt;
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; retorna 1&lt;/pre&gt;
-&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; retorna 0&lt;/pre&gt;</translation>
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; retorna 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1362"/>
@@ -63088,7 +63090,7 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função yat()&lt;/h3&gt;
+        <translation>&lt;h3&gt;função xat()&lt;/h3&gt;
 Fornece a coordenada x do elemento actual
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -63386,7 +63388,7 @@ Converte uma cadeia de texto para um número inteiro. Nada será alterado se o v
 
 &lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; é uma cadeia de texto.  a cadeia de texto aser convertida num número inteiro.&lt;/p&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; é uma cadeia de texto.  a cadeia de texto a ser convertida num número inteiro.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -64654,7 +64656,7 @@ text &amp;rarr; GML representation of a geometry
 
 </source>
         <translation>&lt;h3&gt;função geomFromGML&lt;/h3&gt;
-Retorna a geometria de uma representaçaõ de geometria GML
+Retorna a geometria de uma representação de geometria GML
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
 &lt;pre&gt;geomFromGML(text)&lt;/pre&gt;
@@ -64798,7 +64800,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;função disjoint&lt;/h3&gt;
-Returna 1 se as  geometrias não se &quot;intersectam espacialmente&quot; - se não partilham um espaço conjunto. 
+Retorna 1 se as  geometrias não se &quot;intersectam espacialmente&quot; - se não partilham um espaço conjunto. 
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
 &lt;pre&gt;disjoint( a, b )&lt;/pre&gt;
@@ -64918,7 +64920,7 @@ None
 
 </source>
         <translation>&lt;h3&gt;função $currentfeature&lt;/h3&gt;
-Retornas o elemento actual que está a ser avaliado. Isto pode ser usado com a função &apos;attribute&apos;
+Retorna o elemento actual que está a ser avaliado. Isto pode ser usado com a função &apos;attribute&apos;
 para avaliar os valores do atributo do elemento actual.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -64947,7 +64949,7 @@ None
 
 </source>
         <translation>&lt;h3&gt;função $id&lt;/h3&gt;
-Retorna o elemnto id da linhas actual.
+Retorna o elemento id da linhas actual.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
 &lt;pre&gt;$id&lt;/pre&gt;
@@ -65068,7 +65070,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;função crosses&lt;/h3&gt;
-Returna 1 se as geometrias fornecidas tenham alguns, mas não todos, pontos interiores em comum.
+Retorna 1 se as geometrias fornecidas tenham alguns, mas não todos, pontos interiores em comum.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
 &lt;pre&gt;crosses( $geometry , $geometry)&lt;/pre&gt;
@@ -65173,7 +65175,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;função overlaps&lt;/h3&gt;
-Returna 1 se as geometrias partilham o espaço, são da mesma dimensão, mas não estão completamente contidos um no outro.
+Retorna 1 se as geometrias partilham o espaço, são da mesma dimensão, mas não estão completamente contidos um no outro.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
 &lt;pre&gt;overlaps( a, b )&lt;/pre&gt;
@@ -65301,7 +65303,7 @@ Returna o centro geométrico da geometria.
 &lt;h4&gt;Argumentos&lt;/h4&gt;
 a &amp;rarr; geometria
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Exemplo&lt;/h4&gt;
 &lt;pre&gt; centroid($geometry) &amp;rarr; retorna uma geometria do tipo ponto&lt;/pre&gt;
 
 </translation>
@@ -65390,7 +65392,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; distance( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(4 8)&apos; ))    &amp;rarr; returns 4&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;função distance&lt;/h3&gt;
- Returna a distância mínima (baseado na ref espacial) entre as unidades projectadas de duas geometrias.
+ Retorna a distância mínima (baseado na ref espacial) entre as unidades projectadas de duas geometrias.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
 &lt;pre&gt;distance( a, b )&lt;/pre&gt;
@@ -65481,7 +65483,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; geomToWKT( symDifference(  geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 8 8)&apos; ))   )   &amp;rarr; returns LINESTRING(5 5, 8 8)&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;função symDifference&lt;/h3&gt;
-Returna a geometria que representa porções de a e b que não se intersectam.
+Retorna a geometria que representa porções de a e b que não se intersectam.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
 &lt;pre&gt;symDifference( geometry a, geometry b)&lt;/pre&gt;
@@ -66332,7 +66334,7 @@ Returns cosinus of an angle.
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;função cos()&lt;/h3&gt;
-Retorna cosseno de um ãngulo.
+Retorna cosseno de um ângulo.
 
 
 &lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -66502,7 +66504,7 @@ Returns true if any part of a string matches the supplied regular expression.
      regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;função regexp_match()&lt;/h3&gt;
-Returna como verdadeiro se houver qualquer parte da cadeia de texto que coincida com a expressão regular fornecida.
+Retorna como verdadeiro se houver qualquer parte da cadeia de texto que coincida com a expressão regular fornecida.
 
 &lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
      regexp_match(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;

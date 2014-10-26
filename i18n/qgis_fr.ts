@@ -6909,7 +6909,7 @@ Ouvrez la fenêtre de résultats pour la vérifier.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2103"/>
         <source>Select By Expression...</source>
-        <translation>Sélectionner par une Expression...</translation>
+        <translation>Sélectionner à l&apos;aide d&apos;une expression...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2111"/>
@@ -7124,7 +7124,7 @@ Ouvrez la fenêtre de résultats pour la vérifier.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="895"/>
         <source>Select Features by area or single click</source>
-        <translation>Séléctionner les éléments par région ou simple click</translation>
+        <translation>Sélectionner les entités avec un rectangle ou un simple clic</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1111"/>
@@ -7412,7 +7412,7 @@ Activables sur toutes les couches éditables</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1869"/>
         <source>Cumulative cut stretch using full dataset extent, default limits and estimated values.</source>
-        <translation>Histogramme cumulatif de l&apos;emprise local utilisant l&apos;emprise total du jeu de données, les limites par défaut et les valeurs estimées.</translation>
+        <translation>Histogramme cumulatif de l&apos;emprise locale utilisant l&apos;emprise totale du jeu de données, les limites par défaut et les valeurs estimées.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1881"/>
@@ -8641,7 +8641,7 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     <name>Processing</name>
     <message>
         <source>Pro&amp;cessing</source>
-        <translation>&amp;Calcul en cours</translation>
+        <translation>&amp;Traitement</translation>
     </message>
     <message>
         <source>&amp;Toolbox</source>
@@ -8702,7 +8702,7 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     </message>
     <message>
         <source>Use filename as layer name</source>
-        <translation>Utiliser les noms des fichiers comme noms de couche</translation>
+        <translation>Utiliser le nom de fichier comme nom de couche</translation>
     </message>
     <message>
         <source>Show recently executed algorithms</source>
@@ -10428,7 +10428,7 @@ Seulement %1 sur %2 entités ont été écrites.</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="960"/>
         <source>By default when writing a layer whose features are of type wkbMultiLineString, the GPX driver chooses to write them as tracks. If FORCE_GPX_ROUTE=YES is specified, they will be written as routes, provided that the multilines are composed of only one single line.</source>
-        <translation>Par défaut lors de l&apos;écriture d&apos;une couche dont les caractéristiques sont de type wkbMultiLineString, le module GPX choisit de les écrire comme des pistes (Tracks). Si FORCE_GPX_ROUTE=YES est spécifié, ils seront inscrits en tant que routes composées de multi-lignes ou de lignes simples.</translation>
+        <translation>Par défaut, lors de l&apos;écriture d&apos;une couche dont les entités sont de type wkbMultiLineString, le module GPX choisit de les écrire comme des pistes (Tracks). Si FORCE_GPX_ROUTE=YES est spécifié, ils seront inscrits en tant que routes composées de multi-lignes ou de lignes simples.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="969"/>
@@ -13687,7 +13687,7 @@ Veuillez contacter les développeurs.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2346"/>
         <source>Filter Legend By Map Content</source>
-        <translation>Filtrer la légende par contenu de la carte</translation>
+        <translation>Filtrer la légende par le contenu de la carte</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2354"/>
@@ -14514,7 +14514,7 @@ Toujours ignorer ces erreurs ?</translation>
     <message>
         <location filename="../src/customwidgets/qgiscustomwidgets.h" line="32"/>
         <source>QGIS custom widgets</source>
-        <translation>Outil QGIS personnalisés</translation>
+        <translation>Outils QGIS personnalisés</translation>
     </message>
 </context>
 <context>
@@ -16868,7 +16868,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="842"/>
         <source>Export Colors...</source>
-        <translation>Exporter les couleurs</translation>
+        <translation>Exporter les couleurs...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="845"/>
@@ -17770,7 +17770,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="72"/>
         <source>Line style...</source>
-        <translation>Style de ligne</translation>
+        <translation>Style de ligne...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="85"/>
@@ -17795,7 +17795,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="122"/>
         <source>Arrow outline color</source>
-        <translation>Couleur de la bordure de la flèche</translation>
+        <translation>Couleur de bordure de la flèche</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="154"/>
@@ -17928,7 +17928,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="45"/>
         <source>Repeat until finished</source>
-        <translation>Répéter jusqu&apos;à avoir fini</translation>
+        <translation>Répéter jusqu&apos;à la fin</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="47"/>
@@ -18650,7 +18650,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="194"/>
         <source>Zoom &amp;Full</source>
-        <translation>Zoom sur l&apos;emprise</translation>
+        <translation>Zoom sur l&apos;&amp;emprise totale</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="209"/>
@@ -18905,7 +18905,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="925"/>
         <source>P&amp;revious Feature</source>
-        <translation>Entité &amp;précédente</translation>
+        <translation>Entité p&amp;récédente</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="937"/>
@@ -18960,7 +18960,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="621"/>
         <source>Add table</source>
-        <translation>Ajouter table</translation>
+        <translation>Ajouter une table</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="632"/>
@@ -19469,7 +19469,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="75"/>
         <source>Evaluate QGIS expressions in HTML source</source>
-        <translation>Évaluer l&apos;expression QGIS dans le source du HTML</translation>
+        <translation>Évaluer l&apos;expression QGIS dans la source du HTML</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="110"/>
@@ -19976,12 +19976,12 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
 <context>
     <name>QgsComposerLegend</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="440"/>
+        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="493"/>
         <source>&lt;legend&gt;</source>
         <translation>&lt;légende&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="444"/>
+        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="497"/>
         <source>%1...</source>
         <translation>%1...</translation>
     </message>
@@ -20337,7 +20337,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="366"/>
         <source>Filter Legend By Map Content</source>
-        <translation>Filtrer la légende par contenu de la carte</translation>
+        <translation>Filtrer la légende par le contenu de la carte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="425"/>
@@ -23289,7 +23289,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/core/qgscontexthelp.cpp" line="91"/>
         <source>&lt;h3&gt;Oops! QGIS can&apos;t find help for this form.&lt;/h3&gt;The help file for %1 was not found for your language&lt;br&gt;If you would like to create it, contact the QGIS development team</source>
-        <translation>&lt;h3&gt;Oops! QGISn&apos;arrive pas à trouver l&apos;aide pour ce formulaire.&lt;/h3&gt;L&apos;aide pour %1 n&apos;a pas été trouvée pour votre langue&lt;br&gt;Si vous voulez la créer, contactez l&apos;équipe de traduction de QGIS</translation>
+        <translation>&lt;h3&gt;Oups! QGIS n&apos;arrive pas à trouver l&apos;aide pour ce formulaire.&lt;/h3&gt;L&apos;aide pour %1 n&apos;a pas été trouvée pour votre langue&lt;br&gt;Si vous voulez la créer, contactez l&apos;équipe de traduction de QGIS</translation>
     </message>
 </context>
 <context>
@@ -26202,12 +26202,12 @@ Erreur d&apos;analyse :
 <context>
     <name>QgsDxfExportDialog</name>
     <message>
-        <location filename="../src/app/qgsdxfexportdialog.cpp" line="345"/>
+        <location filename="../src/app/qgsdxfexportdialog.cpp" line="370"/>
         <source>Export as DXF</source>
         <translation>Exporter en DXF</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsdxfexportdialog.cpp" line="345"/>
+        <location filename="../src/app/qgsdxfexportdialog.cpp" line="370"/>
         <source>DXF files *.dxf *.DXF</source>
         <translation>Fichiers DXF *.dxf *.DXF</translation>
     </message>
@@ -26558,7 +26558,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="74"/>
         <source>&apos;Dia&apos; || Diameter</source>
-        <translation>&apos;Dia&apos; || Diamètre</translation>
+        <translation>&apos;Dia&apos; || &apos;mètre&apos; &amp;rarr; &apos;Diamètre&apos;</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="108"/>
@@ -36250,7 +36250,7 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.</numerusform
     <message>
         <location filename="../src/app/qgsmaptoolpinlabels.cpp" line="34"/>
         <source>Pin labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Épingler les étiquettes</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolpinlabels.cpp" line="387"/>
@@ -59091,7 +59091,7 @@ La calculatrice de champs vous permet de mettre à jour des champs grâce à des
   &lt;/td&gt;
   &lt;td&gt;valeur du champ &lt;tt&gt;column_name&lt;/tt&gt;&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&apos;&lt;tt&gt;string&lt;/tt&gt;&apos;&lt;/td&gt;&lt;td&gt;valeur litérale de texte&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&apos;&lt;tt&gt;string&lt;/tt&gt;&apos;&lt;/td&gt;&lt;td&gt;valeur littérale de texte&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;&lt;tt&gt;number&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;nombre&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;NULL&lt;/td&gt;&lt;td&gt;valeur nulle&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;exp(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Nombre d&apos;Euler e à la puissance&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
@@ -59114,7 +59114,7 @@ La calculatrice de champs vous permet de mettre à jour des champs grâce à des
 &lt;tr&gt;&lt;td&gt;atan2(&lt;tt&gt;y&lt;/tt&gt;,&lt;tt&gt;x&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;inverse de la tangente de &lt;tt&gt;y&lt;/tt&gt;/&lt;tt&gt;x&lt;/tt&gt; en utilisant les signes des deux arguments pour déterminer le quadrant du résultat.&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;ceci&lt;/tt&gt;,&lt;tt&gt;cela&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;remplacer &lt;tt&gt;ceci&lt;/tt&gt; par &lt;tt&gt;cela&lt;/tt&gt; dans la chaîne de caractères &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
 &lt;tr&gt;&lt;td&gt;regexp_replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;ceci&lt;/tt&gt;,&lt;tt&gt;cela&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;remplacer l&apos;expression régulière &lt;tt&gt;ceci&lt;/tt&gt; par &lt;tt&gt;cela&lt;/tt&gt; dans la chaîne de caractères &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
-&lt;tr&gt;&lt;td&gt;substr(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;from&lt;/tt&gt;,&lt;tt&gt;len&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;&lt;tt&gt;len&lt;/tt&gt; caractères du texte &lt;tt&gt;a&lt;/tt&gt; à partir de &lt;tt&gt;from&lt;/tt&gt; (le premier caractère a pour index 1)&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;substr(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;from&lt;/tt&gt;,&lt;tt&gt;len&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;renvoyer&lt;tt&gt;len&lt;/tt&gt; caractères du texte &lt;tt&gt;a&lt;/tt&gt; à partir de &lt;tt&gt;from&lt;/tt&gt; (le premier caractère a pour index 1)&lt;/td&gt;&lt;/td&gt;
 &lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; || &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;mettre bout à bout les chaînes de caractère &lt;tt&gt;a&lt;/tt&gt; et &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;$rownum&lt;/td&gt;&lt;td&gt;numéro de la ligne actuelle&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;$area&lt;/td&gt;&lt;td&gt;surface de polygone&lt;/td&gt;&lt;/tr&gt;
@@ -62934,7 +62934,21 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;fonction atan2()&lt;/h3&gt;
+Renvoie l&apos;arctangente de y/x en utilisant le signe des deux arguments pour déterminer le quadrant du résultat
+
+
+
+&lt;p&gt;&lt;h4&gt;Syntaxe&lt;/h4&gt;
+     atan2(&lt;i&gt;réel&lt;/i&gt;, &lt;i&gt;réel&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;i&gt;réel&lt;/i&gt; &amp;rarr; différence de coordonnées en y&lt;br&gt;
+&lt;i&gt;réel&lt;/i&gt; &amp;rarr; différence de coordonnées en x&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemple&lt;/h4&gt;
+     atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1797"/>
@@ -63688,7 +63702,23 @@ Returns a string wrapped to a maximum/minimum number of characters.
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Fonction wordwrap()&lt;/h3&gt;
+Insère un saut de ligne dans une chaîne de texte, sur la base d&apos;un nombre maximum/minimum de caractères par ligne.
+
+&lt;p&gt;&lt;h4&gt;Syntaxe&lt;/h4&gt;
+     wordwrap(&lt;i&gt;texte,longueur_coupe[,texte_delimiteur]&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- Liste des arguments de la fonction ici--&gt;
+&lt;i&gt;  texte&lt;/i&gt; &amp;rarr; est une chaîne de caractères.  Il s&apos;agit du texte dans lequel insérer le saut de ligne.&lt;br&gt;
+&lt;i&gt;  longueur_coupe&lt;/i&gt; &amp;rarr; est un nombre.  Lorsqu&apos;il est positif, il représente le nombre idéal de caractères à avoir au maximum par ligne; s&apos;il est négatif, ce nombre représente le nombre minimum de caractères à avoir par ligne.&lt;br&gt;
+&lt;i&gt;  texte_delimiteur&lt;/i&gt; &amp;rarr; est une chaîne de caractères. Son apparition fait office de renvoi à la ligne (&lt;u&gt;optionnel&lt;/u&gt;).&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemples&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     wordwrap(&apos;UNIVERSITÉ DE QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITÉ OF&amp;#92;nQGIS&apos;&lt;br&gt;
+     wordwrap(&apos;UNIVERSITÉ DE QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITÉ&amp;#92;nDE QGIS&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="858"/>
@@ -65914,7 +65944,20 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;fonction format()&lt;/h3&gt;
+Compose une chaîne de texte à l&apos;aide d&apos;arguments fournis. 
+
+&lt;h4&gt;Syntaxe&lt;/h4&gt;
+&lt;code&gt;format(&apos;texte&apos;, arg, [arg...n])&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;texte&lt;/code&gt; - est une chaîne de caractères. Texte contenant des formateurs QString de Qt. Utiliser %1, %2, etc pour chaque formateur. Les formateurs peuvent être répétés. 
+&lt;br&gt;
+&lt;code&gt;arg [arg...n]&lt;/code&gt; - de tout type. Autant d&apos;arguments que nécessaire. 
+
+&lt;h4&gt;Exemple&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format(&apos;Ceci %1 un %2&apos;,&apos;est&apos;, &apos;test&apos;) &amp;rarr; Ceci est un test&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1624"/>

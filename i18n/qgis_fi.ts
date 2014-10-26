@@ -9119,7 +9119,8 @@ Katso lokia lisäinformaation saamiseksi.</translation>
     <message>
         <source>Python Console 
 Use iface to access QGIS API interface or Type help(iface) for more info</source>
-        <translation type="unfinished"></translation>
+        <translation>Python konsoli
+Käytä iface päästäksesi QGIS API rajapinnalle tai kirjoita help(iface) saadaksesi lisäinformaatiota</translation>
     </message>
     <message>
         <source>History saved successfully.</source>
@@ -9378,7 +9379,7 @@ Näet tämän viesti luultavasti koska Sinulla ei ole DISPLAY ympäristömuuttuj
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="122"/>
         <source>Selection extends beyond layer&apos;s coordinate system</source>
-        <translation type="unfinished"></translation>
+        <translation>Valinta laajentaa suuremmaksi kuin tason koordinaattijärjestelmä</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="266"/>
@@ -10267,7 +10268,7 @@ Only %1 of %2 features written.</source>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="636"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="2227"/>
         <source>Comma Separated Value [CSV]</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilkuin erotellut arvot [CSV]</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="649"/>
@@ -10649,7 +10650,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="774"/>
         <source>If defined to YES, extension fields will be written. If the field name not found in the base schema matches the foo_bar pattern, foo will be considered as the namespace of the element, and a &lt;foo:bar&gt; element will be written. Otherwise, elements will be written in the &lt;ogr:&gt; namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jos määritellään YES, liitännäisen tiedot kirjoitetaan. Jos tiedon nimeä ei löydy perusskeemasta joka vastaa foo_bar kuviota, pidetään foo elementin namespace:na, ja &lt;foo:bar&gt; elementti kirjoitetaan. Muussa tapaksessa elementit kirjotetaan &lt;ogr:&gt; namespace:en.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1207"/>
@@ -10698,12 +10699,12 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1441"/>
         <source>Override the header file used - in place of header.dxf.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohita otsikkotiedoston käyttö - tilalle header.dxf.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1446"/>
         <source>Override the trailer file used - in place of trailer.dxf.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohita lopputiedoston käyttö - tilalle trailer.dxf.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1454"/>
@@ -10720,7 +10721,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1477"/>
         <source>path to the GCT : the GCT file describe the GeoConcept types definitions: In this file, every line must start with //# followed by a keyword. Lines starting with // are comments.</source>
-        <translation type="unfinished"></translation>
+        <translation>GCT polku: GCT tiedosto kuvaa GeoConcept tyyppien määrityksiä: Tässä tiedostossa jokaisen rivin tulee alkaa //# jota seuraa avainsana. Rivit jotka alkavat // ovat kommentteja.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1487"/>
@@ -13690,7 +13691,7 @@ Ota yhteyttä kehittäjiin.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2346"/>
         <source>Filter Legend By Map Content</source>
-        <translation type="unfinished"></translation>
+        <translation>Map Content (Kartta sisällön) suodatinten selite.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2354"/>
@@ -13925,7 +13926,7 @@ Virhe: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5320"/>
         <source>Composer title</source>
-        <translation>Muodostajan otsikko</translation>
+        <translation>Tulosteen muodostajan otsikko</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5335"/>
@@ -13941,7 +13942,7 @@ Virhe: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="5363"/>
         <location filename="../src/app/qgisapp.cpp" line="5458"/>
         <source>Composer %1</source>
-        <translation>Muodostaja %1</translation>
+        <translation>Tulosteen muodostaja %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5420"/>
@@ -15007,7 +15008,7 @@ Käyttäjän DB Polku:	%9
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="241"/>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="816"/>
         <source>Composer</source>
-        <translation>Laatija</translation>
+        <translation>Tulosteen muodostaja</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="395"/>
@@ -15761,7 +15762,7 @@ Jäsentelyvirhe:
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="590"/>
         <source>Failed to add field &apos;%1&apos; of type &apos;%2&apos;. Is the field name unique?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedon &apos;%1&apos; tyyppiä &apos;%2&apos; lisääminen epäonnistui. Onko tiedon nimi yksilöllinen?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="710"/>
@@ -15867,7 +15868,7 @@ Jäsentelyvirhe:
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="46"/>
         <source>Edit Widget Properties - %1 (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Muokkaa vekottimen ominaisuuksia </translation>
     </message>
 </context>
 <context>
@@ -16807,27 +16808,27 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="158"/>
         <source>Opacity</source>
-        <translation type="unfinished">Läpikuultamattomuus</translation>
+        <translation>Peittävyys</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="172"/>
         <source>HTML notation</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML merkintä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="527"/>
         <source>Color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Väriluiska</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="547"/>
         <source>Color wheel</source>
-        <translation type="unfinished"></translation>
+        <translation>Väripyörä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="564"/>
         <source>Color swatches</source>
-        <translation type="unfinished"></translation>
+        <translation>Värikartta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="581"/>
@@ -16837,7 +16838,7 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="654"/>
         <source>Sample average radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytteen keskimääräinen säde</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="661"/>
@@ -16852,7 +16853,7 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="683"/>
         <source>&lt;i&gt;Press space to sample a color from under the mouse cursor&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;Paina tyhjää näytteistääksesi värin hiiren osoittimen alla&lt;/i&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolordialog.ui" line="740"/>
@@ -17165,12 +17166,12 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="204"/>
         <source>&amp;Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulosteen muodostaja</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="211"/>
         <source>Print &amp;Composers</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulosta tulosteen muodostajat</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="250"/>
@@ -17220,7 +17221,7 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="351"/>
         <source>&amp;Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Asettelu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="375"/>
@@ -17235,7 +17236,7 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="3036"/>
         <source>Composer</source>
-        <translation>Mallin muodostus</translation>
+        <translation>Tulosteen muodostaja</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="232"/>
@@ -17578,17 +17579,17 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2513"/>
         <source>Duplicating composer...</source>
-        <translation>Tuplataan muodostaja...</translation>
+        <translation>Tuplataan tulosteen muodostaja...</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2525"/>
         <source>Duplicate Composer</source>
-        <translation>Tuplaa muodostaja</translation>
+        <translation>Tuplaa tulosteen muodostaja</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2526"/>
         <source>Composer duplication failed.</source>
-        <translation>Muodostajan tuplaus epäonnistui.</translation>
+        <translation>Tulosteen muodostajan tuplaus epäonnistui.</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2545"/>
@@ -17598,7 +17599,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2547"/>
         <source>Composer templates</source>
-        <translation>Sommittelumallit</translation>
+        <translation>Tulosteen muodostajan mallit</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2571"/>
@@ -17628,17 +17629,17 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2614"/>
         <source>Composer error</source>
-        <translation>Muodostus virhe</translation>
+        <translation>Tulosteen muodostaja virhe</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2614"/>
         <source>Error, could not create new composer</source>
-        <translation>Virhe, ei voitu luoda uutta muodostajaa</translation>
+        <translation>Virhe, ei voitu luoda uutta tulosteen muodostajaa</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2631"/>
         <source>Loading template into composer...</source>
-        <translation>Ladataan mallia muodostajaan...</translation>
+        <translation>Ladataan mallia tulosteen muodostajaan...</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="3359"/>
@@ -17927,22 +17928,22 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="43"/>
         <source>Use existing frames</source>
-        <translation type="unfinished">Käytä olemassa olevia raameja</translation>
+        <translation>Käytä olemassa olevia raameja</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="44"/>
         <source>Extend to next page</source>
-        <translation type="unfinished">Laajenna resuraavalle sivulle</translation>
+        <translation>Lisää seuraavalle sivulle</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="45"/>
         <source>Repeat until finished</source>
-        <translation type="unfinished">Toista kunnes valmis</translation>
+        <translation>Toista kunnes valmis</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="47"/>
         <source>Draw headers only</source>
-        <translation type="unfinished"></translation>
+        <translation>Piirrä ainoastaan otsikot</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="48"/>
@@ -17952,37 +17953,37 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="49"/>
         <source>Show set message</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä asetusviesti</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="52"/>
         <source>Layer features</source>
-        <translation type="unfinished"></translation>
+        <translation>Tason ominaisuudet</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="63"/>
         <source>Select header font color</source>
-        <translation type="unfinished">Valitse otsikon kirjaimen väri</translation>
+        <translation>Valitse otsikon merkkien väri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="66"/>
         <source>Select content font color</source>
-        <translation type="unfinished">Valitse sisällön kirjaimen väri</translation>
+        <translation>Valitse sisällön merkkien väri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="69"/>
         <source>Select grid color</source>
-        <translation type="unfinished">Valitse ruudukon väri</translation>
+        <translation>Valitse ruudukon väri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="73"/>
         <source>Select background color</source>
-        <translation type="unfinished">Valitse taustaväri</translation>
+        <translation>Valitse taustan väri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="77"/>
         <source>No background</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei taustaa</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="132"/>
@@ -17993,22 +17994,22 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="179"/>
         <source>Table attribute settings</source>
-        <translation type="unfinished">Taulun ominaisuustietojen asetukset</translation>
+        <translation>Taulun attribuuttien asetukset</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="233"/>
         <source>Table map changed</source>
-        <translation type="unfinished">Taulun kartta muutettu</translation>
+        <translation>Taulukartta muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="254"/>
         <source>Table maximum columns</source>
-        <translation type="unfinished">Taulun maksimi sarakkeet</translation>
+        <translation>Taulun maksimi sarakkeet</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="274"/>
         <source>Table margin changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Taulun marginaali muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="293"/>
@@ -18021,138 +18022,138 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="302"/>
         <source>Table header font</source>
-        <translation type="unfinished">Taulun otsikon kirjaisin</translation>
+        <translation>Taulun otsikon kirjasin</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="322"/>
         <source>Table header font color</source>
-        <translation type="unfinished">Taulun otsikon kirjaimen väri</translation>
+        <translation>Taulun otsikon kirjaimen väri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="350"/>
         <source>Table content font</source>
-        <translation type="unfinished">Taulun sisällön kirjaisin</translation>
+        <translation>Taulun sisällön kirjasin</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="370"/>
         <source>Table content font color</source>
-        <translation type="unfinished">Taulun sisällön kirjaimen väri</translation>
+        <translation>Taulun sisällön kirjaimen väri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="389"/>
         <source>Table grid stroke</source>
-        <translation type="unfinished">Taulun ruudukon tiheys</translation>
+        <translation>Tauluruudukon piirto</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="408"/>
         <source>Table grid color</source>
-        <translation type="unfinished">Taulun ruudukon väri</translation>
+        <translation>Tauluruudukon väri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="427"/>
         <source>Table grid toggled</source>
-        <translation type="unfinished">Taulun ruudukko vaihdettu</translation>
+        <translation>Tauluruudukko vaihdettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="446"/>
         <source>Table background color</source>
-        <translation type="unfinished"></translation>
+        <translation>Taulun taustaväri</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="609"/>
         <source>Current atlas feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Nykyinen atlaksen ominaisuus</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="614"/>
         <source>Relation children</source>
-        <translation type="unfinished"></translation>
+        <translation>Relaation alaosa</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="670"/>
         <source>Table visible only toggled</source>
-        <translation type="unfinished">Taulun ainoastaan-näkyvissä vaihdettu</translation>
+        <translation>Taulu näkyvä ainoastaan vaihdettuna</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="695"/>
         <source>Table remove duplicates changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Taulun duplikaattien poisto muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="712"/>
         <source>Empty frame mode toggled</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyhjän raamin tila muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="724"/>
         <source>Hide background if empty toggled</source>
-        <translation type="unfinished"></translation>
+        <translation>Piilota tausta jos tyhjä muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="739"/>
         <source>Table filter to atlas changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Taulun suodatin atlakseen muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="771"/>
         <source>Table feature filter toggled</source>
-        <translation type="unfinished">Taulun ominaisuuksien suodin vaihdettu</translation>
+        <translation>Taulun ominaisuussuodatinta muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="791"/>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="819"/>
         <source>Table feature filter modified</source>
-        <translation type="unfinished">Taulun ominaisuuksien suodin muutettu</translation>
+        <translation>Taulun ominaisuussuodatinta muokattu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="809"/>
         <source>Expression based filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Lausekepohjainen suodatin</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="841"/>
         <source>Table header alignment changed</source>
-        <translation type="unfinished">Taulu otsikon kohdistusta muutettu</translation>
+        <translation>Taulukon otsikon kohdistusta muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="860"/>
         <source>Table header mode changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Taulukon otsikon tilaa muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="885"/>
         <source>Table layer changed</source>
-        <translation type="unfinished">Taulun taso muutettu</translation>
+        <translation>Taulun tasoa muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="939"/>
         <source>Change resize mode</source>
-        <translation type="unfinished">Muuta koon muuttamisen tilaa</translation>
+        <translation>Muuta koon muuttamisen tilaa</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="957"/>
         <source>Change table source</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta lähdetaulua</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="975"/>
         <source>Change table source relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta lähdetaulun relaatiota</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="991"/>
         <source>Change empty table behaviour</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta tyhjän taulun käyttäytymistä</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="1009"/>
         <source>Show empty rows changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä muutetut tyhjät rivit</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="1028"/>
         <source>Empty table message changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyhjän taulun viestiä muutettu</translation>
     </message>
 </context>
 <context>
@@ -18170,7 +18171,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="60"/>
         <source>Main properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Pääominaisuudet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="82"/>
@@ -18180,7 +18181,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="112"/>
         <source>Refresh table data</source>
-        <translation type="unfinished">Virkistä taulun data</translation>
+        <translation>Virkistä taulun data</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="119"/>
@@ -18201,17 +18202,17 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="144"/>
         <source>Maximum rows</source>
-        <translation type="unfinished">Max rivejä</translation>
+        <translation>Maksimi rivit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="178"/>
         <source>Composer map</source>
-        <translation type="unfinished">Kohdekartta</translation>
+        <translation>Tulosteen muodostaja</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="201"/>
         <source>Filter with</source>
-        <translation type="unfinished">Suodata</translation>
+        <translation>Suodattimen kanssa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="213"/>
@@ -18226,17 +18227,17 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="361"/>
         <source>Show empty rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä tyhjät rivit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="374"/>
         <source>Show grid</source>
-        <translation type="unfinished">Näytä ruudukko</translation>
+        <translation>Näytä ruudukko</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="389"/>
         <source>Stroke width</source>
-        <translation type="unfinished">Viivan leveys</translation>
+        <translation>Piirron leveys</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="409"/>
@@ -18248,17 +18249,17 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="458"/>
         <source>Fonts and text styling</source>
-        <translation type="unfinished">Kirjain ja tekstin tyyli</translation>
+        <translation>Kirjainten ja tekstin tyyli</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="470"/>
         <source>Table heading</source>
-        <translation type="unfinished">Taulun otsikko</translation>
+        <translation>Taulun otsikot</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="547"/>
         <source>Follow column alignment</source>
-        <translation type="unfinished">Seuraa sarakkeen kohdistusta</translation>
+        <translation>Seuraa sarakkeen kohdistusta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="552"/>
@@ -18295,17 +18296,17 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="687"/>
         <source>Don&apos;t export page if frame is empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Älä vie sivua jos raami on tyhjä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="694"/>
         <source>Don&apos;t draw background if frame is empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Älä piirrä taustaa jos raami on tyhjä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="280"/>
         <source>On first frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Ensimmäisessä raamissa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="72"/>
@@ -18320,67 +18321,67 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="171"/>
         <source>Show only features visible within a map</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä ainoastaan ominaisuudet jotka ovat näkyvissä kartalla</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="194"/>
         <source>Show only features intersecting atlas feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä ainoastaan ominaisuudet jotka leikkaavat atlas ominaisuutta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="164"/>
         <source>Remove duplicate rows from table</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista duplikaatit rivit taulusta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="240"/>
         <source>Appearance</source>
-        <translation type="unfinished">Ulkoasu</translation>
+        <translation>Ulkoasu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="252"/>
         <source>Cell margins</source>
-        <translation type="unfinished"></translation>
+        <translation>Solujen marginaalit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="272"/>
         <source>Display header</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä otsikko</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="285"/>
         <source>On all frames</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaikissa raameissa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="290"/>
         <source>No header</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei otsikkoa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="298"/>
         <source>Empty tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyhjät taulut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="308"/>
         <source>Message to display</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytettävä viesti</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="573"/>
         <source>Table contents</source>
-        <translation type="unfinished">Taulun sisältö</translation>
+        <translation>Taulun sisältö</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="645"/>
         <source>Frames</source>
-        <translation type="unfinished">Raamit</translation>
+        <translation>Raamit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="660"/>
         <source>Resize mode</source>
-        <translation type="unfinished">Koonmuutostila</translation>
+        <translation>Koonmuutostila</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="680"/>
@@ -18398,7 +18399,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="77"/>
         <source>Composer</source>
-        <translation>Mallin muodostus</translation>
+        <translation>Tulosteen muodostaja</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="102"/>
@@ -18408,12 +18409,12 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="118"/>
         <source>Composer Item Actions</source>
-        <translation>Muodostuksen jäsenen toiminnot</translation>
+        <translation>Tulosteen muodostajan jäsen toiminnot</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="133"/>
         <source>Composer Items</source>
-        <translation>Muodostuksen jäsenet</translation>
+        <translation>Tulosteen muodostajan jäsenet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="157"/>
@@ -18659,62 +18660,62 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="194"/>
         <source>Zoom &amp;Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoomaa täydeksi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="209"/>
         <source>Zoom &amp;In</source>
-        <translation type="unfinished"></translation>
+        <translation>Lähennä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="224"/>
         <source>Zoom &amp;Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Loitonna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="239"/>
         <source>Zoom to &amp;100%</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoomaa 100%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="269"/>
         <source>Add &amp;Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää kartta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="281"/>
         <source>Add Lab&amp;el</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää nimiö</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="293"/>
         <source>Add Legen&amp;d</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää selite</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="305"/>
         <source>Move &amp;Item</source>
-        <translation type="unfinished"></translation>
+        <translation>Siirrä jäsen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="320"/>
         <source>Export as &amp;Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vie kuvana...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="332"/>
         <source>&amp;Export as PDF...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tallenna PDF:nä...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="341"/>
         <source>Export as S&amp;VG...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tallenna SVG:nä...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="350"/>
         <source>Add &amp;Scalebar</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää mittakaavajana</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="362"/>
@@ -18724,82 +18725,82 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="377"/>
         <source>Show &amp;Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä ruudukko</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="388"/>
         <source>S&amp;nap to Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Kohdista ruudukkoon</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="399"/>
         <source>Show G&amp;uides</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä ohjaimet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="410"/>
         <source>&amp;Snap to Guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Kohdista ohjaimiin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="421"/>
         <source>S&amp;mart Guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Fiksut ohjaimet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="432"/>
         <source>&amp;Clear Guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista ohjaimet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="444"/>
         <source>Add Im&amp;age</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää kuva</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="452"/>
         <source>Move &amp;Content</source>
-        <translation type="unfinished"></translation>
+        <translation>Siirrä sisältöä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="463"/>
         <source>&amp;Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Ryhmä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="474"/>
         <source>&amp;Ungroup</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista ryhmitys</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="485"/>
         <source>&amp;Raise</source>
-        <translation type="unfinished"></translation>
+        <translation>Nosta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="496"/>
         <source>&amp;Lower</source>
-        <translation type="unfinished"></translation>
+        <translation>Laske</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="507"/>
         <source>Bring to &amp;Front</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuo eteen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="518"/>
         <source>Send to &amp;Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Vie taakse</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="529"/>
         <source>&amp;Add Items from Template...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää jäseniä mallista...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="537"/>
         <source>Save as &amp;Template...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tallenna malliksi...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="540"/>
@@ -18884,77 +18885,77 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="788"/>
         <source>Paste in P&amp;lace</source>
-        <translation type="unfinished"></translation>
+        <translation>Liitä paikalle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="818"/>
         <source>D&amp;eselect All</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista valinta kaikesta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="829"/>
         <source>&amp;Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse kaikki</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="890"/>
         <source>Composer &amp;Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulosteen muodostajan valinnat...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="898"/>
         <source>Show Ru&amp;lers</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä viivaimet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="913"/>
         <source>&amp;First Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Ensimmäinen ominaisuus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="925"/>
         <source>P&amp;revious Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Edellinen ominaisuus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="937"/>
         <source>&amp;Next Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Seuraava ominaisuus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="949"/>
         <source>&amp;Last Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Viimeinen ominaisuus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="961"/>
         <source>Preview &amp;Atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>Esikatsele Atlasta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="973"/>
         <source>&amp;Print Atlas...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulosta Atlas...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="982"/>
         <source>Export Atlas as &amp;Images...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vie Atlas kuvina...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="991"/>
         <source>Export Atlas as S&amp;VG...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vie Atlas SVG muodossa...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="1000"/>
         <source>&amp;Export Atlas as PDF...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vie Atlas PDF muodossa...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="1012"/>
         <source>Atlas &amp;Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlas asetukset</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="610"/>
@@ -19004,22 +19005,22 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="723"/>
         <source>Composer &amp;Manager...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulosteen muodostajan hallinta...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="731"/>
         <source>&amp;New Composer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uusi tulosteen muodostaja...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="753"/>
         <source>&amp;Duplicate Composer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuplaa tulosteen muodostaja...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="765"/>
         <source>Loc&amp;k Selected Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Lukitse valitut jäsenet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="777"/>
@@ -19119,7 +19120,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="878"/>
         <source>Pan Composer</source>
-        <translation>Siirrä muodostajaa</translation>
+        <translation>Siirrä tulosteen muodostajassa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="881"/>
@@ -19417,12 +19418,12 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="277"/>
         <source>Empty frame mode toggled</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyhjän raamin tila muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="289"/>
         <source>Hide background if empty toggled</source>
-        <translation type="unfinished"></translation>
+        <translation>Piilota tausta jos tyhjä muutettu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="305"/>
@@ -19498,7 +19499,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="168"/>
         <source>Don&apos;t export page if frame is empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Älä vie sivua jos raami on tyhjä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="182"/>
@@ -19513,7 +19514,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="192"/>
         <source>Don&apos;t draw background if frame is empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Älä piirrä taustaa jos raami on tyhjä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="202"/>
@@ -19684,7 +19685,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="760"/>
         <source>Exclude from exports changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Poissulje muuteista vienneistä</translation>
     </message>
 </context>
 <context>
@@ -19794,7 +19795,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="654"/>
         <source>Exclude item from exports</source>
-        <translation type="unfinished"></translation>
+        <translation>Poissulje jäsen vienneistä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="437"/>
@@ -19919,7 +19920,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="108"/>
         <source>Appearance</source>
-        <translation type="unfinished">Ulkoasu</translation>
+        <translation>Ulkoasu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="129"/>
@@ -19985,12 +19986,12 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
 <context>
     <name>QgsComposerLegend</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="440"/>
+        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="493"/>
         <source>&lt;legend&gt;</source>
         <translation>&lt;legend&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="444"/>
+        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="497"/>
         <source>%1...</source>
         <translation>%1...</translation>
     </message>
@@ -20346,7 +20347,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="366"/>
         <source>Filter Legend By Map Content</source>
-        <translation type="unfinished"></translation>
+        <translation>Suodata selite karttasisällöllä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="425"/>
@@ -20470,7 +20471,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="72"/>
         <source>Empty composer</source>
-        <translation>Tyhjää  kartan muodostaja</translation>
+        <translation>Tyhjää  tulosteen muodostaja</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="73"/>
@@ -20497,17 +20498,17 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="205"/>
         <source>Composer error</source>
-        <translation>Muodostajan virhe</translation>
+        <translation>Tulosteen muodostaja virhe</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="205"/>
         <source>Error, could not create composer</source>
-        <translation>Virhe, ei voitu luoda muodostajaa</translation>
+        <translation>Virhe, ei voitu luoda tulosteen muodostajaa</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="220"/>
         <source>Loading template into composer...</source>
-        <translation>Ladataan mallia muodostajaan...</translation>
+        <translation>Ladataan mallia tulosteen muodostajaan...</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="239"/>
@@ -20522,7 +20523,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="257"/>
         <source>Composer templates</source>
-        <translation>Muodostajan mallit</translation>
+        <translation>Tulosteen muodostajan mallit</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="282"/>
@@ -20537,12 +20538,12 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="324"/>
         <source>Remove composer</source>
-        <translation>Poista kartan muodostaja</translation>
+        <translation>Poista tulosteen muodostaja</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="324"/>
         <source>Do you really want to remove the map composer &apos;%1&apos;?</source>
-        <translation>Haluatko varmasti poistaa kartan muodostajan %1?</translation>
+        <translation>Haluatko varmasti poistaa tulosteen muodostajan %1?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="423"/>
@@ -20552,17 +20553,17 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="430"/>
         <source>Duplicating composer...</source>
-        <translation>Tuplataan muodostajaa...</translation>
+        <translation>Tuplataan tulosteen muodostaja...</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="447"/>
         <source>Duplicate Composer</source>
-        <translation>Tuplaa muodostaja</translation>
+        <translation>Tuplaa tulosteen muodostaja</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="448"/>
         <source>Composer duplication failed.</source>
-        <translation>Muodostajan tuplaus epäonnistui.</translation>
+        <translation>Tulosteen muodostajan tuplaus epäonnistui.</translation>
     </message>
 </context>
 <context>
@@ -20570,7 +20571,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="20"/>
         <source>Composer manager</source>
-        <translation>Muodostajan hallinta</translation>
+        <translation>Tulosteen muodostajan hallinta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="38"/>
@@ -20718,12 +20719,12 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="120"/>
         <source>Set layer list from a visibility preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Aseta tasojen luettelo näkyvyysasetuksista</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="278"/>
         <source>No presets defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Asetuksia ei määritetty</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="825"/>
@@ -21543,12 +21544,12 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="538"/>
         <source>Rename composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimeä tulosteen muodostaja uudelleen</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="538"/>
         <source>There is already a composer named &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulosteen muodostaja &quot;%1&quot; on jo olemassa</translation>
     </message>
 </context>
 <context>
@@ -22476,7 +22477,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="177"/>
         <source>Composer map</source>
-        <translation>Kohdekartta</translation>
+        <translation>Tulosteen muodostajan kartta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="262"/>
@@ -22687,12 +22688,12 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="910"/>
         <source>Attribute table added</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribuuttitaulu lisätty</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="915"/>
         <source>Attribute table frame added</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribuuttitaulun raami lisätty</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="938"/>
@@ -24180,7 +24181,7 @@ ja nykyinen tiedosto on [%3]</translation>
     <message>
         <location filename="../src/gui/editorwidgets/qgsdatetimeeditwrapper.cpp" line="78"/>
         <source>The usual date/time widget QDateTimeEdit cannot be configured to allow NULL values. For that the QGIS custom widget QgsDateTimeEdit needs to be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tavanomainen päiväys/aika widgetti QDateTimeEdit ei ole konfigguroitavissa hyväksymään NULL arvoja. Tätä varten tarvitsee käyttää QGIS räätälöityä widgettiä QgsDateTimeEdit.</translation>
     </message>
 </context>
 <context>
@@ -24894,12 +24895,12 @@ ei näytetä</translation>
     <message>
         <location filename="../src/ui/qgsdelattrdialogbase.ui" line="49"/>
         <source>Provider fields can only be deleted when the layer is in edit mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tarjoajan kenttiä voi poistaa ainoastaan kun taso on muokkaustavassa.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelattrdialogbase.ui" line="56"/>
         <source>Provider does not support deleting attributes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tarjoaja ei tue attribuuttien poistamista.</translation>
     </message>
 </context>
 <context>
@@ -25482,7 +25483,7 @@ ei näytetä</translation>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="922"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="925"/>
         <source>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character. These characters are used in addition to the comma, tab, space, colon, and semicolon options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Välimerkkejä käytetään jakamaan tietoja tekstitiedostoissa. Välimerkki voi muodostua useammasta kuin  yhdestä kirjaimesta. Näitä välimerkkejä käytetään vaihtoehtojen pilkku, tabulaattori, tyhjä, puolipiste ja kaksoispiste lisäksi.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="968"/>
@@ -26216,12 +26217,12 @@ Jäsentelyvirhe:
 <context>
     <name>QgsDxfExportDialog</name>
     <message>
-        <location filename="../src/app/qgsdxfexportdialog.cpp" line="345"/>
+        <location filename="../src/app/qgsdxfexportdialog.cpp" line="370"/>
         <source>Export as DXF</source>
         <translation>Vie DXF tiedostona</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsdxfexportdialog.cpp" line="345"/>
+        <location filename="../src/app/qgsdxfexportdialog.cpp" line="370"/>
         <source>DXF files *.dxf *.DXF</source>
         <translation>DXF tiedostot *.dxf *.DXF</translation>
     </message>
@@ -27008,12 +27009,12 @@ Lauseke on virheellinen katso (lisää tietoja) yksityiskohtia</translation>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="49"/>
         <source>You are editing information on this layer but the layer is currently not in edit mode. If you click Ok, edit mode will automatically be turned on.</source>
-        <translation type="unfinished"></translation>
+        <translation>Olet muokkaamassa tietoa tälle tasolle mutta taso ei ole muokkausmoodissa. Jos klikkaat OK, tulee muokkausmoodi päälle automaattisesti.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="59"/>
         <source>This layer does not support adding new provider fields. You can only add virtual fields.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tämä taso ei tue uusien tarjoajatietojen lisäystä. Voit lisätä ainoastaan virtuaalisia tietoja.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="134"/>
@@ -27033,7 +27034,7 @@ Lauseke on virheellinen katso (lisää tietoja) yksityiskohtia</translation>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="233"/>
         <source>&lt;p&gt;A virtual field will be recalculated every time it is used. Its definition will be saved in the project file. It will not be saved in the dataprovider and therefore its values not be available in other software.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Virtuaalinen tieto lasketaan uudellen joka kerta kun sitä käytetään. Sen määritelmä talletetaan projektitiedostoon. Sitä ei talleteta tiedontarjoajaan ja siksi sen arvot eivät ole käytettävissä muissa ohjelmistoissa.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="236"/>
@@ -27172,7 +27173,7 @@ Lauseke on virheellinen katso (lisää tietoja) yksityiskohtia</translation>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="491"/>
         <source>Failed to add field &apos;%1&apos; of type &apos;%2&apos;. Is the field name unique?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedon &apos;%1&apos; tyyppiä &apos;%2&apos; lisääminen epäonnistui. Onko tiedon nimi yksilöllinen?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="562"/>
@@ -30132,7 +30133,7 @@ Näppäile Cancel keskeyttääksesi katkojen luokittelun laskennan tai OK jatkaa
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="816"/>
         <source>Rows will be reordered before linking boundaries. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Rivit järjestetään uudellen ennen linkkausta rajoihin. Jatkatko?</translation>
     </message>
 </context>
 <context>
@@ -35771,7 +35772,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="102"/>
         <source>Wrong editing tool, cannot apply the &apos;capture point&apos; tool on this vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Virheellinen muokkaustyökalu, ei voi suorittaa &quot;kaappaa piste&quot; työkalua tällä tasolla</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="36"/>
@@ -35781,12 +35782,12 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="158"/>
         <source>Wrong editing tool, cannot apply the &apos;capture line&apos; tool on this vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Virheellinen muokkaustyökalu, ei voi suorittaa &quot;kaappaa viiva&quot; työkalua tällä tasolla</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="165"/>
         <source>Wrong editing tool, cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Virheellinen muokkaustyökalu, ei voi suorittaa &quot;kaappaa monikulmio&quot; työkalua tällä tasolla</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="223"/>
@@ -35880,7 +35881,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="28"/>
         <source>Add ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää kehä</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="67"/>
@@ -35895,37 +35896,37 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="90"/>
         <source>a problem with geometry type occured</source>
-        <translation type="unfinished"></translation>
+        <translation>tapahtui virhe geometria tyypissä</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="94"/>
         <source>the inserted ring is not closed</source>
-        <translation type="unfinished"></translation>
+        <translation>lisätty kehä ei ole suljettu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="98"/>
         <source>the inserted ring is not a valid geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>lisättyllä piirillä on viallinen geometria</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="102"/>
         <source>the inserted ring crosses existing rings</source>
-        <translation type="unfinished"></translation>
+        <translation>lisätty kehä risteää olemassa olevien kehien kansssa</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="106"/>
         <source>the inserted ring is not contained in a feature</source>
-        <translation type="unfinished"></translation>
+        <translation>lisätty kehä ei sisälly ominaisuuteen </translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="110"/>
         <source>an unknown error occured</source>
-        <translation type="unfinished">tapahtui tuntematon virhe</translation>
+        <translation>tapahtui tuntematon virhe</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="112"/>
         <source>could not add ring since %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>ei voida lisätä kehää koska %1.</translation>
     </message>
 </context>
 <context>
@@ -36004,7 +36005,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/app/qgsmaptoolfeatureaction.cpp" line="63"/>
         <source>To run an action, you must choose an active vector layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suorittaaksesi toiminnon, on Sinun valittava aktiivinen vektoritaso.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfeatureaction.cpp" line="76"/>
@@ -36022,7 +36023,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="31"/>
         <source>Fill ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Täytä kehä</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="68"/>
@@ -36037,27 +36038,27 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="91"/>
         <source>a problem with geometry type occured</source>
-        <translation type="unfinished"></translation>
+        <translation>tapahtui virhe geometria tyypissä</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="95"/>
         <source>the inserted Ring is not closed</source>
-        <translation type="unfinished"></translation>
+        <translation>lisätty Kehä ei ole suljettu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="99"/>
         <source>the inserted Ring is not a valid geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>lisättyllä kehällä on viallinen geometria</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="103"/>
         <source>the inserted Ring crosses existing rings</source>
-        <translation type="unfinished"></translation>
+        <translation>lisätty kehä leikkaa jo olemassa olevia kehiä</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="107"/>
         <source>the inserted Ring is not contained in a feature</source>
-        <translation type="unfinished"></translation>
+        <translation>lisätty kehä ei ole sisällytetty ominaisuuteen</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="111"/>
@@ -36067,7 +36068,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="113"/>
         <source>could not add ring since %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>ei voida lisätä kehää koska %1.</translation>
     </message>
 </context>
 <context>
@@ -36167,7 +36168,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/app/qgsmaptoolidentifyaction.cpp" line="58"/>
         <source>Show attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä attribuuttitaulu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentifyaction.cpp" line="137"/>
@@ -36258,7 +36259,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/gui/qgsmaptoolpan.cpp" line="29"/>
         <source>Pan</source>
-        <translation type="unfinished">Panoroi</translation>
+        <translation>Panoroi</translation>
     </message>
 </context>
 <context>
@@ -36347,7 +36348,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/app/qgsmaptoolshowhidelabels.cpp" line="33"/>
         <source>Show/hide labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä/piilota nimiöt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolshowhidelabels.cpp" line="151"/>
@@ -36362,7 +36363,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/app/qgsmaptoolshowhidelabels.cpp" line="199"/>
         <source>CRS Exception: selection extends beyond layer&apos;s coordinate system.</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS poikkeus: valinta laajenee tason koordinaattijärjestelmä ulkopuolelle.</translation>
     </message>
 </context>
 <context>
@@ -36430,7 +36431,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="28"/>
         <source>Split features</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaa ominaisuudet</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="126"/>
@@ -36484,7 +36485,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="28"/>
         <source>Split parts</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaa osat</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="124"/>
@@ -36846,7 +36847,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/gui/qgsmessagelogviewer.cpp" line="114"/>
         <source>Message(s) logged.</source>
-        <translation type="unfinished"></translation>
+        <translation>Viestejä kirjoitettu lokiin.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmessagelogviewer.cpp" line="125"/>
@@ -40179,7 +40180,7 @@ Aina verkosta: lataa aina verkosta äläkä tarkista onko välimuistin merkintä
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1097"/>
         <source>Reset user interface to default settings (restart required)</source>
-        <translation type="unfinished"></translation>
+        <translation>Aseta uudelleen käyttäjäliittymä oletusarvoihin (uudelleenkäynnistys pakollinen)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1340"/>
@@ -40480,7 +40481,7 @@ Aina verkosta: lataa aina verkosta äläkä tarkista onko välimuistin merkintä
         <location filename="../src/ui/qgsoptionsbase.ui" line="172"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="175"/>
         <source>Composer</source>
-        <translation>Mallin muodostus</translation>
+        <translation>Tulosteen muodostaja</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="647"/>
@@ -44837,12 +44838,12 @@ Proceed?</source>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1154"/>
         <source>Select print composer</source>
-        <translation>Valitse tulosteen muodostaja</translation>
+        <translation>Valitse tulostettava tulosteen muodostaja</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1154"/>
         <source>Composer Title</source>
-        <translation>Muodostajan otsikko</translation>
+        <translation>Tulosteen muodostajan otsikko</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1176"/>
@@ -45386,7 +45387,7 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1573"/>
         <source>Exclude composers</source>
-        <translation>Poissulje muodostajat</translation>
+        <translation>Poissulje tulosteen muodostajat</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1982"/>
@@ -45866,12 +45867,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="36"/>
         <source>Suffix</source>
-        <translation type="unfinished"></translation>
+        <translation>Jälkiliite</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="43"/>
         <source>Inactive</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei-aktiivinen</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="106"/>
@@ -47054,7 +47055,11 @@ Klikkaa ohje näppäintä saadaksesi oikeat luonnin vaihtoehdot tälle muodolle.
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1676"/>
@@ -48151,7 +48156,7 @@ keskihajonta ×</translation>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="90"/>
         <source>Terrain Analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Maastoanalyysi</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="96"/>
@@ -48465,7 +48470,7 @@ keskihajonta ×</translation>
         <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="269"/>
         <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="387"/>
         <source>%1 (no selection)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (ei valintaa)</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="542"/>
@@ -50158,7 +50163,7 @@ lisäys</translation>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="70"/>
         <source>Avoid intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Vältä leikkauksia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="73"/>
@@ -52728,12 +52733,12 @@ Symbolien tietokannassa oli ongelma.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="67"/>
         <source>Both used to be correct, but we recently decided to just use &apos;QGIS&apos;. For articles we suggest you write &apos;QGIS is ....&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Molemmat olivat aiemmin oikein, mutta hiljakkoin päätimme käyttää vain &apos;QGIS&apos;. Artikkeleihin ehdotamme että käytät &apos;QGIS on ...&apos;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="117"/>
         <source>In the Print Composer you can rotate a map by setting its rotation value in the tab &lt;strong&gt;Item Properties -&gt; Map -&gt; Main properties&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
-        <translation>Voit kiertää karttaa asettamalla sen kiertoarvoon &lt;strong&gt; panelissa Nimikkeen ominaisuudet → Kartan ominaisuudet → Rotaatio &lt;/strong&gt;. Pohjoisnuolen sijoittamiseksi voit käyttää ulkoasussa &lt;strong&gt;Lisää kuva&lt;/strong&gt; työkalua, painike jossa pieni kamerakuvake. QGISin mukana tulee valikoima pohjoisnuolia. Sijoitettuasi pohjoisnuolen  ulkoasuun voit liittää sen tiettyyn kartta-kehykseen aktivoimalla &lt;strong&gt; Synkronoi kartan kanssa&lt;/strong&gt; valintaruudulla ja valitsemalla kartan raamin. Aina kun vaihdat kiertoarvoa joka on liitetty karttaan, pohjoisnuoli kääntyy mukautuen kiertoon.</translation>
+        <translation>Voit kiertää karttaa tulosteen muodostajassa asettamalla sen kiertoarvoon &lt;strong&gt; panelissa Nimikkeen ominaisuudet → Kartan ominaisuudet → Rotaatio &lt;/strong&gt;. Pohjoisnuolen sijoittamiseksi voit käyttää ulkoasussa &lt;strong&gt;Lisää kuva&lt;/strong&gt; työkalua, painike jossa pieni kamerakuvake. QGISin mukana tulee valikoima pohjoisnuolia. Sijoitettuasi pohjoisnuolen  ulkoasuun voit liittää sen tiettyyn kartta-kehykseen aktivoimalla &lt;strong&gt; Synkronoi kartan kanssa&lt;/strong&gt; valintaruudulla ja valitsemalla kartan raamin. Aina kun vaihdat kiertoarvoa joka on liitetty karttaan, pohjoisnuoli kääntyy mukautuen kiertoon.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="146"/>
@@ -54441,22 +54446,22 @@ Virhe oli:%2</translation>
     <message>
         <location filename="../src/app/qgsvisibilitypresets.cpp" line="45"/>
         <source>Add Preset...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää esiasetuksia...</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvisibilitypresets.cpp" line="48"/>
         <source>Remove Current Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista nykyiset esiasetukset</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvisibilitypresets.cpp" line="213"/>
         <source>Visibility Presets</source>
-        <translation type="unfinished"></translation>
+        <translation>Näkyvyyden esiasetukset</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvisibilitypresets.cpp" line="213"/>
         <source>Name of the new preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Uuden esiasetuksen nimi</translation>
     </message>
 </context>
 <context>
@@ -54913,7 +54918,8 @@ Virhe oli:%2</translation>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1064"/>
         <source>Could not understand the response. The %1 provider said:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei ymmärretty vastausta. Tarjoaja %1 sanoi :
+%2</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1115"/>
@@ -56666,11 +56672,11 @@ Syy: %2</translation>
     <name>RasterLayerBoundsAlgorithm</name>
     <message>
         <source>Raster layer bounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasteritason rajat</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished">Ainoastaan mallin työkalut</translation>
+        <translation>Ainoastaan mallintajan työkalut</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -56713,7 +56719,7 @@ Syy: %2</translation>
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml *.QML)</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS tason tyylitiedosto (*.qml *.QML)</translation>
     </message>
 </context>
 <context>
@@ -57020,20 +57026,22 @@ Syy: %2</translation>
     <message>
         <source>Could not load script: %s
 Problem with line: %d</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voitu ladata skriptiä: %s
+Ongelma rivillä: %d</translation>
     </message>
     <message>
         <source>[Test scripts]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Testiskriptit]</translation>
     </message>
     <message>
         <source>[Unnamed algorithm]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Nimetön algoritmi]</translation>
     </message>
     <message>
         <source>Could not load script: %s.
 Problem with line %d</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voitu ladata skriptiä: %s
+Ongelma rivillä: %d</translation>
     </message>
 </context>
 <context>
@@ -57365,7 +57373,7 @@ Problem with line %d</source>
     <name>ShowTestDialog</name>
     <message>
         <source>Unit test</source>
-        <translation type="unfinished"></translation>
+        <translation>Laite testi</translation>
     </message>
 </context>
 <context>
@@ -57551,11 +57559,11 @@ Problem with line %d</source>
     <name>VectorLayerBoundsAlgorithm</name>
     <message>
         <source>Vector layer bounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektoritason rajat</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished">Ainoastaan mallin työkalut</translation>
+        <translation>Ainoastaan mallintajan työkalut</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -61165,10 +61173,10 @@ Click on one of the icons along the top of the composer window to select what ty
 &lt;/p&gt;
 
 </source>
-        <translation>&lt;h3&gt;Tulosteen muodostus&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tulosteen muodostaja&lt;/h3&gt;
 
 &lt;p&gt;
-Tulosteen muodostus mahdollistaa tietojäsenten siirtelyn sivulla, jonka jälkeen voit tulostaa sen. Tietojäseniä voivat olla karttapohja, mittakaavajana, selite ja mahdolliset kuvat.
+Tulosteen muodostaja mahdollistaa tietojäsenten siirtelyn sivulla, jonka jälkeen voit tulostaa sen. Tietojäseniä voivat olla karttapohja, mittakaavajana, selite ja mahdolliset kuvat.
 &lt;/p&gt;
 
 &lt;p&gt;
@@ -62067,7 +62075,7 @@ Liitännäistä ei voi käyttää.</translation>
     </message>
     <message>
         <source>Nearest Neighbour Analysis...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lähin naapuri analyysi....</translation>
     </message>
     <message>
         <source>Mean Coordinate(s)...</source>
@@ -62075,7 +62083,7 @@ Liitännäistä ei voi käyttää.</translation>
     </message>
     <message>
         <source>Line Intersections...</source>
-        <translation type="unfinished"></translation>
+        <translation>Viivojen leikkaukset...</translation>
     </message>
     <message>
         <source>Random Selection...</source>
@@ -62111,11 +62119,11 @@ Liitännäistä ei voi käyttää.</translation>
     </message>
     <message>
         <source>Buffer(s)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Puskuri(t)...</translation>
     </message>
     <message>
         <source>Intersect...</source>
-        <translation type="unfinished"></translation>
+        <translation>Leikkaus...</translation>
     </message>
     <message>
         <source>Union...</source>
@@ -62147,7 +62155,7 @@ Liitännäistä ei voi käyttää.</translation>
     </message>
     <message>
         <source>Check Geometry Validity...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tarkista geometrinen kelpoisuus...</translation>
     </message>
     <message>
         <source>Polygon Centroids...</source>
@@ -62155,7 +62163,7 @@ Liitännäistä ei voi käyttää.</translation>
     </message>
     <message>
         <source>Delaunay Triangulation...</source>
-        <translation type="unfinished"></translation>
+        <translation>Delaunay kolmiomittaus...</translation>
     </message>
     <message>
         <source>Voronoi Polygons...</source>
@@ -62163,7 +62171,7 @@ Liitännäistä ei voi käyttää.</translation>
     </message>
     <message>
         <source>Extract Nodes...</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista solmut...</translation>
     </message>
     <message>
         <source>Simplify Geometries...</source>
@@ -62175,11 +62183,11 @@ Liitännäistä ei voi käyttää.</translation>
     </message>
     <message>
         <source>Multipart to Singleparts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Moniosaiset yksiosaisiksi...</translation>
     </message>
     <message>
         <source>Singleparts to Multipart...</source>
-        <translation type="unfinished"></translation>
+        <translation>Yksiosaiset moniosaisiksi...</translation>
     </message>
     <message>
         <source>Polygons to Lines...</source>
@@ -64833,7 +64841,7 @@ Ei mitään
 
 &lt;h4&gt;Esimerkki&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-&lt;pre&gt;$map &amp;rarr; &quot;yleiskartta&quot; (kokoonpanon jäsen)&lt;br /&gt;
+&lt;pre&gt;$map &amp;rarr; &quot;yleiskartta&quot; (tulostteen muodostajan jäsen)&lt;br /&gt;
 $map &amp;rarr; &quot;karttapohja (QGIS pääkarttapohjasta)&lt;/pre&gt;
 
 
