@@ -1595,25 +1595,37 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
   }
 
   QDomElement operandElem = element.firstChildElement();
-  QgsExpression::Node* opLeft = nodeFromOgcFilter( operandElem, errorMessage );
-  if ( !opLeft )
+  QgsExpression::Node *expr = nodeFromOgcFilter( operandElem, errorMessage ), *leftOp = expr;
+  if ( !expr )
   {
     if ( errorMessage.isEmpty() )
       errorMessage = QString( "invalid left operand for '%1' binary operator" ).arg( element.tagName() );
     return NULL;
   }
 
-  operandElem = operandElem.nextSiblingElement();
-  QgsExpression::Node* opRight = nodeFromOgcFilter( operandElem, errorMessage );
-  if ( !opRight )
+  for( operandElem = operandElem.nextSiblingElement(); !operandElem.isNull(); operandElem = operandElem.nextSiblingElement() )
+  {
+    QgsExpression::Node* opRight = nodeFromOgcFilter( operandElem, errorMessage );
+    if ( !opRight )
+    {
+      if ( errorMessage.isEmpty() )
+        errorMessage = QString( "invalid right operand for '%1' binary operator" ).arg( element.tagName() );
+      delete expr;
+      return NULL;
+    }
+
+    expr = new QgsExpression::NodeBinaryOperator(( QgsExpression::BinaryOperator ) op, expr, opRight );
+  }
+
+  if( expr == leftOp )
   {
     if ( errorMessage.isEmpty() )
-      errorMessage = QString( "invalid right operand for '%1' binary operator" ).arg( element.tagName() );
-    delete opLeft;
+      errorMessage = QString( "only one operand for '%1' binary operator" ).arg( element.tagName() );
+    delete expr;
     return NULL;
   }
 
-  return new QgsExpression::NodeBinaryOperator(( QgsExpression::BinaryOperator ) op, opLeft, opRight );
+  return dynamic_cast< QgsExpression::NodeBinaryOperator * >( expr );
 }
 
 
@@ -1843,7 +1855,6 @@ QgsExpression::Node* QgsOgcUtils::nodeIsBetweenFromOgcFilter( QDomElement& eleme
 }
 
 
-
 QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodePropertyIsNullFromOgcFilter( QDomElement& element, QString& errorMessage )
 {
   // convert ogc:PropertyIsNull to IS operator with NULL right operand
@@ -1863,8 +1874,6 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodePropertyIsNullFromOgcFilter(
 
 
 /////////////////
-
-
 
 
 QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage )
