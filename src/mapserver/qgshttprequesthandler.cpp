@@ -57,7 +57,6 @@ void QgsHttpRequestHandler::setHttpResponse( QByteArray *ba, const QString &form
     return;
   }
   QgsDebugMsg( "Byte array looks good, setting response..." );
-
   appendBody( *ba );
   mInfoFormat = format;
 }
