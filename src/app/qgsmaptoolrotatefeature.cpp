@@ -59,9 +59,10 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
   }
   if ( mRubberBand )
   {
-    double XDistance = mStPoint.x() - e->pos().x();
-    double YDistance = mStPoint.y() - e->pos().y();
+    double XDistance = e->pos().x() - mStPoint.x();
+    double YDistance = e->pos().y() - mStPoint.y();
     mRotation = atan2( YDistance, XDistance ) * ( 180 / PI );
+    mRotation = mRotation-mRotationOffset;
 
     mStPoint = toCanvasCoordinates( mStartPointMapCoords );
     double offsetX = mStPoint.x() - mRubberBand->x();
@@ -175,6 +176,9 @@ void QgsMapToolRotateFeature::canvasPressEvent( QMouseEvent * e )
   mRubberBand->setWidth( 2 );
   mRubberBand->show();
 
+  double XDistance = mInitialPos.x() - mAnchorPoint->x();
+  double YDistance = mInitialPos.y() - mAnchorPoint->y() ;
+  mRotationOffset = atan2( YDistance, XDistance ) * ( 180 / PI );
 }
 
 void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
@@ -340,6 +344,7 @@ void QgsMapToolRotateFeature::deactivate()
   delete mAnchorPoint;
   mRubberBand = 0;
   mAnchorPoint = 0;
+  mRotationOffset = 0;
 
   QgsMapTool::deactivate();
 }
