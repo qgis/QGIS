@@ -62,6 +62,8 @@ class QgsRequestHandler
     QString format() const;
     /**Return the format string as requested by the client*/
     QString infoFormat() const;
+    /**Allow plugins to return a QgsMapServiceException*/
+    virtual void setServiceException( QgsMapServiceException ex /Transfer/) = 0;
 
 private:
 
@@ -77,7 +79,6 @@ private:
     virtual void setGetMapResponse( const QString& service, QImage* img, int imageQuality ) = 0;
     virtual void setGetCapabilitiesResponse( const QDomDocument& doc ) = 0;
     virtual void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) = 0;
-    virtual void setServiceException( QgsMapServiceException ex ) = 0;
     virtual void setGetStyleResponse( const QDomDocument& doc ) = 0;
     virtual void setGetPrintResponse( QByteArray* ba ) = 0;
     virtual bool startGetFeatureResponse( QByteArray* ba, const QString& infoFormat ) = 0;
