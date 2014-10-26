@@ -191,6 +191,12 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
     theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0] );
     mDataSource = theURIParts.join( "|" );
   }
+  else if ( provider == "gpx" )
+  {
+    QStringList theURIParts = mDataSource.split( "?" );
+    theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0] );
+    mDataSource = theURIParts.join( "?" );
+  }
   else if ( provider == "delimitedtext" )
   {
     QUrl urlSource = QUrl::fromEncoded( mDataSource.toAscii() );
@@ -465,6 +471,12 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
     QStringList theURIParts = src.split( "|" );
     theURIParts[0] = QgsProject::instance()->writePath( theURIParts[0], relativeBasePath );
     src = theURIParts.join( "|" );
+  }
+  else if ( vlayer && vlayer->providerType() == "gpx" )
+  {
+    QStringList theURIParts = src.split( "?" );
+    theURIParts[0] = QgsProject::instance()->writePath( theURIParts[0], relativeBasePath );
+    src = theURIParts.join( "?" );
   }
   else if ( vlayer && vlayer->providerType() == "delimitedtext" )
   {
@@ -1066,6 +1078,11 @@ QString QgsMapLayer::saveNamedStyle( const QString &theURI, bool &theResultFlag 
     QStringList theURIParts = theURI.split( "|" );
     filename = theURIParts[0];
   }
+  else if ( vlayer && vlayer->providerType() == "gpx" )
+  {
+    QStringList theURIParts = theURI.split( "?" );
+    filename = theURIParts[0];
+  }
   else if ( vlayer && vlayer->providerType() == "delimitedtext" )
   {
     filename = QUrl::fromEncoded( theURI.toAscii() ).toLocalFile();
@@ -1242,6 +1259,11 @@ QString QgsMapLayer::saveSldStyle( const QString &theURI, bool &theResultFlag )
   if ( vlayer->providerType() == "ogr" )
   {
     QStringList theURIParts = theURI.split( "|" );
+    filename = theURIParts[0];
+  }
+  else if ( vlayer->providerType() == "gpx" )
+  {
+    QStringList theURIParts = theURI.split( "?" );
     filename = theURIParts[0];
   }
   else if ( vlayer->providerType() == "delimitedtext" )
