@@ -400,6 +400,8 @@ bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
     {
       QToolButton* toolbutton = qobject_cast<QToolButton*>( widget );
       QAction* action = toolbutton->defaultAction();
+      if ( !action )
+        return false;
       QString toolbarName = widget->parent()->objectName();
       QString actionName = action->objectName();
       path = "/Toolbars/" + toolbarName + "/" + actionName;
