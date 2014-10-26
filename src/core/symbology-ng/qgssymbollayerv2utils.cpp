@@ -3662,6 +3662,9 @@ QPointF QgsSymbolLayerV2Utils::polygonCentroid( const QPolygonF& points )
 
 QPointF QgsSymbolLayerV2Utils::polygonPointOnSurface( const QPolygonF& points )
 {
+  if ( points.count() <= 3 )
+    return points.count() == 0 ? QPointF() : points[0];
+
   QPointF centroid = QgsSymbolLayerV2Utils::polygonCentroid( points );
 
   // check if centroid inside in polygon
