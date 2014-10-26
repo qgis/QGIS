@@ -127,10 +127,8 @@ class DlgExportVector(QDialog, Ui_Dialog):
 				enc = self.cboEncoding.currentText()
 				options['fileEncoding'] = enc
 
-			if self.radCreate.isChecked() and self.chkDropTable.isChecked():
+			if self.chkDropTable.isChecked():
 				options['overwrite'] = True
-			elif self.radAppend.isChecked():
-				options['append'] = True
 
 			outCrs = None
 			if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():

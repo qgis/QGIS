@@ -282,10 +282,9 @@ class DlgImportVector(QDialog, Ui_Dialog):
 			providerName = self.db.dbplugin().providerName()
 
 			options = {}
-			if self.radCreate.isChecked() and self.chkDropTable.isChecked():
+			if self.chkDropTable.isChecked():
 				options['overwrite'] = True
-			elif self.radAppend.isChecked():
-				options['append'] = True
+
 			if self.chkSinglePart.isEnabled() and self.chkSinglePart.isChecked():
 				options['forceSinglePartGeometryType'] = True
 
