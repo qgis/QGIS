@@ -1927,7 +1927,6 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     {
       QgsVectorFileWriter::WriterError error = writer->exportFeaturesSymbolLevels( layer, fit, ct, errorMessage );
       delete writer;
-      delete ct;
       return ( error == NoError ) ? NoError : ErrFeatureWriteFailed;
     }
   }
@@ -1969,7 +1968,6 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
       }
       catch ( QgsCsException &e )
       {
-        delete ct;
         delete writer;
 
         QString msg = QObject::tr( "Failed to transform a point while drawing a feature with ID '%1'. Writing stopped. (Exception: %2)" )
@@ -2471,8 +2469,6 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
       }
       catch ( QgsCsException &e )
       {
-        delete ct;
-
         QString msg = QObject::tr( "Failed to transform, writing stopped. (Exception: %1)" )
                       .arg( e.what() );
         QgsLogger::warning( msg );
