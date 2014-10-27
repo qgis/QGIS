@@ -434,10 +434,11 @@ void QgsComposerScaleBar::segmentPositions( QList<QPair<double, double> >& posWi
   double mCurrentXCoord = mPen.widthF() + mBoxContentSpace;
 
   //left segments
+  double leftSegmentSize = mSegmentMillimeters / mNumSegmentsLeft;
   for ( int i = 0; i < mNumSegmentsLeft; ++i )
   {
-    posWidthList.push_back( qMakePair( mCurrentXCoord, mSegmentMillimeters / mNumSegmentsLeft ) );
-    mCurrentXCoord += mSegmentMillimeters / mNumSegmentsLeft;
+    posWidthList.push_back( qMakePair( mCurrentXCoord, leftSegmentSize ) );
+    mCurrentXCoord += leftSegmentSize;
   }
 
   //right segments

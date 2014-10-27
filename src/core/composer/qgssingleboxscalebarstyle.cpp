@@ -48,7 +48,6 @@ void QgsSingleBoxScaleBarStyle::draw( QPainter* p, double xOffset ) const
   p->setRenderHint( QPainter::Antialiasing, true );
   p->setPen( mScaleBar->pen() );
 
-
   QList<QPair<double, double> > segmentInfo;
   mScaleBar->segmentPositions( segmentInfo );
 

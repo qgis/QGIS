@@ -59,8 +59,6 @@ void QgsDoubleBoxScaleBarStyle::draw( QPainter* p, double xOffset ) const
 
   bool useColor = true; //alternate brush color/white
 
-
-
   QList<QPair<double, double> >::const_iterator segmentIt = segmentInfo.constBegin();
   for ( ; segmentIt != segmentInfo.constEnd(); ++segmentIt )
   {
