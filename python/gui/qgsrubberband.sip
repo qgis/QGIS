@@ -48,7 +48,7 @@ class QgsRubberBand: QgsMapCanvasItem
      *  @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
      *  @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
      */
-    QgsRubberBand( QgsMapCanvas* mapCanvas /TransferThis/, bool isPolygon );
+    QgsRubberBand( QgsMapCanvas* mapCanvas /TransferThis/, bool isPolygon ) /Deprecated/;
     ~QgsRubberBand();
 
     /**
