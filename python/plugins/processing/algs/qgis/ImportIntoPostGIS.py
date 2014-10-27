@@ -103,6 +103,10 @@ class ImportIntoPostGIS(GeoAlgorithm):
         if dropStringLength:
             options['dropStringConstraints'] = True
 
+        #clear geometry column for non-geometry tables
+        if not layer.hasGeometryType():
+            geomColumn = None
+
         uri = QgsDataSourceURI()
         uri.setConnection(host, str(port), database, username, password)
         if primaryKeyField:
@@ -123,7 +127,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                     'Error importing to PostGIS\n%s' % errMsg)
 
-        if createIndex:
+        if geomColumn and createIndex:
             db.create_spatial_index(table, schema, geomColumn)
 
         db.vacuum_analyze(table, schema)
