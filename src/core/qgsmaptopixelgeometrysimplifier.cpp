@@ -61,7 +61,7 @@ inline static QgsRectangle calculateBoundingBox( QGis::WkbType wkbType, unsigned
 }
 
 //! Generalize the WKB-geometry using the BBOX of the original geometry
-inline static bool generalizeWkbGeometry(
+static bool generalizeWkbGeometryByBoundingBox(
   QGis::WkbType wkbType,
   unsigned char* sourceWkb, size_t sourceWkbSize,
   unsigned char* targetWkb, size_t& targetWkbSize,
@@ -169,7 +169,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
   if (( simplifyFlags & QgsMapToPixelSimplifier::SimplifyEnvelope ) &&
       isGeneralizableByMapBoundingBox( envelope, map2pixelTol ) )
   {
-    isGeneralizable = generalizeWkbGeometry( wkbType, sourceWkb, sourceWkbSize, targetWkb, targetWkbSize, envelope, writeHeader );
+    isGeneralizable = generalizeWkbGeometryByBoundingBox( wkbType, sourceWkb, sourceWkbSize, targetWkb, targetWkbSize, envelope, writeHeader );
     if ( isGeneralizable )
       return true;
   }
@@ -222,8 +222,8 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
     double* ptr = ( double* )targetWkb;
     map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'LengthSquare' calculations.
 
-    bool isaUngenerizableSegment;
-    bool hasUngenerizableSegments = false; //-> To avoid replace the simplified geometry by its BBOX when there are 'long' segments.
+    bool isLongSegment;
+    bool hasLongSegments = false; //-> To avoid replace the simplified geometry by its BBOX when there are 'long' segments.
 
     // Check whether the LinearRing is really closed.
     if ( isaLinearRing )
@@ -249,44 +249,55 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
       memcpy( &x, sourceWkb, sizeof( double ) ); sourceWkb += sizeOfDoubleX;
       memcpy( &y, sourceWkb, sizeof( double ) ); sourceWkb += sizeOfDoubleY;
 
-      isaUngenerizableSegment = false;
+      isLongSegment = false;
 
       if ( i == 0 ||
            !isGeneralizable ||
-           ( isaUngenerizableSegment = ( calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol ) ) ||
+           ( isLongSegment = ( calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol ) ) ||
            ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
       {
         memcpy( ptr, &x, sizeof( double ) ); lastX = x; ptr++;
         memcpy( ptr, &y, sizeof( double ) ); lastY = y; ptr++;
         numTargetPoints++;
 
-        if ( isaUngenerizableSegment && !hasUngenerizableSegments )
-        {
-          hasUngenerizableSegments = true;
-        }
+        hasLongSegments |= isLongSegment;
       }
 
       r.combineExtentWith( x, y );
     }
     targetWkb = wkb2 + 4;
 
-    // Fix the topology of the geometry
-    if ( numTargetPoints <= ( isaLinearRing ? 2 : 1 ) && !hasUngenerizableSegments )
+    if ( numTargetPoints < ( isaLinearRing ? 4 : 2 ) )
     {
-      unsigned char* targetTempWkb = targetWkb;
-      int targetWkbTempSize = targetWkbSize;
+      // we simplified the geometry too much!
+      if ( !hasLongSegments )
+      {
+        // approximate the geometry's shape by its bounding box
+        // (rect for linear ring / one segment for line string)
+        unsigned char* targetTempWkb = targetWkb;
+        int targetWkbTempSize = targetWkbSize;
 
-      sourceWkb = sourcePrevWkb;
-      targetWkb = targetPrevWkb;
-      targetWkbSize = targetWkbPrevSize;
-      if ( generalizeWkbGeometry( wkbType, sourceWkb, sourceWkbSize, targetWkb, targetWkbSize, r, writeHeader ) )
-        return true;
+        sourceWkb = sourcePrevWkb;
+        targetWkb = targetPrevWkb;
+        targetWkbSize = targetWkbPrevSize;
+        if ( generalizeWkbGeometryByBoundingBox( wkbType, sourceWkb, sourceWkbSize, targetWkb, targetWkbSize, r, writeHeader ) )
+          return true;
 
-      targetWkb = targetTempWkb;
-      targetWkbSize = targetWkbTempSize;
+        targetWkb = targetTempWkb;
+        targetWkbSize = targetWkbTempSize;
+      }
+      else
+      {
+        // Bad luck! The simplified geometry is invalid and approximation by bounding box
+        // would create artifacts due to long segments. Worst of all, we may have overwritten
+        // the original coordinates by the simplified ones (source and target WKB ptr can be the same)
+        // so we cannot even undo the changes here. We will return invalid geometry and hope that
+        // other pieces of QGIS will survive that :-/
+      }
     }
     if ( isaLinearRing )
     {
+      // make sure we keep the linear ring closed
       memcpy( &x, targetWkb + 0, sizeof( double ) );
       memcpy( &y, targetWkb + sizeof( double ), sizeof( double ) );
       if ( lastX != x || lastY != y )
