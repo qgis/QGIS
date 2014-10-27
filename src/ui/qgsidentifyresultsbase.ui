@@ -47,7 +47,7 @@
          <item>
           <widget class="QToolButton" name="mExpandToolButton">
            <property name="toolTip">
-            <string>Expand tree.</string>
+            <string>Expand tree</string>
            </property>
            <property name="text">
             <string>...</string>
@@ -64,7 +64,7 @@
          <item>
           <widget class="QToolButton" name="mCollapseToolButton">
            <property name="toolTip">
-            <string>Collapse tree.</string>
+            <string>Collapse tree</string>
            </property>
            <property name="text">
             <string>...</string>
