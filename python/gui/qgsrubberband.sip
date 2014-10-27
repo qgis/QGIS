@@ -58,6 +58,20 @@ class QgsRubberBand: QgsMapCanvasItem
     void setColor( const QColor & color );
 
     /**
+     * Set the fill color for the rubberband
+     *  @param color  The color used to render this rubberband
+     *  @note Added in 2.6
+     */
+    void setFillColor( const QColor & color );
+
+    /**
+     * Set the border color for the rubberband
+     *  @param color  The color used to render this rubberband
+     *  @note Added in 2.6
+     */
+    void setBorderColor( const QColor & color );
+
+    /**
      * Set the width of the line. Outline width for polygon.
      *  @param width The width for any lines painted for this rubberband
      */
