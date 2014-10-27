@@ -1,13 +1,15 @@
 <h3>Attribute table</h3>
-The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking <label>Open attribute table in a dock window</label> in <label>Settings > Options > General</label>.<p>
+The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking <label>Open attribute table in a dock window</label> in <label>Settings > Options > Data Sources</label>.<p>
 
 The number of total number of layer features, filtered features and selected features is printed on the window header.<p>
+At the bottom right of the dialog, you can choose whether to display features in a form or in a table.<p>
 <p>
 <a href="#Selecting">Selecting</a><br/>
 <a href="#Sorting">Sorting</a><br/>
 <a href="#Filtering">Filtering</a><br/>
 <a href="#Editing">Editing</a><br/>
 <a href="#FieldCalc">Field Calculator</a><br/>
+<a href="#FieldCalcBar">Field Calculator bar</a><br/>
 
 <a name="Selecting">
 <h4>Selecting</h4>
@@ -19,7 +21,6 @@ A continuous selection can be made by holding the <label>Shift</label> key and c
 <h4>Sorting</h4>
 </a>
 Each column can be sorted by clicking on its column header. A small arrow indicates the sort order (downward pointing means descending values from the top row down, upward pointing means ascending values from the top row down).<br>
-Activate the <label>Selected on top</label> button to show the selected rows always on top, regardless of the current sort column.
 
 <a name="Filtering">
 <h4>Filtering</h4>
@@ -41,7 +42,8 @@ For more complex searches, this mode offers a powerful expression builder, which
 <a name="Editing">
 <h4>Editing</h4>
 </a>
-To edit values, you first have to switch the layer to editing mode. To switch to editing mode click on the <label>Toggle editing mode</label> (pencil) button or press <label>Ctrl + E</label>. Afterwards double-click on the value you want to edit or place the cursor on it and use the <label>Space</label>-Key. You can customize the widgets used for field editing in <label>Vector Layer Properties > Fields</label>  
+To edit values, you first have to switch the layer to editing mode. To switch to editing mode click on the <label>Toggle editing mode</label> (pencil) button or press <label>Ctrl + E</label>. Afterwards double-click on the value you want to edit or place the cursor on it and use the <label>Space</label>-Key. You can customize the widgets used for field editing in <label>Vector Layer Properties > Fields</label>  <br>
+You can also edit a field's value for many rows at once. You need to select the rows you want to edit and then use the <label>Field Calculator</label> or the <label>Field Calculator Bar</label>. If no row is selected, the edition will apply on all the features.
 
 <a name="FieldCalc">
 <h4>Field Calculator</h4>
@@ -49,3 +51,9 @@ To edit values, you first have to switch the layer to editing mode. To switch to
 The <label>Field Calculator</label> button in the attribute table allows performing calculations on basis of existing attribute values or defined functions, e.g. to calculate length or area of geometry features.<br>
 The results can be written to a new attribute column or it can be used to update values in an already existing column.<br>
 The vector layer needs to be in editing mode, before you can click on the <label>Field calculator</label> icon to open the dialog.
+
+<a name="FieldCalcBar">
+<h4>Field Calculator Bar</h4>
+</a>
+When you toggle to edition the layer, a new row of functions appears in the attribute table: the <label>Field Calculator Bar</label>. This allows to quickly edit values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.<br>
+To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press <label>Update all</label> button to update all the rows of the attribute table or <label>Update selected</label> button if some features are selected or a filter is applied on the attribute table display. You can also use the <label>Expression builder</label> button to calculate the new value in the column.<br>
