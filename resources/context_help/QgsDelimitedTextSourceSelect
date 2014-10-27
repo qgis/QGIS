@@ -34,7 +34,7 @@ be double, otherwise the type will be text.
 <p>
 QGIS can also read the types from an OGR CSV driver compatible &quot;csvt&quot; file.  
 This is a file alongside the data file, but with a &quot;t&quot; appended to the file name. 
-The file should just contain one linewhich lists the type of each field. 
+The file should just contain one line which lists the type of each field. 
 Valid types are &quot;integer&quot;, &quot;real&quot;, &quot;string&quot;, &quot;date&quot;, &quot;time&quot;, and &quot;datetime&quot;. The date, time, and datetime types are treated as strings in QGIS.
 Each type may be followed by a width and precision, for example &quot;real(10.4)&quot;.
 The list of types are separated by commas, regardless of the delimiter used in the data file.  An
