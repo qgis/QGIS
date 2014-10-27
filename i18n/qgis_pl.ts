@@ -30403,7 +30403,7 @@ a aktualną wersją pliku jest [%3]</translation>
     <message>
         <location filename="../src/core/qgscolorscheme.h" line="209"/>
         <source>Standard colors</source>
-        <translation type="unfinished">Standardowe kolory</translation>
+        <translation>Standardowe kolory</translation>
     </message>
 </context>
 <context>
@@ -31128,7 +31128,7 @@ a aktualną wersją pliku jest [%3]</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="224"/>
         <source>allow NULL values</source>
-        <translation type="unfinished"></translation>
+        <translation>NULL jest dopuszczalne</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="236"/>
@@ -31141,7 +31141,7 @@ a aktualną wersją pliku jest [%3]</translation>
     <message>
         <location filename="../src/customwidgets/qgsdatetimeeditplugin.cpp" line="74"/>
         <source>Define date</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdefiniuj datę</translation>
     </message>
 </context>
 <context>
@@ -31273,7 +31273,7 @@ a aktualną wersją pliku jest [%3]</translation>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="134"/>
         <source>Keep dialog open</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie zamykaj okna</translation>
     </message>
     <message>
         <source>Hold dialog open</source>
@@ -31389,7 +31389,8 @@ a aktualną wersją pliku jest [%3]</translation>
     <message>
         <location filename="../src/ui/qgsdecorationcopyrightdialog.ui" line="35"/>
         <source>&amp;Enter your copyright label here:</source>
-        <translation>&amp;Wprowadź informację o prawach autorskich:</translation>
+        <translatorcomment>field was too short</translatorcomment>
+        <translation>&amp;Informację o prawach autorskich:</translation>
     </message>
     <message utf8="true">
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -31422,7 +31423,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt;&quot;&gt;© QGIS 2013&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt;&quot;&gt;© QGIS 2014&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationcopyrightdialog.ui" line="56"/>
@@ -31476,7 +31481,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdecorationcopyrightdialog.cpp" line="46"/>
         <source>Select text color</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz kolor tekstu</translation>
     </message>
 </context>
 <context>
@@ -31935,7 +31940,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdecorationscalebardialog.cpp" line="63"/>
         <source>Select scalebar color</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz kolor podziałki</translation>
     </message>
 </context>
 <context>
@@ -31962,12 +31967,12 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/ui/qgsdelattrdialogbase.ui" line="49"/>
         <source>Provider fields can only be deleted when the layer is in edit mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pola mogą usuwane jedynie w trybie edycji warstwy.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelattrdialogbase.ui" line="56"/>
         <source>Provider does not support deleting attributes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Źródło danych nie umożliwia usuwania pól.</translation>
     </message>
 </context>
 <context>
@@ -33031,22 +33036,22 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="56"/>
         <source>Select background color</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz kolor tła</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="60"/>
         <source>Transparent background</source>
-        <translation type="unfinished"></translation>
+        <translation>Przezroczyste tło</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="61"/>
         <source>Select pen color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wybierz kolor pióra</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="65"/>
         <source>Transparent outline</source>
-        <translation type="unfinished">Przezroczysty obrys</translation>
+        <translation>Przezroczysty obrys</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="71"/>
@@ -33790,7 +33795,7 @@ Błąd:
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="95"/>
         <source>Layer attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Atrybut warstwy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="148"/>
@@ -33842,12 +33847,12 @@ Błąd:
     <message>
         <location filename="../src/gui/symbology-ng/qgsellipsesymbollayerv2widget.cpp" line="37"/>
         <source>Select border color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wybierz kolor obrysu</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsellipsesymbollayerv2widget.cpp" line="40"/>
         <source>Transparent border</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Przezroczysty obrys</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsellipsesymbollayerv2widget.cpp" line="280"/>
@@ -34440,7 +34445,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="468"/>
         <source>Output preview: </source>
-        <translation type="unfinished"></translation>
+        <translation>Podgląd wyniku:   </translation>
     </message>
     <message>
         <source>Output preview:   </source>
@@ -34638,12 +34643,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="49"/>
         <source>You are editing information on this layer but the layer is currently not in edit mode. If you click Ok, edit mode will automatically be turned on.</source>
-        <translation type="unfinished"></translation>
+        <translation>Informacja o warstwie jest edytowana, ale warstwa nie jest w trybie edycji. Klawisz OK automatycznie przełączy w tryb edycji.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="59"/>
         <source>This layer does not support adding new provider fields. You can only add virtual fields.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta warstwa nie umożliwia dodawania nowych pól. Można dodać jedynie pola wirtualne.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="134"/>
@@ -34653,12 +34658,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="233"/>
         <source>&lt;p&gt;A virtual field will be recalculated every time it is used. Its definition will be saved in the project file. It will not be saved in the dataprovider and therefore its values not be available in other software.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Pole wirtualne jest aktualizowane w trakcie użycia. Jego definicja zostanie zapisana tylko w pliku projektu. Informacje nie będa dostępne dla innych programów, ponieważ nie będą zapisane w źródle danych.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="236"/>
         <source>Create virtual field</source>
-        <translation type="unfinished"></translation>
+        <translation>Twórz pole wirtualne</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="72"/>
@@ -34817,12 +34822,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/customwidgets/qgsfieldcomboboxplugin.cpp" line="74"/>
         <source>A combo box to list the fields of a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>List rozwijalna z polami warstwy.</translation>
     </message>
     <message>
         <location filename="../src/customwidgets/qgsfieldcomboboxplugin.cpp" line="79"/>
         <source>A combo box to list the field of a layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>List rozwijalna z polami warstwy.</translation>
     </message>
 </context>
 <context>
@@ -34940,7 +34945,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="562"/>
         <source>Deleted attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Usunięte atrybuty</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="658"/>
@@ -35271,7 +35276,7 @@ MyForms.py musi znajdować się w PYTHONPATH, .qgis/python, lub w katalogu proje
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2734"/>
         <source>Select symbol color</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz kolor symbolu</translation>
     </message>
 </context>
 <context>
@@ -36986,7 +36991,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="101"/>
         <source>&amp;Georeferencer...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Georeferencer...</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="113"/>
@@ -37891,7 +37896,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="771"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="776"/>
         <source>Select gradient color</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz kolor gradientu</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="774"/>
